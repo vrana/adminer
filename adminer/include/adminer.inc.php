@@ -111,15 +111,15 @@ class Adminer {
 
 	/** Print login form */
 	function loginForm(): void {
-		global $drivers;
+		global $drivers, $adminer;
 		echo "<table class='layout'>\n";
 		// this is matched by compile.php
-		echo $this->loginFormField('driver', '<tr><th>' . lang('System') . '<td>', html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);"));
-		echo $this->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', '<input name="auth[server]" value="' . h(SERVER) . '" title="hostname[:port]" placeholder="localhost" autocapitalize="off">');
+		echo $adminer->loginFormField('driver', '<tr><th>' . lang('System') . '<td>', html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);"));
+		echo $adminer->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', '<input name="auth[server]" value="' . h(SERVER) . '" title="hostname[:port]" placeholder="localhost" autocapitalize="off">');
 		// this is matched by compile.php
-		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input name="auth[username]" id="username" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">' . script("qs('#username').form['auth[driver]'].onchange();"));
-		echo $this->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">');
-		echo $this->loginFormField('db', '<tr><th>' . lang('Database') . '<td>', '<input name="auth[db]" value="' . h($_GET["db"]) . '" autocapitalize="off">');
+		echo $adminer->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input name="auth[username]" id="username" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">' . script("qs('#username').form['auth[driver]'].onchange();"));
+		echo $adminer->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">');
+		echo $adminer->loginFormField('db', '<tr><th>' . lang('Database') . '<td>', '<input name="auth[db]" value="' . h($_GET["db"]) . '" autocapitalize="off">');
 		echo "</table>\n";
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
 		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
@@ -519,7 +519,7 @@ class Adminer {
 	* @return list<string> expressions to join by AND
 	*/
 	function selectSearchProcess(array $fields, array $indexes): array {
-		global $connection, $driver;
+		global $connection, $driver, $adminer;
 		$return = array();
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT" && $_GET["fulltext"][$i] != "") {
@@ -536,14 +536,14 @@ class Adminer {
 				} elseif ($val["op"] == "SQL") {
 					$cond = " $val[val]"; // SQL injection
 				} elseif ($val["op"] == "LIKE %%") {
-					$cond = " LIKE " . $this->processInput($fields[$val["col"]], "%$val[val]%");
+					$cond = " LIKE " . $adminer->processInput($fields[$val["col"]], "%$val[val]%");
 				} elseif ($val["op"] == "ILIKE %%") {
-					$cond = " ILIKE " . $this->processInput($fields[$val["col"]], "%$val[val]%");
+					$cond = " ILIKE " . $adminer->processInput($fields[$val["col"]], "%$val[val]%");
 				} elseif ($val["op"] == "FIND_IN_SET") {
 					$prefix = "$val[op](" . q($val["val"]) . ", ";
 					$cond = ")";
 				} elseif (!preg_match('~NULL$~', $val["op"])) {
-					$cond .= " " . $this->processInput($fields[$val["col"]], $val["val"]);
+					$cond .= " " . $adminer->processInput($fields[$val["col"]], $val["val"]);
 				}
 				if ($val["col"] != "") {
 					$return[] = $prefix . $driver->convertSearch(idf_escape($val["col"]), $val, $fields[$val["col"]]) . $cond;
@@ -938,8 +938,8 @@ class Adminer {
 	* @param string $missing can be "auth" if there is no database connection, "db" if there is no database selected, "ns" with invalid schema
 	*/
 	function navigation(string $missing): void {
-		global $VERSION, $drivers, $connection;
-		echo "<h1>" . $this->name() . " <span class='version'>$VERSION";
+		global $VERSION, $drivers, $connection, $adminer;
+		echo "<h1>" . $adminer->name() . " <span class='version'>$VERSION";
 		$new_version = $_COOKIE["adminer_version"];
 		echo " <a href='https://www.adminer.org/#download'" . target_blank() . " id='version'>" . (version_compare($VERSION, $new_version) < 0 ? h($new_version) : "") . "</a>";
 		echo "</span></h1>\n";
@@ -954,7 +954,7 @@ class Adminer {
 						if ($password !== null) {
 							$dbs = $_SESSION["db"][$vendor][$server][$username];
 							foreach (($dbs ? array_keys($dbs) : array("")) as $db) {
-								$output .= "<li><a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($name) " . h($username . ($server != "" ? "@" . $this->serverName($server) : "") . ($db != "" ? " - $db" : "")) . "</a>\n";
+								$output .= "<li><a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($name) " . h($username . ($server != "" ? "@" . $adminer->serverName($server) : "") . ($db != "" ? " - $db" : "")) . "</a>\n";
 							}
 						}
 					}
@@ -969,8 +969,8 @@ class Adminer {
 				$connection->select_db(DB);
 				$tables = table_status('', true);
 			}
-			$this->syntaxHighlighting($tables);
-			$this->databasesPrint($missing);
+			$adminer->syntaxHighlighting($tables);
+			$adminer->databasesPrint($missing);
 			$actions = array();
 			if (DB == "" || !$missing) {
 				if (support("sql")) {
@@ -986,7 +986,7 @@ class Adminer {
 			echo ($actions ? "<p class='links'>\n" . implode("\n", $actions) . "\n" : "");
 			if ($in_db) {
 				if ($tables) {
-					$this->tablesPrint($tables);
+					$adminer->tablesPrint($tables);
 				} else {
 					echo "<p class='message'>" . lang('No tables.') . "</p>\n";
 				}
@@ -1027,7 +1027,7 @@ class Adminer {
 	/** Print databases list in menu */
 	function databasesPrint(string $missing): void {
 		global $adminer, $connection;
-		$databases = $this->databases();
+		$databases = $adminer->databases();
 		if (DB && $databases && !in_array(DB, $databases)) {
 			array_unshift($databases, DB);
 		}
@@ -1060,9 +1060,10 @@ class Adminer {
 	* @param TableStatus[] $tables result of table_status('', true)
 	*/
 	function tablesPrint(array $tables): void {
+		global $adminer;
 		echo "<ul id='tables'>" . script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
 		foreach ($tables as $table => $status) {
-			$name = $this->tableName($status);
+			$name = $adminer->tableName($status);
 			if ($name != "") {
 				echo '<li><a href="' . h(ME) . 'select=' . urlencode($table) . '"'
 					. bold($_GET["select"] == $table || $_GET["edit"] == $table, "select")

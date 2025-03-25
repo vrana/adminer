@@ -31,9 +31,9 @@ class Adminer {
 	}
 
 	function database() {
-		global $connection;
+		global $connection, $adminer;
 		if ($connection) {
-			$databases = $this->databases(false);
+			$databases = $adminer->databases(false);
 			return (!$databases
 				? get_val("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1)") // username without the database list
 				: $databases[(information_schema($databases[0]) ? 1 : 0)] // first available database
@@ -76,9 +76,10 @@ class Adminer {
 	}
 
 	function loginForm() {
+		global $adminer;
 		echo "<table class='layout'>\n";
-		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', input_hidden("auth[driver]", "server") . '<input name="auth[username]" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">');
-		echo $this->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">');
+		echo $adminer->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', input_hidden("auth[driver]", "server") . '<input name="auth[username]" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">');
+		echo $adminer->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">');
 		echo "</table>\n";
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
 		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
@@ -115,19 +116,20 @@ class Adminer {
 	}
 
 	function backwardKeys($table, $tableName) {
+		global $adminer;
 		$return = array();
 		foreach (
 			get_rows("SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
 FROM information_schema.KEY_COLUMN_USAGE
-WHERE TABLE_SCHEMA = " . q($this->database()) . "
-AND REFERENCED_TABLE_SCHEMA = " . q($this->database()) . "
+WHERE TABLE_SCHEMA = " . q($adminer->database()) . "
+AND REFERENCED_TABLE_SCHEMA = " . q($adminer->database()) . "
 AND REFERENCED_TABLE_NAME = " . q($table) . "
 ORDER BY ORDINAL_POSITION", null, "") as $row
 		) {
 			$return[$row["TABLE_NAME"]]["keys"][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
 		}
 		foreach ($return as $key => $val) {
-			$name = $this->tableName(table_status1($key, true));
+			$name = $adminer->tableName(table_status1($key, true));
 			if ($name != "") {
 				$search = preg_quote($tableName);
 				$separator = "(:|\\s*-)?\\s+";
@@ -350,7 +352,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function selectSearchProcess($fields, $indexes) {
-		global $driver;
+		global $driver, $adminer;
 		$return = array();
 		foreach ((array) $_GET["where"] as $key => $where) {
 			$col = $where["col"];
@@ -365,7 +367,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 							$conds[] = (in_array(0, $val) ? "$name IS NULL OR " : "") . "$name IN (" . implode(", ", array_map('intval', $val)) . ")";
 						} else {
 							$text_type = preg_match('~char|text|enum|set~', $field["type"]);
-							$value = $this->processInput($field, (!$op && $text_type && preg_match('~^[^%]+$~', $val) ? "%$val%" : $val));
+							$value = $adminer->processInput($field, (!$op && $text_type && preg_match('~^[^%]+$~', $val) ? "%$val%" : $val));
 							$conds[] = $driver->convertSearch($name, $where, $field) . ($value == "NULL" ? " IS" . ($op == ">=" ? " NOT" : "") . " $value"
 								: (in_array($op, $this->operators) || $op == "=" ? " $op $value"
 								: ($text_type ? " LIKE $value"
@@ -420,6 +422,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function selectEmailProcess($where, $foreignKeys) {
+		global $adminer;
 		if ($_POST["email_append"]) {
 			return true;
 		}
@@ -437,10 +440,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 					. ($_POST["all"] ? "" : " AND ((" . implode(") OR (", array_map('Adminer\where_check', (array) $_POST["check"])) . "))")
 				);
 				$fields = fields($_GET["select"]);
-				foreach ($this->rowDescriptions($rows, $foreignKeys) as $row) {
+				foreach ($adminer->rowDescriptions($rows, $foreignKeys) as $row) {
 					$replace = array('{\\' => '{'); // allow literal {$name}
 					foreach ($matches[1] as $val) {
-						$replace['{$' . "$val}"] = $this->editVal($row[$val], $fields[$val]);
+						$replace['{$' . "$val}"] = $adminer->editVal($row[$val], $fields[$val]);
 					}
 					$email = $row[$_POST["email_field"]];
 					if (is_mail($email) && send_mail($email, strtr($subject, $replace), strtr($message, $replace), $_POST["email_from"], $_FILES["email_files"])) {
@@ -589,8 +592,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function navigation($missing) {
-		global $VERSION;
-		echo "<h1>" . $this->name() . " <span class='version'>$VERSION";
+		global $VERSION, $adminer;
+		echo "<h1>" . $adminer->name() . " <span class='version'>$VERSION";
 		$new_version = $_COOKIE["adminer_version"];
 		echo " <a href='https://www.adminer.org/editor/#download'" . target_blank() . " id='version'>" . (version_compare($VERSION, $new_version) < 0 ? h($new_version) : "") . "</a>";
 		echo "</span></h1>\n";
@@ -610,13 +613,13 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 				}
 			}
 		} else {
-			$this->databasesPrint($missing);
+			$adminer->databasesPrint($missing);
 			if ($missing != "db" && $missing != "ns") {
 				$table_status = table_status('', true);
 				if (!$table_status) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";
 				} else {
-					$this->tablesPrint($table_status);
+					$adminer->tablesPrint($table_status);
 				}
 			}
 		}
@@ -629,11 +632,12 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function tablesPrint($tables) {
+		global $adminer;
 		echo "<ul id='tables'>";
 		echo script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
 		foreach ($tables as $row) {
 			echo '<li>';
-			$name = $this->tableName($row);
+			$name = $adminer->tableName($row);
 			if ($name != "") { // ignore tables without name
 				echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'"
 					. bold($_GET["select"] == $row["Name"] || $_GET["edit"] == $row["Name"], "select")
@@ -645,9 +649,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function _foreignColumn($foreignKeys, $column) {
+		global $adminer;
 		foreach ((array) $foreignKeys[$column] as $foreignKey) {
 			if (count($foreignKey["source"]) == 1) {
-				$name = $this->rowDescription($foreignKey["table"]);
+				$name = $adminer->rowDescription($foreignKey["table"]);
 				if ($name != "") {
 					$id = idf_escape($foreignKey["target"][0]);
 					return array($foreignKey["table"], $id, $name);
