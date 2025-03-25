@@ -143,7 +143,7 @@ function textarea($name, $value, $rows = 10, $cols = 80) {
 
 /** Generate HTML <select> or <input> if $options are empty
 * @param string
-* @param array
+* @param string[]
 * @param string
 * @param string
 * @param string
@@ -178,10 +178,10 @@ function json_row($key, $val = null) {
 
 /** Print table columns for type edit
 * @param string
-* @param array
-* @param array
-* @param array returned by referencable_primary()
-* @param array extra types to prepend
+* @param list<string>[]
+* @param array[]
+* @param array[] returned by referencable_primary()
+* @param list<string> extra types to prepend
 * @return null
 */
 function edit_type($key, $field, $collations, $foreign_keys = array(), $extra_types = array()) {
@@ -317,10 +317,10 @@ function type_class($type) {
 }
 
 /** Print table interior for fields editing
-* @param array
-* @param array
+* @param array[]
+* @param list<string>[]
 * @param string TABLE or PROCEDURE
-* @param array returned by referencable_primary()
+* @param array[] returned by referencable_primary()
 * @return null
 */
 function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = array()) {
@@ -382,7 +382,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 }
 
 /** Move fields up and down or add field
-* @param array
+* @param array[]
 * @return bool
 */
 function process_fields(&$fields) {
@@ -423,7 +423,7 @@ function process_fields(&$fields) {
 }
 
 /** Callback used in routine()
-* @param array
+* @param list<array>
 * @return string
 */
 function normalize_enum($match) {
@@ -432,7 +432,7 @@ function normalize_enum($match) {
 
 /** Issue grant or revoke commands
 * @param string GRANT or REVOKE
-* @param array
+* @param list<string>
 * @param string
 * @param string
 * @return bool
@@ -502,7 +502,7 @@ function create_trigger($on, $row) {
 
 /** Generate SQL query for creating routine
 * @param string "PROCEDURE" or "FUNCTION"
-* @param array result of routine()
+* @param string[] result of routine()
 * @return string
 */
 function create_routine($routine, $row) {
@@ -587,7 +587,7 @@ function ini_bytes($ini) {
 }
 
 /** Create link to database documentation
-* @param array JUSH => $path
+* @param string[] JUSH => $path
 * @param string HTML code
 * @return string HTML code
 */

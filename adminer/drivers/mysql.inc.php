@@ -505,7 +505,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get database collation
 	* @param string
-	* @param array result of collations()
+	* @param list<string>[] result of collations()
 	* @return string
 	*/
 	function db_collation($db, $collations) {
@@ -535,7 +535,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Count tables in all databases
-	* @param array
+	* @param list<string>
 	* @return int[] [$db => $tables]
 	*/
 	function count_tables($databases) {
@@ -752,7 +752,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Drop databases
-	* @param array
+	* @param list<string>
 	* @return bool
 	*/
 	function drop_databases($databases) {
@@ -809,7 +809,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @param string "" to create
 	* @param string new name
 	* @param array of [$orig, $process_field, $after]
-	* @param array of strings
+	* @param list<string>
 	* @param string
 	* @param string
 	* @param string
@@ -853,7 +853,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Run commands to alter indexes
 	* @param string escaped table name
-	* @param array of ["index type", "name", ["column definition", ...]] or ["index type", "name", "DROP"]
+	* @param array[] of ["index type", "name", ["column definition", ...]] or ["index type", "name", "DROP"]
 	* @return bool
 	*/
 	function alter_indexes($table, $alter) {
@@ -867,7 +867,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Run commands to truncate tables
-	* @param array
+	* @param list<string>
 	* @return bool
 	*/
 	function truncate_tables($tables) {
@@ -875,7 +875,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Drop views
-	* @param array
+	* @param list<string>
 	* @return bool
 	*/
 	function drop_views($views) {
@@ -883,7 +883,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Drop tables
-	* @param array
+	* @param list<string>
 	* @return bool
 	*/
 	function drop_tables($tables) {
@@ -891,8 +891,8 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Move tables to other schema
-	* @param array
-	* @param array
+	* @param list<string>
+	* @param list<string>
 	* @param string
 	* @return bool
 	*/
@@ -921,8 +921,8 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Copy tables to other schema
-	* @param array
-	* @param array
+	* @param list<string>
+	* @param list<string>
 	* @param string
 	* @return bool
 	*/
@@ -1073,7 +1073,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get approximate number of rows
 	* @param array
-	* @param array
+	* @param list<string>
 	* @return int or null if approximate number can't be retrieved
 	*/
 	function found_rows($table_status, $where) {

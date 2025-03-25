@@ -87,7 +87,7 @@ function checkbox($name, $value, $checked, $label = "", $onclick = "", $class = 
 }
 
 /** Generate list of HTML options
-* @param array array of strings or arrays (creates optgroup)
+* @param string[]|string[][] array of strings or arrays (creates optgroup)
 * @param mixed
 * @param bool always use array keys for value="", otherwise only string keys are used
 * @return string
@@ -116,7 +116,7 @@ function optionlist($options, $selected = null, $use_keys = false) {
 
 /** Generate HTML <select>
 * @param string
-* @param array
+* @param string[]
 * @param string
 * @param string
 * @param string
@@ -132,7 +132,7 @@ function html_select($name, $options, $value = "", $onchange = "", $labelled_by 
 
 /** Generate HTML radio list
 * @param string
-* @param array
+* @param string[]
 * @param string
 * @return string
 */
@@ -198,7 +198,7 @@ function pagination($page, $current) {
 
 /** Print hidden fields
 * @param array
-* @param array
+* @param list<string>
 * @param string
 * @return bool
 */
@@ -426,7 +426,7 @@ function on_help($command, $side = 0) {
 
 /** Print edit data form
 * @param string
-* @param array
+* @param array[]
 * @param mixed
 * @param bool
 * @return null

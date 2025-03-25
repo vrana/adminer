@@ -9,7 +9,7 @@
 class AdminerTableStructure {
 
 	/** Print table structure in tabular format
-	* @param array data about individual fields
+	* @param array[] data about individual fields
 	* @return bool
 	*/
 	function tableStructurePrint($fields, $tableStatus = null) {

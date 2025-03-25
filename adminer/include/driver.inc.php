@@ -75,10 +75,10 @@ abstract class SqlDriver {
 
 	/** Select data from table
 	* @param string
-	* @param array result of $adminer->selectColumnsProcess()[0]
-	* @param array result of $adminer->selectSearchProcess()
-	* @param array result of $adminer->selectColumnsProcess()[1]
-	* @param array result of $adminer->selectOrderProcess()
+	* @param list<string> result of $adminer->selectColumnsProcess()[0]
+	* @param list<string> result of $adminer->selectSearchProcess()
+	* @param list<string> result of $adminer->selectColumnsProcess()[1]
+	* @param list<string> result of $adminer->selectOrderProcess()
 	* @param int result of $adminer->selectLimitProcess()
 	* @param int index of page starting at zero
 	* @param bool whether to print the query
@@ -118,7 +118,7 @@ abstract class SqlDriver {
 
 	/** Update data in table
 	* @param string
-	* @param array escaped columns in keys, quoted data in values
+	* @param string[] escaped columns in keys, quoted data in values
 	* @param string " WHERE ..."
 	* @param int 0 or 1
 	* @param string
@@ -135,7 +135,7 @@ abstract class SqlDriver {
 
 	/** Insert data into table
 	* @param string
-	* @param array escaped columns in keys, quoted data in values
+	* @param string[] escaped columns in keys, quoted data in values
 	* @return bool
 	*/
 	function insert($table, $set) {
@@ -155,8 +155,8 @@ abstract class SqlDriver {
 
 	/** Insert or update data in table
 	* @param string
-	* @param array
-	* @param array of arrays with escaped columns in keys and quoted data in values
+	* @param list<string[]> of arrays with escaped columns in keys and quoted data in values
+	* @param int[] column names in keys
 	* @return bool
 	*/
 	function insertUpdate($table, $rows, $primary) {

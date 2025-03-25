@@ -81,7 +81,7 @@ function number_type() {
 }
 
 /** Disable magic_quotes_gpc
-* @param array e.g. (&$_GET, &$_POST, &$_COOKIE)
+* @param list<array> e.g. (&$_GET, &$_POST, &$_COOKIE)
 * @param bool whether to leave values as is
 * @return null modified in place
 */
@@ -261,8 +261,8 @@ function get_rows($query, $connection2 = null, $error = "<p class='error'>") {
 }
 
 /** Find unique identifier of a row
-* @param array
-* @param array result of indexes()
+* @param string[]
+* @param array[] result of indexes()
 * @return string[] or null if there is no unique identifier
 */
 function unique_array($row, $indexes) {
@@ -293,7 +293,7 @@ function escape_key($key) {
 
 /** Create SQL condition from parsed query string
 * @param array parsed query string
-* @param array
+* @param array[]
 * @return string
 */
 function where($where, $fields = array()) {
@@ -321,7 +321,7 @@ function where($where, $fields = array()) {
 
 /** Create SQL condition from query string
 * @param string
-* @param array
+* @param array[]
 * @return string
 */
 function where_check($val, $fields = array()) {
@@ -342,9 +342,9 @@ function where_link($i, $column, $value, $operator = "=") {
 }
 
 /** Get select clause for convertible fields
-* @param array
-* @param array
-* @param array
+* @param string[]
+* @param array[]
+* @param list<string>
 * @return string
 */
 function convert_fields($columns, $fields, $select = array()) {
@@ -551,7 +551,7 @@ function queries($query) {
 
 /** Apply command to all array items
 * @param string
-* @param array
+* @param list<string>
 * @param callback
 * @return bool
 */
@@ -770,7 +770,7 @@ function dump_headers($identifier, $multi_table = false) {
 }
 
 /** Print CSV row
-* @param array
+* @param string[]
 * @return null
 */
 function dump_csv($row) {
@@ -962,9 +962,9 @@ function is_shortable($field) {
 
 /** Get query to compute number of found rows
 * @param string
-* @param array
+* @param list<string>
 * @param bool
-* @param array
+* @param list<string>
 * @return string
 */
 function count_rows($table, $where, $is_group, $group) {

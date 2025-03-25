@@ -15,7 +15,7 @@ function email_header($header) {
 * @param string
 * @param string
 * @param string
-* @param array
+* @param array[]
 * @return bool
 */
 function send_mail($email, $subject, $message, $from = "", $files = array()) {

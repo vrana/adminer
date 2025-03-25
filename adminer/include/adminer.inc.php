@@ -227,8 +227,8 @@ class Adminer {
 	}
 
 	/** Print backward keys for row
-	* @param array result of $this->backwardKeys()
-	* @param array
+	* @param array[] result of $this->backwardKeys()
+	* @param string[]
 	* @return null
 	*/
 	function backwardKeysPrint($backwardKeys, $row) {
@@ -277,8 +277,8 @@ class Adminer {
 	}
 
 	/** Get descriptions of selected data
-	* @param array all data to print
-	* @param array
+	* @param list<string[]> all data to print
+	* @param array[]
 	* @return list<string[]>
 	*/
 	function rowDescriptions($rows, $foreignKeys) {
@@ -297,7 +297,7 @@ class Adminer {
 	* @param string HTML-escaped value to print
 	* @param string link to foreign key
 	* @param array single field returned from fields()
-	* @param array original value before applying editVal() and escaping
+	* @param string original value before applying editVal() and escaping
 	* @return string
 	*/
 	function selectVal($val, $link, $field, $original) {
@@ -322,7 +322,7 @@ class Adminer {
 	}
 
 	/** Print table structure in tabular format
-	* @param array data about individual fields
+	* @param array[] data about individual fields
 	* @param array
 	* @return null
 	*/
@@ -354,7 +354,7 @@ class Adminer {
 	}
 
 	/** Print list of indexes on table in tabular format
-	* @param array data about all indexes on a table
+	* @param array[] data about all indexes on a table
 	* @return null
 	*/
 	function tableIndexesPrint($indexes) {
@@ -374,8 +374,8 @@ class Adminer {
 	}
 
 	/** Print columns box in select
-	* @param array result of selectColumnsProcess()[0]
-	* @param array selectable columns
+	* @param list<string> result of selectColumnsProcess()[0]
+	* @param string[] selectable columns
 	* @return null
 	*/
 	function selectColumnsPrint($select, $columns) {
@@ -401,9 +401,9 @@ class Adminer {
 	}
 
 	/** Print search box in select
-	* @param array result of selectSearchProcess()
-	* @param array selectable columns
-	* @param array
+	* @param list<string> result of selectSearchProcess()
+	* @param string[] selectable columns
+	* @param array[]
 	* @return null
 	*/
 	function selectSearchPrint($where, $columns, $indexes) {
@@ -437,9 +437,9 @@ class Adminer {
 	}
 
 	/** Print order box in select
-	* @param array result of selectOrderProcess()
-	* @param array selectable columns
-	* @param array
+	* @param list<string> result of selectOrderProcess()
+	* @param string[] selectable columns
+	* @param array[]
 	* @return null
 	*/
 	function selectOrderPrint($order, $columns, $indexes) {
@@ -481,7 +481,7 @@ class Adminer {
 	}
 
 	/** Print action box in select
-	* @param array
+	* @param array[]
 	* @return null
 	*/
 	function selectActionPrint($indexes) {
@@ -522,16 +522,16 @@ class Adminer {
 	}
 
 	/** Print extra text in the end of a select form
-	* @param array fields holding e-mails
-	* @param array selectable columns
+	* @param string[] fields holding e-mails
+	* @param string[] selectable columns
 	* @return null
 	*/
 	function selectEmailPrint($emailFields, $columns) {
 	}
 
 	/** Process columns box in select
-	* @param array selectable columns
-	* @param array
+	* @param string[] selectable columns
+	* @param array[]
 	* @return list<list<string>> [[select_expressions], [group_expressions]]
 	*/
 	function selectColumnsProcess($columns, $indexes) {
@@ -550,8 +550,8 @@ class Adminer {
 	}
 
 	/** Process search box in select
-	* @param array
-	* @param array
+	* @param array[]
+	* @param array[]
 	* @return list<string> expressions to join by AND
 	*/
 	function selectSearchProcess($fields, $indexes) {
@@ -604,8 +604,8 @@ class Adminer {
 	}
 
 	/** Process order box in select
-	* @param array
-	* @param array
+	* @param array[]
+	* @param array[]
 	* @return list<string> expressions to join by comma
 	*/
 	function selectOrderProcess($fields, $indexes) {
@@ -635,8 +635,8 @@ class Adminer {
 	}
 
 	/** Process extras in select form
-	* @param array AND conditions
-	* @param array
+	* @param string[] AND conditions
+	* @param array[]
 	* @return bool true if processed, false to process other parts of form
 	*/
 	function selectEmailProcess($where, $foreignKeys) {
@@ -644,10 +644,10 @@ class Adminer {
 	}
 
 	/** Build SQL query used in select
-	* @param array result of selectColumnsProcess()[0]
-	* @param array result of selectSearchProcess()
-	* @param array result of selectColumnsProcess()[1]
-	* @param array result of selectOrderProcess()
+	* @param list<string> result of selectColumnsProcess()[0]
+	* @param list<string> result of selectSearchProcess()
+	* @param list<string> result of selectColumnsProcess()[1]
+	* @param list<string> result of selectOrderProcess()
 	* @param int result of selectLimitProcess()
 	* @param int index of page starting at zero
 	* @return string empty string to use default query
@@ -689,7 +689,7 @@ class Adminer {
 
 	/** Print before edit form
 	* @param string
-	* @param array
+	* @param array[]
 	* @param mixed
 	* @param bool
 	* @return null
@@ -1051,7 +1051,7 @@ class Adminer {
 	}
 
 	/** Set up syntax highlight for code and <textarea>
-	* @param array result of table_status()
+	* @param array[] result of table_status()
 	*/
 	function syntaxHighlighting($tables) {
 		global $connection;

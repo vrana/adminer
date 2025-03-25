@@ -5,7 +5,7 @@ class Plugins extends Adminer {
 	public $plugins; ///< @var protected(set) array
 
 	/** Register plugins
-	* @param array object instances or null to autoload plugins from adminer-plugins/
+	* @param list<object> object instances or null to autoload plugins from adminer-plugins/
 	*/
 	function __construct($plugins) {
 		if ($plugins === null) {
