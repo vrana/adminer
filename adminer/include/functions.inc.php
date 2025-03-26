@@ -1050,8 +1050,10 @@ function lzw_decompress($binary) {
 		}
 	}
 	// decompression
+	/** @var list<?string> */
 	$dictionary = range("\0", "\xFF");
 	$return = "";
+	$word = "";
 	foreach ($codes as $i => $code) {
 		$element = $dictionary[$code];
 		if (!isset($element)) {

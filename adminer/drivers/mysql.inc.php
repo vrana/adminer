@@ -961,10 +961,11 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get information about trigger
 	* @param string trigger name
+	* @param string
 	* @return Trigger
 	* @phpstan-type Trigger array{Trigger:string, Timing:string, Event:string, Of:string, Type:string, Statement:string}
 	*/
-	function trigger($name) {
+	function trigger($name, $table) {
 		if ($name == "") {
 			return array();
 		}

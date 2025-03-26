@@ -221,7 +221,7 @@ if (isset($_GET["oracle"])) {
 		return $connection->error;
 	}
 
-	function get_databases() {
+	function get_databases($flush) {
 		return get_vals(
 			"SELECT DISTINCT tablespace_name FROM (
 SELECT tablespace_name FROM user_tablespaces

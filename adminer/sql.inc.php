@@ -152,6 +152,7 @@ if (!$error && $_POST) {
 										$time .= ", <a href='#$warnings_id'>" . lang('Warnings') . "</a>" . script("qsl('a').onclick = partial(toggle, '$warnings_id');", "");
 									}
 									$explain = null;
+									$orgtables = null;
 									$explain_id = "explain-$commands";
 									if (is_object($result)) {
 										$limit = $_POST["limit"];

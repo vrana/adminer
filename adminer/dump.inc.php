@@ -93,6 +93,7 @@ SET foreign_key_checks = 0;
 					$table = (DB == "" || in_array($name, (array) $_POST["tables"]));
 					$data = (DB == "" || in_array($name, (array) $_POST["data"]));
 					if ($table || $data) {
+						$tmp_file = null;
 						if ($ext == "tar") {
 							$tmp_file = new TmpFile;
 							ob_start(array($tmp_file, 'write'), 1e5);

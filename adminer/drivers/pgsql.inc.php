@@ -338,7 +338,7 @@ if (isset($_GET["pgsql"])) {
 		return $connection->error;
 	}
 
-	function get_databases() {
+	function get_databases($flush) {
 		return get_vals("SELECT datname FROM pg_database
 WHERE datallowconn = TRUE AND has_database_privilege(datname, 'CONNECT')
 ORDER BY datname");

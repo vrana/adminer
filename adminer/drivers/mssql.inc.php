@@ -316,7 +316,7 @@ if (isset($_GET["mssql"])) {
 		return $connection->error;
 	}
 
-	function get_databases() {
+	function get_databases($flush) {
 		return get_vals("SELECT name FROM sys.databases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')");
 	}
 
@@ -598,7 +598,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 		return apply_queries("ALTER SCHEMA " . idf_escape($target) . " TRANSFER", array_merge($tables, $views));
 	}
 
-	function trigger($name) {
+	function trigger($name, $table) {
 		if ($name == "") {
 			return array();
 		}
@@ -707,7 +707,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)) as $row
 	function trigger_sql($table) {
 		$return = "";
 		foreach (triggers($table) as $name => $trigger) {
-			$return .= create_trigger(" ON " . table($table), trigger($name)) . ";";
+			$return .= create_trigger(" ON " . table($table), trigger($name, $table)) . ";";
 		}
 		return $return;
 	}

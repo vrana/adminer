@@ -200,7 +200,7 @@ if (isset($_GET["sqlite"])) {
 		return new Db;
 	}
 
-	function get_databases() {
+	function get_databases($flush) {
 		return array();
 	}
 
@@ -567,7 +567,7 @@ if (isset($_GET["sqlite"])) {
 			}
 			$triggers = array();
 			foreach (triggers($table) as $trigger_name => $timing_event) {
-				$trigger = trigger($trigger_name);
+				$trigger = trigger($trigger_name, $table);
 				$triggers[] = "CREATE TRIGGER " . idf_escape($trigger_name) . " " . implode(" ", $timing_event) . " ON " . table($name) . "\n$trigger[Statement]";
 			}
 			$auto_increment = $auto_increment ? 0 : get_val("SELECT seq FROM sqlite_sequence WHERE name = " . q($table)); // if $auto_increment is set then it will be updated later
@@ -633,7 +633,7 @@ if (isset($_GET["sqlite"])) {
 		return false;
 	}
 
-	function trigger($name) {
+	function trigger($name, $table) {
 		if ($name == "") {
 			return array("Statement" => "BEGIN\n\t;\nEND");
 		}

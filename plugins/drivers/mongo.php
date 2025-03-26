@@ -478,7 +478,7 @@ if (isset($_GET["mongo"])) {
 	function db_collation($db, $collations) {
 	}
 
-	function information_schema() {
+	function information_schema($db) {
 	}
 
 	function is_view($table_status) {

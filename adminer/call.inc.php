@@ -19,6 +19,7 @@ foreach ($routine["fields"] as $i => $field) {
 if (!$error && $_POST) {
 	$call = array();
 	foreach ($routine["fields"] as $key => $field) {
+		$val = "";
 		if (in_array($key, $in)) {
 			$val = process_input($field);
 			if ($val === false) {

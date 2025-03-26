@@ -219,7 +219,7 @@ function minify_js($file) {
 	return lzw_compress($file);
 }
 
-function compile_file($match) {
+function compile_file($match, $callback) { // $callback only to match signature
 	global $project;
 	$file = "";
 	list(, $filenames, $callback) = $match;

@@ -274,7 +274,7 @@ if (isset($_GET["simpledb"])) {
 		return $credentials[1];
 	}
 
-	function get_databases() {
+	function get_databases($flush) {
 		return array("domain");
 	}
 
@@ -329,7 +329,7 @@ if (isset($_GET["simpledb"])) {
 		return h($connection->error);
 	}
 
-	function information_schema() {
+	function information_schema($db) {
 	}
 
 	function indexes($table, $connection2 = null) {

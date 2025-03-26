@@ -207,9 +207,7 @@ if (isset($_GET["elastic"])) {
 			if (empty($search)) {
 				return false;
 			}
-			if ($select == array("*")) {
-				$tableFields = array_keys(fields($table));
-			}
+			$tableFields = ($select == array("*") ? array_keys(fields($table)) : array());
 
 			$return = array();
 			foreach ($search["hits"]["hits"] as $hit) {
@@ -332,7 +330,7 @@ if (isset($_GET["elastic"])) {
 		return $credentials[1];
 	}
 
-	function get_databases() {
+	function get_databases($flush) {
 		return array("elastic");
 	}
 
@@ -445,7 +443,7 @@ if (isset($_GET["elastic"])) {
 		return h(connection()->error);
 	}
 
-	function information_schema() {
+	function information_schema($db) {
 		//
 	}
 

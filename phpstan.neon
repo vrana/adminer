@@ -1,10 +1,11 @@
 parameters:
-	level: 0
+	level: 1
 	ignoreErrors:
 		- identifier: include.fileNotFound # relative includes
 		- identifier: includeOnce.fileNotFound # ./adminer-plugins.php
 		- "~^Function (set_magic_quotes_runtime|mysql_)~" # PHP < 7 functions
 		- "~^Instantiated class Adminer\\w~" # no support for classes defined inside function
+		- "~^Variable \\$(adminer|connection|driver|drivers|error|HTTPS|LANG|langs|permanent|has_token|token|translations|VERSION) might not be defined~" # declared in bootstrap.inc.php
 	paths:
 		- .
 	phpVersion:

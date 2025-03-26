@@ -118,9 +118,7 @@ if ($_POST && !$error) {
 				}
 			}
 			if ($_POST["delete"] || $set) {
-				if ($_POST["clone"]) {
-					$query = "INTO " . table($TABLE) . " (" . implode(", ", array_keys($set)) . ")\nSELECT " . implode(", ", $set) . "\nFROM " . table($TABLE);
-				}
+				$query = ($_POST["clone"] ? "INTO " . table($TABLE) . " (" . implode(", ", array_keys($set)) . ")\nSELECT " . implode(", ", $set) . "\nFROM " . table($TABLE) : "");
 				if ($_POST["all"] || ($primary && is_array($_POST["check"])) || $is_group) {
 					$result = ($_POST["delete"]
 						? $driver->delete($TABLE, $where_check)
@@ -484,6 +482,7 @@ if (!$columns && support("table")) {
 		if (!is_ajax()) {
 			if ($rows || $page) {
 				$exact_count = true;
+				$found_rows = null;
 				if ($_GET["page"] != "last") {
 					if ($limit == "" || (count($rows) < $limit && ($rows || !$page))) {
 						$found_rows = ($page ? $page * $limit : 0) + count($rows);
@@ -507,10 +506,8 @@ if (!$columns && support("table")) {
 					);
 					echo "\n";
 				}
-			}
 
-			echo "<div class='footer'><div>\n";
-			if ($rows || $page) {
+				echo "<div class='footer'><div>\n";
 				if ($pagination) {
 					// display first, previous 4, next 4 and last page
 					$max_page = ($found_rows === false
@@ -578,9 +575,8 @@ if (!$columns && support("table")) {
 				}
 
 				$adminer->selectEmailPrint(array_filter($email_fields, 'strlen'), $columns);
+				echo "</div></div>\n";
 			}
-
-			echo "</div></div>\n";
 
 			if ($adminer->selectImportPrint()) {
 				echo "<div>";
