@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-// any method change in this file should be transferred to editor/include/adminer.inc.php and plugins/plugin.php
+// any method change in this file should be transferred to editor/include/adminer.inc.php and plugins.inc.php
 
 class Adminer {
 	public $operators; ///< @var list<string> operators used in select, null for all operators
