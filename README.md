@@ -26,25 +26,4 @@ If downloaded from Git then run: `git submodule update --init`
 - `tests/*.html` - Katalon Recorder test suites
 
 ## Plugins
-There are [several plugins](/plugins/) distributed with Adminer, as well as many user-contributed plugins linked on the [Adminer Plugins page](https://www.adminer.org/plugins/).
-To use a plugin, simply upload it to the `adminer-plugins/` directory next to `adminer.php`. You can also upload plugins for drivers (e.g., `elastic.php`) in this directory.
-
-```
-- adminer.php
-- adminer-plugins/
-    - dump-xml.php
-    - login-password-less.php
-    - elastic.php
-    - ...
-- adminer-plugins.php
-```
-
-Some plugins require configuration. To use them, create a file named `adminer-plugins.php`. You can also specify the loading order in this file.
-
-```php
-<?php // adminer-plugins.php
-return array(
-    new AdminerLoginPasswordLess('$2y$07$Czp9G/aLi3AnaUqpvkF05OHO1LMizrAgMLvnaOdvQovHaRv28XDhG'),
-    // You can specify all plugins here or just the ones needing configuration.
-);
-```
+There are several plugins distributed with Adminer, as well as many user-contributed plugins listed on the [Adminer Plugins page](https://www.adminer.org/plugins/).
