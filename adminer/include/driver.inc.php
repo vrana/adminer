@@ -61,14 +61,14 @@ abstract class SqlDriver {
 
 	/** Get enum values
 	* @param Field
-	* @return ?string
+	* @return string|void
 	*/
 	function enumLength($field) {
 	}
 
 	/** Function used to convert the value inputted by user
 	* @param Field
-	* @return ?string
+	* @return string|void
 	*/
 	function unconvertFunction($field) {
 	}
@@ -187,7 +187,7 @@ abstract class SqlDriver {
 	/** Return query with a timeout
 	* @param string
 	* @param int seconds
-	* @return ?string null if the driver doesn't support query timeouts
+	* @return string|void null if the driver doesn't support query timeouts
 	*/
 	function slowQuery($query, $timeout) {
 	}
@@ -231,7 +231,7 @@ abstract class SqlDriver {
 	}
 
 	/** Get warnings about the last command
-	* @return ?string HTML
+	* @return string|void HTML
 	*/
 	function warnings() {
 	}
@@ -239,7 +239,7 @@ abstract class SqlDriver {
 	/** Get help link for table
 	* @param string
 	* @param bool
-	* @return ?string relative URL
+	* @return string|void relative URL
 	*/
 	function tableHelp($name, $is_view = false) {
 	}

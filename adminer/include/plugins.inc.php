@@ -2,7 +2,7 @@
 namespace Adminer;
 
 class Plugins extends Adminer {
-	public $plugins; ///< @var protected(set) array
+	public $plugins; ///< @var list<object> @visibility protected(set)
 
 	/** Register plugins
 	* @param list<object> object instances or null to autoload plugins from adminer-plugins/

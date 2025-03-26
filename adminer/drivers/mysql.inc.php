@@ -550,7 +550,6 @@ if (!defined('Adminer\DRIVER')) {
 	* @param string
 	* @param bool return only "Name", "Engine" and "Comment" fields
 	* @return TableStatus[]
-	* @phpstan-type TableStatus array{Name:string, Engine:string, Comment:string, Oid:int, Rows:int, Collation:string, Auto_increment:int, Data_length:int, Index_length:int, Data_free:int}
 	*/
 	function table_status($name = "", $fast = false) {
 		$return = array();
@@ -596,7 +595,6 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get information about fields
 	* @param string
 	* @return Field[]
-	* @phpstan-type Field array{field:string, full_type:string, type:string, length:int, unsigned:string, default:string, null:bool, auto_increment:bool, on_update:string, collation:string, privileges:int[], comment:string, primary:bool, generated:string}
 	*/
 	function fields($table) {
 		global $connection;
@@ -653,7 +651,6 @@ if (!defined('Adminer\DRIVER')) {
 	* @param string
 	* @param string Db to use
 	* @return Index[]
-	* @phpstan-type Index array{type:string, columns:list<string>, lengths:list<int>, descs:list<bool>}
 	*/
 	function indexes($table, $connection2 = null) {
 		$return = array();
@@ -670,7 +667,6 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get foreign keys in table
 	* @param string
 	* @return ForeignKey[]
-	* @phpstan-type ForeignKey array{db:string, ns:string, table:string, source:list<string>, target:list<string>, on_delete:string, on_update:string}
 	*/
 	function foreign_keys($table) {
 		global $driver;
@@ -963,7 +959,6 @@ if (!defined('Adminer\DRIVER')) {
 	* @param string trigger name
 	* @param string
 	* @return Trigger
-	* @phpstan-type Trigger array{Trigger:string, Timing:string, Event:string, Of:string, Type:string, Statement:string}
 	*/
 	function trigger($name, $table) {
 		if ($name == "") {
@@ -1000,7 +995,6 @@ if (!defined('Adminer\DRIVER')) {
 	* @param string
 	* @param string "FUNCTION" or "PROCEDURE"
 	* @return Routine
-	* @phpstan-type Routine array{fields:list<array{field:string, type:string, length:string, unsigned:string, null:bool, full_type:string, inout:string, collation:string}>, comment:string, returns:array, definition:string, language:string}
 	*/
 	function routine($name, $type) {
 		global $driver;
@@ -1185,7 +1179,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Convert field in select and edit
 	* @param Field one element from fields()
-	* @return ?string
+	* @return string|void
 	*/
 	function convert_field($field) {
 		if (preg_match("~binary~", $field["type"])) {

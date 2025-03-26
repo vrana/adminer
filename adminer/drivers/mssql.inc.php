@@ -385,7 +385,7 @@ WHERE c.object_id = " . q($table_id)) as $row
 		) {
 			$type = $row["type"];
 			$length = (preg_match("~char|binary~", $type)
-				? $row["max_length"] / ($type[0] == 'n' ? 2 : 1)
+				? intval($row["max_length"]) / ($type[0] == 'n' ? 2 : 1)
 				: ($type == "decimal" ? "$row[precision],$row[scale]" : "")
 			);
 			$return[$row["name"]] = array(

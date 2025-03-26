@@ -270,7 +270,7 @@ if (!$columns && support("table")) {
 	$page = $_GET["page"];
 	if ($page == "last") {
 		$found_rows = get_val(count_rows($TABLE, $where, $is_group, $group));
-		$page = floor(max(0, $found_rows - 1) / $limit);
+		$page = floor(max(0, intval($found_rows) - 1) / $limit);
 	}
 
 	$select2 = $select;

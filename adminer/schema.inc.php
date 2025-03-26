@@ -3,6 +3,7 @@ namespace Adminer;
 
 page_header(lang('Database schema'), "", array(), h(DB . ($_GET["ns"] ? ".$_GET[ns]" : "")));
 
+/** @var array{float, float}[] */
 $table_pos = array();
 $table_pos_js = array();
 $SCHEMA = ($_GET["schema"] ?: $_COOKIE["adminer_schema-" . str_replace(".", "_", DB)]); // $_COOKIE["adminer_schema"] was used before 3.2.0 //! ':' in table name
@@ -14,6 +15,7 @@ foreach ($matches as $i => $match) {
 
 $top = 0;
 $base_left = -1;
+/** @var array{fields:Field[], pos:array{float, float}, references:string[][][]}[] */
 $schema = array(); // table => array("fields" => array(name => field), "pos" => array(top, left), "references" => array(table => array(left => array(source, target))))
 $referenced = array(); // target_table => array(table => array(left => target_column))
 $lefts = array(); // float => bool

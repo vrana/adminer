@@ -274,7 +274,7 @@ function get_rows($query, $connection2 = null, $error = "<p class='error'>") {
 /** Find unique identifier of a row
 * @param string[]
 * @param Index[] result of indexes()
-* @return ?string[] null if there is no unique identifier
+* @return string[]|void null if there is no unique identifier
 */
 function unique_array($row, $indexes) {
 	foreach ($indexes as $index) {

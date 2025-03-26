@@ -5,7 +5,7 @@ namespace Adminer;
 
 class Adminer {
 	public $operators; ///< @var list<string> operators used in select, null for all operators
-	public $error = ''; ///< @var protected(set) string HTML
+	public $error = ''; ///< @var string @visibility protected(set) string HTML
 
 	/** Name in title and navigation
 	* @return string HTML code
@@ -22,7 +22,7 @@ class Adminer {
 	}
 
 	/** Get SSL connection options
-	* @return ?string[]
+	* @return string[]|void
 	*/
 	function connectSsl() {
 	}
@@ -221,7 +221,6 @@ class Adminer {
 	* @param string
 	* @param string
 	* @return BackwardKey[]
-	* @phpstan-type BackwardKey array{name:string, keys:string[][]}
 	*/
 	function backwardKeys($table, $tableName) {
 		return array();
@@ -289,7 +288,7 @@ class Adminer {
 	/** Get a link to use in select table
 	* @param string raw value of the field
 	* @param Field single field returned from fields()
-	* @return ?string null to create the default link
+	* @return string|void null to create the default link
 	*/
 	function selectLink($val, $field) {
 	}

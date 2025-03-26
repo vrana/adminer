@@ -89,7 +89,7 @@ if (isset($_GET["oracle"])) {
 
 			private function convert($row) {
 				foreach ((array) $row as $key => $val) {
-					if (is_a($val, 'OCI-Lob')) {
+					if (is_a($val, 'OCILob') || is_a($val, 'OCI-Lob')) {
 						$row[$key] = $val->load();
 					}
 				}

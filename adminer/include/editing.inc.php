@@ -299,7 +299,7 @@ function default_value($field) {
 
 /** Get type class to use in CSS
 * @param string
-* @return ?string class=''
+* @return string|void class=''
 */
 function type_class($type) {
 	foreach (

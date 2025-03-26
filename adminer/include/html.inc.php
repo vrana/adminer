@@ -343,7 +343,7 @@ function input($field, $value, $function, $autofocus = false) {
 }
 
 /** Process edit input field
-* @param one field from fields()
+* @param Field one field from fields()
 * @return string or false to leave the original value
 */
 function process_input($field) {
@@ -417,7 +417,7 @@ function search_tables() {
 
 /** Return events to display help on mouse over
 * @param string JS expression
-* @param bool JS expression
+* @param int JS expression
 * @return string
 */
 function on_help($command, $side = 0) {

@@ -9,7 +9,7 @@ if (isset($_GET["mongo"])) {
 	if (class_exists('MongoDB\Driver\Manager')) {
 		class Db {
 			public $extension = "MongoDB", $flavor = '', $server_info = MONGODB_VERSION, $affected_rows, $error, $last_id;
-			/** @var MongoDB\Driver\Manager */
+			/** @var \MongoDB\Driver\Manager */
 			public $_link;
 			public $_db, $_db_name;
 
