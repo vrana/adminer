@@ -1,9 +1,10 @@
 parameters:
-	level: 4
+	level: 5
 	ignoreErrors:
 		# need to fix
 		- "~^Function Adminer\\\\fields_from_edit\\(\\) should return~" # Mongo and SimpleDB
 		- "~^Function Adminer\\\\explain\\(\\) should return Adminer\\\\Result~" # mysqli_result
+		- "~expects array~" # different shape of array
 		
 		# not real problems
 		- identifier: include.fileNotFound # relative includes
@@ -14,6 +15,11 @@ parameters:
 		- "~^Method Adminer\\\\Plugins::\\w+\\(\\) with return type void~" # we use the same pattern for all methods
 		- "~Call to function is_object\\(\\) with Adminer\\\\Db\\|string will always evaluate to false~" # is_object(Db) is true
 		- "~^Comparison operation \"==\" between \\(array\\|float\\|int\\) and 1~" # it thinks that $affected could be an array
+		- "~^Parameter #2 \\$newvalue of function ini_set expects string~" # it expects string|int|float|bool|null
+		- "~expects int, float given~" # this will work
+		- "~expects bool~" # truthy values
+		- "~fread expects int<1, max>, 100000~" # 1e6
+		- "~'strlen' given~" # used as a bool callback
 
 		# it probably doesn't like $ar[$key] instead of isset($ar[$key]) and thinks that $ar[$key] is always set
 		- identifier: identical.alwaysFalse
@@ -54,5 +60,6 @@ parameters:
 		Index: "array{type:string, columns:list<string>, lengths:list<numeric-string>, descs:list<?bool>}"
 		ForeignKey: "array{db:string, ns?:string, table:string, source:list<string>, target:list<string>, on_delete:string, on_update:string}"
 		Trigger: "array{Trigger?:string, Timing?:string, Event?:string, Of?:string, Type?:string, Statement?:string}"
-		Routine: "array{name?:string, fields:list<array{field:string, type:string, length:?string, unsigned:string, null:bool, full_type:string, inout:string, collation:string}>, comment:string, returns?:array, definition:string, language?:string}"
+		RoutineField: "array{field:string, type:string, length:?string, unsigned:string, null:bool, full_type:string, inout:string, collation:string}"
+		Routine: "array{name?:string, fields:list<RoutineField>, comment:string, returns?:array, definition:string, language?:string}"
 		BackwardKey: "array{name:string, keys:string[][]}"

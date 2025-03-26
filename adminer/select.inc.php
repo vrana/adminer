@@ -48,7 +48,7 @@ if ($_GET["val"] && is_ajax()) {
 		$where[] = where_check($unique_idf, $fields);
 		$return = $driver->select($TABLE, $select, $where, $select);
 		if ($return) {
-			echo reset($return->fetch_row());
+			echo first($return->fetch_row());
 		}
 	}
 	exit;
@@ -170,7 +170,7 @@ if ($_POST && !$error) {
 				foreach ($_POST["val"] as $unique_idf => $row) {
 					$set = array();
 					foreach ($row as $key => $val) {
-						$key = bracket_escape($key, 1); // 1 - back
+						$key = bracket_escape($key, true); // true - back
 						$set[idf_escape($key)] = (preg_match('~char|text~', $fields[$key]["type"]) || $val != "" ? $adminer->processInput($fields[$key], $val) : "NULL");
 					}
 					$result = $driver->update(

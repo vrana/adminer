@@ -24,11 +24,11 @@ if (!defined('Adminer\DRIVER')) {
 					$this->ssl_set($ssl['key'], $ssl['cert'], $ssl['ca'], '', '');
 				}
 				$return = @$this->real_connect(
-					($server != "" ? $host : ini_get("mysqli.default_host")),
-					($server . $username != "" ? $username : ini_get("mysqli.default_user")),
-					($server . $username . $password != "" ? $password : ini_get("mysqli.default_pw")),
+					($server != "" ? $host : null),
+					($server . $username != "" ? $username : null),
+					($server . $username . $password != "" ? $password : null),
 					$database,
-					(is_numeric($port) ? $port : ini_get("mysqli.default_port")),
+					(is_numeric($port) ? intval($port) : null),
 					(!is_numeric($port) ? $port : $socket),
 					($ssl ? ($ssl['verify'] !== false ? 2048 : 64) : 0) // 2048 - MYSQLI_CLIENT_SSL, 64 - MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT (not available before PHP 5.6.16)
 				);
@@ -649,7 +649,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get table indexes
 	* @param string
-	* @param string Db to use
+	* @param ?Db
 	* @return Index[]
 	*/
 	function indexes($table, $connection2 = null) {
@@ -807,7 +807,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @param string "" to create
 	* @param string new name
 	* @param list<array{string, list<string>, string}> of [$orig, $process_field, $after]
-	* @param list<string>
+	* @param string[]
 	* @param string
 	* @param string
 	* @param string
@@ -1186,7 +1186,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Kill a process
-	* @param int
+	* @param numeric-string
 	* @return Result|bool
 	*/
 	function kill_process($val) {

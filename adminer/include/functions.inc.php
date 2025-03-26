@@ -124,8 +124,8 @@ function bracket_escape($idf, $back = false) {
 }
 
 /** Check if connection has at least the given version
-* @param string required version
-* @param string required MariaDB version
+* @param string|float required version
+* @param string|float required MariaDB version
 * @param Db defaults to $connection
 * @return bool
 */
@@ -311,7 +311,7 @@ function where($where, $fields = array()) {
 	global $connection;
 	$return = array();
 	foreach ((array) $where["where"] as $key => $val) {
-		$key = bracket_escape($key, 1); // 1 - back
+		$key = bracket_escape($key, true); // true - back
 		$column = escape_key($key);
 		$field = idx($fields, $key, array());
 		$field_type = $field["type"];
@@ -694,7 +694,7 @@ function shorten_utf8($string, $length = 80, $suffix = "") {
 }
 
 /** Format decimal number
-* @param int
+* @param float|numeric-string
 * @return string
 */
 function format_number($val) {
@@ -749,7 +749,7 @@ function fields_from_edit() { // used by Mongo and SimpleDB
 		}
 	}
 	foreach ((array) $_POST["fields"] as $key => $val) {
-		$name = bracket_escape($key, 1); // 1 - back
+		$name = bracket_escape($key, true); // true - back
 		$return[$name] = array(
 			"field" => $name,
 			"privileges" => array("insert" => 1, "update" => 1, "where" => 1, "order" => 1),
@@ -898,7 +898,7 @@ function password_file($create) {
 * @return string 32 hexadecimal characters
 */
 function rand_string() {
-	return md5(uniqid(mt_rand(), true));
+	return md5(uniqid(strval(mt_rand()), true));
 }
 
 /** Format value to use in select

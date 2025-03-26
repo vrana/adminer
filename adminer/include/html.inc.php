@@ -27,7 +27,7 @@ function nonce() {
 
 /** Get <input type="hidden">
 * @param string
-* @param string
+* @param string|int
 * @return string HTML
 */
 function input_hidden($name, $value = "") {
@@ -68,7 +68,7 @@ function nl_br($string) {
 
 /** Generate HTML checkbox
 * @param string
-* @param string
+* @param string|int
 * @param bool
 * @param string
 * @param string

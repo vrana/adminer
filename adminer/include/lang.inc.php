@@ -61,7 +61,7 @@ function get_lang() {
 
 /** Translate string
 * @param literal-string
-* @param int
+* @param float|string
 * @return string
 */
 // this is matched by compile.php

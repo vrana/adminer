@@ -159,7 +159,7 @@ function select_input($attrs, $options, $value = "", $onchange = "", $placeholde
 
 /** Print one row in JSON object
 * @param string or "" to close the object
-* @param string
+* @param string|int
 * @return void
 */
 function json_row($key, $val = null) {
@@ -318,7 +318,7 @@ function type_class($type) {
 
 /** Print table interior for fields editing
 * @param Field[]
-* @param list<string>[]
+* @param list<string>
 * @param string TABLE or PROCEDURE
 * @param Field[] returned by referencable_primary()
 * @return void
@@ -423,11 +423,12 @@ function process_fields(&$fields) {
 }
 
 /** Callback used in routine()
-* @param list<array>
+* @param list<string>
 * @return string
 */
 function normalize_enum($match) {
-	return "'" . str_replace("'", "''", addcslashes(stripcslashes(str_replace($match[0][0] . $match[0][0], $match[0][0], substr($match[0], 1, -1))), '\\')) . "'";
+	$val = $match[0];
+	return "'" . str_replace("'", "''", addcslashes(stripcslashes(str_replace($val[0] . $val[0], $val[0], substr($val, 1, -1))), '\\')) . "'";
 }
 
 /** Issue grant or revoke commands
