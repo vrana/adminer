@@ -124,7 +124,7 @@ function referencable_primary($self) {
 
 /** Print SQL <textarea> tag
 * @param string
-* @param string or array in which case [0] of every element is used
+* @param string|list<array{string}>
 * @param int
 * @param int
 * @return void

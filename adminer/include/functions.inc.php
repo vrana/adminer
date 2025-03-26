@@ -174,7 +174,7 @@ function sid() {
 * @param string
 * @param string
 * @param string
-* @param string
+* @param ?string
 * @return void
 */
 function set_password($vendor, $server, $username, $password) {
@@ -185,7 +185,7 @@ function set_password($vendor, $server, $username, $password) {
 }
 
 /** Get password from session
-* @return string or null for missing password or false for expired password
+* @return string|false|null null for missing password, false for expired password
 */
 function get_password() {
 	$return = get_session("pwds");
@@ -549,7 +549,7 @@ class Queries {
 
 /** Execute and remember query
 * @param string end with ';' to use DELIMITER
-* @return Result
+* @return Result|bool
 */
 function queries($query) {
 	global $connection;
@@ -902,7 +902,7 @@ function rand_string() {
 }
 
 /** Format value to use in select
-* @param string
+* @param string|string[]
 * @param string
 * @param Field
 * @param int
@@ -945,7 +945,7 @@ function select_value($val, $link, $field, $text_length) {
 }
 
 /** Check whether the string is e-mail address
-* @param string
+* @param ?string
 * @return bool
 */
 function is_mail($email) {

@@ -337,6 +337,7 @@ if (!$columns && support("table")) {
 			$rank = 1;
 			foreach ($rows[0] as $key => $val) {
 				if (!isset($unselected[$key])) {
+					/** @var array{fun?:string, col?:string} */
 					$val = idx($_GET["columns"], key($select)) ?: array();
 					$field = $fields[$select ? ($val ? $val["col"] : current($select)) : $key];
 					$name = ($field ? $adminer->fieldName($field, $rank) : ($val["fun"] ? "*" : h($key)));

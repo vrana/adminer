@@ -854,7 +854,7 @@ AND typelem = 0"
 		}
 		$fields = fields($table);
 
-		if (!$status || empty($fields)) {
+		if (count($status) < 2 || empty($fields)) {
 			return false;
 		}
 

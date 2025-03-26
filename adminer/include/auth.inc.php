@@ -61,6 +61,7 @@ function check_invalid_login() {
 			break;
 		}
 	}
+	/** @var array{int, int} */
 	$invalid = idx($invalids, $adminer->bruteForceKey(), array());
 	$next_attempt = ($invalid[1] > 29 ? $invalid[0] - time() : 0); // allow 30 invalid attempts
 	if ($next_attempt > 0) { //! do the same with permanent login

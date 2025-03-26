@@ -444,7 +444,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Connect to the database
 	* @param array{string, string, string} [$server, $username, $password]
-	* @return mixed Db or string for error
+	* @return string|Db string for error
 	*/
 	function connect($credentials) {
 		global $drivers;
@@ -1073,46 +1073,11 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get approximate number of rows
 	* @param TableStatus
 	* @param list<string>
-	* @return numeric-string|void null if approximate number can't be retrieved
+	* @return numeric-string|null null if approximate number can't be retrieved
 	*/
 	function found_rows($table_status, $where) {
 		return ($where || $table_status["Engine"] != "InnoDB" ? null : $table_status["Rows"]);
 	}
-
-	/* Not used is MySQL but checked in compile.php:
-	/** Get user defined types
-	* @return string[] [$id => $name]
-	function types() {
-		return array();
-	}
-
-	/** Get values of user defined type
-	* @param int
-	* @return string
-	function type_values($id) {
-		return "";
-	}
-
-	/** Get existing schemas
-	* @return list<string>
-	function schemas() {
-		return array();
-	}
-
-	/** Get current schema
-	* @return string
-	function get_schema() {
-		return "";
-	}
-
-	/** Set current schema
-	* @param string
-	* @param Db
-	* @return bool
-	function set_schema($schema, $connection2 = null) {
-		return true;
-	}
-	*/
 
 	/** Get SQL command to create table
 	* @param string
@@ -1240,5 +1205,45 @@ if (!defined('Adminer\DRIVER')) {
 	*/
 	function max_connections() {
 		return get_val("SELECT @@max_connections");
+	}
+
+	// Not used is MySQL but checked in compile.php:
+
+	/** Get user defined types
+	* @return string[] [$id => $name]
+	*/
+	function types() {
+		return array();
+	}
+
+	/** Get values of user defined type
+	* @param int
+	* @return string
+	*/
+	function type_values($id) {
+		return "";
+	}
+
+	/** Get existing schemas
+	* @return list<string>
+	*/
+	function schemas() {
+		return array();
+	}
+
+	/** Get current schema
+	* @return string
+	*/
+	function get_schema() {
+		return "";
+	}
+
+	/** Set current schema
+	* @param string
+	* @param Db
+	* @return bool
+	*/
+	function set_schema($schema, $connection2 = null) {
+		return true;
 	}
 }
