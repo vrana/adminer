@@ -738,7 +738,7 @@ function column_foreign_keys($table) {
 /** Compute fields() from $_POST edit data
 * @return Field[] same as fields()
 */
-function fields_from_edit() {
+function fields_from_edit() { // used by Mongo and SimpleDB
 	global $driver;
 	$return = array();
 	foreach ((array) $_POST["field_keys"] as $key => $val) {
