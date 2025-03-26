@@ -140,7 +140,7 @@ foreach ($row["indexes"] as $index) {
 			);
 			echo "<span class='idxopts" . ($show_options ? "" : " hidden") . "'>";
 			echo ($lengths ? "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h($index["lengths"][$key]) . "' title='" . lang('Length') . "'>" : "");
-			echo (support("descidx") ? checkbox("indexes[$j][descs][$i]", 1, $index["descs"][$key], lang('descending')) : "");
+			echo (support("descidx") ? checkbox("indexes[$j][descs][$i]", 1, idx($index["descs"], $key), lang('descending')) : "");
 			echo "</span> </span>";
 			$i++;
 		}

@@ -19,7 +19,7 @@ function adminerDarkSwitch() {
 }
 
 function adminerDarkSet() {
-	qsa('link[href$="dark.css"]').forEach(link => link.media = (adminerDark ? '' : 'never'));
+	qsa('link[href*="dark.css"]').forEach(link => link.media = (adminerDark ? '' : 'never'));
 	qs('meta[name="color-scheme"]').content = (adminerDark ? 'dark' : 'light');
 	cookie('adminer_dark=' + (adminerDark ? 1 : 0), 30);
 }
