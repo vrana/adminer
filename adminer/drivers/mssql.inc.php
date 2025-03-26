@@ -357,9 +357,6 @@ if (isset($_GET["mssql"])) {
 FROM sys.all_objects AS ao
 WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V') " . ($name != "" ? "AND name = " . q($name) : "ORDER BY name")) as $row
 		) {
-			if ($name != "") {
-				return $row;
-			}
 			$return[$row["Name"]] = $row;
 		}
 		return $return;
@@ -662,7 +659,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)) as $row
 
 	function create_sql($table, $auto_increment, $style) {
 		global $driver;
-		if (is_view(table_status($table))) {
+		if (is_view(table_status1($table))) {
 			$view = view($table);
 			return "CREATE VIEW " . table($table) . " AS $view[select]";
 		}

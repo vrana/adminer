@@ -17,8 +17,8 @@ $orig_fields = array();
 $table_status = array();
 if ($TABLE != "") {
 	$orig_fields = fields($TABLE);
-	$table_status = table_status($TABLE);
-	if (!$table_status) {
+	$table_status = table_status1($TABLE);
+	if (count($table_status) < 2) { // there's only the Name field
 		$error = lang('No tables.');
 	}
 }

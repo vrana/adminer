@@ -1051,7 +1051,7 @@ class Adminer {
 	}
 
 	/** Set up syntax highlight for code and <textarea>
-	* @param array[] result of table_status()
+	* @param array[] result of table_status('', true)
 	*/
 	function syntaxHighlighting($tables) {
 		global $connection;

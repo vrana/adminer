@@ -44,7 +44,7 @@ if (isset($_GET["imap"])) {
 					preg_match_all('~"uid" = (\d+)~', $query, $matches);
 					return imap_delete($this->imap, implode(",", $matches[1]), FT_UID);
 				} elseif (preg_match('~^SELECT COUNT\(\*\)\sFROM "(.+?)"~s', $query, $match)) {
-					$status = table_status($match[1]);
+					$status = table_status1($match[1]);
 					return new Result(array(array($status["Rows"])));
 				} elseif (preg_match('~^SELECT (.+)\sFROM "(.+?)"(?:\sWHERE "uid" = (\d+))?.*?(?:\sLIMIT (\d+)(?:\sOFFSET (\d+))?)?~s', $query, $match)) {
 					list(, $columns, $table, $uid, $limit, $offset) = $match;
@@ -233,11 +233,8 @@ if (isset($_GET["imap"])) {
 	}
 
 	function table_status($name = "", $fast = false) {
-		if ($name != "") {
-			return connection()->table_status($name, $fast);
-		}
 		$return = array();
-		foreach (tables_list() as $table => $type) {
+		foreach (($name != "" ? array($name => 1) : tables_list()) as $table => $type) {
 			$return[$table] = connection()->table_status($table, $fast);
 		}
 		return $return;

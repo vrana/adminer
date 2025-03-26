@@ -316,9 +316,6 @@ if (isset($_GET["simpledb"])) {
 					}
 				}
 			}
-			if ($name != "") {
-				return $row;
-			}
 			$return[$table] = $row;
 		}
 		return $return;

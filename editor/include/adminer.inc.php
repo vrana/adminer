@@ -127,7 +127,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			$return[$row["TABLE_NAME"]]["keys"][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
 		}
 		foreach ($return as $key => $val) {
-			$name = $this->tableName(table_status($key, true));
+			$name = $this->tableName(table_status1($key, true));
 			if ($name != "") {
 				$search = preg_quote($tableName);
 				$separator = "(:|\\s*-)?\\s+";
@@ -660,7 +660,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		if (list($target, $id, $name) = $this->_foreignColumn(column_foreign_keys($table), $column)) {
 			$return = &$this->values[$target];
 			if ($return === null) {
-				$table_status = table_status($target);
+				$table_status = table_status1($target);
 				$return = ($table_status["Rows"] > 1000 ? "" : array("" => "") + get_key_vals("SELECT $id, $name FROM " . table($target) . " ORDER BY 2"));
 			}
 			if (!$return && $value !== null) {

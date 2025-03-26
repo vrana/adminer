@@ -23,7 +23,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			$return[$row["TABLE_NAME"]]["keys"][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
 		}
 		foreach ($return as $key => $val) {
-			$name = Adminer\adminer()->tableName(Adminer\table_status($key, true));
+			$name = Adminer\adminer()->tableName(Adminer\table_status1($key, true));
 			if ($name != "") {
 				$search = preg_quote($tableName);
 				$separator = '(:|\s*-)?\s+';

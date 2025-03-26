@@ -260,7 +260,7 @@ abstract class SqlDriver {
 	}
 
 	/** Check whether table supports indexes
-	* @param array result of table_status()
+	* @param array result of table_status1()
 	* @return bool
 	*/
 	function supportsIndex($table_status) {

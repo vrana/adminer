@@ -701,11 +701,11 @@ function friendly_url($val) {
 /** Get status of a single table and fall back to name on error
 * @param string
 * @param bool
-* @return array[] same as table_status()
+* @return array one element from table_status()
 */
 function table_status1($table, $fast = false) {
 	$return = table_status($table, $fast);
-	return ($return ?: array("Name" => $table));
+	return ($return ? reset($return) : array("Name" => $table));
 }
 
 /** Find out foreign keys for each column

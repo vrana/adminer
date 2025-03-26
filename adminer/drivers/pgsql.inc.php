@@ -414,7 +414,7 @@ WHERE relkind IN ('r', 'm', 'v', 'f', 'p')
 		) {
 			$return[$row["Name"]] = $row;
 		}
-		return ($name != "" ? $return[$name] : $return);
+		return $return;
 	}
 
 	function is_view($table_status) {
@@ -683,7 +683,7 @@ ORDER BY conkey, conname") as $row
 
 	function drop_tables($tables) {
 		foreach ($tables as $table) {
-			$status = table_status($table);
+			$status = table_status1($table);
 			if (!queries("DROP " . strtoupper($status["Engine"]) . " " . table($table))) {
 				return false;
 			}
@@ -693,7 +693,7 @@ ORDER BY conkey, conname") as $row
 
 	function move_tables($tables, $views, $target) {
 		foreach (array_merge($tables, $views) as $table) {
-			$status = table_status($table);
+			$status = table_status1($table);
 			if (!queries("ALTER " . strtoupper($status["Engine"]) . " " . table($table) . " SET SCHEMA " . idf_escape($target))) {
 				return false;
 			}
@@ -834,7 +834,7 @@ AND typelem = 0"
 	function foreign_keys_sql($table) {
 		$return = "";
 
-		$status = table_status($table);
+		$status = table_status1($table);
 		$fkeys = foreign_keys($table);
 		ksort($fkeys);
 
@@ -850,7 +850,7 @@ AND typelem = 0"
 		$return_parts = array();
 		$sequences = array();
 
-		$status = table_status($table);
+		$status = table_status1($table);
 		if (is_view($status)) {
 			$view = view($table);
 			return rtrim("CREATE VIEW " . idf_escape($table) . " AS $view[select]", ";");
@@ -927,7 +927,7 @@ AND typelem = 0"
 	}
 
 	function trigger_sql($table) {
-		$status = table_status($table);
+		$status = table_status1($table);
 		$return = "";
 		foreach (triggers($table) as $trg_id => $trg) {
 			$trigger = trigger($trg_id, $status['Name']);

@@ -184,16 +184,13 @@ if (isset($_GET["firebird"])) {
 	function table_status($name = "", $fast = false) {
 		$connection = connection();
 		$return = array();
-		$data = tables_list();
+		$data = ($name != "" ? array($name => 1) : tables_list());
 		foreach ($data as $index => $val) {
 			$index = trim($index);
 			$return[$index] = array(
 				'Name' => $index,
 				'Engine' => 'standard',
 			);
-			if ($name == $index) {
-				return $return[$index];
-			}
 		}
 		return $return;
 	}

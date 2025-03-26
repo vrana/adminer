@@ -384,16 +384,17 @@ if (isset($_GET["elastic"])) {
 
 		if ($name != "") {
 			if (isset($stats["indices"][$name])) {
-				return format_index_status($name, $stats["indices"][$name]);
+				return array(format_index_status($name, $stats["indices"][$name]));
 			} else {
 				foreach ($aliases as $index_name => $index) {
 					foreach ($index["aliases"] as $alias_name => $alias) {
 						if ($alias_name == $name) {
-							return format_alias_status($alias_name, $stats["indices"][$index_name]);
+							return array(format_alias_status($alias_name, $stats["indices"][$index_name]));
 						}
 					}
 				}
 			}
+			return array();
 		}
 
 		ksort($stats["indices"]);
