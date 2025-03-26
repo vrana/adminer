@@ -294,7 +294,7 @@ if (isset($_GET["elastic"])) {
 				}
 			}
 
-			return $this->conn->affected_rows;
+			return !!$this->conn->affected_rows;
 		}
 
 		function convertOperator($operator) {
@@ -528,7 +528,6 @@ if (isset($_GET["elastic"])) {
 	}
 
 	function found_rows($table_status, $where) {
-		return null;
 	}
 
 	/** Alter type

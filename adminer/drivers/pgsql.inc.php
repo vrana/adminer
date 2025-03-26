@@ -789,7 +789,6 @@ ORDER BY SPECIFIC_NAME');
 		if (preg_match("~ rows=([0-9]+)~", get_val("EXPLAIN SELECT * FROM " . idf_escape($table_status["Name"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")), $regs)) {
 			return $regs[1];
 		}
-		return false;
 	}
 
 	function types() {

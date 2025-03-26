@@ -505,7 +505,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get database collation
 	* @param string
-	* @param list<string>[] result of collations()
+	* @param string[][] result of collations()
 	* @return string
 	*/
 	function db_collation($db, $collations) {
@@ -705,7 +705,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get sorted grouped list of collations
-	* @return list<string>[]
+	* @return string[][]
 	*/
 	function collations() {
 		$return = array();
@@ -743,7 +743,7 @@ if (!defined('Adminer\DRIVER')) {
 	/** Create database
 	* @param string
 	* @param string
-	* @return string
+	* @return Result
 	*/
 	function create_database($db, $collation) {
 		return queries("CREATE DATABASE " . idf_escape($db) . ($collation ? " COLLATE " . q($collation) : ""));
@@ -813,7 +813,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @param string
 	* @param string number
 	* @param string
-	* @return bool
+	* @return Result|bool
 	*/
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		global $connection;
@@ -852,7 +852,7 @@ if (!defined('Adminer\DRIVER')) {
 	/** Run commands to alter indexes
 	* @param string escaped table name
 	* @param array{string, string, 'DROP'|list<string>} of ["index type", "name", ["column definition", ...]] or ["index type", "name", "DROP"]
-	* @return bool
+	* @return Result|bool
 	*/
 	function alter_indexes($table, $alter) {
 		foreach ($alter as $key => $val) {
@@ -874,7 +874,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Drop views
 	* @param list<string>
-	* @return bool
+	* @return Result|bool
 	*/
 	function drop_views($views) {
 		return queries("DROP VIEW " . implode(", ", array_map('Adminer\table', $views)));
@@ -882,7 +882,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Drop tables
 	* @param list<string>
-	* @return bool
+	* @return Result|bool
 	*/
 	function drop_tables($tables) {
 		return queries("DROP TABLE " . implode(", ", array_map('Adminer\table', $tables)));
@@ -1014,7 +1014,7 @@ if (!defined('Adminer\DRIVER')) {
 				"type" => strtolower($param[5]),
 				"length" => preg_replace_callback("~$enum~s", 'Adminer\normalize_enum', $param[6]),
 				"unsigned" => strtolower(preg_replace('~\s+~', ' ', trim("$param[8] $param[7]"))),
-				"null" => 1,
+				"null" => true,
 				"full_type" => $param[4],
 				"inout" => strtoupper($param[1]),
 				"collation" => strtolower($param[9]),
@@ -1073,7 +1073,7 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get approximate number of rows
 	* @param TableStatus
 	* @param list<string>
-	* @return int or null if approximate number can't be retrieved
+	* @return numeric-string|void null if approximate number can't be retrieved
 	*/
 	function found_rows($table_status, $where) {
 		return ($where || $table_status["Engine"] != "InnoDB" ? null : $table_status["Rows"]);
@@ -1222,7 +1222,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Kill a process
 	* @param int
-	* @return bool
+	* @return Result|bool
 	*/
 	function kill_process($val) {
 		return queries("KILL " . number($val));
@@ -1236,7 +1236,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get maximum number of connections
-	* @return int
+	* @return numeric-string
 	*/
 	function max_connections() {
 		return get_val("SELECT @@max_connections");

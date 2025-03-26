@@ -75,7 +75,7 @@ function encrypt_string($str, $key) {
 /** Decipher
 * @param string binary cipher
 * @param string
-* @return string plain-text password
+* @return string|false plain-text password
 */
 function decrypt_string($str, $key) {
 	if ($str == "") {

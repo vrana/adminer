@@ -435,7 +435,7 @@ function normalize_enum($match) {
 * @param list<string>
 * @param string
 * @param string
-* @return bool
+* @return Result|bool
 */
 function grant($grant, $privileges, $columns, $on) {
 	if (!$privileges) {
@@ -502,7 +502,7 @@ function create_trigger($on, $row) {
 
 /** Generate SQL query for creating routine
 * @param string "PROCEDURE" or "FUNCTION"
-* @param string[] result of routine()
+* @param Routine result of routine()
 * @return string
 */
 function create_routine($routine, $row) {

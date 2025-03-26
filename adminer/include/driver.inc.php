@@ -53,7 +53,7 @@ abstract class SqlDriver {
 	}
 
 	/** Get structured types
-	* @return list<string>[] [$description => [$type, ...], ...]
+	* @return list<string>[]|list<string> [$description => [$type, ...], ...]
 	*/
 	function structuredTypes() {
 		return array_map('array_keys', $this->types);
@@ -82,7 +82,7 @@ abstract class SqlDriver {
 	* @param int result of $adminer->selectLimitProcess()
 	* @param int index of page starting at zero
 	* @param bool whether to print the query
-	* @return Result
+	* @return Result|false
 	*/
 	function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 		global $adminer;
@@ -109,7 +109,7 @@ abstract class SqlDriver {
 	* @param string
 	* @param string " WHERE ..."
 	* @param int 0 or 1
-	* @return bool
+	* @return Result|bool
 	*/
 	function delete($table, $queryWhere, $limit = 0) {
 		$query = "FROM " . table($table);
@@ -122,7 +122,7 @@ abstract class SqlDriver {
 	* @param string " WHERE ..."
 	* @param int 0 or 1
 	* @param string
-	* @return bool
+	* @return Result|bool
 	*/
 	function update($table, $set, $queryWhere, $limit = 0, $separator = "\n") {
 		$values = array();
@@ -136,7 +136,7 @@ abstract class SqlDriver {
 	/** Insert data into table
 	* @param string
 	* @param string[] escaped columns in keys, quoted data in values
-	* @return bool
+	* @return Result|bool
 	*/
 	function insert($table, $set) {
 		return queries("INSERT INTO " . table($table) . ($set
@@ -145,7 +145,7 @@ abstract class SqlDriver {
 		) . $this->insertReturning($table));
 	}
 
-	/** Get RETURNING clause for INSERT queries, PostgreSQL specific
+	/** Get RETURNING clause for INSERT queries (PostgreSQL specific)
 	* @param string
 	* @return string
 	*/
@@ -157,28 +157,28 @@ abstract class SqlDriver {
 	* @param string
 	* @param list<string[]> of arrays with escaped columns in keys and quoted data in values
 	* @param int[] column names in keys
-	* @return bool
+	* @return Result|bool
 	*/
 	function insertUpdate($table, $rows, $primary) {
 		return false;
 	}
 
 	/** Begin transaction
-	* @return bool
+	* @return Result|bool
 	*/
 	function begin() {
 		return queries("BEGIN");
 	}
 
 	/** Commit transaction
-	* @return bool
+	* @return Result|bool
 	*/
 	function commit() {
 		return queries("COMMIT");
 	}
 
 	/** Rollback transaction
-	* @return bool
+	* @return Result|bool
 	*/
 	function rollback() {
 		return queries("ROLLBACK");

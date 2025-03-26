@@ -344,12 +344,12 @@ function input($field, $value, $function, $autofocus = false) {
 
 /** Process edit input field
 * @param Field one field from fields()
-* @return string or false to leave the original value
+* @return mixed false to leave the original value
 */
 function process_input($field) {
 	global $adminer, $driver;
 	if (stripos($field["default"], "GENERATED ALWAYS AS ") === 0) {
-		return null;
+		return;
 	}
 	$idf = bracket_escape($field["field"]);
 	$function = idx($_POST["function"], $idf);

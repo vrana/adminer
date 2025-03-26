@@ -88,7 +88,7 @@ if (isset($_GET["sqlite"])) {
 			}
 
 			function __destruct() {
-				return $this->result->finalize();
+				$this->result->finalize();
 			}
 		}
 

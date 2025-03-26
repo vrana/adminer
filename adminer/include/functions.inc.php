@@ -722,7 +722,7 @@ function table_status1($table, $fast = false) {
 
 /** Find out foreign keys for each column
 * @param string
-* @return list<string>[] [$col => []]
+* @return list<ForeignKey>[] [$col => []]
 */
 function column_foreign_keys($table) {
 	global $adminer;
@@ -814,7 +814,7 @@ function get_temp_dir() {
 		} else {
 			$filename = @tempnam("", ""); // @ - temp directory can be disabled by open_basedir
 			if (!$filename) {
-				return false;
+				return '';
 			}
 			$return = dirname($filename);
 			unlink($filename);
@@ -825,7 +825,7 @@ function get_temp_dir() {
 
 /** Open and exclusively lock a file
 * @param string
-* @return resource or null for error
+* @return resource|void null for error
 */
 function file_open_lock($filename) {
 	if (is_link($filename)) {
@@ -873,7 +873,7 @@ function first($array) {
 
 /** Read password from file adminer.key in temporary directory or create one
 * @param bool
-* @return string or false if the file can not be created
+* @return string|false false if the file can not be created
 */
 function password_file($create) {
 	$filename = get_temp_dir() . "/adminer.key";
