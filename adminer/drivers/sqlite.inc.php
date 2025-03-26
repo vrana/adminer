@@ -8,8 +8,8 @@ if (isset($_GET["sqlite"])) {
 	if (class_exists("SQLite3") && $_GET["ext"] != "pdo") {
 
 		class SqliteDb {
-			public $extension = "SQLite3", $server_info, $affected_rows, $errno, $error;
-			private $link;
+			public $extension = "SQLite3", $flavor = '', $server_info, $affected_rows, $errno, $error;
+			private $link, $result;
 
 			function __construct($filename) {
 				$this->link = new \SQLite3($filename);
@@ -38,8 +38,17 @@ if (isset($_GET["sqlite"])) {
 				);
 			}
 
+
+			function multi_query($query) {
+				return $this->result = $this->query($query);
+			}
+
 			function store_result() {
 				return $this->result;
+			}
+
+			function next_result() {
+				return false;
 			}
 
 			function result($query, $field = 0) {
@@ -100,8 +109,6 @@ if (isset($_GET["sqlite"])) {
 
 	if (class_exists('Adminer\SqliteDb')) {
 		class Db extends SqliteDb {
-			public $flavor = '';
-
 			function __construct() {
 				parent::__construct(":memory:");
 				$this->query("PRAGMA foreign_keys = 1");
