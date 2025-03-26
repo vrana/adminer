@@ -102,7 +102,7 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 
 /** Get referencable tables with single column primary key except self
 * @param string
-* @return array[] [$table_name => $field]
+* @return Field[] [$table_name => $field]
 */
 function referencable_primary($self) {
 	$return = array(); // table_name => field
@@ -178,9 +178,9 @@ function json_row($key, $val = null) {
 
 /** Print table columns for type edit
 * @param string
-* @param list<string>[]
-* @param array[]
-* @param array[] returned by referencable_primary()
+* @param Field
+* @param list<string>
+* @param Field[] returned by referencable_primary()
 * @param list<string> extra types to prepend
 * @return null
 */
@@ -246,7 +246,7 @@ function process_length($length) {
 }
 
 /** Create SQL string from field type
-* @param array
+* @param Field
 * @param string
 * @return string
 */
@@ -260,8 +260,8 @@ function process_type($field, $collate = "COLLATE") {
 }
 
 /** Create SQL string from field
-* @param array basic field information
-* @param array information about field type
+* @param Field basic field information
+* @param Field information about field type
 * @return list<string> ["field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT"]
 */
 function process_field($field, $type_field) {
@@ -281,7 +281,7 @@ function process_field($field, $type_field) {
 }
 
 /** Get default value clause
-* @param array
+* @param Field
 * @return string
 */
 function default_value($field) {
@@ -317,10 +317,10 @@ function type_class($type) {
 }
 
 /** Print table interior for fields editing
-* @param array[]
+* @param Field[]
 * @param list<string>[]
 * @param string TABLE or PROCEDURE
-* @param array[] returned by referencable_primary()
+* @param Field[] returned by referencable_primary()
 * @return null
 */
 function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = array()) {
@@ -382,7 +382,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 }
 
 /** Move fields up and down or add field
-* @param array[]
+* @param Field[]
 * @return bool
 */
 function process_fields(&$fields) {
@@ -487,7 +487,7 @@ function drop_create($drop, $create, $drop_created, $test, $drop_test, $location
 
 /** Generate SQL query for creating trigger
 * @param string
-* @param array result of trigger()
+* @param Trigger result of trigger()
 * @return string
 */
 function create_trigger($on, $row) {
@@ -534,7 +534,7 @@ function remove_definer($query) {
 }
 
 /** Format foreign key to use in SQL query
-* @param array ["db" => string, "ns" => string, "table" => string, "source" => array, "target" => array, "on_delete" => one of $on_actions, "on_update" => one of $on_actions]
+* @param ForeignKey
 * @return string
 */
 function format_foreign_key($foreign_key) {

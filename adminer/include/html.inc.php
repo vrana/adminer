@@ -229,7 +229,7 @@ function hidden_fields_get() {
 /** Print enum or set input field
 * @param string "radio"|"checkbox"
 * @param string
-* @param array
+* @param Field
 * @param mixed string|array
 * @param string
 * @return null
@@ -247,7 +247,7 @@ function enum_input($type, $attrs, $field, $value, $empty = null) {
 }
 
 /** Print edit input field
-* @param array one field from fields()
+* @param Field one field from fields()
 * @param mixed
 * @param string
 * @param bool
@@ -426,7 +426,7 @@ function on_help($command, $side = 0) {
 
 /** Print edit data form
 * @param string
-* @param array[]
+* @param Field[]
 * @param mixed
 * @param bool
 * @return null

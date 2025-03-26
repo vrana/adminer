@@ -443,7 +443,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Connect to the database
-	* @param array [$server, $username, $password]
+	* @param array{string, string, string} [$server, $username, $password]
 	* @return mixed Db or string for error
 	*/
 	function connect($credentials) {
@@ -549,7 +549,8 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get table status
 	* @param string
 	* @param bool return only "Name", "Engine" and "Comment" fields
-	* @return array{Name:string, Engine:string, Comment:string, Oid:int, Rows:int, Collation:string, Auto_increment:int, Data_length:int, Index_length:int, Data_free:int}[]
+	* @return TableStatus[]
+	* @phpstan-type TableStatus array{Name:string, Engine:string, Comment:string, Oid:int, Rows:int, Collation:string, Auto_increment:int, Data_length:int, Index_length:int, Data_free:int}
 	*/
 	function table_status($name = "", $fast = false) {
 		$return = array();
@@ -577,7 +578,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Find out whether the identifier is view
-	* @param array
+	* @param TableStatus
 	* @return bool
 	*/
 	function is_view($table_status) {
@@ -585,7 +586,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Check if table supports foreign keys
-	* @param array result of table_status
+	* @param TableStatus result of table_status1()
 	* @return bool
 	*/
 	function fk_support($table_status) {
@@ -595,7 +596,8 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get information about fields
 	* @param string
-	* @return array{field:string, full_type:string, type:string, length:int, unsigned:string, default:string, null:bool, auto_increment:bool, on_update:string, collation:string, privileges:int[], comment:string, primary:bool, generated:string}[]
+	* @return Field[]
+	* @phpstan-type Field array{field:string, full_type:string, type:string, length:int, unsigned:string, default:string, null:bool, auto_increment:bool, on_update:string, collation:string, privileges:int[], comment:string, primary:bool, generated:string}
 	*/
 	function fields($table) {
 		global $connection;
@@ -651,7 +653,8 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get table indexes
 	* @param string
 	* @param string Db to use
-	* @return array{type:string, columns:list<string>, lengths:list<int>, descs:list<bool>}[]
+	* @return Index[]
+	* @phpstan-type Index array{type:string, columns:list<string>, lengths:list<int>, descs:list<bool>}
 	*/
 	function indexes($table, $connection2 = null) {
 		$return = array();
@@ -667,7 +670,8 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get foreign keys in table
 	* @param string
-	* @return array{db:string, ns:string, table:string, source:list<string>, target:list<string>, on_delete:string, on_update:string}[]
+	* @return ForeignKey[]
+	* @phpstan-type ForeignKey array{db:string, ns:string, table:string, source:list<string>, target:list<string>, on_delete:string, on_update:string}
 	*/
 	function foreign_keys($table) {
 		global $driver;
@@ -807,7 +811,7 @@ if (!defined('Adminer\DRIVER')) {
 	/** Run commands to create or alter table
 	* @param string "" to create
 	* @param string new name
-	* @param array of [$orig, $process_field, $after]
+	* @param list<array{string, list<string>, string}> of [$orig, $process_field, $after]
 	* @param list<string>
 	* @param string
 	* @param string
@@ -852,7 +856,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Run commands to alter indexes
 	* @param string escaped table name
-	* @param array[] of ["index type", "name", ["column definition", ...]] or ["index type", "name", "DROP"]
+	* @param array{string, string, 'DROP'|list<string>} of ["index type", "name", ["column definition", ...]] or ["index type", "name", "DROP"]
 	* @return bool
 	*/
 	function alter_indexes($table, $alter) {
@@ -958,7 +962,8 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get information about trigger
 	* @param string trigger name
-	* @return array{Trigger:string, Timing:string, Event:string, Of:string, Type:string, Statement:string}
+	* @return Trigger
+	* @phpstan-type Trigger array{Trigger:string, Timing:string, Event:string, Of:string, Type:string, Statement:string}
 	*/
 	function trigger($name) {
 		if ($name == "") {
@@ -970,7 +975,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get defined triggers
 	* @param string
-	* @return array{string, string}[]4
+	* @return array{string, string}[]
 	*/
 	function triggers($table) {
 		$return = array();
@@ -994,7 +999,8 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get information about stored routine
 	* @param string
 	* @param string "FUNCTION" or "PROCEDURE"
-	* @return array{fields:list<array{field:string, type:string, length:string, unsigned:string, null:bool, full_type:string, inout:string, collation:string}>, comment:string, returns:array, definition:string, language:string}
+	* @return Routine
+	* @phpstan-type Routine array{fields:list<array{field:string, type:string, length:string, unsigned:string, null:bool, full_type:string, inout:string, collation:string}>, comment:string, returns:array, definition:string, language:string}
 	*/
 	function routine($name, $type) {
 		global $driver;
@@ -1046,7 +1052,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get routine signature
 	* @param string
-	* @param array result of routine()
+	* @param Routine result of routine()
 	* @return string
 	*/
 	function routine_id($name, $row) {
@@ -1071,7 +1077,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get approximate number of rows
-	* @param array
+	* @param TableStatus
 	* @param list<string>
 	* @return int or null if approximate number can't be retrieved
 	*/
@@ -1178,7 +1184,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Convert field in select and edit
-	* @param array one element from fields()
+	* @param Field one element from fields()
 	* @return string
 	*/
 	function convert_field($field) {
@@ -1194,7 +1200,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Convert value in edit after applying functions back
-	* @param array one element from fields()
+	* @param Field one element from fields()
 	* @param string SQL expression
 	* @return string
 	*/

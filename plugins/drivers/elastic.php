@@ -555,7 +555,7 @@ if (isset($_GET["elastic"])) {
 	}
 
 	/** Drop types
-	 * @param array
+	 * @param list<string>
 	 * @return bool
 	 */
 	function drop_tables($tables) {

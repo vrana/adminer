@@ -159,7 +159,7 @@ class Adminer {
 	}
 
 	/** Table caption used in navigation and headings
-	* @param array result of SHOW TABLE STATUS
+	* @param TableStatus result of table_status1()
 	* @return string HTML code, "" to ignore table
 	*/
 	function tableName($tableStatus) {
@@ -167,7 +167,7 @@ class Adminer {
 	}
 
 	/** Field caption used in select and edit
-	* @param array single field returned from fields()
+	* @param Field single field returned from fields()
 	* @param int order of column in select
 	* @return string HTML code, "" to ignore field
 	*/
@@ -178,7 +178,7 @@ class Adminer {
 	}
 
 	/** Print links after select heading
-	* @param array result of SHOW TABLE STATUS
+	* @param TableStatus result of table_status1()
 	* @param string new item options, NULL for no new item
 	* @return null
 	*/
@@ -211,7 +211,7 @@ class Adminer {
 
 	/** Get foreign keys for table
 	* @param string
-	* @return array[] same format as foreign_keys()
+	* @return ForeignKey[] same format as foreign_keys()
 	*/
 	function foreignKeys($table) {
 		return foreign_keys($table);
@@ -220,14 +220,15 @@ class Adminer {
 	/** Find backward keys for table
 	* @param string
 	* @param string
-	* @return array{keys:string[][], name:string}[]
+	* @return BackwardKey[]
+	* @phpstan-type BackwardKey array{name:string, keys:string[][]}
 	*/
 	function backwardKeys($table, $tableName) {
 		return array();
 	}
 
 	/** Print backward keys for row
-	* @param array[] result of $this->backwardKeys()
+	* @param BackwardKey[] result of $this->backwardKeys()
 	* @param string[]
 	* @return null
 	*/
@@ -278,7 +279,7 @@ class Adminer {
 
 	/** Get descriptions of selected data
 	* @param list<string[]> all data to print
-	* @param array[]
+	* @param ForeignKey[]
 	* @return list<string[]>
 	*/
 	function rowDescriptions($rows, $foreignKeys) {
@@ -287,7 +288,7 @@ class Adminer {
 
 	/** Get a link to use in select table
 	* @param string raw value of the field
-	* @param array single field returned from fields()
+	* @param Field single field returned from fields()
 	* @return string or null to create the default link
 	*/
 	function selectLink($val, $field) {
@@ -296,7 +297,7 @@ class Adminer {
 	/** Value printed in select table
 	* @param string HTML-escaped value to print
 	* @param string link to foreign key
-	* @param array single field returned from fields()
+	* @param Field single field returned from fields()
 	* @param string original value before applying editVal() and escaping
 	* @return string
 	*/
@@ -314,7 +315,7 @@ class Adminer {
 
 	/** Value conversion used in select and edit
 	* @param string
-	* @param array single field returned from fields()
+	* @param Field single field returned from fields()
 	* @return string
 	*/
 	function editVal($val, $field) {
@@ -322,8 +323,8 @@ class Adminer {
 	}
 
 	/** Print table structure in tabular format
-	* @param array[] data about individual fields
-	* @param array
+	* @param Field[] data about individual fields
+	* @param TableStatus
 	* @return null
 	*/
 	function tableStructurePrint($fields, $tableStatus = null) {
@@ -354,7 +355,7 @@ class Adminer {
 	}
 
 	/** Print list of indexes on table in tabular format
-	* @param array[] data about all indexes on a table
+	* @param Index[] data about all indexes on a table
 	* @return null
 	*/
 	function tableIndexesPrint($indexes) {
@@ -403,7 +404,7 @@ class Adminer {
 	/** Print search box in select
 	* @param list<string> result of selectSearchProcess()
 	* @param string[] selectable columns
-	* @param array[]
+	* @param Index[]
 	* @return null
 	*/
 	function selectSearchPrint($where, $columns, $indexes) {
@@ -439,7 +440,7 @@ class Adminer {
 	/** Print order box in select
 	* @param list<string> result of selectOrderProcess()
 	* @param string[] selectable columns
-	* @param array[]
+	* @param Index[]
 	* @return null
 	*/
 	function selectOrderPrint($order, $columns, $indexes) {
@@ -481,7 +482,7 @@ class Adminer {
 	}
 
 	/** Print action box in select
-	* @param array[]
+	* @param Index[]
 	* @return null
 	*/
 	function selectActionPrint($indexes) {
@@ -531,7 +532,7 @@ class Adminer {
 
 	/** Process columns box in select
 	* @param string[] selectable columns
-	* @param array[]
+	* @param Index[]
 	* @return list<list<string>> [[select_expressions], [group_expressions]]
 	*/
 	function selectColumnsProcess($columns, $indexes) {
@@ -550,8 +551,8 @@ class Adminer {
 	}
 
 	/** Process search box in select
-	* @param array[]
-	* @param array[]
+	* @param Field[]
+	* @param Index[]
 	* @return list<string> expressions to join by AND
 	*/
 	function selectSearchProcess($fields, $indexes) {
@@ -604,8 +605,8 @@ class Adminer {
 	}
 
 	/** Process order box in select
-	* @param array[]
-	* @param array[]
+	* @param Field[]
+	* @param Index[]
 	* @return list<string> expressions to join by comma
 	*/
 	function selectOrderProcess($fields, $indexes) {
@@ -636,7 +637,7 @@ class Adminer {
 
 	/** Process extras in select form
 	* @param string[] AND conditions
-	* @param array[]
+	* @param ForeignKey[]
 	* @return bool true if processed, false to process other parts of form
 	*/
 	function selectEmailProcess($where, $foreignKeys) {
@@ -698,7 +699,7 @@ class Adminer {
 	}
 
 	/** Functions displayed in edit form
-	* @param array single field from fields()
+	* @param Field single field from fields()
 	* @return list<string>
 	*/
 	function editFunctions($field) {
@@ -725,7 +726,7 @@ class Adminer {
 
 	/** Get options to display edit field
 	* @param string table name
-	* @param array single field from fields()
+	* @param Field single field from fields()
 	* @param string attributes to use inside the tag
 	* @param string
 	* @return string custom input field or empty string for default
@@ -742,7 +743,7 @@ class Adminer {
 
 	/** Get hint for edit field
 	* @param string table name
-	* @param array single field from fields()
+	* @param Field single field from fields()
 	* @param string
 	* @return string
 	*/
@@ -751,7 +752,7 @@ class Adminer {
 	}
 
 	/** Process sent input
-	* @param array single field from fields()
+	* @param Field single field from fields()
 	* @param string
 	* @param string
 	* @return string expression to use in a query
@@ -1051,7 +1052,7 @@ class Adminer {
 	}
 
 	/** Set up syntax highlight for code and <textarea>
-	* @param array[] result of table_status('', true)
+	* @param TableStatus[] result of table_status('', true)
 	*/
 	function syntaxHighlighting($tables) {
 		global $connection;
@@ -1116,7 +1117,7 @@ class Adminer {
 	}
 
 	/** Print table list in menu
-	* @param array result of table_status('', true)
+	* @param TableStatus[] result of table_status('', true)
 	* @return null
 	*/
 	function tablesPrint($tables) {

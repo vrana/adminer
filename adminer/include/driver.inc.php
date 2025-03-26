@@ -60,14 +60,14 @@ abstract class SqlDriver {
 	}
 
 	/** Get enum values
-	* @param array
+	* @param Field
 	* @return string or null
 	*/
 	function enumLength($field) {
 	}
 
 	/** Function used to convert the value inputted by user
-	* @param array
+	* @param Field
 	* @return string or null
 	*/
 	function unconvertFunction($field) {
@@ -194,8 +194,8 @@ abstract class SqlDriver {
 
 	/** Convert column to be searchable
 	* @param string escaped column name
-	* @param array ["op" => , "val" => ]
-	* @param array
+	* @param array{op:string, val:string}
+	* @param Field
 	* @return string
 	*/
 	function convertSearch($idf, $val, $field) {
@@ -212,7 +212,7 @@ abstract class SqlDriver {
 
 	/** Convert value returned by database to actual value
 	* @param string
-	* @param array
+	* @param Field
 	* @return string
 	*/
 	function value($val, $field) {
@@ -260,7 +260,7 @@ abstract class SqlDriver {
 	}
 
 	/** Check whether table supports indexes
-	* @param array result of table_status1()
+	* @param TableStatus result of table_status1()
 	* @return bool
 	*/
 	function supportsIndex($table_status) {

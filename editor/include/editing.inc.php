@@ -15,7 +15,7 @@ function email_header($header) {
 * @param string
 * @param string
 * @param string
-* @param array[]
+* @param array{error:list<int>, type:list<string>, name:list<string>}
 * @return bool
 */
 function send_mail($email, $subject, $message, $from = "", $files = array()) {
@@ -47,7 +47,7 @@ function send_mail($email, $subject, $message, $from = "", $files = array()) {
 }
 
 /** Check whether the column looks like boolean
-* @param array single field returned from fields()
+* @param Field single field returned from fields()
 * @return bool
 */
 function like_bool($field) {

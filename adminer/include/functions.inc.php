@@ -262,7 +262,7 @@ function get_rows($query, $connection2 = null, $error = "<p class='error'>") {
 
 /** Find unique identifier of a row
 * @param string[]
-* @param array[] result of indexes()
+* @param Index[] result of indexes()
 * @return string[] or null if there is no unique identifier
 */
 function unique_array($row, $indexes) {
@@ -292,8 +292,8 @@ function escape_key($key) {
 }
 
 /** Create SQL condition from parsed query string
-* @param array parsed query string
-* @param array[]
+* @param array{where:string[], null:list<string>} parsed query string
+* @param Field[]
 * @return string
 */
 function where($where, $fields = array()) {
@@ -321,7 +321,7 @@ function where($where, $fields = array()) {
 
 /** Create SQL condition from query string
 * @param string
-* @param array[]
+* @param Field[]
 * @return string
 */
 function where_check($val, $fields = array()) {
@@ -343,7 +343,7 @@ function where_link($i, $column, $value, $operator = "=") {
 
 /** Get select clause for convertible fields
 * @param string[]
-* @param array[]
+* @param Field[]
 * @param list<string>
 * @return string
 */
@@ -701,7 +701,7 @@ function friendly_url($val) {
 /** Get status of a single table and fall back to name on error
 * @param string
 * @param bool
-* @return array one element from table_status()
+* @return TableStatus one element from table_status()
 */
 function table_status1($table, $fast = false) {
 	$return = table_status($table, $fast);
@@ -724,7 +724,7 @@ function column_foreign_keys($table) {
 }
 
 /** Compute fields() from $_POST edit data
-* @return array[] same as fields()
+* @return Field[] same as fields()
 */
 function fields_from_edit() {
 	global $driver;
@@ -892,7 +892,7 @@ function rand_string() {
 /** Format value to use in select
 * @param string
 * @param string
-* @param array
+* @param Field
 * @param int
 * @return string HTML
 */
@@ -953,7 +953,7 @@ function is_url($string) {
 }
 
 /** Check if field should be shortened
-* @param array
+* @param Field
 * @return bool
 */
 function is_shortable($field) {
