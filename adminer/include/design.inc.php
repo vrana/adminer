@@ -6,7 +6,7 @@ namespace Adminer;
 * @param string
 * @param mixed ["key" => "link", "key2" => ["link", "desc"]], null for nothing, false for driver only, true for driver and server
 * @param string used after colon in title and heading, should be HTML escaped
-* @return null
+* @return void
 */
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 	global $LANG, $VERSION, $adminer, $drivers;
@@ -128,7 +128,7 @@ const thousandsSeparator = '" . js_escape(lang(',')) . "';")
 }
 
 /** Send HTTP headers
-* @return null
+* @return void
 */
 function page_headers() {
 	global $adminer;
@@ -177,7 +177,7 @@ function get_nonce() {
 
 /** Print flash and error messages
 * @param string
-* @return null
+* @return void
 */
 function page_messages($error) {
 	global $adminer;
@@ -197,7 +197,7 @@ function page_messages($error) {
 
 /** Print HTML footer
 * @param string "auth", "db", "ns"
-* @return null
+* @return void
 */
 function page_footer($missing = "") {
 	global $adminer;

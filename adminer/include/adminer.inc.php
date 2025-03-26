@@ -81,7 +81,7 @@ class Adminer {
 	}
 
 	/** Headers to send before HTML output
-	* @return null
+	* @return void
 	*/
 	function headers() {
 	}
@@ -119,7 +119,7 @@ class Adminer {
 	}
 
 	/** Print login form
-	* @return null
+	* @return void
 	*/
 	function loginForm() {
 		global $drivers;
@@ -180,7 +180,7 @@ class Adminer {
 	/** Print links after select heading
 	* @param TableStatus result of table_status1()
 	* @param string new item options, NULL for no new item
-	* @return null
+	* @return void
 	*/
 	function selectLinks($tableStatus, $set = "") {
 		global $driver;
@@ -230,7 +230,7 @@ class Adminer {
 	/** Print backward keys for row
 	* @param BackwardKey[] result of $this->backwardKeys()
 	* @param string[]
-	* @return null
+	* @return void
 	*/
 	function backwardKeysPrint($backwardKeys, $row) {
 	}
@@ -325,7 +325,7 @@ class Adminer {
 	/** Print table structure in tabular format
 	* @param Field[] data about individual fields
 	* @param TableStatus
-	* @return null
+	* @return void
 	*/
 	function tableStructurePrint($fields, $tableStatus = null) {
 		global $driver;
@@ -356,7 +356,7 @@ class Adminer {
 
 	/** Print list of indexes on table in tabular format
 	* @param Index[] data about all indexes on a table
-	* @return null
+	* @return void
 	*/
 	function tableIndexesPrint($indexes) {
 		echo "<table>\n";
@@ -377,7 +377,7 @@ class Adminer {
 	/** Print columns box in select
 	* @param list<string> result of selectColumnsProcess()[0]
 	* @param string[] selectable columns
-	* @return null
+	* @return void
 	*/
 	function selectColumnsPrint($select, $columns) {
 		global $driver;
@@ -405,7 +405,7 @@ class Adminer {
 	* @param list<string> result of selectSearchProcess()
 	* @param string[] selectable columns
 	* @param Index[]
-	* @return null
+	* @return void
 	*/
 	function selectSearchPrint($where, $columns, $indexes) {
 		print_fieldset("search", lang('Search'), $where);
@@ -441,7 +441,7 @@ class Adminer {
 	* @param list<string> result of selectOrderProcess()
 	* @param string[] selectable columns
 	* @param Index[]
-	* @return null
+	* @return void
 	*/
 	function selectOrderPrint($order, $columns, $indexes) {
 		print_fieldset("sort", lang('Sort'), $order);
@@ -460,7 +460,7 @@ class Adminer {
 
 	/** Print limit box in select
 	* @param string result of selectLimitProcess()
-	* @return null
+	* @return void
 	*/
 	function selectLimitPrint($limit) {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
@@ -471,7 +471,7 @@ class Adminer {
 
 	/** Print text length box in select
 	* @param string result of selectLengthProcess()
-	* @return null
+	* @return void
 	*/
 	function selectLengthPrint($text_length) {
 		if ($text_length !== null) {
@@ -483,7 +483,7 @@ class Adminer {
 
 	/** Print action box in select
 	* @param Index[]
-	* @return null
+	* @return void
 	*/
 	function selectActionPrint($indexes) {
 		echo "<fieldset><legend>" . lang('Action') . "</legend><div>";
@@ -525,7 +525,7 @@ class Adminer {
 	/** Print extra text in the end of a select form
 	* @param string[] fields holding e-mails
 	* @param string[] selectable columns
-	* @return null
+	* @return void
 	*/
 	function selectEmailPrint($emailFields, $columns) {
 	}
@@ -693,7 +693,7 @@ class Adminer {
 	* @param array[]
 	* @param mixed
 	* @param bool
-	* @return null
+	* @return void
 	*/
 	function editRowPrint($table, $fields, $row, $update) {
 	}
@@ -799,7 +799,7 @@ class Adminer {
 
 	/** Export database structure
 	* @param string
-	* @return null prints data
+	* @return void prints data
 	*/
 	function dumpDatabase($db) {
 	}
@@ -808,7 +808,7 @@ class Adminer {
 	* @param string
 	* @param string
 	* @param int 0 table, 1 view, 2 temporary view table
-	* @return null prints data
+	* @return void prints data
 	*/
 	function dumpTable($table, $style, $is_view = 0) {
 		if ($_POST["format"] != "sql") {
@@ -843,7 +843,7 @@ class Adminer {
 	* @param string
 	* @param string
 	* @param string
-	* @return null prints data
+	* @return void prints data
 	*/
 	function dumpData($table, $style, $query) {
 		global $connection;
@@ -964,7 +964,7 @@ class Adminer {
 	}
 
 	/** Print text after export
-	* @return null prints data
+	* @return void prints data
 	*/
 	function dumpFooter() {
 		if ($_POST["format"] == "sql") {
@@ -992,7 +992,7 @@ class Adminer {
 
 	/** Print navigation after Adminer title
 	* @param string can be "auth" if there is no database connection, "db" if there is no database selected, "ns" with invalid schema
-	* @return null
+	* @return void
 	*/
 	function navigation($missing) {
 		global $VERSION, $drivers, $connection;
@@ -1083,7 +1083,7 @@ class Adminer {
 
 	/** Print databases list in menu
 	* @param string
-	* @return null
+	* @return void
 	*/
 	function databasesPrint($missing) {
 		global $adminer, $connection;
@@ -1118,7 +1118,7 @@ class Adminer {
 
 	/** Print table list in menu
 	* @param TableStatus[] result of table_status('', true)
-	* @return null
+	* @return void
 	*/
 	function tablesPrint($tables) {
 		echo "<ul id='tables'>" . script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");

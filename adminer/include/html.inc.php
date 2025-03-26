@@ -157,7 +157,7 @@ function confirm($message = "", $selector = "qsl('input')") {
 * @param string
 * @param string
 * @param bool
-* @return null
+* @return void
 */
 function print_fieldset($id, $legend, $visible = false) {
 	echo "<fieldset><legend>";
@@ -218,7 +218,7 @@ function hidden_fields($process, $ignore = array(), $prefix = '') {
 }
 
 /** Print hidden fields for GET forms
-* @return null
+* @return void
 */
 function hidden_fields_get() {
 	echo (sid() ? input_hidden(session_name(), session_id()) : '');
@@ -232,7 +232,7 @@ function hidden_fields_get() {
 * @param Field
 * @param mixed string|array
 * @param string
-* @return null
+* @return string
 */
 function enum_input($type, $attrs, $field, $value, $empty = null) {
 	global $adminer;
@@ -251,7 +251,7 @@ function enum_input($type, $attrs, $field, $value, $empty = null) {
 * @param mixed
 * @param string
 * @param bool
-* @return null
+* @return void
 */
 function input($field, $value, $function, $autofocus = false) {
 	global $driver, $adminer;
@@ -395,7 +395,7 @@ function process_input($field) {
 /** Print results of search in all tables
 * @uses $_GET["where"][0]
 * @uses $_POST["tables"]
-* @return null
+* @return void
 */
 function search_tables() {
 	global $adminer, $connection;
@@ -429,7 +429,7 @@ function on_help($command, $side = 0) {
 * @param Field[]
 * @param mixed
 * @param bool
-* @return null
+* @return void
 */
 function edit_form($table, $fields, $row, $update) {
 	global $adminer, $error;

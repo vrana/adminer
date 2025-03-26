@@ -6,7 +6,7 @@ $drivers = array();
 /** Add a driver
 * @param string
 * @param string
-* @return null
+* @return void
 */
 function add_driver($id, $name) {
 	global $drivers;

@@ -127,7 +127,7 @@ function referencable_primary($self) {
 * @param string or array in which case [0] of every element is used
 * @param int
 * @param int
-* @return null
+* @return void
 */
 function textarea($name, $value, $rows = 10, $cols = 80) {
 	echo "<textarea name='" . h($name) . "' rows='$rows' cols='$cols' class='sqlarea jush-" . JUSH . "' spellcheck='false' wrap='off'>";
@@ -160,7 +160,7 @@ function select_input($attrs, $options, $value = "", $onchange = "", $placeholde
 /** Print one row in JSON object
 * @param string or "" to close the object
 * @param string
-* @return null
+* @return void
 */
 function json_row($key, $val = null) {
 	static $first = true;
@@ -182,7 +182,7 @@ function json_row($key, $val = null) {
 * @param list<string>
 * @param Field[] returned by referencable_primary()
 * @param list<string> extra types to prepend
-* @return null
+* @return void
 */
 function edit_type($key, $field, $collations, $foreign_keys = array(), $extra_types = array()) {
 	global $driver;
@@ -321,7 +321,7 @@ function type_class($type) {
 * @param list<string>[]
 * @param string TABLE or PROCEDURE
 * @param Field[] returned by referencable_primary()
-* @return null
+* @return void
 */
 function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = array()) {
 	global $driver;
@@ -463,7 +463,7 @@ function grant($grant, $privileges, $columns, $on) {
 * @param string
 * @param string
 * @param string
-* @return null redirect in success
+* @return void redirect on success
 */
 function drop_create($drop, $create, $drop_created, $test, $drop_test, $location, $message_drop, $message_alter, $message_create, $old_name, $new_name) {
 	if ($_POST["drop"]) {
@@ -554,7 +554,7 @@ function format_foreign_key($foreign_key) {
 /** Add a file to TAR
 * @param string
 * @param TmpFile
-* @return null prints the output
+* @return void prints the output
 */
 function tar_file($filename, $tmp_file) {
 	$return = pack("a100a8a8a8a12a12", $filename, 644, 0, 0, decoct($tmp_file->size), decoct(time()));
@@ -627,7 +627,7 @@ function db_size($db) {
 
 /** Print SET NAMES if utf8mb4 might be needed
 * @param string
-* @return null
+* @return void
 */
 function set_utf8mb4($create) {
 	global $connection;

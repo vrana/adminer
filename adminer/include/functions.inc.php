@@ -94,7 +94,7 @@ function number_type() {
 /** Disable magic_quotes_gpc
 * @param list<array> e.g. (&$_GET, &$_POST, &$_COOKIE)
 * @param bool whether to leave values as is
-* @return null modified in place
+* @return void modified in place
 */
 function remove_slashes($process, $filter = false) {
 	if (function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc()) {
@@ -175,7 +175,7 @@ function sid() {
 * @param string
 * @param string
 * @param string
-* @return null
+* @return void
 */
 function set_password($vendor, $server, $username, $password) {
 	$_SESSION["pwds"][$vendor][$server][$username] = ($_COOKIE["adminer_key"] && is_string($password)
@@ -377,7 +377,7 @@ function convert_fields($columns, $fields, $select = array()) {
 * @param string
 * @param string
 * @param int number of seconds, 0 for session cookie, 2592000 - 30 days
-* @return null
+* @return void
 */
 function cookie($name, $value, $lifetime = 2592000) {
 	global $HTTPS;
@@ -413,14 +413,14 @@ function get_setting($key, $cookie = "adminer_settings") {
 /** Store settings to a cookie
 * @param mixed[]
 * @param string
-* @return null
+* @return void
 */
 function save_settings($settings, $cookie = "adminer_settings") {
 	cookie($cookie, http_build_query($settings + get_settings($cookie)));
 }
 
 /** Restart stopped session
-* @return null
+* @return void
 */
 function restart_session() {
 	if (!ini_bool("session.use_cookies") && (!function_exists('session_status') || session_status() == 1)) { // 1 - PHP_SESSION_NONE, session_status() available since PHP 5.4
@@ -430,7 +430,7 @@ function restart_session() {
 
 /** Stop session if possible
 * @param bool
-* @return null
+* @return void
 */
 function stop_session($force = false) {
 	$use_cookies = ini_bool("session.use_cookies");
@@ -495,7 +495,7 @@ function is_ajax() {
 /** Send Location header and exit
 * @param string null to only set a message
 * @param string
-* @return null
+* @return void
 */
 function redirect($location, $message = null) {
 	if ($message !== null) {
@@ -783,7 +783,7 @@ function dump_headers($identifier, $multi_table = false) {
 
 /** Print CSV row
 * @param string[]
-* @return null
+* @return void
 */
 function dump_csv($row) {
 	foreach ($row as $key => $val) {
