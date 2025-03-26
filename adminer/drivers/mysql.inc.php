@@ -1184,7 +1184,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Convert field in select and edit
 	* @param Field one element from fields()
-	* @return string
+	* @return ?string
 	*/
 	function convert_field($field) {
 		if (preg_match("~binary~", $field["type"])) {

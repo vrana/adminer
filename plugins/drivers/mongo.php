@@ -19,7 +19,7 @@ if (isset($_GET["mongo"])) {
 			}
 
 			function executeCommand($command) {
-				return $this->executeDbCommand($this->_db_name);
+				return $this->executeDbCommand($this->_db_name, $command);
 			}
 
 			function executeDbCommand($db, $command) {

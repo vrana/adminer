@@ -27,8 +27,8 @@ if (isset($_GET["firebird"])) {
 				$this->_link = ibase_connect($server, $username, $password);
 				if ($this->_link) {
 					$url_parts = explode(':', $server);
-					$this->service_link = ibase_service_attach($url_parts[0], $username, $password);
-					$this->server_info = ibase_server_info($this->service_link, IBASE_SVC_SERVER_VERSION);
+					$service_link = ibase_service_attach($url_parts[0], $username, $password);
+					$this->server_info = ibase_server_info($service_link, IBASE_SVC_SERVER_VERSION);
 				} else {
 					$this->errno = ibase_errcode();
 					$this->error = ibase_errmsg();

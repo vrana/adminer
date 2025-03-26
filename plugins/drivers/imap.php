@@ -110,7 +110,7 @@ if (isset($_GET["imap"])) {
 			}
 
 			function expunge() {
-				return imap_expunge();
+				return imap_expunge($this->imap);
 			}
 		}
 
@@ -272,7 +272,7 @@ if (isset($_GET["imap"])) {
 	}
 
 	function truncate_tables($tables) {
-		return connection()->expunge($name);
+		return connection()->expunge();
 	}
 
 	function connect($credentials) {

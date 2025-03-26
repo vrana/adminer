@@ -22,7 +22,7 @@ class Adminer {
 	}
 
 	/** Get SSL connection options
-	* @return string[] or null
+	* @return ?string[]
 	*/
 	function connectSsl() {
 	}
@@ -289,7 +289,7 @@ class Adminer {
 	/** Get a link to use in select table
 	* @param string raw value of the field
 	* @param Field single field returned from fields()
-	* @return string or null to create the default link
+	* @return ?string null to create the default link
 	*/
 	function selectLink($val, $field) {
 	}

@@ -66,8 +66,8 @@ function escape_string($val) {
 }
 
 /** Get a possibly missing item from a possibly missing array
-* idx($row, $key) is better than $row[$key] ?? null because it reports error for undefined $row
-* @param array|null
+* idx($row, $key) is better than $row[$key] ?? null because PHP will report error for undefined $row
+* @param ?array
 * @param string|int
 * @param mixed
 * @return mixed
@@ -274,7 +274,7 @@ function get_rows($query, $connection2 = null, $error = "<p class='error'>") {
 /** Find unique identifier of a row
 * @param string[]
 * @param Index[] result of indexes()
-* @return string[] or null if there is no unique identifier
+* @return ?string[] null if there is no unique identifier
 */
 function unique_array($row, $indexes) {
 	foreach ($indexes as $index) {
@@ -377,11 +377,11 @@ function convert_fields($columns, $fields, $select = array()) {
 * @param string
 * @param string
 * @param int number of seconds, 0 for session cookie, 2592000 - 30 days
-* @return bool
+* @return null
 */
 function cookie($name, $value, $lifetime = 2592000) {
 	global $HTTPS;
-	return header(
+	header(
 		"Set-Cookie: $name=" . urlencode($value)
 			. ($lifetime ? "; expires=" . gmdate("D, d M Y H:i:s", time() + $lifetime) . " GMT" : "")
 			. "; path=" . preg_replace('~\?.*~', '', $_SERVER["REQUEST_URI"])
@@ -413,10 +413,10 @@ function get_setting($key, $cookie = "adminer_settings") {
 /** Store settings to a cookie
 * @param mixed[]
 * @param string
-* @return bool
+* @return null
 */
 function save_settings($settings, $cookie = "adminer_settings") {
-	return cookie($cookie, http_build_query($settings + get_settings($cookie)));
+	cookie($cookie, http_build_query($settings + get_settings($cookie)));
 }
 
 /** Restart stopped session
@@ -495,7 +495,7 @@ function is_ajax() {
 /** Send Location header and exit
 * @param string null to only set a message
 * @param string
-* @return never
+* @return null
 */
 function redirect($location, $message = null) {
 	if ($message !== null) {

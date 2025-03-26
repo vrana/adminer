@@ -176,9 +176,7 @@ if (isset($_GET["pgsql"])) {
 				return $return;
 			}
 
-			function warnings() {
-				return ''; // not implemented in PDO_PgSQL as of PHP 7.2.1
-			}
+			// warnings() not implemented in PDO_PgSQL as of PHP 7.2.1
 
 			function close() {
 			}
