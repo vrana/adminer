@@ -40,7 +40,7 @@ if (!extension_loaded("xdebug")) {
 	for ($l=0; $l <= count($file); $l++) {
 		$line = $file[$l];
 		$color = "#C0FFC0"; // tested
-		switch ($coverage[realpath($filename)][$l+1]) {
+		switch ($coverage[realpath($filename)][$l+1] ?? null) {
 			case -1: // untested
 				$color = "#FFC0C0";
 				break;

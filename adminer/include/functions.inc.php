@@ -65,6 +65,16 @@ function escape_string($val) {
 	return substr(q($val), 1, -1);
 }
 
+/** Get a possibly missing item from a possibly missing array
+* @param array|null
+* @param string|int
+* @param mixed
+* @return mixed
+*/
+function idx($array, $key, $default = null) {
+	return ($array && array_key_exists($key, $array) ? $array[$key] : $default);
+}
+
 /** Remove non-digits from a string
 * @param string
 * @return string
@@ -302,12 +312,13 @@ function where($where, $fields = array()) {
 	foreach ((array) $where["where"] as $key => $val) {
 		$key = bracket_escape($key, 1); // 1 - back
 		$column = escape_key($key);
-		$field_type = $fields[$key]["type"];
+		$field = ($fields ? $fields[$key] : array());
+		$field_type = $field["type"];
 		$return[] = $column
 			. (JUSH == "sql" && $field_type == "json" ? " = CAST(" . q($val) . " AS JSON)"
 				: (JUSH == "sql" && is_numeric($val) && preg_match('~\.~', $val) ? " LIKE " . q($val) // LIKE because of floats but slow with ints
 				: (JUSH == "mssql" && strpos($field_type, "datetime") === false ? " LIKE " . q(preg_replace('~[_%[]~', '[\0]', $val)) // LIKE because of text but it does not work with datetime
-				: " = " . unconvert_field($fields[$key], q($val)))))
+				: " = " . unconvert_field($field, q($val)))))
 		; //! enum and set
 		if (JUSH == "sql" && preg_match('~char|text~', $field_type) && preg_match("~[^ -@]~", $val)) { // not just [a-z] to catch non-ASCII characters
 			$return[] = "$column = " . q($val) . " COLLATE " . charset($connection) . "_bin";

@@ -182,7 +182,7 @@ function get_nonce() {
 function page_messages($error) {
 	global $adminer;
 	$uri = preg_replace('~^[^?]*~', '', $_SERVER["REQUEST_URI"]);
-	$messages = $_SESSION["messages"][$uri];
+	$messages = idx($_SESSION["messages"], $uri);
 	if ($messages) {
 		echo "<div class='message'>" . implode("</div>\n<div class='message'>", $messages) . "</div>" . script("messagesPrint();");
 		unset($_SESSION["messages"][$uri]);

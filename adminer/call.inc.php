@@ -71,13 +71,13 @@ if ($in) {
 		$field = $routine["fields"][$key];
 		$name = $field["field"];
 		echo "<tr><th>" . $adminer->fieldName($field);
-		$value = $_POST["fields"][$name];
+		$value = idx($_POST["fields"], $name);
 		if ($value != "") {
 			if ($field["type"] == "set") {
 				$value = implode(",", $value);
 			}
 		}
-		input($field, $value, (string) $_POST["function"][$name]); // param name can be empty
+		input($field, $value, idx($_POST["function"], $name, "")); // param name can be empty
 		echo "\n";
 	}
 	echo "</table>\n";

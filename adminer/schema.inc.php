@@ -32,8 +32,8 @@ foreach (table_status('', true) as $table => $table_status) {
 	foreach ($adminer->foreignKeys($table) as $val) {
 		if (!$val["db"]) {
 			$left = $base_left;
-			if ($table_pos[$table][1] || $table_pos[$val["table"]][1]) {
-				$left = min(floatval($table_pos[$table][1]), floatval($table_pos[$val["table"]][1])) - 1;
+			if (idx($table_pos[$table], 1) || idx($table_pos[$val["table"]], 1)) {
+				$left = min(idx($table_pos[$table], 1, 0), idx($table_pos[$val["table"]], 1, 0)) - 1;
 			} else {
 				$base_left -= .1;
 			}
@@ -71,7 +71,7 @@ foreach ($schema as $name => $table) {
 
 	foreach ((array) $table["references"] as $target_name => $refs) {
 		foreach ($refs as $left => $ref) {
-			$left1 = $left - $table_pos[$name][1];
+			$left1 = $left - idx($table_pos[$name], 1);
 			$i = 0;
 			foreach ($ref[0] as $source) {
 				echo "\n<div class='references' title='" . h($target_name) . "' id='refs$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$source]["pos"] . "em; padding-top: .5em;'>"
@@ -83,7 +83,7 @@ foreach ($schema as $name => $table) {
 
 	foreach ((array) $referenced[$name] as $target_name => $refs) {
 		foreach ($refs as $left => $columns) {
-			$left1 = $left - $table_pos[$name][1];
+			$left1 = $left - idx($table_pos[$name], 1);
 			$i = 0;
 			foreach ($columns as $target) {
 				echo "\n<div class='references arrow' title='" . h($target_name) . "' id='refd$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$target]["pos"] . "em;'>"

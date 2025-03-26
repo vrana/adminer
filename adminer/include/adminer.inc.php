@@ -667,7 +667,7 @@ class Adminer {
 		global $driver;
 		restart_session();
 		$history = &get_session("queries");
-		if (!$history[$_GET["db"]]) {
+		if (!idx($history, $_GET["db"])) {
 			$history[$_GET["db"]] = array();
 		}
 		if (strlen($query) > 1e6) {

@@ -8,7 +8,7 @@ if (extension_loaded("xdebug") && file_exists(sys_get_temp_dir() . "/adminer.cov
 		$coverage = unserialize(file_get_contents($coverage_filename));
 		foreach (xdebug_get_code_coverage() as $filename => $lines) {
 			foreach ($lines as $l => $val) {
-				if (!$coverage[$filename][$l] || $val > 0) {
+				if (!idx($coverage[$filename], $l) || $val > 0) {
 					$coverage[$filename][$l] = $val;
 				}
 			}

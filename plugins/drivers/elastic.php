@@ -274,7 +274,7 @@ if (isset($_GET["elastic"])) {
 		function delete($table, $queryWhere, $limit = 0) {
 			//! use $limit
 			$ids = array();
-			if (isset($_GET["where"]["_id"]) && $_GET["where"]["_id"]) {
+			if (idx($_GET["where"], "_id")) {
 				$ids[] = $_GET["where"]["_id"];
 			}
 			if (isset($_POST['check'])) {

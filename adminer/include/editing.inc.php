@@ -353,7 +353,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 	foreach ($fields as $i => $field) {
 		$i++;
 		$orig = $field[($_POST ? "orig" : "field")];
-		$display = (isset($_POST["add"][$i-1]) || (isset($field["field"]) && !$_POST["drop_col"][$i])) && (support("drop_col") || $orig == "");
+		$display = (isset($_POST["add"][$i-1]) || (isset($field["field"]) && !idx($_POST["drop_col"], $i))) && (support("drop_col") || $orig == "");
 		echo "<tr" . ($display ? "" : " style='display: none;'") . ">\n";
 		echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", $driver->inout), $field["inout"]) : "") . "<th>";
 		if ($display) {

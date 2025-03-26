@@ -352,7 +352,7 @@ function process_input($field) {
 		return null;
 	}
 	$idf = bracket_escape($field["field"]);
-	$function = $_POST["function"][$idf];
+	$function = idx($_POST["function"], $idf);
 	$value = $_POST["fields"][$idf];
 	if ($field["type"] == "enum" || $driver->enumLength($field)) {
 		if ($value == -1) {
@@ -453,7 +453,7 @@ function edit_form($table, $fields, $row, $update) {
 		$autofocus = !$_POST;
 		foreach ($fields as $name => $field) {
 			echo "<tr><th>" . $adminer->fieldName($field);
-			$default = $_GET["set"][bracket_escape($name)];
+			$default = idx($_GET["set"], bracket_escape($name));
 			if ($default === null) {
 				$default = $field["default"];
 				if ($field["type"] == "bit" && preg_match("~^b'([01]*)'\$~", $default, $regs)) {
@@ -477,7 +477,7 @@ function edit_form($table, $fields, $row, $update) {
 				$value = $adminer->editVal($value, $field);
 			}
 			$function = ($_POST["save"]
-				? (string) $_POST["function"][$name]
+				? idx($_POST["function"], $name, "")
 				: ($update && preg_match('~^CURRENT_TIMESTAMP~i', $field["on_update"])
 					? "now"
 					: ($value === false ? null : ($value !== null ? '' : 'NULL'))
