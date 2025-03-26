@@ -122,7 +122,7 @@ if (isset($_GET["imap"])) {
 			function __construct($result) {
 				$this->result = $result;
 				$this->num_rows = count($result);
-				$this->fields = ($result ? array_keys(reset($result)) : array());
+				$this->fields = array_keys(idx($result, 0,  array()));
 			}
 
 			function fetch_assoc() {

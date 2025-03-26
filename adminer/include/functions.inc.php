@@ -66,6 +66,7 @@ function escape_string($val) {
 }
 
 /** Get a possibly missing item from a possibly missing array
+* idx($row, $key) is better than $row[$key] ?? null because it reports error for undefined $row
 * @param array|null
 * @param string|int
 * @param mixed
@@ -312,7 +313,7 @@ function where($where, $fields = array()) {
 	foreach ((array) $where["where"] as $key => $val) {
 		$key = bracket_escape($key, 1); // 1 - back
 		$column = escape_key($key);
-		$field = ($fields ? $fields[$key] : array());
+		$field = idx($fields, $key, array());
 		$field_type = $field["type"];
 		$return[] = $column
 			. (JUSH == "sql" && $field_type == "json" ? " = CAST(" . q($val) . " AS JSON)"

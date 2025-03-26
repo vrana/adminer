@@ -72,7 +72,7 @@ for (const el of qsa('textarea')) {
 			hintOptions: {
 				completeSingle: false,
 				tables: <?php echo json_encode($tables); ?>,
-				defaultTable: <?php echo json_encode($_GET["trigger"] ? $_GET["trigger"] : ($_GET["check"] ? $_GET["check"] : null)); ?>
+				defaultTable: <?php echo json_encode($_GET["trigger"] ? $_GET["trigger"] : ($_GET["check"] ?: null)); ?>
 			}
 		});
 		cm.setSize(width, height);

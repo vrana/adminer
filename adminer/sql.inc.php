@@ -230,7 +230,7 @@ if (!isset($_GET["import"])) {
 	} elseif ($_GET["history"] == "all") {
 		$q = $history;
 	} elseif ($_GET["history"] != "") {
-		$q = $history[$_GET["history"]][0];
+		$q = idx($history[$_GET["history"]], 0);
 	}
 	echo "<p>";
 	textarea("query", $q, 20);
