@@ -6,6 +6,10 @@ namespace Adminer;
 * @link http://www.coolcode.cn/?action=show&id=128
 */
 
+/**
+* @param int
+* @return int
+*/
 function int32($n) {
 	while ($n >= 2147483648) {
 		$n -= 4294967296;
@@ -16,6 +20,11 @@ function int32($n) {
 	return (int) $n;
 }
 
+/**
+* @param int[]
+* @param bool
+* @return string
+*/
 function long2str($v, $w) {
 	$s = '';
 	foreach ($v as $val) {
@@ -27,6 +36,11 @@ function long2str($v, $w) {
 	return $s;
 }
 
+/**
+* @param string
+* @param bool
+* @return int[]
+*/
 function str2long($s, $w) {
 	$v = array_values(unpack('V*', str_pad($s, 4 * ceil(strlen($s) / 4), "\0")));
 	if ($w) {
@@ -35,6 +49,13 @@ function str2long($s, $w) {
 	return $v;
 }
 
+/**
+* @param int
+* @param int
+* @param int
+* @param int
+* @return int
+*/
 function xxtea_mx($z, $y, $sum, $k) {
 	return int32((($z >> 5 & 0x7FFFFFF) ^ $y << 2) + (($y >> 3 & 0x1FFFFFFF) ^ $z << 4)) ^ int32(($sum ^ $y) + ($k ^ $z));
 }

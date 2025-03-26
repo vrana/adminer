@@ -61,16 +61,16 @@ if (!defined('Adminer\DRIVER')) {
 
 	} elseif (extension_loaded("mysql") && !((ini_bool("sql.safe_mode") || ini_bool("mysql.allow_local_infile")) && extension_loaded("pdo_mysql"))) {
 		class Db {
-			public
-				$extension = "MySQL", ///< @var string extension name
-				$flavor = '', ///< @var string different vendor with the same API, e.g. MariaDB, usually stays empty
-				$server_info, ///< @var string server version
-				$affected_rows, ///< @var int number of affected rows
-				$info, ///< @var string see https://php.net/mysql_info
-				$errno, ///< @var int last error code
-				$error ///< @var string last error message
-			;
-			private $link, $result;
+			/** @var string */ public $extension = "MySQL"; // extension name
+			/** @var string */ public $flavor = ''; // different vendor with the same API; e.g. MariaDB; usually stays empty
+			/** @var string */ public $server_info; // server version
+			/** @var int */ public $affected_rows; // number of affected rows
+			/** @var string */ public $info; // see https://php.net/mysql_info
+			/** @var int */ public $errno; // last error code
+			/** @var string */ public $error; // last error message
+
+			/** @var \mysqli */ private $link;
+			/** @var Result */ private $result;
 
 			/** Connect to server
 			* @param string
@@ -132,7 +132,7 @@ if (!defined('Adminer\DRIVER')) {
 			/** Send query
 			* @param string
 			* @param bool
-			* @return mixed bool or Result
+			* @return Result|bool
 			*/
 			function query($query, $unbuffered = false) {
 				$result = @($unbuffered ? mysql_unbuffered_query($query, $this->link) : mysql_query($query, $this->link)); // @ - mute mysql.trace_mode
@@ -152,7 +152,7 @@ if (!defined('Adminer\DRIVER')) {
 
 			/** Send query with more resultsets
 			* @param string
-			* @return bool
+			* @return Result|bool
 			*/
 			function multi_query($query) {
 				return $this->result = $this->query($query);
@@ -185,8 +185,9 @@ if (!defined('Adminer\DRIVER')) {
 		}
 
 		class Result {
-			public $num_rows; ///< @var int number of rows in the result
-			private $result, $offset = 0;
+			/** @var int */ public $num_rows; // number of rows in the result
+			/** @var resource */ private $result;
+			/** @var int */ private $offset = 0;
 
 			/** Constructor
 			* @param resource
@@ -286,13 +287,13 @@ if (!defined('Adminer\DRIVER')) {
 
 
 	class Driver extends SqlDriver {
-		static $possibleDrivers = array("MySQLi", "MySQL", "PDO_MySQL");
-		static $jush = "sql"; ///< @var string JUSH identifier
+		/** @var list<string> */ static $possibleDrivers = array("MySQLi", "MySQL", "PDO_MySQL");
+		/** @var string */ static $jush = "sql"; // JUSH identifier
 
-		public $unsigned = array("unsigned", "zerofill", "unsigned zerofill");
-		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL");
-		public $functions = array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper");
-		public $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
+		/** @var list<string> */ public $unsigned = array("unsigned", "zerofill", "unsigned zerofill");
+		/** @var list<string> */ public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL");
+		/** @var list<string> */ public $functions = array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper");
+		/** @var list<string> */ public $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 
 		function __construct($connection) {
 			parent::__construct($connection);

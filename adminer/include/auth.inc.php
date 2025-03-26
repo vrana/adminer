@@ -17,6 +17,7 @@ if ($_COOKIE["adminer_permanent"]) {
 	}
 }
 
+/** @return void */
 function add_invalid_login() {
 	global $adminer;
 	$base = get_temp_dir() . "/adminer.invalid";
@@ -50,6 +51,7 @@ function add_invalid_login() {
 	file_write_unlock($fp, serialize($invalids));
 }
 
+/** @return void */
 function check_invalid_login() {
 	global $adminer;
 	$invalids = array();
@@ -113,6 +115,7 @@ if ($auth) {
 	}
 }
 
+/** @return void */
 function unset_permanent() {
 	global $permanent;
 	foreach ($permanent as $key => $val) {

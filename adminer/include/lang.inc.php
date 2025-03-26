@@ -92,6 +92,7 @@ function lang($idf, $number = null) {
 	return vsprintf($format, $args);
 }
 
+/** @return void */
 function switch_lang() {
 	global $LANG, $langs;
 	echo "<form action='' method='post'>\n<div id='lang'>";

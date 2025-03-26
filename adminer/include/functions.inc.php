@@ -67,7 +67,7 @@ function escape_string($val) {
 
 /** Get a possibly missing item from a possibly missing array
 * idx($row, $key) is better than $row[$key] ?? null because PHP will report error for undefined $row
-* @param ?array
+* @param ?mixed[]
 * @param string|int
 * @param mixed
 * @return mixed
@@ -543,8 +543,8 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 }
 
 class Queries {
-	static $queries = array();
-	static $start;
+	/** @var string[] */ static $queries = array();
+	/** @var float */ static $start;
 }
 
 /** Execute and remember query
@@ -846,6 +846,7 @@ function file_open_lock($filename) {
 /** Write and unlock a file
 * @param resource
 * @param string
+* @return void
 */
 function file_write_unlock($fp, $data) {
 	rewind($fp);
@@ -856,6 +857,7 @@ function file_write_unlock($fp, $data) {
 
 /** Unlock and close a file
 * @param resource
+* @return void
 */
 function file_unlock($fp) {
 	flock($fp, LOCK_UN);
@@ -863,8 +865,8 @@ function file_unlock($fp) {
 }
 
 /** Get first element of an array
-* @param array
-* @return mixed or false if not found
+* @param mixed[]
+* @return mixed if not found
 */
 function first($array) {
 	// reset(f()) triggers a notice
@@ -1029,6 +1031,10 @@ function verify_token() {
 }
 
 // used in compiled version
+/**
+* @param string
+* @return string
+*/
 function lzw_decompress($binary) {
 	// convert binary string to codes
 	$dictionary_count = 256;

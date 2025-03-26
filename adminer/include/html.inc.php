@@ -197,7 +197,7 @@ function pagination($page, $current) {
 }
 
 /** Print hidden fields
-* @param array
+* @param mixed[]
 * @param list<string>
 * @param string
 * @return bool

@@ -1,9 +1,10 @@
 parameters:
-	level: 5
+	level: 6
+	
 	ignoreErrors:
 		# need to fix
 		- "~^Function Adminer\\\\fields_from_edit\\(\\) should return~" # Mongo and SimpleDB
-		- "~^Function Adminer\\\\explain\\(\\) should return Adminer\\\\Result~" # mysqli_result
+		- "~Adminer\\\\Result.*mysqli_result~" # mysqli_result
 		- "~expects array~" # different shape of array
 		
 		# not real problems
@@ -20,6 +21,7 @@ parameters:
 		- "~expects bool~" # truthy values
 		- "~fread expects int<1, max>, 100000~" # 1e6
 		- "~'strlen' given~" # used as a bool callback
+		- "~Adminer\\\\(Db|PdoDb).* type specified~" # duplicate methods
 
 		# it probably doesn't like $ar[$key] instead of isset($ar[$key]) and thinks that $ar[$key] is always set
 		- identifier: identical.alwaysFalse
@@ -37,9 +39,10 @@ parameters:
 		- identifier: while.alwaysTrue
 		- identifier: isset.offset
 		- identifier: deadCode.unreachable
-
+		
 	paths:
 		- adminer/
+	scanFiles:
 		- compile.php # compile_file()
 	excludePaths:
 		- adminer/designs.php
@@ -53,7 +56,7 @@ parameters:
 	phpVersion:
 		min: 70100
 		max: 80499
-	checkMissingCallableSignature: true
+		
 	typeAliases:
 		TableStatus: "array{Name:string, Engine?:?string, Comment?:string, Oid?:numeric-string, Rows?:?numeric-string, Collation?:string, Auto_increment?:?numeric-string, Data_length?:numeric-string, Index_length?:numeric-string, Data_free?:numeric-string, Create_options?:string, nspname?:string}"
 		Field: "array{field:?string, full_type:string, type:string, length:numeric-string, unsigned:string, default:?string, null:bool, auto_increment:bool, collation:string, privileges:int[], comment:string, primary:bool, generated:string, orig?:string, on_update:?string, on_delete?:string, inout?:string}"
@@ -61,5 +64,5 @@ parameters:
 		ForeignKey: "array{db:string, ns?:string, table:string, source:list<string>, target:list<string>, on_delete:string, on_update:string}"
 		Trigger: "array{Trigger?:string, Timing?:string, Event?:string, Of?:string, Type?:string, Statement?:string}"
 		RoutineField: "array{field:string, type:string, length:?string, unsigned:string, null:bool, full_type:string, inout:string, collation:string}"
-		Routine: "array{name?:string, fields:list<RoutineField>, comment:string, returns?:array, definition:string, language?:string}"
+		Routine: "array{name?:string, fields:list<RoutineField>, comment:string, returns?:array{type:string, length:string, unsigned:string, collation:string}, definition:string, language?:string}"
 		BackwardKey: "array{name:string, keys:string[][]}"

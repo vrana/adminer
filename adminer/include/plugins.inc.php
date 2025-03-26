@@ -2,7 +2,7 @@
 namespace Adminer;
 
 class Plugins extends Adminer {
-	public $plugins; ///< @var list<object> @visibility protected(set)
+	/** @var list<object> @visibility protected(set) */ public $plugins;
 
 	/** Register plugins
 	* @param ?list<object> object instances or null to autoload plugins from adminer-plugins/
@@ -42,10 +42,20 @@ class Plugins extends Adminer {
 		$this->plugins = $plugins;
 	}
 
+	/**
+	* @param literal-string
+	* @param mixed[]
+	* @return mixed
+	*/
 	private function callParent($function, $args) {
 		return call_user_func_array(array('parent', $function), $args);
 	}
 
+	/**
+	* @param literal-string
+	* @param mixed[]
+	* @return mixed
+	*/
 	private function applyPlugin($function, $params) {
 		$args = array();
 		foreach ($params as $key => $val) {
@@ -63,6 +73,11 @@ class Plugins extends Adminer {
 		return $this->callParent($function, $args);
 	}
 
+	/**
+	* @param literal-string
+	* @param mixed[]
+	* @return mixed
+	*/
 	private function appendPlugin($function, $args) {
 		$return = $this->callParent($function, $args);
 		foreach ($this->plugins as $plugin) {

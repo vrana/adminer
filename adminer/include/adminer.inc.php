@@ -4,8 +4,8 @@ namespace Adminer;
 // any method change in this file should be transferred to editor/include/adminer.inc.php and plugins.inc.php
 
 class Adminer {
-	public $operators; ///< @var list<string> operators used in select, null for all operators
-	public $error = ''; ///< @var string @visibility protected(set) string HTML
+	/** @var list<string> */ public $operators; // operators used in select, null for all operators
+	/** @var string @visibility protected(set) */ public $error = ''; // HTML
 
 	/** Name in title and navigation
 	* @return string HTML code
@@ -264,6 +264,7 @@ class Adminer {
 	}
 
 	/** Print HTML code just before the Execute button in SQL command
+	* @return void
 	*/
 	function sqlPrintAfter() {
 	}
@@ -689,7 +690,7 @@ class Adminer {
 
 	/** Print before edit form
 	* @param string
-	* @param array[]
+	* @param Field[]
 	* @param mixed
 	* @param bool
 	* @return void
@@ -1052,6 +1053,7 @@ class Adminer {
 
 	/** Set up syntax highlight for code and <textarea>
 	* @param TableStatus[] result of table_status('', true)
+	* @return void
 	*/
 	function syntaxHighlighting($tables) {
 		global $connection;
