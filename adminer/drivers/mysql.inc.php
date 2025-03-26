@@ -590,8 +590,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @return bool
 	*/
 	function fk_support($table_status) {
-		return preg_match('~InnoDB|IBMDB2I~i', $table_status["Engine"])
-			|| (preg_match('~NDB~i', $table_status["Engine"]) && min_version(5.6));
+		return preg_match('~InnoDB|IBMDB2I' . (min_version(5.6) ? '|NDB' : '') . '~i', $table_status["Engine"]);
 	}
 
 	/** Get information about fields
