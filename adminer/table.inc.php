@@ -4,7 +4,7 @@ namespace Adminer;
 $TABLE = $_GET["table"];
 $fields = fields($TABLE);
 if (!$fields) {
-	$error = error();
+	$error = error() ?: lang('No tables.');
 }
 $table_status = table_status1($TABLE);
 $name = $adminer->tableName($table_status);
