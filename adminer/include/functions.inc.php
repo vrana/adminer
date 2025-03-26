@@ -542,22 +542,21 @@ function query_redirect($query, $location, $message, $redirect = true, $execute 
 	return true;
 }
 
+class Queries {
+	static $queries = array();
+	static $start;
+}
+
 /** Execute and remember query
-* @param string or null to return remembered queries, end with ';' to use DELIMITER
-* @return Result or [$queries, $time] if $query = null
+* @param string end with ';' to use DELIMITER
+* @return Result
 */
 function queries($query) {
 	global $connection;
-	static $queries = array();
-	static $start;
-	if (!$start) {
-		$start = microtime(true);
+	if (!Queries::$start) {
+		Queries::$start = microtime(true);
 	}
-	if ($query === null) {
-		// return executed queries
-		return array(implode("\n", $queries), format_time($start));
-	}
-	$queries[] = (preg_match('~;$~', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query) . ";";
+	Queries::$queries[] = (preg_match('~;$~', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query) . ";";
 	return $connection->query($query);
 }
 
@@ -583,7 +582,8 @@ function apply_queries($query, $tables, $escape = 'Adminer\table') {
 * @return bool
 */
 function queries_redirect($location, $message, $redirect) {
-	list($queries, $time) = queries(null);
+	$queries = implode("\n", Queries::$queries);
+	$time = format_time(Queries::$start);
 	return query_redirect($queries, $location, $message, $redirect, false, !$redirect, $time);
 }
 
