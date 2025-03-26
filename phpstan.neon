@@ -1,29 +1,40 @@
 parameters:
 	level: 3
 	ignoreErrors:
-		# diagnose
-		- "~Adminer\\\\Db::~"
-		
 		# need to fix
 		- "~^Function Adminer\\\\fields_from_edit\\(\\) should return~" # Mongo and SimpleDB
-		
+		- "~^Function Adminer\\\\explain\\(\\) should return Adminer\\\\Result~" # mysqli_result
+
 		# not real problems
 		- identifier: include.fileNotFound # relative includes
 		- identifier: includeOnce.fileNotFound # ./adminer-plugins.php
 		- "~^Function (set_magic_quotes_runtime|mysql_)~" # PHP < 7 functions
-		- "~^Instantiated class Adminer\\w~" # no support for classes defined inside function
+		- "~^Function (foreign_keys_sql|recreate_table) not found~" # defined by other drivers
 		- "~^Variable \\$(adminer|connection|driver|drivers|error|HTTPS|LANG|langs|permanent|has_token|token|translations|VERSION) might not be defined~" # declared in bootstrap.inc.php
-		- "~^Comparison operation \"==\" between \\(array\\|float\\|int\\) and 1~" # false positive
+		- "~^Method Adminer\\\\Plugins::\\w+\\(\\) with return type void~" # we use the same pattern for all methods
 		- "~OCI-?Lob~" # maybe include stub?
 
+		# it probably doesn't like $ar[$key] instead of isset($ar[$key]) and thinks that $ar[$key] is always set
+		- "~^Comparison operation \"==\" between \\(array\\|float\\|int\\) and 1~"
+
 	paths:
-		- .
+		- adminer/
+		- compile.php # compile_file()
+	excludePaths:
+		- adminer/designs.php
+		- adminer/elastic.php
+		- adminer/sqlite.php
+		- adminer/drivers/mssql.inc.php
+		- adminer/drivers/oracle.inc.php
+		- adminer/drivers/pgsql.inc.php
+		- adminer/drivers/sqlite.inc.php
+
 	phpVersion:
 		min: 70100
 		max: 80499
 	checkMissingCallableSignature: true
 	typeAliases:
-		TableStatus: "array{Name:string, Engine:string, Comment:string, Oid?:numeric-string, Rows:numeric-string, Collation:string, Auto_increment:numeric-string, Data_length:numeric-string, Index_length:numeric-string, Data_free:numeric-string, Create_options?:string, nspname?:string}"
+		TableStatus: "array{Name:string, Engine?:?string, Comment?:string, Oid?:numeric-string, Rows?:numeric-string, Collation?:string, Auto_increment?:numeric-string, Data_length?:numeric-string, Index_length?:numeric-string, Data_free?:numeric-string, Create_options?:string, nspname?:string}"
 		Field: "array{field:string, full_type:string, type:string, length:numeric-string, unsigned:string, default:?string, null:bool, auto_increment:bool, on_update:string, collation:string, privileges:int[], comment:string, primary:bool, generated:string, orig?:string, on_delete?:string, inout?:string}"
 		Index: "array{type:string, columns:list<string>, lengths:list<numeric-string>, descs:list<?bool>}"
 		ForeignKey: "array{db:string, ns?:string, table:string, source:list<string>, target:list<string>, on_delete:string, on_update:string}"
