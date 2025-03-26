@@ -1,12 +1,13 @@
 parameters:
 	level: 6
-	
+	checkNullables: true # level 8
+
 	ignoreErrors:
 		# need to fix
 		- "~^Function Adminer\\\\fields_from_edit\\(\\) should return~" # Mongo and SimpleDB
 		- "~Adminer\\\\Result.*mysqli_result~" # mysqli_result
 		- "~expects array~" # different shape of array
-		
+
 		# not real problems
 		- identifier: include.fileNotFound # relative includes
 		- identifier: includeOnce.fileNotFound # ./adminer-plugins.php
@@ -39,12 +40,13 @@ parameters:
 		- identifier: while.alwaysTrue
 		- identifier: isset.offset
 		- identifier: deadCode.unreachable
-		
+
 	paths:
 		- adminer/
 	scanFiles:
 		- compile.php # compile_file()
 	excludePaths:
+		- adminer/adminer-plugins.php
 		- adminer/designs.php
 		- adminer/elastic.php
 		- adminer/sqlite.php
@@ -52,11 +54,11 @@ parameters:
 		- adminer/drivers/oracle.inc.php
 		- adminer/drivers/pgsql.inc.php
 		- adminer/drivers/sqlite.inc.php
-	
+
 	phpVersion:
 		min: 70100
 		max: 80499
-		
+
 	typeAliases:
 		TableStatus: "array{Name:string, Engine?:?string, Comment?:string, Oid?:numeric-string, Rows?:?numeric-string, Collation?:string, Auto_increment?:?numeric-string, Data_length?:numeric-string, Index_length?:numeric-string, Data_free?:numeric-string, Create_options?:string, nspname?:string}"
 		Field: "array{field:?string, full_type:string, type:string, length:numeric-string, unsigned:string, default:?string, null:bool, auto_increment:bool, collation:string, privileges:int[], comment:string, primary:bool, generated:string, orig?:string, on_update:?string, on_delete?:string, inout?:string}"

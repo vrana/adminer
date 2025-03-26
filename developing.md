@@ -81,11 +81,11 @@ All functions have doc-comments, but redundancy is avoided. For example, `Db` me
 
 Inline comments are useful for linking specifications but are generally avoided for explaining self-explanatory code. They start with a lowercase letter and do not end with a period, though I am not entirely happy with this convention.
 
-Comments starting with `//!` mean TODO.
+Comments starting with `//!` mean TODO. Comments starting with `//~` are meant for debugging.
 
 ## Error Handling
 
-Adminer strictly initializes all variables before use, which is [verified](https://github.com/vrana/php-initialized). However, Adminer relies on the default value of uninitialized array items. This approach leads to more readable code. Consider the following examples:
+Adminer strictly initializes all variables before use, which is [verified](/phpstan.neon). However, Adminer relies on the default value of uninitialized array items. This approach leads to more readable code. Consider the following examples:
 
 ```php
 // Adminer style
@@ -110,7 +110,7 @@ function idx($array, $key, $default = null) {
 }
 ```
 
-Although it would be possible to use such a function in Adminer, the code would still be less readable than the current approach. Using `isset` can introduce bugs, such as in this case: `isset($rw["name"])`. Here, I intended to check if `$row` contains `name`, but a typo in the variable name is silently ignored. `empty()` is even worse and should be avoided in most cases.
+Although it would be possible to use such a function in Adminer, the code would still be less readable than the current approach. Using `isset` can introduce bugs, such as in this case: `isset($rw["name"])`. Here, I intended to check if `$row` contains `name`, but a typo in the variable name is silently ignored. The same is true for `??`. `empty()` is even worse and should be avoided in most cases.
 
 Adminer uses `@` only where an error is unavoidable, such as when writing to files. Even if you check whether a file is writable, a race condition exists between the check and the actual write operation.
 
