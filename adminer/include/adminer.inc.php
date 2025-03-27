@@ -385,7 +385,7 @@ class Adminer {
 		$i = 0;
 		$select[""] = array();
 		foreach ($select as $key => $val) {
-			$val = $_GET["columns"][$key];
+			$val = idx($_GET["columns"], $key, array());
 			$column = select_input(
 				" name='columns[$i][col]'",
 				$columns,
@@ -879,7 +879,7 @@ class Adminer {
 						$values = array();
 						foreach ($row as $val) {
 							$field = $result->fetch_field();
-							if ($fields[$field->name]['generated']) {
+							if (idx($fields[$field->name], 'generated')) {
 								$generated[$field->name] = true;
 								continue;
 							}

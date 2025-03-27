@@ -233,7 +233,7 @@ if (support("partitioning")) {
 		echo '<tr>';
 		echo '<td><input name="partition_names[]" value="' . h($val) . '" autocapitalize="off">';
 		echo ($key == count($row["partition_names"]) - 1 ? script("qsl('input').oninput = partitionNameChange;") : '');
-		echo '<td><input name="partition_values[]" value="' . h($row["partition_values"][$key]) . '">';
+		echo '<td><input name="partition_values[]" value="' . h(idx($row["partition_values"], $key)) . '">';
 	}
 	echo "</table>\n</div></fieldset>\n";
 }
