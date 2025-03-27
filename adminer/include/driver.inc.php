@@ -79,7 +79,7 @@ abstract class SqlDriver {
 	* @param list<string> result of $adminer->selectSearchProcess()
 	* @param list<string> result of $adminer->selectColumnsProcess()[1]
 	* @param list<string> result of $adminer->selectOrderProcess()
-	* @param int result of $adminer->selectLimitProcess()
+	* @param int|numeric-string result of $adminer->selectLimitProcess()
 	* @param int index of page starting at zero
 	* @param bool whether to print the query
 	* @return Result|false

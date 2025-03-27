@@ -47,7 +47,7 @@ if (!defined('Adminer\DRIVER')) {
 
 			function result($query, $field = 0) {
 				$result = $this->query($query);
-				if (!$result) {
+				if (!is_object($result)) {
 					return false;
 				}
 				$row = $result->fetch_array();
@@ -60,24 +60,9 @@ if (!defined('Adminer\DRIVER')) {
 		}
 
 	} elseif (extension_loaded("mysql") && !((ini_bool("sql.safe_mode") || ini_bool("mysql.allow_local_infile")) && extension_loaded("pdo_mysql"))) {
-		class Db {
-			/** @var string */ public $extension = "MySQL"; // extension name
-			/** @var string */ public $flavor = ''; // different vendor with the same API; e.g. MariaDB; usually stays empty
-			/** @var string */ public $server_info; // server version
-			/** @var int */ public $affected_rows; // number of affected rows
-			/** @var string */ public $info; // see https://php.net/mysql_info
-			/** @var int */ public $errno; // last error code
-			/** @var string */ public $error; // last error message
+		class Db extends SqlDb {
+			/** @var resource */ private $link;
 
-			/** @var \mysqli */ private $link;
-			/** @var Result */ private $result;
-
-			/** Connect to server
-			* @param string
-			* @param string
-			* @param string
-			* @return bool
-			*/
 			function connect($server, $username, $password) {
 				if (ini_bool("mysql.allow_local_infile")) {
 					$this->error = lang('Disable %s or enable %s or %s extensions.', "'mysql.allow_local_infile'", "MySQLi", "PDO_MySQL");
@@ -113,27 +98,14 @@ if (!defined('Adminer\DRIVER')) {
 				return $this->query("SET NAMES $charset");
 			}
 
-			/** Quote string to use in SQL
-			* @param string
-			* @return string escaped string enclosed in '
-			*/
 			function quote($string) {
 				return "'" . mysql_real_escape_string($string, $this->link) . "'";
 			}
 
-			/** Select database
-			* @param string
-			* @return bool
-			*/
 			function select_db($database) {
 				return mysql_select_db($database, $this->link);
 			}
 
-			/** Send query
-			* @param string
-			* @param bool
-			* @return Result|bool
-			*/
 			function query($query, $unbuffered = false) {
 				$result = @($unbuffered ? mysql_unbuffered_query($query, $this->link) : mysql_query($query, $this->link)); // @ - mute mysql.trace_mode
 				$this->error = "";
@@ -148,39 +120,6 @@ if (!defined('Adminer\DRIVER')) {
 					return true;
 				}
 				return new Result($result);
-			}
-
-			/** Send query with more resultsets
-			* @param string
-			* @return Result|bool
-			*/
-			function multi_query($query) {
-				return $this->result = $this->query($query);
-			}
-
-			/** Get current resultset
-			* @return Result
-			*/
-			function store_result() {
-				return $this->result;
-			}
-
-			/** Fetch next resultset
-			* @return bool
-			*/
-			function next_result() {
-				// MySQL extension doesn't support multiple results
-				return false;
-			}
-
-			/** Get single field from result
-			* @param string
-			* @param int
-			* @return string
-			*/
-			function result($query, $field = 0) {
-				$result = $this->query($query);
-				return ($result ? $result->fetch_column($field) : false);
 			}
 		}
 
@@ -198,25 +137,17 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			/** Fetch next row as associative array
-			* @return string[]
+			* @return array<?string>
 			*/
 			function fetch_assoc() {
 				return mysql_fetch_assoc($this->result);
 			}
 
 			/** Fetch next row as numbered array
-			* @return list<string>
+			* @return list<?string>
 			*/
 			function fetch_row() {
 				return mysql_fetch_row($this->result);
-			}
-
-			/** Fetch a single column
-			* @param int
-			* @return string or false if there are no rows
-			*/
-			function fetch_column($field) {
-				return ($this->num_rows ? mysql_result($this->result, 0, $field) : false);
 			}
 
 			/** Fetch next field
@@ -268,7 +199,7 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			function set_charset($charset) {
-				$this->query("SET NAMES $charset"); // charset in DSN is ignored before PHP 5.3.6
+				return $this->query("SET NAMES $charset"); // charset in DSN is ignored before PHP 5.3.6
 			}
 
 			function select_db($database) {
@@ -1179,7 +1110,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Check whether a feature is supported
-	* @param string "check|comment|copy|database|descidx|drop_col|dump|event|indexes|kill|materializedview|partitioning|privileges|procedure|processlist|routine|scheme|sequence|status|table|trigger|type|variables|view|view_trigger"
+	* @param literal-string "check|comment|copy|database|descidx|drop_col|dump|event|indexes|kill|materializedview|partitioning|privileges|procedure|processlist|routine|scheme|sequence|status|table|trigger|type|variables|view|view_trigger"
 	* @return bool
 	*/
 	function support($feature) {

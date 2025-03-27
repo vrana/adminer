@@ -12,17 +12,22 @@ parameters:
 		- identifier: include.fileNotFound # relative includes
 		- identifier: includeOnce.fileNotFound # ./adminer-plugins.php
 		- "~^Function (set_magic_quotes_runtime|mysql_)~" # PHP < 7 functions
-		- "~^Function (foreign_keys_sql|recreate_table) not found~" # defined by other drivers
+		- "~an unknown class OCI-?Lob~" # this looks like PHPStan bug
 		- "~^Variable \\$(adminer|connection|driver|drivers|error|HTTPS|LANG|langs|permanent|has_token|token|translations|VERSION) might not be defined~" # declared in bootstrap.inc.php
 		- "~^Method Adminer\\\\Plugins::\\w+\\(\\) with return type void~" # we use the same pattern for all methods
 		- "~Call to function is_object\\(\\) with Adminer\\\\Db\\|string will always evaluate to false~" # is_object(Db) is true
 		- "~^Comparison operation \"==\" between \\(array\\|float\\|int\\) and 1~" # it thinks that $affected could be an array
-		- "~^Parameter #2 \\$newvalue of function ini_set expects string~" # it expects string|int|float|bool|null
+		- "~^Parameter #2 \\$newvalue of function ini_set expects string~" # it expects string|int|float|bool|null since PHP 8.1
 		- "~expects int, float given~" # this will work
 		- "~expects bool~" # truthy values
 		- "~fread expects int<1, max>, 100000~" # 1e6
 		- "~'strlen' given~" # used as a bool callback
-		- "~Adminer\\\\(Db|PdoDb).* type specified~" # duplicate methods
+
+		-
+			message: "~ type specified~" # duplicate functions and methods
+			paths:
+				- adminer/include/pdo.inc.php
+				- adminer/drivers/*
 
 		# it probably doesn't like $ar[$key] instead of isset($ar[$key]) and thinks that $ar[$key] is always set
 		- identifier: identical.alwaysFalse
@@ -42,18 +47,16 @@ parameters:
 		- identifier: deadCode.unreachable
 
 	paths:
+		- adminer/drivers/mysql.inc.php # other drivers inherit the annotations so we take them from here
 		- adminer/
 	scanFiles:
 		- compile.php # compile_file()
 	excludePaths:
+		- adminer/lang/
 		- adminer/adminer-plugins.php
 		- adminer/designs.php
 		- adminer/elastic.php
 		- adminer/sqlite.php
-		- adminer/drivers/mssql.inc.php
-		- adminer/drivers/oracle.inc.php
-		- adminer/drivers/pgsql.inc.php
-		- adminer/drivers/sqlite.inc.php
 
 	phpVersion:
 		min: 70100

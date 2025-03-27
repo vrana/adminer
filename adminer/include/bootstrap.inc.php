@@ -70,6 +70,7 @@ if (function_exists("get_magic_quotes_runtime") && get_magic_quotes_runtime()) {
 
 include "../adminer/include/lang.inc.php";
 include "../adminer/lang/$LANG.inc.php";
+include "../adminer/include/db.inc.php";
 include "../adminer/include/pdo.inc.php";
 include "../adminer/include/driver.inc.php";
 include "../adminer/drivers/sqlite.inc.php";

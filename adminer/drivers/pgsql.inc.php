@@ -6,9 +6,9 @@ $drivers["pgsql"] = "PostgreSQL";
 if (isset($_GET["pgsql"])) {
 	define('Adminer\DRIVER', "pgsql");
 	if (extension_loaded("pgsql") && $_GET["ext"] != "pdo") {
-		class Db {
-			public $extension = "PgSQL", $flavor = '', $server_info, $affected_rows, $error, $timeout;
-			private $link, $result, $string, $database = true;
+		class Db extends SqlDb {
+			public $extension = "PgSQL", $timeout;
+			private $link, $string, $database = true;
 
 			function _error($errno, $error) {
 				if (ini_bool("html_errors")) {
@@ -86,24 +86,6 @@ if (isset($_GET["pgsql"])) {
 				return $return;
 			}
 
-			function multi_query($query) {
-				return $this->result = $this->query($query);
-			}
-
-			function store_result() {
-				return $this->result;
-			}
-
-			function next_result() {
-				// PgSQL extension doesn't support multiple results
-				return false;
-			}
-
-			function result($query, $field = 0) {
-				$result = $this->query($query);
-				return ($result ? $result->fetch_column($field) : false);
-			}
-
 			function warnings() {
 				return h(pg_last_notice($this->link)); // second parameter is available since PHP 7.1.0
 			}
@@ -124,10 +106,6 @@ if (isset($_GET["pgsql"])) {
 
 			function fetch_row() {
 				return pg_fetch_row($this->result);
-			}
-
-			function fetch_column($field) {
-				return ($this->num_rows ? pg_fetch_result($this->result, 0, $field) : false);
 			}
 
 			function fetch_field() {
@@ -176,7 +154,9 @@ if (isset($_GET["pgsql"])) {
 				return $return;
 			}
 
-			// warnings() not implemented in PDO_PgSQL as of PHP 7.2.1
+			function warnings() {
+				// not implemented in PDO_PgSQL as of PHP 7.2.1
+			}
 
 			function close() {
 			}

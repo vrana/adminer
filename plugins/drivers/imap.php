@@ -18,10 +18,8 @@ if (isset($_GET["imap"])) {
 	define('Adminer\DRIVER', "imap");
 
 	if (extension_loaded("imap")) {
-		class Db {
+		class Db extends SqlDb {
 			public $extension = "IMAP";
-			public $flavor = '';
-			public $error;
 			public $server_info = "?"; // imap_mailboxmsginfo() or imap_check() don't return anything useful
 			private $mailbox;
 			private $imap;

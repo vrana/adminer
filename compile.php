@@ -281,6 +281,7 @@ if ($_SERVER["argv"][1]) {
 	exit(1);
 }
 
+include __DIR__ . "/adminer/include/db.inc.php";
 include __DIR__ . "/adminer/include/pdo.inc.php";
 include __DIR__ . "/adminer/include/driver.inc.php";
 $connection = (object) array('flavor' => ''); // used in support()

@@ -7,10 +7,10 @@ if (isset($_GET["clickhouse"])) {
 	define('Adminer\DRIVER', "clickhouse");
 
 	if (ini_bool('allow_url_fopen')) {
-		class Db {
-			public $extension = "JSON", $flavor = '', $server_info, $errno, $error;
+		class Db extends SqlDb {
+			public $extension = "JSON";
 			public $_db = 'default';
-			private $result, $url;
+			private $url;
 
 			function rootQuery($db, $query) {
 				$file = @file_get_contents("$this->url/?database=$db", false, stream_context_create(array('http' => array(
@@ -52,7 +52,7 @@ if (isset($_GET["clickhouse"])) {
 				return (bool) preg_match('~^(select|show)~i', $query);
 			}
 
-			function query($query) {
+			function query($query, $unbuffered = false) {
 				return $this->rootQuery($this->_db, $query);
 			}
 
@@ -70,23 +70,6 @@ if (isset($_GET["clickhouse"])) {
 
 			function quote($string) {
 				return "'" . addcslashes($string, "\\'") . "'";
-			}
-
-			function multi_query($query) {
-				return $this->result = $this->query($query);
-			}
-
-			function store_result() {
-				return $this->result;
-			}
-
-			function next_result() {
-				return false;
-			}
-
-			function result($query, $field = 0) {
-				$result = $this->query($query);
-				return $result['data'];
 			}
 		}
 

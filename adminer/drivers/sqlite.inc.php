@@ -7,17 +7,18 @@ if (isset($_GET["sqlite"])) {
 	define('Adminer\DRIVER', "sqlite");
 	if (class_exists("SQLite3") && $_GET["ext"] != "pdo") {
 
-		class SqliteDb {
-			public $extension = "SQLite3", $flavor = '', $server_info, $affected_rows, $errno, $error;
-			private $link, $result;
+		abstract class SqliteDb extends SqlDb {
+			public $extension = "SQLite3";
+			private $link;
 
-			function __construct($filename) {
+			function connect($filename, $username = '', $password = '') {
 				$this->link = new \SQLite3($filename);
 				$version = $this->link->version();
 				$this->server_info = $version["versionString"];
+				return true;
 			}
 
-			function query($query) {
+			function query($query, $unbuffered = false) {
 				$result = @$this->link->query($query);
 				$this->error = "";
 				if (!$result) {
@@ -36,28 +37,6 @@ if (isset($_GET["sqlite"])) {
 					? "'" . $this->link->escapeString($string) . "'"
 					: "x'" . first(unpack('H*', $string)) . "'"
 				);
-			}
-
-
-			function multi_query($query) {
-				return $this->result = $this->query($query);
-			}
-
-			function store_result() {
-				return $this->result;
-			}
-
-			function next_result() {
-				return false;
-			}
-
-			function result($query, $field = 0) {
-				$result = $this->query($query);
-				if (!is_object($result)) {
-					return false;
-				}
-				$row = $result->fetch_row();
-				return $row ? $row[$field] : false;
 			}
 		}
 
@@ -93,15 +72,14 @@ if (isset($_GET["sqlite"])) {
 		}
 
 	} elseif (extension_loaded("pdo_sqlite")) {
-		class SqliteDb extends PdoDb {
+		abstract class SqliteDb extends PdoDb {
 			public $extension = "PDO_SQLite";
 
-			function __construct($filename) {
+			function connect($filename, $username = '', $password = '') {
 				$this->dsn(DRIVER . ":$filename", "", "");
-			}
-
-			function select_db($db) {
-				return false;
+				$this->query("PRAGMA foreign_keys = 1");
+				$this->query("PRAGMA busy_timeout = 500");
+				return true;
 			}
 		}
 
@@ -109,17 +87,16 @@ if (isset($_GET["sqlite"])) {
 
 	if (class_exists('Adminer\SqliteDb')) {
 		class Db extends SqliteDb {
-			function __construct() {
-				parent::__construct(":memory:");
+			function connect($filename, $username = '', $password = '') {
+				parent::connect($filename);
 				$this->query("PRAGMA foreign_keys = 1");
+				$this->query("PRAGMA busy_timeout = 500");
+				return true;
 			}
 
 			function select_db($filename) {
-				if (is_readable($filename) && $this->query("ATTACH " . $this->quote(preg_match("~(^[/\\\\]|:)~", $filename) ? $filename : dirname($_SERVER["SCRIPT_FILENAME"]) . "/$filename") . " AS a")) { // is_readable - SQLite 3
-					parent::__construct($filename);
-					$this->query("PRAGMA foreign_keys = 1");
-					$this->query("PRAGMA busy_timeout = 500");
-					return true;
+				if (is_readable($filename) && $this->query("ATTACH " . $this->quote(preg_match("~(^[/\\\\]|:)~", $filename) ? $filename : dirname($_SERVER["SCRIPT_FILENAME"]) . "/$filename") . " AS a")) {
+					return self::connect($filename);
 				}
 				return false;
 			}
@@ -197,7 +174,9 @@ if (isset($_GET["sqlite"])) {
 		if ($password != "") {
 			return lang('Database does not support password.');
 		}
-		return new Db;
+		$connection = new Db;
+		$connection->connect(":memory:", "", "");
+		return $connection;
 	}
 
 	function get_databases($flush) {
@@ -392,7 +371,8 @@ if (isset($_GET["sqlite"])) {
 			return false;
 		}
 		try {
-			$link = new SqliteDb($db);
+			$link = new Db();
+			$link->connect($db);
 		} catch (\Exception $ex) {
 			$connection->error = $ex->getMessage();
 			return false;
@@ -476,7 +456,7 @@ if (isset($_GET["sqlite"])) {
 	* @param string new name
 	* @param list<list<string>> [process_field()], empty to preserve
 	* @param string[] [$original => idf_escape($new_column)], empty to preserve
-	* @param string [format_foreign_key()], empty to preserve
+	* @param string[] [format_foreign_key()], empty to preserve
 	* @param int set auto_increment to this value, 0 to preserve
 	* @param list<array{string, string, list<string>|'DROP'}> [[$type, $name, $columns]], empty to preserve
 	* @param string CHECK constraint to drop

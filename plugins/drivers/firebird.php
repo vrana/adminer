@@ -11,17 +11,8 @@ if (isset($_GET["firebird"])) {
 	define('Adminer\DRIVER', "firebird");
 
 	if (extension_loaded("interbase")) {
-		class Db {
-			public
-				$extension = "Firebird",
-				$flavor = '',
-				$server_info,
-				$affected_rows,
-				$errno,
-				$error,
-				$_link
-			;
-			private $result;
+		class Db extends SqlDb {
+			public $extension = "Firebird", $_link;
 
 			function connect($server, $username, $password) {
 				$this->_link = ibase_connect($server, $username, $password);
@@ -45,7 +36,7 @@ if (isset($_GET["firebird"])) {
 			}
 
 			function query($query, $unbuffered = false) {
-				$result = ibase_query($query, $this->_link);
+				$result = ibase_query($this->_link, $query);
 				if (!$result) {
 					$this->errno = ibase_errcode();
 					$this->error = ibase_errmsg();
@@ -57,27 +48,6 @@ if (isset($_GET["firebird"])) {
 					return true;
 				}
 				return new Result($result);
-			}
-
-			function multi_query($query) {
-				return $this->result = $this->query($query);
-			}
-
-			function store_result() {
-				return $this->result;
-			}
-
-			function next_result() {
-				return false;
-			}
-
-			function result($query, $field = 0) {
-				$result = $this->query($query);
-				if (!$result || !$result->num_rows) {
-					return false;
-				}
-				$row = $result->fetch_row();
-				return $row[$field];
 			}
 		}
 

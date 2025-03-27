@@ -7,9 +7,8 @@ if (isset($_GET["simpledb"])) {
 	define('Adminer\DRIVER', "simpledb");
 
 	if (class_exists('SimpleXMLElement') && ini_bool('allow_url_fopen')) {
-		class Db {
-			public $extension = "SimpleXML", $flavor = '', $server_info = '2009-04-15', $error, $timeout, $next, $affected_rows;
-			private $result;
+		class Db extends SqlDb {
+			public $extension = "SimpleXML", $server_info = '2009-04-15', $timeout, $next;
 
 			function select_db($database) {
 				return ($database == "domain");
@@ -36,18 +35,6 @@ if (isset($_GET["simpledb"])) {
 					))));
 				}
 				return new Result($result);
-			}
-
-			function multi_query($query) {
-				return $this->result = $this->query($query);
-			}
-
-			function store_result() {
-				return $this->result;
-			}
-
-			function next_result() {
-				return false;
 			}
 
 			function quote($string) {

@@ -8,8 +8,8 @@ if (isset($_GET["elastic"])) {
 
 	if (ini_bool('allow_url_fopen')) {
 
-		class Db {
-			public $extension = "JSON", $flavor = '', $server_info, $errno, $error;
+		class Db extends SqlDb {
+			public $extension = "JSON";
 			private $url;
 
 			/**
@@ -65,7 +65,7 @@ if (isset($_GET["elastic"])) {
 
 					$where = explode(" AND ", $matches[2]);
 
-					return $driver->select($matches[1], array("*"), $where, null, array(), $matches[3]);
+					return $driver->select($matches[1], array("*"), $where, array(), array(), $matches[3]);
 				}
 
 				return $this->rootQuery($path, $content, $method);

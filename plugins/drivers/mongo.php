@@ -7,8 +7,8 @@ if (isset($_GET["mongo"])) {
 	define('Adminer\DRIVER', "mongo");
 
 	if (class_exists('MongoDB\Driver\Manager')) {
-		class Db {
-			public $extension = "MongoDB", $flavor = '', $server_info = MONGODB_VERSION, $affected_rows, $error, $last_id;
+		class Db extends SqlDb {
+			public $extension = "MongoDB", $server_info = MONGODB_VERSION, $last_id;
 			/** @var \MongoDB\Driver\Manager */
 			public $_link;
 			public $_db, $_db_name;
@@ -42,7 +42,7 @@ if (isset($_GET["mongo"])) {
 				}
 			}
 
-			function query($query) {
+			function query($query, $unbuffered = false) {
 				return false;
 			}
 
@@ -170,7 +170,7 @@ if (isset($_GET["mongo"])) {
 			$driver = driver();
 			$fields = fields_from_edit();
 			if (!$fields) {
-				$result = $driver->select($table, array("*"), null, null, array(), 10);
+				$result = $driver->select($table, array("*"), array(), array(), array(), 10);
 				if ($result) {
 					while ($row = $result->fetch_assoc()) {
 						foreach ($row as $key => $val) {

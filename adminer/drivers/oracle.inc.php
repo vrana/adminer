@@ -6,10 +6,10 @@ $drivers["oracle"] = "Oracle (beta)";
 if (isset($_GET["oracle"])) {
 	define('Adminer\DRIVER', "oracle");
 	if (extension_loaded("oci8") && $_GET["ext"] != "pdo") {
-		class Db {
-			public $extension = "oci8", $flavor = '', $server_info, $affected_rows, $errno, $error;
+		class Db extends SqlDb {
+			public $extension = "oci8";
 			public $_current_db;
-			private $link, $result;
+			private $link;
 
 			function _error($errno, $error) {
 				if (ini_bool("html_errors")) {
@@ -60,23 +60,6 @@ if (isset($_GET["oracle"])) {
 				}
 				return $return;
 			}
-
-			function multi_query($query) {
-				return $this->result = $this->query($query);
-			}
-
-			function store_result() {
-				return $this->result;
-			}
-
-			function next_result() {
-				return false;
-			}
-
-			function result($query, $field = 0) {
-				$result = $this->query($query);
-				return (is_object($result) ? $result->fetch_column($field) : false);
-			}
 		}
 
 		class Result {
@@ -102,10 +85,6 @@ if (isset($_GET["oracle"])) {
 
 			function fetch_row() {
 				return $this->convert(oci_fetch_row($this->result));
-			}
-
-			function fetch_column($field) {
-				return (oci_fetch($this->result) ? oci_result($this->result, $field + 1) : false);
 			}
 
 			function fetch_field() {

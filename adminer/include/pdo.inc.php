@@ -3,14 +3,19 @@ namespace Adminer;
 
 // PDO can be used in several database drivers
 if (extension_loaded('pdo')) {
-	abstract class PdoDb {
-		public $flavor = '', $server_info, $affected_rows, $errno, $error;
-		protected $pdo;
-		private $result;
+	abstract class PdoDb extends SqlDb {
+		/** @var \PDO */ protected $pdo;
 
+		/** Connect to server using DSN
+		* @param string
+		* @param string
+		* @param string
+		* @param mixed[]
+		* @return void
+		*/
 		function dsn($dsn, $username, $password, $options = array()) {
 			$options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_SILENT;
-			$options[\PDO::ATTR_STATEMENT_CLASS] = array('Adminer\PdoDbStatement');
+			$options[\PDO::ATTR_STATEMENT_CLASS] = array('Adminer\PdoResult');
 			try {
 				$this->pdo = new \PDO($dsn, $username, $password, $options);
 			} catch (\Exception $ex) {
@@ -19,13 +24,12 @@ if (extension_loaded('pdo')) {
 			$this->server_info = @$this->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION);
 		}
 
-		abstract function select_db($database);
-
 		function quote($string) {
 			return $this->pdo->quote($string);
 		}
 
 		function query($query, $unbuffered = false) {
+			/** @var Result|bool */
 			$result = $this->pdo->query($query);
 			$this->error = "";
 			if (!$result) {
@@ -39,13 +43,9 @@ if (extension_loaded('pdo')) {
 			return $result;
 		}
 
-		function multi_query($query) {
-			return $this->result = $this->query($query);
-		}
-
 		function store_result($result = null) {
 			if (!$result) {
-				$result = $this->result;
+				$result = $this->multi;
 				if (!$result) {
 					return false;
 				}
@@ -59,24 +59,15 @@ if (extension_loaded('pdo')) {
 		}
 
 		function next_result() {
-			if (!$this->result) {
+			if (!is_object($this->multi)) {
 				return false;
 			}
-			$this->result->_offset = 0;
-			return @$this->result->nextRowset(); // @ - PDO_PgSQL doesn't support it
-		}
-
-		function result($query, $field = 0) {
-			$result = $this->query($query);
-			if (!$result) {
-				return false;
-			}
-			$row = $result->fetch();
-			return $row ? $row[$field] : false;
+			$this->multi->_offset = 0;
+			return @$this->multi->nextRowset(); // @ - PDO_PgSQL doesn't support it
 		}
 	}
 
-	class PdoDbStatement extends \PDOStatement {
+	class PdoResult extends \PDOStatement {
 		public $_offset = 0, $num_rows;
 
 		function fetch_assoc() {
@@ -85,10 +76,6 @@ if (extension_loaded('pdo')) {
 
 		function fetch_row() {
 			return $this->fetch(\PDO::FETCH_NUM);
-		}
-
-		function fetch_column($field) {
-			return $this->fetchColumn($field);
 		}
 
 		function fetch_field() {
