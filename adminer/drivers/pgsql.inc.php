@@ -728,7 +728,7 @@ ORDER BY event_manipulation DESC") as $row
 		$rows = get_rows('SELECT routine_definition AS definition, LOWER(external_language) AS language, *
 FROM information_schema.routines
 WHERE routine_schema = current_schema() AND specific_name = ' . q($name));
-		$return = $rows[0];
+		$return = idx($rows, 0, array());
 		$return["returns"] = array("type" => $return["type_udt_name"]);
 		$return["fields"] = get_rows('SELECT parameter_name AS field, data_type AS type, character_maximum_length AS length, parameter_mode AS inout
 FROM information_schema.parameters
