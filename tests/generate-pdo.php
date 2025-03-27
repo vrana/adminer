@@ -3,6 +3,7 @@
 // Katalon Recorder has global variables: https://docs.katalon.com/katalon-platform/plugins-and-add-ons/katalon-recorder-extension/get-your-job-done/automate-scenarios/global-variables-in-katalon-recorder
 // It's possible to use them in URL in Katalon Studio but apparently not in Recorder: https://forum.katalon.com/t/45673/2
 
+chdir(__DIR__);
 foreach (glob("*.html") as $filename) {
 	if (!preg_match('~^pdo-~', $filename)) {
 		$file = file_get_contents($filename);
