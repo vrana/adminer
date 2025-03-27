@@ -247,7 +247,7 @@ function enum_input($type, $attrs, $field, $value, $empty = null) {
 }
 
 /** Print edit input field
-* @param Field one field from fields()
+* @param Field|RoutineField one field from fields()
 * @param mixed
 * @param string
 * @param bool
@@ -343,7 +343,7 @@ function input($field, $value, $function, $autofocus = false) {
 }
 
 /** Process edit input field
-* @param Field one field from fields()
+* @param Field|RoutineField one field from fields()
 * @return mixed false to leave the original value
 */
 function process_input($field) {

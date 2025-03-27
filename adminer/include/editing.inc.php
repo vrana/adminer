@@ -102,7 +102,7 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 
 /** Get referencable tables with single column primary key except self
 * @param string
-* @return Field[] [$table_name => $field]
+* @return array<string, Field> [$table_name => $field]
 */
 function referencable_primary($self) {
 	$return = array(); // table_name => field
@@ -180,7 +180,7 @@ function json_row($key, $val = null) {
 * @param string
 * @param Field
 * @param list<string>
-* @param Field[] returned by referencable_primary()
+* @param string[]
 * @param list<string> extra types to prepend
 * @return void
 */
@@ -246,7 +246,7 @@ function process_length($length) {
 }
 
 /** Create SQL string from field type
-* @param Field
+* @param FieldType
 * @param string
 * @return string
 */
@@ -317,10 +317,10 @@ function type_class($type) {
 }
 
 /** Print table interior for fields editing
-* @param Field[]
+* @param (Field|RoutineField)[]
 * @param list<string>
-* @param string TABLE or PROCEDURE
-* @param Field[] returned by referencable_primary()
+* @param 'TABLE'|'PROCEDURE'
+* @param string[]
 * @return void
 */
 function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = array()) {
@@ -502,7 +502,7 @@ function create_trigger($on, $row) {
 }
 
 /** Generate SQL query for creating routine
-* @param string "PROCEDURE" or "FUNCTION"
+* @param 'PROCEDURE'|'FUNCTION'
 * @param Routine result of routine()
 * @return string
 */

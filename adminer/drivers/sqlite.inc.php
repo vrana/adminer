@@ -521,23 +521,24 @@ if (isset($_GET["sqlite"])) {
 			}
 			queries("BEGIN");
 		}
-		foreach ($fields as $key => $field) {
+		$changes = array();
+		foreach ($fields as $field) {
 			if (preg_match('~GENERATED~', $field[3])) {
 				unset($originals[array_search($field[0], $originals)]);
 			}
-			$fields[$key] = "  " . implode($field);
+			$changes[] = "  " . implode($field);
 		}
-		$fields = array_merge($fields, array_filter($foreign));
+		$changes = array_merge($changes, array_filter($foreign));
 		foreach ($driver->checkConstraints($table) as $check) {
 			if ($check != $drop_check) {
-				$fields[] = "  CHECK ($check)";
+				$changes[] = "  CHECK ($check)";
 			}
 		}
 		if ($add_check) {
-			$fields[] = "  CHECK ($add_check)";
+			$changes[] = "  CHECK ($add_check)";
 		}
 		$temp_name = ($table == $name ? "adminer_$name" : $name);
-		if (!queries("CREATE TABLE " . table($temp_name) . " (\n" . implode(",\n", $fields) . "\n)")) {
+		if (!queries("CREATE TABLE " . table($temp_name) . " (\n" . implode(",\n", $changes) . "\n)")) {
 			// implicit ROLLBACK to not overwrite $connection->error
 			return false;
 		}

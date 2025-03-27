@@ -844,7 +844,7 @@ AND typelem = 0"
 		foreach ($fields as $field) {
 			$part = idf_escape($field['field']) . ' ' . $field['full_type']
 				. default_value($field)
-				. ($field['attnotnull'] ? " NOT NULL" : "");
+				. ($field['null'] ? "" : " NOT NULL");
 			$return_parts[] = $part;
 
 			// sequences for fields

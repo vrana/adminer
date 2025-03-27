@@ -354,7 +354,7 @@ function where_link($i, $column, $value, $operator = "=") {
 }
 
 /** Get select clause for convertible fields
-* @param string[]
+* @param mixed[] only keys are used
 * @param Field[]
 * @param list<string>
 * @return string
@@ -436,7 +436,7 @@ function stop_session($force = false) {
 	$use_cookies = ini_bool("session.use_cookies");
 	if (!$use_cookies || $force) {
 		session_write_close(); // improves concurrency if a user opens several pages at once, may be restarted later
-		if ($use_cookies && @ini_set("session.use_cookies", false) === false) { // @ - may be disabled
+		if ($use_cookies && @ini_set("session.use_cookies", '0') === false) { // @ - may be disabled
 			session_start();
 		}
 	}
@@ -999,9 +999,12 @@ function slow_query($query) {
 	$timeout = $adminer->queryTimeout();
 	$slow_query = $driver->slowQuery($query, $timeout);
 	$connection2 = null;
-	if (!$slow_query && support("kill") && is_object($connection2 = connect($adminer->credentials())) && ($db == "" || $connection2->select_db($db))) {
-		$kill = $connection2->result(connection_id()); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
-		echo script("const timeout = setTimeout(() => { ajax('" . js_escape(ME) . "script=kill', function () {}, 'kill=$kill&token=$token'); }, 1000 * $timeout);");
+	if (!$slow_query && support("kill")) {
+		$connection2 = connect($adminer->credentials());
+		if (is_object($connection2) && ($db == "" || $connection2->select_db($db))) {
+			$kill = $connection2->result(connection_id()); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
+			echo script("const timeout = setTimeout(() => { ajax('" . js_escape(ME) . "script=kill', function () {}, 'kill=$kill&token=$token'); }, 1000 * $timeout);");
+		}
 	}
 	ob_flush();
 	flush();

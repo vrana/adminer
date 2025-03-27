@@ -6,18 +6,14 @@ parameters:
 		# need to fix
 		- "~^Function Adminer\\\\fields_from_edit\\(\\) should return~" # Mongo and SimpleDB
 		- "~Adminer\\\\Result.*mysqli_result~" # mysqli_result
-		- "~expects array~" # different shape of array
 
 		# not real problems
-		- identifier: include.fileNotFound # relative includes
+		- identifier: include.fileNotFound # includes in include/ relative from index.php
 		- identifier: includeOnce.fileNotFound # ./adminer-plugins.php
 		- "~^Function (set_magic_quotes_runtime|mysql_)~" # PHP < 7 functions
 		- "~an unknown class OCI-?Lob~" # this looks like PHPStan bug
 		- "~^Variable \\$(adminer|connection|driver|drivers|error|HTTPS|LANG|langs|permanent|has_token|token|translations|VERSION) might not be defined~" # declared in bootstrap.inc.php
 		- "~^Method Adminer\\\\Plugins::\\w+\\(\\) with return type void~" # we use the same pattern for all methods
-		- "~Call to function is_object\\(\\) with Adminer\\\\Db\\|string will always evaluate to false~" # is_object(Db) is true
-		- "~^Comparison operation \"==\" between \\(array\\|float\\|int\\) and 1~" # it thinks that $affected could be an array
-		- "~^Parameter #2 \\$newvalue of function ini_set expects string~" # it expects string|int|float|bool|null since PHP 8.1
 		- "~expects int, float given~" # this will work
 		- "~expects bool~" # truthy values
 		- "~fread expects int<1, max>, 100000~" # 1e6
@@ -28,6 +24,10 @@ parameters:
 			paths:
 				- adminer/include/pdo.inc.php
 				- adminer/drivers/*
+				
+		-
+			message: "~ to an undefined ~" # PostgreSQL has this in its version of Db
+			path: adminer/drivers/pgsql.inc.php
 
 		# it probably doesn't like $ar[$key] instead of isset($ar[$key]) and thinks that $ar[$key] is always set
 		- identifier: identical.alwaysFalse
@@ -64,10 +64,11 @@ parameters:
 
 	typeAliases:
 		TableStatus: "array{Name:string, Engine?:?string, Comment?:string, Oid?:numeric-string, Rows?:?numeric-string, Collation?:string, Auto_increment?:?numeric-string, Data_length?:numeric-string, Index_length?:numeric-string, Data_free?:numeric-string, Create_options?:string, nspname?:string}"
-		Field: "array{field:?string, full_type:string, type:string, length:numeric-string, unsigned:string, default:?string, null:bool, auto_increment:bool, collation:string, privileges:int[], comment:string, primary:bool, generated:string, orig?:string, on_update:?string, on_delete?:string, inout?:string}"
+		Field: "array{field?:string, full_type:string, type:string, length:numeric-string, unsigned:string, default?:string, null:bool, auto_increment:bool, collation:string, privileges:int[], comment:string, primary:bool, generated:string, orig?:string, on_update?:string, on_delete?:string, default_constraint?: string}"
+		FieldType: "array{type:string, length:numeric-string, unsigned:string, collation:string}" # subset of RoutineField and Field
+		RoutineField: "array{field:string, type:string, length:numeric-string, unsigned:string, null:bool, full_type:string, collation:string, inout?:string}"
 		Index: "array{type:string, columns:list<string>, lengths:list<numeric-string>, descs:list<?bool>}"
-		ForeignKey: "array{db:string, ns?:string, table:string, source:list<string>, target:list<string>, on_delete:string, on_update:string}"
+		ForeignKey: "array{db?:string, ns?:string, table:string, source:list<string>, target:list<?string>, on_delete:string, on_update?:string, definition?:string, deferrable?:string}"
 		Trigger: "array{Trigger?:string, Timing?:string, Event?:string, Of?:string, Type?:string, Statement?:string}"
-		RoutineField: "array{field:string, type:string, length:?string, unsigned:string, null:bool, full_type:string, inout:string, collation:string}"
-		Routine: "array{name?:string, fields:list<RoutineField>, comment:string, returns?:array{type:string, length:string, unsigned:string, collation:string}, definition:string, language?:string}"
+		Routine: "array{name?:string, fields:list<RoutineField>, comment:string, returns?:FieldType, definition:string, language?:string}"
 		BackwardKey: "array{name:string, keys:string[][]}"

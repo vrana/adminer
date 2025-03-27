@@ -127,7 +127,10 @@ if ($_POST && !$error) {
 							: $driver->update($TABLE, $set, $where_check)
 						)
 					);
-					$affected = $connection->affected_rows + (is_object($result) ? $result->num_rows : 0); // PostgreSQL with RETURNING fills num_rows
+					$affected = $connection->affected_rows;
+					if (is_object($result)) { // PostgreSQL with RETURNING fills num_rows
+						$affected += $result->num_rows;
+					}
 				} else {
 					foreach ((array) $_POST["check"] as $val) {
 						// where is not unique so OR can't be used

@@ -783,17 +783,18 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Run commands to alter indexes
 	* @param string escaped table name
-	* @param array{string, string, 'DROP'|list<string>} of ["index type", "name", ["column definition", ...]] or ["index type", "name", "DROP"]
+	* @param list<array{string, string, 'DROP'|list<string>}> of ["index type", "name", ["column definition", ...]] or ["index type", "name", "DROP"]
 	* @return Result|bool
 	*/
 	function alter_indexes($table, $alter) {
-		foreach ($alter as $key => $val) {
-			$alter[$key] = ($val[2] == "DROP"
+		$changes = array();
+		foreach ($alter as $val) {
+			$changes[] = ($val[2] == "DROP"
 				? "\nDROP INDEX " . idf_escape($val[1])
 				: "\nADD $val[0] " . ($val[0] == "PRIMARY" ? "KEY " : "") . ($val[1] != "" ? idf_escape($val[1]) . " " : "") . "(" . implode(", ", $val[2]) . ")"
 			);
 		}
-		return queries("ALTER TABLE " . table($table) . implode(",", $alter));
+		return queries("ALTER TABLE " . table($table) . implode(",", $changes));
 	}
 
 	/** Run commands to truncate tables
@@ -925,7 +926,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get information about stored routine
 	* @param string
-	* @param string "FUNCTION" or "PROCEDURE"
+	* @param 'FUNCTION'|'PROCEDURE'
 	* @return Routine
 	*/
 	function routine($name, $type) {

@@ -59,11 +59,13 @@ if (extension_loaded('pdo')) {
 		}
 
 		function next_result() {
-			if (!is_object($this->multi)) {
+			/** @var PdoResult|bool */
+			$result = $this->multi;
+			if (!is_object($result)) {
 				return false;
 			}
-			$this->multi->_offset = 0;
-			return @$this->multi->nextRowset(); // @ - PDO_PgSQL doesn't support it
+			$result->_offset = 0;
+			return @$result->nextRowset(); // @ - PDO_PgSQL doesn't support it
 		}
 	}
 

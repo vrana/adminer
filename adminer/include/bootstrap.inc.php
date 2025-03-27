@@ -52,7 +52,7 @@ if ($_SERVER["HTTP_X_FORWARDED_PREFIX"]) {
 }
 $HTTPS = ($_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off")) || ini_bool("session.cookie_secure"); // session.cookie_secure could be set on HTTP if we are behind a reverse proxy
 
-@ini_set("session.use_trans_sid", false); // protect links in export, @ - may be disabled
+@ini_set("session.use_trans_sid", '0'); // protect links in export, @ - may be disabled
 if (!defined("SID")) {
 	session_cache_limiter(""); // to allow restarting session
 	session_name("adminer_sid"); // use specific session name to get own namespace
@@ -66,7 +66,7 @@ if (function_exists("get_magic_quotes_runtime") && get_magic_quotes_runtime()) {
 	set_magic_quotes_runtime(false);
 }
 @set_time_limit(0); // @ - can be disabled
-@ini_set("precision", 15); // @ - can be disabled, 15 - internal PHP precision
+@ini_set("precision", '15'); // @ - can be disabled, 15 - internal PHP precision
 
 include "../adminer/include/lang.inc.php";
 include "../adminer/lang/$LANG.inc.php";
