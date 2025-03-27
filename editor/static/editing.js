@@ -1,4 +1,4 @@
-// Editor specific functions
+'use strict'; // Editor specific functions
 
 function messagesPrint() {
 }

@@ -213,6 +213,11 @@ function minify_css($file) {
 }
 
 function minify_js($file) {
+	$file = preg_replace_callback("~'use strict';~", function ($match) { // keep only the first one
+		static $count = 0;
+		$count++;
+		return ($count == 1 ? $match[0] : '');
+	}, $file);
 	if (function_exists('jsShrink')) {
 		$file = jsShrink($file);
 	}

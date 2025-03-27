@@ -1,4 +1,4 @@
-// Adminer specific functions
+'use strict'; // Adminer specific functions
 
 /** Load syntax highlighting
 * @param string first three characters of database system version

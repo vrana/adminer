@@ -1,3 +1,4 @@
+'use strict';
 
 /** Get first element by selector
 * @param string
