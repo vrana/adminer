@@ -758,7 +758,8 @@ ORDER BY SPECIFIC_NAME');
 	}
 
 	function last_id($result) {
-		return (is_object($result) && $result->num_rows ? $result->fetch_column(0) : 0);
+		$row = (is_object($result) ? $result->fetch_row() : array());
+		return ($row ? $row[0] : 0);
 	}
 
 	function explain($connection, $query) {
