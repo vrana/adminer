@@ -15,6 +15,10 @@
 <tr><td>select</td><td>name=lang</td><td>label=English</td></tr>
 <tr><td>clickAndWait</td><td>css=#lang &gt; input[type="submit"]</td><td></td></tr>
 <tr><td>type</td><td>id=username</td><td>ODBC</td></tr>
+<tr><td>type</td><td>name=auth[password]</td><td>wrong</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Login']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Access denied for user</td><td></td></tr>
+<tr><td>type</td><td>id=username</td><td>ODBC</td></tr>
 <tr><td>type</td><td>name=auth[password]</td><td>ODBC</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Login']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Logged as</td><td></td></tr>
