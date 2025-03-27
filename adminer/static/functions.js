@@ -783,7 +783,6 @@ function setupSubmitHighlightInput(input) {
 * @this HTMLInputElement
 */
 function inputFocus() {
-	console.log('functions');
 	alterClass(findDefaultSubmit(this), 'default', true);
 }
 
