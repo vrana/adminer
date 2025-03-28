@@ -39,7 +39,7 @@ function target_blank(): string {
 }
 
 /** Escape for HTML */
-function h(string $string): string {
+function h(?string $string): string {
 	return str_replace("\0", "&#0;", htmlspecialchars($string, ENT_QUOTES, 'utf-8'));
 }
 
@@ -51,7 +51,7 @@ function nl_br(string $string): string {
 /** Generate HTML checkbox
 * @param string|int $value
 */
-function checkbox(string $name, $value, bool $checked, string $label = "", string $onclick = "", string $class = "", string $labelled_by = ""): string {
+function checkbox(string $name, $value, ?bool $checked, string $label = "", string $onclick = "", string $class = "", string $labelled_by = ""): string {
 	$return = "<input type='checkbox' name='$name' value='" . h($value) . "'"
 		. ($checked ? " checked" : "")
 		. ($labelled_by ? " aria-labelledby='$labelled_by'" : "")
@@ -91,7 +91,7 @@ function optionlist($options, $selected = null, bool $use_keys = false): string 
 /** Generate HTML <select>
 * @param string[] $options
 */
-function html_select(string $name, array $options, string $value = "", string $onchange = "", string $labelled_by = ""): string {
+function html_select(string $name, array $options, ?string $value = "", string $onchange = "", string $labelled_by = ""): string {
 	return "<select name='" . h($name) . "'"
 		. ($labelled_by ? " aria-labelledby='$labelled_by'" : "")
 		. ">" . optionlist($options, $value) . "</select>"
@@ -115,8 +115,10 @@ function confirm(string $message = "", string $selector = "qsl('input')"): strin
 	return script("$selector.onclick = () => confirm('" . ($message ? js_escape($message) : lang('Are you sure?')) . "');", "");
 }
 
-/** Print header for hidden fieldset (close by </div></fieldset>) */
-function print_fieldset(string $id, string $legend, bool $visible = false): void {
+/** Print header for hidden fieldset (close by </div></fieldset>)
+* @param bool $visible
+*/
+function print_fieldset(string $id, string $legend, $visible = false): void {
 	echo "<fieldset><legend>";
 	echo "<a href='#fieldset-$id'>$legend</a>";
 	echo script("qsl('a').onclick = partial(toggle, 'fieldset-$id');", "");
@@ -135,7 +137,7 @@ function js_escape(string $string): string {
 }
 
 /** Generate page number for pagination */
-function pagination(int $page, int $current): string {
+function pagination(int $page, ?int $current): string {
 	return " " . ($page == $current
 		? $page + 1
 		: '<a href="' . h(remove_from_uri("page") . ($page ? "&page=$page" . ($_GET["next"] ? "&next=" . urlencode($_GET["next"]) : "") : "")) . '">' . ($page + 1) . "</a>"
@@ -210,8 +212,9 @@ function input(array $field, $value, string $function, bool $autofocus = false):
 		$field["length"] = $enums;
 	}
 	echo $driver->unconvertFunction($field) . " ";
+	$table = $_GET["edit"] ?: $_GET["select"];
 	if ($field["type"] == "enum") {
-		echo h($functions[""]) . "<td>" . $adminer->editInput($_GET["edit"], $field, $attrs, $value);
+		echo h($functions[""]) . "<td>" . $adminer->editInput($table, $field, $attrs, $value);
 	} else {
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
@@ -220,7 +223,7 @@ function input(array $field, $value, string $function, bool $autofocus = false):
 				. script("qsl('select').onchange = functionChange;", "")
 			: h(reset($functions))
 		) . '<td>';
-		$input = $adminer->editInput($_GET["edit"], $field, $attrs, $value); // usage in call is without a table
+		$input = $adminer->editInput($table, $field, $attrs, $value); // usage in call is without a table
 		if ($input != "") {
 			echo $input;
 		} elseif (preg_match('~bool~', $field["type"])) {
@@ -263,7 +266,7 @@ function input(array $field, $value, string $function, bool $autofocus = false):
 				. "$attrs>"
 			;
 		}
-		echo $adminer->editHint($_GET["edit"], $field, $value);
+		echo $adminer->editHint($table, $field, $value);
 		// skip 'original'
 		$first = 0;
 		foreach ($functions as $key => $val) {
@@ -362,7 +365,7 @@ function on_help(string $command, int $side = 0): string {
 * @param Field[] $fields
 * @param mixed $row
 */
-function edit_form(string $table, array $fields, $row, bool $update): void {
+function edit_form(string $table, array $fields, $row, ?bool $update): void {
 	global $adminer, $error;
 	$table_name = $adminer->tableName(table_status1($table, true));
 	page_header(

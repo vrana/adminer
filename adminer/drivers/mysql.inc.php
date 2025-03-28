@@ -417,7 +417,7 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get database collation
 	* @param string[][] $collations result of collations()
 	*/
-	function db_collation(string $db, array $collations): string {
+	function db_collation(string $db, array $collations): ?string {
 		$return = null;
 		$create = get_val("SHOW CREATE DATABASE " . idf_escape($db), 1);
 		if (preg_match('~ COLLATE ([^ ]+)~', $create, $match)) {
@@ -698,7 +698,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @param string $auto_increment number
 	* @return Result|bool
 	*/
-	function alter_table(string $table, string $name, array $fields, array $foreign, string $comment, string $engine, string $collation, string $auto_increment, string $partitioning) {
+	function alter_table(string $table, string $name, array $fields, array $foreign, ?string $comment, string $engine, string $collation, string $auto_increment, string $partitioning) {
 		global $connection;
 		$alter = array();
 		foreach ($fields as $field) {
@@ -928,7 +928,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get last auto increment ID
-	* @param Result $result or true
+	* @param Result|bool $result
 	*/
 	function last_id($result): string {
 		return get_val("SELECT LAST_INSERT_ID()"); // mysql_insert_id() truncates bigint

@@ -7,9 +7,10 @@ namespace Adminer;
 * @param Result $result
 * @param Db $connection2 connection to examine indexes
 * @param string[] $orgtables
+* @param int|numeric-string $limit
 * @return string[] $orgtables
 */
-function select($result, Db $connection2 = null, array $orgtables = array(), int $limit = 0): array {
+function select($result, Db $connection2 = null, array $orgtables = array(), $limit = 0): array {
 	$links = array(); // colno => orgtable - create links from these columns
 	$indexes = array(); // orgtable => array(column => colno) - primary keys
 	$columns = array(); // orgtable => array(column => ) - not selected columns in primary key
@@ -138,7 +139,7 @@ function textarea(string $name, $value, int $rows = 10, int $cols = 80): void {
 /** Generate HTML <select> or <input> if $options are empty
 * @param string[] $options
 */
-function select_input(string $attrs, array $options, string $value = "", string $onchange = "", string $placeholder = ""): string {
+function select_input(string $attrs, array $options, ?string $value = "", string $onchange = "", string $placeholder = ""): string {
 	$tag = ($options ? "select" : "input");
 	return "<$tag$attrs" . ($options
 		? "><option value=''>$placeholder" . optionlist($options, $value, true) . "</select>"
@@ -218,7 +219,7 @@ function get_partitions_info(string $table): array {
 }
 
 /** Filter length value including enums */
-function process_length(string $length): string {
+function process_length(?string $length): string {
 	global $driver;
 	$enum_length = $driver->enumLength;
 	return (preg_match("~^\\s*\\(?\\s*$enum_length(?:\\s*,\\s*$enum_length)*+\\s*\\)?\\s*\$~", $length) && preg_match_all("~$enum_length~", $length, $matches)

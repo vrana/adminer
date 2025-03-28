@@ -322,7 +322,7 @@ if (isset($_GET["mongo"])) {
 
 		public $primary = "_id";
 
-		function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, int $page = 0, bool $print = false) {
+		function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, ?int $page = 0, bool $print = false) {
 			$select = ($select == array("*")
 				? array()
 				: array_fill_keys($select, 1)

@@ -145,7 +145,7 @@ if (isset($_GET["simpledb"])) {
 			return $return;
 		}
 
-		function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, int $page = 0, bool $print = false) {
+		function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, ?int $page = 0, bool $print = false) {
 			$connection = connection();
 			$connection->next = $_GET["next"];
 			$return = parent::select($table, $select, $where, $group, $order, $limit, $page, $print);

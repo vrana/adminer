@@ -232,7 +232,7 @@ function get_rows(string $query, Db $connection2 = null, string $error = "<p cla
 * @param Index[] $indexes result of indexes()
 * @return string[]|void null if there is no unique identifier
 */
-function unique_array(array $row, array $indexes) {
+function unique_array(?array $row, array $indexes) {
 	foreach ($indexes as $index) {
 		if (preg_match("~PRIMARY|UNIQUE~", $index["type"])) {
 			$return = array();
@@ -456,7 +456,7 @@ function query_redirect(string $query, string $location, string $message, bool $
 
 class Queries {
 	/** @var string[] */ static array $queries = array();
-	static float $start;
+	static float $start = 0;
 }
 
 /** Execute and remember query
@@ -671,7 +671,7 @@ function dump_csv(array $row): void {
 /** Apply SQL function
 * @param string $column escaped column identifier
 */
-function apply_sql_function(string $function, string $column): string {
+function apply_sql_function(?string $function, string $column): string {
 	return ($function ? ($function == "unixepoch" ? "DATETIME($column, '$function')" : ($function == "count distinct" ? "COUNT(DISTINCT " : strtoupper("$function(")) . "$column)") : $column);
 }
 
@@ -818,7 +818,7 @@ function is_mail(?string $email): bool {
 }
 
 /** Check whether the string is URL address */
-function is_url(string $string): bool {
+function is_url(?string $string): bool {
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component //! IDN
 	return preg_match("~^(https?)://($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string); //! restrict path, query and fragment characters
 }

@@ -124,7 +124,7 @@ if (isset($_GET["elastic"])) {
 			);
 		}
 
-		function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, int $page = 0, bool $print = false) {
+		function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, ?int $page = 0, bool $print = false) {
 			$data = array();
 			if ($select != array("*")) {
 				$data["fields"] = array_values($select);

@@ -74,7 +74,7 @@ abstract class SqlDriver {
 	* @param bool $print whether to print the query
 	* @return Result|false
 	*/
-	function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, int $page = 0, bool $print = false) {
+	function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, ?int $page = 0, bool $print = false) {
 		global $adminer;
 		$is_group = (count($group) < count($select));
 		$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
@@ -190,7 +190,7 @@ abstract class SqlDriver {
 	/** Convert value returned by database to actual value
 	* @param Field $field
 	*/
-	function value(string $val, array $field): string {
+	function value(?string $val, array $field): ?string {
 		return (method_exists($this->conn, 'value')
 			? $this->conn->value($val, $field)
 			: (is_resource($val) ? stream_get_contents($val) : $val)

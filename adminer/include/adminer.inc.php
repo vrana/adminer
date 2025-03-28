@@ -4,7 +4,7 @@ namespace Adminer;
 // any method change in this file should be transferred to editor/include/adminer.inc.php and plugins.inc.php
 
 class Adminer {
-	/** @var list<string> */ public array $operators; // operators used in select, null for all operators
+	/** @var ?list<string> */ public ?array $operators = null; // operators used in select, null for all operators
 	/** @visibility protected(set) */ public string $error = ''; // HTML
 
 	/** Name in title and navigation
@@ -42,7 +42,7 @@ class Adminer {
 	/** Get server name displayed in breadcrumbs
 	* @return string HTML code or null
 	*/
-	function serverName(string $server): string {
+	function serverName(?string $server): string {
 		return h($server);
 	}
 
@@ -164,9 +164,9 @@ class Adminer {
 
 	/** Print links after select heading
 	* @param TableStatus $tableStatus result of table_status1()
-	* @param string $set new item options, NULL for no new item
+	* @param ?string $set new item options, NULL for no new item
 	*/
-	function selectLinks(array $tableStatus, string $set = ""): void {
+	function selectLinks(array $tableStatus, ?string $set = ""): void {
 		global $driver;
 		echo '<p class="links">';
 		$links = array("select" => lang('Select data'));
@@ -266,16 +266,16 @@ class Adminer {
 	* @param Field $field single field returned from fields()
 	* @return string|void null to create the default link
 	*/
-	function selectLink(string $val, array $field) {
+	function selectLink(?string $val, array $field) {
 	}
 
 	/** Value printed in select table
-	* @param string $val HTML-escaped value to print
-	* @param string $link link to foreign key
+	* @param ?string $val HTML-escaped value to print
+	* @param ?string $link link to foreign key
 	* @param Field $field single field returned from fields()
 	* @param string $original original value before applying editVal() and escaping
 	*/
-	function selectVal(string $val, string $link, array $field, string $original): string {
+	function selectVal(?string $val, ?string $link, array $field, ?string $original): string {
 		$return = ($val === null ? "<i>NULL</i>"
 			: (preg_match("~char|binary|boolean~", $field["type"]) && !preg_match("~var~", $field["type"]) ? "<code>$val</code>"
 			: (preg_match('~json~', $field["type"]) ? "<code class='jush-js'>$val</code>"
@@ -290,7 +290,7 @@ class Adminer {
 	/** Value conversion used in select and edit
 	* @param Field $field single field returned from fields()
 	*/
-	function editVal(string $val, array $field): string {
+	function editVal(?string $val, array $field): ?string {
 		return $val;
 	}
 
@@ -616,7 +616,7 @@ class Adminer {
 	* @param int $page index of page starting at zero
 	* @return string empty string to use default query
 	*/
-	function selectQueryBuild(array $select, array $where, array $group, array $order, int $limit, int $page): string {
+	function selectQueryBuild(array $select, array $where, array $group, array $order, ?int $limit, ?int $page): string {
 		return "";
 	}
 
@@ -653,7 +653,7 @@ class Adminer {
 	* @param Field[] $fields
 	* @param mixed $row
 	*/
-	function editRowPrint(string $table, array $fields, $row, bool $update): void {
+	function editRowPrint(string $table, array $fields, $row, ?bool $update): void {
 	}
 
 	/** Functions displayed in edit form
@@ -688,7 +688,7 @@ class Adminer {
 	* @param string $attrs attributes to use inside the tag
 	* @return string custom input field or empty string for default
 	*/
-	function editInput(string $table, array $field, string $attrs, string $value): string {
+	function editInput(string $table, array $field, string $attrs, ?string $value): string {
 		if ($field["type"] == "enum") {
 			return (isset($_GET["select"]) ? "<label><input type='radio'$attrs value='-1' checked><i>" . lang('original') . "</i></label> " : "")
 				. ($field["null"] ? "<label><input type='radio'$attrs value=''" . ($value !== null || isset($_GET["select"]) ? "" : " checked") . "><i>NULL</i></label> " : "")
@@ -702,7 +702,7 @@ class Adminer {
 	* @param string $table table name
 	* @param Field $field single field from fields()
 	*/
-	function editHint(string $table, array $field, string $value): string {
+	function editHint(string $table, array $field, ?string $value): string {
 		return "";
 	}
 
@@ -710,7 +710,7 @@ class Adminer {
 	* @param Field $field single field from fields()
 	* @return string expression to use in a query
 	*/
-	function processInput(array $field, string $value, string $function = ""): string {
+	function processInput(array $field, string $value, ?string $function = ""): string {
 		if ($function == "SQL") {
 			return $value; // SQL injection
 		}

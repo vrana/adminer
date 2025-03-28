@@ -48,7 +48,7 @@ if (isset($_GET["pgsql"])) {
 				);
 			}
 
-			function value(string $val, array $field): string {
+			function value(?string $val, array $field): ?string {
 				return ($field["type"] == "bytea" && $val !== null ? pg_unescape_bytea($val) : $val);
 			}
 
