@@ -44,7 +44,8 @@ function add_invalid_login(): void {
 	file_write_unlock($fp, serialize($invalids));
 }
 
-function check_invalid_login(): void {
+/** @param string[] $permanent */
+function check_invalid_login(array &$permanent): void {
 	global $adminer;
 	$invalids = array();
 	foreach (glob(get_temp_dir() . "/adminer.invalid*") as $filename) {
@@ -59,7 +60,7 @@ function check_invalid_login(): void {
 	$invalid = idx($invalids, $adminer->bruteForceKey(), array());
 	$next_attempt = ($invalid[1] > 29 ? $invalid[0] - time() : 0); // allow 30 invalid attempts
 	if ($next_attempt > 0) { //! do the same with permanent login
-		auth_error(lang('Too many unsuccessful logins, try again in %d minute(s).', ceil($next_attempt / 60)));
+		auth_error(lang('Too many unsuccessful logins, try again in %d minute(s).', ceil($next_attempt / 60)), $permanent);
 	}
 }
 
@@ -93,7 +94,7 @@ if ($auth) {
 	foreach (array("pwds", "db", "dbs", "queries") as $key) {
 		set_session($key, null);
 	}
-	unset_permanent();
+	unset_permanent($permanent);
 	redirect(substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.') . ' ' . lang('Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.'));
 
 } elseif ($permanent && !$_SESSION["pwds"]) {
@@ -107,8 +108,10 @@ if ($auth) {
 	}
 }
 
-function unset_permanent(): void {
-	global $permanent;
+/** Remove credentials from permanent login
+* @param string[] $permanent
+*/
+function unset_permanent(array &$permanent): void {
 	foreach ($permanent as $key => $val) {
 		list($vendor, $server, $username, $db) = array_map('base64_decode', explode("-", $key));
 		if ($vendor == DRIVER && $server == SERVER && $username == $_GET["username"] && $db == DB) {
@@ -120,9 +123,10 @@ function unset_permanent(): void {
 
 /** Render an error message and a login form
 * @param string $error plain text
+* @param string[] $permanent
 * @return never
 */
-function auth_error(string $error) {
+function auth_error(string $error, array &$permanent) {
 	global $adminer;
 	$session_name = session_name();
 	if (isset($_GET["username"])) {
@@ -139,7 +143,7 @@ function auth_error(string $error) {
 				}
 				set_password(DRIVER, SERVER, $_GET["username"], null);
 			}
-			unset_permanent();
+			unset_permanent($permanent);
 		}
 	}
 	if (!$_COOKIE[$session_name] && $_GET[$session_name] && ini_bool("session.use_only_cookies")) {
@@ -162,7 +166,7 @@ function auth_error(string $error) {
 
 if (isset($_GET["username"]) && !class_exists('Adminer\Db')) {
 	unset($_SESSION["pwds"][DRIVER]);
-	unset_permanent();
+	unset_permanent($permanent);
 	page_header(lang('No extension'), lang('None of the supported PHP extensions (%s) are available.', implode(", ", Driver::$possibleDrivers)), false);
 	page_footer("auth");
 	exit;
@@ -171,9 +175,9 @@ if (isset($_GET["username"]) && !class_exists('Adminer\Db')) {
 if (isset($_GET["username"]) && is_string(get_password())) {
 	list($host, $port) = explode(":", SERVER, 2);
 	if (preg_match('~^\s*([-+]?\d+)~', $port, $match) && ($match[1] < 1024 || $match[1] > 65535)) { // is_numeric('80#') would still connect to port 80
-		auth_error(lang('Connecting to privileged ports is not allowed.'));
+		auth_error(lang('Connecting to privileged ports is not allowed.'), $permanent);
 	}
-	check_invalid_login();
+	check_invalid_login($permanent);
 	$connection = connect($adminer->credentials());
 	if (is_object($connection)) {
 		$driver = new Driver($connection);
@@ -186,7 +190,10 @@ if (isset($_GET["username"]) && is_string(get_password())) {
 $login = null;
 if (!is_object($connection) || ($login = $adminer->login($_GET["username"], get_password())) !== true) {
 	$error = (is_string($connection) ? nl_br(h($connection)) : (is_string($login) ? $login : lang('Invalid credentials.')));
-	auth_error($error . (preg_match('~^ | $~', get_password()) ? '<br>' . lang('There is a space in the input password which might be the cause.') : ''));
+	auth_error(
+		$error . (preg_match('~^ | $~', get_password()) ? '<br>' . lang('There is a space in the input password which might be the cause.') : ''),
+		$permanent
+	);
 }
 
 if ($_POST["logout"] && $_SESSION["token"] && !verify_token()) {
