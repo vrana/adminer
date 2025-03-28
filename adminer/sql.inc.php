@@ -156,7 +156,7 @@ if (!$error && $_POST) {
 									$explain_id = "explain-$commands";
 									if (is_object($result)) {
 										$limit = $_POST["limit"];
-										$orgtables = select($result, $connection2, array(), $limit);
+										$orgtables = print_select_result($result, $connection2, array(), $limit);
 										if (!$_POST["only_errors"]) {
 											echo "<form action='' method='post'>\n";
 											$num_rows = $result->num_rows;
@@ -188,7 +188,7 @@ if (!$error && $_POST) {
 									echo ($warnings ? "<div id='$warnings_id' class='hidden'>\n$warnings</div>\n" : "");
 									if ($explain) {
 										echo "<div id='$explain_id' class='hidden explain'>\n";
-										select($explain, $connection2, $orgtables);
+										print_select_result($explain, $connection2, $orgtables);
 										echo "</div>\n";
 									}
 								}

@@ -315,7 +315,7 @@ if (!defined('Adminer\DRIVER')) {
 			$result = $this->conn->query("SHOW WARNINGS");
 			if ($result && $result->num_rows) {
 				ob_start();
-				select($result); // select() usually needs to print a big table progressively
+				print_select_result($result); // print_select_result() usually needs to print a big table progressively
 				return ob_get_clean();
 			}
 		}

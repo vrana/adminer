@@ -49,7 +49,7 @@ if (!$error && $_POST) {
 		do {
 			$result = $connection->store_result();
 			if (is_object($result)) {
-				select($result, $connection2);
+				print_select_result($result, $connection2);
 			} else {
 				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $affected)
 					. " <span class='time'>" . @date("H:i:s") . "</span>\n" // @ - time zone may be not set
@@ -58,7 +58,7 @@ if (!$error && $_POST) {
 		} while ($connection->next_result());
 
 		if ($out) {
-			select($connection->query("SELECT " . implode(", ", $out)));
+			print_select_result($connection->query("SELECT " . implode(", ", $out)));
 		}
 	}
 }
