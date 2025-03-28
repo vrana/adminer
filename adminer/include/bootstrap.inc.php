@@ -39,7 +39,7 @@ if ($_GET["script"] == "version") {
 	exit;
 }
 
-global $adminer, $connection, $driver, $drivers, $error, $HTTPS, $langs, $permanent, $has_token, $token, $translations; // allows including Adminer inside a function
+global $adminer, $connection, $driver, $drivers, $error, $HTTPS, $permanent, $has_token, $token, $translations; // allows including Adminer inside a function
 
 if (!$_SERVER["REQUEST_URI"]) { // IIS 5 compatibility
 	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"];

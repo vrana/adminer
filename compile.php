@@ -161,12 +161,12 @@ function lzw_compress($string) {
 }
 
 function put_file_lang($match) {
-	global $lang_ids, $project, $langs;
+	global $lang_ids, $project;
 	if ($_SESSION["lang"]) {
 		return "";
 	}
 	$return = "";
-	foreach ($langs as $lang => $val) {
+	foreach (Adminer\langs() as $lang => $val) {
 		include __DIR__ . "/adminer/lang/$lang.inc.php"; // assign $translations
 		$translation_ids = array_flip($lang_ids); // default translation
 		foreach ($translations as $key => $val) {
@@ -269,8 +269,9 @@ if (file_exists(__DIR__ . $driver_path)) {
 
 unset($_COOKIE["adminer_lang"]);
 $_SESSION["lang"] = $_SERVER["argv"][1]; // Adminer functions read language from session
+include __DIR__ . "/adminer/include/functions.inc.php";
 include __DIR__ . "/adminer/include/lang.inc.php";
-if (isset($langs[$_SESSION["lang"]])) {
+if (Adminer\idx(Adminer\langs(), $_SESSION["lang"])) {
 	include __DIR__ . "/adminer/lang/$_SESSION[lang].inc.php";
 	array_shift($_SERVER["argv"]);
 }
