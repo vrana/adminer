@@ -120,7 +120,7 @@ if (isset($_GET["oracle"])) {
 
 
 	class Driver extends SqlDriver {
-		static array $possibleDrivers = array("OCI8", "PDO_OCI");
+		static array $extensions = array("OCI8", "PDO_OCI");
 		static string $jush = "oracle";
 
 	public array $insertFunctions = array( //! no parentheses

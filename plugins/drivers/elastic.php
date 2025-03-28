@@ -104,7 +104,7 @@ if (isset($_GET["elastic"])) {
 	}
 
 	class Driver extends SqlDriver {
-		static array $possibleDrivers = array("json + allow_url_fopen");
+		static array $extensions = array("json + allow_url_fopen");
 		static string $jush = "elastic";
 
 		public array $insertFunctions = array("json");

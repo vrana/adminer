@@ -106,7 +106,7 @@ if (isset($_GET["sqlite"])) {
 
 
 	class Driver extends SqlDriver {
-		static array $possibleDrivers = array("SQLite3", "PDO_SQLite");
+		static array $extensions = array("SQLite3", "PDO_SQLite");
 		static string $jush = "sqlite";
 
 		protected array $types = array(array("integer" => 0, "real" => 0, "numeric" => 0, "text" => 0, "blob" => 0));

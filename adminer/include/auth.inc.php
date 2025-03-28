@@ -167,7 +167,7 @@ function auth_error(string $error, array &$permanent) {
 if (isset($_GET["username"]) && !class_exists('Adminer\Db')) {
 	unset($_SESSION["pwds"][DRIVER]);
 	unset_permanent($permanent);
-	page_header(lang('No extension'), lang('None of the supported PHP extensions (%s) are available.', implode(", ", Driver::$possibleDrivers)), false);
+	page_header(lang('No extension'), lang('None of the supported PHP extensions (%s) are available.', implode(", ", Driver::$extensions)), false);
 	page_footer("auth");
 	exit;
 }

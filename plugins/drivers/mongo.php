@@ -294,7 +294,7 @@ if (isset($_GET["mongo"])) {
 
 
 	class Driver extends SqlDriver {
-		static array $possibleDrivers = array("mongodb");
+		static array $extensions = array("mongodb");
 		static string $jush = "mongo";
 
 		public array $insertFunctions = array("json");

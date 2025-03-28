@@ -168,7 +168,7 @@ if (isset($_GET["pgsql"])) {
 
 
 	class Driver extends SqlDriver {
-		static array $possibleDrivers = array("PgSQL", "PDO_PgSQL");
+		static array $extensions = array("PgSQL", "PDO_PgSQL");
 		static string $jush = "pgsql";
 
 		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // no "SQL" to avoid CSRF

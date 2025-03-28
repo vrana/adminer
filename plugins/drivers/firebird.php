@@ -85,7 +85,7 @@ if (isset($_GET["firebird"])) {
 
 
 	class Driver extends SqlDriver {
-		static array $possibleDrivers = array("interbase");
+		static array $extensions = array("interbase");
 		static string $jush = "firebird";
 
 		public array $operators = array("=");

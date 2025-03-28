@@ -111,7 +111,7 @@ if (isset($_GET["simpledb"])) {
 
 
 	class Driver extends SqlDriver {
-		static array $possibleDrivers = array("SimpleXML + allow_url_fopen");
+		static array $extensions = array("SimpleXML + allow_url_fopen");
 		static string $jush = "simpledb";
 
 		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "IS NOT NULL");

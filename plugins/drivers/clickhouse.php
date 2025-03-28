@@ -117,7 +117,7 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	class Driver extends SqlDriver {
-		static array $possibleDrivers = array("allow_url_fopen");
+		static array $extensions = array("allow_url_fopen");
 		static string $jush = "clickhouse";
 
 		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");

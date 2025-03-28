@@ -212,7 +212,7 @@ if (!defined('Adminer\DRIVER')) {
 
 
 	class Driver extends SqlDriver {
-		/** @var list<string> */ static array $possibleDrivers = array("MySQLi", "MySQL", "PDO_MySQL");
+		/** @var list<string> */ static array $extensions = array("MySQLi", "MySQL", "PDO_MySQL");
 		static string $jush = "sql"; // JUSH identifier
 
 		/** @var list<string> */ public array $unsigned = array("unsigned", "zerofill", "unsigned zerofill");

@@ -16,7 +16,7 @@ function get_driver(string $id): string {
 }
 
 abstract class SqlDriver {
-	/** @var list<string> */ static array $possibleDrivers = array();
+	/** @var list<string> */ static array $extensions = array(); // possible extensions
 	static string $jush; // JUSH identifier
 
 	protected Db $conn;

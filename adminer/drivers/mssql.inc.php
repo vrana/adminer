@@ -200,7 +200,7 @@ if (isset($_GET["mssql"])) {
 
 
 	class Driver extends SqlDriver {
-		static array $possibleDrivers = array("SQLSRV", "PDO_SQLSRV", "PDO_DBLIB");
+		static array $extensions = array("SQLSRV", "PDO_SQLSRV", "PDO_DBLIB");
 		static string $jush = "mssql";
 
 		public array $insertFunctions = array("date|time" => "getdate");

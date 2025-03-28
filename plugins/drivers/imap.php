@@ -140,7 +140,7 @@ if (isset($_GET["imap"])) {
 	}
 
 	class Driver extends SqlDriver {
-		static array $possibleDrivers = array("imap");
+		static array $extensions = array("imap");
 		static string $jush = "imap";
 		public array $insertFunctions = array("json");
 	}
