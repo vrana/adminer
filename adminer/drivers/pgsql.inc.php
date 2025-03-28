@@ -19,7 +19,7 @@ if (isset($_GET["pgsql"])) {
 				$this->error = $error;
 			}
 
-			function connect(string $server, string $username, string $password): bool {
+			function attach(?string $server, string $username, string $password): string {
 				global $adminer;
 				$db = $adminer->database();
 				set_error_handler(array($this, '_error'));
@@ -38,7 +38,7 @@ if (isset($_GET["pgsql"])) {
 				if ($this->link) {
 					pg_set_client_encoding($this->link, "UTF8");
 				}
-				return (bool) $this->link;
+				return ($this->link ? '' : $this->error);
 			}
 
 			function quote(string $string): string {
@@ -129,7 +129,7 @@ if (isset($_GET["pgsql"])) {
 			public string $extension = "PDO_PgSQL";
 			public int $timeout;
 
-			function connect(string $server, string $username, string $password): bool {
+			function attach(?string $server, string $username, string $password): string {
 				global $adminer;
 				$db = $adminer->database();
 				//! client_encoding is supported since 9.1, but we can't yet use min_version here
@@ -138,8 +138,7 @@ if (isset($_GET["pgsql"])) {
 				if (isset($ssl["mode"])) {
 					$dsn .= " sslmode='" . $ssl["mode"] . "'";
 				}
-				$this->dsn($dsn, $username, $password);
-				return true;
+				return $this->dsn($dsn, $username, $password);
 			}
 
 			function select_db(string $database): bool {
@@ -304,19 +303,20 @@ if (isset($_GET["pgsql"])) {
 	function connect($credentials) {
 		global $drivers;
 		$connection = new Db;
-		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
-			if (min_version(9, 0, $connection)) {
-				$connection->query("SET application_name = 'Adminer'");
-			}
-			$version = get_val("SELECT version()", 0, $connection);
-			$connection->flavor = (preg_match('~CockroachDB~', $version) ? 'cockroach' : '');
-			$connection->server_info = preg_replace('~^\D*([\d.]+[-\w]*).*~', '\1', $version);
-			if ($connection->flavor == 'cockroach') { // we don't use "PostgreSQL / CockroachDB" by default because it's too long
-				$drivers[DRIVER] = "CockroachDB";
-			}
-			return $connection;
+		$error = $connection->attach($credentials[0], $credentials[1], $credentials[2]);
+		if ($error) {
+			return $error;
 		}
-		return $connection->error;
+		if (min_version(9, 0, $connection)) {
+			$connection->query("SET application_name = 'Adminer'");
+		}
+		$version = get_val("SELECT version()", 0, $connection);
+		$connection->flavor = (preg_match('~CockroachDB~', $version) ? 'cockroach' : '');
+		$connection->server_info = preg_replace('~^\D*([\d.]+[-\w]*).*~', '\1', $version);
+		if ($connection->flavor == 'cockroach') { // we don't use "PostgreSQL / CockroachDB" by default because it's too long
+			$drivers[DRIVER] = "CockroachDB";
+		}
+		return $connection;
 	}
 
 	function get_databases($flush) {

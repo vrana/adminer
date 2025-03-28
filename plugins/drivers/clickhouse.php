@@ -56,11 +56,11 @@ if (isset($_GET["clickhouse"])) {
 				return $this->rootQuery($this->_db, $query);
 			}
 
-			function connect(string $server, string $username, string $password): bool {
+			function attach(?string $server, string $username, string $password): string {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
 				$this->url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
 				$return = $this->query('SELECT 1');
-				return (bool) $return;
+				return ($return ? '' : $this->error);
 			}
 
 			function select_db(string $database): bool {
@@ -230,10 +230,7 @@ if (isset($_GET["clickhouse"])) {
 		if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
 			return lang('Invalid server.');
 		}
-		if ($connection->connect($server, $username, $password)) {
-			return $connection;
-		}
-		return $connection->error;
+		return ($connection->attach($server, $username, $password) ?: $connection);
 	}
 
 	function get_databases($flush) {

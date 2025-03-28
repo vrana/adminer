@@ -14,8 +14,7 @@ if (!defined('Adminer\DRIVER')) {
 				parent::init();
 			}
 
-			/** @see https://php.net/mysqli.construct */
-			function connect($server = "", $username = "", $password = "", $database = null, $port = null, $socket = null) {
+			function attach(?string $server, string $username, string $password): string {
 				global $adminer;
 				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
 				list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
@@ -27,13 +26,13 @@ if (!defined('Adminer\DRIVER')) {
 					($server != "" ? $host : null),
 					($server . $username != "" ? $username : null),
 					($server . $username . $password != "" ? $password : null),
-					$database,
+					null,
+					(is_numeric($port) ? $port : ini_get("mysqli.default_port")),
 					(is_numeric($port) ? intval($port) : null),
-					(!is_numeric($port) ? $port : $socket),
 					($ssl ? ($ssl['verify'] !== false ? 2048 : 64) : 0) // 2048 - MYSQLI_CLIENT_SSL, 64 - MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT (not available before PHP 5.6.16)
 				);
 				$this->options(MYSQLI_OPT_LOCAL_INFILE, false);
-				return $return;
+				return ($return ? '' : $this->error);
 			}
 
 			function set_charset($charset) {
@@ -67,10 +66,9 @@ if (!defined('Adminer\DRIVER')) {
 		class Db extends SqlDb {
 			/** @var resource */ private $link;
 
-			function connect(string $server, string $username, string $password): bool {
+			function attach(?string $server, string $username, string $password): string {
 				if (ini_bool("mysql.allow_local_infile")) {
-					$this->error = lang('Disable %s or enable %s or %s extensions.', "'mysql.allow_local_infile'", "MySQLi", "PDO_MySQL");
-					return false;
+					return lang('Disable %s or enable %s or %s extensions.', "'mysql.allow_local_infile'", "MySQLi", "PDO_MySQL");
 				}
 				$this->link = @mysql_connect(
 					($server != "" ? $server : ini_get("mysql.default_host")),
@@ -79,12 +77,11 @@ if (!defined('Adminer\DRIVER')) {
 					true,
 					131072 // CLIENT_MULTI_RESULTS for CALL
 				);
-				if ($this->link) {
-					$this->server_info = mysql_get_server_info($this->link);
-				} else {
-					$this->error = mysql_error();
+				if (!$this->link) {
+					return mysql_error();
 				}
-				return (bool) $this->link;
+				$this->server_info = mysql_get_server_info($this->link);
+				return '';
 			}
 
 			/** Set the client character set */
@@ -169,7 +166,7 @@ if (!defined('Adminer\DRIVER')) {
 		class Db extends PdoDb {
 			public string $extension = "PDO_MySQL";
 
-			function connect(string $server, string $username, string $password): bool {
+			function attach(?string $server, string $username, string $password): string {
 				global $adminer;
 				$options = array(\PDO::MYSQL_ATTR_LOCAL_INFILE => false);
 				$ssl = $adminer->connectSsl();
@@ -187,13 +184,12 @@ if (!defined('Adminer\DRIVER')) {
 						$options[\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $ssl['verify'];
 					}
 				}
-				$this->dsn(
+				return $this->dsn(
 					"mysql:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\d)~', ';port=\1', $server)),
 					$username,
 					$password,
 					$options
 				);
-				return true;
 			}
 
 			function set_charset($charset) {
@@ -366,24 +362,24 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Connect to the database
-	* @param array{string, string, string} $credentials [$server, $username, $password]
+	* @param array{?string, string, string} $credentials [$server, $username, $password]
 	* @return string|Db string for error
 	*/
 	function connect(array $credentials) {
 		global $drivers;
 		$connection = new Db;
-		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
-			$connection->set_charset(charset($connection));
-			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
-			$connection->flavor = (preg_match('~MariaDB~', $connection->server_info) ? 'maria' : 'mysql');
-			$drivers[DRIVER] = ($connection->flavor == 'maria' ? "MariaDB" : "MySQL");
-			return $connection;
+		$error = $connection->attach($credentials[0], $credentials[1], $credentials[2]);
+		if ($error) {
+			if (function_exists('iconv') && !is_utf8($error) && strlen($s = iconv("windows-1250", "utf-8", $error)) > strlen($error)) { // windows-1250 - most common Windows encoding
+				$error = $s;
+			}
+			return $error;
 		}
-		$return = $connection->error;
-		if (function_exists('iconv') && !is_utf8($return) && strlen($s = iconv("windows-1250", "utf-8", $return)) > strlen($return)) { // windows-1250 - most common Windows encoding
-			$return = $s;
-		}
-		return $return;
+		$connection->set_charset(charset($connection));
+		$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
+		$connection->flavor = (preg_match('~MariaDB~', $connection->server_info) ? 'maria' : 'mysql');
+		$drivers[DRIVER] = ($connection->flavor == 'maria' ? "MariaDB" : "MySQL");
+		return $connection;
 	}
 
 	/** Get cached list of databases

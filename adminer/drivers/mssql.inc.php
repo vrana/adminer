@@ -25,7 +25,7 @@ if (isset($_GET["mssql"])) {
 				$this->error = rtrim($this->error);
 			}
 
-			function connect(string $server, string $username, string $password): bool {
+			function attach(?string $server, string $username, string $password): string {
 				global $adminer;
 				$connection_info = array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8");
 				$ssl = $adminer->connectSsl();
@@ -46,7 +46,7 @@ if (isset($_GET["mssql"])) {
 				} else {
 					$this->get_error();
 				}
-				return (bool) $this->link;
+				return ($this->link ? '' : $this->error);
 			}
 
 			function quote(string $string): string {
@@ -182,9 +182,8 @@ if (isset($_GET["mssql"])) {
 			class Db extends MssqlDb {
 				public string $extension = "PDO_SQLSRV";
 
-				function connect(string $server, string $username, string $password): bool {
-					$this->dsn("sqlsrv:Server=" . str_replace(":", ",", $server), $username, $password);
-					return true;
+				function attach(?string $server, string $username, string $password): string {
+					return $this->dsn("sqlsrv:Server=" . str_replace(":", ",", $server), $username, $password);
 				}
 			}
 
@@ -192,9 +191,8 @@ if (isset($_GET["mssql"])) {
 			class Db extends MssqlDb {
 				public string $extension = "PDO_DBLIB";
 
-				function connect(string $server, string $username, string $password): bool {
-					$this->dsn("dblib:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\d)~', ';port=\1', $server)), $username, $password);
-					return true;
+				function attach(?string $server, string $username, string $password): string {
+					return $this->dsn("dblib:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\d)~', ';port=\1', $server)), $username, $password);
 				}
 			}
 		}
@@ -298,10 +296,7 @@ if (isset($_GET["mssql"])) {
 		if ($credentials[0] == "") {
 			$credentials[0] = "localhost:1433";
 		}
-		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
-			return $connection;
-		}
-		return $connection->error;
+		return ($connection->attach($credentials[0], $credentials[1], $credentials[2]) ?: $connection);
 	}
 
 	function get_databases($flush) {

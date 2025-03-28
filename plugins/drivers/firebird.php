@@ -14,17 +14,15 @@ if (isset($_GET["firebird"])) {
 		class Db extends SqlDb {
 			public string $extension = "Firebird", $_link;
 
-			function connect(string $server, string $username, string $password): bool {
+			function attach(?string $server, string $username, string $password): string {
 				$this->_link = ibase_connect($server, $username, $password);
 				if ($this->_link) {
 					$url_parts = explode(':', $server);
 					$service_link = ibase_service_attach($url_parts[0], $username, $password);
 					$this->server_info = ibase_server_info($service_link, IBASE_SVC_SERVER_VERSION);
-				} else {
-					$this->errno = ibase_errcode();
-					$this->error = ibase_errmsg();
+					return '';
 				}
-				return (bool) $this->_link;
+				return ibase_errmsg();
 			}
 
 			function quote(string $string): string {
@@ -105,10 +103,7 @@ if (isset($_GET["firebird"])) {
 
 	function connect($credentials) {
 		$connection = new Db;
-		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
-			return $connection;
-		}
-		return $connection->error;
+		return ($connection->attach($credentials[0], $credentials[1], $credentials[2]) ?: $connection);
 	}
 
 	function get_databases($flush) {

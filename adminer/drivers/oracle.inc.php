@@ -19,15 +19,14 @@ if (isset($_GET["oracle"])) {
 				$this->error = $error;
 			}
 
-			function connect(string $server, string $username, string $password): bool {
+			function attach(?string $server, string $username, string $password): string {
 				$this->link = @oci_new_connect($username, $password, $server, "AL32UTF8");
 				if ($this->link) {
 					$this->server_info = oci_server_version($this->link);
-					return true;
+					return '';
 				}
 				$error = oci_error();
-				$this->error = $error["message"];
-				return false;
+				return $error["message"];
 			}
 
 			function quote(string $string): string {
@@ -106,9 +105,8 @@ if (isset($_GET["oracle"])) {
 			public string $extension = "PDO_OCI";
 			public $_current_db;
 
-			function connect(string $server, string $username, string $password): bool {
-				$this->dsn("oci:dbname=//$server;charset=AL32UTF8", $username, $password);
-				return true;
+			function attach(?string $server, string $username, string $password): string {
+				return $this->dsn("oci:dbname=//$server;charset=AL32UTF8", $username, $password);
 			}
 
 			function select_db(string $database): bool {
@@ -193,10 +191,7 @@ if (isset($_GET["oracle"])) {
 
 	function connect($credentials) {
 		$connection = new Db;
-		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
-			return $connection;
-		}
-		return $connection->error;
+		return ($connection->attach($credentials[0], $credentials[1], $credentials[2]) ?: $connection);
 	}
 
 	function get_databases($flush) {

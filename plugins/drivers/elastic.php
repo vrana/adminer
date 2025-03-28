@@ -61,14 +61,14 @@ if (isset($_GET["elastic"])) {
 				}
 			}
 
-			function connect(string $server, string $username, string $password): bool {
+			function attach(?string $server, string $username, string $password): string {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
 				$this->url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
 				$return = $this->rootQuery('');
 				if ($return) {
 					$this->server_info = $return['version']['number'];
 				}
-				return (bool) $return;
+				return ($return ? '' : $this->error);
 			}
 
 			function select_db(string $database): bool {
@@ -290,15 +290,11 @@ if (isset($_GET["elastic"])) {
 		if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
 			return lang('Invalid server.');
 		}
-		if ($password != "" && $connection->connect($server, $username, "")) {
+		if ($password != "" && $connection->attach($server, $username, "")) {
 			return lang('Database does not support password.');
 		}
 
-		if ($connection->connect($server, $username, $password)) {
-			return $connection;
-		}
-
-		return $connection->error;
+		return ($connection->attach($server, $username, $password) ?: $connection);
 	}
 
 	function support($feature) {

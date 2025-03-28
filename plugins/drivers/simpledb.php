@@ -10,6 +10,10 @@ if (isset($_GET["simpledb"])) {
 		class Db extends SqlDb {
 			public string $extension = "SimpleXML", $server_info = '2009-04-15', $timeout, $next;
 
+			function attach(?string $server, string $username, string $password): string {
+				return '';
+			}
+
 			function select_db(string $database): bool {
 				return ($database == "domain");
 			}

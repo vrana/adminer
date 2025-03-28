@@ -12,7 +12,7 @@ if (isset($_GET["mongo"])) {
 			public \MongoDB\Driver\Manager $_link;
 			public $_db, $_db_name;
 
-			function connect(string $server, string $username, string $password): bool {
+			function attach(?string $server, string $username, string $password): string {
 				$options = array();
 				if ($username . $password != "") {
 					$options["username"] = $username;
@@ -27,6 +27,7 @@ if (isset($_GET["mongo"])) {
 				}
 				$this->_link = new \MongoDB\Driver\Manager("mongodb://$server", $options);
 				$this->executeDbCommand($options["db"], array('ping' => 1));
+				return '';
 			}
 
 			function executeCommand($command) {
@@ -435,11 +436,7 @@ if (isset($_GET["mongo"])) {
 		if ($server == "") {
 			$server = "localhost:27017";
 		}
-		$connection->connect($server, $username, $password);
-		if ($connection->error) {
-			return $connection->error;
-		}
-		return $connection;
+		return ($connection->attach($server, $username, $password) ?: $connection);
 	}
 
 	function alter_indexes($table, $alter) {

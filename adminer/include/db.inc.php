@@ -13,8 +13,10 @@ abstract class SqlDb {
 	public string $error; // last error message
 	/** @var Result|bool */ protected $multi; // used for multiquery
 
-	/** Connect to server */
-	abstract function connect(string $server, string $username, string $password): bool;
+	/** Connect to server
+	* @return string error message
+	*/
+	abstract function attach(?string $server, string $username, string $password): string;
 
 	/** Quote string to use in SQL
 	* @return string escaped string enclosed in '

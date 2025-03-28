@@ -8,16 +8,18 @@ if (extension_loaded('pdo')) {
 
 		/** Connect to server using DSN
 		* @param mixed[] $options
+		* @return string error message
 		*/
-		function dsn(string $dsn, string $username, string $password, array $options = array()): void {
+		function dsn(string $dsn, string $username, string $password, array $options = array()): string {
 			$options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_SILENT;
 			$options[\PDO::ATTR_STATEMENT_CLASS] = array('Adminer\PdoResult');
 			try {
 				$this->pdo = new \PDO($dsn, $username, $password, $options);
 			} catch (\Exception $ex) {
-				auth_error(h($ex->getMessage()));
+				return $ex->getMessage();
 			}
 			$this->server_info = @$this->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION);
+			return '';
 		}
 
 		function quote(string $string): string {

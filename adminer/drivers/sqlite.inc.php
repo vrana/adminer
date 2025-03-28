@@ -11,11 +11,11 @@ if (isset($_GET["sqlite"])) {
 			public string $extension = "SQLite3";
 			private $link;
 
-			function connect(string $filename, string $username = '', string $password = ''): bool {
+			function attach(?string $filename, string $username, string $password): string {
 				$this->link = new \SQLite3($filename);
 				$version = $this->link->version();
 				$this->server_info = $version["versionString"];
-				return true;
+				return '';
 			}
 
 			function query(string $query, bool $unbuffered = false) {
@@ -75,11 +75,11 @@ if (isset($_GET["sqlite"])) {
 		abstract class SqliteDb extends PdoDb {
 			public string $extension = "PDO_SQLite";
 
-			function connect(string $filename, string $username = '', string $password = ''): bool {
+			function attach(?string $filename, string $username, string $password): string {
 				$this->dsn(DRIVER . ":$filename", "", "");
 				$this->query("PRAGMA foreign_keys = 1");
 				$this->query("PRAGMA busy_timeout = 500");
-				return true;
+				return '';
 			}
 		}
 
@@ -87,16 +87,16 @@ if (isset($_GET["sqlite"])) {
 
 	if (class_exists('Adminer\SqliteDb')) {
 		class Db extends SqliteDb {
-			function connect(string $filename, string $username = '', string $password = ''): bool {
-				parent::connect($filename);
+			function attach(?string $filename, string $username, string $password): string {
+				parent::attach($filename, $username, $password);
 				$this->query("PRAGMA foreign_keys = 1");
 				$this->query("PRAGMA busy_timeout = 500");
-				return true;
+				return '';
 			}
 
 			function select_db(string $filename): bool {
 				if (is_readable($filename) && $this->query("ATTACH " . $this->quote(preg_match("~(^[/\\\\]|:)~", $filename) ? $filename : dirname($_SERVER["SCRIPT_FILENAME"]) . "/$filename") . " AS a")) {
-					return self::connect($filename);
+					return !self::attach($filename, '', '');
 				}
 				return false;
 			}
@@ -172,8 +172,7 @@ if (isset($_GET["sqlite"])) {
 			return lang('Database does not support password.');
 		}
 		$connection = new Db;
-		$connection->connect(":memory:", "", "");
-		return $connection;
+		return ($connection->attach(":memory:", "", "") ?: $connection);
 	}
 
 	function get_databases($flush) {
@@ -369,7 +368,7 @@ if (isset($_GET["sqlite"])) {
 		}
 		try {
 			$link = new Db();
-			$link->connect($db);
+			$link->attach($db, '', '');
 		} catch (\Exception $ex) {
 			$connection->error = $ex->getMessage();
 			return false;
@@ -382,7 +381,7 @@ if (isset($_GET["sqlite"])) {
 
 	function drop_databases($databases) {
 		global $connection;
-		$connection->connect(":memory:"); // to unlock file, doesn't work in PDO on Windows
+		$connection->attach(":memory:", '', ''); // to unlock file, doesn't work in PDO on Windows
 		foreach ($databases as $db) {
 			if (!@unlink($db)) {
 				$connection->error = lang('File exists.');
@@ -397,7 +396,7 @@ if (isset($_GET["sqlite"])) {
 		if (!check_sqlite_name($name)) {
 			return false;
 		}
-		$connection->connect(":memory:");
+		$connection->attach(":memory:", '', '');
 		$connection->error = lang('File exists.');
 		return @rename(DB, $name);
 	}
