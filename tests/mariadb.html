@@ -10,7 +10,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Login</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php</td><td></td></tr>
+<tr><td>open</td><td>/adminer/</td><td></td></tr>
 <tr><td>select</td><td>name=lang</td><td>label=English</td></tr>
 <tr><td>clickAndWait</td><td>css=#lang &gt; input[type="submit"]</td><td></td></tr>
 <tr><td>type</td><td>id=username</td><td>ODBC</td></tr>
@@ -19,7 +19,7 @@
 <tr><td>clickAndWait</td><td>//input[@value='Login']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>MariaDB</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=SQL command</td><td></td></tr>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;sql=DROP+DATABASE+IF+EXISTS+adminer_test</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;sql=DROP+DATABASE+IF+EXISTS+adminer_test</td><td></td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Execute']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Query executed OK</td><td></td></tr>
 </tbody></table>
@@ -27,7 +27,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Create database</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Create database</td><td></td></tr>
 <tr><td>type</td><td>name</td><td>adminer_test</td></tr>
 <tr><td>select</td><td>collation</td><td>label=utf8mb4_general_ci</td></tr>
@@ -38,7 +38,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Create table</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Create table</td><td></td></tr>
 <tr><td>type</td><td>name</td><td>interprets</td></tr>
 <tr><td>select</td><td>Engine</td><td>label=InnoDB</td></tr>
@@ -59,7 +59,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Create index</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;table=interprets</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;table=interprets</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Alter indexes</td><td></td></tr>
 <tr><td>select</td><td>indexes[2][type]</td><td>label=PRIMARY</td></tr>
 <tr><td>select</td><td>indexes[2][columns][1]</td><td>label=name</td></tr>
@@ -74,7 +74,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Partitioning</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;table=interprets</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;table=interprets</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Alter table</td><td></td></tr>
 <tr><td>select</td><td>partition_by</td><td>label=HASH</td></tr>
 <tr><td>click</td><td>link=Partition by</td><td></td></tr>
@@ -96,7 +96,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Create table 2</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;table=interprets</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;table=interprets</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Create table</td><td></td></tr>
 <tr><td>type</td><td>name</td><td>albums</td></tr>
 <tr><td>type</td><td>fields[1][field]</td><td>id</td></tr>
@@ -118,7 +118,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Foreign key</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;table=albums</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;table=albums</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Add foreign key</td><td></td></tr>
 <tr><td>selectAndWait</td><td>table</td><td>label=interprets</td></tr>
 <tr><td>select</td><td>source[0]</td><td>label=interpret</td></tr>
@@ -129,7 +129,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Alter table</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;table=interprets</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;table=interprets</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Alter table</td><td></td></tr>
 <tr><td>click</td><td>add[2]</td><td></td></tr>
 <tr><td>type</td><td>fields[2.1][field]</td><td>albums</td></tr>
@@ -145,7 +145,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Create trigger</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;trigger=albums</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;trigger=albums</td><td></td></tr>
 <tr><td>select</td><td>Timing</td><td>label=AFTER</td></tr>
 <tr><td>runScript</td><td>document.querySelector('[name="Statement"]').value = 'UPDATE interprets SET albums = albums + 1 WHERE id = NEW.interpret'</td><td></td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
@@ -155,7 +155,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Check constraints</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;table=albums</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;table=albums</td><td></td></tr>
 <tr><td>click</td><td>link=Create check</td><td></td></tr>
 <tr><td>type</td><td>name=name</td><td>albums_interpret_check</td></tr>
 <tr><td>runScript</td><td>document.querySelector('[name="clause"]').value = 'interpret > 0'</td><td></td></tr>
@@ -165,7 +165,7 @@
 <tr><td>type</td><td>fields[interpret]</td><td>0</td></tr>
 <tr><td>click</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>CONSTRAINT `albums_interpret_check` failed for `adminer_test`.`albums`</td><td></td></tr>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;check=albums&amp;name=albums_interpret_check</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;check=albums&amp;name=albums_interpret_check</td><td></td></tr>
 <tr><td>verifyTextPresent<td>`interpret` > 0</td><td></td></tr>
 <tr><td>chooseOkOnNextConfirmation</td><td>Drop albums_interpret_check?</td><td></td></tr>
 <tr><td>click</td><td>name=drop</td><td></td></tr>
@@ -175,7 +175,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Create view</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;view=</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;view=</td><td></td></tr>
 <tr><td>runScript</td><td>document.querySelector('[name="select"]').value = 'SELECT albums.id, albums.title, interprets.name FROM albums LEFT JOIN interprets ON albums.interpret = interprets.id'</td><td></td></tr>
 <tr><td>type</td><td>name</td><td>albums_interprets</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
@@ -185,29 +185,29 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Invalid table</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;table=invalid</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;table=invalid</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>No tables.</td><td></td></tr>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;create=invalid</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;create=invalid</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>No tables.</td><td></td></tr>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;select=invalid</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;select=invalid</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Unable to select the table:</td><td></td></tr>
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Schema</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;schema=</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;schema=</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Permanent link</td><td></td></tr>
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Insert</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;edit=interprets</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;edit=interprets</td><td></td></tr>
 <tr><td>type</td><td>fields[name]</td><td>Michael Jackson</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Item 1 has been inserted.</td><td></td></tr>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;edit=albums</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;edit=albums</td><td></td></tr>
 <tr><td>type</td><td>fields[interpret]</td><td>1</td></tr>
 <tr><td>type</td><td>fields[title]</td><td>Dangerous</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
@@ -217,7 +217,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Clone</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
 <tr><td>click</td><td>check[]</td><td></td></tr>
 <tr><td>clickAndWait</td><td>clone</td><td></td></tr>
 <tr><td>type</td><td>fields[title]</td><td>Black and White</td></tr>
@@ -228,7 +228,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Explain</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Edit</td><td></td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Execute']</td><td></td></tr>
 <tr><td>click</td><td>link=Explain</td><td></td></tr>
@@ -238,7 +238,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Reference</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=1</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Michael Jackson</td><td></td></tr>
 </tbody></table>
@@ -246,7 +246,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Update</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;edit=albums&amp;where%5Bid%5D=2</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;edit=albums&amp;where%5Bid%5D=2</td><td></td></tr>
 <tr><td>type</td><td>fields[title]</td><td>Black or White</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Item has been updated.</td><td></td></tr>
@@ -255,7 +255,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Delete</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
 <tr><td>click</td><td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td><td></td></tr>
 <tr><td>waitForChecked</td><td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td><td></td></tr>
 <tr><td>chooseOkOnNextConfirmation</td><td>Are you sure?</td><td></td></tr>
@@ -266,7 +266,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Truncate</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;select=albums</td><td></td></tr>
 <tr><td>click</td><td>all</td><td></td></tr>
 <tr><td>waitForChecked</td><td>all</td><td></td></tr>
 <tr><td>chooseOkOnNextConfirmation</td><td>Are you sure?</td><td></td></tr>
@@ -277,7 +277,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Privileges</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;user=</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;user=</td><td></td></tr>
 <tr><td>type</td><td>user</td><td>adminer_test</td></tr>
 <tr><td>type</td><td>objects[0]</td><td>adminer_test.*</td></tr>
 <tr><td>click</td><td>grants[0][ALTER]</td><td></td></tr>
@@ -305,14 +305,14 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Process list</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;processlist=</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;processlist=</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>SHOW FULL PROCESSLIST</td><td></td></tr>
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Export</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;dump=</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;dump=</td><td></td></tr>
 <tr><td>click</td><td>output</td><td></td></tr>
 <tr><td>click</td><td>format</td><td></td></tr>
 <tr><td>select</td><td>table_style</td><td>label=DROP+CREATE</td></tr>
@@ -327,7 +327,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Events</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;event=</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;event=</td><td></td></tr>
 <tr><td>type</td><td>EVENT_NAME</td><td>no_albums</td></tr>
 <tr><td>select</td><td>INTERVAL_FIELD</td><td>label=DAY</td></tr>
 <tr><td>type</td><td>INTERVAL_VALUE</td><td>1</td></tr>
@@ -344,7 +344,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Procedures</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;procedure=</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;procedure=</td><td></td></tr>
 <tr><td>clickAndWait</td><td>add[0]</td><td></td></tr>
 <tr><td>type</td><td>fields[1][field]</td><td>interpret_name</td></tr>
 <tr><td>select</td><td>fields[1][type]</td><td>label=varchar</td></tr>
@@ -371,7 +371,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3" data-tags="">Generated columns</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;create=</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;create=</td><td></td></tr>
 <tr><td>type</td><td>name=name</td><td>generated</td></tr>
 <tr><td>type</td><td>name=fields[1][field]</td><td>normal</td></tr>
 <tr><td>type</td><td>name=fields[1.1][field]</td><td>virtual</td></tr>
@@ -400,23 +400,23 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Variables</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;variables=</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;variables=</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>basedir</td><td></td></tr>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;status=</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;status=</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Uptime</td><td></td></tr>
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">History</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;sql=</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC&amp;sql=</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>DROP DATABASE IF EXISTS adminer_test</td><td></td></tr>
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Logout</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?server=localhost:3307&amp;username=ODBC</td><td></td></tr>
 <tr><td>clickAndWait</td><td>logout</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Logout successful.</td><td></td></tr>
 <tr><td>open</td><td>/coverage.php</td><td></td></tr>

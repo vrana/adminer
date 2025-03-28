@@ -11,11 +11,11 @@ echo "Paste test created for MySQL:\n";
 $input = stream_get_contents(STDIN);
 
 $urls = array( // this works for tests inside db, not e.g. for server overview
-	"mysql" => "/adminer.php?username=ODBC&db=adminer_test",
-	"mariadb" => "/adminer.php?server=localhost:3307&username=ODBC&db=adminer_test",
-	"pgsql" => "/adminer.php?pgsql=&username=ODBC&db=adminer_test&ns=public",
-	"cockroachdb" => "/adminer.php?pgsql=localhost:26257&username=ODBC&db=adminer_test&ns=public",
-	"mssql" => "/adminer.php?mssql=&username=ODBC&db=adminer_test&ns=dbo",
+	"mysql" => "/adminer/?username=ODBC&db=adminer_test",
+	"mariadb" => "/adminer/?server=localhost:3307&username=ODBC&db=adminer_test",
+	"pgsql" => "/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public",
+	"cockroachdb" => "/adminer/?pgsql=localhost:26257&username=ODBC&db=adminer_test&ns=public",
+	"mssql" => "/adminer/?mssql=&username=ODBC&db=adminer_test&ns=dbo",
 	"sqlite" => "/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite",
 );
 
