@@ -6,7 +6,7 @@
 */
 function syntaxHighlighting(version, vendor) {
 	if (window.jush) {
-		jush.create_links = ' target="_blank" rel="noreferrer noopener"';
+		jush.create_links = 'target="_blank" rel="noreferrer noopener"';
 		if (version) {
 			for (let key in jush.urls) {
 				let obj = jush.urls;
