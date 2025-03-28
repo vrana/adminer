@@ -38,7 +38,7 @@ function lang_ids($match) {
 
 function put_file($match) {
 	global $project, $vendor;
-	if (basename($match[2]) == '$LANG.inc.php') {
+	if (preg_match('~LANG~', $match[2])) {
 		return $match[0]; // processed later
 	}
 	$return = file_get_contents(__DIR__ . "/$project/$match[2]");
@@ -195,7 +195,7 @@ function get_translations($lang) {
 }
 
 if (!$translations) {
-	$translations = get_translations($LANG);
+	$translations = get_translations(LANG);
 	$_SESSION["translations"] = $translations;
 }
 ';
@@ -342,13 +342,13 @@ if ($project == "editor") {
 	$file = preg_replace('~compile_file\(\'\.\./(externals/jush/modules/jush\.js)[^)]+\)~', "''", $file);
 }
 $file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
-$file = preg_replace_callback('~\b(include|require) "([^"]*\$LANG.inc.php)";~', 'put_file_lang', $file);
+$file = preg_replace_callback('~\b(include|require) "([^"]*" . LANG . ".inc.php)";~', 'put_file_lang', $file);
 $file = str_replace("\r", "", $file);
 if ($_SESSION["lang"]) {
 	// single language version
 	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
 	$file = str_replace("switch_lang();", "", $file);
-	$file = str_replace('<?php echo $LANG; ?>', $_SESSION["lang"], $file);
+	$file = str_replace('<?php echo LANG; ?>', $_SESSION["lang"], $file);
 }
 $file = str_replace('echo script_src("static/editing.js");' . "\n", "", $file); // merged into functions.js
 $file = preg_replace('~\s+echo script_src\("\.\./externals/jush/modules/jush-(textarea|txt|js|" \. JUSH \. ")\.js"\);~', '', $file); // merged into jush.js

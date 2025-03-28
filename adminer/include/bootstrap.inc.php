@@ -39,7 +39,7 @@ if ($_GET["script"] == "version") {
 	exit;
 }
 
-global $adminer, $connection, $driver, $drivers, $error, $HTTPS, $LANG, $langs, $permanent, $has_token, $token, $translations; // allows including Adminer inside a function
+global $adminer, $connection, $driver, $drivers, $error, $HTTPS, $langs, $permanent, $has_token, $token, $translations; // allows including Adminer inside a function
 
 if (!$_SERVER["REQUEST_URI"]) { // IIS 5 compatibility
 	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"];
@@ -69,7 +69,7 @@ if (function_exists("get_magic_quotes_runtime") && get_magic_quotes_runtime()) {
 @ini_set("precision", '15'); // @ - can be disabled, 15 - internal PHP precision
 
 include "../adminer/include/lang.inc.php";
-include "../adminer/lang/$LANG.inc.php";
+include "../adminer/lang/" . LANG . ".inc.php";
 include "../adminer/include/db.inc.php";
 include "../adminer/include/pdo.inc.php";
 include "../adminer/include/driver.inc.php";

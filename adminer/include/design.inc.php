@@ -7,7 +7,7 @@ namespace Adminer;
 * @param string $title2 used after colon in title and heading, should be HTML escaped
 */
 function page_header(string $title, string $error = "", $breadcrumb = array(), string $title2 = ""): void {
-	global $LANG, $adminer, $drivers;
+	global $adminer, $drivers;
 	page_headers();
 	if (is_ajax() && $error) {
 		page_messages($error);
@@ -21,7 +21,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	// initial-scale=1 is the default but Chrome 134 on iOS is not able to zoom out without it
 	?>
 <!DOCTYPE html>
-<html lang="<?php echo $LANG; ?>" dir="<?php echo lang('ltr'); ?>">
+<html lang="<?php echo LANG; ?>" dir="<?php echo lang('ltr'); ?>">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width,initial-scale=1">

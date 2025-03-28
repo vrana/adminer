@@ -51,30 +51,24 @@ $langs = array(
 	'zh-tw' => '繁體中文', // http://tzangms.com
 );
 
-/** Get current language */
-function get_lang(): string {
-	global $LANG;
-	return $LANG;
-}
-
 /** Translate string
 * @param literal-string $idf
 * @param float|string $number
 */
 function lang(string $idf, $number = null): string {
 	// this is matched by compile.php
-	global $LANG, $translations;
+	global $translations;
 	$translation = ($translations[$idf] ?: $idf);
 	if (is_array($translation)) {
 		// this is matched by compile.php
 		$pos = ($number == 1 ? 0
-			: ($LANG == 'cs' || $LANG == 'sk' ? ($number && $number < 5 ? 1 : 2) // different forms for 1, 2-4, other
-			: ($LANG == 'fr' ? (!$number ? 0 : 1) // different forms for 0-1, other
-			: ($LANG == 'pl' ? ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2) // different forms for 1, 2-4 except 12-14, other
-			: ($LANG == 'sl' ? ($number % 100 == 1 ? 0 : ($number % 100 == 2 ? 1 : ($number % 100 == 3 || $number % 100 == 4 ? 2 : 3))) // different forms for 1, 2, 3-4, other
-			: ($LANG == 'lt' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 12-19, other
-			: ($LANG == 'lv' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number ? 1 : 2)) // different forms for 1 except 11, other, 0
-			: (in_array($LANG, array('bs', 'ru', 'sr', 'uk')) ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1 except 11, 2-4 except 12-14, other
+			: (LANG == 'cs' || LANG == 'sk' ? ($number && $number < 5 ? 1 : 2) // different forms for 1, 2-4, other
+			: (LANG == 'fr' ? (!$number ? 0 : 1) // different forms for 0-1, other
+			: (LANG == 'pl' ? ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2) // different forms for 1, 2-4 except 12-14, other
+			: (LANG == 'sl' ? ($number % 100 == 1 ? 0 : ($number % 100 == 2 ? 1 : ($number % 100 == 3 || $number % 100 == 4 ? 2 : 3))) // different forms for 1, 2, 3-4, other
+			: (LANG == 'lt' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 12-19, other
+			: (LANG == 'lv' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number ? 1 : 2)) // different forms for 1 except 11, other, 0
+			: (in_array(LANG, array('bs', 'ru', 'sr', 'uk')) ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1 except 11, 2-4 except 12-14, other
 			: 1)))))))) // different forms for 1, other
 		; // http://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
 		$translation = $translation[$pos];
@@ -90,9 +84,9 @@ function lang(string $idf, $number = null): string {
 }
 
 function switch_lang(): void {
-	global $LANG, $langs;
+	global $langs;
 	echo "<form action='' method='post'>\n<div id='lang'>";
-	echo lang('Language') . ": " . html_select("lang", $langs, $LANG, "this.form.submit();");
+	echo lang('Language') . ": " . html_select("lang", $langs, LANG, "this.form.submit();");
 	echo " <input type='submit' value='" . lang('Use') . "' class='hidden'>\n";
 	echo input_token(get_token()); // $token may be empty in auth.inc.php
 	echo "</div>\n</form>\n";
@@ -130,3 +124,5 @@ if (isset($langs[$_COOKIE["adminer_lang"]])) {
 		}
 	}
 }
+
+define('Adminer\LANG', $LANG);
