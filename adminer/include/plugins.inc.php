@@ -2,11 +2,12 @@
 namespace Adminer;
 
 class Plugins {
+	/** @var true[] */ private static array $append = array('dumpFormat' => true, 'dumpOutput' => true, 'editRowPrint' => true, 'editFunctions' => true); // these hooks expect the value to be appended to the result
+
 	/** @var list<object> @visibility protected(set) */ public array $plugins;
 	/** @visibility protected(set) */ public string $error = ''; // HTML
-	public $operators; //! delete
-	private $hooks = array();
-	private $append;
+	/** @var ?list<string> */ public ?array $operators; //! delete
+	/** @var list<object>[] */ private array $hooks = array();
 
 	/** Register plugins
 	* @param ?list<object> $plugins object instances or null to autoload plugins from adminer-plugins/
@@ -45,7 +46,6 @@ class Plugins {
 			}
 		}
 		$this->plugins = $plugins;
-		$this->append = array_flip(array('dumpFormat', 'dumpOutput', 'editRowPrint', 'editFunctions')); // these hooks expect the value to be appended to the result
 
 		$adminer = new Adminer;
 		$plugins[] = $adminer;
@@ -60,7 +60,12 @@ class Plugins {
 		}
 	}
 
-	function __call($name, $params) {
+	/**
+	* @param literal-string $name
+	* @param mixed[] $params
+	* @return mixed
+	*/
+	function __call($name, array $params) {
 		$args = array();
 		foreach ($params as $key => $val) {
 			// some plugins accept params by reference - we don't need to propage it outside, just to the other plugins
@@ -70,7 +75,7 @@ class Plugins {
 		foreach ($this->hooks[$name] as $plugin) {
 			$value = call_user_func_array(array($plugin, $name), $args);
 			if ($value !== null) {
-				if (!isset($this->append[$name])) { // non-null value from non-appending method short-circuits the other plugins
+				if (!self::$append[$name]) { // non-null value from non-appending method short-circuits the other plugins
 					return $value;
 				}
 				$return = $value + (array) $return;

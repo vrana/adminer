@@ -13,7 +13,6 @@ parameters:
 		- "~^Function (set_magic_quotes_runtime|mysql_)~" # PHP < 7 functions
 		- "~an unknown class OCI-?Lob~" # this looks like PHPStan bug
 		- "~^Variable \\$(adminer|connection|driver|drivers|error|HTTPS|LANG|langs|permanent|has_token|token|translations|VERSION) might not be defined~" # declared in bootstrap.inc.php
-		- "~^Method Adminer\\\\Plugins::\\w+\\(\\) with return type void~" # we use the same pattern for all methods
 		- "~expects int, float given~" # this will work
 		- "~expects bool~" # truthy values
 		- "~fread expects int<1, max>, 100000~" # 1e6
@@ -38,8 +37,6 @@ parameters:
 		- identifier: booleanAnd.leftAlwaysTrue
 		- identifier: booleanAnd.rightAlwaysTrue
 		- identifier: booleanAnd.rightAlwaysFalse
-		- identifier: booleanOr.alwaysTrue
-		- identifier: booleanOr.leftAlwaysTrue
 		- identifier: ternary.alwaysTrue
 		- identifier: if.alwaysTrue
 		- identifier: while.alwaysTrue
