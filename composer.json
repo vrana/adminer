@@ -1,5 +1,6 @@
 {
     "name": "vrana/adminer",
+    "version": "5.1.0",
     "description": "Database management in a single PHP file.",
     "homepage": "https://www.adminer.org/",
     "keywords": [
