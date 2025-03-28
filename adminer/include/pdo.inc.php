@@ -20,11 +20,11 @@ if (extension_loaded('pdo')) {
 			$this->server_info = @$this->pdo->getAttribute(\PDO::ATTR_SERVER_VERSION);
 		}
 
-		function quote($string) {
+		function quote(string $string): string {
 			return $this->pdo->quote($string);
 		}
 
-		function query($query, $unbuffered = false) {
+		function query(string $query, bool $unbuffered = false) {
 			/** @var Result|bool */
 			$result = $this->pdo->query($query);
 			$this->error = "";
@@ -54,7 +54,7 @@ if (extension_loaded('pdo')) {
 			return true;
 		}
 
-		function next_result() {
+		function next_result(): bool {
 			/** @var PdoResult|bool */
 			$result = $this->multi;
 			if (!is_object($result)) {
@@ -68,15 +68,15 @@ if (extension_loaded('pdo')) {
 	class PdoResult extends \PDOStatement {
 		public $_offset = 0, $num_rows;
 
-		function fetch_assoc() {
+		function fetch_assoc(): array {
 			return $this->fetch(\PDO::FETCH_ASSOC);
 		}
 
-		function fetch_row() {
+		function fetch_row(): array {
 			return $this->fetch(\PDO::FETCH_NUM);
 		}
 
-		function fetch_field() {
+		function fetch_field(): object {
 			$row = (object) $this->getColumnMeta($this->_offset++);
 			$type = $row->pdo_type;
 			$row->type = ($type == \PDO::PARAM_INT ? 0 : 15);

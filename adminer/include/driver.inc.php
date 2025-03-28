@@ -46,7 +46,7 @@ abstract class SqlDriver {
 	/** Get structured types
 	* @return list<string>[]|list<string> [$description => [$type, ...], ...]
 	*/
-	function structuredTypes() {
+	function structuredTypes(): array {
 		return array_map('array_keys', $this->types);
 	}
 

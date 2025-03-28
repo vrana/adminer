@@ -52,23 +52,23 @@ if (isset($_GET["clickhouse"])) {
 				return (bool) preg_match('~^(select|show)~i', $query);
 			}
 
-			function query($query, $unbuffered = false) {
+			function query(string $query, bool $unbuffered = false) {
 				return $this->rootQuery($this->_db, $query);
 			}
 
-			function connect($server, $username, $password) {
+			function connect(string $server, string $username, string $password): bool {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
 				$this->url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
 				$return = $this->query('SELECT 1');
 				return (bool) $return;
 			}
 
-			function select_db($database) {
+			function select_db(string $database): bool {
 				$this->_db = $database;
 				return true;
 			}
 
-			function quote($string) {
+			function quote(string $string): string {
 				return "'" . addcslashes($string, "\\'") . "'";
 			}
 		}
@@ -91,19 +91,19 @@ if (isset($_GET["clickhouse"])) {
 				reset($this->rows);
 			}
 
-			function fetch_assoc() {
+			function fetch_assoc(): array {
 				$row = current($this->rows);
 				next($this->rows);
 				return $row === false ? false : array_combine($this->columns, $row);
 			}
 
-			function fetch_row() {
+			function fetch_row(): array {
 				$row = current($this->rows);
 				next($this->rows);
 				return $row;
 			}
 
-			function fetch_field() {
+			function fetch_field(): object {
 				$column = $this->offset++;
 				$return = new \stdClass;
 				if ($column < count($this->columns)) {
@@ -123,7 +123,7 @@ if (isset($_GET["clickhouse"])) {
 		public $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
 		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 
-		function __construct($connection) {
+		function __construct(Db $connection) {
 			parent::__construct($connection);
 			$this->types = array( //! arrays
 				lang('Numbers') => array(
@@ -138,14 +138,14 @@ if (isset($_GET["clickhouse"])) {
 			);
 		}
 
-		function delete($table, $queryWhere, $limit = 0) {
+		function delete(string $table, string $queryWhere, int $limit = 0) {
 			if ($queryWhere === '') {
 				$queryWhere = 'WHERE 1=1';
 			}
 			return queries("ALTER TABLE " . table($table) . " DELETE $queryWhere");
 		}
 
-		function update($table, $set, $queryWhere, $limit = 0, $separator = "\n") {
+		function update(string $table, array $set, string $queryWhere, int $limit = 0, string $separator = "\n") {
 			$values = array();
 			foreach ($set as $key => $val) {
 				$values[] = "$key = $val";
@@ -259,10 +259,6 @@ if (isset($_GET["clickhouse"])) {
 	function db_collation($db, $collations) {
 	}
 
-	function engines() {
-		return array('MergeTree');
-	}
-
 	function logged_user() {
 		$adminer = adminer();
 		$credentials = $adminer->credentials();
@@ -355,7 +351,7 @@ if (isset($_GET["clickhouse"])) {
 		return h($connection->error);
 	}
 
-	function types() {
+	function types(): array {
 		return array();
 	}
 

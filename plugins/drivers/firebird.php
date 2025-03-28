@@ -14,7 +14,7 @@ if (isset($_GET["firebird"])) {
 		class Db extends SqlDb {
 			public $extension = "Firebird", $_link;
 
-			function connect($server, $username, $password) {
+			function connect(string $server, string $username, string $password): bool {
 				$this->_link = ibase_connect($server, $username, $password);
 				if ($this->_link) {
 					$url_parts = explode(':', $server);
@@ -27,15 +27,15 @@ if (isset($_GET["firebird"])) {
 				return (bool) $this->_link;
 			}
 
-			function quote($string) {
+			function quote(string $string): string {
 				return "'" . str_replace("'", "''", $string) . "'";
 			}
 
-			function select_db($database) {
+			function select_db(string $database): bool {
 				return ($database == "domain");
 			}
 
-			function query($query, $unbuffered = false) {
+			function query(string $query, bool $unbuffered = false) {
 				$result = ibase_query($this->_link, $query);
 				if (!$result) {
 					$this->errno = ibase_errcode();
@@ -60,15 +60,15 @@ if (isset($_GET["firebird"])) {
 				// $this->num_rows = ibase_num_rows($result);
 			}
 
-			function fetch_assoc() {
+			function fetch_assoc(): array {
 				return ibase_fetch_assoc($this->result);
 			}
 
-			function fetch_row() {
+			function fetch_row(): array {
 				return ibase_fetch_row($this->result);
 			}
 
-			function fetch_field() {
+			function fetch_field(): object {
 				$field = ibase_field_info($this->result, $this->offset++);
 				return (object) array(
 					'name' => $field['name'],
@@ -260,7 +260,7 @@ ORDER BY RDB$INDEX_SEGMENTS.RDB$FIELD_POSITION';
 		return h($connection->error);
 	}
 
-	function types() {
+	function types(): array {
 		return array();
 	}
 

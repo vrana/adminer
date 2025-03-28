@@ -18,7 +18,7 @@ if (isset($_GET["pgsql"])) {
 				$this->error = $error;
 			}
 
-			function connect($server, $username, $password) {
+			function connect(string $server, string $username, string $password): bool {
 				global $adminer;
 				$db = $adminer->database();
 				set_error_handler(array($this, '_error'));
@@ -40,18 +40,18 @@ if (isset($_GET["pgsql"])) {
 				return (bool) $this->link;
 			}
 
-			function quote($string) {
+			function quote(string $string): string {
 				return (function_exists('pg_escape_literal')
 					? pg_escape_literal($this->link, $string) // available since PHP 5.4.4
 					: "'" . pg_escape_string($this->link, $string) . "'"
 				);
 			}
 
-			function value($val, $field) {
+			function value(string $val, array $field): string {
 				return ($field["type"] == "bytea" && $val !== null ? pg_unescape_bytea($val) : $val);
 			}
 
-			function select_db($database) {
+			function select_db(string $database): bool {
 				global $adminer;
 				if ($database == $adminer->database()) {
 					return $this->database;
@@ -67,7 +67,7 @@ if (isset($_GET["pgsql"])) {
 				$this->link = @pg_connect("$this->string dbname='postgres'");
 			}
 
-			function query($query, $unbuffered = false) {
+			function query(string $query, bool $unbuffered = false) {
 				$result = @pg_query($this->link, $query);
 				$this->error = "";
 				if (!$result) {
@@ -100,15 +100,15 @@ if (isset($_GET["pgsql"])) {
 				$this->num_rows = pg_num_rows($result);
 			}
 
-			function fetch_assoc() {
+			function fetch_assoc(): array {
 				return pg_fetch_assoc($this->result);
 			}
 
-			function fetch_row() {
+			function fetch_row(): array {
 				return pg_fetch_row($this->result);
 			}
 
-			function fetch_field() {
+			function fetch_field(): object {
 				$column = $this->offset++;
 				$return = new \stdClass;
 				$return->orgtable = pg_field_table($this->result, $column);
@@ -127,7 +127,7 @@ if (isset($_GET["pgsql"])) {
 		class Db extends PdoDb {
 			public $extension = "PDO_PgSQL", $timeout;
 
-			function connect($server, $username, $password) {
+			function connect(string $server, string $username, string $password): bool {
 				global $adminer;
 				$db = $adminer->database();
 				//! client_encoding is supported since 9.1, but we can't yet use min_version here
@@ -140,12 +140,12 @@ if (isset($_GET["pgsql"])) {
 				return true;
 			}
 
-			function select_db($database) {
+			function select_db(string $database): bool {
 				global $adminer;
 				return ($adminer->database() == $database);
 			}
 
-			function query($query, $unbuffered = false) {
+			function query(string $query, bool $unbuffered = false) {
 				$return = parent::query($query, $unbuffered);
 				if ($this->timeout) {
 					$this->timeout = 0;
@@ -174,7 +174,7 @@ if (isset($_GET["pgsql"])) {
 		public $functions = array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper");
 		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 
-		function __construct($connection) {
+		function __construct(Db $connection) {
 			parent::__construct($connection);
 			$this->types = array( //! arrays
 				lang('Numbers') => array("smallint" => 5, "integer" => 10, "bigint" => 19, "boolean" => 1, "numeric" => 0, "real" => 7, "double precision" => 16, "money" => 20),
@@ -205,7 +205,7 @@ if (isset($_GET["pgsql"])) {
 			}
 		}
 
-		function enumLength($field) {
+		function enumLength(array $field) {
 			$enum = $this->types[lang('User types')][$field["type"]];
 			return ($enum ? type_values($enum) : "");
 		}
@@ -214,14 +214,14 @@ if (isset($_GET["pgsql"])) {
 			$this->types[lang('User types')] = array_flip($types);
 		}
 
-		function insertReturning($table) {
+		function insertReturning(string $table): string {
 			$auto_increment = array_filter(fields($table), function ($field) {
 				return $field['auto_increment'];
 			});
 			return (count($auto_increment) == 1 ? " RETURNING " . idf_escape(key($auto_increment)) : "");
 		}
 
-		function insertUpdate($table, $rows, $primary) {
+		function insertUpdate(string $table, array $rows, array $primary) {
 			global $connection;
 			foreach ($rows as $set) {
 				$update = array();
@@ -242,13 +242,13 @@ if (isset($_GET["pgsql"])) {
 			return true;
 		}
 
-		function slowQuery($query, $timeout) {
+		function slowQuery(string $query, int $timeout) {
 			$this->conn->query("SET statement_timeout = " . (1000 * $timeout));
 			$this->conn->timeout = 1000 * $timeout;
 			return $query;
 		}
 
-		function convertSearch($idf, $val, $field) {
+		function convertSearch(string $idf, array $val, array $field): string {
 			$textTypes = "char|text";
 			if (strpos($val["op"], "LIKE") === false) {
 				$textTypes .= "|date|time(stamp)?|boolean|uuid|inet|cidr|macaddr|" . number_type();
@@ -257,7 +257,7 @@ if (isset($_GET["pgsql"])) {
 			return (preg_match("~$textTypes~", $field["type"]) ? $idf : "CAST($idf AS text)");
 		}
 
-		function quoteBinary($s) {
+		function quoteBinary(string $s): string {
 			return "'\\x" . bin2hex($s) . "'"; // available since PostgreSQL 8.1
 		}
 
@@ -265,7 +265,7 @@ if (isset($_GET["pgsql"])) {
 			return $this->conn->warnings();
 		}
 
-		function tableHelp($name, $is_view = false) {
+		function tableHelp(string $name, bool $is_view = false) {
 			$links = array(
 				"information_schema" => "infoschema",
 				"pg_catalog" => ($is_view ? "view" : "catalog"),
@@ -276,12 +276,12 @@ if (isset($_GET["pgsql"])) {
 			}
 		}
 
-		function supportsIndex($table_status) {
+		function supportsIndex(array $table_status): bool {
 			// returns true for "materialized view"
 			return $table_status["Engine"] != "view";
 		}
 
-		function hasCStyleEscapes() {
+		function hasCStyleEscapes(): bool {
 			static $c_style;
 			if ($c_style === null) {
 				$c_style = ($this->conn->result("SHOW standard_conforming_strings") == "off");
@@ -772,7 +772,7 @@ ORDER BY SPECIFIC_NAME');
 		}
 	}
 
-	function types() {
+	function types(): array {
 		return get_key_vals(
 			"SELECT oid, typname
 FROM pg_type

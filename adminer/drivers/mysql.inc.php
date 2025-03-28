@@ -54,7 +54,7 @@ if (!defined('Adminer\DRIVER')) {
 				return ($row ? $row[$field] : false);
 			}
 
-			function quote($string) {
+			function quote(string $string): string {
 				return "'" . $this->escape_string($string) . "'";
 			}
 		}
@@ -63,7 +63,7 @@ if (!defined('Adminer\DRIVER')) {
 		class Db extends SqlDb {
 			private resource $link;
 
-			function connect($server, $username, $password) {
+			function connect(string $server, string $username, string $password): bool {
 				if (ini_bool("mysql.allow_local_infile")) {
 					$this->error = lang('Disable %s or enable %s or %s extensions.', "'mysql.allow_local_infile'", "MySQLi", "PDO_MySQL");
 					return false;
@@ -95,15 +95,15 @@ if (!defined('Adminer\DRIVER')) {
 				return $this->query("SET NAMES $charset");
 			}
 
-			function quote($string) {
+			function quote(string $string): string {
 				return "'" . mysql_real_escape_string($string, $this->link) . "'";
 			}
 
-			function select_db($database) {
+			function select_db(string $database): bool {
 				return mysql_select_db($database, $this->link);
 			}
 
-			function query($query, $unbuffered = false) {
+			function query(string $query, bool $unbuffered = false) {
 				$result = @($unbuffered ? mysql_unbuffered_query($query, $this->link) : mysql_query($query, $this->link)); // @ - mute mysql.trace_mode
 				$this->error = "";
 				if (!$result) {
@@ -164,7 +164,7 @@ if (!defined('Adminer\DRIVER')) {
 		class Db extends PdoDb {
 			public $extension = "PDO_MySQL";
 
-			function connect($server, $username, $password) {
+			function connect(string $server, string $username, string $password): bool {
 				global $adminer;
 				$options = array(\PDO::MYSQL_ATTR_LOCAL_INFILE => false);
 				$ssl = $adminer->connectSsl();
@@ -195,12 +195,12 @@ if (!defined('Adminer\DRIVER')) {
 				return $this->query("SET NAMES $charset"); // charset in DSN is ignored before PHP 5.3.6
 			}
 
-			function select_db($database) {
+			function select_db(string $database): bool {
 				// database selection is separated from the connection so dbname in DSN can't be used
 				return $this->query("USE " . idf_escape($database));
 			}
 
-			function query($query, $unbuffered = false) {
+			function query(string $query, bool $unbuffered = false) {
 				$this->pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, !$unbuffered);
 				return parent::query($query, $unbuffered);
 			}
@@ -219,7 +219,7 @@ if (!defined('Adminer\DRIVER')) {
 		/** @var list<string> */ public array $functions = array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper");
 		/** @var list<string> */ public array $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 
-		function __construct($connection) {
+		function __construct(Db $connection) {
 			parent::__construct($connection);
 			$this->types = array(
 				lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "mediumint" => 8, "int" => 10, "bigint" => 20, "decimal" => 66, "float" => 12, "double" => 21),
@@ -257,18 +257,18 @@ if (!defined('Adminer\DRIVER')) {
 			}
 		}
 
-		function unconvertFunction($field) {
+		function unconvertFunction(array $field) {
 			return (preg_match("~binary~", $field["type"]) ? "<code class='jush-sql'>UNHEX</code>"
 				: ($field["type"] == "bit" ? doc_link(array('sql' => 'bit-value-literals.html'), "<code>b''</code>")
 				: (preg_match("~geometry|point|linestring|polygon~", $field["type"]) ? "<code class='jush-sql'>GeomFromText</code>"
 				: "")));
 		}
 
-		function insert($table, $set) {
+		function insert(string $table, array $set) {
 			return ($set ? parent::insert($table, $set) : queries("INSERT INTO " . table($table) . " ()\nVALUES ()"));
 		}
 
-		function insertUpdate($table, $rows, $primary) {
+		function insertUpdate(string $table, array $rows, array $primary) {
 			$columns = array_keys(reset($rows));
 			$prefix = "INSERT INTO " . table($table) . " (" . implode(", ", $columns) . ") VALUES\n";
 			$values = array();
@@ -293,7 +293,7 @@ if (!defined('Adminer\DRIVER')) {
 			return queries($prefix . implode(",\n", $values) . $suffix);
 		}
 
-		function slowQuery($query, $timeout) {
+		function slowQuery(string $query, int $timeout) {
 			if (min_version('5.7.8', '10.1.2')) {
 				if ($this->conn->flavor == 'maria') {
 					return "SET STATEMENT max_statement_time=$timeout FOR $query";
@@ -303,7 +303,7 @@ if (!defined('Adminer\DRIVER')) {
 			}
 		}
 
-		function convertSearch($idf, $val, $field) {
+		function convertSearch(string $idf, array $val, array $field): string {
 			return (preg_match('~char|text|enum|set~', $field["type"]) && !preg_match("~^utf8~", $field["collation"]) && preg_match('~[\x80-\xFF]~', $val['val'])
 				? "CONVERT($idf USING " . charset($this->conn) . ")"
 				: $idf
@@ -319,7 +319,7 @@ if (!defined('Adminer\DRIVER')) {
 			}
 		}
 
-		function tableHelp($name, $is_view = false) {
+		function tableHelp(string $name, bool $is_view = false) {
 			$maria = ($this->conn->flavor == 'maria');
 			if (information_schema(DB)) {
 				return strtolower("information-schema-" . ($maria ? "$name-table/" : str_replace("_", "-", $name) . "-table.html"));
@@ -329,7 +329,7 @@ if (!defined('Adminer\DRIVER')) {
 			}
 		}
 
-		function hasCStyleEscapes() {
+		function hasCStyleEscapes(): bool {
 			static $c_style;
 			if ($c_style === null) {
 				$sql_mode = $this->conn->result("SHOW VARIABLES LIKE 'sql_mode'", 1);
@@ -338,7 +338,7 @@ if (!defined('Adminer\DRIVER')) {
 			return $c_style;
 		}
 
-		function engines() {
+		function engines(): array {
 			$return = array();
 			foreach (get_rows("SHOW ENGINES") as $row) {
 				if (preg_match("~YES|DEFAULT~", $row["Support"])) {

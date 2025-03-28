@@ -75,11 +75,11 @@ if (isset($_GET["elastic"])) {
 				return (bool) $return;
 			}
 
-			function select_db($database) {
+			function select_db(string $database): bool {
 				return true;
 			}
 
-			function quote($string) {
+			function quote(string $string): string {
 				return $string;
 			}
 		}
@@ -91,20 +91,17 @@ if (isset($_GET["elastic"])) {
 			function __construct($rows) {
 				$this->num_rows = count($rows);
 				$this->rows = $rows;
-
 				reset($this->rows);
 			}
 
-			function fetch_assoc() {
+			function fetch_assoc(): array {
 				$return = current($this->rows);
 				next($this->rows);
-
 				return $return;
 			}
 
-			function fetch_row() {
+			function fetch_row(): array {
 				$row = $this->fetch_assoc();
-
 				return $row ? array_values($row) : false;
 			}
 		}
@@ -117,7 +114,7 @@ if (isset($_GET["elastic"])) {
 		public $editFunctions = array(array("json"));
 		public $operators = array("=", "must", "should", "must_not");
 
-		function __construct($connection) {
+		function __construct(Db $connection) {
 			parent::__construct($connection);
 			$this->types = array(
 				lang('Numbers') => array("long" => 3, "integer" => 5, "short" => 8, "byte" => 10, "double" => 20, "float" => 66, "half_float" => 12, "scaled_float" => 21),
@@ -127,7 +124,7 @@ if (isset($_GET["elastic"])) {
 			);
 		}
 
-		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
+		function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, int $page = 0, bool $print = false) {
 			$data = array();
 			if ($select != array("*")) {
 				$data["fields"] = array_values($select);
@@ -224,7 +221,7 @@ if (isset($_GET["elastic"])) {
 			return new Result($return);
 		}
 
-		function update($type, $record, $queryWhere, $limit = 0, $separator = "\n") {
+		function update(string $table, array $set, string $queryWhere, int $limit = 0, string $separator = "\n") {
 			//! use $limit
 			$parts = preg_split('~ *= *~', $queryWhere);
 			if (count($parts) == 2) {
@@ -237,7 +234,7 @@ if (isset($_GET["elastic"])) {
 			return false;
 		}
 
-		function insert($type, $record) {
+		function insert(string $type, array $record) {
 			$query = "$type/_doc/";
 			if (isset($record["_id"]) && $record["_id"] != "NULL") {
 				$query .= $record["_id"];
@@ -257,7 +254,7 @@ if (isset($_GET["elastic"])) {
 			return $response['result'];
 		}
 
-		function delete($table, $queryWhere, $limit = 0) {
+		function delete(string $table, string $queryWhere, int $limit = 0) {
 			//! use $limit
 			$ids = array();
 			if (idx($_GET["where"], "_id")) {
@@ -285,7 +282,7 @@ if (isset($_GET["elastic"])) {
 			return !!$this->conn->affected_rows;
 		}
 
-		function convertOperator($operator) {
+		function convertOperator(string $operator): string {
 			return $operator == "LIKE %%" ? "should" : $operator;
 		}
 	}

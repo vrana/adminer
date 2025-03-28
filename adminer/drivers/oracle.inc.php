@@ -19,7 +19,7 @@ if (isset($_GET["oracle"])) {
 				$this->error = $error;
 			}
 
-			function connect($server, $username, $password) {
+			function connect(string $server, string $username, string $password): bool {
 				$this->link = @oci_new_connect($username, $password, $server, "AL32UTF8");
 				if ($this->link) {
 					$this->server_info = oci_server_version($this->link);
@@ -30,16 +30,16 @@ if (isset($_GET["oracle"])) {
 				return false;
 			}
 
-			function quote($string) {
+			function quote(string $string): string {
 				return "'" . str_replace("'", "''", $string) . "'";
 			}
 
-			function select_db($database) {
+			function select_db(string $database): bool {
 				$this->_current_db = $database;
 				return true;
 			}
 
-			function query($query, $unbuffered = false) {
+			function query(string $query, bool $unbuffered = false) {
 				$result = oci_parse($this->link, $query);
 				$this->error = "";
 				if (!$result) {
@@ -79,15 +79,15 @@ if (isset($_GET["oracle"])) {
 				return $row;
 			}
 
-			function fetch_assoc() {
+			function fetch_assoc(): array {
 				return $this->convert(oci_fetch_assoc($this->result));
 			}
 
-			function fetch_row() {
+			function fetch_row(): array {
 				return $this->convert(oci_fetch_row($this->result));
 			}
 
-			function fetch_field() {
+			function fetch_field(): object {
 				$column = $this->offset++;
 				$return = new \stdClass;
 				$return->name = oci_field_name($this->result, $column);
@@ -106,12 +106,12 @@ if (isset($_GET["oracle"])) {
 			public $extension = "PDO_OCI";
 			public $_current_db;
 
-			function connect($server, $username, $password) {
+			function connect(string $server, string $username, string $password): bool {
 				$this->dsn("oci:dbname=//$server;charset=AL32UTF8", $username, $password);
 				return true;
 			}
 
-			function select_db($database) {
+			function select_db(string $database): bool {
 				$this->_current_db = $database;
 				return true;
 			}
@@ -140,7 +140,7 @@ if (isset($_GET["oracle"])) {
 		public $functions = array("length", "lower", "round", "upper");
 		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 
-		function __construct($connection) {
+		function __construct(Db $connection) {
 			parent::__construct($connection);
 			$this->types = array(
 				lang('Numbers') => array("number" => 38, "binary_float" => 12, "binary_double" => 21),
@@ -156,7 +156,7 @@ if (isset($_GET["oracle"])) {
 			return true; // automatic start
 		}
 
-		function insertUpdate($table, $rows, $primary) {
+		function insertUpdate(string $table, array $rows, array $primary) {
 			global $connection;
 			foreach ($rows as $set) {
 				$update = array();
@@ -177,7 +177,7 @@ if (isset($_GET["oracle"])) {
 			return true;
 		}
 
-		function hasCStyleEscapes() {
+		function hasCStyleEscapes(): bool {
 			return true;
 		}
 	}

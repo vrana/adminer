@@ -24,7 +24,7 @@ if (isset($_GET["imap"])) {
 			private $mailbox;
 			private $imap;
 
-			function connect($server, $username, $password) {
+			function connect(string $server, string $username, string $password): bool {
 				$this->mailbox = "{" . "$server:993/ssl}"; // Adminer disallows specifying privileged port in server name
 				$this->imap = @imap_open($this->mailbox, $username, $password, OP_HALFOPEN, 1);
 				if (!$this->imap) {
@@ -33,11 +33,11 @@ if (isset($_GET["imap"])) {
 				return $this->imap;
 			}
 
-			function select_db($database) {
+			function select_db(string $database): bool {
 				return ($database == "mail");
 			}
 
-			function query($query, $unbuffered = false) {
+			function query(string $query, bool $unbuffered = false) {
 				if (preg_match('~DELETE FROM "(.+?)"~', $query)) {
 					preg_match_all('~"uid" = (\d+)~', $query, $matches);
 					return imap_delete($this->imap, implode(",", $matches[1]), FT_UID);
@@ -70,7 +70,7 @@ if (isset($_GET["imap"])) {
 				return false;
 			}
 
-			function quote($string) {
+			function quote(string $string): string {
 				return $string;
 			}
 
@@ -123,18 +123,18 @@ if (isset($_GET["imap"])) {
 				$this->fields = array_keys(idx($result, 0,  array()));
 			}
 
-			function fetch_assoc() {
+			function fetch_assoc(): array {
 				$row = current($this->result);
 				next($this->result);
 				return $row;
 			}
 
-			function fetch_row() {
+			function fetch_row(): array {
 				$row = $this->fetch_assoc();
 				return ($row ? array_values($row) : false);
 			}
 
-			function fetch_field() {
+			function fetch_field(): object {
 				$field = current($this->fields);
 				next($this->fields);
 				return ($field != '' ? (object) array('name' => $field, 'type' => 15, 'charsetnr' => 0) : false);

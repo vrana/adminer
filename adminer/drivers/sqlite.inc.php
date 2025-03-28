@@ -11,14 +11,14 @@ if (isset($_GET["sqlite"])) {
 			public $extension = "SQLite3";
 			private $link;
 
-			function connect($filename, $username = '', $password = '') {
+			function connect(string $filename, string $username = '', string $password = ''): bool {
 				$this->link = new \SQLite3($filename);
 				$version = $this->link->version();
 				$this->server_info = $version["versionString"];
 				return true;
 			}
 
-			function query($query, $unbuffered = false) {
+			function query(string $query, bool $unbuffered = false) {
 				$result = @$this->link->query($query);
 				$this->error = "";
 				if (!$result) {
@@ -32,7 +32,7 @@ if (isset($_GET["sqlite"])) {
 				return true;
 			}
 
-			function quote($string) {
+			function quote(string $string): string {
 				return (is_utf8($string)
 					? "'" . $this->link->escapeString($string) . "'"
 					: "x'" . first(unpack('H*', $string)) . "'"
@@ -48,15 +48,15 @@ if (isset($_GET["sqlite"])) {
 				$this->result = $result;
 			}
 
-			function fetch_assoc() {
+			function fetch_assoc(): array {
 				return $this->result->fetchArray(SQLITE3_ASSOC);
 			}
 
-			function fetch_row() {
+			function fetch_row(): array {
 				return $this->result->fetchArray(SQLITE3_NUM);
 			}
 
-			function fetch_field() {
+			function fetch_field(): object {
 				$column = $this->offset++;
 				$type = $this->result->columnType($column);
 				return (object) array(
@@ -75,7 +75,7 @@ if (isset($_GET["sqlite"])) {
 		abstract class SqliteDb extends PdoDb {
 			public $extension = "PDO_SQLite";
 
-			function connect($filename, $username = '', $password = '') {
+			function connect(string $filename, string $username = '', string $password = ''): bool {
 				$this->dsn(DRIVER . ":$filename", "", "");
 				$this->query("PRAGMA foreign_keys = 1");
 				$this->query("PRAGMA busy_timeout = 500");
@@ -87,14 +87,14 @@ if (isset($_GET["sqlite"])) {
 
 	if (class_exists('Adminer\SqliteDb')) {
 		class Db extends SqliteDb {
-			function connect($filename, $username = '', $password = '') {
+			function connect(string $filename, string $username = '', string $password = ''): bool {
 				parent::connect($filename);
 				$this->query("PRAGMA foreign_keys = 1");
 				$this->query("PRAGMA busy_timeout = 500");
 				return true;
 			}
 
-			function select_db($filename) {
+			function select_db(string $filename): bool {
 				if (is_readable($filename) && $this->query("ATTACH " . $this->quote(preg_match("~(^[/\\\\]|:)~", $filename) ? $filename : dirname($_SERVER["SCRIPT_FILENAME"]) . "/$filename") . " AS a")) {
 					return self::connect($filename);
 				}
@@ -125,18 +125,18 @@ if (isset($_GET["sqlite"])) {
 		public $functions = array("hex", "length", "lower", "round", "unixepoch", "upper");
 		public $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 
-		function __construct($connection) {
+		function __construct(Db $connection) {
 			parent::__construct($connection);
 			if (min_version(3.31, 0, $connection)) {
 				$this->generated = array("STORED", "VIRTUAL");
 			}
 		}
 
-		function structuredTypes() {
+		function structuredTypes(): array {
 			return array_keys($this->types[0]);
 		}
 
-		function insertUpdate($table, $rows, $primary) {
+		function insertUpdate(string $table, array $rows, array $primary) {
 			$values = array();
 			foreach ($rows as $set) {
 				$values[] = "(" . implode(", ", $set) . ")";
@@ -144,7 +144,7 @@ if (isset($_GET["sqlite"])) {
 			return queries("REPLACE INTO " . table($table) . " (" . implode(", ", array_keys(reset($rows))) . ") VALUES\n" . implode(",\n", $values));
 		}
 
-		function tableHelp($name, $is_view = false) {
+		function tableHelp(string $name, bool $is_view = false) {
 			if ($name == "sqlite_sequence") {
 				return "fileformat2.html#seqtab";
 			}
@@ -153,7 +153,7 @@ if (isset($_GET["sqlite"])) {
 			}
 		}
 
-		function checkConstraints($table) {
+		function checkConstraints(string $table): array {
 			preg_match_all('~ CHECK *(\( *(((?>[^()]*[^() ])|(?1))*) *\))~', $this->conn->result("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table)), $matches); //! could be inside a comment
 			return array_combine($matches[2], $matches[2]);
 		}
@@ -667,7 +667,7 @@ if (isset($_GET["sqlite"])) {
 	function found_rows($table_status, $where) {
 	}
 
-	function types() {
+	function types(): array {
 		return array();
 	}
 

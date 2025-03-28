@@ -12,8 +12,20 @@ if (isset($_GET["mongo"])) {
 			public \MongoDB\Driver\Manager $_link;
 			public $_db, $_db_name;
 
-			function connect($uri, $options) {
-				$this->_link = new \MongoDB\Driver\Manager($uri, $options);
+			function connect(string $server, string $username, string $password): bool {
+				$options = array();
+				if ($username . $password != "") {
+					$options["username"] = $username;
+					$options["password"] = $password;
+				}
+				$db = adminer()->database();
+				if ($db != "") {
+					$options["db"] = $db;
+				}
+				if (($auth_source = getenv("MONGO_AUTH_SOURCE"))) {
+					$options["authSource"] = $auth_source;
+				}
+				$this->_link = new \MongoDB\Driver\Manager("mongodb://$server", $options);
 				$this->executeDbCommand($options["db"], array('ping' => 1));
 			}
 
@@ -41,16 +53,16 @@ if (isset($_GET["mongo"])) {
 				}
 			}
 
-			function query($query, $unbuffered = false) {
+			function query(string $query, bool $unbuffered = false) {
 				return false;
 			}
 
-			function select_db($database) {
+			function select_db(string $database): bool {
 				$this->_db_name = $database;
 				return true;
 			}
 
-			function quote($string) {
+			function quote(string $string): string {
 				return $string;
 			}
 		}
@@ -85,7 +97,7 @@ if (isset($_GET["mongo"])) {
 				$this->num_rows = count($this->rows);
 			}
 
-			function fetch_assoc() {
+			function fetch_assoc(): array {
 				$row = current($this->rows);
 				if (!$row) {
 					return $row;
@@ -98,7 +110,7 @@ if (isset($_GET["mongo"])) {
 				return $return;
 			}
 
-			function fetch_row() {
+			function fetch_row(): array {
 				$return = $this->fetch_assoc();
 				if (!$return) {
 					return $return;
@@ -106,7 +118,7 @@ if (isset($_GET["mongo"])) {
 				return array_values($return);
 			}
 
-			function fetch_field() {
+			function fetch_field(): object {
 				$keys = array_keys($this->rows[0]);
 				$name = $keys[$this->offset++];
 				return (object) array(
@@ -310,7 +322,7 @@ if (isset($_GET["mongo"])) {
 
 		public $primary = "_id";
 
-		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
+		function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, int $page = 0, bool $print = false) {
 			$select = ($select == array("*")
 				? array()
 				: array_fill_keys($select, 1)
@@ -337,7 +349,7 @@ if (isset($_GET["mongo"])) {
 			}
 		}
 
-		function update($table, $set, $queryWhere, $limit = 0, $separator = "\n") {
+		function update(string $table, array $set, string $queryWhere, int $limit = 0, string $separator = "\n") {
 			$db = $this->conn->_db_name;
 			$where = sql_query_where_parser($queryWhere);
 			$bulk = new \MongoDB\Driver\BulkWrite(array());
@@ -359,7 +371,7 @@ if (isset($_GET["mongo"])) {
 			return $this->conn->executeBulkWrite("$db.$table", $bulk, 'getModifiedCount');
 		}
 
-		function delete($table, $queryWhere, $limit = 0) {
+		function delete(string $table, string $queryWhere, int $limit = 0) {
 			$db = $this->conn->_db_name;
 			$where = sql_query_where_parser($queryWhere);
 			$bulk = new \MongoDB\Driver\BulkWrite(array());
@@ -367,7 +379,7 @@ if (isset($_GET["mongo"])) {
 			return $this->conn->executeBulkWrite("$db.$table", $bulk, 'getDeletedCount');
 		}
 
-		function insert($table, $set) {
+		function insert(string $table, array $set) {
 			$db = $this->conn->_db_name;
 			$bulk = new \MongoDB\Driver\BulkWrite(array());
 			if ($set['_id'] == '') {
@@ -420,24 +432,10 @@ if (isset($_GET["mongo"])) {
 	function connect($credentials) {
 		$connection = new Db;
 		list($server, $username, $password) = $credentials;
-
 		if ($server == "") {
 			$server = "localhost:27017";
 		}
-
-		$options = array();
-		if ($username . $password != "") {
-			$options["username"] = $username;
-			$options["password"] = $password;
-		}
-		$db = adminer()->database();
-		if ($db != "") {
-			$options["db"] = $db;
-		}
-		if (($auth_source = getenv("MONGO_AUTH_SOURCE"))) {
-			$options["authSource"] = $auth_source;
-		}
-		$connection->connect("mongodb://$server", $options);
+		$connection->connect($server, $username, $password);
 		if ($connection->error) {
 			return $connection->error;
 		}

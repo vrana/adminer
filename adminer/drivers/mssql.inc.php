@@ -25,7 +25,7 @@ if (isset($_GET["mssql"])) {
 				$this->error = rtrim($this->error);
 			}
 
-			function connect($server, $username, $password) {
+			function connect(string $server, string $username, string $password): bool {
 				global $adminer;
 				$connection_info = array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8");
 				$ssl = $adminer->connectSsl();
@@ -49,16 +49,16 @@ if (isset($_GET["mssql"])) {
 				return (bool) $this->link;
 			}
 
-			function quote($string) {
+			function quote(string $string): string {
 				$unicode = strlen($string) != strlen(utf8_decode($string));
 				return ($unicode ? "N" : "") . "'" . str_replace("'", "''", $string) . "'";
 			}
 
-			function select_db($database) {
+			function select_db(string $database): bool {
 				return $this->query(use_sql($database));
 			}
 
-			function query($query, $unbuffered = false) {
+			function query(string $query, bool $unbuffered = false) {
 				$result = sqlsrv_query($this->link, $query); //! , array(), ($unbuffered ? array() : array("Scrollable" => "keyset"))
 				$this->error = "";
 				if (!$result) {
@@ -68,7 +68,7 @@ if (isset($_GET["mssql"])) {
 				return $this->store_result($result);
 			}
 
-			function multi_query($query) {
+			function multi_query(string $query) {
 				$this->result = sqlsrv_query($this->link, $query);
 				$this->error = "";
 				if (!$this->result) {
@@ -92,7 +92,7 @@ if (isset($_GET["mssql"])) {
 				return true;
 			}
 
-			function next_result() {
+			function next_result(): bool {
 				return $this->result ? sqlsrv_next_result($this->result) : null;
 			}
 		}
@@ -116,15 +116,15 @@ if (isset($_GET["mssql"])) {
 				return $row;
 			}
 
-			function fetch_assoc() {
+			function fetch_assoc(): array {
 				return $this->convert(sqlsrv_fetch_array($this->result, SQLSRV_FETCH_ASSOC));
 			}
 
-			function fetch_row() {
+			function fetch_row(): array {
 				return $this->convert(sqlsrv_fetch_array($this->result, SQLSRV_FETCH_NUMERIC));
 			}
 
-			function fetch_field() {
+			function fetch_field(): object {
 				if (!$this->fields) {
 					$this->fields = sqlsrv_field_metadata($this->result);
 				}
@@ -160,7 +160,7 @@ if (isset($_GET["mssql"])) {
 
 	} else {
 		abstract class MssqlDb extends PdoDb {
-			function select_db($database) {
+			function select_db(string $database): bool {
 				// database selection is separated from the connection so dbname in DSN can't be used
 				return $this->query(use_sql($database));
 			}
@@ -182,7 +182,7 @@ if (isset($_GET["mssql"])) {
 			class Db extends MssqlDb {
 				public $extension = "PDO_SQLSRV";
 
-				function connect($server, $username, $password) {
+				function connect(string $server, string $username, string $password): bool {
 					$this->dsn("sqlsrv:Server=" . str_replace(":", ",", $server), $username, $password);
 					return true;
 				}
@@ -192,7 +192,7 @@ if (isset($_GET["mssql"])) {
 			class Db extends MssqlDb {
 				public $extension = "PDO_DBLIB";
 
-				function connect($server, $username, $password) {
+				function connect(string $server, string $username, string $password): bool {
 					$this->dsn("dblib:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\d)~', ';port=\1', $server)), $username, $password);
 					return true;
 				}
@@ -220,7 +220,7 @@ if (isset($_GET["mssql"])) {
 		public $onActions = "NO ACTION|CASCADE|SET NULL|SET DEFAULT";
 		public $generated = array("PERSISTED", "VIRTUAL");
 
-		function __construct($connection) {
+		function __construct(Db $connection) {
 			parent::__construct($connection);
 			$this->types = array( //! use sys.types
 				lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "int" => 10, "bigint" => 20, "bit" => 1, "decimal" => 0, "real" => 12, "float" => 53, "smallmoney" => 10, "money" => 20),
@@ -230,7 +230,7 @@ if (isset($_GET["mssql"])) {
 			);
 		}
 
-		function insertUpdate($table, $rows, $primary) {
+		function insertUpdate(string $table, array $rows, array $primary) {
 			$fields = fields($table);
 			$update = array();
 			$where = array();
@@ -274,7 +274,7 @@ if (isset($_GET["mssql"])) {
 			return queries("BEGIN TRANSACTION");
 		}
 
-		function tableHelp($name, $is_view = false) {
+		function tableHelp(string $name, bool $is_view = false) {
 			$links = array(
 				"sys" => "catalog-views/sys-",
 				"INFORMATION_SCHEMA" => "information-schema-views/",
