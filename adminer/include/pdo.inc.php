@@ -4,7 +4,7 @@ namespace Adminer;
 // PDO can be used in several database drivers
 if (extension_loaded('pdo')) {
 	abstract class PdoDb extends SqlDb {
-		/** @var \PDO */ protected $pdo;
+		protected \PDO $pdo;
 
 		/** Connect to server using DSN
 		* @param mixed[] $options

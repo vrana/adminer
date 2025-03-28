@@ -61,7 +61,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	} elseif (extension_loaded("mysql") && !((ini_bool("sql.safe_mode") || ini_bool("mysql.allow_local_infile")) && extension_loaded("pdo_mysql"))) {
 		class Db extends SqlDb {
-			/** @var resource */ private $link;
+			private resource $link;
 
 			function connect($server, $username, $password) {
 				if (ini_bool("mysql.allow_local_infile")) {
@@ -121,9 +121,9 @@ if (!defined('Adminer\DRIVER')) {
 		}
 
 		class Result {
-			/** @var int */ public $num_rows; // number of rows in the result
-			/** @var resource */ private $result;
-			/** @var int */ private $offset = 0;
+			public int $num_rows; // number of rows in the result
+			private resource $result;
+			private int $offset = 0;
 
 			function __construct(resource $result) {
 				$this->result = $result;
@@ -211,13 +211,13 @@ if (!defined('Adminer\DRIVER')) {
 
 
 	class Driver extends SqlDriver {
-		/** @var list<string> */ static $possibleDrivers = array("MySQLi", "MySQL", "PDO_MySQL");
-		/** @var string */ static $jush = "sql"; // JUSH identifier
+		/** @var list<string> */ static array $possibleDrivers = array("MySQLi", "MySQL", "PDO_MySQL");
+		static string $jush = "sql"; // JUSH identifier
 
-		/** @var list<string> */ public $unsigned = array("unsigned", "zerofill", "unsigned zerofill");
-		/** @var list<string> */ public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL");
-		/** @var list<string> */ public $functions = array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper");
-		/** @var list<string> */ public $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
+		/** @var list<string> */ public array $unsigned = array("unsigned", "zerofill", "unsigned zerofill");
+		/** @var list<string> */ public array $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL");
+		/** @var list<string> */ public array $functions = array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper");
+		/** @var list<string> */ public array $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 
 		function __construct($connection) {
 			parent::__construct($connection);

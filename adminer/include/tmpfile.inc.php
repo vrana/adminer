@@ -2,8 +2,8 @@
 namespace Adminer;
 
 class TmpFile {
-	/** @var resource */ private $handler;
-	/** @var int @visibility protected(set) */ public $size;
+	private resource $handler;
+	/** @visibility protected(set) */ public int $size;
 
 	function __construct() {
 		$this->handler = tmpfile();

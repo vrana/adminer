@@ -16,20 +16,20 @@ function get_driver(string $id): string {
 }
 
 abstract class SqlDriver {
-	/** @var list<string> */ static $possibleDrivers = array();
-	/** @var string */ static $jush; // JUSH identifier
+	/** @var list<string> */ static array $possibleDrivers = array();
+	static string $jush; // JUSH identifier
 
-	/** @var Db */ protected $conn;
-	/** @var int[][] */ protected $types = array(); // [$group => [$type => $maximum_unsigned_length, ...], ...]
-	/** @var array{0?:string[], 1?:string[]} */ public $editFunctions = array(); // of ["$type|$type2" => "$function/$function2"] functions used in editing, [0] - edit and insert, [1] - edit only
-	/** @var list<string> */ public $unsigned = array(); // number variants
-	/** @var list<string> */ public $operators = array(); // operators used in select
-	/** @var list<string> */ public $functions = array(); // functions used in select
-	/** @var list<string> */ public $grouping = array(); // grouping functions used in select
-	/** @var string */ public $onActions = "RESTRICT|NO ACTION|CASCADE|SET NULL|SET DEFAULT"; // used in foreign_keys()
-	/** @var string */ public $inout = "IN|OUT|INOUT"; // used in routines
-	/** @var string */ public $enumLength = "'(?:''|[^'\\\\]|\\\\.)*'"; // regular expression for parsing enum lengths
-	/** @var list<string> */ public $generated = array(); // allowed types of generated columns
+	protected Db $conn;
+	/** @var int[][] */ protected array $types = array(); // [$group => [$type => $maximum_unsigned_length, ...], ...]
+	/** @var array{0?:string[], 1?:string[]} */ public array $editFunctions = array(); // of ["$type|$type2" => "$function/$function2"] functions used in editing, [0] - edit and insert, [1] - edit only
+	/** @var list<string> */ public array $unsigned = array(); // number variants
+	/** @var list<string> */ public array $operators = array(); // operators used in select
+	/** @var list<string> */ public array $functions = array(); // functions used in select
+	/** @var list<string> */ public array $grouping = array(); // grouping functions used in select
+	public string $onActions = "RESTRICT|NO ACTION|CASCADE|SET NULL|SET DEFAULT"; // used in foreign_keys()
+	public string $inout = "IN|OUT|INOUT"; // used in routines
+	public string $enumLength = "'(?:''|[^'\\\\]|\\\\.)*'"; // regular expression for parsing enum lengths
+	/** @var list<string> */ public array $generated = array(); // allowed types of generated columns
 
 	/** Create object for performing database operations */
 	function __construct(Db $connection) {

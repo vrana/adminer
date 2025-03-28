@@ -9,8 +9,7 @@ if (isset($_GET["mongo"])) {
 	if (class_exists('MongoDB\Driver\Manager')) {
 		class Db extends SqlDb {
 			public $extension = "MongoDB", $server_info = MONGODB_VERSION, $last_id;
-			/** @var \MongoDB\Driver\Manager */
-			public $_link;
+			public \MongoDB\Driver\Manager $_link;
 			public $_db, $_db_name;
 
 			function connect($uri, $options) {

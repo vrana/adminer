@@ -455,8 +455,8 @@ function query_redirect(string $query, string $location, string $message, bool $
 }
 
 class Queries {
-	/** @var string[] */ static $queries = array();
-	/** @var float */ static $start;
+	/** @var string[] */ static array $queries = array();
+	static float $start;
 }
 
 /** Execute and remember query

@@ -4,13 +4,13 @@ namespace Adminer;
 // this could be interface when "Db extends \mysqli" can have compatible type declarations (PHP 7)
 // interfaces can include properties only since PHP 8.4
 abstract class SqlDb {
-	/** @var string */ public $extension; // extension name
-	/** @var string */ public $flavor; // different vendor with the same API, e.g. MariaDB; usually stays empty
-	/** @var string */ public $server_info; // server version
-	/** @var int */ public $affected_rows; // number of affected rows
-	/** @var string */ public $info; // see https://php.net/mysql_info
-	/** @var int */ public $errno; // last error code
-	/** @var string */ public $error; // last error message
+	public string $extension; // extension name
+	public string $flavor; // different vendor with the same API, e.g. MariaDB; usually stays empty
+	public string $server_info; // server version
+	public int $affected_rows; // number of affected rows
+	public string $info; // see https://php.net/mysql_info
+	public int $errno; // last error code
+	public string $error; // last error message
 	/** @var Result|bool */ protected $multi; // used for multiquery
 
 	/** Connect to server */
