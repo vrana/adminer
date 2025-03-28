@@ -490,7 +490,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Check if table supports foreign keys
-	* @param TableStatus $table_status result of table_status1()
+	* @param TableStatus $table_status
 	*/
 	function fk_support(array $table_status): bool {
 		return preg_match('~InnoDB|IBMDB2I' . (min_version(5.6) ? '|NDB' : '') . '~i', $table_status["Engine"]);
@@ -872,7 +872,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @param 'FUNCTION'|'PROCEDURE' $type
 	* @return Routine
 	*/
-	function routine(string $name, $type): array {
+	function routine(string $name, string $type): array {
 		global $driver;
 		$aliases = array("bool", "boolean", "integer", "double precision", "real", "dec", "numeric", "fixed", "national char", "national varchar");
 		$space = "(?:\\s|/\\*[\s\S]*?\\*/|(?:#|-- )[^\n]*\n?|--\r?\n)";
@@ -921,7 +921,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get routine signature
-	* @param Routine $row result of routine()
+	* @param Routine $row
 	*/
 	function routine_id(string $name, array $row): string {
 		return idf_escape($name);
@@ -1000,7 +1000,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Convert field in select and edit
-	* @param Field $field one element from fields()
+	* @param Field $field
 	* @return string|void
 	*/
 	function convert_field(array $field) {
@@ -1016,7 +1016,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Convert value in edit after applying functions back
-	* @param Field $field one element from fields()
+	* @param Field $field
 	* @param string $return SQL expression
 	*/
 	function unconvert_field(array $field, string $return): string {

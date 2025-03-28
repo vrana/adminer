@@ -229,7 +229,7 @@ function get_rows(string $query, Db $connection2 = null, string $error = "<p cla
 
 /** Find unique identifier of a row
 * @param string[] $row
-* @param Index[] $indexes result of indexes()
+* @param Index[] $indexes
 * @return string[]|void null if there is no unique identifier
 */
 function unique_array(?array $row, array $indexes) {
@@ -416,9 +416,9 @@ function is_ajax(): bool {
 }
 
 /** Send Location header and exit
-* @param string $location null to only set a message
+* @param ?string $location null to only set a message
 */
-function redirect(string $location, string $message = null): void {
+function redirect(?string $location, string $message = null): void {
 	if ($message !== null) {
 		restart_session();
 		$_SESSION["messages"][preg_replace('~^[^?]*~', '', ($location !== null ? $location : $_SERVER["REQUEST_URI"]))][] = $message;

@@ -408,7 +408,7 @@ function normalize_enum(array $match): string {
 }
 
 /** Issue grant or revoke commands
-* @param string $grant GRANT or REVOKE
+* @param 'GRANT'|'REVOKE' $grant
 * @param list<string> $privileges
 * @return Result|bool
 */
@@ -455,7 +455,7 @@ function drop_create(string $drop, string $create, string $drop_created, string 
 }
 
 /** Generate SQL query for creating trigger
-* @param Trigger $row result of trigger()
+* @param Trigger $row
 */
 function create_trigger(string $on, array $row): string {
 	$timing_event = " $row[Timing] $row[Event]" . (preg_match('~ OF~', $row["Event"]) ? " $row[Of]" : ""); // SQL injection
@@ -469,7 +469,7 @@ function create_trigger(string $on, array $row): string {
 
 /** Generate SQL query for creating routine
 * @param 'PROCEDURE'|'FUNCTION' $routine
-* @param Routine $row result of routine()
+* @param Routine $row
 */
 function create_routine($routine, array $row): string {
 	global $driver;

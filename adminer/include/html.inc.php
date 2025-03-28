@@ -171,7 +171,7 @@ function hidden_fields_get(): void {
 }
 
 /** Print enum or set input field
-* @param string $type "radio"|"checkbox"
+* @param 'radio'|'checkbox' $type
 * @param Field $field
 * @param mixed $value string|array
 */
@@ -188,7 +188,7 @@ function enum_input(string $type, string $attrs, array $field, $value, string $e
 }
 
 /** Print edit input field
-* @param Field|RoutineField $field one field from fields()
+* @param Field|RoutineField $field
 * @param mixed $value
 */
 function input(array $field, $value, string $function, bool $autofocus = false): void {
@@ -282,7 +282,7 @@ function input(array $field, $value, string $function, bool $autofocus = false):
 }
 
 /** Process edit input field
-* @param Field|RoutineField $field one field from fields()
+* @param Field|RoutineField $field
 * @return mixed false to leave the original value
 */
 function process_input(array $field) {

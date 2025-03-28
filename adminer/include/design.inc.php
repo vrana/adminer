@@ -189,7 +189,7 @@ function page_messages(string $error): void {
 }
 
 /** Print HTML footer
-* @param string $missing "auth", "db", "ns"
+* @param ''|'auth'|'db'|'ns' $missing
 */
 function page_footer(string $missing = ""): void {
 	global $adminer;

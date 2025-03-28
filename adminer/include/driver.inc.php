@@ -227,7 +227,7 @@ abstract class SqlDriver {
 	}
 
 	/** Check whether table supports indexes
-	* @param TableStatus $table_status result of table_status1()
+	* @param TableStatus $table_status
 	*/
 	function supportsIndex(array $table_status): bool {
 		return !is_view($table_status);

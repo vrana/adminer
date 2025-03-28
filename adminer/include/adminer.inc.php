@@ -144,7 +144,7 @@ class Adminer {
 	}
 
 	/** Table caption used in navigation and headings
-	* @param TableStatus $tableStatus result of table_status1()
+	* @param TableStatus $tableStatus
 	* @return string HTML code, "" to ignore table
 	*/
 	function tableName(array $tableStatus): string {
@@ -152,7 +152,7 @@ class Adminer {
 	}
 
 	/** Field caption used in select and edit
-	* @param Field $field single field returned from fields()
+	* @param Field $field
 	* @param int $order order of column in select
 	* @return string HTML code, "" to ignore field
 	*/
@@ -163,7 +163,7 @@ class Adminer {
 	}
 
 	/** Print links after select heading
-	* @param TableStatus $tableStatus result of table_status1()
+	* @param TableStatus $tableStatus
 	* @param ?string $set new item options, NULL for no new item
 	*/
 	function selectLinks(array $tableStatus, ?string $set = ""): void {
@@ -208,7 +208,7 @@ class Adminer {
 	}
 
 	/** Print backward keys for row
-	* @param BackwardKey[] $backwardKeys result of $this->backwardKeys()
+	* @param BackwardKey[] $backwardKeys
 	* @param string[] $row
 	*/
 	function backwardKeysPrint(array $backwardKeys, array $row): void {
@@ -263,7 +263,7 @@ class Adminer {
 
 	/** Get a link to use in select table
 	* @param string $val raw value of the field
-	* @param Field $field single field returned from fields()
+	* @param Field $field
 	* @return string|void null to create the default link
 	*/
 	function selectLink(?string $val, array $field) {
@@ -272,7 +272,7 @@ class Adminer {
 	/** Value printed in select table
 	* @param ?string $val HTML-escaped value to print
 	* @param ?string $link link to foreign key
-	* @param Field $field single field returned from fields()
+	* @param Field $field
 	* @param string $original original value before applying editVal() and escaping
 	*/
 	function selectVal(?string $val, ?string $link, array $field, ?string $original): string {
@@ -288,14 +288,14 @@ class Adminer {
 	}
 
 	/** Value conversion used in select and edit
-	* @param Field $field single field returned from fields()
+	* @param Field $field
 	*/
 	function editVal(?string $val, array $field): ?string {
 		return $val;
 	}
 
 	/** Print table structure in tabular format
-	* @param Field[] $fields data about individual fields
+	* @param Field[] $fields
 	* @param TableStatus $tableStatus
 	*/
 	function tableStructurePrint(array $fields, array $tableStatus = null): void {
@@ -326,7 +326,7 @@ class Adminer {
 	}
 
 	/** Print list of indexes on table in tabular format
-	* @param Index[] $indexes data about all indexes on a table
+	* @param Index[] $indexes
 	*/
 	function tableIndexesPrint(array $indexes): void {
 		echo "<table>\n";
@@ -657,7 +657,7 @@ class Adminer {
 	}
 
 	/** Functions displayed in edit form
-	* @param Field $field single field from fields()
+	* @param Field $field
 	* @return list<string>
 	*/
 	function editFunctions(array $field): array {
@@ -683,8 +683,7 @@ class Adminer {
 	}
 
 	/** Get options to display edit field
-	* @param string $table table name
-	* @param Field $field single field from fields()
+	* @param Field $field
 	* @param string $attrs attributes to use inside the tag
 	* @return string custom input field or empty string for default
 	*/
@@ -699,15 +698,14 @@ class Adminer {
 	}
 
 	/** Get hint for edit field
-	* @param string $table table name
-	* @param Field $field single field from fields()
+	* @param Field $field
 	*/
 	function editHint(string $table, array $field, ?string $value): string {
 		return "";
 	}
 
 	/** Process sent input
-	* @param Field $field single field from fields()
+	* @param Field $field
 	* @return string expression to use in a query
 	*/
 	function processInput(array $field, string $value, ?string $function = ""): string {
@@ -995,7 +993,7 @@ class Adminer {
 	}
 
 	/** Set up syntax highlight for code and <textarea>
-	* @param TableStatus[] $tables result of table_status('', true)
+	* @param TableStatus[] $tables
 	*/
 	function syntaxHighlighting(array $tables): void {
 		global $connection;
@@ -1057,7 +1055,7 @@ class Adminer {
 	}
 
 	/** Print table list in menu
-	* @param TableStatus[] $tables result of table_status('', true)
+	* @param TableStatus[] $tables
 	*/
 	function tablesPrint(array $tables): void {
 		global $adminer;
