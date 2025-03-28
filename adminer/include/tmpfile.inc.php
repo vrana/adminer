@@ -2,7 +2,7 @@
 namespace Adminer;
 
 class TmpFile {
-	private resource $handler;
+	/** @var resource */ private $handler;
 	/** @visibility protected(set) */ public int $size;
 
 	function __construct() {

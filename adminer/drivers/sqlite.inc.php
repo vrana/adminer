@@ -8,7 +8,7 @@ if (isset($_GET["sqlite"])) {
 	if (class_exists("SQLite3") && $_GET["ext"] != "pdo") {
 
 		abstract class SqliteDb extends SqlDb {
-			public $extension = "SQLite3";
+			public string $extension = "SQLite3";
 			private $link;
 
 			function connect(string $filename, string $username = '', string $password = ''): bool {
@@ -56,7 +56,7 @@ if (isset($_GET["sqlite"])) {
 				return $this->result->fetchArray(SQLITE3_NUM);
 			}
 
-			function fetch_field(): object {
+			function fetch_field(): \stdClass {
 				$column = $this->offset++;
 				$type = $this->result->columnType($column);
 				return (object) array(
@@ -73,7 +73,7 @@ if (isset($_GET["sqlite"])) {
 
 	} elseif (extension_loaded("pdo_sqlite")) {
 		abstract class SqliteDb extends PdoDb {
-			public $extension = "PDO_SQLite";
+			public string $extension = "PDO_SQLite";
 
 			function connect(string $filename, string $username = '', string $password = ''): bool {
 				$this->dsn(DRIVER . ":$filename", "", "");
@@ -106,12 +106,12 @@ if (isset($_GET["sqlite"])) {
 
 
 	class Driver extends SqlDriver {
-		static $possibleDrivers = array("SQLite3", "PDO_SQLite");
-		static $jush = "sqlite";
+		static array $possibleDrivers = array("SQLite3", "PDO_SQLite");
+		static string $jush = "sqlite";
 
-		protected $types = array(array("integer" => 0, "real" => 0, "numeric" => 0, "text" => 0, "blob" => 0));
+		protected array $types = array(array("integer" => 0, "real" => 0, "numeric" => 0, "text" => 0, "blob" => 0));
 
-		public $editFunctions = array(
+		public array $editFunctions = array(
 			array(
 				// "text" => "date('now')/time('now')/datetime('now')",
 			), array(
@@ -121,9 +121,9 @@ if (isset($_GET["sqlite"])) {
 			)
 		);
 
-		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"); // REGEXP can be user defined function
-		public $functions = array("hex", "length", "lower", "round", "unixepoch", "upper");
-		public $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
+		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"); // REGEXP can be user defined function
+		public array $functions = array("hex", "length", "lower", "round", "unixepoch", "upper");
+		public array $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 
 		function __construct(Db $connection) {
 			parent::__construct($connection);

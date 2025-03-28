@@ -8,7 +8,7 @@ if (!defined('Adminer\DRIVER')) {
 	// MySQLi supports everything, MySQL doesn't support multiple result sets, PDO_MySQL doesn't support orgtable
 	if (extension_loaded("mysqli") && $_GET["ext"] != "pdo") {
 		class Db extends \MySQLi {
-			public $extension = "MySQLi", $flavor = '';
+			public string $extension = "MySQLi", $flavor = '';
 
 			function __construct() {
 				parent::init();
@@ -61,7 +61,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	} elseif (extension_loaded("mysql") && !((ini_bool("sql.safe_mode") || ini_bool("mysql.allow_local_infile")) && extension_loaded("pdo_mysql"))) {
 		class Db extends SqlDb {
-			private resource $link;
+			/** @var resource */ private $link;
 
 			function connect(string $server, string $username, string $password): bool {
 				if (ini_bool("mysql.allow_local_infile")) {
@@ -122,10 +122,11 @@ if (!defined('Adminer\DRIVER')) {
 
 		class Result {
 			public int $num_rows; // number of rows in the result
-			private resource $result;
+			/** @var resource */ private $result;
 			private int $offset = 0;
 
-			function __construct(resource $result) {
+			/** @param resource $result */
+			function __construct($result) {
 				$this->result = $result;
 				$this->num_rows = mysql_num_rows($result);
 			}
@@ -145,9 +146,9 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			/** Fetch next field
-			* @return object properties: name, type (0 number, 15 varchar, 254 char), charsetnr (63 binary); optionally: table, orgtable, orgname
+			* @return \stdClass properties: name, type (0 number, 15 varchar, 254 char), charsetnr (63 binary); optionally: table, orgtable, orgname
 			*/
-			function fetch_field(): object {
+			function fetch_field(): \stdClass {
 				$return = mysql_fetch_field($this->result, $this->offset++); // offset required under certain conditions
 				$return->orgtable = $return->table;
 				$return->charsetnr = ($return->blob ? 63 : 0);
@@ -162,7 +163,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	} elseif (extension_loaded("pdo_mysql")) {
 		class Db extends PdoDb {
-			public $extension = "PDO_MySQL";
+			public string $extension = "PDO_MySQL";
 
 			function connect(string $server, string $username, string $password): bool {
 				global $adminer;

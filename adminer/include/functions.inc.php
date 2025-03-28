@@ -476,7 +476,7 @@ function queries(string $query) {
 * @param list<string> $tables
 * @param callable(string):string $escape
 */
-function apply_queries(string $query, array $tables, callable $escape = 'Adminer\table'): bool {
+function apply_queries(string $query, array $tables, $escape = 'Adminer\table'): bool {
 	foreach ($tables as $table) {
 		if (!queries("$query " . $escape($table))) {
 			return false;
@@ -712,16 +712,20 @@ function file_open_lock(string $filename) {
 	return $fp;
 }
 
-/** Write and unlock a file */
-function file_write_unlock(resource $fp, string $data): void {
+/** Write and unlock a file
+* @param resource $fp
+*/
+function file_write_unlock($fp, string $data): void {
 	rewind($fp);
 	fwrite($fp, $data);
 	ftruncate($fp, strlen($data));
 	file_unlock($fp);
 }
 
-/** Unlock and close a file */
-function file_unlock(resource $fp): void {
+/** Unlock and close a file
+* @param resource $fp
+*/
+function file_unlock($fp): void {
 	flock($fp, LOCK_UN);
 	fclose($fp);
 }

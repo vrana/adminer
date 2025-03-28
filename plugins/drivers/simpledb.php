@@ -8,7 +8,7 @@ if (isset($_GET["simpledb"])) {
 
 	if (class_exists('SimpleXMLElement') && ini_bool('allow_url_fopen')) {
 		class Db extends SqlDb {
-			public $extension = "SimpleXML", $server_info = '2009-04-15', $timeout, $next;
+			public string $extension = "SimpleXML", $server_info = '2009-04-15', $timeout, $next;
 
 			function select_db(string $database): bool {
 				return ($database == "domain");
@@ -97,7 +97,7 @@ if (isset($_GET["simpledb"])) {
 				return array_values($return);
 			}
 
-			function fetch_field(): object {
+			function fetch_field(): \stdClass {
 				$keys = array_keys($this->rows[0]);
 				return (object) array('name' => $keys[$this->offset++], 'type' => 15, 'charsetnr' => 0);
 			}
@@ -107,11 +107,11 @@ if (isset($_GET["simpledb"])) {
 
 
 	class Driver extends SqlDriver {
-		static $possibleDrivers = array("SimpleXML + allow_url_fopen");
-		static $jush = "simpledb";
+		static array $possibleDrivers = array("SimpleXML + allow_url_fopen");
+		static string $jush = "simpledb";
 
-		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "IS NOT NULL");
-		public $grouping = array("count");
+		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "IS NOT NULL");
+		public array $grouping = array("count");
 
 		public $primary = "itemName()";
 

@@ -361,7 +361,7 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 /** Move fields up and down or add field
 * @param Field[] $fields
 */
-function process_fields(&array $fields): bool {
+function process_fields(array &$fields): bool {
 	$offset = 0;
 	if ($_POST["up"]) {
 		$last = 0;

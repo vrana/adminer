@@ -24,7 +24,7 @@ parameters:
 			paths:
 				- adminer/include/pdo.inc.php
 				- adminer/drivers/*
-				
+
 		-
 			message: "~ to an undefined ~" # PostgreSQL has this in its version of Db
 			path: adminer/drivers/pgsql.inc.php
@@ -52,6 +52,7 @@ parameters:
 	scanFiles:
 		- compile.php # compile_file()
 	excludePaths:
+		- adminer/adminer-plugins/
 		- adminer/lang/
 		- adminer/adminer-plugins.php
 		- adminer/designs.php
@@ -59,7 +60,7 @@ parameters:
 		- adminer/sqlite.php
 
 	phpVersion:
-		min: 70100
+		min: 70400
 		max: 80499
 
 	typeAliases:

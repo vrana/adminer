@@ -19,7 +19,7 @@ if (isset($_GET["imap"])) {
 
 	if (extension_loaded("imap")) {
 		class Db extends SqlDb {
-			public $extension = "IMAP";
+			public string $extension = "IMAP";
 			public $server_info = "?"; // imap_mailboxmsginfo() or imap_check() don't return anything useful
 			private $mailbox;
 			private $imap;
@@ -134,7 +134,7 @@ if (isset($_GET["imap"])) {
 				return ($row ? array_values($row) : false);
 			}
 
-			function fetch_field(): object {
+			function fetch_field(): \stdClass {
 				$field = current($this->fields);
 				next($this->fields);
 				return ($field != '' ? (object) array('name' => $field, 'type' => 15, 'charsetnr' => 0) : false);
@@ -143,9 +143,9 @@ if (isset($_GET["imap"])) {
 	}
 
 	class Driver extends SqlDriver {
-		static $possibleDrivers = array("imap");
-		static $jush = "imap";
-		public $editFunctions = array(array("json"));
+		static array $possibleDrivers = array("imap");
+		static string $jush = "imap";
+		public array $editFunctions = array(array("json"));
 	}
 
 	function logged_user() {

@@ -7,7 +7,8 @@ if (isset($_GET["pgsql"])) {
 	define('Adminer\DRIVER', "pgsql");
 	if (extension_loaded("pgsql") && $_GET["ext"] != "pdo") {
 		class Db extends SqlDb {
-			public $extension = "PgSQL", $timeout;
+			public string $extension = "PgSQL";
+			public int $timeout;
 			private $link, $string, $database = true;
 
 			function _error($errno, $error) {
@@ -108,7 +109,7 @@ if (isset($_GET["pgsql"])) {
 				return pg_fetch_row($this->result);
 			}
 
-			function fetch_field(): object {
+			function fetch_field(): \stdClass {
 				$column = $this->offset++;
 				$return = new \stdClass;
 				$return->orgtable = pg_field_table($this->result, $column);
@@ -125,7 +126,8 @@ if (isset($_GET["pgsql"])) {
 
 	} elseif (extension_loaded("pdo_pgsql")) {
 		class Db extends PdoDb {
-			public $extension = "PDO_PgSQL", $timeout;
+			public string $extension = "PDO_PgSQL";
+			public int $timeout;
 
 			function connect(string $server, string $username, string $password): bool {
 				global $adminer;
@@ -167,12 +169,12 @@ if (isset($_GET["pgsql"])) {
 
 
 	class Driver extends SqlDriver {
-		static $possibleDrivers = array("PgSQL", "PDO_PgSQL");
-		static $jush = "pgsql";
+		static array $possibleDrivers = array("PgSQL", "PDO_PgSQL");
+		static string $jush = "pgsql";
 
-		public $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // no "SQL" to avoid CSRF
-		public $functions = array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper");
-		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
+		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // no "SQL" to avoid CSRF
+		public array $functions = array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper");
+		public array $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 
 		function __construct(Db $connection) {
 			parent::__construct($connection);

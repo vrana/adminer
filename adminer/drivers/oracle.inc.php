@@ -7,7 +7,7 @@ if (isset($_GET["oracle"])) {
 	define('Adminer\DRIVER', "oracle");
 	if (extension_loaded("oci8") && $_GET["ext"] != "pdo") {
 		class Db extends SqlDb {
-			public $extension = "oci8";
+			public string $extension = "oci8";
 			public $_current_db;
 			private $link;
 
@@ -87,7 +87,7 @@ if (isset($_GET["oracle"])) {
 				return $this->convert(oci_fetch_row($this->result));
 			}
 
-			function fetch_field(): object {
+			function fetch_field(): \stdClass {
 				$column = $this->offset++;
 				$return = new \stdClass;
 				$return->name = oci_field_name($this->result, $column);
@@ -103,7 +103,7 @@ if (isset($_GET["oracle"])) {
 
 	} elseif (extension_loaded("pdo_oci")) {
 		class Db extends PdoDb {
-			public $extension = "PDO_OCI";
+			public string $extension = "PDO_OCI";
 			public $_current_db;
 
 			function connect(string $server, string $username, string $password): bool {
@@ -122,10 +122,10 @@ if (isset($_GET["oracle"])) {
 
 
 	class Driver extends SqlDriver {
-		static $possibleDrivers = array("OCI8", "PDO_OCI");
-		static $jush = "oracle";
+		static array $possibleDrivers = array("OCI8", "PDO_OCI");
+		static string $jush = "oracle";
 
-		public $editFunctions = array(
+		public array $editFunctions = array(
 			array( //! no parentheses
 				"date" => "current_date",
 				"timestamp" => "current_timestamp",
@@ -136,9 +136,9 @@ if (isset($_GET["oracle"])) {
 			)
 		);
 
-		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
-		public $functions = array("length", "lower", "round", "upper");
-		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
+		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
+		public array $functions = array("length", "lower", "round", "upper");
+		public array $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 
 		function __construct(Db $connection) {
 			parent::__construct($connection);

@@ -12,7 +12,7 @@ if (isset($_GET["firebird"])) {
 
 	if (extension_loaded("interbase")) {
 		class Db extends SqlDb {
-			public $extension = "Firebird", $_link;
+			public string $extension = "Firebird", $_link;
 
 			function connect(string $server, string $username, string $password): bool {
 				$this->_link = ibase_connect($server, $username, $password);
@@ -68,7 +68,7 @@ if (isset($_GET["firebird"])) {
 				return ibase_fetch_row($this->result);
 			}
 
-			function fetch_field(): object {
+			function fetch_field(): \stdClass {
 				$field = ibase_field_info($this->result, $this->offset++);
 				return (object) array(
 					'name' => $field['name'],
@@ -87,10 +87,10 @@ if (isset($_GET["firebird"])) {
 
 
 	class Driver extends SqlDriver {
-		static $possibleDrivers = array("interbase");
-		static $jush = "firebird";
+		static array $possibleDrivers = array("interbase");
+		static string $jush = "firebird";
 
-		public $operators = array("=");
+		public array $operators = array("=");
 	}
 
 

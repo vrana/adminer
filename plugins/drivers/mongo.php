@@ -8,7 +8,7 @@ if (isset($_GET["mongo"])) {
 
 	if (class_exists('MongoDB\Driver\Manager')) {
 		class Db extends SqlDb {
-			public $extension = "MongoDB", $server_info = MONGODB_VERSION, $last_id;
+			public string $extension = "MongoDB", $server_info = MONGODB_VERSION, $last_id;
 			public \MongoDB\Driver\Manager $_link;
 			public $_db, $_db_name;
 
@@ -118,7 +118,7 @@ if (isset($_GET["mongo"])) {
 				return array_values($return);
 			}
 
-			function fetch_field(): object {
+			function fetch_field(): \stdClass {
 				$keys = array_keys($this->rows[0]);
 				$name = $keys[$this->offset++];
 				return (object) array(
@@ -293,12 +293,12 @@ if (isset($_GET["mongo"])) {
 
 
 	class Driver extends SqlDriver {
-		static $possibleDrivers = array("mongodb");
-		static $jush = "mongo";
+		static array $possibleDrivers = array("mongodb");
+		static string $jush = "mongo";
 
-		public $editFunctions = array(array("json"));
+		public array $editFunctions = array(array("json"));
 
-		public $operators = array(
+		public array $operators = array(
 			"=",
 			"!=",
 			">",

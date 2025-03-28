@@ -76,7 +76,7 @@ if (extension_loaded('pdo')) {
 			return $this->fetch(\PDO::FETCH_NUM);
 		}
 
-		function fetch_field(): object {
+		function fetch_field(): \stdClass {
 			$row = (object) $this->getColumnMeta($this->_offset++);
 			$type = $row->pdo_type;
 			$row->type = ($type == \PDO::PARAM_INT ? 0 : 15);

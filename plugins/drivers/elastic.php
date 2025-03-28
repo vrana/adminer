@@ -9,7 +9,7 @@ if (isset($_GET["elastic"])) {
 	if (ini_bool('allow_url_fopen')) {
 
 		class Db extends SqlDb {
-			public $extension = "JSON";
+			public string $extension = "JSON";
 			private $url;
 
 			/**
@@ -108,11 +108,11 @@ if (isset($_GET["elastic"])) {
 	}
 
 	class Driver extends SqlDriver {
-		static $possibleDrivers = array("json + allow_url_fopen");
-		static $jush = "elastic";
+		static array $possibleDrivers = array("json + allow_url_fopen");
+		static string $jush = "elastic";
 
-		public $editFunctions = array(array("json"));
-		public $operators = array("=", "must", "should", "must_not");
+		public array $editFunctions = array(array("json"));
+		public array $operators = array("=", "must", "should", "must_not");
 
 		function __construct(Db $connection) {
 			parent::__construct($connection);

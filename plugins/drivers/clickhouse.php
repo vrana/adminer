@@ -8,7 +8,7 @@ if (isset($_GET["clickhouse"])) {
 
 	if (ini_bool('allow_url_fopen')) {
 		class Db extends SqlDb {
-			public $extension = "JSON";
+			public string $extension = "JSON";
 			public $_db = 'default';
 			private $url;
 
@@ -103,7 +103,7 @@ if (isset($_GET["clickhouse"])) {
 				return $row;
 			}
 
-			function fetch_field(): object {
+			function fetch_field(): \stdClass {
 				$column = $this->offset++;
 				$return = new \stdClass;
 				if ($column < count($this->columns)) {
@@ -117,11 +117,11 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	class Driver extends SqlDriver {
-		static $possibleDrivers = array("allow_url_fopen");
-		static $jush = "clickhouse";
+		static array $possibleDrivers = array("allow_url_fopen");
+		static string $jush = "clickhouse";
 
-		public $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
-		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
+		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
+		public array $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 
 		function __construct(Db $connection) {
 			parent::__construct($connection);
