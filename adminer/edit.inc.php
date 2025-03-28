@@ -110,4 +110,4 @@ if (!support("table") && !$fields) { // used by Mongo and SimpleDB
 	}
 }
 
-edit_form($TABLE, $fields, $row, $update);
+edit_form($TABLE, $fields, $row, $update, $error);

@@ -363,8 +363,8 @@ function on_help(string $command, int $side = 0): string {
 * @param Field[] $fields
 * @param mixed $row
 */
-function edit_form(string $table, array $fields, $row, ?bool $update): void {
-	global $adminer, $error;
+function edit_form(string $table, array $fields, $row, ?bool $update, string $error = ''): void {
+	global $adminer;
 	$table_name = $adminer->tableName(table_status1($table, true));
 	page_header(
 		($update ? lang('Edit') : lang('Insert')),

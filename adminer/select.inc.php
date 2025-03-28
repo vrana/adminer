@@ -159,7 +159,7 @@ if ($_POST && !$error) {
 			queries_redirect(remove_from_uri($_POST["all"] && $_POST["delete"] ? "page" : ""), $message, $result);
 			if (!$_POST["delete"]) {
 				$post_fields = (array) $_POST["fields"];
-				edit_form($TABLE, array_intersect_key($fields, $post_fields), $post_fields, !$_POST["clone"]);
+				edit_form($TABLE, array_intersect_key($fields, $post_fields), $post_fields, !$_POST["clone"], $error);
 				page_footer();
 				exit;
 			}
