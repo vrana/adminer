@@ -435,18 +435,15 @@ function redirect(?string $location, string $message = null): void {
 * @param bool $redirect
 */
 function query_redirect(string $query, string $location, string $message, $redirect = true, bool $execute = true, bool $failed = false, string $time = ""): bool {
-	global $connection, $error, $adminer;
+	global $connection, $adminer;
 	if ($execute) {
 		$start = microtime(true);
 		$failed = !$connection->query($query);
 		$time = format_time($start);
 	}
-	$sql = "";
-	if ($query) {
-		$sql = $adminer->messageQuery($query, $time, $failed);
-	}
+	$sql = ($query ? $adminer->messageQuery($query, $time, $failed) : "");
 	if ($failed) {
-		$error = error() . $sql . script("messagesPrint();");
+		$adminer->error .= error() . $sql . script("messagesPrint();") . "<br>";
 		return false;
 	}
 	if ($redirect) {
