@@ -4,17 +4,15 @@ namespace Adminer;
 $drivers = array();
 
 /** Add a driver
-* @return void
 */
-function add_driver(string $id, string $name) {
+function add_driver(string $id, string $name): void {
 	global $drivers;
 	$drivers[$id] = $name;
 }
 
 /** Get driver name
-* @return string
 */
-function get_driver(string $id) {
+function get_driver(string $id): string {
 	global $drivers;
 	return $drivers[$id];
 }
@@ -44,7 +42,7 @@ abstract class SqlDriver {
 	/** Get all types
 	* @return int[] [$type => $maximum_unsigned_length, ...]
 	*/
-	function types() {
+	function types(): array {
 		return call_user_func_array('array_merge', array_values($this->types));
 	}
 
@@ -137,9 +135,8 @@ abstract class SqlDriver {
 	}
 
 	/** Get RETURNING clause for INSERT queries (PostgreSQL specific)
-	* @return string
 	*/
-	function insertReturning(string $table) {
+	function insertReturning(string $table): string {
 		return "";
 	}
 
@@ -184,24 +181,21 @@ abstract class SqlDriver {
 	* @param string $idf escaped column name
 	* @param array{op:string, val:string} $val
 	* @param Field $field
-	* @return string
 	*/
-	function convertSearch(string $idf, array $val, array $field) {
+	function convertSearch(string $idf, array $val, array $field): string {
 		return $idf;
 	}
 
 	/** Convert operator so it can be used in search
-	* @return string
 	*/
-	function convertOperator(string $operator) {
+	function convertOperator(string $operator): string {
 		return $operator;
 	}
 
 	/** Convert value returned by database to actual value
 	* @param Field $field
-	* @return string
 	*/
-	function value(string $val, array $field) {
+	function value(string $val, array $field): string {
 		return (method_exists($this->conn, 'value')
 			? $this->conn->value($val, $field)
 			: (is_resource($val) ? stream_get_contents($val) : $val)
@@ -209,9 +203,8 @@ abstract class SqlDriver {
 	}
 
 	/** Quote binary string
-	* @return string
 	*/
-	function quoteBinary(string $s) {
+	function quoteBinary(string $s): string {
 		return q($s);
 	}
 
@@ -228,31 +221,29 @@ abstract class SqlDriver {
 	}
 
 	/** Check if C-style escapes are supported
-	* @return bool
 	*/
-	function hasCStyleEscapes() {
+	function hasCStyleEscapes(): bool {
 		return false;
 	}
 
 	/** Get supported engines
 	* @return list<string>
 	*/
-	function engines() {
+	function engines(): array {
 		return array();
 	}
 
 	/** Check whether table supports indexes
 	* @param TableStatus $table_status result of table_status1()
-	* @return bool
 	*/
-	function supportsIndex(array $table_status) {
+	function supportsIndex(array $table_status): bool {
 		return !is_view($table_status);
 	}
 
 	/** Get defined check constraints
 	* @return string[] [$name => $clause]
 	*/
-	function checkConstraints(string $table) {
+	function checkConstraints(string $table): array {
 		// MariaDB contains CHECK_CONSTRAINTS.TABLE_NAME, MySQL and PostrgreSQL not
 		return get_key_vals("SELECT c.CONSTRAINT_NAME, CHECK_CLAUSE
 FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS c

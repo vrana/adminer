@@ -52,9 +52,8 @@ $langs = array(
 );
 
 /** Get current language
-* @return string
 */
-function get_lang() {
+function get_lang(): string {
 	global $LANG;
 	return $LANG;
 }
@@ -62,9 +61,8 @@ function get_lang() {
 /** Translate string
 * @param literal-string $idf
 * @param float|string $number
-* @return string
 */
-function lang(string $idf, $number = null) {
+function lang(string $idf, $number = null): string {
 	// this is matched by compile.php
 	global $LANG, $translations;
 	$translation = ($translations[$idf] ?: $idf);
@@ -92,8 +90,7 @@ function lang(string $idf, $number = null) {
 	return vsprintf($format, $args);
 }
 
-/** @return void */
-function switch_lang() {
+function switch_lang(): void {
 	global $LANG, $langs;
 	echo "<form action='' method='post'>\n<div id='lang'>";
 	echo lang('Language') . ": " . html_select("lang", $langs, $LANG, "this.form.submit();");

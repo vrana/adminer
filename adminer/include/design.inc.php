@@ -5,9 +5,8 @@ namespace Adminer;
 * @param string $title used in title, breadcrumb and heading, should be HTML escaped
 * @param mixed $breadcrumb ["key" => "link", "key2" => ["link", "desc"]], null for nothing, false for driver only, true for driver and server
 * @param string $title2 used after colon in title and heading, should be HTML escaped
-* @return void
 */
-function page_header(string $title, string $error = "", $breadcrumb = array(), string $title2 = "") {
+function page_header(string $title, string $error = "", $breadcrumb = array(), string $title2 = ""): void {
 	global $LANG, $VERSION, $adminer, $drivers;
 	page_headers();
 	if (is_ajax() && $error) {
@@ -127,9 +126,8 @@ const thousandsSeparator = '" . js_escape(lang(',')) . "';")
 }
 
 /** Send HTTP headers
-* @return void
 */
-function page_headers() {
+function page_headers(): void {
 	global $adminer;
 	header("Content-Type: text/html; charset=utf-8");
 	header("Cache-Control: no-cache");
@@ -150,7 +148,7 @@ function page_headers() {
 /** Get Content Security Policy headers
 * @return list<string[]> of arrays with directive name in key, allowed sources in value
 */
-function csp() {
+function csp(): array {
 	return array(
 		array(
 			"script-src" => "'self' 'unsafe-inline' 'nonce-" . get_nonce() . "' 'strict-dynamic'", // 'self' is a fallback for browsers not supporting 'strict-dynamic', 'unsafe-inline' is a fallback for browsers not supporting 'nonce-'
@@ -166,7 +164,7 @@ function csp() {
 /** Get a CSP nonce
 * @return string Base64 value
 */
-function get_nonce() {
+function get_nonce(): string {
 	static $nonce;
 	if (!$nonce) {
 		$nonce = base64_encode(rand_string());
@@ -175,9 +173,8 @@ function get_nonce() {
 }
 
 /** Print flash and error messages
-* @return void
 */
-function page_messages(string $error) {
+function page_messages(string $error): void {
 	global $adminer;
 	$uri = preg_replace('~^[^?]*~', '', $_SERVER["REQUEST_URI"]);
 	$messages = idx($_SESSION["messages"], $uri);
@@ -195,9 +192,8 @@ function page_messages(string $error) {
 
 /** Print HTML footer
 * @param string $missing "auth", "db", "ns"
-* @return void
 */
-function page_footer(string $missing = "") {
+function page_footer(string $missing = ""): void {
 	global $adminer;
 	echo "</div>\n\n<div id='menu'>\n";
 	$adminer->navigation($missing);

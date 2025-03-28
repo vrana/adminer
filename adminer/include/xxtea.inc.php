@@ -7,9 +7,8 @@ namespace Adminer;
 */
 
 /**
-* @return int
 */
-function int32(int $n) {
+function int32(int $n): int {
 	while ($n >= 2147483648) {
 		$n -= 4294967296;
 	}
@@ -21,9 +20,8 @@ function int32(int $n) {
 
 /**
 * @param int[] $v
-* @return string
 */
-function long2str(array $v, bool $w) {
+function long2str(array $v, bool $w): string {
 	$s = '';
 	foreach ($v as $val) {
 		$s .= pack('V', $val);
@@ -37,7 +35,7 @@ function long2str(array $v, bool $w) {
 /**
 * @return int[]
 */
-function str2long(string $s, bool $w) {
+function str2long(string $s, bool $w): array {
 	$v = array_values(unpack('V*', str_pad($s, 4 * ceil(strlen($s) / 4), "\0")));
 	if ($w) {
 		$v[] = strlen($s);
@@ -46,9 +44,8 @@ function str2long(string $s, bool $w) {
 }
 
 /**
-* @return int
 */
-function xxtea_mx(int $z, int $y, int $sum, int $k) {
+function xxtea_mx(int $z, int $y, int $sum, int $k): int {
 	return int32((($z >> 5 & 0x7FFFFFF) ^ $y << 2) + (($y >> 3 & 0x1FFFFFFF) ^ $z << 4)) ^ int32(($sum ^ $y) + ($k ^ $z));
 }
 
@@ -56,7 +53,7 @@ function xxtea_mx(int $z, int $y, int $sum, int $k) {
 * @param string $str plain-text password
 * @return string binary cipher
 */
-function encrypt_string(string $str, string $key) {
+function encrypt_string(string $str, string $key): string {
 	if ($str == "") {
 		return "";
 	}

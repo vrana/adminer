@@ -10,14 +10,14 @@ class Adminer {
 	/** Name in title and navigation
 	* @return string HTML code
 	*/
-	function name() {
+	function name(): string {
 		return "<a href='https://www.adminer.org/'" . target_blank() . " id='h1'>Adminer</a>";
 	}
 
 	/** Connection parameters
 	* @return array{string, string, string}
 	*/
-	function credentials() {
+	function credentials(): array {
 		return array(SERVER, $_GET["username"], get_password());
 	}
 
@@ -30,28 +30,26 @@ class Adminer {
 	/** Get key used for permanent login
 	* @return string cryptic string which gets combined with password or false in case of an error
 	*/
-	function permanentLogin(bool $create = false) {
+	function permanentLogin(bool $create = false): string {
 		return password_file($create);
 	}
 
 	/** Return key used to group brute force attacks; behind a reverse proxy, you want to return the last part of X-Forwarded-For
-	* @return string
 	*/
-	function bruteForceKey() {
+	function bruteForceKey(): string {
 		return $_SERVER["REMOTE_ADDR"];
 	}
 
 	/** Get server name displayed in breadcrumbs
 	* @return string HTML code or null
 	*/
-	function serverName(string $server) {
+	function serverName(string $server): string {
 		return h($server);
 	}
 
 	/** Identifier of selected database
-	* @return string
 	*/
-	function database() {
+	function database(): string {
 		// should be used everywhere instead of DB
 		return DB;
 	}
@@ -59,34 +57,33 @@ class Adminer {
 	/** Get cached list of databases
 	* @return list<string>
 	*/
-	function databases(bool $flush = true) {
+	function databases(bool $flush = true): array {
 		return get_databases($flush);
 	}
 
 	/** Get list of schemas
 	* @return list<string>
 	*/
-	function schemas() {
+	function schemas(): array {
 		return schemas();
 	}
 
 	/** Specify limit for waiting on some slow queries like DB list
 	* @return float number of seconds
 	*/
-	function queryTimeout() {
+	function queryTimeout(): float {
 		return 2;
 	}
 
 	/** Headers to send before HTML output
-	* @return void
 	*/
-	function headers() {
+	function headers(): void {
 	}
 
 	/** Get Content Security Policy headers
 	* @return list<string[]> of arrays with directive name in key, allowed sources in value
 	*/
-	function csp() {
+	function csp(): array {
 		return csp();
 	}
 
@@ -94,7 +91,7 @@ class Adminer {
 	* @param bool $dark dark CSS: false to disable, true to force, null to base on user preferences
 	* @return bool true to link favicon.ico
 	*/
-	function head(bool $dark = null) {
+	function head(bool $dark = null): bool {
 		// this is matched by compile.php
 		echo "<link rel='stylesheet' href='../externals/jush/jush.css'>\n";
 		echo ($dark !== false ? "<link rel='stylesheet'" . ($dark ? "" : " media='(prefers-color-scheme: dark)'") . " href='../externals/jush/jush-dark.css'>\n" : "");
@@ -104,7 +101,7 @@ class Adminer {
 	/** Get URLs of the CSS files
 	* @return list<string>
 	*/
-	function css() {
+	function css(): array {
 		$return = array();
 		foreach (array("", "-dark") as $mode) {
 			$filename = "adminer$mode.css";
@@ -116,9 +113,8 @@ class Adminer {
 	}
 
 	/** Print login form
-	* @return void
 	*/
-	function loginForm() {
+	function loginForm(): void {
 		global $drivers;
 		echo "<table class='layout'>\n";
 		// this is matched by compile.php
@@ -136,9 +132,8 @@ class Adminer {
 	/** Get login form field
 	* @param string $heading HTML
 	* @param string $value HTML
-	* @return string
 	*/
-	function loginFormField(string $name, string $heading, string $value) {
+	function loginFormField(string $name, string $heading, string $value): string {
 		return $heading . $value . "\n";
 	}
 
@@ -156,7 +151,7 @@ class Adminer {
 	* @param TableStatus $tableStatus result of table_status1()
 	* @return string HTML code, "" to ignore table
 	*/
-	function tableName(array $tableStatus) {
+	function tableName(array $tableStatus): string {
 		return h($tableStatus["Name"]);
 	}
 
@@ -165,7 +160,7 @@ class Adminer {
 	* @param int $order order of column in select
 	* @return string HTML code, "" to ignore field
 	*/
-	function fieldName(array $field, int $order = 0) {
+	function fieldName(array $field, int $order = 0): string {
 		$type = $field["full_type"];
 		$comment = $field["comment"];
 		return '<span title="' . h($type . ($comment != "" ? ($type ? ": " : "") . $comment : '')) . '">' . h($field["field"]) . '</span>';
@@ -174,9 +169,8 @@ class Adminer {
 	/** Print links after select heading
 	* @param TableStatus $tableStatus result of table_status1()
 	* @param string $set new item options, NULL for no new item
-	* @return void
 	*/
-	function selectLinks(array $tableStatus, string $set = "") {
+	function selectLinks(array $tableStatus, string $set = ""): void {
 		global $driver;
 		echo '<p class="links">';
 		$links = array("select" => lang('Select data'));
@@ -206,31 +200,29 @@ class Adminer {
 	/** Get foreign keys for table
 	* @return ForeignKey[] same format as foreign_keys()
 	*/
-	function foreignKeys(string $table) {
+	function foreignKeys(string $table): array {
 		return foreign_keys($table);
 	}
 
 	/** Find backward keys for table
 	* @return BackwardKey[]
 	*/
-	function backwardKeys(string $table, string $tableName) {
+	function backwardKeys(string $table, string $tableName): array {
 		return array();
 	}
 
 	/** Print backward keys for row
 	* @param BackwardKey[] $backwardKeys result of $this->backwardKeys()
 	* @param string[] $row
-	* @return void
 	*/
-	function backwardKeysPrint(array $backwardKeys, array $row) {
+	function backwardKeysPrint(array $backwardKeys, array $row): void {
 	}
 
 	/** Query printed in select before execution
 	* @param string $query query to be executed
 	* @param float $start start time of the query
-	* @return string
 	*/
-	function selectQuery(string $query, float $start, bool $failed = false) {
+	function selectQuery(string $query, float $start, bool $failed = false): string {
 		global $driver;
 		$return = "</p>\n"; // required for IE9 inline edit
 		if (!$failed && ($warnings = $driver->warnings())) {
@@ -249,20 +241,19 @@ class Adminer {
 	* @param string $query query to be executed
 	* @return string escaped query to be printed
 	*/
-	function sqlCommandQuery(string $query) {
+	function sqlCommandQuery(string $query): string {
 		return shorten_utf8(trim($query), 1000);
 	}
 
 	/** Print HTML code just before the Execute button in SQL command
-	* @return void
 	*/
-	function sqlPrintAfter() {
+	function sqlPrintAfter(): void {
 	}
 
 	/** Description of a row in a table
 	* @return string SQL expression, empty string for no description
 	*/
-	function rowDescription(string $table) {
+	function rowDescription(string $table): string {
 		return "";
 	}
 
@@ -271,7 +262,7 @@ class Adminer {
 	* @param ForeignKey[] $foreignKeys
 	* @return list<string[]>
 	*/
-	function rowDescriptions(array $rows, array $foreignKeys) {
+	function rowDescriptions(array $rows, array $foreignKeys): array {
 		return $rows;
 	}
 
@@ -288,9 +279,8 @@ class Adminer {
 	* @param string $link link to foreign key
 	* @param Field $field single field returned from fields()
 	* @param string $original original value before applying editVal() and escaping
-	* @return string
 	*/
-	function selectVal(string $val, string $link, array $field, string $original) {
+	function selectVal(string $val, string $link, array $field, string $original): string {
 		$return = ($val === null ? "<i>NULL</i>"
 			: (preg_match("~char|binary|boolean~", $field["type"]) && !preg_match("~var~", $field["type"]) ? "<code>$val</code>"
 			: (preg_match('~json~', $field["type"]) ? "<code class='jush-js'>$val</code>"
@@ -304,18 +294,16 @@ class Adminer {
 
 	/** Value conversion used in select and edit
 	* @param Field $field single field returned from fields()
-	* @return string
 	*/
-	function editVal(string $val, array $field) {
+	function editVal(string $val, array $field): string {
 		return $val;
 	}
 
 	/** Print table structure in tabular format
 	* @param Field[] $fields data about individual fields
 	* @param TableStatus $tableStatus
-	* @return void
 	*/
-	function tableStructurePrint(array $fields, array $tableStatus = null) {
+	function tableStructurePrint(array $fields, array $tableStatus = null): void {
 		global $driver;
 		echo "<div class='scrollable'>\n";
 		echo "<table class='nowrap odds'>\n";
@@ -344,9 +332,8 @@ class Adminer {
 
 	/** Print list of indexes on table in tabular format
 	* @param Index[] $indexes data about all indexes on a table
-	* @return void
 	*/
-	function tableIndexesPrint(array $indexes) {
+	function tableIndexesPrint(array $indexes): void {
 		echo "<table>\n";
 		foreach ($indexes as $name => $index) {
 			ksort($index["columns"]); // enforce correct columns order
@@ -365,9 +352,8 @@ class Adminer {
 	/** Print columns box in select
 	* @param list<string> $select result of selectColumnsProcess()[0]
 	* @param string[] $columns selectable columns
-	* @return void
 	*/
-	function selectColumnsPrint(array $select, array $columns) {
+	function selectColumnsPrint(array $select, array $columns): void {
 		global $driver;
 		print_fieldset("select", lang('Select'), $select);
 		$i = 0;
@@ -393,9 +379,8 @@ class Adminer {
 	* @param list<string> $where result of selectSearchProcess()
 	* @param string[] $columns selectable columns
 	* @param Index[] $indexes
-	* @return void
 	*/
-	function selectSearchPrint(array $where, array $columns, array $indexes) {
+	function selectSearchPrint(array $where, array $columns, array $indexes): void {
 		print_fieldset("search", lang('Search'), $where);
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
@@ -429,9 +414,8 @@ class Adminer {
 	* @param list<string> $order result of selectOrderProcess()
 	* @param string[] $columns selectable columns
 	* @param Index[] $indexes
-	* @return void
 	*/
-	function selectOrderPrint(array $order, array $columns, array $indexes) {
+	function selectOrderPrint(array $order, array $columns, array $indexes): void {
 		print_fieldset("sort", lang('Sort'), $order);
 		$i = 0;
 		foreach ((array) $_GET["order"] as $key => $val) {
@@ -448,9 +432,8 @@ class Adminer {
 
 	/** Print limit box in select
 	* @param string $limit result of selectLimitProcess()
-	* @return void
 	*/
-	function selectLimitPrint(string $limit) {
+	function selectLimitPrint(string $limit): void {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
 		echo "<input type='number' name='limit' class='size' value='" . h($limit) . "'>";
 		echo script("qsl('input').oninput = selectFieldChange;", "");
@@ -459,9 +442,8 @@ class Adminer {
 
 	/** Print text length box in select
 	* @param string $text_length result of selectLengthProcess()
-	* @return void
 	*/
-	function selectLengthPrint(string $text_length) {
+	function selectLengthPrint(string $text_length): void {
 		if ($text_length !== null) {
 			echo "<fieldset><legend>" . lang('Text length') . "</legend><div>";
 			echo "<input type='number' name='text_length' class='size' value='" . h($text_length) . "'>";
@@ -471,9 +453,8 @@ class Adminer {
 
 	/** Print action box in select
 	* @param Index[] $indexes
-	* @return void
 	*/
-	function selectActionPrint(array $indexes) {
+	function selectActionPrint(array $indexes): void {
 		echo "<fieldset><legend>" . lang('Action') . "</legend><div>";
 		echo "<input type='submit' value='" . lang('Select') . "'>";
 		echo " <span id='noindex' title='" . lang('Full table scan') . "'></span>";
@@ -499,23 +480,22 @@ class Adminer {
 	/** Print command box in select
 	* @return bool whether to print default commands
 	*/
-	function selectCommandPrint() {
+	function selectCommandPrint(): bool {
 		return !information_schema(DB);
 	}
 
 	/** Print import box in select
 	* @return bool whether to print default import
 	*/
-	function selectImportPrint() {
+	function selectImportPrint(): bool {
 		return !information_schema(DB);
 	}
 
 	/** Print extra text in the end of a select form
 	* @param string[] $emailFields fields holding e-mails
 	* @param string[] $columns selectable columns
-	* @return void
 	*/
-	function selectEmailPrint(array $emailFields, array $columns) {
+	function selectEmailPrint(array $emailFields, array $columns): void {
 	}
 
 	/** Process columns box in select
@@ -523,7 +503,7 @@ class Adminer {
 	* @param Index[] $indexes
 	* @return list<list<string>> [[select_expressions], [group_expressions]]
 	*/
-	function selectColumnsProcess(array $columns, array $indexes) {
+	function selectColumnsProcess(array $columns, array $indexes): array {
 		global $driver;
 		$select = array(); // select expressions, empty for *
 		$group = array(); // expressions without aggregation - will be used for GROUP BY if an aggregation function is used
@@ -543,7 +523,7 @@ class Adminer {
 	* @param Index[] $indexes
 	* @return list<string> expressions to join by AND
 	*/
-	function selectSearchProcess(array $fields, array $indexes) {
+	function selectSearchProcess(array $fields, array $indexes): array {
 		global $connection, $driver;
 		$return = array();
 		foreach ($indexes as $i => $index) {
@@ -597,7 +577,7 @@ class Adminer {
 	* @param Index[] $indexes
 	* @return list<string> expressions to join by comma
 	*/
-	function selectOrderProcess(array $fields, array $indexes) {
+	function selectOrderProcess(array $fields, array $indexes): array {
 		$return = array();
 		foreach ((array) $_GET["order"] as $key => $val) {
 			if ($val != "") {
@@ -612,14 +592,14 @@ class Adminer {
 	/** Process limit box in select
 	* @return string expression to use in LIMIT, will be escaped
 	*/
-	function selectLimitProcess() {
+	function selectLimitProcess(): string {
 		return (isset($_GET["limit"]) ? $_GET["limit"] : "50");
 	}
 
 	/** Process length box in select
 	* @return string number of characters to shorten texts, will be escaped
 	*/
-	function selectLengthProcess() {
+	function selectLengthProcess(): string {
 		return (isset($_GET["text_length"]) ? $_GET["text_length"] : "100");
 	}
 
@@ -628,7 +608,7 @@ class Adminer {
 	* @param ForeignKey[] $foreignKeys
 	* @return bool true if processed, false to process other parts of form
 	*/
-	function selectEmailProcess(array $where, array $foreignKeys) {
+	function selectEmailProcess(array $where, array $foreignKeys): bool {
 		return false;
 	}
 
@@ -641,16 +621,15 @@ class Adminer {
 	* @param int $page index of page starting at zero
 	* @return string empty string to use default query
 	*/
-	function selectQueryBuild(array $select, array $where, array $group, array $order, int $limit, int $page) {
+	function selectQueryBuild(array $select, array $where, array $group, array $order, int $limit, int $page): string {
 		return "";
 	}
 
 	/** Query printed after execution in the message
 	* @param string $query executed query
 	* @param string $time elapsed time
-	* @return string
 	*/
-	function messageQuery(string $query, string $time, bool $failed = false) {
+	function messageQuery(string $query, string $time, bool $failed = false): string {
 		global $driver;
 		restart_session();
 		$history = &get_session("queries");
@@ -678,16 +657,15 @@ class Adminer {
 	/** Print before edit form
 	* @param Field[] $fields
 	* @param mixed $row
-	* @return void
 	*/
-	function editRowPrint(string $table, array $fields, $row, bool $update) {
+	function editRowPrint(string $table, array $fields, $row, bool $update): void {
 	}
 
 	/** Functions displayed in edit form
 	* @param Field $field single field from fields()
 	* @return list<string>
 	*/
-	function editFunctions(array $field) {
+	function editFunctions(array $field): array {
 		global $driver;
 		$return = ($field["null"] ? "NULL/" : "");
 		$update = isset($_GET["select"]) || where($_GET);
@@ -715,7 +693,7 @@ class Adminer {
 	* @param string $attrs attributes to use inside the tag
 	* @return string custom input field or empty string for default
 	*/
-	function editInput(string $table, array $field, string $attrs, string $value) {
+	function editInput(string $table, array $field, string $attrs, string $value): string {
 		if ($field["type"] == "enum") {
 			return (isset($_GET["select"]) ? "<label><input type='radio'$attrs value='-1' checked><i>" . lang('original') . "</i></label> " : "")
 				. ($field["null"] ? "<label><input type='radio'$attrs value=''" . ($value !== null || isset($_GET["select"]) ? "" : " checked") . "><i>NULL</i></label> " : "")
@@ -728,9 +706,8 @@ class Adminer {
 	/** Get hint for edit field
 	* @param string $table table name
 	* @param Field $field single field from fields()
-	* @return string
 	*/
-	function editHint(string $table, array $field, string $value) {
+	function editHint(string $table, array $field, string $value): string {
 		return "";
 	}
 
@@ -738,7 +715,7 @@ class Adminer {
 	* @param Field $field single field from fields()
 	* @return string expression to use in a query
 	*/
-	function processInput(array $field, string $value, string $function = "") {
+	function processInput(array $field, string $value, string $function = ""): string {
 		if ($function == "SQL") {
 			return $value; // SQL injection
 		}
@@ -763,7 +740,7 @@ class Adminer {
 	/** Return export output options
 	* @return string[]
 	*/
-	function dumpOutput() {
+	function dumpOutput(): array {
 		$return = array('text' => lang('open'), 'file' => lang('save'));
 		if (function_exists('gzencode')) {
 			$return['gz'] = 'gzip';
@@ -774,21 +751,21 @@ class Adminer {
 	/** Return export format options
 	* @return string[] empty to disable export
 	*/
-	function dumpFormat() {
+	function dumpFormat(): array {
 		return (support("dump") ? array('sql' => 'SQL') : array()) + array('csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV');
 	}
 
 	/** Export database structure
 	* @return void prints data
 	*/
-	function dumpDatabase(string $db) {
+	function dumpDatabase(string $db): void {
 	}
 
 	/** Export table structure
 	* @param int $is_view 0 table, 1 view, 2 temporary view table
 	* @return void prints data
 	*/
-	function dumpTable(string $table, string $style, int $is_view = 0) {
+	function dumpTable(string $table, string $style, int $is_view = 0): void {
 		if ($_POST["format"] != "sql") {
 			echo "\xef\xbb\xbf"; // UTF-8 byte order mark
 			if ($style) {
@@ -820,7 +797,7 @@ class Adminer {
 	/** Export table data
 	* @return void prints data
 	*/
-	function dumpData(string $table, string $style, string $query) {
+	function dumpData(string $table, string $style, string $query): void {
 		global $connection;
 		if ($style) {
 			$max_packet = (JUSH == "sqlite" ? 0 : 1048576); // default, minimum is 1024
@@ -911,14 +888,14 @@ class Adminer {
 	/** Set export filename
 	* @return string filename without extension
 	*/
-	function dumpFilename(string $identifier) {
+	function dumpFilename(string $identifier): string {
 		return friendly_url($identifier != "" ? $identifier : (SERVER != "" ? SERVER : "localhost"));
 	}
 
 	/** Send headers for export
 	* @return string extension
 	*/
-	function dumpHeaders(string $identifier, bool $multi_table = false) {
+	function dumpHeaders(string $identifier, bool $multi_table = false): string {
 		$output = $_POST["output"];
 		$ext = (preg_match('~sql~', $_POST["format"]) ? "sql" : ($multi_table ? "tar" : "csv")); // multiple CSV packed to TAR
 		header("Content-Type: " .
@@ -938,7 +915,7 @@ class Adminer {
 	/** Print text after export
 	* @return void prints data
 	*/
-	function dumpFooter() {
+	function dumpFooter(): void {
 		if ($_POST["format"] == "sql") {
 			echo "-- " . gmdate("Y-m-d H:i:s e") . "\n";
 		}
@@ -947,14 +924,14 @@ class Adminer {
 	/** Set the path of the file for webserver load
 	* @return string path of the sql dump file
 	*/
-	function importServerPath() {
+	function importServerPath(): string {
 		return "adminer.sql";
 	}
 
 	/** Print homepage
 	* @return bool whether to print default homepage
 	*/
-	function homepage() {
+	function homepage(): bool {
 		echo '<p class="links">' . ($_GET["ns"] == "" && support("database") ? '<a href="' . h(ME) . 'database=">' . lang('Alter database') . "</a>\n" : "");
 		echo (support("scheme") ? "<a href='" . h(ME) . "scheme='>" . ($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema')) . "</a>\n" : "");
 		echo ($_GET["ns"] !== "" ? '<a href="' . h(ME) . 'schema=">' . lang('Database schema') . "</a>\n" : "");
@@ -964,9 +941,8 @@ class Adminer {
 
 	/** Print navigation after Adminer title
 	* @param string $missing can be "auth" if there is no database connection, "db" if there is no database selected, "ns" with invalid schema
-	* @return void
 	*/
-	function navigation(string $missing) {
+	function navigation(string $missing): void {
 		global $VERSION, $drivers, $connection;
 		echo "<h1>" . $this->name() . " <span class='version'>$VERSION";
 		$new_version = $_COOKIE["adminer_version"];
@@ -1025,9 +1001,8 @@ class Adminer {
 
 	/** Set up syntax highlight for code and <textarea>
 	* @param TableStatus[] $tables result of table_status('', true)
-	* @return void
 	*/
-	function syntaxHighlighting(array $tables) {
+	function syntaxHighlighting(array $tables): void {
 		global $connection;
 		// this is matched by compile.php
 		echo script_src("../externals/jush/modules/jush.js");
@@ -1055,9 +1030,8 @@ class Adminer {
 	}
 
 	/** Print databases list in menu
-	* @return void
 	*/
-	function databasesPrint(string $missing) {
+	function databasesPrint(string $missing): void {
 		global $adminer, $connection;
 		$databases = $this->databases();
 		if (DB && $databases && !in_array(DB, $databases)) {
@@ -1090,9 +1064,8 @@ class Adminer {
 
 	/** Print table list in menu
 	* @param TableStatus[] $tables result of table_status('', true)
-	* @return void
 	*/
-	function tablesPrint(array $tables) {
+	function tablesPrint(array $tables): void {
 		echo "<ul id='tables'>" . script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
 		foreach ($tables as $table => $status) {
 			$name = $this->tableName($status);

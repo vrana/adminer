@@ -94,7 +94,7 @@ if ($in) {
 /** Format string as table row
 * @return string HTML
 */
-function pre_tr(string $s) {
+function pre_tr(string $s): string {
 	return preg_replace('~^~m', '<tr>', preg_replace('~\|~', '<td>', preg_replace('~\|$~m', "", rtrim($s))));
 }
 

@@ -84,9 +84,8 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			/** Set the client character set
-			* @return bool
 			*/
-			function set_charset(string $charset) {
+			function set_charset(string $charset): bool {
 				if (function_exists('mysql_set_charset')) {
 					if (mysql_set_charset($charset, $this->link)) {
 						return true;
@@ -137,21 +136,21 @@ if (!defined('Adminer\DRIVER')) {
 			/** Fetch next row as associative array
 			* @return array<?string>
 			*/
-			function fetch_assoc() {
+			function fetch_assoc(): array {
 				return mysql_fetch_assoc($this->result);
 			}
 
 			/** Fetch next row as numbered array
 			* @return list<?string>
 			*/
-			function fetch_row() {
+			function fetch_row(): array {
 				return mysql_fetch_row($this->result);
 			}
 
 			/** Fetch next field
 			* @return object properties: name, type (0 number, 15 varchar, 254 char), charsetnr (63 binary); optionally: table, orgtable, orgname
 			*/
-			function fetch_field() {
+			function fetch_field(): object {
 				$return = mysql_fetch_field($this->result, $this->offset++); // offset required under certain conditions
 				$return->orgtable = $return->table;
 				$return->charsetnr = ($return->blob ? 63 : 0);
@@ -357,16 +356,14 @@ if (!defined('Adminer\DRIVER')) {
 
 
 	/** Escape database identifier
-	* @return string
 	*/
-	function idf_escape(string $idf) {
+	function idf_escape(string $idf): string {
 		return "`" . str_replace("`", "``", $idf) . "`";
 	}
 
 	/** Get escaped table name
-	* @return string
 	*/
-	function table(string $idf) {
+	function table(string $idf): string {
 		return idf_escape($idf);
 	}
 
@@ -394,7 +391,7 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get cached list of databases
 	* @return list<string>
 	*/
-	function get_databases(bool $flush) {
+	function get_databases(bool $flush): array {
 		// SHOW DATABASES can take a very long time so it is cached
 		$return = get_session("dbs");
 		if ($return === null) {
@@ -410,25 +407,22 @@ if (!defined('Adminer\DRIVER')) {
 	/** Formulate SQL query with limit
 	* @param string $query everything after SELECT
 	* @param string $where including WHERE
-	* @return string
 	*/
-	function limit(string $query, string $where, int $limit, int $offset = 0, string $separator = " ") {
+	function limit(string $query, string $where, int $limit, int $offset = 0, string $separator = " "): string {
 		return " $query$where" . ($limit !== null ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
 	/** Formulate SQL modification query with limit 1
 	* @param string $query everything after UPDATE or DELETE
-	* @return string
 	*/
-	function limit1(string $table, string $query, string $where, string $separator = "\n") {
+	function limit1(string $table, string $query, string $where, string $separator = "\n"): string {
 		return limit($query, $where, 1, 0, $separator);
 	}
 
 	/** Get database collation
 	* @param string[][] $collations result of collations()
-	* @return string
 	*/
-	function db_collation(string $db, array $collations) {
+	function db_collation(string $db, array $collations): string {
 		$return = null;
 		$create = get_val("SHOW CREATE DATABASE " . idf_escape($db), 1);
 		if (preg_match('~ COLLATE ([^ ]+)~', $create, $match)) {
@@ -441,16 +435,15 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get logged user
-	* @return string
 	*/
-	function logged_user() {
+	function logged_user(): string {
 		return get_val("SELECT USER()");
 	}
 
 	/** Get tables list
 	* @return string[] [$name => $type]
 	*/
-	function tables_list() {
+	function tables_list(): array {
 		return get_key_vals("SELECT TABLE_NAME, TABLE_TYPE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() ORDER BY TABLE_NAME");
 	}
 
@@ -458,7 +451,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @param list<string> $databases
 	* @return int[] [$db => $tables]
 	*/
-	function count_tables(array $databases) {
+	function count_tables(array $databases): array {
 		$return = array();
 		foreach ($databases as $db) {
 			$return[$db] = count(get_vals("SHOW TABLES IN " . idf_escape($db)));
@@ -470,7 +463,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @param bool $fast return only "Name", "Engine" and "Comment" fields
 	* @return TableStatus[]
 	*/
-	function table_status(string $name = "", bool $fast = false) {
+	function table_status(string $name = "", bool $fast = false): array {
 		$return = array();
 		foreach (
 			get_rows(
@@ -497,24 +490,22 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Find out whether the identifier is view
 	* @param TableStatus $table_status
-	* @return bool
 	*/
-	function is_view(array $table_status) {
+	function is_view(array $table_status): bool {
 		return $table_status["Engine"] === null;
 	}
 
 	/** Check if table supports foreign keys
 	* @param TableStatus $table_status result of table_status1()
-	* @return bool
 	*/
-	function fk_support(array $table_status) {
+	function fk_support(array $table_status): bool {
 		return preg_match('~InnoDB|IBMDB2I' . (min_version(5.6) ? '|NDB' : '') . '~i', $table_status["Engine"]);
 	}
 
 	/** Get information about fields
 	* @return Field[]
 	*/
-	function fields(string $table) {
+	function fields(string $table): array {
 		global $connection;
 		$maria = ($connection->flavor == 'maria');
 		$return = array();
@@ -568,7 +559,7 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get table indexes
 	* @return Index[]
 	*/
-	function indexes(string $table, ?Db $connection2 = null) {
+	function indexes(string $table, ?Db $connection2 = null): array {
 		$return = array();
 		foreach (get_rows("SHOW INDEX FROM " . table($table), $connection2) as $row) {
 			$name = $row["Key_name"];
@@ -583,7 +574,7 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get foreign keys in table
 	* @return ForeignKey[]
 	*/
-	function foreign_keys(string $table) {
+	function foreign_keys(string $table): array {
 		global $driver;
 		static $pattern = '(?:`(?:[^`]|``)+`|"(?:[^"]|"")+")';
 		$return = array();
@@ -614,14 +605,14 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get view SELECT
 	* @return array{select:string}
 	*/
-	function view(string $name) {
+	function view(string $name): array {
 		return array("select" => preg_replace('~^(?:[^`]|`[^`]*`)*\s+AS\s+~isU', '', get_val("SHOW CREATE VIEW " . table($name), 1)));
 	}
 
 	/** Get sorted grouped list of collations
 	* @return string[][]
 	*/
-	function collations() {
+	function collations(): array {
 		$return = array();
 		foreach (get_rows("SHOW COLLATION") as $row) {
 			if ($row["Default"]) {
@@ -638,17 +629,15 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Find out if database is information_schema
-	* @return bool
 	*/
-	function information_schema(string $db) {
+	function information_schema(string $db): bool {
 		return ($db == "information_schema")
 			|| (min_version(5.5) && $db == "performance_schema");
 	}
 
 	/** Get escaped error message
-	* @return string
 	*/
-	function error() {
+	function error(): string {
 		global $connection;
 		return h(preg_replace('~^You have an error.*syntax to use~U', "Syntax error", $connection->error));
 	}
@@ -662,9 +651,8 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Drop databases
 	* @param list<string> $databases
-	* @return bool
 	*/
-	function drop_databases(array $databases) {
+	function drop_databases(array $databases): bool {
 		$return = apply_queries("DROP DATABASE", $databases, 'Adminer\idf_escape');
 		restart_session();
 		set_session("dbs", null);
@@ -673,9 +661,8 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Rename database from DB
 	* @param string $name new name
-	* @return bool
 	*/
-	function rename_database(string $name, string $collation) {
+	function rename_database(string $name, string $collation): bool {
 		$return = false;
 		if (create_database($name, $collation)) {
 			$tables = array();
@@ -694,9 +681,8 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Generate modifier for auto increment column
-	* @return string
 	*/
-	function auto_increment() {
+	function auto_increment(): string {
 		$auto_increment_index = " PRIMARY KEY";
 		// don't overwrite primary key by auto_increment
 		if ($_GET["create"] != "" && $_POST["auto_increment_col"]) {
@@ -773,9 +759,8 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Run commands to truncate tables
 	* @param list<string> $tables
-	* @return bool
 	*/
-	function truncate_tables(array $tables) {
+	function truncate_tables(array $tables): bool {
 		return apply_queries("TRUNCATE TABLE", $tables);
 	}
 
@@ -798,9 +783,8 @@ if (!defined('Adminer\DRIVER')) {
 	/** Move tables to other schema
 	* @param list<string> $tables
 	* @param list<string> $views
-	* @return bool
 	*/
-	function move_tables(array $tables, array $views, string $target) {
+	function move_tables(array $tables, array $views, string $target): bool {
 		global $connection;
 		$rename = array();
 		foreach ($tables as $table) {
@@ -827,9 +811,8 @@ if (!defined('Adminer\DRIVER')) {
 	/** Copy tables to other schema
 	* @param list<string> $tables
 	* @param list<string> $views
-	* @return bool
 	*/
-	function copy_tables(array $tables, array $views, string $target) {
+	function copy_tables(array $tables, array $views, string $target): bool {
 		queries("SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO'");
 		foreach ($tables as $table) {
 			$name = ($target == DB ? table("copy_$table") : idf_escape($target) . "." . table($table));
@@ -864,7 +847,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @param string $name trigger name
 	* @return Trigger
 	*/
-	function trigger(string $name, string $table) {
+	function trigger(string $name, string $table): array {
 		if ($name == "") {
 			return array();
 		}
@@ -875,7 +858,7 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get defined triggers
 	* @return array{string, string}[]
 	*/
-	function triggers(string $table) {
+	function triggers(string $table): array {
 		$return = array();
 		foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_\\"))) as $row) {
 			$return[$row["Trigger"]] = array($row["Timing"], $row["Event"]);
@@ -886,7 +869,7 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get trigger options
 	* @return array{Timing: list<string>, Event: list<string>, Type: list<string>}
 	*/
-	function trigger_options() {
+	function trigger_options(): array {
 		return array(
 			"Timing" => array("BEFORE", "AFTER"),
 			"Event" => array("INSERT", "UPDATE", "DELETE"),
@@ -898,7 +881,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @param 'FUNCTION'|'PROCEDURE' $type
 	* @return Routine
 	*/
-	function routine(string $name, $type) {
+	function routine(string $name, $type): array {
 		global $driver;
 		$aliases = array("bool", "boolean", "integer", "double precision", "real", "dec", "numeric", "fixed", "national char", "national varchar");
 		$space = "(?:\\s|/\\*[\s\S]*?\\*/|(?:#|-- )[^\n]*\n?|--\r?\n)";
@@ -935,30 +918,28 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get list of routines
 	* @return list<string[]> ["SPECIFIC_NAME" => , "ROUTINE_NAME" => , "ROUTINE_TYPE" => , "DTD_IDENTIFIER" => ]
 	*/
-	function routines() {
+	function routines(): array {
 		return get_rows("SELECT ROUTINE_NAME AS SPECIFIC_NAME, ROUTINE_NAME, ROUTINE_TYPE, DTD_IDENTIFIER FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = DATABASE()");
 	}
 
 	/** Get list of available routine languages
 	* @return list<string>
 	*/
-	function routine_languages() {
+	function routine_languages(): array {
 		return array(); // "SQL" not required
 	}
 
 	/** Get routine signature
 	* @param Routine $row result of routine()
-	* @return string
 	*/
-	function routine_id(string $name, array $row) {
+	function routine_id(string $name, array $row): string {
 		return idf_escape($name);
 	}
 
 	/** Get last auto increment ID
 	* @param Result $result or true
-	* @return string
 	*/
-	function last_id($result) {
+	function last_id($result): string {
 		return get_val("SELECT LAST_INSERT_ID()"); // mysql_insert_id() truncates bigint
 	}
 
@@ -979,9 +960,8 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get SQL command to create table
-	* @return string
 	*/
-	function create_sql(string $table, bool $auto_increment, string $style) {
+	function create_sql(string $table, bool $auto_increment, string $style): string {
 		$return = get_val("SHOW CREATE TABLE " . table($table), 1);
 		if (!$auto_increment) {
 			$return = preg_replace('~ AUTO_INCREMENT=\d+~', '', $return); //! skip comments
@@ -990,23 +970,20 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get SQL command to truncate table
-	* @return string
 	*/
-	function truncate_sql(string $table) {
+	function truncate_sql(string $table): string {
 		return "TRUNCATE " . table($table);
 	}
 
 	/** Get SQL command to change database
-	* @return string
 	*/
-	function use_sql(string $database) {
+	function use_sql(string $database): string {
 		return "USE " . idf_escape($database);
 	}
 
 	/** Get SQL commands to create triggers
-	* @return string
 	*/
-	function trigger_sql(string $table) {
+	function trigger_sql(string $table): string {
 		$return = "";
 		foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_\\")), null, "-- ") as $row) {
 			$return .= "\nCREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . table($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
@@ -1017,21 +994,21 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get server variables
 	* @return list<string[]> [[$name, $value]]
 	*/
-	function show_variables() {
+	function show_variables(): array {
 		return get_rows("SHOW VARIABLES");
 	}
 
 	/** Get status variables
 	* @return list<string[]> [[$name, $value]]
 	*/
-	function show_status() {
+	function show_status(): array {
 		return get_rows("SHOW STATUS");
 	}
 
 	/** Get process list
 	* @return list<string[]> [$row]
 	*/
-	function process_list() {
+	function process_list(): array {
 		return get_rows("SHOW FULL PROCESSLIST");
 	}
 
@@ -1054,9 +1031,8 @@ if (!defined('Adminer\DRIVER')) {
 	/** Convert value in edit after applying functions back
 	* @param Field $field one element from fields()
 	* @param string $return SQL expression
-	* @return string
 	*/
-	function unconvert_field(array $field, string $return) {
+	function unconvert_field(array $field, string $return): string {
 		if (preg_match("~binary~", $field["type"])) {
 			$return = "UNHEX($return)";
 		}
@@ -1072,9 +1048,8 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Check whether a feature is supported
 	* @param literal-string $feature "check|comment|copy|database|descidx|drop_col|dump|event|indexes|kill|materializedview|partitioning|privileges|procedure|processlist|routine|scheme|sequence|status|table|trigger|type|variables|view|view_trigger"
-	* @return bool
 	*/
-	function support(string $feature) {
+	function support(string $feature): bool {
 		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(8) ? "" : "|descidx" . (min_version(5.1) ? "" : "|event|partitioning")) . (min_version('8.0.16', '10.2.1') ? "" : "|check") . "~", $feature);
 	}
 
@@ -1087,16 +1062,15 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Return query to get connection ID
-	* @return string
 	*/
-	function connection_id() {
+	function connection_id(): string {
 		return "SELECT CONNECTION_ID()";
 	}
 
 	/** Get maximum number of connections
 	* @return numeric-string
 	*/
-	function max_connections() {
+	function max_connections(): string {
 		return get_val("SELECT @@max_connections");
 	}
 
@@ -1105,35 +1079,32 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get user defined types
 	* @return string[] [$id => $name]
 	*/
-	function types() {
+	function types(): array {
 		return array();
 	}
 
 	/** Get values of user defined type
-	* @return string
 	*/
-	function type_values(int $id) {
+	function type_values(int $id): string {
 		return "";
 	}
 
 	/** Get existing schemas
 	* @return list<string>
 	*/
-	function schemas() {
+	function schemas(): array {
 		return array();
 	}
 
 	/** Get current schema
-	* @return string
 	*/
-	function get_schema() {
+	function get_schema(): string {
 		return "";
 	}
 
 	/** Set current schema
-	* @return bool
 	*/
-	function set_schema(string $schema, Db $connection2 = null) {
+	function set_schema(string $schema, Db $connection2 = null): bool {
 		return true;
 	}
 }

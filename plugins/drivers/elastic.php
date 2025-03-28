@@ -66,9 +66,8 @@ if (isset($_GET["elastic"])) {
 			}
 
 			/**
-			 * @return bool
 			 */
-			function connect(string $server, string $username, string $password) {
+			function connect(string $server, string $username, string $password): bool {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
 				$this->url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
 				$return = $this->query('');
@@ -543,9 +542,8 @@ if (isset($_GET["elastic"])) {
 
 	/** Drop types
 	 * @param list<string> $tables
-	 * @return bool
 	 */
-	function drop_tables(array $tables) {
+	function drop_tables(array $tables): bool {
 		$return = true;
 		foreach ($tables as $table) { //! convert to bulk api
 			$return = $return && connection()->query(urlencode($table), null, 'DELETE');

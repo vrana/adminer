@@ -8,9 +8,8 @@ if (extension_loaded('pdo')) {
 
 		/** Connect to server using DSN
 		* @param mixed[] $options
-		* @return void
 		*/
-		function dsn(string $dsn, string $username, string $password, array $options = array()) {
+		function dsn(string $dsn, string $username, string $password, array $options = array()): void {
 			$options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_SILENT;
 			$options[\PDO::ATTR_STATEMENT_CLASS] = array('Adminer\PdoResult');
 			try {

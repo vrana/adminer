@@ -10,15 +10,13 @@ class TmpFile {
 	}
 
 	/**
-	* @return void
 	*/
-	function write(string $contents) {
+	function write(string $contents): void {
 		$this->size += strlen($contents);
 		fwrite($this->handler, $contents);
 	}
 
-	/** @return void */
-	function send() {
+	function send(): void {
 		fseek($this->handler, 0);
 		fpassthru($this->handler);
 		fclose($this->handler);

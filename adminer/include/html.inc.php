@@ -2,23 +2,20 @@
 namespace Adminer;
 
 /** Return <script> element
-* @return string
 */
-function script(string $source, string $trailing = "\n") {
+function script(string $source, string $trailing = "\n"): string {
 	return "<script" . nonce() . ">$source</script>$trailing";
 }
 
 /** Return <script src> element
-* @return string
 */
-function script_src(string $url) {
+function script_src(string $url): string {
 	return "<script src='" . h($url) . "'" . nonce() . "></script>\n";
 }
 
 /** Get a nonce="" attribute with CSP nonce
-* @return string
 */
-function nonce() {
+function nonce(): string {
 	return ' nonce="' . get_nonce() . '"';
 }
 
@@ -26,7 +23,7 @@ function nonce() {
 * @param string|int $value
 * @return string HTML
 */
-function input_hidden(string $name, $value = "") {
+function input_hidden(string $name, $value = ""): string {
 	return "<input type='hidden' name='" . h($name) . "' value='" . h($value) . "'>\n";
 }
 
@@ -34,37 +31,33 @@ function input_hidden(string $name, $value = "") {
 * @param string $special token to use instead of global $token
 * @return string HTML
 */
-function input_token(string $special = "") {
+function input_token(string $special = ""): string {
 	global $token;
 	return input_hidden("token", ($special ?: $token));
 }
 
 /** Get a target="_blank" attribute
-* @return string
 */
-function target_blank() {
+function target_blank(): string {
 	return ' target="_blank" rel="noreferrer noopener"';
 }
 
 /** Escape for HTML
-* @return string
 */
-function h(string $string) {
+function h(string $string): string {
 	return str_replace("\0", "&#0;", htmlspecialchars($string, ENT_QUOTES, 'utf-8'));
 }
 
 /** Convert \n to <br>
-* @return string
 */
-function nl_br(string $string) {
+function nl_br(string $string): string {
 	return str_replace("\n", "<br>", $string); // nl2br() uses XHTML before PHP 5.3
 }
 
 /** Generate HTML checkbox
 * @param string|int $value
-* @return string
 */
-function checkbox(string $name, $value, bool $checked, string $label = "", string $onclick = "", string $class = "", string $labelled_by = "") {
+function checkbox(string $name, $value, bool $checked, string $label = "", string $onclick = "", string $class = "", string $labelled_by = ""): string {
 	$return = "<input type='checkbox' name='$name' value='" . h($value) . "'"
 		. ($checked ? " checked" : "")
 		. ($labelled_by ? " aria-labelledby='$labelled_by'" : "")
@@ -78,9 +71,8 @@ function checkbox(string $name, $value, bool $checked, string $label = "", strin
 * @param string[]|string[][] $options array of strings or arrays (creates optgroup)
 * @param mixed $selected
 * @param bool $use_keys always use array keys for value="", otherwise only string keys are used
-* @return string
 */
-function optionlist($options, $selected = null, bool $use_keys = false) {
+function optionlist($options, $selected = null, bool $use_keys = false): string {
 	$return = "";
 	foreach ($options as $k => $v) {
 		$opts = array($k => $v);
@@ -104,9 +96,8 @@ function optionlist($options, $selected = null, bool $use_keys = false) {
 
 /** Generate HTML <select>
 * @param string[] $options
-* @return string
 */
-function html_select(string $name, array $options, string $value = "", string $onchange = "", string $labelled_by = "") {
+function html_select(string $name, array $options, string $value = "", string $onchange = "", string $labelled_by = ""): string {
 	return "<select name='" . h($name) . "'"
 		. ($labelled_by ? " aria-labelledby='$labelled_by'" : "")
 		. ">" . optionlist($options, $value) . "</select>"
@@ -116,9 +107,8 @@ function html_select(string $name, array $options, string $value = "", string $o
 
 /** Generate HTML radio list
 * @param string[] $options
-* @return string
 */
-function html_radios(string $name, array $options, string $value = "") {
+function html_radios(string $name, array $options, string $value = ""): string {
 	$return = "";
 	foreach ($options as $key => $val) {
 		$return .= "<label><input type='radio' name='" . h($name) . "' value='" . h($key) . "'" . ($key == $value ? " checked" : "") . ">" . h($val) . "</label>";
@@ -127,16 +117,14 @@ function html_radios(string $name, array $options, string $value = "") {
 }
 
 /** Get onclick confirmation
-* @return string
 */
-function confirm(string $message = "", string $selector = "qsl('input')") {
+function confirm(string $message = "", string $selector = "qsl('input')"): string {
 	return script("$selector.onclick = () => confirm('" . ($message ? js_escape($message) : lang('Are you sure?')) . "');", "");
 }
 
 /** Print header for hidden fieldset (close by </div></fieldset>)
-* @return void
 */
-function print_fieldset(string $id, string $legend, bool $visible = false) {
+function print_fieldset(string $id, string $legend, bool $visible = false): void {
 	echo "<fieldset><legend>";
 	echo "<a href='#fieldset-$id'>$legend</a>";
 	echo script("qsl('a').onclick = partial(toggle, 'fieldset-$id');", "");
@@ -145,23 +133,20 @@ function print_fieldset(string $id, string $legend, bool $visible = false) {
 }
 
 /** Return class='active' if $bold is true
-* @return string
 */
-function bold(bool $bold, string $class = "") {
+function bold(bool $bold, string $class = ""): string {
 	return ($bold ? " class='active $class'" : ($class ? " class='$class'" : ""));
 }
 
 /** Escape string for JavaScript apostrophes
-* @return string
 */
-function js_escape(string $string) {
+function js_escape(string $string): string {
 	return addcslashes($string, "\r\n'\\/"); // slash for <script>
 }
 
 /** Generate page number for pagination
-* @return string
 */
-function pagination(int $page, int $current) {
+function pagination(int $page, int $current): string {
 	return " " . ($page == $current
 		? $page + 1
 		: '<a href="' . h(remove_from_uri("page") . ($page ? "&page=$page" . ($_GET["next"] ? "&next=" . urlencode($_GET["next"]) : "") : "")) . '">' . ($page + 1) . "</a>"
@@ -171,9 +156,8 @@ function pagination(int $page, int $current) {
 /** Print hidden fields
 * @param mixed[] $process
 * @param list<string> $ignore
-* @return bool
 */
-function hidden_fields(array $process, array $ignore = array(), string $prefix = '') {
+function hidden_fields(array $process, array $ignore = array(), string $prefix = ''): bool {
 	$return = false;
 	foreach ($process as $key => $val) {
 		if (!in_array($key, $ignore)) {
@@ -189,9 +173,8 @@ function hidden_fields(array $process, array $ignore = array(), string $prefix =
 }
 
 /** Print hidden fields for GET forms
-* @return void
 */
-function hidden_fields_get() {
+function hidden_fields_get(): void {
 	echo (sid() ? input_hidden(session_name(), session_id()) : '');
 	echo (SERVER !== null ? input_hidden(DRIVER, SERVER) : "");
 	echo input_hidden("username", $_GET["username"]);
@@ -201,9 +184,8 @@ function hidden_fields_get() {
 * @param string $type "radio"|"checkbox"
 * @param Field $field
 * @param mixed $value string|array
-* @return string
 */
-function enum_input(string $type, string $attrs, array $field, $value, string $empty = null) {
+function enum_input(string $type, string $attrs, array $field, $value, string $empty = null): string {
 	global $adminer;
 	preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 	$return = ($empty !== null ? "<label><input type='$type'$attrs value='$empty'" . ((is_array($value) ? in_array($empty, $value) : $value === $empty) ? " checked" : "") . "><i>" . lang('empty') . "</i></label>" : "");
@@ -218,9 +200,8 @@ function enum_input(string $type, string $attrs, array $field, $value, string $e
 /** Print edit input field
 * @param Field|RoutineField $field one field from fields()
 * @param mixed $value
-* @return void
 */
-function input(array $field, $value, string $function, bool $autofocus = false) {
+function input(array $field, $value, string $function, bool $autofocus = false): void {
 	global $driver, $adminer;
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
@@ -362,9 +343,8 @@ function process_input(array $field) {
 /** Print results of search in all tables
 * @uses $_GET["where"][0]
 * @uses $_POST["tables"]
-* @return void
 */
-function search_tables() {
+function search_tables(): void {
 	global $adminer, $connection;
 	$_GET["where"][0]["val"] = $_POST["query"];
 	$sep = "<ul>\n";
@@ -385,18 +365,16 @@ function search_tables() {
 /** Return events to display help on mouse over
 * @param string $command JS expression
 * @param int $side JS expression
-* @return string
 */
-function on_help(string $command, int $side = 0) {
+function on_help(string $command, int $side = 0): string {
 	return script("mixin(qsl('select, input'), {onmouseover: function (event) { helpMouseover.call(this, event, $command, $side) }, onmouseout: helpMouseout});", "");
 }
 
 /** Print edit data form
 * @param Field[] $fields
 * @param mixed $row
-* @return void
 */
-function edit_form(string $table, array $fields, $row, bool $update) {
+function edit_form(string $table, array $fields, $row, bool $update): void {
 	global $adminer, $error;
 	$table_name = $adminer->tableName(table_status1($table, true));
 	page_header(
@@ -501,8 +479,7 @@ function edit_form(string $table, array $fields, $row, bool $update) {
 }
 
 /** Get button with icon
-* @return string
 */
-function icon(string $icon, string $name, string $html, string $title) {
+function icon(string $icon, string $name, string $html, string $title): string {
 	return "<button type='submit' name='$name' title='" . h($title) . "' class='icon icon-$icon'><span>$html</span></button>";
 }

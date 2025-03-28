@@ -461,9 +461,8 @@ if (isset($_GET["sqlite"])) {
 	* @param list<array{string, string, list<string>|'DROP'}> $indexes [[$type, $name, $columns]], empty to preserve
 	* @param string $drop_check CHECK constraint to drop
 	* @param string $add_check CHECK constraint to add
-	* @return bool
 	*/
-	function recreate_table(string $table, string $name, array $fields, array $originals, array $foreign, int $auto_increment = 0, $indexes = array(), string $drop_check = "", string $add_check = "") {
+	function recreate_table(string $table, string $name, array $fields, array $originals, array $foreign, int $auto_increment = 0, $indexes = array(), string $drop_check = "", string $add_check = ""): bool {
 		global $driver;
 		if ($table != "") {
 			if (!$fields) {

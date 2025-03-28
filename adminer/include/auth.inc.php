@@ -17,8 +17,7 @@ if ($_COOKIE["adminer_permanent"]) {
 	}
 }
 
-/** @return void */
-function add_invalid_login() {
+function add_invalid_login(): void {
 	global $adminer;
 	$base = get_temp_dir() . "/adminer.invalid";
 	// adminer.invalid may not be writable by us, try the files with random suffixes
@@ -51,8 +50,7 @@ function add_invalid_login() {
 	file_write_unlock($fp, serialize($invalids));
 }
 
-/** @return void */
-function check_invalid_login() {
+function check_invalid_login(): void {
 	global $adminer;
 	$invalids = array();
 	foreach (glob(get_temp_dir() . "/adminer.invalid*") as $filename) {
@@ -115,8 +113,7 @@ if ($auth) {
 	}
 }
 
-/** @return void */
-function unset_permanent() {
+function unset_permanent(): void {
 	global $permanent;
 	foreach ($permanent as $key => $val) {
 		list($vendor, $server, $username, $db) = array_map('base64_decode', explode("-", $key));
