@@ -77,7 +77,7 @@ function put_file($match) {
 					}
 				}
 			}
-			unset($functions["__construct"], $functions["__destruct"], $functions["set_charset"]);
+			unset($functions["__construct"], $functions["__destruct"], $functions["set_charset"], $functions["multi_query"], $functions["store_result"], $functions["next_result"]);
 			foreach ($functions as $val) {
 				if (!strpos($return, "$val(")) {
 					fprintf(STDERR, "Missing $val in $vendor\n");
@@ -239,10 +239,6 @@ function compile_file($match, $callback = '') { // $callback only to match signa
 	return '"' . add_quo_slashes($file) . '"';
 }
 
-function min_version() {
-	return true;
-}
-
 function number_type() {
 	return '';
 }
@@ -285,7 +281,7 @@ if ($_SERVER["argv"][1]) {
 include __DIR__ . "/adminer/include/db.inc.php";
 include __DIR__ . "/adminer/include/pdo.inc.php";
 include __DIR__ . "/adminer/include/driver.inc.php";
-$connection = (object) array('flavor' => ''); // used in support()
+$connection = (object) array('flavor' => '', 'server_info' => '99'); // used in support()
 $features = array("check", "call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine", "scheme", "sequence", "sql", "status", "trigger", "type", "user" => "privileges", "variables", "view");
 $lang_ids = array(); // global variable simplifies usage in a callback function
 $file = file_get_contents(__DIR__ . "/$project/index.php");
