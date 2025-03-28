@@ -16,14 +16,17 @@ if (isset($_GET["elastic"])) {
 			 * @return array|false
 			 */
 			function rootQuery(string $path, ?array $content = null, string $method = 'GET') {
-				$file = @file_get_contents("$this->url/" . ltrim($path, '/'), false, stream_context_create(array('http' => array(
-					'method' => $method,
-					'content' => $content !== null ? json_encode($content) : null,
-					'header' => $content !== null ? 'Content-Type: application/json' : array(),
-					'ignore_errors' => 1,
-					'follow_location' => 0,
-					'max_redirects' => 0,
-				))));
+				$file = @file_get_contents("$this->url/" . ltrim($path, '/'), false, stream_context_create(array(
+					//~ 'ssl' => array('verify_peer' => false),
+					'http' => array(
+						'method' => $method,
+						'content' => $content !== null ? json_encode($content) : null,
+						'header' => $content !== null ? 'Content-Type: application/json' : array(),
+						'ignore_errors' => 1,
+						'follow_location' => 0,
+						'max_redirects' => 0,
+					),
+				)));
 
 				if ($file === false) {
 					$this->error = lang('Invalid server or credentials.');
@@ -219,9 +222,9 @@ if (isset($_GET["elastic"])) {
 			$parts = preg_split('~ *= *~', $queryWhere);
 			if (count($parts) == 2) {
 				$id = trim($parts[1]);
-				$query = "$type/$id";
-
-				return $this->conn->rootQuery($query, $record, 'POST');
+				$query = "$table/_update/$id";
+				$this->conn->affected_rows = 0;
+				return $this->conn->rootQuery($query, array('doc' => $set), 'POST');
 			}
 
 			return false;
@@ -518,18 +521,24 @@ if (isset($_GET["elastic"])) {
 	function alter_table(string $table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		$properties = array();
 		foreach ($fields as $f) {
-			$field_name = trim($f[1][0]);
-			$field_type = trim($f[1][1] ?: "text");
-			$properties[$field_name] = array(
-				'type' => $field_type
-			);
+			if ($f[1]) {
+				$field_name = trim($f[1][0]);
+				$field_type = trim($f[1][1] ?: "text");
+				$properties[$field_name] = array(
+					'type' => $field_type
+				);
+			}
 		}
 
 		if (!empty($properties)) {
 			$properties = array('properties' => $properties);
 		}
 
-		return connection()->rootQuery("_mapping/$name", $properties, 'PUT');
+		if ($table != '') {
+			return connection()->rootQuery("$name/_mapping", $properties, 'POST');
+		} else {
+			return connection()->rootQuery($name, array('mappings' => $properties), 'PUT');
+		}
 	}
 
 	/** Drop types

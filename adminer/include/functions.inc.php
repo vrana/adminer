@@ -438,8 +438,10 @@ function redirect(?string $location, string $message = null): void {
 	}
 }
 
-/** Execute query and redirect if successful */
-function query_redirect(string $query, string $location, string $message, bool $redirect = true, bool $execute = true, bool $failed = false, string $time = ""): bool {
+/** Execute query and redirect if successful
+* @param bool $redirect
+*/
+function query_redirect(string $query, string $location, string $message, $redirect = true, bool $execute = true, bool $failed = false, string $time = ""): bool {
 	global $connection, $error, $adminer;
 	if ($execute) {
 		$start = microtime(true);
