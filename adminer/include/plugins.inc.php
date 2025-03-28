@@ -6,7 +6,6 @@ class Plugins {
 
 	/** @var list<object> @visibility protected(set) */ public array $plugins;
 	/** @visibility protected(set) */ public string $error = ''; // HTML
-	/** @var ?list<string> */ public ?array $operators; //! delete
 	/** @var list<object>[] */ private array $hooks = array();
 
 	/** Register plugins

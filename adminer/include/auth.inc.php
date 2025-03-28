@@ -185,9 +185,6 @@ if (isset($_GET["username"]) && is_string(get_password())) {
 	$connection = connect($adminer->credentials());
 	if (is_object($connection)) {
 		$driver = new Driver($connection);
-		if ($adminer->operators === null) {
-			$adminer->operators = $driver->operators;
-		}
 		if ($connection->flavor) {
 			save_settings(array("vendor-" . DRIVER . "-" . SERVER => $drivers[DRIVER]));
 		}

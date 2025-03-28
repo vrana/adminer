@@ -4,7 +4,6 @@ namespace Adminer;
 // any method change in this file should be transferred to editor/include/adminer.inc.php and plugins.inc.php
 
 class Adminer {
-	/** @var ?list<string> */ public ?array $operators = null; // operators used in select, null for all operators
 	/** @visibility protected(set) */ public string $error = ''; // HTML
 
 	/** Name in title and navigation
@@ -57,6 +56,14 @@ class Adminer {
 	*/
 	function databases(bool $flush = true): array {
 		return get_databases($flush);
+	}
+
+	/** Operators used in select
+	* @return list<string> operators
+	*/
+	function operators(): array {
+		global $driver;
+		return $driver->operators;
 	}
 
 	/** Get list of schemas
@@ -376,6 +383,7 @@ class Adminer {
 	* @param Index[] $indexes
 	*/
 	function selectSearchPrint(array $where, array $columns, array $indexes): void {
+		global $adminer;
 		print_fieldset("search", lang('Search'), $where);
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
@@ -388,7 +396,7 @@ class Adminer {
 		}
 		$change_next = "this.parentNode.firstChild.onchange();";
 		foreach (array_merge((array) $_GET["where"], array(array())) as $i => $val) {
-			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators))) {
+			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $adminer->operators()))) {
 				echo "<div>" . select_input(
 					" name='where[$i][col]'",
 					$columns,
@@ -396,7 +404,7 @@ class Adminer {
 					($val ? "selectFieldChange" : "selectAddRow"),
 					"(" . lang('anywhere') . ")"
 				);
-				echo html_select("where[$i][op]", $this->operators, $val["op"], $change_next);
+				echo html_select("where[$i][op]", $adminer->operators(), $val["op"], $change_next);
 				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'>";
 				echo script("mixin(qsl('input'), {oninput: function () { $change_next }, onkeydown: selectSearchKeydown, onsearch: selectSearchSearch});", "");
 				echo "</div>\n";
@@ -527,7 +535,7 @@ class Adminer {
 			}
 		}
 		foreach ((array) $_GET["where"] as $key => $val) {
-			if ("$val[col]$val[val]" != "" && in_array($val["op"], $this->operators)) {
+			if ("$val[col]$val[val]" != "" && in_array($val["op"], $adminer->operators())) {
 				$prefix = "";
 				$cond = " $val[op]";
 				if (preg_match('~IN$~', $val["op"])) {

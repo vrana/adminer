@@ -242,7 +242,7 @@ if (isset($_GET["mongo"])) {
 							list(, $class, $val) = $match;
 							$val = new $class($val);
 						}
-						if (!in_array($op, adminer()->operators)) {
+						if (!in_array($op, adminer()->operators())) {
 							continue;
 						}
 						if (preg_match('~^\(f\)(.+)~', $op, $match)) {

@@ -2,7 +2,6 @@
 namespace Adminer;
 
 class Adminer {
-	public $operators = array("<=", ">=");
 	public $error = '';
 	private $values = array();
 
@@ -39,6 +38,10 @@ class Adminer {
 				: $databases[(information_schema($databases[0]) ? 1 : 0)] // first available database
 			);
 		}
+	}
+
+	function operators() {
+		return array("<=", ">=");
 	}
 
 	function schemas() {
@@ -235,6 +238,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function selectSearchPrint($where, $columns, $indexes) {
+		global $adminer;
 		$where = (array) $_GET["where"];
 		echo '<fieldset id="fieldset-search"><legend>' . lang('Search') . "</legend><div>\n";
 		$keys = array();
@@ -269,14 +273,14 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		foreach ($where as $val) {
 			if (($val["col"] == "" || $columns[$val["col"]]) && "$val[col]$val[val]" != "") {
 				echo "<div><select name='where[$i][col]'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
-				echo html_select("where[$i][op]", array(-1 => "") + $this->operators, $val["op"]);
+				echo html_select("where[$i][op]", array(-1 => "") + $adminer->operators(), $val["op"]);
 				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'>" . script("mixin(qsl('input'), {onkeydown: selectSearchKeydown, onsearch: selectSearchSearch});", "") . "</div>\n";
 				$i++;
 			}
 		}
 		echo "<div><select name='where[$i][col]'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, null, true) . "</select>";
 		echo script("qsl('select').onchange = selectAddRow;", "");
-		echo html_select("where[$i][op]", array(-1 => "") + $this->operators);
+		echo html_select("where[$i][op]", array(-1 => "") + $adminer->operators());
 		echo "<input type='search' name='where[$i][val]'></div>";
 		echo script("mixin(qsl('input'), {onchange: function () { this.parentNode.firstChild.onchange(); }, onsearch: selectSearchSearch});");
 		echo "</div></fieldset>\n";
@@ -369,7 +373,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 							$text_type = preg_match('~char|text|enum|set~', $field["type"]);
 							$value = $adminer->processInput($field, (!$op && $text_type && preg_match('~^[^%]+$~', $val) ? "%$val%" : $val));
 							$conds[] = $driver->convertSearch($name, $where, $field) . ($value == "NULL" ? " IS" . ($op == ">=" ? " NOT" : "") . " $value"
-								: (in_array($op, $this->operators) || $op == "=" ? " $op $value"
+								: (in_array($op, $adminer->operators()) || $op == "=" ? " $op $value"
 								: ($text_type ? " LIKE $value"
 								: " IN (" . str_replace(",", "', '", $value) . ")"
 							)));
