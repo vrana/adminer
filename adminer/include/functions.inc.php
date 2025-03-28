@@ -328,7 +328,7 @@ function convert_fields(array $columns, array $fields, array $select = array()):
 /** Set cookie valid on current path
 * @param int $lifetime number of seconds, 0 for session cookie, 2592000 - 30 days
 */
-function cookie(string $name, string $value, int $lifetime = 2592000): void {
+function cookie(string $name, ?string $value, int $lifetime = 2592000): void {
 	global $HTTPS;
 	header(
 		"Set-Cookie: $name=" . urlencode($value)
@@ -491,8 +491,10 @@ function apply_queries(string $query, array $tables, $escape = 'Adminer\table'):
 	return true;
 }
 
-/** Redirect by remembered queries */
-function queries_redirect(string $location, string $message, bool $redirect): bool {
+/** Redirect by remembered queries
+* @param bool $redirect
+*/
+function queries_redirect(string $location, string $message, $redirect): bool {
 	$queries = implode("\n", Queries::$queries);
 	$time = format_time(Queries::$start);
 	return query_redirect($queries, $location, $message, $redirect, false, !$redirect, $time);

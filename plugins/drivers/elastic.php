@@ -508,10 +508,14 @@ if (isset($_GET["elastic"])) {
 	function found_rows($table_status, $where) {
 	}
 
+	function auto_increment(): string {
+		return '';
+	}
+
 	/** Alter type
 	 * @return mixed
 	 */
-	function alter_table(array $table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+	function alter_table(string $table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		$properties = array();
 		foreach ($fields as $f) {
 			$field_name = trim($f[1][0]);
