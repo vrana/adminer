@@ -850,7 +850,7 @@ function count_rows(string $table, array $where, bool $is_group, array $group): 
 * @return string[]
 */
 function slow_query(string $query): array {
-	global $adminer, $token, $driver;
+	global $adminer, $driver;
 	$db = $adminer->database();
 	$timeout = $adminer->queryTimeout();
 	$slow_query = $driver->slowQuery($query, $timeout);
@@ -859,7 +859,7 @@ function slow_query(string $query): array {
 		$connection2 = connect($adminer->credentials());
 		if (is_object($connection2) && ($db == "" || $connection2->select_db($db))) {
 			$kill = get_val(connection_id(), 0, $connection2); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
-			echo script("const timeout = setTimeout(() => { ajax('" . js_escape(ME) . "script=kill', function () {}, 'kill=$kill&token=$token'); }, 1000 * $timeout);");
+			echo script("const timeout = setTimeout(() => { ajax('" . js_escape(ME) . "script=kill', function () {}, 'kill=$kill&token=" . get_token() . "'); }, 1000 * $timeout);");
 		}
 	}
 	ob_flush();

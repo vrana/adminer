@@ -24,13 +24,11 @@ function input_hidden(string $name, $value = ""): string {
 	return "<input type='hidden' name='" . h($name) . "' value='" . h($value) . "'>\n";
 }
 
-/** Get <input type="hidden" name="token">
-* @param string $special token to use instead of global $token
+/** Get CSRF <input type="hidden" name="token">
 * @return string HTML
 */
-function input_token(string $special = ""): string {
-	global $token;
-	return input_hidden("token", ($special ?: $token));
+function input_token(): string {
+	return input_hidden("token", get_token());
 }
 
 /** Get a target="_blank" attribute */

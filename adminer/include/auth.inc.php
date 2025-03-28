@@ -7,7 +7,6 @@ $has_token = $_SESSION["token"];
 if (!$has_token) {
 	$_SESSION["token"] = rand(1, 1e6); // defense against cross-site request forgery
 }
-$token = get_token(); ///< @var string CSRF protection
 
 $permanent = array();
 if ($_COOKIE["adminer_permanent"]) {
@@ -204,7 +203,7 @@ if ($_POST["logout"] && $has_token && !verify_token()) {
 }
 
 if ($auth && $_POST["token"]) {
-	$_POST["token"] = $token; // reset token after explicit login
+	$_POST["token"] = get_token(); // reset token after explicit login
 }
 
 $error = ''; ///< @var string
