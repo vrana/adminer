@@ -12,7 +12,7 @@ class AdminerDesigns {
 	/**
 	* @param list<string> $designs URL in key, name in value
 	*/
-	function __construct($designs) {
+	function __construct(array $designs) {
 		$this->designs = $designs;
 	}
 

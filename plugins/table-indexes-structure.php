@@ -12,7 +12,7 @@ class AdminerTableIndexesStructure {
 	* @param Index[] $indexes data about all indexes on a table
 	* @return bool
 	*/
-	function tableIndexesPrint($indexes) {
+	function tableIndexesPrint(array $indexes) {
 		echo "<table>\n";
 		echo "<thead><tr><th>" . Adminer\lang('Name') . "<th>" . Adminer\lang('Type') . "<th>" . Adminer\lang('Columns') . "</thead>\n";
 		foreach ($indexes as $name => $index) {

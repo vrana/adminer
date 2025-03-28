@@ -3,12 +3,11 @@ namespace Adminer;
 
 /** Print HTML header
 * @param string $title used in title, breadcrumb and heading, should be HTML escaped
-* @param string $error
 * @param mixed $breadcrumb ["key" => "link", "key2" => ["link", "desc"]], null for nothing, false for driver only, true for driver and server
 * @param string $title2 used after colon in title and heading, should be HTML escaped
 * @return void
 */
-function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
+function page_header(string $title, string $error = "", $breadcrumb = array(), string $title2 = "") {
 	global $LANG, $VERSION, $adminer, $drivers;
 	page_headers();
 	if (is_ajax() && $error) {
@@ -176,10 +175,9 @@ function get_nonce() {
 }
 
 /** Print flash and error messages
-* @param string $error
 * @return void
 */
-function page_messages($error) {
+function page_messages(string $error) {
 	global $adminer;
 	$uri = preg_replace('~^[^?]*~', '', $_SERVER["REQUEST_URI"]);
 	$messages = idx($_SESSION["messages"], $uri);
@@ -199,7 +197,7 @@ function page_messages($error) {
 * @param string $missing "auth", "db", "ns"
 * @return void
 */
-function page_footer($missing = "") {
+function page_footer(string $missing = "") {
 	global $adminer;
 	echo "</div>\n\n<div id='menu'>\n";
 	$adminer->navigation($missing);

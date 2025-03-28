@@ -12,7 +12,7 @@ class AdminerLoginServers {
 	/** Set supported servers
 	* @param array{server:string, driver:string}[] $servers [$description => ["server" => , "driver" => "server|pgsql|sqlite|..."]]
 	*/
-	function __construct($servers) {
+	function __construct(array $servers) {
 		$this->servers = $servers;
 		if ($_POST["auth"]) {
 			$key = $_POST["auth"]["server"];

@@ -13,7 +13,7 @@ class AdminerSlugify {
 	* @param string $from find these characters ...
 	* @param string $to ... and replace them by these
 	*/
-	function __construct($from = 'áčďéěíňóřšťúůýž', $to = 'acdeeinorstuuyz') {
+	function __construct(string $from = 'áčďéěíňóřšťúůýž', string $to = 'acdeeinorstuuyz') {
 		$this->from = $from;
 		$this->to = $to;
 	}

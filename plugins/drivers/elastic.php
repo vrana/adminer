@@ -13,12 +13,9 @@ if (isset($_GET["elastic"])) {
 			private $url;
 
 			/**
-			 * @param string $path
-			 * @param ?array $content
-			 * @param string $method
 			 * @return array|false
 			 */
-			function rootQuery($path, array $content = null, $method = 'GET') {
+			function rootQuery(string $path, ?array $content = null, string $method = 'GET') {
 				$file = @file_get_contents("$this->url/" . ltrim($path, '/'), false, stream_context_create(array('http' => array(
 					'method' => $method,
 					'content' => $content !== null ? json_encode($content) : null,
@@ -53,12 +50,9 @@ if (isset($_GET["elastic"])) {
 			}
 
 			/** Perform query relative to actual selected DB
-			 * @param string $path
-			 * @param ?array $content
-			 * @param string $method
 			 * @return array|false
 			 */
-			function query($path, array $content = null, $method = 'GET') {
+			function query(string $path, ?array $content = null, string $method = 'GET') {
 				// Support for global search through all tables
 				if ($path != "" && $path[0] == "S" && preg_match('/SELECT 1 FROM ([^ ]+) WHERE (.+) LIMIT ([0-9]+)/', $path, $matches)) {
 					$driver = driver();
@@ -72,12 +66,9 @@ if (isset($_GET["elastic"])) {
 			}
 
 			/**
-			 * @param string $server
-			 * @param string $username
-			 * @param string $password
 			 * @return bool
 			 */
-			function connect($server, $username, $password) {
+			function connect(string $server, string $username, string $password) {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
 				$this->url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
 				$return = $this->query('');
@@ -531,10 +522,9 @@ if (isset($_GET["elastic"])) {
 	}
 
 	/** Alter type
-	 * @param array $table
 	 * @return mixed
 	 */
-	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+	function alter_table(array $table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		$properties = array();
 		foreach ($fields as $f) {
 			$field_name = trim($f[1][0]);
@@ -555,7 +545,7 @@ if (isset($_GET["elastic"])) {
 	 * @param list<string> $tables
 	 * @return bool
 	 */
-	function drop_tables($tables) {
+	function drop_tables(array $tables) {
 		$return = true;
 		foreach ($tables as $table) { //! convert to bulk api
 			$return = $return && connection()->query(urlencode($table), null, 'DELETE');

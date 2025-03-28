@@ -131,7 +131,7 @@ function unset_permanent() {
 * @param string $error plain text
 * @return never
 */
-function auth_error($error) {
+function auth_error(string $error) {
 	global $adminer, $has_token;
 	$session_name = session_name();
 	if (isset($_GET["username"])) {

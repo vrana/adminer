@@ -13,7 +13,7 @@ class AdminerLoginIp {
 	* @param list<string> $ips IP address prefixes
 	* @param list<string> $forwarded_for X-Forwarded-For prefixes if IP address matches, empty array means anything
 	*/
-	function __construct($ips, $forwarded_for = array()) {
+	function __construct(array $ips, array $forwarded_for = array()) {
 		$this->ips = $ips;
 		$this->forwarded_for= $forwarded_for;
 	}

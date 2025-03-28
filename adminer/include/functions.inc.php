@@ -40,7 +40,7 @@ function version() {
 * @param string $idf text inside ``
 * @return string
 */
-function idf_unescape($idf) {
+function idf_unescape(string $idf) {
 	if (!preg_match('~^[`\'"[]~', $idf)) {
 		return $idf;
 	}
@@ -49,19 +49,17 @@ function idf_unescape($idf) {
 }
 
 /** Shortcut for $connection->quote($string)
-* @param string $string
 * @return string
 */
-function q($string) {
+function q(string $string) {
 	global $connection;
 	return $connection->quote($string);
 }
 
 /** Escape string to use inside ''
-* @param string $val
 * @return string
 */
-function escape_string($val) {
+function escape_string(string $val) {
 	return substr(q($val), 1, -1);
 }
 
@@ -72,15 +70,14 @@ function escape_string($val) {
 * @param mixed $default
 * @return mixed
 */
-function idx($array, $key, $default = null) {
+function idx(?array $array, $key, $default = null) {
 	return ($array && array_key_exists($key, $array) ? $array[$key] : $default);
 }
 
 /** Remove non-digits from a string
-* @param string $val
 * @return string
 */
-function number($val) {
+function number(string $val) {
 	return preg_replace('~[^0-9]+~', '', $val);
 }
 
@@ -96,7 +93,7 @@ function number_type() {
 * @param bool $filter whether to leave values as is
 * @return void modified in place
 */
-function remove_slashes($process, $filter = false) {
+function remove_slashes(array $process, bool $filter = false) {
 	if (function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc()) {
 		while (list($key, $val) = each($process)) {
 			foreach ($val as $k => $v) {
@@ -113,11 +110,9 @@ function remove_slashes($process, $filter = false) {
 }
 
 /** Escape or unescape string to use inside form []
-* @param string $idf
-* @param bool $back
 * @return string
 */
-function bracket_escape($idf, $back = false) {
+function bracket_escape(string $idf, bool $back = false) {
 	// escape brackets inside name="x[]"
 	static $trans = array(':' => ':1', ']' => ':2', '[' => ':3', '"' => ':4');
 	return strtr($idf, ($back ? array_flip($trans) : $trans));
@@ -129,7 +124,7 @@ function bracket_escape($idf, $back = false) {
 * @param Db $connection2 defaults to $connection
 * @return bool
 */
-function min_version($version, $maria_db = "", $connection2 = null) {
+function min_version($version, $maria_db = "", Db $connection2 = null) {
 	global $connection;
 	if (!$connection2) {
 		$connection2 = $connection;
@@ -143,18 +138,16 @@ function min_version($version, $maria_db = "", $connection2 = null) {
 }
 
 /** Get connection charset
-* @param Db $connection
 * @return string
 */
-function charset($connection) {
+function charset(Db $connection) {
 	return (min_version("5.5.3", 0, $connection) ? "utf8mb4" : "utf8"); // SHOW CHARSET would require an extra query
 }
 
 /** Get INI boolean value
-* @param string $ini
 * @return bool
 */
-function ini_bool($ini) {
+function ini_bool(string $ini) {
 	$val = ini_get($ini);
 	return (preg_match('~^(on|true|yes)$~i', $val) || (int) $val); // boolean values set by php_value are strings
 }
@@ -171,13 +164,9 @@ function sid() {
 }
 
 /** Set password to session
-* @param string $vendor
-* @param string $server
-* @param string $username
-* @param ?string $password
 * @return void
 */
-function set_password($vendor, $server, $username, $password) {
+function set_password(string $vendor, string $server, string $username, ?string $password) {
 	$_SESSION["pwds"][$vendor][$server][$username] = ($_COOKIE["adminer_key"] && is_string($password)
 		? array(encrypt_string($password, $_COOKIE["adminer_key"]))
 		: $password
@@ -199,21 +188,18 @@ function get_password() {
 }
 
 /** Get single value from database
-* @param string $query
-* @param int $field
 * @return string or false if error
 */
-function get_val($query, $field = 0) {
+function get_val(string $query, int $field = 0) {
 	global $connection;
 	return $connection->result($query, $field);
 }
 
 /** Get list of values from database
-* @param string $query
 * @param mixed $column
 * @return list<string>
 */
-function get_vals($query, $column = 0) {
+function get_vals(string $query, $column = 0) {
 	global $connection;
 	$return = array();
 	$result = $connection->query($query);
@@ -226,12 +212,9 @@ function get_vals($query, $column = 0) {
 }
 
 /** Get keys from first column and values from second
-* @param string $query
-* @param Db $connection2
-* @param bool $set_keys
 * @return string[]
 */
-function get_key_vals($query, $connection2 = null, $set_keys = true) {
+function get_key_vals(string $query, Db $connection2 = null, bool $set_keys = true) {
 	global $connection;
 	if (!is_object($connection2)) {
 		$connection2 = $connection;
@@ -251,12 +234,9 @@ function get_key_vals($query, $connection2 = null, $set_keys = true) {
 }
 
 /** Get all rows of result
-* @param string $query
-* @param Db $connection2
-* @param string $error
 * @return list<string[]> of associative arrays
 */
-function get_rows($query, $connection2 = null, $error = "<p class='error'>") {
+function get_rows(string $query, Db $connection2 = null, string $error = "<p class='error'>") {
 	global $connection;
 	$conn = (is_object($connection2) ? $connection2 : $connection);
 	$return = array();
@@ -276,7 +256,7 @@ function get_rows($query, $connection2 = null, $error = "<p class='error'>") {
 * @param Index[] $indexes result of indexes()
 * @return string[]|void null if there is no unique identifier
 */
-function unique_array($row, $indexes) {
+function unique_array(array $row, array $indexes) {
 	foreach ($indexes as $index) {
 		if (preg_match("~PRIMARY|UNIQUE~", $index["type"])) {
 			$return = array();
@@ -292,10 +272,9 @@ function unique_array($row, $indexes) {
 }
 
 /** Escape column key used in where()
-* @param string $key
 * @return string
 */
-function escape_key($key) {
+function escape_key(string $key) {
 	if (preg_match('(^([\w(]+)(' . str_replace("_", ".*", preg_quote(idf_escape("_"))) . ')([ \w)]+)$)', $key, $match)) { //! columns looking like functions
 		return $match[1] . idf_escape(idf_unescape($match[2])) . $match[3]; //! SQL injection
 	}
@@ -307,7 +286,7 @@ function escape_key($key) {
 * @param Field[] $fields
 * @return string
 */
-function where($where, $fields = array()) {
+function where(array $where, array $fields = array()) {
 	global $connection;
 	$return = array();
 	foreach ((array) $where["where"] as $key => $val) {
@@ -332,11 +311,10 @@ function where($where, $fields = array()) {
 }
 
 /** Create SQL condition from query string
-* @param string $val
 * @param Field[] $fields
 * @return string
 */
-function where_check($val, $fields = array()) {
+function where_check(string $val, array $fields = array()) {
 	parse_str($val, $check);
 	remove_slashes(array(&$check));
 	return where($check, $fields);
@@ -345,11 +323,9 @@ function where_check($val, $fields = array()) {
 /** Create query string where condition from value
 * @param int $i condition order
 * @param string $column column identifier
-* @param string $value
-* @param string $operator
 * @return string
 */
-function where_link($i, $column, $value, $operator = "=") {
+function where_link(int $i, string $column, string $value, string $operator = "=") {
 	return "&where%5B$i%5D%5Bcol%5D=" . urlencode($column) . "&where%5B$i%5D%5Bop%5D=" . urlencode(($value !== null ? $operator : "IS NULL")) . "&where%5B$i%5D%5Bval%5D=" . urlencode($value);
 }
 
@@ -359,7 +335,7 @@ function where_link($i, $column, $value, $operator = "=") {
 * @param list<string> $select
 * @return string
 */
-function convert_fields($columns, $fields, $select = array()) {
+function convert_fields(array $columns, array $fields, array $select = array()) {
 	$return = "";
 	foreach ($columns as $key => $val) {
 		if ($select && !in_array(idf_escape($key), $select)) {
@@ -374,12 +350,10 @@ function convert_fields($columns, $fields, $select = array()) {
 }
 
 /** Set cookie valid on current path
-* @param string $name
-* @param string $value
 * @param int $lifetime number of seconds, 0 for session cookie, 2592000 - 30 days
 * @return void
 */
-function cookie($name, $value, $lifetime = 2592000) {
+function cookie(string $name, string $value, int $lifetime = 2592000) {
 	global $HTTPS;
 	header(
 		"Set-Cookie: $name=" . urlencode($value)
@@ -392,30 +366,26 @@ function cookie($name, $value, $lifetime = 2592000) {
 }
 
 /** Get settings stored in a cookie
-* @param string $cookie
 * @return mixed[]
 */
-function get_settings($cookie) {
+function get_settings(string $cookie) {
 	parse_str($_COOKIE[$cookie], $settings);
 	return $settings;
 }
 
 /** Get setting stored in a cookie
-* @param string $key
-* @param string $cookie
 * @return mixed
 */
-function get_setting($key, $cookie = "adminer_settings") {
+function get_setting(string $key, string $cookie = "adminer_settings") {
 	$settings = get_settings($cookie);
 	return $settings[$key];
 }
 
 /** Store settings to a cookie
 * @param mixed[] $settings
-* @param string $cookie
 * @return void
 */
-function save_settings($settings, $cookie = "adminer_settings") {
+function save_settings(array $settings, string $cookie = "adminer_settings") {
 	cookie($cookie, http_build_query($settings + get_settings($cookie)));
 }
 
@@ -429,10 +399,9 @@ function restart_session() {
 }
 
 /** Stop session if possible
-* @param bool $force
 * @return void
 */
-function stop_session($force = false) {
+function stop_session(bool $force = false) {
 	$use_cookies = ini_bool("session.use_cookies");
 	if (!$use_cookies || $force) {
 		session_write_close(); // improves concurrency if a user opens several pages at once, may be restarted later
@@ -443,30 +412,24 @@ function stop_session($force = false) {
 }
 
 /** Get session variable for current server
-* @param string $key
 * @return mixed
 */
-function &get_session($key) {
+function &get_session(string $key) {
 	return $_SESSION[$key][DRIVER][SERVER][$_GET["username"]];
 }
 
 /** Set session variable for current server
-* @param string $key
 * @param mixed $val
 * @return mixed
 */
-function set_session($key, $val) {
+function set_session(string $key, $val) {
 	$_SESSION[$key][DRIVER][SERVER][$_GET["username"]] = $val; // used also in auth.inc.php
 }
 
 /** Get authenticated URL
-* @param string $vendor
-* @param string $server
-* @param string $username
-* @param string $db
 * @return string
 */
-function auth_url($vendor, $server, $username, $db = null) {
+function auth_url(string $vendor, string $server, string $username, string $db = null) {
 	global $drivers;
 	$uri = remove_from_uri(implode("|", array_keys($drivers))
 		. "|username|ext|"
@@ -494,10 +457,9 @@ function is_ajax() {
 
 /** Send Location header and exit
 * @param string $location null to only set a message
-* @param string $message
 * @return void
 */
-function redirect($location, $message = null) {
+function redirect(string $location, string $message = null) {
 	if ($message !== null) {
 		restart_session();
 		$_SESSION["messages"][preg_replace('~^[^?]*~', '', ($location !== null ? $location : $_SERVER["REQUEST_URI"]))][] = $message;
@@ -512,16 +474,9 @@ function redirect($location, $message = null) {
 }
 
 /** Execute query and redirect if successful
-* @param string $query
-* @param string $location
-* @param string $message
-* @param bool $redirect
-* @param bool $execute
-* @param bool $failed
-* @param string $time
 * @return bool
 */
-function query_redirect($query, $location, $message, $redirect = true, $execute = true, $failed = false, $time = "") {
+function query_redirect(string $query, string $location, string $message, bool $redirect = true, bool $execute = true, bool $failed = false, string $time = "") {
 	global $connection, $error, $adminer;
 	if ($execute) {
 		$start = microtime(true);
@@ -551,7 +506,7 @@ class Queries {
 * @param string $query end with ';' to use DELIMITER
 * @return Result|bool
 */
-function queries($query) {
+function queries(string $query) {
 	global $connection;
 	if (!Queries::$start) {
 		Queries::$start = microtime(true);
@@ -561,12 +516,11 @@ function queries($query) {
 }
 
 /** Apply command to all array items
-* @param string $query
 * @param list<string> $tables
 * @param callable(string):string $escape
 * @return bool
 */
-function apply_queries($query, $tables, $escape = 'Adminer\table') {
+function apply_queries(string $query, array $tables, callable $escape = 'Adminer\table') {
 	foreach ($tables as $table) {
 		if (!queries("$query " . $escape($table))) {
 			return false;
@@ -576,12 +530,9 @@ function apply_queries($query, $tables, $escape = 'Adminer\table') {
 }
 
 /** Redirect by remembered queries
-* @param string $location
-* @param string $message
-* @param bool $redirect
 * @return bool
 */
-function queries_redirect($location, $message, $redirect) {
+function queries_redirect(string $location, string $message, bool $redirect) {
 	$queries = implode("\n", Queries::$queries);
 	$time = format_time(Queries::$start);
 	return query_redirect($queries, $location, $message, $redirect, false, !$redirect, $time);
@@ -591,7 +542,7 @@ function queries_redirect($location, $message, $redirect) {
 * @param float $start output of microtime(true)
 * @return string HTML code
 */
-function format_time($start) {
+function format_time(float $start) {
 	return lang('%.3f s', max(0, microtime(true) - $start));
 }
 
@@ -603,20 +554,16 @@ function relative_uri() {
 }
 
 /** Remove parameter from query string
-* @param string $param
 * @return string
 */
-function remove_from_uri($param = "") {
+function remove_from_uri(string $param = "") {
 	return substr(preg_replace("~(?<=[?&])($param" . (SID ? "" : "|" . session_name()) . ")=[^&]*&~", '', relative_uri() . "&"), 0, -1);
 }
 
 /** Get file contents from $_FILES
-* @param string $key
-* @param bool $decompress
-* @param string $delimiter
 * @return mixed int for error, string otherwise
 */
-function get_file($key, $decompress = false, $delimiter = "") {
+function get_file(string $key, bool $decompress = false, string $delimiter = "") {
 	$file = $_FILES[$key];
 	if (!$file) {
 		return null;
@@ -653,40 +600,33 @@ function get_file($key, $decompress = false, $delimiter = "") {
 }
 
 /** Determine upload error
-* @param int $error
 * @return string
 */
-function upload_error($error) {
+function upload_error(int $error) {
 	$max_size = ($error == UPLOAD_ERR_INI_SIZE ? ini_get("upload_max_filesize") : 0); // post_max_size is checked in index.php
 	return ($error ? lang('Unable to upload a file.') . ($max_size ? " " . lang('Maximum allowed file size is %sB.', $max_size) : "") : lang('File does not exist.'));
 }
 
 /** Create repeat pattern for preg
-* @param string $pattern
-* @param int $length
 * @return string
 */
-function repeat_pattern($pattern, $length) {
+function repeat_pattern(string $pattern, int $length) {
 	// fix for Compilation failed: number too big in {} quantifier
 	return str_repeat("$pattern{0,65535}", $length / 65535) . "$pattern{0," . ($length % 65535) . "}"; // can create {0,0} which is OK
 }
 
 /** Check whether the string is in UTF-8
-* @param string $val
 * @return bool
 */
-function is_utf8($val) {
+function is_utf8(string $val) {
 	// don't print control chars except \t\r\n
 	return (preg_match('~~u', $val) && !preg_match('~[\0-\x8\xB\xC\xE-\x1F]~', $val));
 }
 
 /** Shorten UTF-8 string
-* @param string $string
-* @param int $length
-* @param string $suffix
 * @return string escaped string with appended ...
 */
-function shorten_utf8($string, $length = 80, $suffix = "") {
+function shorten_utf8(string $string, int $length = 80, string $suffix = "") {
 	if (!preg_match("(^(" . repeat_pattern("[\t\r\n -\x{10FFFF}]", $length) . ")($)?)u", $string, $match)) { // ~s causes trash in $match[2] under some PHP versions, (.|\n) is slow
 		preg_match("(^(" . repeat_pattern("[\t\r\n -~]", $length) . ")($)?)", $string, $match);
 	}
@@ -702,29 +642,25 @@ function format_number($val) {
 }
 
 /** Generate friendly URL
-* @param string $val
 * @return string
 */
-function friendly_url($val) {
+function friendly_url(string $val) {
 	// used for blobs and export
 	return preg_replace('~\W~i', '-', $val);
 }
 
 /** Get status of a single table and fall back to name on error
-* @param string $table
-* @param bool $fast
 * @return TableStatus one element from table_status()
 */
-function table_status1($table, $fast = false) {
+function table_status1(string $table, bool $fast = false) {
 	$return = table_status($table, $fast);
 	return ($return ? reset($return) : array("Name" => $table));
 }
 
 /** Find out foreign keys for each column
-* @param string $table
 * @return list<ForeignKey>[] [$col => []]
 */
-function column_foreign_keys($table) {
+function column_foreign_keys(string $table) {
 	global $adminer;
 	$return = array();
 	foreach ($adminer->foreignKeys($table) as $foreign_key) {
@@ -761,11 +697,9 @@ function fields_from_edit() { // used by Mongo and SimpleDB
 }
 
 /** Send headers for export
-* @param string $identifier
-* @param bool $multi_table
 * @return string extension
 */
-function dump_headers($identifier, $multi_table = false) {
+function dump_headers(string $identifier, bool $multi_table = false) {
 	global $adminer;
 	$return = $adminer->dumpHeaders($identifier, $multi_table);
 	$output = $_POST["output"];
@@ -785,7 +719,7 @@ function dump_headers($identifier, $multi_table = false) {
 * @param string[] $row
 * @return void
 */
-function dump_csv($row) {
+function dump_csv(array $row) {
 	foreach ($row as $key => $val) {
 		if (preg_match('~["\n,;\t]|^0|\.\d*0$~', $val) || $val === "") {
 			$row[$key] = '"' . str_replace('"', '""', $val) . '"';
@@ -795,11 +729,10 @@ function dump_csv($row) {
 }
 
 /** Apply SQL function
-* @param string $function
 * @param string $column escaped column identifier
 * @return string
 */
-function apply_sql_function($function, $column) {
+function apply_sql_function(string $function, string $column) {
 	return ($function ? ($function == "unixepoch" ? "DATETIME($column, '$function')" : ($function == "count distinct" ? "COUNT(DISTINCT " : strtoupper("$function(")) . "$column)") : $column);
 }
 
@@ -824,10 +757,9 @@ function get_temp_dir() {
 }
 
 /** Open and exclusively lock a file
-* @param string $filename
 * @return resource|void null for error
 */
-function file_open_lock($filename) {
+function file_open_lock(string $filename) {
 	if (is_link($filename)) {
 		return; // https://cwe.mitre.org/data/definitions/61.html
 	}
@@ -844,11 +776,9 @@ function file_open_lock($filename) {
 }
 
 /** Write and unlock a file
-* @param resource $fp
-* @param string $data
 * @return void
 */
-function file_write_unlock($fp, $data) {
+function file_write_unlock(resource $fp, string $data) {
 	rewind($fp);
 	fwrite($fp, $data);
 	ftruncate($fp, strlen($data));
@@ -856,10 +786,9 @@ function file_write_unlock($fp, $data) {
 }
 
 /** Unlock and close a file
-* @param resource $fp
 * @return void
 */
-function file_unlock($fp) {
+function file_unlock(resource $fp) {
 	flock($fp, LOCK_UN);
 	fclose($fp);
 }
@@ -868,16 +797,15 @@ function file_unlock($fp) {
 * @param mixed[] $array
 * @return mixed if not found
 */
-function first($array) {
+function first(array $array) {
 	// reset(f()) triggers a notice
 	return reset($array);
 }
 
 /** Read password from file adminer.key in temporary directory or create one
-* @param bool $create
 * @return string|false false if the file can not be created
 */
-function password_file($create) {
+function password_file(bool $create) {
 	$filename = get_temp_dir() . "/adminer.key";
 	if (!$create && !file_exists($filename)) {
 		return false;
@@ -905,12 +833,10 @@ function rand_string() {
 
 /** Format value to use in select
 * @param string|string[] $val
-* @param string $link
 * @param Field $field
-* @param int $text_length
 * @return string HTML
 */
-function select_value($val, $link, $field, $text_length) {
+function select_value($val, string $link, array $field, int $text_length) {
 	global $adminer;
 	if (is_array($val)) {
 		$return = "";
@@ -947,10 +873,9 @@ function select_value($val, $link, $field, $text_length) {
 }
 
 /** Check whether the string is e-mail address
-* @param ?string $email
 * @return bool
 */
-function is_mail($email) {
+function is_mail(?string $email) {
 	$atom = '[-a-z0-9!#$%&\'*+/=?^_`{|}~]'; // characters of local-name
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component
 	$pattern = "$atom+(\\.$atom+)*@($domain?\\.)+$domain";
@@ -958,10 +883,9 @@ function is_mail($email) {
 }
 
 /** Check whether the string is URL address
-* @param string $string
 * @return bool
 */
-function is_url($string) {
+function is_url(string $string) {
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component //! IDN
 	return preg_match("~^(https?)://($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string); //! restrict path, query and fragment characters
 }
@@ -970,18 +894,16 @@ function is_url($string) {
 * @param Field $field
 * @return bool
 */
-function is_shortable($field) {
+function is_shortable(array $field) {
 	return preg_match('~char|text|json|lob|geometry|point|linestring|polygon|string|bytea~', $field["type"]);
 }
 
 /** Get query to compute number of found rows
-* @param string $table
 * @param list<string> $where
-* @param bool $is_group
 * @param list<string> $group
 * @return string
 */
-function count_rows($table, $where, $is_group, $group) {
+function count_rows(string $table, array $where, bool $is_group, array $group) {
 	$query = " FROM " . table($table) . ($where ? " WHERE " . implode(" AND ", $where) : "");
 	return ($is_group && (JUSH == "sql" || count($group) == 1)
 		? "SELECT COUNT(DISTINCT " . implode(", ", $group) . ")$query"
@@ -990,10 +912,9 @@ function count_rows($table, $where, $is_group, $group) {
 }
 
 /** Run query which can be killed by AJAX call after timing out
-* @param string $query
 * @return string[]
 */
-function slow_query($query) {
+function slow_query(string $query) {
 	global $adminer, $token, $driver;
 	$db = $adminer->database();
 	$timeout = $adminer->queryTimeout();
@@ -1035,10 +956,9 @@ function verify_token() {
 
 // used in compiled version
 /**
-* @param string $binary
 * @return string
 */
-function lzw_decompress($binary) {
+function lzw_decompress(string $binary) {
 	// convert binary string to codes
 	$dictionary_count = 256;
 	$bits = 8; // ceil(log($dictionary_count, 2))

@@ -15,7 +15,7 @@ class AdminerEditCalendar {
 	* @param string $prepend text to append before first calendar usage
 	* @param string $langPath path to language file, %s stands for language code
 	*/
-	function __construct($prepend = null, $langPath = "jquery-ui/i18n/jquery.ui.datepicker-%s.js") {
+	function __construct(string $prepend = null, string $langPath = "jquery-ui/i18n/jquery.ui.datepicker-%s.js") {
 		$this->prepend = $prepend;
 		$this->langPath = $langPath;
 	}

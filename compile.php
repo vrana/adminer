@@ -87,7 +87,7 @@ function put_file($match) {
 	}
 	if (basename($match[2]) != "lang.inc.php" || !$_SESSION["lang"]) {
 		if (basename($match[2]) == "lang.inc.php") {
-			$return = str_replace('function lang($idf, $number = null) {', 'function lang($idf, $number = null) {
+			$return = str_replace('function lang(string $idf, $number = null) {', 'function lang($idf, $number = null) {
 	if (is_string($idf)) { // compiled version uses numbers, string comes from a plugin
 		// English translation is closest to the original identifiers //! pluralized translations are not found
 		$pos = array_search($idf, get_translations("en")); //! this should be cached

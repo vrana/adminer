@@ -64,7 +64,7 @@ function get_lang() {
 * @param float|string $number
 * @return string
 */
-function lang($idf, $number = null) {
+function lang(string $idf, $number = null) {
 	// this is matched by compile.php
 	global $LANG, $translations;
 	$translation = ($translations[$idf] ?: $idf);

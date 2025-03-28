@@ -12,7 +12,7 @@ class AdminerTableStructure {
 	* @param Field[] $fields data about individual fields
 	* @return bool
 	*/
-	function tableStructurePrint($fields, $tableStatus = null) {
+	function tableStructurePrint(array $fields, $tableStatus = null) {
 		echo "<div class='scrollable'>\n";
 		echo "<table class='nowrap odds'>\n";
 		echo "<thead><tr>"

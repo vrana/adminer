@@ -4,20 +4,17 @@ namespace Adminer;
 $drivers = array();
 
 /** Add a driver
-* @param string $id
-* @param string $name
 * @return void
 */
-function add_driver($id, $name) {
+function add_driver(string $id, string $name) {
 	global $drivers;
 	$drivers[$id] = $name;
 }
 
 /** Get driver name
-* @param string $id
 * @return string
 */
-function get_driver($id) {
+function get_driver(string $id) {
 	global $drivers;
 	return $drivers[$id];
 }
@@ -39,9 +36,8 @@ abstract class SqlDriver {
 	/** @var list<string> */ public $generated = array(); // allowed types of generated columns
 
 	/** Create object for performing database operations
-	* @param Db $connection
 	*/
-	function __construct($connection) {
+	function __construct(Db $connection) {
 		$this->conn = $connection;
 	}
 
@@ -63,18 +59,17 @@ abstract class SqlDriver {
 	* @param Field $field
 	* @return string|void
 	*/
-	function enumLength($field) {
+	function enumLength(array $field) {
 	}
 
 	/** Function used to convert the value inputted by user
 	* @param Field $field
 	* @return string|void
 	*/
-	function unconvertFunction($field) {
+	function unconvertFunction(array $field) {
 	}
 
 	/** Select data from table
-	* @param string $table
 	* @param list<string> $select result of $adminer->selectColumnsProcess()[0]
 	* @param list<string> $where result of $adminer->selectSearchProcess()
 	* @param list<string> $group result of $adminer->selectColumnsProcess()[1]
@@ -84,7 +79,7 @@ abstract class SqlDriver {
 	* @param bool $print whether to print the query
 	* @return Result|false
 	*/
-	function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
+	function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, int $page = 0, bool $print = false) {
 		global $adminer;
 		$is_group = (count($group) < count($select));
 		$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
@@ -106,25 +101,22 @@ abstract class SqlDriver {
 	}
 
 	/** Delete data from table
-	* @param string $table
 	* @param string $queryWhere " WHERE ..."
 	* @param int $limit 0 or 1
 	* @return Result|bool
 	*/
-	function delete($table, $queryWhere, $limit = 0) {
+	function delete(string $table, string $queryWhere, int $limit = 0) {
 		$query = "FROM " . table($table);
 		return queries("DELETE" . ($limit ? limit1($table, $query, $queryWhere) : " $query$queryWhere"));
 	}
 
 	/** Update data in table
-	* @param string $table
 	* @param string[] $set escaped columns in keys, quoted data in values
 	* @param string $queryWhere " WHERE ..."
 	* @param int $limit 0 or 1
-	* @param string $separator
 	* @return Result|bool
 	*/
-	function update($table, $set, $queryWhere, $limit = 0, $separator = "\n") {
+	function update(string $table, array $set, string $queryWhere, int $limit = 0, string $separator = "\n") {
 		$values = array();
 		foreach ($set as $key => $val) {
 			$values[] = "$key = $val";
@@ -134,11 +126,10 @@ abstract class SqlDriver {
 	}
 
 	/** Insert data into table
-	* @param string $table
 	* @param string[] $set escaped columns in keys, quoted data in values
 	* @return Result|bool
 	*/
-	function insert($table, $set) {
+	function insert(string $table, array $set) {
 		return queries("INSERT INTO " . table($table) . ($set
 			? " (" . implode(", ", array_keys($set)) . ")\nVALUES (" . implode(", ", $set) . ")"
 			: " DEFAULT VALUES"
@@ -146,20 +137,18 @@ abstract class SqlDriver {
 	}
 
 	/** Get RETURNING clause for INSERT queries (PostgreSQL specific)
-	* @param string $table
 	* @return string
 	*/
-	function insertReturning($table) {
+	function insertReturning(string $table) {
 		return "";
 	}
 
 	/** Insert or update data in table
-	* @param string $table
 	* @param list<string[]> $rows of arrays with escaped columns in keys and quoted data in values
 	* @param int[] $primary column names in keys
 	* @return Result|bool
 	*/
-	function insertUpdate($table, $rows, $primary) {
+	function insertUpdate(string $table, array $rows, array $primary) {
 		return false;
 	}
 
@@ -185,11 +174,10 @@ abstract class SqlDriver {
 	}
 
 	/** Return query with a timeout
-	* @param string $query
 	* @param int $timeout seconds
 	* @return string|void null if the driver doesn't support query timeouts
 	*/
-	function slowQuery($query, $timeout) {
+	function slowQuery(string $query, int $timeout) {
 	}
 
 	/** Convert column to be searchable
@@ -198,24 +186,22 @@ abstract class SqlDriver {
 	* @param Field $field
 	* @return string
 	*/
-	function convertSearch($idf, $val, $field) {
+	function convertSearch(string $idf, array $val, array $field) {
 		return $idf;
 	}
 
 	/** Convert operator so it can be used in search
-	* @param string $operator
 	* @return string
 	*/
-	function convertOperator($operator) {
+	function convertOperator(string $operator) {
 		return $operator;
 	}
 
 	/** Convert value returned by database to actual value
-	* @param string $val
 	* @param Field $field
 	* @return string
 	*/
-	function value($val, $field) {
+	function value(string $val, array $field) {
 		return (method_exists($this->conn, 'value')
 			? $this->conn->value($val, $field)
 			: (is_resource($val) ? stream_get_contents($val) : $val)
@@ -223,10 +209,9 @@ abstract class SqlDriver {
 	}
 
 	/** Quote binary string
-	* @param string $s
 	* @return string
 	*/
-	function quoteBinary($s) {
+	function quoteBinary(string $s) {
 		return q($s);
 	}
 
@@ -237,11 +222,9 @@ abstract class SqlDriver {
 	}
 
 	/** Get help link for table
-	* @param string $name
-	* @param bool $is_view
 	* @return string|void relative URL
 	*/
-	function tableHelp($name, $is_view = false) {
+	function tableHelp(string $name, bool $is_view = false) {
 	}
 
 	/** Check if C-style escapes are supported
@@ -262,15 +245,14 @@ abstract class SqlDriver {
 	* @param TableStatus $table_status result of table_status1()
 	* @return bool
 	*/
-	function supportsIndex($table_status) {
+	function supportsIndex(array $table_status) {
 		return !is_view($table_status);
 	}
 
 	/** Get defined check constraints
-	* @param string $table
 	* @return string[] [$name => $clause]
 	*/
-	function checkConstraints($table) {
+	function checkConstraints(string $table) {
 		// MariaDB contains CHECK_CONSTRAINTS.TABLE_NAME, MySQL and PostrgreSQL not
 		return get_key_vals("SELECT c.CONSTRAINT_NAME, CHECK_CLAUSE
 FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS c

@@ -2,23 +2,18 @@
 namespace Adminer;
 
 /** Encode e-mail header in UTF-8
-* @param string $header
 * @return string
 */
-function email_header($header) {
+function email_header(string $header) {
 	// iconv_mime_encode requires iconv, imap_8bit requires IMAP extension
 	return "=?UTF-8?B?" . base64_encode($header) . "?="; //! split long lines
 }
 
 /** Send e-mail in UTF-8
-* @param string $email
-* @param string $subject
-* @param string $message
-* @param string $from
 * @param array{error?:list<int>, type?:list<string>, name?:list<string>, tmp_name?:list<string>} $files
 * @return bool
 */
-function send_mail($email, $subject, $message, $from = "", $files = array()) {
+function send_mail(string $email, string $subject, string $message, string $from = "", array $files = array()) {
 	$eol = PHP_EOL;
 	$message = str_replace("\n", $eol, wordwrap(str_replace("\r", "", "$message\n")));
 	$boundary = uniqid("boundary");
@@ -50,6 +45,6 @@ function send_mail($email, $subject, $message, $from = "", $files = array()) {
 * @param Field $field single field returned from fields()
 * @return bool
 */
-function like_bool($field) {
+function like_bool(array $field) {
 	return preg_match("~bool|(tinyint|bit)\\(1\\)~", $field["full_type"]);
 }

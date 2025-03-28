@@ -7,7 +7,7 @@ class Plugins extends Adminer {
 	/** Register plugins
 	* @param ?list<object> $plugins object instances or null to autoload plugins from adminer-plugins/
 	*/
-	function __construct($plugins) {
+	function __construct(?array $plugins) {
 		if ($plugins === null) {
 			$plugins = array();
 			$basename = "adminer-plugins";
@@ -47,7 +47,7 @@ class Plugins extends Adminer {
 	* @param mixed[] $args
 	* @return mixed
 	*/
-	private function callParent($function, $args) {
+	private function callParent(string $function, array $args) {
 		return call_user_func_array(array('parent', $function), $args);
 	}
 
@@ -56,7 +56,7 @@ class Plugins extends Adminer {
 	* @param mixed[] $params
 	* @return mixed
 	*/
-	private function applyPlugin($function, $params) {
+	private function applyPlugin(string $function, array $params) {
 		$args = array();
 		foreach ($params as $key => $val) {
 			// some plugins accept params by reference - we don't need to propage it outside, just to the other plugins
@@ -78,7 +78,7 @@ class Plugins extends Adminer {
 	* @param mixed[] $args
 	* @return mixed
 	*/
-	private function appendPlugin($function, $args) {
+	private function appendPlugin(string $function, array $args) {
 		$return = $this->callParent($function, $args);
 		foreach ($this->plugins as $plugin) {
 			if (method_exists($plugin, $function)) {

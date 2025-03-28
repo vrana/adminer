@@ -10,10 +10,9 @@ class TmpFile {
 	}
 
 	/**
-	* @param string $contents
 	* @return void
 	*/
-	function write($contents) {
+	function write(string $contents) {
 		$this->size += strlen($contents);
 		fwrite($this->handler, $contents);
 	}
