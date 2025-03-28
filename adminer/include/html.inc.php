@@ -2,8 +2,8 @@
 namespace Adminer;
 
 /** Return <script> element
-* @param string
-* @param string
+* @param string $source
+* @param string $trailing
 * @return string
 */
 function script($source, $trailing = "\n") {
@@ -11,7 +11,7 @@ function script($source, $trailing = "\n") {
 }
 
 /** Return <script src> element
-* @param string
+* @param string $url
 * @return string
 */
 function script_src($url) {
@@ -26,8 +26,8 @@ function nonce() {
 }
 
 /** Get <input type="hidden">
-* @param string
-* @param string|int
+* @param string $name
+* @param string|int $value
 * @return string HTML
 */
 function input_hidden($name, $value = "") {
@@ -35,7 +35,7 @@ function input_hidden($name, $value = "") {
 }
 
 /** Get <input type="hidden" name="token">
-* @param string token to use instead of global $token
+* @param string $special token to use instead of global $token
 * @return string HTML
 */
 function input_token($special = "") {
@@ -51,7 +51,7 @@ function target_blank() {
 }
 
 /** Escape for HTML
-* @param string
+* @param string $string
 * @return string
 */
 function h($string) {
@@ -59,7 +59,7 @@ function h($string) {
 }
 
 /** Convert \n to <br>
-* @param string
+* @param string $string
 * @return string
 */
 function nl_br($string) {
@@ -67,13 +67,13 @@ function nl_br($string) {
 }
 
 /** Generate HTML checkbox
-* @param string
-* @param string|int
-* @param bool
-* @param string
-* @param string
-* @param string
-* @param string
+* @param string $name
+* @param string|int $value
+* @param bool $checked
+* @param string $label
+* @param string $onclick
+* @param string $class
+* @param string $labelled_by
 * @return string
 */
 function checkbox($name, $value, $checked, $label = "", $onclick = "", $class = "", $labelled_by = "") {
@@ -87,9 +87,9 @@ function checkbox($name, $value, $checked, $label = "", $onclick = "", $class = 
 }
 
 /** Generate list of HTML options
-* @param string[]|string[][] array of strings or arrays (creates optgroup)
-* @param mixed
-* @param bool always use array keys for value="", otherwise only string keys are used
+* @param string[]|string[][] $options array of strings or arrays (creates optgroup)
+* @param mixed $selected
+* @param bool $use_keys always use array keys for value="", otherwise only string keys are used
 * @return string
 */
 function optionlist($options, $selected = null, $use_keys = false) {
@@ -115,11 +115,11 @@ function optionlist($options, $selected = null, $use_keys = false) {
 }
 
 /** Generate HTML <select>
-* @param string
-* @param string[]
-* @param string
-* @param string
-* @param string
+* @param string $name
+* @param string[] $options
+* @param string $value
+* @param string $onchange
+* @param string $labelled_by
 * @return string
 */
 function html_select($name, $options, $value = "", $onchange = "", $labelled_by = "") {
@@ -131,9 +131,9 @@ function html_select($name, $options, $value = "", $onchange = "", $labelled_by 
 }
 
 /** Generate HTML radio list
-* @param string
-* @param string[]
-* @param string
+* @param string $name
+* @param string[] $options
+* @param string $value
 * @return string
 */
 function html_radios($name, $options, $value = "") {
@@ -145,8 +145,8 @@ function html_radios($name, $options, $value = "") {
 }
 
 /** Get onclick confirmation
-* @param string
-* @param string
+* @param string $message
+* @param string $selector
 * @return string
 */
 function confirm($message = "", $selector = "qsl('input')") {
@@ -154,9 +154,9 @@ function confirm($message = "", $selector = "qsl('input')") {
 }
 
 /** Print header for hidden fieldset (close by </div></fieldset>)
-* @param string
-* @param string
-* @param bool
+* @param string $id
+* @param string $legend
+* @param bool $visible
 * @return void
 */
 function print_fieldset($id, $legend, $visible = false) {
@@ -168,8 +168,8 @@ function print_fieldset($id, $legend, $visible = false) {
 }
 
 /** Return class='active' if $bold is true
-* @param bool
-* @param string
+* @param bool $bold
+* @param string $class
 * @return string
 */
 function bold($bold, $class = "") {
@@ -177,7 +177,7 @@ function bold($bold, $class = "") {
 }
 
 /** Escape string for JavaScript apostrophes
-* @param string
+* @param string $string
 * @return string
 */
 function js_escape($string) {
@@ -185,8 +185,8 @@ function js_escape($string) {
 }
 
 /** Generate page number for pagination
-* @param int
-* @param int
+* @param int $page
+* @param int $current
 * @return string
 */
 function pagination($page, $current) {
@@ -197,9 +197,9 @@ function pagination($page, $current) {
 }
 
 /** Print hidden fields
-* @param mixed[]
-* @param list<string>
-* @param string
+* @param mixed[] $process
+* @param list<string> $ignore
+* @param string $prefix
 * @return bool
 */
 function hidden_fields($process, $ignore = array(), $prefix = '') {
@@ -227,11 +227,11 @@ function hidden_fields_get() {
 }
 
 /** Print enum or set input field
-* @param string "radio"|"checkbox"
-* @param string
-* @param Field
-* @param mixed string|array
-* @param string
+* @param string $type "radio"|"checkbox"
+* @param string $attrs
+* @param Field $field
+* @param mixed $value string|array
+* @param string $empty
 * @return string
 */
 function enum_input($type, $attrs, $field, $value, $empty = null) {
@@ -247,10 +247,10 @@ function enum_input($type, $attrs, $field, $value, $empty = null) {
 }
 
 /** Print edit input field
-* @param Field|RoutineField one field from fields()
-* @param mixed
-* @param string
-* @param bool
+* @param Field|RoutineField $field one field from fields()
+* @param mixed $value
+* @param string $function
+* @param bool $autofocus
 * @return void
 */
 function input($field, $value, $function, $autofocus = false) {
@@ -343,7 +343,7 @@ function input($field, $value, $function, $autofocus = false) {
 }
 
 /** Process edit input field
-* @param Field|RoutineField one field from fields()
+* @param Field|RoutineField $field one field from fields()
 * @return mixed false to leave the original value
 */
 function process_input($field) {
@@ -416,8 +416,8 @@ function search_tables() {
 }
 
 /** Return events to display help on mouse over
-* @param string JS expression
-* @param int JS expression
+* @param string $command JS expression
+* @param int $side JS expression
 * @return string
 */
 function on_help($command, $side = 0) {
@@ -425,10 +425,10 @@ function on_help($command, $side = 0) {
 }
 
 /** Print edit data form
-* @param string
-* @param Field[]
-* @param mixed
-* @param bool
+* @param string $table
+* @param Field[] $fields
+* @param mixed $row
+* @param bool $update
 * @return void
 */
 function edit_form($table, $fields, $row, $update) {
@@ -536,10 +536,10 @@ function edit_form($table, $fields, $row, $update) {
 }
 
 /** Get button with icon
-* @param string
-* @param string
-* @param string
-* @param string
+* @param string $icon
+* @param string $name
+* @param string $html
+* @param string $title
 * @return string
 */
 function icon($icon, $name, $html, $title) {

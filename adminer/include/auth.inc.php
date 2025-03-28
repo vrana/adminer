@@ -128,7 +128,7 @@ function unset_permanent() {
 }
 
 /** Render an error message and a login form
-* @param string plain text
+* @param string $error plain text
 * @return never
 */
 function auth_error($error) {

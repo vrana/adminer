@@ -7,10 +7,10 @@ if (extension_loaded('pdo')) {
 		/** @var \PDO */ protected $pdo;
 
 		/** Connect to server using DSN
-		* @param string
-		* @param string
-		* @param string
-		* @param mixed[]
+		* @param string $dsn
+		* @param string $username
+		* @param string $password
+		* @param mixed[] $options
 		* @return void
 		*/
 		function dsn($dsn, $username, $password, $options = array()) {

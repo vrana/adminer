@@ -4,10 +4,10 @@ namespace Adminer;
 // This file is not used in Adminer Editor.
 
 /** Print select result
-* @param Result
-* @param Db connection to examine indexes
-* @param string[]
-* @param int
+* @param Result $result
+* @param Db $connection2 connection to examine indexes
+* @param string[] $orgtables
+* @param int $limit
 * @return string[] $orgtables
 */
 function select($result, $connection2 = null, $orgtables = array(), $limit = 0) {
@@ -101,7 +101,7 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 }
 
 /** Get referencable tables with single column primary key except self
-* @param string
+* @param string $self
 * @return array<string, Field> [$table_name => $field]
 */
 function referencable_primary($self) {
@@ -123,10 +123,10 @@ function referencable_primary($self) {
 }
 
 /** Print SQL <textarea> tag
-* @param string
-* @param string|list<array{string}>
-* @param int
-* @param int
+* @param string $name
+* @param string|list<array{string}> $value
+* @param int $rows
+* @param int $cols
 * @return void
 */
 function textarea($name, $value, $rows = 10, $cols = 80) {
@@ -142,11 +142,11 @@ function textarea($name, $value, $rows = 10, $cols = 80) {
 }
 
 /** Generate HTML <select> or <input> if $options are empty
-* @param string
-* @param string[]
-* @param string
-* @param string
-* @param string
+* @param string $attrs
+* @param string[] $options
+* @param string $value
+* @param string $onchange
+* @param string $placeholder
 * @return string
 */
 function select_input($attrs, $options, $value = "", $onchange = "", $placeholder = "") {
@@ -158,8 +158,8 @@ function select_input($attrs, $options, $value = "", $onchange = "", $placeholde
 }
 
 /** Print one row in JSON object
-* @param string or "" to close the object
-* @param string|int
+* @param string $key or "" to close the object
+* @param string|int $val
 * @return void
 */
 function json_row($key, $val = null) {
@@ -177,11 +177,11 @@ function json_row($key, $val = null) {
 }
 
 /** Print table columns for type edit
-* @param string
-* @param Field
-* @param list<string>
-* @param string[]
-* @param list<string> extra types to prepend
+* @param string $key
+* @param Field $field
+* @param list<string> $collations
+* @param string[] $foreign_keys
+* @param list<string> $extra_types extra types to prepend
 * @return void
 */
 function edit_type($key, $field, $collations, $foreign_keys = array(), $extra_types = array()) {
@@ -217,7 +217,7 @@ function edit_type($key, $field, $collations, $foreign_keys = array(), $extra_ty
 }
 
 /** Get partition info
-* @param string
+* @param string $table
 * @return array{partition_by:string, partition:string, partitions:string, partition_names:list<string>, partition_values:list<string>}
 */
 function get_partitions_info($table) {
@@ -233,7 +233,7 @@ function get_partitions_info($table) {
 }
 
 /** Filter length value including enums
-* @param string
+* @param string $length
 * @return string
 */
 function process_length($length) {
@@ -246,8 +246,8 @@ function process_length($length) {
 }
 
 /** Create SQL string from field type
-* @param FieldType
-* @param string
+* @param FieldType $field
+* @param string $collate
 * @return string
 */
 function process_type($field, $collate = "COLLATE") {
@@ -260,8 +260,8 @@ function process_type($field, $collate = "COLLATE") {
 }
 
 /** Create SQL string from field
-* @param Field basic field information
-* @param Field information about field type
+* @param Field $field basic field information
+* @param Field $type_field information about field type
 * @return list<string> ["field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT"]
 */
 function process_field($field, $type_field) {
@@ -281,7 +281,7 @@ function process_field($field, $type_field) {
 }
 
 /** Get default value clause
-* @param Field
+* @param Field $field
 * @return string
 */
 function default_value($field) {
@@ -298,7 +298,7 @@ function default_value($field) {
 }
 
 /** Get type class to use in CSS
-* @param string
+* @param string $type
 * @return string|void class=''
 */
 function type_class($type) {
@@ -317,10 +317,10 @@ function type_class($type) {
 }
 
 /** Print table interior for fields editing
-* @param (Field|RoutineField)[]
-* @param list<string>
-* @param 'TABLE'|'PROCEDURE'
-* @param string[]
+* @param (Field|RoutineField)[] $fields
+* @param list<string> $collations
+* @param 'TABLE'|'PROCEDURE' $type
+* @param string[] $foreign_keys
 * @return void
 */
 function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = array()) {
@@ -382,7 +382,7 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 }
 
 /** Move fields up and down or add field
-* @param Field[]
+* @param Field[] $fields
 * @return bool
 */
 function process_fields(&$fields) {
@@ -423,7 +423,7 @@ function process_fields(&$fields) {
 }
 
 /** Callback used in routine()
-* @param list<string>
+* @param list<string> $match
 * @return string
 */
 function normalize_enum($match) {
@@ -432,10 +432,10 @@ function normalize_enum($match) {
 }
 
 /** Issue grant or revoke commands
-* @param string GRANT or REVOKE
-* @param list<string>
-* @param string
-* @param string
+* @param string $grant GRANT or REVOKE
+* @param list<string> $privileges
+* @param string $columns
+* @param string $on
 * @return Result|bool
 */
 function grant($grant, $privileges, $columns, $on) {
@@ -453,17 +453,17 @@ function grant($grant, $privileges, $columns, $on) {
 }
 
 /** Drop old object and create a new one
-* @param string drop old object query
-* @param string create new object query
-* @param string drop new object query
-* @param string create test object query
-* @param string drop test object query
-* @param string
-* @param string
-* @param string
-* @param string
-* @param string
-* @param string
+* @param string $drop drop old object query
+* @param string $create create new object query
+* @param string $drop_created drop new object query
+* @param string $test create test object query
+* @param string $drop_test drop test object query
+* @param string $location
+* @param string $message_drop
+* @param string $message_alter
+* @param string $message_create
+* @param string $old_name
+* @param string $new_name
 * @return void redirect on success
 */
 function drop_create($drop, $create, $drop_created, $test, $drop_test, $location, $message_drop, $message_alter, $message_create, $old_name, $new_name) {
@@ -487,8 +487,8 @@ function drop_create($drop, $create, $drop_created, $test, $drop_test, $location
 }
 
 /** Generate SQL query for creating trigger
-* @param string
-* @param Trigger result of trigger()
+* @param string $on
+* @param Trigger $row result of trigger()
 * @return string
 */
 function create_trigger($on, $row) {
@@ -502,8 +502,8 @@ function create_trigger($on, $row) {
 }
 
 /** Generate SQL query for creating routine
-* @param 'PROCEDURE'|'FUNCTION'
-* @param Routine result of routine()
+* @param 'PROCEDURE'|'FUNCTION' $routine
+* @param Routine $row result of routine()
 * @return string
 */
 function create_routine($routine, $row) {
@@ -527,7 +527,7 @@ function create_routine($routine, $row) {
 }
 
 /** Remove current user definer from SQL command
-* @param string
+* @param string $query
 * @return string
 */
 function remove_definer($query) {
@@ -535,7 +535,7 @@ function remove_definer($query) {
 }
 
 /** Format foreign key to use in SQL query
-* @param ForeignKey
+* @param ForeignKey $foreign_key
 * @return string
 */
 function format_foreign_key($foreign_key) {
@@ -553,8 +553,8 @@ function format_foreign_key($foreign_key) {
 }
 
 /** Add a file to TAR
-* @param string
-* @param TmpFile
+* @param string $filename
+* @param TmpFile $tmp_file
 * @return void prints the output
 */
 function tar_file($filename, $tmp_file) {
@@ -571,7 +571,7 @@ function tar_file($filename, $tmp_file) {
 }
 
 /** Get INI bytes value
-* @param string
+* @param string $ini
 * @return int
 */
 function ini_bytes($ini) {
@@ -588,8 +588,8 @@ function ini_bytes($ini) {
 }
 
 /** Create link to database documentation
-* @param string[] JUSH => $path
-* @param string HTML code
+* @param string[] $paths JUSH => $path
+* @param string $text HTML code
 * @return string HTML code
 */
 function doc_link($paths, $text = "<sup>?</sup>") {
@@ -611,7 +611,7 @@ function doc_link($paths, $text = "<sup>?</sup>") {
 }
 
 /** Compute size of database
-* @param string
+* @param string $db
 * @return string formatted
 */
 function db_size($db) {
@@ -627,7 +627,7 @@ function db_size($db) {
 }
 
 /** Print SET NAMES if utf8mb4 might be needed
-* @param string
+* @param string $create
 * @return void
 */
 function set_utf8mb4($create) {

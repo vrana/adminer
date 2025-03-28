@@ -14,7 +14,7 @@ if (isset($_GET["elastic"])) {
 
 			/**
 			 * @param string $path
-			 * @param array|null $content
+			 * @param ?array $content
 			 * @param string $method
 			 * @return array|false
 			 */
@@ -54,7 +54,7 @@ if (isset($_GET["elastic"])) {
 
 			/** Perform query relative to actual selected DB
 			 * @param string $path
-			 * @param array|null $content
+			 * @param ?array $content
 			 * @param string $method
 			 * @return array|false
 			 */
@@ -531,7 +531,7 @@ if (isset($_GET["elastic"])) {
 	}
 
 	/** Alter type
-	 * @param array
+	 * @param array $table
 	 * @return mixed
 	 */
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
@@ -552,7 +552,7 @@ if (isset($_GET["elastic"])) {
 	}
 
 	/** Drop types
-	 * @param list<string>
+	 * @param list<string> $tables
 	 * @return bool
 	 */
 	function drop_tables($tables) {

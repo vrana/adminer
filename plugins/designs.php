@@ -10,7 +10,7 @@ class AdminerDesigns {
 	protected $designs;
 
 	/**
-	* @param list<string> URL in key, name in value
+	* @param list<string> $designs URL in key, name in value
 	*/
 	function __construct($designs) {
 		$this->designs = $designs;

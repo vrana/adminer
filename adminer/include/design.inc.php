@@ -2,10 +2,10 @@
 namespace Adminer;
 
 /** Print HTML header
-* @param string used in title, breadcrumb and heading, should be HTML escaped
-* @param string
-* @param mixed ["key" => "link", "key2" => ["link", "desc"]], null for nothing, false for driver only, true for driver and server
-* @param string used after colon in title and heading, should be HTML escaped
+* @param string $title used in title, breadcrumb and heading, should be HTML escaped
+* @param string $error
+* @param mixed $breadcrumb ["key" => "link", "key2" => ["link", "desc"]], null for nothing, false for driver only, true for driver and server
+* @param string $title2 used after colon in title and heading, should be HTML escaped
 * @return void
 */
 function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
@@ -176,7 +176,7 @@ function get_nonce() {
 }
 
 /** Print flash and error messages
-* @param string
+* @param string $error
 * @return void
 */
 function page_messages($error) {
@@ -196,7 +196,7 @@ function page_messages($error) {
 }
 
 /** Print HTML footer
-* @param string "auth", "db", "ns"
+* @param string $missing "auth", "db", "ns"
 * @return void
 */
 function page_footer($missing = "") {

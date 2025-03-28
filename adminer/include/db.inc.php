@@ -14,34 +14,34 @@ abstract class SqlDb {
 	/** @var Result|bool */ protected $multi; // used for multiquery
 
 	/** Connect to server
-	* @param string
-	* @param string
-	* @param string
+	* @param string $server
+	* @param string $username
+	* @param string $password
 	* @return bool
 	*/
 	abstract function connect($server, $username, $password);
 
 	/** Quote string to use in SQL
-	* @param string
+	* @param string $string
 	* @return string escaped string enclosed in '
 	*/
 	abstract function quote($string);
 
 	/** Select database
-	* @param string
+	* @param string $database
 	* @return bool
 	*/
 	abstract function select_db($database);
 
 	/** Send query
-	* @param string
-	* @param bool
+	* @param string $query
+	* @param bool $unbuffered
 	* @return Result|bool
 	*/
 	abstract function query($query, $unbuffered = false);
 
 	/** Send query with more resultsets
-	* @param string
+	* @param string $query
 	* @return Result|bool
 	*/
 	function multi_query($query) {
@@ -63,8 +63,8 @@ abstract class SqlDb {
 	}
 
 	/** Get single field from result
-	* @param string
-	* @param int
+	* @param string $query
+	* @param int $field
 	* @return string|bool
 	*/
 	function result($query, $field = 0) {

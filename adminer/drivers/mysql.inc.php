@@ -84,7 +84,7 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			/** Set the client character set
-			* @param string
+			* @param string $charset
 			* @return bool
 			*/
 			function set_charset($charset) {
@@ -129,7 +129,7 @@ if (!defined('Adminer\DRIVER')) {
 			/** @var int */ private $offset = 0;
 
 			/** Constructor
-			* @param resource
+			* @param resource $result
 			*/
 			function __construct($result) {
 				$this->result = $result;
@@ -359,7 +359,7 @@ if (!defined('Adminer\DRIVER')) {
 
 
 	/** Escape database identifier
-	* @param string
+	* @param string $idf
 	* @return string
 	*/
 	function idf_escape($idf) {
@@ -367,7 +367,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get escaped table name
-	* @param string
+	* @param string $idf
 	* @return string
 	*/
 	function table($idf) {
@@ -375,7 +375,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Connect to the database
-	* @param array{string, string, string} [$server, $username, $password]
+	* @param array{string, string, string} $credentials [$server, $username, $password]
 	* @return string|Db string for error
 	*/
 	function connect($credentials) {
@@ -396,7 +396,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get cached list of databases
-	* @param bool
+	* @param bool $flush
 	* @return list<string>
 	*/
 	function get_databases($flush) {
@@ -413,11 +413,11 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Formulate SQL query with limit
-	* @param string everything after SELECT
-	* @param string including WHERE
-	* @param int
-	* @param int
-	* @param string
+	* @param string $query everything after SELECT
+	* @param string $where including WHERE
+	* @param int $limit
+	* @param int $offset
+	* @param string $separator
 	* @return string
 	*/
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
@@ -425,10 +425,10 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Formulate SQL modification query with limit 1
-	* @param string
-	* @param string everything after UPDATE or DELETE
-	* @param string
-	* @param string
+	* @param string $table
+	* @param string $query everything after UPDATE or DELETE
+	* @param string $where
+	* @param string $separator
 	* @return string
 	*/
 	function limit1($table, $query, $where, $separator = "\n") {
@@ -436,8 +436,8 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get database collation
-	* @param string
-	* @param string[][] result of collations()
+	* @param string $db
+	* @param string[][] $collations result of collations()
 	* @return string
 	*/
 	function db_collation($db, $collations) {
@@ -467,7 +467,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Count tables in all databases
-	* @param list<string>
+	* @param list<string> $databases
 	* @return int[] [$db => $tables]
 	*/
 	function count_tables($databases) {
@@ -479,8 +479,8 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get table status
-	* @param string
-	* @param bool return only "Name", "Engine" and "Comment" fields
+	* @param string $name
+	* @param bool $fast return only "Name", "Engine" and "Comment" fields
 	* @return TableStatus[]
 	*/
 	function table_status($name = "", $fast = false) {
@@ -509,7 +509,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Find out whether the identifier is view
-	* @param TableStatus
+	* @param TableStatus $table_status
 	* @return bool
 	*/
 	function is_view($table_status) {
@@ -517,7 +517,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Check if table supports foreign keys
-	* @param TableStatus result of table_status1()
+	* @param TableStatus $table_status result of table_status1()
 	* @return bool
 	*/
 	function fk_support($table_status) {
@@ -525,7 +525,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get information about fields
-	* @param string
+	* @param string $table
 	* @return Field[]
 	*/
 	function fields($table) {
@@ -580,8 +580,8 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get table indexes
-	* @param string
-	* @param ?Db
+	* @param string $table
+	* @param ?Db $connection2
 	* @return Index[]
 	*/
 	function indexes($table, $connection2 = null) {
@@ -597,7 +597,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get foreign keys in table
-	* @param string
+	* @param string $table
 	* @return ForeignKey[]
 	*/
 	function foreign_keys($table) {
@@ -629,7 +629,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get view SELECT
-	* @param string
+	* @param string $name
 	* @return array{select:string}
 	*/
 	function view($name) {
@@ -656,7 +656,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Find out if database is information_schema
-	* @param string
+	* @param string $db
 	* @return bool
 	*/
 	function information_schema($db) {
@@ -673,8 +673,8 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Create database
-	* @param string
-	* @param string
+	* @param string $db
+	* @param string $collation
 	* @return Result
 	*/
 	function create_database($db, $collation) {
@@ -682,7 +682,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Drop databases
-	* @param list<string>
+	* @param list<string> $databases
 	* @return bool
 	*/
 	function drop_databases($databases) {
@@ -693,8 +693,8 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Rename database from DB
-	* @param string new name
-	* @param string
+	* @param string $name new name
+	* @param string $collation
 	* @return bool
 	*/
 	function rename_database($name, $collation) {
@@ -736,15 +736,15 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Run commands to create or alter table
-	* @param string "" to create
-	* @param string new name
-	* @param list<array{string, list<string>, string}> of [$orig, $process_field, $after]
-	* @param string[]
-	* @param string
-	* @param string
-	* @param string
-	* @param string number
-	* @param string
+	* @param string $table "" to create
+	* @param string $name new name
+	* @param list<array{string, list<string>, string}> $fields of [$orig, $process_field, $after]
+	* @param string[] $foreign
+	* @param string $comment
+	* @param string $engine
+	* @param string $collation
+	* @param string $auto_increment number
+	* @param string $partitioning
 	* @return Result|bool
 	*/
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
@@ -782,8 +782,8 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Run commands to alter indexes
-	* @param string escaped table name
-	* @param list<array{string, string, 'DROP'|list<string>}> of ["index type", "name", ["column definition", ...]] or ["index type", "name", "DROP"]
+	* @param string $table escaped table name
+	* @param list<array{string, string, 'DROP'|list<string>}> $alter of ["index type", "name", ["column definition", ...]] or ["index type", "name", "DROP"]
 	* @return Result|bool
 	*/
 	function alter_indexes($table, $alter) {
@@ -798,7 +798,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Run commands to truncate tables
-	* @param list<string>
+	* @param list<string> $tables
 	* @return bool
 	*/
 	function truncate_tables($tables) {
@@ -806,7 +806,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Drop views
-	* @param list<string>
+	* @param list<string> $views
 	* @return Result|bool
 	*/
 	function drop_views($views) {
@@ -814,7 +814,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Drop tables
-	* @param list<string>
+	* @param list<string> $tables
 	* @return Result|bool
 	*/
 	function drop_tables($tables) {
@@ -822,9 +822,9 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Move tables to other schema
-	* @param list<string>
-	* @param list<string>
-	* @param string
+	* @param list<string> $tables
+	* @param list<string> $views
+	* @param string $target
 	* @return bool
 	*/
 	function move_tables($tables, $views, $target) {
@@ -852,9 +852,9 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Copy tables to other schema
-	* @param list<string>
-	* @param list<string>
-	* @param string
+	* @param list<string> $tables
+	* @param list<string> $views
+	* @param string $target
 	* @return bool
 	*/
 	function copy_tables($tables, $views, $target) {
@@ -889,8 +889,8 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get information about trigger
-	* @param string trigger name
-	* @param string
+	* @param string $name trigger name
+	* @param string $table
 	* @return Trigger
 	*/
 	function trigger($name, $table) {
@@ -902,7 +902,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get defined triggers
-	* @param string
+	* @param string $table
 	* @return array{string, string}[]
 	*/
 	function triggers($table) {
@@ -925,8 +925,8 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get information about stored routine
-	* @param string
-	* @param 'FUNCTION'|'PROCEDURE'
+	* @param string $name
+	* @param 'FUNCTION'|'PROCEDURE' $type
 	* @return Routine
 	*/
 	function routine($name, $type) {
@@ -978,8 +978,8 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get routine signature
-	* @param string
-	* @param Routine result of routine()
+	* @param string $name
+	* @param Routine $row result of routine()
 	* @return string
 	*/
 	function routine_id($name, $row) {
@@ -987,7 +987,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get last auto increment ID
-	* @param Result or true
+	* @param Result $result or true
 	* @return string
 	*/
 	function last_id($result) {
@@ -995,8 +995,8 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Explain select
-	* @param Db
-	* @param string
+	* @param Db $connection
+	* @param string $query
 	* @return Result
 	*/
 	function explain($connection, $query) {
@@ -1004,8 +1004,8 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get approximate number of rows
-	* @param TableStatus
-	* @param list<string>
+	* @param TableStatus $table_status
+	* @param list<string> $where
 	* @return numeric-string|null null if approximate number can't be retrieved
 	*/
 	function found_rows($table_status, $where) {
@@ -1013,9 +1013,9 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get SQL command to create table
-	* @param string
-	* @param bool
-	* @param string
+	* @param string $table
+	* @param bool $auto_increment
+	* @param string $style
 	* @return string
 	*/
 	function create_sql($table, $auto_increment, $style) {
@@ -1027,7 +1027,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get SQL command to truncate table
-	* @param string
+	* @param string $table
 	* @return string
 	*/
 	function truncate_sql($table) {
@@ -1035,7 +1035,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get SQL command to change database
-	* @param string
+	* @param string $database
 	* @return string
 	*/
 	function use_sql($database) {
@@ -1043,7 +1043,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get SQL commands to create triggers
-	* @param string
+	* @param string $table
 	* @return string
 	*/
 	function trigger_sql($table) {
@@ -1076,7 +1076,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Convert field in select and edit
-	* @param Field one element from fields()
+	* @param Field $field one element from fields()
 	* @return string|void
 	*/
 	function convert_field($field) {
@@ -1092,8 +1092,8 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Convert value in edit after applying functions back
-	* @param Field one element from fields()
-	* @param string SQL expression
+	* @param Field $field one element from fields()
+	* @param string $return SQL expression
 	* @return string
 	*/
 	function unconvert_field($field, $return) {
@@ -1111,7 +1111,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Check whether a feature is supported
-	* @param literal-string "check|comment|copy|database|descidx|drop_col|dump|event|indexes|kill|materializedview|partitioning|privileges|procedure|processlist|routine|scheme|sequence|status|table|trigger|type|variables|view|view_trigger"
+	* @param literal-string $feature "check|comment|copy|database|descidx|drop_col|dump|event|indexes|kill|materializedview|partitioning|privileges|procedure|processlist|routine|scheme|sequence|status|table|trigger|type|variables|view|view_trigger"
 	* @return bool
 	*/
 	function support($feature) {
@@ -1119,7 +1119,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Kill a process
-	* @param numeric-string
+	* @param numeric-string $val
 	* @return Result|bool
 	*/
 	function kill_process($val) {
@@ -1150,7 +1150,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get values of user defined type
-	* @param int
+	* @param int $id
 	* @return string
 	*/
 	function type_values($id) {
@@ -1172,8 +1172,8 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Set current schema
-	* @param string
-	* @param Db
+	* @param string $schema
+	* @param Db $connection2
 	* @return bool
 	*/
 	function set_schema($schema, $connection2 = null) {

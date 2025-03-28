@@ -4,8 +4,8 @@ namespace Adminer;
 $drivers = array();
 
 /** Add a driver
-* @param string
-* @param string
+* @param string $id
+* @param string $name
 * @return void
 */
 function add_driver($id, $name) {
@@ -14,7 +14,7 @@ function add_driver($id, $name) {
 }
 
 /** Get driver name
-* @param string
+* @param string $id
 * @return string
 */
 function get_driver($id) {
@@ -39,7 +39,7 @@ abstract class SqlDriver {
 	/** @var list<string> */ public $generated = array(); // allowed types of generated columns
 
 	/** Create object for performing database operations
-	* @param Db
+	* @param Db $connection
 	*/
 	function __construct($connection) {
 		$this->conn = $connection;
@@ -60,28 +60,28 @@ abstract class SqlDriver {
 	}
 
 	/** Get enum values
-	* @param Field
+	* @param Field $field
 	* @return string|void
 	*/
 	function enumLength($field) {
 	}
 
 	/** Function used to convert the value inputted by user
-	* @param Field
+	* @param Field $field
 	* @return string|void
 	*/
 	function unconvertFunction($field) {
 	}
 
 	/** Select data from table
-	* @param string
-	* @param list<string> result of $adminer->selectColumnsProcess()[0]
-	* @param list<string> result of $adminer->selectSearchProcess()
-	* @param list<string> result of $adminer->selectColumnsProcess()[1]
-	* @param list<string> result of $adminer->selectOrderProcess()
-	* @param int|numeric-string result of $adminer->selectLimitProcess()
-	* @param int index of page starting at zero
-	* @param bool whether to print the query
+	* @param string $table
+	* @param list<string> $select result of $adminer->selectColumnsProcess()[0]
+	* @param list<string> $where result of $adminer->selectSearchProcess()
+	* @param list<string> $group result of $adminer->selectColumnsProcess()[1]
+	* @param list<string> $order result of $adminer->selectOrderProcess()
+	* @param int|numeric-string $limit result of $adminer->selectLimitProcess()
+	* @param int $page index of page starting at zero
+	* @param bool $print whether to print the query
 	* @return Result|false
 	*/
 	function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
@@ -106,9 +106,9 @@ abstract class SqlDriver {
 	}
 
 	/** Delete data from table
-	* @param string
-	* @param string " WHERE ..."
-	* @param int 0 or 1
+	* @param string $table
+	* @param string $queryWhere " WHERE ..."
+	* @param int $limit 0 or 1
 	* @return Result|bool
 	*/
 	function delete($table, $queryWhere, $limit = 0) {
@@ -117,11 +117,11 @@ abstract class SqlDriver {
 	}
 
 	/** Update data in table
-	* @param string
-	* @param string[] escaped columns in keys, quoted data in values
-	* @param string " WHERE ..."
-	* @param int 0 or 1
-	* @param string
+	* @param string $table
+	* @param string[] $set escaped columns in keys, quoted data in values
+	* @param string $queryWhere " WHERE ..."
+	* @param int $limit 0 or 1
+	* @param string $separator
 	* @return Result|bool
 	*/
 	function update($table, $set, $queryWhere, $limit = 0, $separator = "\n") {
@@ -134,8 +134,8 @@ abstract class SqlDriver {
 	}
 
 	/** Insert data into table
-	* @param string
-	* @param string[] escaped columns in keys, quoted data in values
+	* @param string $table
+	* @param string[] $set escaped columns in keys, quoted data in values
 	* @return Result|bool
 	*/
 	function insert($table, $set) {
@@ -146,7 +146,7 @@ abstract class SqlDriver {
 	}
 
 	/** Get RETURNING clause for INSERT queries (PostgreSQL specific)
-	* @param string
+	* @param string $table
 	* @return string
 	*/
 	function insertReturning($table) {
@@ -154,9 +154,9 @@ abstract class SqlDriver {
 	}
 
 	/** Insert or update data in table
-	* @param string
-	* @param list<string[]> of arrays with escaped columns in keys and quoted data in values
-	* @param int[] column names in keys
+	* @param string $table
+	* @param list<string[]> $rows of arrays with escaped columns in keys and quoted data in values
+	* @param int[] $primary column names in keys
 	* @return Result|bool
 	*/
 	function insertUpdate($table, $rows, $primary) {
@@ -185,17 +185,17 @@ abstract class SqlDriver {
 	}
 
 	/** Return query with a timeout
-	* @param string
-	* @param int seconds
+	* @param string $query
+	* @param int $timeout seconds
 	* @return string|void null if the driver doesn't support query timeouts
 	*/
 	function slowQuery($query, $timeout) {
 	}
 
 	/** Convert column to be searchable
-	* @param string escaped column name
-	* @param array{op:string, val:string}
-	* @param Field
+	* @param string $idf escaped column name
+	* @param array{op:string, val:string} $val
+	* @param Field $field
 	* @return string
 	*/
 	function convertSearch($idf, $val, $field) {
@@ -211,8 +211,8 @@ abstract class SqlDriver {
 	}
 
 	/** Convert value returned by database to actual value
-	* @param string
-	* @param Field
+	* @param string $val
+	* @param Field $field
 	* @return string
 	*/
 	function value($val, $field) {
@@ -223,7 +223,7 @@ abstract class SqlDriver {
 	}
 
 	/** Quote binary string
-	* @param string
+	* @param string $s
 	* @return string
 	*/
 	function quoteBinary($s) {
@@ -237,8 +237,8 @@ abstract class SqlDriver {
 	}
 
 	/** Get help link for table
-	* @param string
-	* @param bool
+	* @param string $name
+	* @param bool $is_view
 	* @return string|void relative URL
 	*/
 	function tableHelp($name, $is_view = false) {
@@ -259,7 +259,7 @@ abstract class SqlDriver {
 	}
 
 	/** Check whether table supports indexes
-	* @param TableStatus result of table_status1()
+	* @param TableStatus $table_status result of table_status1()
 	* @return bool
 	*/
 	function supportsIndex($table_status) {
@@ -267,7 +267,7 @@ abstract class SqlDriver {
 	}
 
 	/** Get defined check constraints
-	* @param string
+	* @param string $table
 	* @return string[] [$name => $clause]
 	*/
 	function checkConstraints($table) {

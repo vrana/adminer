@@ -60,8 +60,8 @@ function get_lang() {
 }
 
 /** Translate string
-* @param literal-string
-* @param float|string
+* @param literal-string $idf
+* @param float|string $number
 * @return string
 */
 function lang($idf, $number = null) {

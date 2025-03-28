@@ -10,7 +10,7 @@ class AdminerFrames {
 	protected $sameOrigin;
 
 	/**
-	* @param bool allow running from the same origin only
+	* @param bool $sameOrigin allow running from the same origin only
 	*/
 	function __construct($sameOrigin = false) {
 		$this->sameOrigin = $sameOrigin;

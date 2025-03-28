@@ -10,7 +10,7 @@ class AdminerLoginOtp {
 	protected $secret;
 
 	/**
-	* @param string decoded secret, e.g. base64_decode("SECRET")
+	* @param string $secret decoded secret, e.g. base64_decode("SECRET")
 	*/
 	function __construct($secret) {
 		$this->secret = $secret;

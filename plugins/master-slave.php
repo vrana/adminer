@@ -10,7 +10,7 @@ class AdminerMasterSlave {
 	private $masters = array();
 
 	/**
-	* @param string[] [$slave => $master]
+	* @param string[] $masters [$slave => $master]
 	*/
 	function __construct($masters) {
 		$this->masters = $masters;

@@ -10,11 +10,11 @@ class AdminerEmailTable {
 	protected $table, $id, $title, $subject, $message;
 
 	/**
-	* @param string quoted table name
-	* @param string quoted column name
-	* @param string quoted column name
-	* @param string quoted column name
-	* @param string quoted column name
+	* @param string $table quoted table name
+	* @param string $id quoted column name
+	* @param string $title quoted column name
+	* @param string $subject quoted column name
+	* @param string $message quoted column name
 	*/
 	function __construct($table = "email", $id = "id", $title = "subject", $subject = "subject", $message = "message") {
 		$this->table = $table;

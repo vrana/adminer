@@ -10,8 +10,8 @@ class AdminerLoginIp {
 	protected $ips, $forwarded_for;
 
 	/** Set allowed IP addresses
-	* @param list<string> IP address prefixes
-	* @param list<string> X-Forwarded-For prefixes if IP address matches, empty array means anything
+	* @param list<string> $ips IP address prefixes
+	* @param list<string> $forwarded_for X-Forwarded-For prefixes if IP address matches, empty array means anything
 	*/
 	function __construct($ips, $forwarded_for = array()) {
 		$this->ips = $ips;

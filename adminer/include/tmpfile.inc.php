@@ -10,7 +10,7 @@ class TmpFile {
 	}
 
 	/**
-	* @param string
+	* @param string $contents
 	* @return void
 	*/
 	function write($contents) {

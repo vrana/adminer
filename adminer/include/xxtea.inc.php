@@ -7,7 +7,7 @@ namespace Adminer;
 */
 
 /**
-* @param int
+* @param int $n
 * @return int
 */
 function int32($n) {
@@ -21,8 +21,8 @@ function int32($n) {
 }
 
 /**
-* @param int[]
-* @param bool
+* @param int[] $v
+* @param bool $w
 * @return string
 */
 function long2str($v, $w) {
@@ -37,8 +37,8 @@ function long2str($v, $w) {
 }
 
 /**
-* @param string
-* @param bool
+* @param string $s
+* @param bool $w
 * @return int[]
 */
 function str2long($s, $w) {
@@ -50,10 +50,10 @@ function str2long($s, $w) {
 }
 
 /**
-* @param int
-* @param int
-* @param int
-* @param int
+* @param int $z
+* @param int $y
+* @param int $sum
+* @param int $k
 * @return int
 */
 function xxtea_mx($z, $y, $sum, $k) {
@@ -61,8 +61,8 @@ function xxtea_mx($z, $y, $sum, $k) {
 }
 
 /** Cipher
-* @param string plain-text password
-* @param string
+* @param string $str plain-text password
+* @param string $key
 * @return string binary cipher
 */
 function encrypt_string($str, $key) {
@@ -94,8 +94,8 @@ function encrypt_string($str, $key) {
 }
 
 /** Decipher
-* @param string binary cipher
-* @param string
+* @param string $str binary cipher
+* @param string $key
 * @return string|false plain-text password
 */
 function decrypt_string($str, $key) {

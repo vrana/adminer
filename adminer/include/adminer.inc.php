@@ -28,7 +28,7 @@ class Adminer {
 	}
 
 	/** Get key used for permanent login
-	* @param bool
+	* @param bool $create
 	* @return string cryptic string which gets combined with password or false in case of an error
 	*/
 	function permanentLogin($create = false) {
@@ -43,7 +43,7 @@ class Adminer {
 	}
 
 	/** Get server name displayed in breadcrumbs
-	* @param string
+	* @param string $server
 	* @return string HTML code or null
 	*/
 	function serverName($server) {
@@ -59,7 +59,7 @@ class Adminer {
 	}
 
 	/** Get cached list of databases
-	* @param bool
+	* @param bool $flush
 	* @return list<string>
 	*/
 	function databases($flush = true) {
@@ -94,7 +94,7 @@ class Adminer {
 	}
 
 	/** Print HTML code inside <head>
-	* @param bool dark CSS: false to disable, true to force, null to base on user preferences
+	* @param bool $dark dark CSS: false to disable, true to force, null to base on user preferences
 	* @return bool true to link favicon.ico
 	*/
 	function head($dark = null) {
@@ -137,9 +137,9 @@ class Adminer {
 	}
 
 	/** Get login form field
-	* @param string
-	* @param string HTML
-	* @param string HTML
+	* @param string $name
+	* @param string $heading HTML
+	* @param string $value HTML
 	* @return string
 	*/
 	function loginFormField($name, $heading, $value) {
@@ -147,8 +147,8 @@ class Adminer {
 	}
 
 	/** Authorize the user
-	* @param string
-	* @param string
+	* @param string $login
+	* @param string $password
 	* @return mixed true for success, string for error message, false for unknown error
 	*/
 	function login($login, $password) {
@@ -159,7 +159,7 @@ class Adminer {
 	}
 
 	/** Table caption used in navigation and headings
-	* @param TableStatus result of table_status1()
+	* @param TableStatus $tableStatus result of table_status1()
 	* @return string HTML code, "" to ignore table
 	*/
 	function tableName($tableStatus) {
@@ -167,8 +167,8 @@ class Adminer {
 	}
 
 	/** Field caption used in select and edit
-	* @param Field single field returned from fields()
-	* @param int order of column in select
+	* @param Field $field single field returned from fields()
+	* @param int $order order of column in select
 	* @return string HTML code, "" to ignore field
 	*/
 	function fieldName($field, $order = 0) {
@@ -178,8 +178,8 @@ class Adminer {
 	}
 
 	/** Print links after select heading
-	* @param TableStatus result of table_status1()
-	* @param string new item options, NULL for no new item
+	* @param TableStatus $tableStatus result of table_status1()
+	* @param string $set new item options, NULL for no new item
 	* @return void
 	*/
 	function selectLinks($tableStatus, $set = "") {
@@ -210,7 +210,7 @@ class Adminer {
 	}
 
 	/** Get foreign keys for table
-	* @param string
+	* @param string $table
 	* @return ForeignKey[] same format as foreign_keys()
 	*/
 	function foreignKeys($table) {
@@ -218,8 +218,8 @@ class Adminer {
 	}
 
 	/** Find backward keys for table
-	* @param string
-	* @param string
+	* @param string $table
+	* @param string $tableName
 	* @return BackwardKey[]
 	*/
 	function backwardKeys($table, $tableName) {
@@ -227,17 +227,17 @@ class Adminer {
 	}
 
 	/** Print backward keys for row
-	* @param BackwardKey[] result of $this->backwardKeys()
-	* @param string[]
+	* @param BackwardKey[] $backwardKeys result of $this->backwardKeys()
+	* @param string[] $row
 	* @return void
 	*/
 	function backwardKeysPrint($backwardKeys, $row) {
 	}
 
 	/** Query printed in select before execution
-	* @param string query to be executed
-	* @param float start time of the query
-	* @param bool
+	* @param string $query query to be executed
+	* @param float $start start time of the query
+	* @param bool $failed
 	* @return string
 	*/
 	function selectQuery($query, $start, $failed = false) {
@@ -256,7 +256,7 @@ class Adminer {
 	}
 
 	/** Query printed in SQL command before execution
-	* @param string query to be executed
+	* @param string $query query to be executed
 	* @return string escaped query to be printed
 	*/
 	function sqlCommandQuery($query) {
@@ -270,7 +270,7 @@ class Adminer {
 	}
 
 	/** Description of a row in a table
-	* @param string
+	* @param string $table
 	* @return string SQL expression, empty string for no description
 	*/
 	function rowDescription($table) {
@@ -278,8 +278,8 @@ class Adminer {
 	}
 
 	/** Get descriptions of selected data
-	* @param list<string[]> all data to print
-	* @param ForeignKey[]
+	* @param list<string[]> $rows all data to print
+	* @param ForeignKey[] $foreignKeys
 	* @return list<string[]>
 	*/
 	function rowDescriptions($rows, $foreignKeys) {
@@ -287,18 +287,18 @@ class Adminer {
 	}
 
 	/** Get a link to use in select table
-	* @param string raw value of the field
-	* @param Field single field returned from fields()
+	* @param string $val raw value of the field
+	* @param Field $field single field returned from fields()
 	* @return string|void null to create the default link
 	*/
 	function selectLink($val, $field) {
 	}
 
 	/** Value printed in select table
-	* @param string HTML-escaped value to print
-	* @param string link to foreign key
-	* @param Field single field returned from fields()
-	* @param string original value before applying editVal() and escaping
+	* @param string $val HTML-escaped value to print
+	* @param string $link link to foreign key
+	* @param Field $field single field returned from fields()
+	* @param string $original original value before applying editVal() and escaping
 	* @return string
 	*/
 	function selectVal($val, $link, $field, $original) {
@@ -314,8 +314,8 @@ class Adminer {
 	}
 
 	/** Value conversion used in select and edit
-	* @param string
-	* @param Field single field returned from fields()
+	* @param string $val
+	* @param Field $field single field returned from fields()
 	* @return string
 	*/
 	function editVal($val, $field) {
@@ -323,8 +323,8 @@ class Adminer {
 	}
 
 	/** Print table structure in tabular format
-	* @param Field[] data about individual fields
-	* @param TableStatus
+	* @param Field[] $fields data about individual fields
+	* @param TableStatus $tableStatus
 	* @return void
 	*/
 	function tableStructurePrint($fields, $tableStatus = null) {
@@ -355,7 +355,7 @@ class Adminer {
 	}
 
 	/** Print list of indexes on table in tabular format
-	* @param Index[] data about all indexes on a table
+	* @param Index[] $indexes data about all indexes on a table
 	* @return void
 	*/
 	function tableIndexesPrint($indexes) {
@@ -375,8 +375,8 @@ class Adminer {
 	}
 
 	/** Print columns box in select
-	* @param list<string> result of selectColumnsProcess()[0]
-	* @param string[] selectable columns
+	* @param list<string> $select result of selectColumnsProcess()[0]
+	* @param string[] $columns selectable columns
 	* @return void
 	*/
 	function selectColumnsPrint($select, $columns) {
@@ -402,9 +402,9 @@ class Adminer {
 	}
 
 	/** Print search box in select
-	* @param list<string> result of selectSearchProcess()
-	* @param string[] selectable columns
-	* @param Index[]
+	* @param list<string> $where result of selectSearchProcess()
+	* @param string[] $columns selectable columns
+	* @param Index[] $indexes
 	* @return void
 	*/
 	function selectSearchPrint($where, $columns, $indexes) {
@@ -438,9 +438,9 @@ class Adminer {
 	}
 
 	/** Print order box in select
-	* @param list<string> result of selectOrderProcess()
-	* @param string[] selectable columns
-	* @param Index[]
+	* @param list<string> $order result of selectOrderProcess()
+	* @param string[] $columns selectable columns
+	* @param Index[] $indexes
 	* @return void
 	*/
 	function selectOrderPrint($order, $columns, $indexes) {
@@ -459,7 +459,7 @@ class Adminer {
 	}
 
 	/** Print limit box in select
-	* @param string result of selectLimitProcess()
+	* @param string $limit result of selectLimitProcess()
 	* @return void
 	*/
 	function selectLimitPrint($limit) {
@@ -470,7 +470,7 @@ class Adminer {
 	}
 
 	/** Print text length box in select
-	* @param string result of selectLengthProcess()
+	* @param string $text_length result of selectLengthProcess()
 	* @return void
 	*/
 	function selectLengthPrint($text_length) {
@@ -482,7 +482,7 @@ class Adminer {
 	}
 
 	/** Print action box in select
-	* @param Index[]
+	* @param Index[] $indexes
 	* @return void
 	*/
 	function selectActionPrint($indexes) {
@@ -523,16 +523,16 @@ class Adminer {
 	}
 
 	/** Print extra text in the end of a select form
-	* @param string[] fields holding e-mails
-	* @param string[] selectable columns
+	* @param string[] $emailFields fields holding e-mails
+	* @param string[] $columns selectable columns
 	* @return void
 	*/
 	function selectEmailPrint($emailFields, $columns) {
 	}
 
 	/** Process columns box in select
-	* @param string[] selectable columns
-	* @param Index[]
+	* @param string[] $columns selectable columns
+	* @param Index[] $indexes
 	* @return list<list<string>> [[select_expressions], [group_expressions]]
 	*/
 	function selectColumnsProcess($columns, $indexes) {
@@ -551,8 +551,8 @@ class Adminer {
 	}
 
 	/** Process search box in select
-	* @param Field[]
-	* @param Index[]
+	* @param Field[] $fields
+	* @param Index[] $indexes
 	* @return list<string> expressions to join by AND
 	*/
 	function selectSearchProcess($fields, $indexes) {
@@ -605,8 +605,8 @@ class Adminer {
 	}
 
 	/** Process order box in select
-	* @param Field[]
-	* @param Index[]
+	* @param Field[] $fields
+	* @param Index[] $indexes
 	* @return list<string> expressions to join by comma
 	*/
 	function selectOrderProcess($fields, $indexes) {
@@ -636,8 +636,8 @@ class Adminer {
 	}
 
 	/** Process extras in select form
-	* @param string[] AND conditions
-	* @param ForeignKey[]
+	* @param string[] $where AND conditions
+	* @param ForeignKey[] $foreignKeys
 	* @return bool true if processed, false to process other parts of form
 	*/
 	function selectEmailProcess($where, $foreignKeys) {
@@ -645,12 +645,12 @@ class Adminer {
 	}
 
 	/** Build SQL query used in select
-	* @param list<string> result of selectColumnsProcess()[0]
-	* @param list<string> result of selectSearchProcess()
-	* @param list<string> result of selectColumnsProcess()[1]
-	* @param list<string> result of selectOrderProcess()
-	* @param int result of selectLimitProcess()
-	* @param int index of page starting at zero
+	* @param list<string> $select result of selectColumnsProcess()[0]
+	* @param list<string> $where result of selectSearchProcess()
+	* @param list<string> $group result of selectColumnsProcess()[1]
+	* @param list<string> $order result of selectOrderProcess()
+	* @param int $limit result of selectLimitProcess()
+	* @param int $page index of page starting at zero
 	* @return string empty string to use default query
 	*/
 	function selectQueryBuild($select, $where, $group, $order, $limit, $page) {
@@ -658,9 +658,9 @@ class Adminer {
 	}
 
 	/** Query printed after execution in the message
-	* @param string executed query
-	* @param string elapsed time
-	* @param bool
+	* @param string $query executed query
+	* @param string $time elapsed time
+	* @param bool $failed
 	* @return string
 	*/
 	function messageQuery($query, $time, $failed = false) {
@@ -689,17 +689,17 @@ class Adminer {
 	}
 
 	/** Print before edit form
-	* @param string
-	* @param Field[]
-	* @param mixed
-	* @param bool
+	* @param string $table
+	* @param Field[] $fields
+	* @param mixed $row
+	* @param bool $update
 	* @return void
 	*/
 	function editRowPrint($table, $fields, $row, $update) {
 	}
 
 	/** Functions displayed in edit form
-	* @param Field single field from fields()
+	* @param Field $field single field from fields()
 	* @return list<string>
 	*/
 	function editFunctions($field) {
@@ -725,10 +725,10 @@ class Adminer {
 	}
 
 	/** Get options to display edit field
-	* @param string table name
-	* @param Field single field from fields()
-	* @param string attributes to use inside the tag
-	* @param string
+	* @param string $table table name
+	* @param Field $field single field from fields()
+	* @param string $attrs attributes to use inside the tag
+	* @param string $value
 	* @return string custom input field or empty string for default
 	*/
 	function editInput($table, $field, $attrs, $value) {
@@ -742,9 +742,9 @@ class Adminer {
 	}
 
 	/** Get hint for edit field
-	* @param string table name
-	* @param Field single field from fields()
-	* @param string
+	* @param string $table table name
+	* @param Field $field single field from fields()
+	* @param string $value
 	* @return string
 	*/
 	function editHint($table, $field, $value) {
@@ -752,9 +752,9 @@ class Adminer {
 	}
 
 	/** Process sent input
-	* @param Field single field from fields()
-	* @param string
-	* @param string
+	* @param Field $field single field from fields()
+	* @param string $value
+	* @param string $function
 	* @return string expression to use in a query
 	*/
 	function processInput($field, $value, $function = "") {
@@ -798,16 +798,16 @@ class Adminer {
 	}
 
 	/** Export database structure
-	* @param string
+	* @param string $db
 	* @return void prints data
 	*/
 	function dumpDatabase($db) {
 	}
 
 	/** Export table structure
-	* @param string
-	* @param string
-	* @param int 0 table, 1 view, 2 temporary view table
+	* @param string $table
+	* @param string $style
+	* @param int $is_view 0 table, 1 view, 2 temporary view table
 	* @return void prints data
 	*/
 	function dumpTable($table, $style, $is_view = 0) {
@@ -840,9 +840,9 @@ class Adminer {
 	}
 
 	/** Export table data
-	* @param string
-	* @param string
-	* @param string
+	* @param string $table
+	* @param string $style
+	* @param string $query
 	* @return void prints data
 	*/
 	function dumpData($table, $style, $query) {
@@ -934,7 +934,7 @@ class Adminer {
 	}
 
 	/** Set export filename
-	* @param string
+	* @param string $identifier
 	* @return string filename without extension
 	*/
 	function dumpFilename($identifier) {
@@ -942,8 +942,8 @@ class Adminer {
 	}
 
 	/** Send headers for export
-	* @param string
-	* @param bool
+	* @param string $identifier
+	* @param bool $multi_table
 	* @return string extension
 	*/
 	function dumpHeaders($identifier, $multi_table = false) {
@@ -991,7 +991,7 @@ class Adminer {
 	}
 
 	/** Print navigation after Adminer title
-	* @param string can be "auth" if there is no database connection, "db" if there is no database selected, "ns" with invalid schema
+	* @param string $missing can be "auth" if there is no database connection, "db" if there is no database selected, "ns" with invalid schema
 	* @return void
 	*/
 	function navigation($missing) {
@@ -1052,7 +1052,7 @@ class Adminer {
 	}
 
 	/** Set up syntax highlight for code and <textarea>
-	* @param TableStatus[] result of table_status('', true)
+	* @param TableStatus[] $tables result of table_status('', true)
 	* @return void
 	*/
 	function syntaxHighlighting($tables) {
@@ -1083,7 +1083,7 @@ class Adminer {
 	}
 
 	/** Print databases list in menu
-	* @param string
+	* @param string $missing
 	* @return void
 	*/
 	function databasesPrint($missing) {
@@ -1118,7 +1118,7 @@ class Adminer {
 	}
 
 	/** Print table list in menu
-	* @param TableStatus[] result of table_status('', true)
+	* @param TableStatus[] $tables result of table_status('', true)
 	* @return void
 	*/
 	function tablesPrint($tables) {

@@ -452,15 +452,15 @@ if (isset($_GET["sqlite"])) {
 	}
 
 	/** Recreate table
-	* @param string original name
-	* @param string new name
-	* @param list<list<string>> [process_field()], empty to preserve
-	* @param string[] [$original => idf_escape($new_column)], empty to preserve
-	* @param string[] [format_foreign_key()], empty to preserve
-	* @param int set auto_increment to this value, 0 to preserve
-	* @param list<array{string, string, list<string>|'DROP'}> [[$type, $name, $columns]], empty to preserve
-	* @param string CHECK constraint to drop
-	* @param string CHECK constraint to add
+	* @param string $table original name
+	* @param string $name new name
+	* @param list<list<string>> $fields [process_field()], empty to preserve
+	* @param string[] $originals [$original => idf_escape($new_column)], empty to preserve
+	* @param string[] $foreign [format_foreign_key()], empty to preserve
+	* @param int $auto_increment set auto_increment to this value, 0 to preserve
+	* @param list<array{string, string, list<string>|'DROP'}> $indexes [[$type, $name, $columns]], empty to preserve
+	* @param string $drop_check CHECK constraint to drop
+	* @param string $add_check CHECK constraint to add
 	* @return bool
 	*/
 	function recreate_table($table, $name, $fields, $originals, $foreign, $auto_increment = 0, $indexes = array(), $drop_check = "", $add_check = "") {

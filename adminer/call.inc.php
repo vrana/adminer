@@ -92,7 +92,7 @@ if ($in) {
 <pre>
 <?php
 /** Format string as table row
-* @param string
+* @param string $s
 * @return string HTML
 */
 function pre_tr($s) {

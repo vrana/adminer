@@ -5,7 +5,7 @@ class Plugins extends Adminer {
 	/** @var list<object> @visibility protected(set) */ public $plugins;
 
 	/** Register plugins
-	* @param ?list<object> object instances or null to autoload plugins from adminer-plugins/
+	* @param ?list<object> $plugins object instances or null to autoload plugins from adminer-plugins/
 	*/
 	function __construct($plugins) {
 		if ($plugins === null) {
@@ -43,8 +43,8 @@ class Plugins extends Adminer {
 	}
 
 	/**
-	* @param literal-string
-	* @param mixed[]
+	* @param literal-string $function
+	* @param mixed[] $args
 	* @return mixed
 	*/
 	private function callParent($function, $args) {
@@ -52,8 +52,8 @@ class Plugins extends Adminer {
 	}
 
 	/**
-	* @param literal-string
-	* @param mixed[]
+	* @param literal-string $function
+	* @param mixed[] $params
 	* @return mixed
 	*/
 	private function applyPlugin($function, $params) {
@@ -74,8 +74,8 @@ class Plugins extends Adminer {
 	}
 
 	/**
-	* @param literal-string
-	* @param mixed[]
+	* @param literal-string $function
+	* @param mixed[] $args
 	* @return mixed
 	*/
 	private function appendPlugin($function, $args) {

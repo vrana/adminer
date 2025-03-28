@@ -2,7 +2,7 @@
 namespace Adminer;
 
 /** Encode e-mail header in UTF-8
-* @param string
+* @param string $header
 * @return string
 */
 function email_header($header) {
@@ -11,11 +11,11 @@ function email_header($header) {
 }
 
 /** Send e-mail in UTF-8
-* @param string
-* @param string
-* @param string
-* @param string
-* @param array{error?:list<int>, type?:list<string>, name?:list<string>, tmp_name?:list<string>}
+* @param string $email
+* @param string $subject
+* @param string $message
+* @param string $from
+* @param array{error?:list<int>, type?:list<string>, name?:list<string>, tmp_name?:list<string>} $files
 * @return bool
 */
 function send_mail($email, $subject, $message, $from = "", $files = array()) {
@@ -47,7 +47,7 @@ function send_mail($email, $subject, $message, $from = "", $files = array()) {
 }
 
 /** Check whether the column looks like boolean
-* @param Field single field returned from fields()
+* @param Field $field single field returned from fields()
 * @return bool
 */
 function like_bool($field) {

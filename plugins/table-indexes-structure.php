@@ -9,7 +9,7 @@
 class AdminerTableIndexesStructure {
 
 	/** Print table structure in tabular format
-	* @param Index[] data about all indexes on a table
+	* @param Index[] $indexes data about all indexes on a table
 	* @return bool
 	*/
 	function tableIndexesPrint($indexes) {
