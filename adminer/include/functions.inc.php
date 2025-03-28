@@ -164,11 +164,17 @@ function get_password() {
 }
 
 /** Get single value from database
-* @return string or false if error
+* @return string|false false if error
 */
-function get_val(string $query, int $field = 0): string {
+function get_val(string $query, int $field = 0, ?Db $conn = null) {
 	global $connection;
-	return $connection->result($query, $field);
+	$conn = $conn ?: $connection;
+	$result = $conn->query($query);
+	if (!is_object($result)) {
+		return false;
+	}
+	$row = $result->fetch_row();
+	return ($row ? $row[$field] : false);
 }
 
 /** Get list of values from database
@@ -855,7 +861,7 @@ function slow_query(string $query): array {
 	if (!$slow_query && support("kill")) {
 		$connection2 = connect($adminer->credentials());
 		if (is_object($connection2) && ($db == "" || $connection2->select_db($db))) {
-			$kill = $connection2->result(connection_id()); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
+			$kill = get_val(connection_id(), 0, $connection2); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
 			echo script("const timeout = setTimeout(() => { ajax('" . js_escape(ME) . "script=kill', function () {}, 'kill=$kill&token=$token'); }, 1000 * $timeout);");
 		}
 	}

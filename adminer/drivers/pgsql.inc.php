@@ -285,7 +285,7 @@ if (isset($_GET["pgsql"])) {
 		function hasCStyleEscapes(): bool {
 			static $c_style;
 			if ($c_style === null) {
-				$c_style = ($this->conn->result("SHOW standard_conforming_strings") == "off");
+				$c_style = (get_val("SHOW standard_conforming_strings", 0, $this->conn) == "off");
 			}
 			return $c_style;
 		}
@@ -308,7 +308,7 @@ if (isset($_GET["pgsql"])) {
 			if (min_version(9, 0, $connection)) {
 				$connection->query("SET application_name = 'Adminer'");
 			}
-			$version = $connection->result("SELECT version()");
+			$version = get_val("SELECT version()", 0, $connection);
 			$connection->flavor = (preg_match('~CockroachDB~', $version) ? 'cockroach' : '');
 			$connection->server_info = preg_replace('~^\D*([\d.]+[-\w]*).*~', '\1', $version);
 			if ($connection->flavor == 'cockroach') { // we don't use "PostgreSQL / CockroachDB" by default because it's too long
@@ -463,7 +463,7 @@ ORDER BY a.attnum") as $row
 			$connection2 = $connection;
 		}
 		$return = array();
-		$table_oid = $connection2->result("SELECT oid FROM pg_class WHERE relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema()) AND relname = " . q($table));
+		$table_oid = get_val("SELECT oid FROM pg_class WHERE relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema()) AND relname = " . q($table), 0, $connection2);
 		$columns = get_key_vals("SELECT attnum, attname FROM pg_attribute WHERE attrelid = $table_oid AND attnum > 0", $connection2);
 		foreach (
 			get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey, indoption, (indpred IS NOT NULL)::int as indispartial

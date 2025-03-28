@@ -47,16 +47,4 @@ abstract class SqlDb {
 	function next_result(): bool {
 		return false;
 	}
-
-	/** Get single field from result
-	* @return string|bool
-	*/
-	function result(string $query, int $field = 0) {
-		$result = $this->query($query);
-		if (!is_object($result)) {
-			return false;
-		}
-		$row = $result->fetch_row();
-		return ($row ? $row[$field] : false);
-	}
 }

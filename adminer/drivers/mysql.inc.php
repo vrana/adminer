@@ -332,7 +332,7 @@ if (!defined('Adminer\DRIVER')) {
 		function hasCStyleEscapes(): bool {
 			static $c_style;
 			if ($c_style === null) {
-				$sql_mode = $this->conn->result("SHOW VARIABLES LIKE 'sql_mode'", 1);
+				$sql_mode = get_val("SHOW VARIABLES LIKE 'sql_mode'", 1, $this->conn);
 				$c_style = (strpos($sql_mode, 'NO_BACKSLASH_ESCAPES') === false);
 			}
 			return $c_style;
