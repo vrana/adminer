@@ -162,7 +162,7 @@ function get_password() {
 */
 function get_val(string $query, int $field = 0, ?Db $conn = null) {
 	global $connection;
-	$conn = $conn ?: $connection;
+	$conn = (is_object($conn) ? $conn : $connection);
 	$result = $conn->query($query);
 	if (!is_object($result)) {
 		return false;
@@ -434,7 +434,7 @@ function redirect(?string $location, string $message = null): void {
 /** Execute query and redirect if successful
 * @param bool $redirect
 */
-function query_redirect(string $query, string $location, string $message, $redirect = true, bool $execute = true, bool $failed = false, string $time = ""): bool {
+function query_redirect(string $query, ?string $location, string $message, $redirect = true, bool $execute = true, bool $failed = false, string $time = ""): bool {
 	global $connection, $adminer;
 	if ($execute) {
 		$start = microtime(true);
@@ -486,7 +486,7 @@ function apply_queries(string $query, array $tables, $escape = 'Adminer\table'):
 /** Redirect by remembered queries
 * @param bool $redirect
 */
-function queries_redirect(string $location, string $message, $redirect): bool {
+function queries_redirect(?string $location, string $message, $redirect): bool {
 	$queries = implode("\n", Queries::$queries);
 	$time = format_time(Queries::$start);
 	return query_redirect($queries, $location, $message, $redirect, false, !$redirect, $time);
