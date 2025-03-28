@@ -3,11 +3,6 @@ namespace Adminer;
 
 $connection = '';
 
-$has_token = $_SESSION["token"];
-if (!$has_token) {
-	$_SESSION["token"] = rand(1, 1e6); // defense against cross-site request forgery
-}
-
 $permanent = array();
 if ($_COOKIE["adminer_permanent"]) {
 	foreach (explode(" ", $_COOKIE["adminer_permanent"]) as $val) {
@@ -94,7 +89,7 @@ if ($auth) {
 		redirect(auth_url($vendor, $server, $username, $db));
 	}
 
-} elseif ($_POST["logout"] && (!$has_token || verify_token())) {
+} elseif ($_POST["logout"] && (!$_SESSION["token"] || verify_token())) {
 	foreach (array("pwds", "db", "dbs", "queries") as $key) {
 		set_session($key, null);
 	}
@@ -128,11 +123,11 @@ function unset_permanent(): void {
 * @return never
 */
 function auth_error(string $error) {
-	global $adminer, $has_token;
+	global $adminer;
 	$session_name = session_name();
 	if (isset($_GET["username"])) {
 		header("HTTP/1.1 403 Forbidden"); // 401 requires sending WWW-Authenticate header
-		if (($_COOKIE[$session_name] || $_GET[$session_name]) && !$has_token) {
+		if (($_COOKIE[$session_name] || $_GET[$session_name]) && !$_SESSION["token"]) {
 			$error = lang('Session expired, please login again.');
 		} else {
 			restart_session();
@@ -173,8 +168,6 @@ if (isset($_GET["username"]) && !class_exists('Adminer\Db')) {
 	exit;
 }
 
-stop_session(true);
-
 if (isset($_GET["username"]) && is_string(get_password())) {
 	list($host, $port) = explode(":", SERVER, 2);
 	if (preg_match('~^\s*([-+]?\d+)~', $port, $match) && ($match[1] < 1024 || $match[1] > 65535)) { // is_numeric('80#') would still connect to port 80
@@ -196,12 +189,16 @@ if (!is_object($connection) || ($login = $adminer->login($_GET["username"], get_
 	auth_error($error . (preg_match('~^ | $~', get_password()) ? '<br>' . lang('There is a space in the input password which might be the cause.') : ''));
 }
 
-if ($_POST["logout"] && $has_token && !verify_token()) {
+if ($_POST["logout"] && $_SESSION["token"] && !verify_token()) {
 	page_header(lang('Logout'), lang('Invalid CSRF token. Send the form again.'));
 	page_footer("db");
 	exit;
 }
 
+if (!$_SESSION["token"]) {
+	$_SESSION["token"] = rand(1, 1e6); // defense against cross-site request forgery
+}
+stop_session(true);
 if ($auth && $_POST["token"]) {
 	$_POST["token"] = get_token(); // reset token after explicit login
 }
