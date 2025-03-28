@@ -186,6 +186,19 @@
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Select</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
+<tr><td>click</td><td>link=Search</td><td></td></tr>
+<tr><td>select</td><td>name=where[0][col]</td><td>label=title</td></tr>
+<tr><td>type</td><td>name=where[0][val]</td><td>Dangerous</td></tr>
+<tr><td>click</td><td>link=Sort</td><td></td></tr>
+<tr><td>select</td><td>name=order[0]</td><td>label=interpret</td></tr>
+<tr><td>clickAndWait</td><td>xpath=//input[@value='Select']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>1 row</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3" data-tags="">Enum</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public</td><td></td></tr>
