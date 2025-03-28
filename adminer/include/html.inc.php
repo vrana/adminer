@@ -1,20 +1,17 @@
 <?php
 namespace Adminer;
 
-/** Return <script> element
-*/
+/** Return <script> element */
 function script(string $source, string $trailing = "\n"): string {
 	return "<script" . nonce() . ">$source</script>$trailing";
 }
 
-/** Return <script src> element
-*/
+/** Return <script src> element */
 function script_src(string $url): string {
 	return "<script src='" . h($url) . "'" . nonce() . "></script>\n";
 }
 
-/** Get a nonce="" attribute with CSP nonce
-*/
+/** Get a nonce="" attribute with CSP nonce */
 function nonce(): string {
 	return ' nonce="' . get_nonce() . '"';
 }
@@ -36,20 +33,17 @@ function input_token(string $special = ""): string {
 	return input_hidden("token", ($special ?: $token));
 }
 
-/** Get a target="_blank" attribute
-*/
+/** Get a target="_blank" attribute */
 function target_blank(): string {
 	return ' target="_blank" rel="noreferrer noopener"';
 }
 
-/** Escape for HTML
-*/
+/** Escape for HTML */
 function h(string $string): string {
 	return str_replace("\0", "&#0;", htmlspecialchars($string, ENT_QUOTES, 'utf-8'));
 }
 
-/** Convert \n to <br>
-*/
+/** Convert \n to <br> */
 function nl_br(string $string): string {
 	return str_replace("\n", "<br>", $string); // nl2br() uses XHTML before PHP 5.3
 }
@@ -116,14 +110,12 @@ function html_radios(string $name, array $options, string $value = ""): string {
 	return $return;
 }
 
-/** Get onclick confirmation
-*/
+/** Get onclick confirmation */
 function confirm(string $message = "", string $selector = "qsl('input')"): string {
 	return script("$selector.onclick = () => confirm('" . ($message ? js_escape($message) : lang('Are you sure?')) . "');", "");
 }
 
-/** Print header for hidden fieldset (close by </div></fieldset>)
-*/
+/** Print header for hidden fieldset (close by </div></fieldset>) */
 function print_fieldset(string $id, string $legend, bool $visible = false): void {
 	echo "<fieldset><legend>";
 	echo "<a href='#fieldset-$id'>$legend</a>";
@@ -132,20 +124,17 @@ function print_fieldset(string $id, string $legend, bool $visible = false): void
 	echo "<div id='fieldset-$id'" . ($visible ? "" : " class='hidden'") . ">\n";
 }
 
-/** Return class='active' if $bold is true
-*/
+/** Return class='active' if $bold is true */
 function bold(bool $bold, string $class = ""): string {
 	return ($bold ? " class='active $class'" : ($class ? " class='$class'" : ""));
 }
 
-/** Escape string for JavaScript apostrophes
-*/
+/** Escape string for JavaScript apostrophes */
 function js_escape(string $string): string {
 	return addcslashes($string, "\r\n'\\/"); // slash for <script>
 }
 
-/** Generate page number for pagination
-*/
+/** Generate page number for pagination */
 function pagination(int $page, int $current): string {
 	return " " . ($page == $current
 		? $page + 1
@@ -172,8 +161,7 @@ function hidden_fields(array $process, array $ignore = array(), string $prefix =
 	return $return;
 }
 
-/** Print hidden fields for GET forms
-*/
+/** Print hidden fields for GET forms */
 function hidden_fields_get(): void {
 	echo (sid() ? input_hidden(session_name(), session_id()) : '');
 	echo (SERVER !== null ? input_hidden(DRIVER, SERVER) : "");
@@ -478,8 +466,7 @@ function edit_form(string $table, array $fields, $row, bool $update): void {
 	echo "</form>\n";
 }
 
-/** Get button with icon
-*/
+/** Get button with icon */
 function icon(string $icon, string $name, string $html, string $title): string {
 	return "<button type='submit' name='$name' title='" . h($title) . "' class='icon icon-$icon'><span>$html</span></button>";
 }

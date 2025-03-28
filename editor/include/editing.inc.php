@@ -1,8 +1,7 @@
 <?php
 namespace Adminer;
 
-/** Encode e-mail header in UTF-8
-*/
+/** Encode e-mail header in UTF-8 */
 function email_header(string $header): string {
 	// iconv_mime_encode requires iconv, imap_8bit requires IMAP extension
 	return "=?UTF-8?B?" . base64_encode($header) . "?="; //! split long lines

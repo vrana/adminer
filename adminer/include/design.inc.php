@@ -125,8 +125,7 @@ const thousandsSeparator = '" . js_escape(lang(',')) . "';")
 	define('Adminer\PAGE_HEADER', 1);
 }
 
-/** Send HTTP headers
-*/
+/** Send HTTP headers */
 function page_headers(): void {
 	global $adminer;
 	header("Content-Type: text/html; charset=utf-8");
@@ -172,8 +171,7 @@ function get_nonce(): string {
 	return $nonce;
 }
 
-/** Print flash and error messages
-*/
+/** Print flash and error messages */
 function page_messages(string $error): void {
 	global $adminer;
 	$uri = preg_replace('~^[^?]*~', '', $_SERVER["REQUEST_URI"]);

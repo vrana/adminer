@@ -3,15 +3,13 @@ namespace Adminer;
 
 $drivers = array();
 
-/** Add a driver
-*/
+/** Add a driver */
 function add_driver(string $id, string $name): void {
 	global $drivers;
 	$drivers[$id] = $name;
 }
 
-/** Get driver name
-*/
+/** Get driver name */
 function get_driver(string $id): string {
 	global $drivers;
 	return $drivers[$id];
@@ -33,8 +31,7 @@ abstract class SqlDriver {
 	/** @var string */ public $enumLength = "'(?:''|[^'\\\\]|\\\\.)*'"; // regular expression for parsing enum lengths
 	/** @var list<string> */ public $generated = array(); // allowed types of generated columns
 
-	/** Create object for performing database operations
-	*/
+	/** Create object for performing database operations */
 	function __construct(Db $connection) {
 		$this->conn = $connection;
 	}
@@ -134,8 +131,7 @@ abstract class SqlDriver {
 		) . $this->insertReturning($table));
 	}
 
-	/** Get RETURNING clause for INSERT queries (PostgreSQL specific)
-	*/
+	/** Get RETURNING clause for INSERT queries (PostgreSQL specific) */
 	function insertReturning(string $table): string {
 		return "";
 	}
@@ -186,8 +182,7 @@ abstract class SqlDriver {
 		return $idf;
 	}
 
-	/** Convert operator so it can be used in search
-	*/
+	/** Convert operator so it can be used in search */
 	function convertOperator(string $operator): string {
 		return $operator;
 	}
@@ -202,8 +197,7 @@ abstract class SqlDriver {
 		);
 	}
 
-	/** Quote binary string
-	*/
+	/** Quote binary string */
 	function quoteBinary(string $s): string {
 		return q($s);
 	}
@@ -220,8 +214,7 @@ abstract class SqlDriver {
 	function tableHelp(string $name, bool $is_view = false) {
 	}
 
-	/** Check if C-style escapes are supported
-	*/
+	/** Check if C-style escapes are supported */
 	function hasCStyleEscapes(): bool {
 		return false;
 	}

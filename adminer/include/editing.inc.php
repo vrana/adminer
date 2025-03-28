@@ -217,8 +217,7 @@ function get_partitions_info(string $table): array {
 	return $return;
 }
 
-/** Filter length value including enums
-*/
+/** Filter length value including enums */
 function process_length(string $length): string {
 	global $driver;
 	$enum_length = $driver->enumLength;
@@ -491,8 +490,7 @@ function create_routine($routine, array $row): string {
 	;
 }
 
-/** Remove current user definer from SQL command
-*/
+/** Remove current user definer from SQL command */
 function remove_definer(string $query): string {
 	return preg_replace('~^([A-Z =]+) DEFINER=`' . preg_replace('~@(.*)~', '`@`(%|\1)', logged_user()) . '`~', '\1', $query); //! proper escaping of user
 }
@@ -531,8 +529,7 @@ function tar_file(string $filename, $tmp_file): void {
 	echo str_repeat("\0", 511 - ($tmp_file->size + 511) % 512);
 }
 
-/** Get INI bytes value
-*/
+/** Get INI bytes value */
 function ini_bytes(string $ini): int {
 	$val = ini_get($ini);
 	switch (strtolower(substr($val, -1))) {
@@ -584,8 +581,7 @@ function db_size(string $db): string {
 	return format_number($return);
 }
 
-/** Print SET NAMES if utf8mb4 might be needed
-*/
+/** Print SET NAMES if utf8mb4 might be needed */
 function set_utf8mb4(string $create): void {
 	global $connection;
 	static $set = false;

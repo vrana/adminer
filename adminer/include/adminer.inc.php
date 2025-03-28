@@ -34,8 +34,7 @@ class Adminer {
 		return password_file($create);
 	}
 
-	/** Return key used to group brute force attacks; behind a reverse proxy, you want to return the last part of X-Forwarded-For
-	*/
+	/** Return key used to group brute force attacks; behind a reverse proxy, you want to return the last part of X-Forwarded-For */
 	function bruteForceKey(): string {
 		return $_SERVER["REMOTE_ADDR"];
 	}
@@ -47,8 +46,7 @@ class Adminer {
 		return h($server);
 	}
 
-	/** Identifier of selected database
-	*/
+	/** Identifier of selected database */
 	function database(): string {
 		// should be used everywhere instead of DB
 		return DB;
@@ -75,8 +73,7 @@ class Adminer {
 		return 2;
 	}
 
-	/** Headers to send before HTML output
-	*/
+	/** Headers to send before HTML output */
 	function headers(): void {
 	}
 
@@ -112,8 +109,7 @@ class Adminer {
 		return $return;
 	}
 
-	/** Print login form
-	*/
+	/** Print login form */
 	function loginForm(): void {
 		global $drivers;
 		echo "<table class='layout'>\n";
@@ -245,8 +241,7 @@ class Adminer {
 		return shorten_utf8(trim($query), 1000);
 	}
 
-	/** Print HTML code just before the Execute button in SQL command
-	*/
+	/** Print HTML code just before the Execute button in SQL command */
 	function sqlPrintAfter(): void {
 	}
 
@@ -1029,8 +1024,7 @@ class Adminer {
 		);
 	}
 
-	/** Print databases list in menu
-	*/
+	/** Print databases list in menu */
 	function databasesPrint(string $missing): void {
 		global $adminer, $connection;
 		$databases = $this->databases();

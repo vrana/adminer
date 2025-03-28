@@ -9,8 +9,6 @@ class TmpFile {
 		$this->handler = tmpfile();
 	}
 
-	/**
-	*/
 	function write(string $contents): void {
 		$this->size += strlen($contents);
 		fwrite($this->handler, $contents);

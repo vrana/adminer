@@ -3,8 +3,7 @@ namespace Adminer;
 
 // This file is used both in Adminer and Adminer Editor.
 
-/** Get database connection
-*/
+/** Get database connection */
 function connection(): Db {
 	// can be used in customization, $connection is minified
 	global $connection;
@@ -27,8 +26,7 @@ function driver() {
 	return $driver;
 }
 
-/** Get Adminer version
-*/
+/** Get Adminer version */
 function version(): string {
 	global $VERSION;
 	return $VERSION;
@@ -45,15 +43,13 @@ function idf_unescape(string $idf): string {
 	return str_replace($last . $last, $last, substr($idf, 1, -1));
 }
 
-/** Shortcut for $connection->quote($string)
-*/
+/** Shortcut for $connection->quote($string) */
 function q(string $string): string {
 	global $connection;
 	return $connection->quote($string);
 }
 
-/** Escape string to use inside ''
-*/
+/** Escape string to use inside '' */
 function escape_string(string $val): string {
 	return substr(q($val), 1, -1);
 }
@@ -69,14 +65,12 @@ function idx(?array $array, $key, $default = null) {
 	return ($array && array_key_exists($key, $array) ? $array[$key] : $default);
 }
 
-/** Remove non-digits from a string
-*/
+/** Remove non-digits from a string */
 function number(string $val): string {
 	return preg_replace('~[^0-9]+~', '', $val);
 }
 
-/** Get regular expression to match numeric types
-*/
+/** Get regular expression to match numeric types */
 function number_type(): string {
 	return '((?<!o)int(?!er)|numeric|real|float|double|decimal|money)'; // not point, not interval
 }
@@ -102,8 +96,7 @@ function remove_slashes(array $process, bool $filter = false): void {
 	}
 }
 
-/** Escape or unescape string to use inside form []
-*/
+/** Escape or unescape string to use inside form [] */
 function bracket_escape(string $idf, bool $back = false): string {
 	// escape brackets inside name="x[]"
 	static $trans = array(':' => ':1', ']' => ':2', '[' => ':3', '"' => ':4');
@@ -128,21 +121,18 @@ function min_version($version, $maria_db = "", Db $connection2 = null): bool {
 	return $version && version_compare($server_info, $version) >= 0;
 }
 
-/** Get connection charset
-*/
+/** Get connection charset */
 function charset(Db $connection): string {
 	return (min_version("5.5.3", 0, $connection) ? "utf8mb4" : "utf8"); // SHOW CHARSET would require an extra query
 }
 
-/** Get INI boolean value
-*/
+/** Get INI boolean value */
 function ini_bool(string $ini): bool {
 	$val = ini_get($ini);
 	return (preg_match('~^(on|true|yes)$~i', $val) || (int) $val); // boolean values set by php_value are strings
 }
 
-/** Check if SID is necessary
-*/
+/** Check if SID is necessary */
 function sid(): bool {
 	static $return;
 	if ($return === null) { // restart_session() defines SID
@@ -151,8 +141,7 @@ function sid(): bool {
 	return $return;
 }
 
-/** Set password to session
-*/
+/** Set password to session */
 function set_password(string $vendor, string $server, string $username, ?string $password): void {
 	$_SESSION["pwds"][$vendor][$server][$username] = ($_COOKIE["adminer_key"] && is_string($password)
 		? array(encrypt_string($password, $_COOKIE["adminer_key"]))
@@ -258,8 +247,7 @@ function unique_array(array $row, array $indexes) {
 	}
 }
 
-/** Escape column key used in where()
-*/
+/** Escape column key used in where() */
 function escape_key(string $key): string {
 	if (preg_match('(^([\w(]+)(' . str_replace("_", ".*", preg_quote(idf_escape("_"))) . ')([ \w)]+)$)', $key, $match)) { //! columns looking like functions
 		return $match[1] . idf_escape(idf_unescape($match[2])) . $match[3]; //! SQL injection
@@ -369,16 +357,14 @@ function save_settings(array $settings, string $cookie = "adminer_settings"): vo
 	cookie($cookie, http_build_query($settings + get_settings($cookie)));
 }
 
-/** Restart stopped session
-*/
+/** Restart stopped session */
 function restart_session(): void {
 	if (!ini_bool("session.use_cookies") && (!function_exists('session_status') || session_status() == 1)) { // 1 - PHP_SESSION_NONE, session_status() available since PHP 5.4
 		session_start();
 	}
 }
 
-/** Stop session if possible
-*/
+/** Stop session if possible */
 function stop_session(bool $force = false): void {
 	$use_cookies = ini_bool("session.use_cookies");
 	if (!$use_cookies || $force) {
@@ -404,8 +390,7 @@ function set_session(string $key, $val) {
 	$_SESSION[$key][DRIVER][SERVER][$_GET["username"]] = $val; // used also in auth.inc.php
 }
 
-/** Get authenticated URL
-*/
+/** Get authenticated URL */
 function auth_url(string $vendor, string $server, string $username, string $db = null): string {
 	global $drivers;
 	$uri = remove_from_uri(implode("|", array_keys($drivers))
@@ -425,8 +410,7 @@ function auth_url(string $vendor, string $server, string $username, string $db =
 	;
 }
 
-/** Find whether it is an AJAX request
-*/
+/** Find whether it is an AJAX request */
 function is_ajax(): bool {
 	return ($_SERVER["HTTP_X_REQUESTED_WITH"] == "XMLHttpRequest");
 }
@@ -448,8 +432,7 @@ function redirect(string $location, string $message = null): void {
 	}
 }
 
-/** Execute query and redirect if successful
-*/
+/** Execute query and redirect if successful */
 function query_redirect(string $query, string $location, string $message, bool $redirect = true, bool $execute = true, bool $failed = false, string $time = ""): bool {
 	global $connection, $error, $adminer;
 	if ($execute) {
@@ -502,8 +485,7 @@ function apply_queries(string $query, array $tables, callable $escape = 'Adminer
 	return true;
 }
 
-/** Redirect by remembered queries
-*/
+/** Redirect by remembered queries */
 function queries_redirect(string $location, string $message, bool $redirect): bool {
 	$queries = implode("\n", Queries::$queries);
 	$time = format_time(Queries::$start);
@@ -518,14 +500,12 @@ function format_time(float $start): string {
 	return lang('%.3f s', max(0, microtime(true) - $start));
 }
 
-/** Get relative REQUEST_URI
-*/
+/** Get relative REQUEST_URI */
 function relative_uri(): string {
 	return str_replace(":", "%3a", preg_replace('~^[^?]*/([^?]*)~', '\1', $_SERVER["REQUEST_URI"]));
 }
 
-/** Remove parameter from query string
-*/
+/** Remove parameter from query string */
 function remove_from_uri(string $param = ""): string {
 	return substr(preg_replace("~(?<=[?&])($param" . (SID ? "" : "|" . session_name()) . ")=[^&]*&~", '', relative_uri() . "&"), 0, -1);
 }
@@ -569,22 +549,19 @@ function get_file(string $key, bool $decompress = false, string $delimiter = "")
 	return $return;
 }
 
-/** Determine upload error
-*/
+/** Determine upload error */
 function upload_error(int $error): string {
 	$max_size = ($error == UPLOAD_ERR_INI_SIZE ? ini_get("upload_max_filesize") : 0); // post_max_size is checked in index.php
 	return ($error ? lang('Unable to upload a file.') . ($max_size ? " " . lang('Maximum allowed file size is %sB.', $max_size) : "") : lang('File does not exist.'));
 }
 
-/** Create repeat pattern for preg
-*/
+/** Create repeat pattern for preg */
 function repeat_pattern(string $pattern, int $length): string {
 	// fix for Compilation failed: number too big in {} quantifier
 	return str_repeat("$pattern{0,65535}", $length / 65535) . "$pattern{0," . ($length % 65535) . "}"; // can create {0,0} which is OK
 }
 
-/** Check whether the string is in UTF-8
-*/
+/** Check whether the string is in UTF-8 */
 function is_utf8(string $val): bool {
 	// don't print control chars except \t\r\n
 	return (preg_match('~~u', $val) && !preg_match('~[\0-\x8\xB\xC\xE-\x1F]~', $val));
@@ -607,8 +584,7 @@ function format_number($val): string {
 	return strtr(number_format($val, 0, ".", lang(',')), preg_split('~~u', lang('0123456789'), -1, PREG_SPLIT_NO_EMPTY));
 }
 
-/** Generate friendly URL
-*/
+/** Generate friendly URL */
 function friendly_url(string $val): string {
 	// used for blobs and export
 	return preg_replace('~\W~i', '-', $val);
@@ -699,8 +675,7 @@ function apply_sql_function(string $function, string $column): string {
 	return ($function ? ($function == "unixepoch" ? "DATETIME($column, '$function')" : ($function == "count distinct" ? "COUNT(DISTINCT " : strtoupper("$function(")) . "$column)") : $column);
 }
 
-/** Get path of the temporary directory
-*/
+/** Get path of the temporary directory */
 function get_temp_dir(): string {
 	$return = ini_get("upload_tmp_dir"); // session_save_path() may contain other storage path
 	if (!$return) {
@@ -737,8 +712,7 @@ function file_open_lock(string $filename) {
 	return $fp;
 }
 
-/** Write and unlock a file
-*/
+/** Write and unlock a file */
 function file_write_unlock(resource $fp, string $data): void {
 	rewind($fp);
 	fwrite($fp, $data);
@@ -746,8 +720,7 @@ function file_write_unlock(resource $fp, string $data): void {
 	file_unlock($fp);
 }
 
-/** Unlock and close a file
-*/
+/** Unlock and close a file */
 function file_unlock(resource $fp): void {
 	flock($fp, LOCK_UN);
 	fclose($fp);
@@ -832,8 +805,7 @@ function select_value($val, string $link, array $field, int $text_length): strin
 	return $adminer->selectVal($return, $link, $field, $val);
 }
 
-/** Check whether the string is e-mail address
-*/
+/** Check whether the string is e-mail address */
 function is_mail(?string $email): bool {
 	$atom = '[-a-z0-9!#$%&\'*+/=?^_`{|}~]'; // characters of local-name
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component
@@ -841,8 +813,7 @@ function is_mail(?string $email): bool {
 	return is_string($email) && preg_match("(^$pattern(,\\s*$pattern)*\$)i", $email);
 }
 
-/** Check whether the string is URL address
-*/
+/** Check whether the string is URL address */
 function is_url(string $string): bool {
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component //! IDN
 	return preg_match("~^(https?)://($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string); //! restrict path, query and fragment characters
@@ -894,23 +865,19 @@ function slow_query(string $query): array {
 	return $return;
 }
 
-/** Generate BREACH resistant CSRF token
-*/
+/** Generate BREACH resistant CSRF token */
 function get_token(): string {
 	$rand = rand(1, 1e6);
 	return ($rand ^ $_SESSION["token"]) . ":$rand";
 }
 
-/** Verify if supplied CSRF token is valid
-*/
+/** Verify if supplied CSRF token is valid */
 function verify_token(): bool {
 	list($token, $rand) = explode(":", $_POST["token"]);
 	return ($rand ^ $_SESSION["token"]) == $token;
 }
 
 // used in compiled version
-/**
-*/
 function lzw_decompress(string $binary): string {
 	// convert binary string to codes
 	$dictionary_count = 256;

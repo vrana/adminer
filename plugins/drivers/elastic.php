@@ -65,8 +65,6 @@ if (isset($_GET["elastic"])) {
 				return $this->rootQuery($path, $content, $method);
 			}
 
-			/**
-			 */
 			function connect(string $server, string $username, string $password): bool {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
 				$this->url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";

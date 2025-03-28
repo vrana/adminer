@@ -6,8 +6,6 @@ namespace Adminer;
 * @link http://www.coolcode.cn/?action=show&id=128
 */
 
-/**
-*/
 function int32(int $n): int {
 	while ($n >= 2147483648) {
 		$n -= 4294967296;
@@ -43,8 +41,6 @@ function str2long(string $s, bool $w): array {
 	return $v;
 }
 
-/**
-*/
 function xxtea_mx(int $z, int $y, int $sum, int $k): int {
 	return int32((($z >> 5 & 0x7FFFFFF) ^ $y << 2) + (($y >> 3 & 0x1FFFFFFF) ^ $z << 4)) ^ int32(($sum ^ $y) + ($k ^ $z));
 }

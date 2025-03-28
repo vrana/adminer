@@ -51,8 +51,7 @@ $langs = array(
 	'zh-tw' => '繁體中文', // http://tzangms.com
 );
 
-/** Get current language
-*/
+/** Get current language */
 function get_lang(): string {
 	global $LANG;
 	return $LANG;

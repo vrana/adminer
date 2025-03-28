@@ -13,8 +13,7 @@ abstract class SqlDb {
 	/** @var string */ public $error; // last error message
 	/** @var Result|bool */ protected $multi; // used for multiquery
 
-	/** Connect to server
-	*/
+	/** Connect to server */
 	abstract function connect(string $server, string $username, string $password): bool;
 
 	/** Quote string to use in SQL
@@ -22,8 +21,7 @@ abstract class SqlDb {
 	*/
 	abstract function quote(string $string): string;
 
-	/** Select database
-	*/
+	/** Select database */
 	abstract function select_db(string $database): bool;
 
 	/** Send query
@@ -45,8 +43,7 @@ abstract class SqlDb {
 		return $this->multi;
 	}
 
-	/** Fetch next resultset
-	*/
+	/** Fetch next resultset */
 	function next_result(): bool {
 		return false;
 	}

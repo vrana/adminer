@@ -83,8 +83,7 @@ if (!defined('Adminer\DRIVER')) {
 				return (bool) $this->link;
 			}
 
-			/** Set the client character set
-			*/
+			/** Set the client character set */
 			function set_charset(string $charset): bool {
 				if (function_exists('mysql_set_charset')) {
 					if (mysql_set_charset($charset, $this->link)) {
@@ -126,8 +125,6 @@ if (!defined('Adminer\DRIVER')) {
 			/** @var resource */ private $result;
 			/** @var int */ private $offset = 0;
 
-			/** Constructor
-			*/
 			function __construct(resource $result) {
 				$this->result = $result;
 				$this->num_rows = mysql_num_rows($result);
@@ -157,8 +154,7 @@ if (!defined('Adminer\DRIVER')) {
 				return $return;
 			}
 
-			/** Free result set
-			*/
+			/** Free result set */
 			function __destruct() {
 				mysql_free_result($this->result);
 			}
@@ -355,14 +351,12 @@ if (!defined('Adminer\DRIVER')) {
 
 
 
-	/** Escape database identifier
-	*/
+	/** Escape database identifier */
 	function idf_escape(string $idf): string {
 		return "`" . str_replace("`", "``", $idf) . "`";
 	}
 
-	/** Get escaped table name
-	*/
+	/** Get escaped table name */
 	function table(string $idf): string {
 		return idf_escape($idf);
 	}
@@ -434,8 +428,7 @@ if (!defined('Adminer\DRIVER')) {
 		return $return;
 	}
 
-	/** Get logged user
-	*/
+	/** Get logged user */
 	function logged_user(): string {
 		return get_val("SELECT USER()");
 	}
@@ -628,15 +621,13 @@ if (!defined('Adminer\DRIVER')) {
 		return $return;
 	}
 
-	/** Find out if database is information_schema
-	*/
+	/** Find out if database is information_schema */
 	function information_schema(string $db): bool {
 		return ($db == "information_schema")
 			|| (min_version(5.5) && $db == "performance_schema");
 	}
 
-	/** Get escaped error message
-	*/
+	/** Get escaped error message */
 	function error(): string {
 		global $connection;
 		return h(preg_replace('~^You have an error.*syntax to use~U', "Syntax error", $connection->error));
@@ -680,8 +671,7 @@ if (!defined('Adminer\DRIVER')) {
 		return $return;
 	}
 
-	/** Generate modifier for auto increment column
-	*/
+	/** Generate modifier for auto increment column */
 	function auto_increment(): string {
 		$auto_increment_index = " PRIMARY KEY";
 		// don't overwrite primary key by auto_increment
@@ -959,8 +949,7 @@ if (!defined('Adminer\DRIVER')) {
 		return ($where || $table_status["Engine"] != "InnoDB" ? null : $table_status["Rows"]);
 	}
 
-	/** Get SQL command to create table
-	*/
+	/** Get SQL command to create table */
 	function create_sql(string $table, bool $auto_increment, string $style): string {
 		$return = get_val("SHOW CREATE TABLE " . table($table), 1);
 		if (!$auto_increment) {
@@ -969,20 +958,17 @@ if (!defined('Adminer\DRIVER')) {
 		return $return;
 	}
 
-	/** Get SQL command to truncate table
-	*/
+	/** Get SQL command to truncate table */
 	function truncate_sql(string $table): string {
 		return "TRUNCATE " . table($table);
 	}
 
-	/** Get SQL command to change database
-	*/
+	/** Get SQL command to change database */
 	function use_sql(string $database): string {
 		return "USE " . idf_escape($database);
 	}
 
-	/** Get SQL commands to create triggers
-	*/
+	/** Get SQL commands to create triggers */
 	function trigger_sql(string $table): string {
 		$return = "";
 		foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_\\")), null, "-- ") as $row) {
@@ -1061,8 +1047,7 @@ if (!defined('Adminer\DRIVER')) {
 		return queries("KILL " . number($val));
 	}
 
-	/** Return query to get connection ID
-	*/
+	/** Return query to get connection ID */
 	function connection_id(): string {
 		return "SELECT CONNECTION_ID()";
 	}
@@ -1083,8 +1068,7 @@ if (!defined('Adminer\DRIVER')) {
 		return array();
 	}
 
-	/** Get values of user defined type
-	*/
+	/** Get values of user defined type */
 	function type_values(int $id): string {
 		return "";
 	}
@@ -1096,14 +1080,12 @@ if (!defined('Adminer\DRIVER')) {
 		return array();
 	}
 
-	/** Get current schema
-	*/
+	/** Get current schema */
 	function get_schema(): string {
 		return "";
 	}
 
-	/** Set current schema
-	*/
+	/** Set current schema */
 	function set_schema(string $schema, Db $connection2 = null): bool {
 		return true;
 	}
