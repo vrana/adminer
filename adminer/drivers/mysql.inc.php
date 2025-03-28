@@ -48,15 +48,6 @@ if (!defined('Adminer\DRIVER')) {
 				return self::more_results() && parent::next_result(); // triggers E_STRICT on PHP < 7.4 otherwise
 			}
 
-			function result($query, $field = 0) {
-				$result = $this->query($query);
-				if (!is_object($result)) {
-					return false;
-				}
-				$row = $result->fetch_array();
-				return ($row ? $row[$field] : false);
-			}
-
 			function quote(string $string): string {
 				return "'" . $this->escape_string($string) . "'";
 			}
