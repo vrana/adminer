@@ -7,7 +7,7 @@ namespace Adminer;
 * @param string $title2 used after colon in title and heading, should be HTML escaped
 */
 function page_header(string $title, string $error = "", $breadcrumb = array(), string $title2 = ""): void {
-	global $LANG, $VERSION, $adminer, $drivers;
+	global $LANG, $adminer, $drivers;
 	page_headers();
 	if (is_ajax() && $error) {
 		page_messages($error);
@@ -77,7 +77,7 @@ fQIDAQAB
 		}
 	}
 	echo script("mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick"
-		. (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '$VERSION', '" . js_escape(ME) . "', '" . get_token() . "')") // $token may be empty in auth.inc.php
+		. (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '" . VERSION . "', '" . js_escape(ME) . "', '" . get_token() . "')") // $token may be empty in auth.inc.php
 		. "});
 document.body.classList.replace('nojs', 'js');
 const offlineMessage = '" . js_escape(lang('You are offline.')) . "';

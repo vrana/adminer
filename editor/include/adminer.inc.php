@@ -596,10 +596,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function navigation($missing) {
-		global $VERSION, $adminer;
-		echo "<h1>" . $adminer->name() . " <span class='version'>$VERSION";
+		global $adminer;
+		echo "<h1>" . $adminer->name() . " <span class='version'>" . VERSION;
 		$new_version = $_COOKIE["adminer_version"];
-		echo " <a href='https://www.adminer.org/editor/#download'" . target_blank() . " id='version'>" . (version_compare($VERSION, $new_version) < 0 ? h($new_version) : "") . "</a>";
+		echo " <a href='https://www.adminer.org/editor/#download'" . target_blank() . " id='version'>" . (version_compare(VERSION, $new_version) < 0 ? h($new_version) : "") . "</a>";
 		echo "</span></h1>\n";
 		switch_lang();
 		if ($missing == "auth") {

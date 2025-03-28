@@ -26,12 +26,6 @@ function driver() {
 	return $driver;
 }
 
-/** Get Adminer version */
-function version(): string {
-	global $VERSION;
-	return $VERSION;
-}
-
 /** Unescape database identifier
 * @param string $idf text inside ``
 */

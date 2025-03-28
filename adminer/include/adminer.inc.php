@@ -946,10 +946,10 @@ class Adminer {
 	* @param string $missing can be "auth" if there is no database connection, "db" if there is no database selected, "ns" with invalid schema
 	*/
 	function navigation(string $missing): void {
-		global $VERSION, $drivers, $connection, $adminer;
-		echo "<h1>" . $adminer->name() . " <span class='version'>$VERSION";
+		global $drivers, $connection, $adminer;
+		echo "<h1>" . $adminer->name() . " <span class='version'>" . VERSION;
 		$new_version = $_COOKIE["adminer_version"];
-		echo " <a href='https://www.adminer.org/#download'" . target_blank() . " id='version'>" . (version_compare($VERSION, $new_version) < 0 ? h($new_version) : "") . "</a>";
+		echo " <a href='https://www.adminer.org/#download'" . target_blank() . " id='version'>" . (version_compare(VERSION, $new_version) < 0 ? h($new_version) : "") . "</a>";
 		echo "</span></h1>\n";
 		// this is matched by compile.php
 		switch_lang();
