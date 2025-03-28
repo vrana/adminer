@@ -7,10 +7,10 @@
 ## Features
 - **Supports:** MySQL, MariaDB, PostgreSQL, CockroachDB, SQLite, MS SQL, Oracle
 - **Plugins for:** Elasticsearch, SimpleDB, MongoDB, Firebird, ClickHouse, IMAP
-- **Requirements:** PHP 5.3+
+- **Requirements:** PHP 5.3+ (compiled file), PHP 7.4+ (source codes)
 
 ## Screenshot
-![Screenshot](https://www.adminer.org/static/screenshots/table.png)
+![Table structure](https://www.adminer.org/static/screenshots/table.png)
 
 ## Installation
 If downloaded from Git then run: `git submodule update --init`

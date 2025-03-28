@@ -353,6 +353,9 @@ if ($_SESSION["lang"]) {
 $file = str_replace('echo script_src("static/editing.js");' . "\n", "", $file); // merged into functions.js
 $file = preg_replace('~\s+echo script_src\("\.\./externals/jush/modules/jush-(textarea|txt|js|" \. JUSH \. ")\.js"\);~', '', $file); // merged into jush.js
 $file = preg_replace('~echo .*/jush(-dark)?.css\'>.*~', '', $file); // merged into default.css or dark.css
+if (function_exists('stripTypes')) {
+	$file = stripTypes($file);
+}
 $file = preg_replace_callback("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", 'compile_file', $file); // integrate static files
 $replace = 'preg_replace("~\\\\\\\\?.*~", "", ME) . "?file=\1&version=' . $VERSION . '"';
 $file = preg_replace('~\.\./adminer/static/(default\.css)~', '<?php echo h(' . $replace . '); ?>', $file);
