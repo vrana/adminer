@@ -23,9 +23,9 @@ if (!defined('Adminer\DRIVER')) {
 					$this->ssl_set($ssl['key'], $ssl['cert'], $ssl['ca'], '', '');
 				}
 				$return = @$this->real_connect(
-					($server != "" ? $host : null),
-					($server . $username != "" ? $username : null),
-					($server . $username . $password != "" ? $password : null),
+					($server != "" ? $host : ini_get("mysqli.default_host")),
+					($server . $username != "" ? $username : ini_get("mysqli.default_user")),
+					($server . $username . $password != "" ? $password : ini_get("mysqli.default_pw")),
 					null,
 					(is_numeric($port) ? $port : ini_get("mysqli.default_port")),
 					(is_numeric($port) ? intval($port) : null),
