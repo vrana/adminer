@@ -118,10 +118,10 @@ class Adminer {
 
 	/** Print login form */
 	function loginForm(): void {
-		global $drivers, $adminer;
+		global $adminer;
 		echo "<table class='layout'>\n";
 		// this is matched by compile.php
-		echo $adminer->loginFormField('driver', '<tr><th>' . lang('System') . '<td>', html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);"));
+		echo $adminer->loginFormField('driver', '<tr><th>' . lang('System') . '<td>', html_select("auth[driver]", SqlDriver::$drivers, DRIVER, "loginDriver(this);"));
 		echo $adminer->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', '<input name="auth[server]" value="' . h(SERVER) . '" title="hostname[:port]" placeholder="localhost" autocapitalize="off">');
 		// this is matched by compile.php
 		echo $adminer->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input name="auth[username]" id="username" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">' . script("qs('#username').form['auth[driver]'].onchange();"));
@@ -946,7 +946,7 @@ class Adminer {
 	* @param string $missing can be "auth" if there is no database connection, "db" if there is no database selected, "ns" with invalid schema
 	*/
 	function navigation(string $missing): void {
-		global $drivers, $connection, $adminer;
+		global $connection, $adminer;
 		echo "<h1>" . $adminer->name() . " <span class='version'>" . VERSION;
 		$new_version = $_COOKIE["adminer_version"];
 		echo " <a href='https://www.adminer.org/#download'" . target_blank() . " id='version'>" . (version_compare(VERSION, $new_version) < 0 ? h($new_version) : "") . "</a>";
@@ -957,7 +957,7 @@ class Adminer {
 			$output = "";
 			foreach ((array) $_SESSION["pwds"] as $vendor => $servers) {
 				foreach ($servers as $server => $usernames) {
-					$name = h(get_setting("vendor-$vendor-$server") ?: $drivers[$vendor]);
+					$name = h(get_setting("vendor-$vendor-$server") ?: get_driver($vendor));
 					foreach ($usernames as $username => $password) {
 						if ($password !== null) {
 							$dbs = $_SESSION["db"][$vendor][$server][$username];

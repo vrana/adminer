@@ -16,7 +16,7 @@ if ($_POST && !$error) {
 	$is_sql = preg_match('~sql~', $_POST["format"]);
 
 	if ($is_sql) {
-		echo "-- Adminer " . VERSION . " " . $drivers[DRIVER] . " " . str_replace("\n", " ", $connection->server_info) . " dump\n\n";
+		echo "-- Adminer " . VERSION . " " . get_driver(DRIVER) . " " . str_replace("\n", " ", $connection->server_info) . " dump\n\n";
 		if (JUSH == "sql") {
 			echo "SET NAMES utf8;
 SET time_zone = '+00:00';

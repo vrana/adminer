@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$drivers["pgsql"] = "PostgreSQL";
+add_driver("pgsql", "PostgreSQL");
 
 if (isset($_GET["pgsql"])) {
 	define('Adminer\DRIVER', "pgsql");
@@ -301,7 +301,6 @@ if (isset($_GET["pgsql"])) {
 	}
 
 	function connect($credentials) {
-		global $drivers;
 		$connection = new Db;
 		$error = $connection->attach($credentials[0], $credentials[1], $credentials[2]);
 		if ($error) {
@@ -314,7 +313,7 @@ if (isset($_GET["pgsql"])) {
 		$connection->flavor = (preg_match('~CockroachDB~', $version) ? 'cockroach' : '');
 		$connection->server_info = preg_replace('~^\D*([\d.]+[-\w]*).*~', '\1', $version);
 		if ($connection->flavor == 'cockroach') { // we don't use "PostgreSQL / CockroachDB" by default because it's too long
-			$drivers[DRIVER] = "CockroachDB";
+			add_driver(DRIVER, "CockroachDB");
 		}
 		return $connection;
 	}

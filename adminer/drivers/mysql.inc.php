@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$drivers = array("server" => "MySQL / MariaDB") + $drivers;
+SqlDriver::$drivers = array("server" => "MySQL / MariaDB") + SqlDriver::$drivers;
 
 if (!defined('Adminer\DRIVER')) {
 	define('Adminer\DRIVER', "server"); // server - backwards compatibility
@@ -366,7 +366,6 @@ if (!defined('Adminer\DRIVER')) {
 	* @return string|Db string for error
 	*/
 	function connect(array $credentials) {
-		global $drivers;
 		$connection = new Db;
 		$error = $connection->attach($credentials[0], $credentials[1], $credentials[2]);
 		if ($error) {
@@ -378,7 +377,7 @@ if (!defined('Adminer\DRIVER')) {
 		$connection->set_charset(charset($connection));
 		$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
 		$connection->flavor = (preg_match('~MariaDB~', $connection->server_info) ? 'maria' : 'mysql');
-		$drivers[DRIVER] = ($connection->flavor == 'maria' ? "MariaDB" : "MySQL");
+		add_driver(DRIVER, ($connection->flavor == 'maria' ? "MariaDB" : "MySQL"));
 		return $connection;
 	}
 

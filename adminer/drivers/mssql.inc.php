@@ -7,7 +7,7 @@
 
 namespace Adminer;
 
-$drivers["mssql"] = "MS SQL";
+add_driver("mssql", "MS SQL");
 
 if (isset($_GET["mssql"])) {
 	define('Adminer\DRIVER', "mssql");

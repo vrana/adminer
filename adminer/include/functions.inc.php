@@ -391,8 +391,7 @@ function set_session(string $key, $val) {
 
 /** Get authenticated URL */
 function auth_url(string $vendor, ?string $server, string $username, string $db = null): string {
-	global $drivers;
-	$uri = remove_from_uri(implode("|", array_keys($drivers))
+	$uri = remove_from_uri(implode("|", array_keys(SqlDriver::$drivers))
 		. "|username|ext|"
 		. ($db !== null ? "db|" : "")
 		. ($vendor == 'mssql' || $vendor == 'pgsql' ? "" : "ns|") // we don't have access to support() here

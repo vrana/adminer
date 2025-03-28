@@ -1,21 +1,18 @@
 <?php
 namespace Adminer;
 
-$drivers = array();
-
-/** Add a driver */
+/** Add or overwrite a driver */
 function add_driver(string $id, string $name): void {
-	global $drivers;
-	$drivers[$id] = $name;
+	SqlDriver::$drivers[$id] = $name;
 }
 
 /** Get driver name */
 function get_driver(string $id): string {
-	global $drivers;
-	return $drivers[$id];
+	return SqlDriver::$drivers[$id];
 }
 
 abstract class SqlDriver {
+	/** @var string[] */ static array $drivers = array();
 	/** @var list<string> */ static array $extensions = array(); // possible extensions
 	static string $jush; // JUSH identifier
 

@@ -182,7 +182,7 @@ if (isset($_GET["username"]) && is_string(get_password())) {
 	if (is_object($connection)) {
 		$driver = new Driver($connection);
 		if ($connection->flavor) {
-			save_settings(array("vendor-" . DRIVER . "-" . SERVER => $drivers[DRIVER]));
+			save_settings(array("vendor-" . DRIVER . "-" . SERVER => get_driver(DRIVER)));
 		}
 	}
 }

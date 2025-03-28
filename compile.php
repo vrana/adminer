@@ -320,8 +320,8 @@ if ($vendor) {
 			$file = preg_replace("((\t*)" . preg_quote('if (support("' . $feature . '")') . ".*?\n\\1\\}( else)?)s", '', $file);
 		}
 	}
-	if ($project != "editor" && count($drivers) == 1) {
-		$file = str_replace('html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);")', 'input_hidden("auth[driver]", "' . ($vendor == "mysql" ? "server" : $vendor) . '") . "' . reset($drivers) . '"', $file, $count);
+	if ($project != "editor" && count(Adminer\SqlDriver::$drivers) == 1) {
+		$file = str_replace('html_select("auth[driver]", SqlDriver::$drivers, DRIVER, "loginDriver(this);")', 'input_hidden("auth[driver]", "' . ($vendor == "mysql" ? "server" : $vendor) . '") . "' . reset(Adminer\SqlDriver::$drivers) . '"', $file, $count);
 		if (!$count) {
 			echo "auth[driver] form field not found\n";
 		}

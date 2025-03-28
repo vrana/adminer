@@ -7,7 +7,7 @@ namespace Adminer;
 * @param string $title2 used after colon in title and heading, should be HTML escaped
 */
 function page_header(string $title, string $error = "", $breadcrumb = array(), string $title2 = ""): void {
-	global $adminer, $drivers;
+	global $adminer;
 	page_headers();
 	if (is_ajax() && $error) {
 		page_messages($error);
@@ -88,7 +88,7 @@ const thousandsSeparator = '" . js_escape(lang(',')) . "';")
 	echo "<div id='content'>\n";
 	if ($breadcrumb !== null) {
 		$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
-		echo '<p id="breadcrumb"><a href="' . h($link ?: ".") . '">' . $drivers[DRIVER] . '</a> » ';
+		echo '<p id="breadcrumb"><a href="' . h($link ?: ".") . '">' . get_driver(DRIVER) . '</a> » ';
 		$link = substr(preg_replace('~\b(db|ns)=[^&]*&~', '', ME), 0, -1);
 		$server = $adminer->serverName(SERVER);
 		$server = ($server != "" ? $server : lang('Server'));

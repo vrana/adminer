@@ -42,7 +42,7 @@ if (
 				echo "<a href='" . h(ME) . "$key='>$val</a>\n";
 			}
 		}
-		echo "<p>" . lang('%s version: %s through PHP extension %s', $drivers[DRIVER], "<b>" . h($connection->server_info) . "</b>", "<b>$connection->extension</b>") . "\n";
+		echo "<p>" . lang('%s version: %s through PHP extension %s', get_driver(DRIVER), "<b>" . h($connection->server_info) . "</b>", "<b>$connection->extension</b>") . "\n";
 		echo "<p>" . lang('Logged as: %s', "<b>" . h(logged_user()) . "</b>") . "\n";
 		if (isset($adminer->plugins) && is_array($adminer->plugins)) {
 			echo "<p>" . lang('Loaded plugins') . ":\n<ul>\n";

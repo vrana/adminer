@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$drivers["sqlite"] = "SQLite";
+add_driver("sqlite", "SQLite");
 
 if (isset($_GET["sqlite"])) {
 	define('Adminer\DRIVER', "sqlite");
