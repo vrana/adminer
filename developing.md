@@ -17,7 +17,7 @@ If authentication fails, a login form is displayed at the same URL, and POST dat
 If the user authenticates using the same credentials, the action is performed.
 
 All state-changing actions (primarily data modifications, as well as language change or logout) are performed using POST with a CSRF token present.
-This token is unnecessary in modern browsers because Adminer sets cookies as SameSite, but it remains for additional security.
+Adminer sets cookies as SameSite which adds a second protection but not for vulnerabilities on the same site.
 If a POST action succeeds, Adminer redirects the browser to a GET request to prevent accidental re-submission.
 An unsuccessful POST displays the same page with pre-filled form fields.
 Refreshing the page attempts the action again, which is useful when errors were resolved in another browser tab.
@@ -69,10 +69,8 @@ This class enables Adminer and Adminer Editor (which lacks DDL support) to share
 Developers can extend this class to implement customizations, as I do for my projects.
 
 A more common method for extending Adminer is the [`Plugins`](/adminer/include/plugins.inc.php) class.
-Although its code is somewhat repetitive, it effectively allows developers to create plugins without extending `Adminer` directly.
-Since developers are accustomed to defining classes with methods, this approach has a low entry barrier.
-I considered a hook system (`$hooks->register("tableName", $callback)`, then `$hooks->call("tableName")`), but I prefer the direct call syntax (`$adminer->tableName()`).
-Implementing hooks while maintaining this syntax would simply relocate repetitive code.
+A plugin is simply a class defining any methods from [`Adminer`](/adminer/include/adminer.inc.php).
+The `Plugins::__call` method calls all registered plugins until one of them returns non-null.
 
 ## Code Style
 
@@ -132,8 +130,9 @@ Proper line wrapping often requires refactoring, which has caused bugs in the pa
 ## Comments
 
 All functions have doc-comments, but redundancy is avoided.
-For example, `Db` methods are documented only in [mysql.inc.php](/adminer/drivers/mysql.inc.php), not in other drivers.
-`@param` tags include only type and description, based on order.
+For example, `Db` methods are documented only in [`db.inc.php`](/adminer/include/db.inc.php), not in the drivers.
+`@param` tags include only params with type [more specific](https://phpstan.org/writing-php-code/phpdoc-types) than the native type declaration or with a comment.
+The doc-comments use [aliases](/phpstan.neon) for complex arrays.
 Doc-comments are imperative ("Get" instead of "Gets"), start with a capital letter, and do not end with a period.
 
 Inline comments are useful for linking specifications but are generally avoided for explaining self-explanatory code.
@@ -250,6 +249,7 @@ Includes in Adminer start with `./` to bypass `include_path`, which is unrelated
 Compilation also [shrinks](https://github.com/vrana/PhpShrink) PHP code by removing whitespace, comments, and shortening variable names.
 This prevents plugins from overwriting Adminer’s variables.
 The compiled file is binary, which is valid PHP but not valid UTF-8 - a debatable choice.
+Compilation also removes PHP 7 type declarations to be compatible with PHP 5.
 
 Translations used to occupy a large portion of the compiled file.
 In the source code, translations map English strings to localized versions.
