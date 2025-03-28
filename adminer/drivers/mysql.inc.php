@@ -230,28 +230,27 @@ if (!defined('Adminer\DRIVER')) {
 				lang('Binary') => array("bit" => 20, "binary" => 255, "varbinary" => 65535, "tinyblob" => 255, "blob" => 65535, "mediumblob" => 16777215, "longblob" => 4294967295),
 				lang('Geometry') => array("geometry" => 0, "point" => 0, "linestring" => 0, "polygon" => 0, "multipoint" => 0, "multilinestring" => 0, "multipolygon" => 0, "geometrycollection" => 0),
 			);
+			$this->insertFunctions = array(
+				"char" => "md5/sha1/password/encrypt/uuid",
+				"binary" => "md5/sha1",
+				"date|time" => "now",
+			);
 			$this->editFunctions = array(
-				array(
-					"char" => "md5/sha1/password/encrypt/uuid",
-					"binary" => "md5/sha1",
-					"date|time" => "now",
-				), array(
-					number_type() => "+/-",
-					"date" => "+ interval/- interval",
-					"time" => "addtime/subtime",
-					"char|text" => "concat",
-				)
+				number_type() => "+/-",
+				"date" => "+ interval/- interval",
+				"time" => "addtime/subtime",
+				"char|text" => "concat",
 			);
 			if (min_version('5.7.8', 10.2, $connection)) {
 				$this->types[lang('Strings')]["json"] = 4294967295;
 			}
 			if (min_version('', 10.7, $connection)) {
 				$this->types[lang('Strings')]["uuid"] = 128;
-				$this->editFunctions[0]['uuid'] = 'uuid';
+				$this->insertFunctions['uuid'] = 'uuid';
 			}
 			if (min_version(9, '', $connection)) {
 				$this->types[lang('Numbers')]["vector"] = 16383;
-				$this->editFunctions[0]['vector'] = 'string_to_vector';
+				$this->insertFunctions['vector'] = 'string_to_vector';
 			}
 			if (min_version(5.7, 10.2, $connection)) {
 				$this->generated = array("STORED", "VIRTUAL");

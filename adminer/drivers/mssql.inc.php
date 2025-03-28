@@ -205,13 +205,10 @@ if (isset($_GET["mssql"])) {
 		static array $possibleDrivers = array("SQLSRV", "PDO_SQLSRV", "PDO_DBLIB");
 		static string $jush = "mssql";
 
+		public array $insertFunctions = array("date|time" => "getdate");
 		public array $editFunctions = array(
-			array(
-				"date|time" => "getdate",
-			), array(
-				"int|decimal|real|float|money|datetime" => "+/-",
-				"char|text" => "+",
-			)
+			"int|decimal|real|float|money|datetime" => "+/-",
+			"char|text" => "+",
 		);
 
 		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL");

@@ -104,7 +104,7 @@ if (isset($_GET["elastic"])) {
 		static array $possibleDrivers = array("json + allow_url_fopen");
 		static string $jush = "elastic";
 
-		public array $editFunctions = array(array("json"));
+		public array $insertFunctions = array("json");
 		public array $operators = array("=", "must", "should", "must_not");
 
 		function __construct(Db $connection) {

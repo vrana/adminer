@@ -192,15 +192,14 @@ if (isset($_GET["pgsql"])) {
 					$this->types[lang('Strings')]["jsonb"] = 4294967295;
 				}
 			}
+			$this->insertFunctions = array(
+				"char" => "md5",
+				"date|time" => "now",
+			);
 			$this->editFunctions = array(
-				array(
-					"char" => "md5",
-					"date|time" => "now",
-				), array(
-					number_type() => "+/-",
-					"date|time" => "+ interval/- interval", //! escape
-					"char|text" => "||",
-				)
+				number_type() => "+/-",
+				"date|time" => "+ interval/- interval", //! escape
+				"char|text" => "||",
 			);
 			if (min_version(12, 0, $connection)) {
 				$this->generated = array("STORED");

@@ -111,14 +111,11 @@ if (isset($_GET["sqlite"])) {
 
 		protected array $types = array(array("integer" => 0, "real" => 0, "numeric" => 0, "text" => 0, "blob" => 0));
 
+		public array $insertFunctions = array(); // "text" => "date('now')/time('now')/datetime('now')",
 		public array $editFunctions = array(
-			array(
-				// "text" => "date('now')/time('now')/datetime('now')",
-			), array(
-				"integer|real|numeric" => "+/-",
-				// "text" => "date/time/datetime",
-				"text" => "||",
-			)
+			"integer|real|numeric" => "+/-",
+			// "text" => "date/time/datetime",
+			"text" => "||",
 		);
 
 		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"); // REGEXP can be user defined function

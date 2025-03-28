@@ -125,15 +125,14 @@ if (isset($_GET["oracle"])) {
 		static array $possibleDrivers = array("OCI8", "PDO_OCI");
 		static string $jush = "oracle";
 
+	public array $insertFunctions = array( //! no parentheses
+			"date" => "current_date",
+			"timestamp" => "current_timestamp",
+		);
 		public array $editFunctions = array(
-			array( //! no parentheses
-				"date" => "current_date",
-				"timestamp" => "current_timestamp",
-			), array(
-				"number|float|double" => "+/-",
-				"date|timestamp" => "+ interval/- interval",
-				"char|clob" => "||",
-			)
+			"number|float|double" => "+/-",
+			"date|timestamp" => "+ interval/- interval",
+			"char|clob" => "||",
 		);
 
 		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");

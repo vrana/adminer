@@ -296,7 +296,7 @@ if (isset($_GET["mongo"])) {
 		static array $possibleDrivers = array("mongodb");
 		static string $jush = "mongo";
 
-		public array $editFunctions = array(array("json"));
+		public array $insertFunctions = array("json");
 
 		public array $operators = array(
 			"=",
