@@ -132,16 +132,16 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			/** Fetch next row as associative array
-			* @return array<?string>
+			* @return array<?string>|false
 			*/
-			function fetch_assoc(): array {
+			function fetch_assoc() {
 				return mysql_fetch_assoc($this->result);
 			}
 
 			/** Fetch next row as numbered array
-			* @return list<?string>
+			* @return list<?string>|false
 			*/
-			function fetch_row(): array {
+			function fetch_row() {
 				return mysql_fetch_row($this->result);
 			}
 
@@ -623,7 +623,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Find out if database is information_schema */
-	function information_schema(string $db): bool {
+	function information_schema(?string $db): bool {
 		return ($db == "information_schema")
 			|| (min_version(5.5) && $db == "performance_schema");
 	}
@@ -951,7 +951,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get SQL command to create table */
-	function create_sql(string $table, bool $auto_increment, string $style): string {
+	function create_sql(string $table, ?bool $auto_increment, string $style): string {
 		$return = get_val("SHOW CREATE TABLE " . table($table), 1);
 		if (!$auto_increment) {
 			$return = preg_replace('~ AUTO_INCREMENT=\d+~', '', $return); //! skip comments

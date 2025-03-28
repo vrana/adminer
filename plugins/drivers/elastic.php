@@ -49,26 +49,19 @@ if (isset($_GET["elastic"])) {
 				return $return;
 			}
 
-			/** Perform query relative to actual selected DB
-			 * @return array|false
-			 */
-			function query(string $path, ?array $content = null, string $method = 'GET') {
+			/** Perform query relative to actual selected DB */
+			function query(string $query, bool $unbuffered = false) {
 				// Support for global search through all tables
-				if ($path != "" && $path[0] == "S" && preg_match('/SELECT 1 FROM ([^ ]+) WHERE (.+) LIMIT ([0-9]+)/', $path, $matches)) {
-					$driver = driver();
-
+				if ($query[0] == "S" && preg_match('/SELECT 1 FROM ([^ ]+) WHERE (.+) LIMIT ([0-9]+)/', $query, $matches)) {
 					$where = explode(" AND ", $matches[2]);
-
-					return $driver->select($matches[1], array("*"), $where, array(), array(), $matches[3]);
+					return driver()->select($matches[1], array("*"), $where, array(), array(), $matches[3]);
 				}
-
-				return $this->rootQuery($path, $content, $method);
 			}
 
 			function connect(string $server, string $username, string $password): bool {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
 				$this->url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
-				$return = $this->query('');
+				$return = $this->rootQuery('');
 				if ($return) {
 					$this->server_info = $return['version']['number'];
 				}
@@ -94,13 +87,13 @@ if (isset($_GET["elastic"])) {
 				reset($this->rows);
 			}
 
-			function fetch_assoc(): array {
+			function fetch_assoc() {
 				$return = current($this->rows);
 				next($this->rows);
 				return $return;
 			}
 
-			function fetch_row(): array {
+			function fetch_row() {
 				$row = $this->fetch_assoc();
 				return $row ? array_values($row) : false;
 			}
@@ -228,7 +221,7 @@ if (isset($_GET["elastic"])) {
 				$id = trim($parts[1]);
 				$query = "$type/$id";
 
-				return $this->conn->query($query, $record, 'POST');
+				return $this->conn->rootQuery($query, $record, 'POST');
 			}
 
 			return false;
@@ -245,7 +238,7 @@ if (isset($_GET["elastic"])) {
 					unset($record[$key]);
 				}
 			}
-			$response = $this->conn->query($query, $record, 'POST');
+			$response = $this->conn->rootQuery($query, $record, 'POST');
 			if ($response == false) {
 				return false;
 			}
@@ -273,7 +266,7 @@ if (isset($_GET["elastic"])) {
 
 			foreach ($ids as $id) {
 				$query = "$table/_doc/$id";
-				$response = $this->conn->query($query, null, 'DELETE');
+				$response = $this->conn->rootQuery($query, null, 'DELETE');
 				if (isset($response['result']) && $response['result'] == 'deleted') {
 					$this->conn->affected_rows++;
 				}
@@ -532,7 +525,7 @@ if (isset($_GET["elastic"])) {
 			$properties = array('properties' => $properties);
 		}
 
-		return connection()->query("_mapping/$name", $properties, 'PUT');
+		return connection()->rootQuery("_mapping/$name", $properties, 'PUT');
 	}
 
 	/** Drop types
@@ -541,7 +534,7 @@ if (isset($_GET["elastic"])) {
 	function drop_tables(array $tables): bool {
 		$return = true;
 		foreach ($tables as $table) { //! convert to bulk api
-			$return = $return && connection()->query(urlencode($table), null, 'DELETE');
+			$return = $return && connection()->rootQuery(urlencode($table), null, 'DELETE');
 		}
 
 		return $return;

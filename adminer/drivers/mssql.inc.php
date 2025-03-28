@@ -116,11 +116,11 @@ if (isset($_GET["mssql"])) {
 				return $row;
 			}
 
-			function fetch_assoc(): array {
+			function fetch_assoc() {
 				return $this->convert(sqlsrv_fetch_array($this->result, SQLSRV_FETCH_ASSOC));
 			}
 
-			function fetch_row(): array {
+			function fetch_row() {
 				return $this->convert(sqlsrv_fetch_array($this->result, SQLSRV_FETCH_NUMERIC));
 			}
 

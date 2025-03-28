@@ -48,11 +48,11 @@ if (isset($_GET["sqlite"])) {
 				$this->result = $result;
 			}
 
-			function fetch_assoc(): array {
+			function fetch_assoc() {
 				return $this->result->fetchArray(SQLITE3_ASSOC);
 			}
 
-			function fetch_row(): array {
+			function fetch_row() {
 				return $this->result->fetchArray(SQLITE3_NUM);
 			}
 

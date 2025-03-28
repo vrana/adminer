@@ -101,11 +101,11 @@ if (isset($_GET["pgsql"])) {
 				$this->num_rows = pg_num_rows($result);
 			}
 
-			function fetch_assoc(): array {
+			function fetch_assoc() {
 				return pg_fetch_assoc($this->result);
 			}
 
-			function fetch_row(): array {
+			function fetch_row() {
 				return pg_fetch_row($this->result);
 			}
 

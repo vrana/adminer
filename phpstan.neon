@@ -56,7 +56,7 @@ parameters:
 		- adminer/sqlite.php
 
 	phpVersion:
-		min: 70400
+		min: 70100
 		max: 80499
 
 	typeAliases:

@@ -13,7 +13,7 @@ $rights = array(); // privilege => 0
 $columns = array(); // selectable columns
 $search_columns = array(); // searchable columns
 $order_columns = array(); // searchable columns
-$text_length = null;
+$text_length = "";
 foreach ($fields as $key => $field) {
 	$name = $adminer->fieldName($field);
 	$name_plain = html_entity_decode(strip_tags($name), ENT_QUOTES);

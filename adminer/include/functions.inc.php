@@ -57,7 +57,7 @@ function escape_string(string $val): string {
 /** Get a possibly missing item from a possibly missing array
 * idx($row, $key) is better than $row[$key] ?? null because PHP will report error for undefined $row
 * @param ?mixed[] $array
-* @param string|int $key
+* @param array-key $key
 * @param mixed $default
 * @return mixed
 */
@@ -142,7 +142,7 @@ function sid(): bool {
 }
 
 /** Set password to session */
-function set_password(string $vendor, string $server, string $username, ?string $password): void {
+function set_password(string $vendor, ?string $server, string $username, ?string $password): void {
 	$_SESSION["pwds"][$vendor][$server][$username] = ($_COOKIE["adminer_key"] && is_string($password)
 		? array(encrypt_string($password, $_COOKIE["adminer_key"]))
 		: $password
@@ -391,7 +391,7 @@ function set_session(string $key, $val) {
 }
 
 /** Get authenticated URL */
-function auth_url(string $vendor, string $server, string $username, string $db = null): string {
+function auth_url(string $vendor, ?string $server, string $username, string $db = null): string {
 	global $drivers;
 	$uri = remove_from_uri(implode("|", array_keys($drivers))
 		. "|username|ext|"
@@ -562,7 +562,7 @@ function repeat_pattern(string $pattern, int $length): string {
 }
 
 /** Check whether the string is in UTF-8 */
-function is_utf8(string $val): bool {
+function is_utf8(?string $val): bool {
 	// don't print control chars except \t\r\n
 	return (preg_match('~~u', $val) && !preg_match('~[\0-\x8\xB\xC\xE-\x1F]~', $val));
 }
@@ -771,9 +771,10 @@ function rand_string(): string {
 /** Format value to use in select
 * @param string|string[] $val
 * @param Field $field
+* @param ?numeric-string $text_length
 * @return string HTML
 */
-function select_value($val, string $link, array $field, int $text_length): string {
+function select_value($val, string $link, array $field, ?string $text_length): string {
 	global $adminer;
 	if (is_array($val)) {
 		$return = "";

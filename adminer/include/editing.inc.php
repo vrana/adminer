@@ -412,7 +412,7 @@ function normalize_enum(array $match): string {
 * @param list<string> $privileges
 * @return Result|bool
 */
-function grant(string $grant, array $privileges, string $columns, string $on) {
+function grant(string $grant, array $privileges, ?string $columns, string $on) {
 	if (!$privileges) {
 		return true;
 	}

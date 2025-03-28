@@ -97,7 +97,7 @@ if (isset($_GET["mongo"])) {
 				$this->num_rows = count($this->rows);
 			}
 
-			function fetch_assoc(): array {
+			function fetch_assoc() {
 				$row = current($this->rows);
 				if (!$row) {
 					return $row;
@@ -110,7 +110,7 @@ if (isset($_GET["mongo"])) {
 				return $return;
 			}
 
-			function fetch_row(): array {
+			function fetch_row() {
 				$return = $this->fetch_assoc();
 				if (!$return) {
 					return $return;

@@ -79,11 +79,11 @@ if (isset($_GET["oracle"])) {
 				return $row;
 			}
 
-			function fetch_assoc(): array {
+			function fetch_assoc() {
 				return $this->convert(oci_fetch_assoc($this->result));
 			}
 
-			function fetch_row(): array {
+			function fetch_row() {
 				return $this->convert(oci_fetch_row($this->result));
 			}
 

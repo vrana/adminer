@@ -23,7 +23,7 @@ foreach ($privileges["Tables"] as $key => $val) {
 $new_grants = array();
 if ($_POST) {
 	foreach ($_POST["objects"] as $key => $val) {
-		$new_grants[$val] = (array) $new_grants[$val] + (array) $_POST["grants"][$key];
+		$new_grants[$val] = (array) $new_grants[$val] + idx($_POST["grants"], $key, array());
 	}
 }
 $grants = array();

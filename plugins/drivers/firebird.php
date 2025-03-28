@@ -60,11 +60,11 @@ if (isset($_GET["firebird"])) {
 				// $this->num_rows = ibase_num_rows($result);
 			}
 
-			function fetch_assoc(): array {
+			function fetch_assoc() {
 				return ibase_fetch_assoc($this->result);
 			}
 
-			function fetch_row(): array {
+			function fetch_row() {
 				return ibase_fetch_row($this->result);
 			}
 

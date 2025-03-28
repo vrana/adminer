@@ -76,7 +76,7 @@ if (isset($_GET["simpledb"])) {
 				return (is_object($element) && $element['encoding'] == 'base64' ? base64_decode($element) : (string) $element);
 			}
 
-			function fetch_assoc(): array {
+			function fetch_assoc() {
 				$row = current($this->rows);
 				if (!$row) {
 					return $row;
@@ -89,7 +89,7 @@ if (isset($_GET["simpledb"])) {
 				return $return;
 			}
 
-			function fetch_row(): array {
+			function fetch_row() {
 				$return = $this->fetch_assoc();
 				if (!$return) {
 					return $return;

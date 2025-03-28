@@ -68,11 +68,11 @@ if (extension_loaded('pdo')) {
 	class PdoResult extends \PDOStatement {
 		public $_offset = 0, $num_rows;
 
-		function fetch_assoc(): array {
+		function fetch_assoc() {
 			return $this->fetch(\PDO::FETCH_ASSOC);
 		}
 
-		function fetch_row(): array {
+		function fetch_row() {
 			return $this->fetch(\PDO::FETCH_NUM);
 		}
 

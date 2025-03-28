@@ -46,7 +46,7 @@ class Adminer {
 	}
 
 	/** Identifier of selected database */
-	function database(): string {
+	function database(): ?string {
 		// should be used everywhere instead of DB
 		return DB;
 	}
@@ -444,7 +444,7 @@ class Adminer {
 	}
 
 	/** Print text length box in select
-	* @param string $text_length result of selectLengthProcess()
+	* @param numeric-string $text_length result of selectLengthProcess()
 	*/
 	function selectLengthPrint(string $text_length): void {
 		if ($text_length !== null) {
@@ -600,10 +600,10 @@ class Adminer {
 	}
 
 	/** Process length box in select
-	* @return string number of characters to shorten texts, will be escaped
+	* @return numeric-string number of characters to shorten texts, will be escaped, empty string means unlimited
 	*/
 	function selectLengthProcess(): string {
-		return (isset($_GET["text_length"]) ? $_GET["text_length"] : "100");
+		return (isset($_GET["text_length"]) ? "$_GET[text_length]" : "100");
 	}
 
 	/** Process extras in select form
@@ -691,11 +691,12 @@ class Adminer {
 	}
 
 	/** Get options to display edit field
+	* @param ?string $table null in call.inc.php
 	* @param Field $field
 	* @param string $attrs attributes to use inside the tag
 	* @return string custom input field or empty string for default
 	*/
-	function editInput(string $table, array $field, string $attrs, ?string $value): string {
+	function editInput(?string $table, array $field, string $attrs, ?string $value): string {
 		if ($field["type"] == "enum") {
 			return (isset($_GET["select"]) ? "<label><input type='radio'$attrs value='-1' checked><i>" . lang('original') . "</i></label> " : "")
 				. ($field["null"] ? "<label><input type='radio'$attrs value=''" . ($value !== null || isset($_GET["select"]) ? "" : " checked") . "><i>NULL</i></label> " : "")
@@ -706,9 +707,10 @@ class Adminer {
 	}
 
 	/** Get hint for edit field
+	* @param ?string $table null in call.inc.php
 	* @param Field $field
 	*/
-	function editHint(string $table, array $field, ?string $value): string {
+	function editHint(?string $table, array $field, ?string $value): string {
 		return "";
 	}
 

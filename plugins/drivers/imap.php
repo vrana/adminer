@@ -123,13 +123,13 @@ if (isset($_GET["imap"])) {
 				$this->fields = array_keys(idx($result, 0,  array()));
 			}
 
-			function fetch_assoc(): array {
+			function fetch_assoc() {
 				$row = current($this->result);
 				next($this->result);
 				return $row;
 			}
 
-			function fetch_row(): array {
+			function fetch_row() {
 				$row = $this->fetch_assoc();
 				return ($row ? array_values($row) : false);
 			}

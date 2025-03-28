@@ -5,7 +5,7 @@ namespace Adminer;
 // interfaces can include properties only since PHP 8.4
 abstract class SqlDb {
 	public string $extension; // extension name
-	public string $flavor; // different vendor with the same API, e.g. MariaDB; usually stays empty
+	public string $flavor = ''; // different vendor with the same API, e.g. MariaDB; usually stays empty
 	public string $server_info; // server version
 	public int $affected_rows; // number of affected rows
 	public string $info; // see https://php.net/mysql_info

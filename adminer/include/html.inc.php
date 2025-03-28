@@ -191,7 +191,7 @@ function enum_input(string $type, string $attrs, array $field, $value, string $e
 * @param Field|RoutineField $field
 * @param mixed $value
 */
-function input(array $field, $value, string $function, bool $autofocus = false): void {
+function input(array $field, $value, string $function, ?bool $autofocus = false): void {
 	global $driver, $adminer;
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";

@@ -20,7 +20,7 @@ class AdminerSlugify {
 
 	function editInput($table, $field, $attrs, $value) {
 		static $slugify;
-		if (!$_GET["select"] && !$_GET["where"]) {
+		if (!$_GET["select"] && !$_GET["where"] && $table) {
 			if ($slugify === null) {
 				$slugify = array();
 				$prev = null;

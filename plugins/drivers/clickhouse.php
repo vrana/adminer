@@ -91,13 +91,13 @@ if (isset($_GET["clickhouse"])) {
 				reset($this->rows);
 			}
 
-			function fetch_assoc(): array {
+			function fetch_assoc() {
 				$row = current($this->rows);
 				next($this->rows);
 				return $row === false ? false : array_combine($this->columns, $row);
 			}
 
-			function fetch_row(): array {
+			function fetch_row() {
 				$row = current($this->rows);
 				next($this->rows);
 				return $row;
