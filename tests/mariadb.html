@@ -183,6 +183,17 @@
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Invalid table</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;table=invalid</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>No tables.</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;create=invalid</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>No tables.</td><td></td></tr>
+<tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;select=invalid</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Unable to select the table:</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Schema</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer.php?server=localhost:3307&amp;username=ODBC&amp;db=adminer_test&amp;schema=</td><td></td></tr>
