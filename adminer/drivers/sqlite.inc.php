@@ -270,9 +270,7 @@ if (isset($_GET["sqlite"])) {
 	}
 
 	function indexes($table, $connection2 = null) {
-		if (!is_object($connection2)) {
-			$connection2 = connection();
-		}
+		$connection2 = connection($connection2);
 		$return = array();
 		$sql = get_val("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table), 0, $connection2);
 		if (preg_match('~\bPRIMARY\s+KEY\s*\((([^)"]+|"[^"]*"|`[^`]*`)++)~i', $sql, $match)) {

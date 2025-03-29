@@ -451,9 +451,7 @@ ORDER BY a.attnum") as $row
 	}
 
 	function indexes($table, $connection2 = null) {
-		if (!is_object($connection2)) {
-			$connection2 = connection();
-		}
+		$connection2 = connection($connection2);
 		$return = array();
 		$table_oid = get_val("SELECT oid FROM pg_class WHERE relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema()) AND relname = " . q($table), 0, $connection2);
 		$columns = get_key_vals("SELECT attnum, attname FROM pg_attribute WHERE attrelid = $table_oid AND attnum > 0", $connection2);

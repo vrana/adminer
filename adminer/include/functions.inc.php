@@ -4,11 +4,12 @@ namespace Adminer;
 // This file is used both in Adminer and Adminer Editor.
 
 /** Get database connection
+* @param Db|string $connection2 custom connection to use instead of the default
 * @return Db|string string means error
 */
-function connection($special = null) {
+function connection($connection2 = null) {
 	// can be used in customization, Db::$instance is minified
-	return Db::$instance;
+	return (is_object($connection2) ? $connection2 : Db::$instance);
 }
 
 /** Get Adminer object
@@ -99,9 +100,7 @@ function bracket_escape(string $idf, bool $back = false): string {
 * @param Db|string $connection2 defaults to connection()
 */
 function min_version($version, $maria_db = "", $connection2 = null): bool {
-	if (!is_object($connection2)) {
-		$connection2 = connection();
-	}
+	$connection2 = connection($connection2);
 	$server_info = $connection2->server_info;
 	if ($maria_db && preg_match('~([\d.]+)-MariaDB~', $server_info, $match)) {
 		$server_info = $match[1];
@@ -185,9 +184,7 @@ function get_vals(string $query, $column = 0): array {
 * @return string[]
 */
 function get_key_vals(string $query, $connection2 = null, bool $set_keys = true): array {
-	if (!is_object($connection2)) {
-		$connection2 = connection();
-	}
+	$connection2 = connection($connection2);
 	$return = array();
 	$result = $connection2->query($query);
 	if (is_object($result)) {
@@ -207,14 +204,14 @@ function get_key_vals(string $query, $connection2 = null, bool $set_keys = true)
 * @return list<string[]> of associative arrays
 */
 function get_rows(string $query, $connection2 = null, string $error = "<p class='error'>"): array {
-	$conn = (is_object($connection2) ? $connection2 : connection());
+	$conn = connection($connection2);
 	$return = array();
 	$result = $conn->query($query);
 	if (is_object($result)) { // can return true
 		while ($row = $result->fetch_assoc()) {
 			$return[] = $row;
 		}
-	} elseif (!$result && !is_object($connection2) && $error && (defined('Adminer\PAGE_HEADER') || $error == "-- ")) {
+	} elseif (!$result && $connection2 === null && $error && (defined('Adminer\PAGE_HEADER') || $error == "-- ")) {
 		echo $error . error() . "\n";
 	}
 	return $return;
