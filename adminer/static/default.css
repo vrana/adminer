@@ -2,16 +2,17 @@
 
 html {
 	--bg: #fff;
+	--fg: #000;
 }
 
-body { color: #000; background: var(--bg); font: 90%/1.25 Verdana, Arial, Helvetica, sans-serif; margin: 0; min-width: fit-content; }
+body { color: var(--fg); background: var(--bg); font: 90%/1.25 Verdana, Arial, Helvetica, sans-serif; margin: 0; min-width: fit-content; }
 a { color: blue; text-decoration: none; }
 a:visited { color: navy; }
 a:link:hover, a:visited:hover { color: red; text-decoration: underline; }
 a.text:hover { text-decoration: none; }
 a.jush-help:hover { color: inherit; }
 h1 { font-size: 150%; margin: 0; padding: .8em 1em; border-bottom: 1px solid #999; font-weight: normal; color: #777; background: #eee; }
-h2 { font-size: 150%; margin: 0 0 20px -18px; padding: .8em 1em; border-bottom: 1px solid #000; color: #000; font-weight: normal; background: #ddf; }
+h2 { font-size: 150%; margin: 0 0 20px -18px; padding: .8em 1em; border-bottom: 1px solid var(--fg); font-weight: normal; background: #ddf; }
 h3 { font-weight: normal; font-size: 130%; margin: 1em 0 0; }
 form { margin: 0; }
 td table { width: 100%; margin: 0; }
@@ -48,7 +49,7 @@ input.wayoff { left: -1000px; position: absolute; }
 .error { color: red; background: #fee; }
 .error b { background: var(--bg); font-weight: normal; }
 .message { color: green; background: #efe; }
-.message table { color: #000; background: var(--bg); }
+.message table { color: var(--fg); background: var(--bg); }
 .error, .message { padding: .5em .8em; margin: 1em 20px 0 0; }
 .char { color: #007F00; }
 .date { color: #7F007F; }
@@ -115,7 +116,7 @@ input.wayoff { left: -1000px; position: absolute; }
 @media all and (max-width: 880px) {
 	.pages { left: auto; }
 	.logout { padding: 1em; top: 3em; }
-	#menu { width: auto; background: var(--bg); border: 1px solid #000; }
+	#menu { width: auto; background: var(--bg); border: 1px solid var(--fg); }
 	#content { margin-left: 10px; }
 	#lang { position: static; }
 	#breadcrumb { left: 48px; }

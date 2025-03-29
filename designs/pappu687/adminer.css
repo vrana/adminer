@@ -10,7 +10,11 @@ https://raw.github.com/vrana/adminer/master/designs/ng9/adminer.css
  *
  * adminer.php :allow in iframe(  if($b->headers()){header("X-Frame-Options: deny");header("X-XSS-Protection: 0");} )
  */
- ::-webkit-scrollbar-track-piece{
+html {
+	--fg: #555;
+}
+
+::-webkit-scrollbar-track-piece{
     background-color: rgba(180,180,180,0.06);
     border-radius:3px;
 }

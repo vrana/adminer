@@ -2,6 +2,7 @@
 
 html {
 	--bg: black;
+	--fg: #ccc;
 }
 
 @import url(//fonts.googleapis.com/css?family=Source+Sans+Pro:400,900);

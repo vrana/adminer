@@ -8,6 +8,9 @@ it is based on some parts of:
 - CSS icons by Hever - http://hev.cz
 */
 
+html {
+	--fg: #333;
+}
 
 body {
 	background: #FFF;

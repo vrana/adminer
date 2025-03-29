@@ -37,6 +37,7 @@
  */
 html {
 	--bg: #002240;
+	--fg: #829bb0;
 }
 
 #menu{padding:0 0 30px 0}

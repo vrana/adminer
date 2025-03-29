@@ -2,9 +2,9 @@
 
 html {
 	--bg: #002240;
+	--fg: #829bb0;
 }
 
-body { color: #829bb0; }
 a { color: #517fa8; }
 a:visited { color: #517fa8; }
 a:link:hover, a:visited:hover { color: #9bc0e1; }
@@ -25,7 +25,6 @@ input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
 .error { color: red; background: #efdada; border: 1px solid #e76f6f; }
 .error b { background: #efeaea; }
 .message { color: #0b860b; background: #efe; border: 1px solid #7fbd7f; }
-.message table { color: #829bb0; }
 .char { color: #a949a9; }
 .date { color: #59c159; }
 .enum { color: #d55c5c; }
