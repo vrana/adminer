@@ -12,7 +12,7 @@ parameters:
 		- identifier: includeOnce.fileNotFound # ./adminer-plugins.php
 		- "~^Function (set_magic_quotes_runtime|mysql_)~" # PHP < 7 functions
 		- "~an unknown class OCI-?Lob~" # this looks like PHPStan bug
-		- "~^Variable \\$(adminer|connection|driver|error|translations) might not be defined~" # declared in bootstrap.inc.php
+		- "~^Variable \\$error might not be defined~" # declared in bootstrap.inc.php
 		- "~^Constant LANG not found~" # defined in lang.inc.php
 		- "~expects int, float given~" # this will work
 		- "~expects bool~" # truthy values
