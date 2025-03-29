@@ -49,6 +49,8 @@ Simple conditional checks may use `JUSH`, but for complex logic, methods in `Dri
 ## Backwards Compatibility
 
 Adminer is highly conservative regarding PHP version requirements.
+Source codes require PHP 7.4 to take advantage of type declarations.
+These type declarations are stripped during compilation to be compatible with PHP 5.3.
 PHP 5.3 is still supported because some users cannot upgrade their servers.
 Compatibility is periodically [checked](https://github.com/vrana/adminer/blob/v5.0.6/phpcs.xml#L121).
 The required PHP version is only increased if it significantly improves the code.
@@ -249,7 +251,6 @@ Includes in Adminer start with `./` to bypass `include_path`, which is unrelated
 Compilation also [shrinks](https://github.com/vrana/PhpShrink) PHP code by removing whitespace, comments, and shortening variable names.
 This prevents plugins from overwriting Adminer’s variables.
 The compiled file is binary, which is valid PHP but not valid UTF-8 - a debatable choice.
-Compilation also removes PHP 7 type declarations to be compatible with PHP 5.
 
 Translations used to occupy a large portion of the compiled file.
 In the source code, translations map English strings to localized versions.
