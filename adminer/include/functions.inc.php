@@ -739,16 +739,16 @@ function first(array $array) {
 }
 
 /** Read password from file adminer.key in temporary directory or create one
-* @return string|false false if the file can not be created
+* @return string '' if the file can not be created
 */
-function password_file(bool $create) {
+function password_file(bool $create): string {
 	$filename = get_temp_dir() . "/adminer.key";
 	if (!$create && !file_exists($filename)) {
-		return false;
+		return '';
 	}
 	$fp = file_open_lock($filename);
 	if (!$fp) {
-		return false;
+		return '';
 	}
 	$return = stream_get_contents($fp);
 	if (!$return) {

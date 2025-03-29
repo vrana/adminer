@@ -28,7 +28,7 @@ class Adminer {
 	}
 
 	/** Get key used for permanent login
-	* @return string cryptic string which gets combined with password or false in case of an error
+	* @return string cryptic string which gets combined with password or '' in case of an error
 	*/
 	function permanentLogin(bool $create = false): string {
 		return password_file($create);
