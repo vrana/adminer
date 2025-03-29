@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$translations = array(
+Lang::$translations = array(
 	'Login' => 'Login',
 	'Logout successful.' => 'Abmeldung erfolgreich.',
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Danke, dass Sie Adminer genutzt haben. <a href="https://www.adminer.org/de/donation/">Spenden willkommen!</a>.',

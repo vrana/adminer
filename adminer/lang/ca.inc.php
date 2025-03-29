@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$translations = array(
+Lang::$translations = array(
 	'Login' => 'Inicia la sessió',
 	'Logout successful.' => 'Desconnexió correcta.',
 	'Invalid credentials.' => 'Credencials invàlides.',

@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$translations = array(
+Lang::$translations = array(
 	// label for database system selection (MySQL, SQLite, ...)
 	'System' => 'Система Бази Даних',
 	'Server' => 'Сервер',

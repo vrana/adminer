@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$translations = array(
+Lang::$translations = array(
 	'Login' => 'লগইন',
 	'Logout successful.' => 'সফলভাবে লগআউট হয়েছে।',
 	'Invalid credentials.' => 'ভুল পাসওয়ার্ড।',

@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$translations = array(
+Lang::$translations = array(
 	'Login' => 'Aanmelden',
 	'Logout successful.' => 'Successvol afgemeld.',
 	'Invalid credentials.' => 'Ongeldige gebruikersgegevens.',

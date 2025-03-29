@@ -62,8 +62,7 @@ function langs(): array {
 */
 function lang(string $idf, $number = null): string {
 	// this is matched by compile.php
-	global $translations;
-	$translation = ($translations[$idf] ?: $idf);
+	$translation = (Lang::$translations[$idf] ?: $idf);
 	if (is_array($translation)) {
 		// this is matched by compile.php
 		$pos = ($number == 1 ? 0
@@ -99,7 +98,6 @@ function switch_lang(): void {
 if (isset($_POST["lang"]) && verify_token()) { // $error not yet available
 	cookie("adminer_lang", $_POST["lang"]);
 	$_SESSION["lang"] = $_POST["lang"]; // cookies may be disabled
-	$_SESSION["translations"] = array(); // used in compiled version
 	redirect(remove_from_uri());
 }
 
@@ -130,3 +128,7 @@ if (idx(langs(), $_COOKIE["adminer_lang"])) {
 }
 
 define('Adminer\LANG', $LANG);
+
+class Lang {
+	/** @var array<literal-string, string|list<string>> */ static array $translations;
+}

@@ -18,9 +18,8 @@ function add_quo_slashes($s) {
 }
 
 function remove_lang($match) {
-	global $translations;
 	$idf = strtr($match[2], array("\\'" => "'", "\\\\" => "\\"));
-	$s = ($translations[$idf] ?: $idf);
+	$s = (Adminer\Lang::$translations[$idf] ?: $idf);
 	if ($match[3] == ",") { // lang() has parameters
 		return $match[1] . (is_array($s) ? "lang(array('" . implode("', '", array_map('add_apo_slashes', $s)) . "')," : "sprintf('" . add_apo_slashes($s) . "',");
 	}
@@ -167,9 +166,9 @@ function put_file_lang($match) {
 	}
 	$return = "";
 	foreach (Adminer\langs() as $lang => $val) {
-		include __DIR__ . "/adminer/lang/$lang.inc.php"; // assign $translations
+		include __DIR__ . "/adminer/lang/$lang.inc.php";
 		$translation_ids = array_flip($lang_ids); // default translation
-		foreach ($translations as $key => $val) {
+		foreach (Adminer\Lang::$translations as $key => $val) {
 			if ($val !== null) {
 				$translation_ids[$lang_ids[$key]] = implode("\t", (array) $val);
 			}
@@ -178,10 +177,14 @@ function put_file_lang($match) {
 		case "' . $lang . '": $compressed = "' . add_quo_slashes(lzw_compress(implode("\n", $translation_ids))) . '"; break;';
 	}
 	$translations_version = crc32($return);
-	return '$translations = $_SESSION["translations"];
-if ($_SESSION["translations_version"] != ' . $translations_version . ') {
-	$translations = array();
-	$_SESSION["translations_version"] = ' . $translations_version . ';
+	return 'Lang::$translations = $_SESSION["translations"];
+if ($_SESSION["translations_version"] != LANG . ' . $translations_version . ') {
+	Lang::$translations = array();
+	$_SESSION["translations_version"] = LANG . ' . $translations_version . ';
+}
+if (!Lang::$translations) {
+	Lang::$translations = get_translations(LANG);
+	$_SESSION["translations"] = Lang::$translations;
 }
 
 function get_translations($lang) {
@@ -192,11 +195,6 @@ function get_translations($lang) {
 		$translations[] = (strpos($val, "\t") ? explode("\t", $val) : $val);
 	}
 	return $translations;
-}
-
-if (!$translations) {
-	$translations = get_translations(LANG);
-	$_SESSION["translations"] = $translations;
 }
 ';
 }

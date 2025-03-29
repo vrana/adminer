@@ -39,7 +39,7 @@ if ($_GET["script"] == "version") {
 	exit;
 }
 
-global $translations; // allows including Adminer inside a function
+// Adminer doesn't use any global variables; they used to be declared here
 
 if (!$_SERVER["REQUEST_URI"]) { // IIS 5 compatibility
 	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"];

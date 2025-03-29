@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$translations = array(
+Lang::$translations = array(
 	'Login' => 'நுழை',
 	'Logout successful.' => 'வெற்றிக‌ர‌மாய் வெளியேறியாயிற்று.',
 	'Invalid credentials.' => 'ச‌ரியான‌ விப‌ர‌ங்க‌ள் இல்லை.',

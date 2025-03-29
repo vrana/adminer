@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$translations = array(
+Lang::$translations = array(
 	'Login' => 'Войти',
 	'Logout successful.' => 'Вы успешно покинули систему.',
 	'Invalid credentials.' => 'Неправильное имя пользователя или пароль.',
