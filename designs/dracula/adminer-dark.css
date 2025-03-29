@@ -4,6 +4,10 @@
  * Color syntax inspired by Dracula Theme [https://draculatheme.com/]
  * @version 1.0 (June 2020)
  */
+html {
+	--bg: #282a36;
+}
+
  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600&family=Ubuntu:wght@500;700&display=swap');
 
  :root {

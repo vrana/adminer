@@ -34,7 +34,12 @@
  *   Default Silk icon set 1.3 by Mark James - https://opengameart.org/content/application-silk-icon-set-13
  *   Modified icons by Robert Mesaros
  *
- */#menu{padding:0 0 30px 0}
+ */
+html {
+	--bg: #002240;
+}
+
+#menu{padding:0 0 30px 0}
 .ltr .logout{right:0;left:auto;margin-top:.5em}
 .rtl .logout{left:0;right:auto;margin-top:.5em}
 html{-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box}
