@@ -1,8 +1,8 @@
 ## Adminer dev
-Export: Fix tar (regression from 5.0.3)
-Elasticsearch: Make it work with Elasticsearch 8
-CSS: Hide menu on mobile
-CSS: Invert icons in dark mode
+- Export: Fix tar (regression from 5.0.3)
+- Elasticsearch: Make it work with Elasticsearch 8
+- CSS: Hide menu on mobile
+- CSS: Invert icons in dark mode
 
 ## Adminer 5.1.0 (released 2025-03-24)
 - Display collation at table structure if different from table
