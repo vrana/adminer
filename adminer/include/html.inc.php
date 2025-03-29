@@ -467,6 +467,16 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 	echo "</form>\n";
 }
 
+/** Shorten UTF-8 string
+* @return string escaped string with appended ...
+*/
+function shorten_utf8(string $string, int $length = 80, string $suffix = ""): string {
+	if (!preg_match("(^(" . repeat_pattern("[\t\r\n -\x{10FFFF}]", $length) . ")($)?)u", $string, $match)) { // ~s causes trash in $match[2] under some PHP versions, (.|\n) is slow
+		preg_match("(^(" . repeat_pattern("[\t\r\n -~]", $length) . ")($)?)", $string, $match);
+	}
+	return h($match[1]) . $suffix . (isset($match[2]) ? "" : "<i>…</i>");
+}
+
 /** Get button with icon */
 function icon(string $icon, string $name, string $html, string $title): string {
 	return "<button type='submit' name='$name' title='" . h($title) . "' class='icon icon-$icon'><span>$html</span></button>";

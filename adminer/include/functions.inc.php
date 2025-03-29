@@ -11,17 +11,15 @@ function connection(): Db {
 }
 
 /** Get Adminer object
-* @return Adminer
+* @return Adminer|Plugins
 */
 function adminer() {
 	global $adminer;
 	return $adminer;
 }
 
-/** Get Driver object
-* @return Driver
-*/
-function driver() {
+/** Get Driver object */
+function driver(): Driver {
 	global $driver;
 	return $driver;
 }
@@ -70,7 +68,7 @@ function number_type(): string {
 }
 
 /** Disable magic_quotes_gpc
-* @param list<array> $process e.g. (&$_GET, &$_POST, &$_COOKIE)
+* @param list<array> $process e.g. [&$_GET, &$_POST, &$_COOKIE]
 * @param bool $filter whether to leave values as is
 * @return void modified in place
 */
@@ -172,7 +170,7 @@ function get_val(string $query, int $field = 0, ?Db $conn = null) {
 }
 
 /** Get list of values from database
-* @param mixed $column
+* @param array-key $column
 * @return list<string>
 */
 function get_vals(string $query, $column = 0): array {
@@ -564,16 +562,6 @@ function repeat_pattern(string $pattern, int $length): string {
 function is_utf8(?string $val): bool {
 	// don't print control chars except \t\r\n
 	return (preg_match('~~u', $val) && !preg_match('~[\0-\x8\xB\xC\xE-\x1F]~', $val));
-}
-
-/** Shorten UTF-8 string
-* @return string escaped string with appended ...
-*/
-function shorten_utf8(string $string, int $length = 80, string $suffix = ""): string {
-	if (!preg_match("(^(" . repeat_pattern("[\t\r\n -\x{10FFFF}]", $length) . ")($)?)u", $string, $match)) { // ~s causes trash in $match[2] under some PHP versions, (.|\n) is slow
-		preg_match("(^(" . repeat_pattern("[\t\r\n -~]", $length) . ")($)?)", $string, $match);
-	}
-	return h($match[1]) . $suffix . (isset($match[2]) ? "" : "<i>…</i>");
 }
 
 /** Format decimal number

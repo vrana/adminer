@@ -64,7 +64,7 @@ class Plugins {
 	* @param mixed[] $params
 	* @return mixed
 	*/
-	function __call($name, array $params) {
+	function __call(string $name, array $params) {
 		$args = array();
 		foreach ($params as $key => $val) {
 			// some plugins accept params by reference - we don't need to propage it outside, just to the other plugins
