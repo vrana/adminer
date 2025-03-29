@@ -7,7 +7,6 @@ namespace Adminer;
 * @param string $title2 used after colon in title and heading, should be HTML escaped
 */
 function page_header(string $title, string $error = "", $breadcrumb = array(), string $title2 = ""): void {
-	global $adminer;
 	page_headers();
 	if (is_ajax() && $error) {
 		page_messages($error);
@@ -17,7 +16,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 		ob_start(null, 4096);
 	}
 	$title_all = $title . ($title2 != "" ? ": $title2" : "");
-	$title_page = strip_tags($title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . $adminer->name());
+	$title_page = strip_tags($title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . adminer()->name());
 	// initial-scale=1 is the default but Chrome 134 on iOS is not able to zoom out without it
 	?>
 <!DOCTYPE html>
@@ -28,7 +27,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 <title><?php echo $title_page; ?></title>
 <link rel="stylesheet" href="../adminer/static/default.css">
 <?php
-	$css = $adminer->css();
+	$css = adminer()->css();
 	$has_light = false;
 	$has_dark = false;
 	foreach ($css as $filename) {
@@ -51,7 +50,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	// this is matched by compile.php
 	echo script_src("../adminer/static/functions.js");
 	echo script_src("static/editing.js");
-	if ($adminer->head($dark)) {
+	if (adminer()->head($dark)) {
 		echo "<link rel='shortcut icon' type='image/x-icon' href='../adminer/static/favicon.ico'>\n";
 		echo "<link rel='apple-touch-icon' href='../adminer/static/favicon.ico'>\n";
 	}
@@ -91,7 +90,7 @@ const thousandsSeparator = '" . js_escape(lang(',')) . "';")
 		$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
 		echo '<p id="breadcrumb"><a href="' . h($link ?: ".") . '">' . get_driver(DRIVER) . '</a> » ';
 		$link = substr(preg_replace('~\b(db|ns)=[^&]*&~', '', ME), 0, -1);
-		$server = $adminer->serverName(SERVER);
+		$server = adminer()->serverName(SERVER);
 		$server = ($server != "" ? $server : lang('Server'));
 		if ($breadcrumb === false) {
 			echo "$server\n";
@@ -128,21 +127,20 @@ const thousandsSeparator = '" . js_escape(lang(',')) . "';")
 
 /** Send HTTP headers */
 function page_headers(): void {
-	global $adminer;
 	header("Content-Type: text/html; charset=utf-8");
 	header("Cache-Control: no-cache");
 	header("X-Frame-Options: deny"); // ClickJacking protection in IE8, Safari 4, Chrome 2, Firefox 3.6.9
 	header("X-XSS-Protection: 0"); // prevents introducing XSS in IE8 by removing safe parts of the page
 	header("X-Content-Type-Options: nosniff");
 	header("Referrer-Policy: origin-when-cross-origin");
-	foreach ($adminer->csp() as $csp) {
+	foreach (adminer()->csp() as $csp) {
 		$header = array();
 		foreach ($csp as $key => $val) {
 			$header[] = "$key $val";
 		}
 		header("Content-Security-Policy: " . implode("; ", $header));
 	}
-	$adminer->headers();
+	adminer()->headers();
 }
 
 /** Get Content Security Policy headers
@@ -174,7 +172,6 @@ function get_nonce(): string {
 
 /** Print flash and error messages */
 function page_messages(string $error): void {
-	global $adminer;
 	$uri = preg_replace('~^[^?]*~', '', $_SERVER["REQUEST_URI"]);
 	$messages = idx($_SESSION["messages"], $uri);
 	if ($messages) {
@@ -184,8 +181,8 @@ function page_messages(string $error): void {
 	if ($error) {
 		echo "<div class='error'>$error</div>\n";
 	}
-	if ($adminer->error) { // separate <div>
-		echo "<div class='error'>$adminer->error</div>\n";
+	if (adminer()->error) { // separate <div>
+		echo "<div class='error'>" . adminer()->error . "</div>\n";
 	}
 }
 
@@ -193,9 +190,8 @@ function page_messages(string $error): void {
 * @param ''|'auth'|'db'|'ns' $missing
 */
 function page_footer(string $missing = ""): void {
-	global $adminer;
 	echo "</div>\n\n<div id='foot' class='foot'>\n<div id='menu'>\n";
-	$adminer->navigation($missing);
+	adminer()->navigation($missing);
 	echo "</div>\n";
 	if ($missing != "auth") {
 		?>

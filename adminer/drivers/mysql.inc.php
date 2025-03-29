@@ -15,10 +15,9 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			function attach(?string $server, string $username, string $password): string {
-				global $adminer;
 				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
 				list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
-				$ssl = $adminer->connectSsl();
+				$ssl = adminer()->connectSsl();
 				if ($ssl) {
 					$this->ssl_set($ssl['key'], $ssl['cert'], $ssl['ca'], '', '');
 				}
@@ -158,9 +157,8 @@ if (!defined('Adminer\DRIVER')) {
 			public string $extension = "PDO_MySQL";
 
 			function attach(?string $server, string $username, string $password): string {
-				global $adminer;
 				$options = array(\PDO::MYSQL_ATTR_LOCAL_INFILE => false);
-				$ssl = $adminer->connectSsl();
+				$ssl = adminer()->connectSsl();
 				if ($ssl) {
 					if ($ssl['key']) {
 						$options[\PDO::MYSQL_ATTR_SSL_KEY] = $ssl['key'];

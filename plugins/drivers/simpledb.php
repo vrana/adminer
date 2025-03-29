@@ -260,8 +260,7 @@ if (isset($_GET["simpledb"])) {
 	}
 
 	function logged_user() {
-		$adminer = adminer();
-		$credentials = $adminer->credentials();
+		$credentials = adminer()->credentials();
 		return $credentials[1];
 	}
 
@@ -383,9 +382,8 @@ if (isset($_GET["simpledb"])) {
 	}
 
 	function sdb_request($action, $params = array()) {
-		$adminer = adminer();
 		$connection = connection();
-		list($host, $params['AWSAccessKeyId'], $secret) = $adminer->credentials();
+		list($host, $params['AWSAccessKeyId'], $secret) = adminer()->credentials();
 		$params['Action'] = $action;
 		$params['Timestamp'] = gmdate('Y-m-d\TH:i:s+00:00');
 		$params['Version'] = '2009-04-15';

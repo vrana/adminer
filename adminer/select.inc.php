@@ -15,12 +15,12 @@ $search_columns = array(); // searchable columns
 $order_columns = array(); // searchable columns
 $text_length = "";
 foreach ($fields as $key => $field) {
-	$name = $adminer->fieldName($field);
+	$name = adminer()->fieldName($field);
 	$name_plain = html_entity_decode(strip_tags($name), ENT_QUOTES);
 	if (isset($field["privileges"]["select"]) && $name != "") {
 		$columns[$key] = $name_plain;
 		if (is_shortable($field)) {
-			$text_length = $adminer->selectLengthProcess();
+			$text_length = adminer()->selectLengthProcess();
 		}
 	}
 	if (isset($field["privileges"]["where"]) && $name != "") {
@@ -32,13 +32,13 @@ foreach ($fields as $key => $field) {
 	$rights += $field["privileges"];
 }
 
-list($select, $group) = $adminer->selectColumnsProcess($columns, $indexes);
+list($select, $group) = adminer()->selectColumnsProcess($columns, $indexes);
 $select = array_unique($select);
 $group = array_unique($group);
 $is_group = count($group) < count($select);
-$where = $adminer->selectSearchProcess($fields, $indexes);
-$order = $adminer->selectOrderProcess($fields, $indexes);
-$limit = $adminer->selectLimitProcess();
+$where = adminer()->selectSearchProcess($fields, $indexes);
+$order = adminer()->selectOrderProcess($fields, $indexes);
+$limit = adminer()->selectLimitProcess();
 
 if ($_GET["val"] && is_ajax()) {
 	header("Content-Type: text/plain; charset=utf-8");
@@ -85,7 +85,7 @@ if ($_POST && !$error) {
 	if ($_POST["export"]) {
 		save_settings(array("output" => $_POST["output"], "format" => $_POST["format"]), "adminer_import");
 		dump_headers($TABLE);
-		$adminer->dumpTable($TABLE, "");
+		adminer()->dumpTable($TABLE, "");
 		$from = ($select ? implode(", ", $select) : "*")
 			. convert_fields($columns, $fields, $select)
 			. "\nFROM " . table($TABLE);
@@ -99,12 +99,12 @@ if ($_POST && !$error) {
 			}
 			$query = implode(" UNION ALL ", $union);
 		}
-		$adminer->dumpData($TABLE, "table", $query);
-		$adminer->dumpFooter();
+		adminer()->dumpData($TABLE, "table", $query);
+		adminer()->dumpFooter();
 		exit;
 	}
 
-	if (!$adminer->selectEmailProcess($where, $foreign_keys)) {
+	if (!adminer()->selectEmailProcess($where, $foreign_keys)) {
 		if ($_POST["save"] || $_POST["delete"]) { // edit
 			$result = true;
 			$affected = 0;
@@ -174,7 +174,7 @@ if ($_POST && !$error) {
 					$set = array();
 					foreach ($row as $key => $val) {
 						$key = bracket_escape($key, true); // true - back
-						$set[idf_escape($key)] = (preg_match('~char|text~', $fields[$key]["type"]) || $val != "" ? $adminer->processInput($fields[$key], $val) : "NULL");
+						$set[idf_escape($key)] = (preg_match('~char|text~', $fields[$key]["type"]) || $val != "" ? adminer()->processInput($fields[$key], $val) : "NULL");
 					}
 					$result = $driver->update(
 						$TABLE,
@@ -229,7 +229,7 @@ if ($_POST && !$error) {
 	}
 }
 
-$table_name = $adminer->tableName($table_status);
+$table_name = adminer()->tableName($table_status);
 if (is_ajax()) {
 	page_headers();
 	ob_start();
@@ -251,7 +251,7 @@ if (isset($rights["insert"]) || !support("table")) {
 
 	$set = $params ? "&" . http_build_query($params) : "";
 }
-$adminer->selectLinks($table_status, $set);
+adminer()->selectLinks($table_status, $set);
 
 if (!$columns && support("table")) {
 	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "." : ": " . error()) . "\n";
@@ -262,12 +262,12 @@ if (!$columns && support("table")) {
 	echo (DB != "" ? input_hidden("db", DB) . (isset($_GET["ns"]) ? input_hidden("ns", $_GET["ns"]) : "") : ""); // not used in Editor
 	echo input_hidden("select", $TABLE);
 	echo "</div>\n";
-	$adminer->selectColumnsPrint($select, $columns);
-	$adminer->selectSearchPrint($where, $search_columns, $indexes);
-	$adminer->selectOrderPrint($order, $order_columns, $indexes);
-	$adminer->selectLimitPrint($limit);
-	$adminer->selectLengthPrint($text_length);
-	$adminer->selectActionPrint($indexes);
+	adminer()->selectColumnsPrint($select, $columns);
+	adminer()->selectSearchPrint($where, $search_columns, $indexes);
+	adminer()->selectOrderPrint($order, $order_columns, $indexes);
+	adminer()->selectLimitPrint($limit);
+	adminer()->selectLengthPrint($text_length);
+	adminer()->selectActionPrint($indexes);
 	echo "</form>\n";
 
 	$page = $_GET["page"];
@@ -325,7 +325,7 @@ if (!$columns && support("table")) {
 		if (!$rows) {
 			echo "<p class='message'>" . lang('No rows.') . "\n";
 		} else {
-			$backward_keys = $adminer->backwardKeys($TABLE, $table_name);
+			$backward_keys = adminer()->backwardKeys($TABLE, $table_name);
 
 			echo "<div class='scrollable'>";
 			echo "<table id='table' class='nowrap checkable odds'>";
@@ -343,7 +343,7 @@ if (!$columns && support("table")) {
 					/** @var array{fun?:string, col?:string} */
 					$val = idx($_GET["columns"], key($select)) ?: array();
 					$field = $fields[$select ? ($val ? $val["col"] : current($select)) : $key];
-					$name = ($field ? $adminer->fieldName($field, $rank) : ($val["fun"] ? "*" : h($key)));
+					$name = ($field ? adminer()->fieldName($field, $rank) : ($val["fun"] ? "*" : h($key)));
 					if ($name != "") {
 						$rank++;
 						$names[$key] = $name;
@@ -384,7 +384,7 @@ if (!$columns && support("table")) {
 				ob_end_clean();
 			}
 
-			foreach ($adminer->rowDescriptions($rows, $foreign_keys) as $n => $row) {
+			foreach (adminer()->rowDescriptions($rows, $foreign_keys) as $n => $row) {
 				$unique_array = unique_array($rows[$n], $indexes);
 				if (!$unique_array) {
 					$unique_array = array();
@@ -472,7 +472,7 @@ if (!$columns && support("table")) {
 				if ($backward_keys) {
 					echo "<td>";
 				}
-				$adminer->backwardKeysPrint($backward_keys, $rows[$n]);
+				adminer()->backwardKeysPrint($backward_keys, $rows[$n]);
 				echo "</tr>\n"; // close to allow white-space: pre
 			}
 
@@ -549,7 +549,7 @@ if (!$columns && support("table")) {
 				echo checkbox("all", 1, 0, ($found_rows !== false ? ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) : ""), $onclick) . "\n";
 				echo "</fieldset>\n";
 
-				if ($adminer->selectCommandPrint()) {
+				if (adminer()->selectCommandPrint()) {
 					?>
 <fieldset<?php echo ($_GET["modify"] ? '' : ' class="jsonly"'); ?>><legend><?php echo lang('Modify'); ?></legend><div>
 <input type="submit" value="<?php echo lang('Save'); ?>"<?php echo ($_GET["modify"] ? '' : ' title="' . lang('Ctrl+click on a value to modify it.') . '"'); ?>>
@@ -562,7 +562,7 @@ if (!$columns && support("table")) {
 <?php
 				}
 
-				$format = $adminer->dumpFormat();
+				$format = adminer()->dumpFormat();
 				foreach ((array) $_GET["columns"] as $column) {
 					if ($column["fun"]) {
 						unset($format['sql']);
@@ -571,18 +571,18 @@ if (!$columns && support("table")) {
 				}
 				if ($format) {
 					print_fieldset("export", lang('Export') . " <span id='selected2'></span>");
-					$output = $adminer->dumpOutput();
+					$output = adminer()->dumpOutput();
 					echo ($output ? html_select("output", $output, $adminer_import["output"]) . " " : "");
 					echo html_select("format", $format, $adminer_import["format"]);
 					echo " <input type='submit' name='export' value='" . lang('Export') . "'>\n";
 					echo "</div></fieldset>\n";
 				}
 
-				$adminer->selectEmailPrint(array_filter($email_fields, 'strlen'), $columns);
+				adminer()->selectEmailPrint(array_filter($email_fields, 'strlen'), $columns);
 				echo "</div></div>\n";
 			}
 
-			if ($adminer->selectImportPrint()) {
+			if (adminer()->selectImportPrint()) {
 				echo "<div>";
 				echo "<a href='#import'>" . lang('Import') . "</a>";
 				echo script("qsl('a').onclick = partial(toggle, 'import');", "");

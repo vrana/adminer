@@ -36,12 +36,12 @@ if (!$error && $_POST) {
 	$start = microtime(true);
 	$result = $connection->multi_query($query);
 	$affected = $connection->affected_rows; // getting warnings overwrites this
-	echo $adminer->selectQuery($query, $start, !$result);
+	echo adminer()->selectQuery($query, $start, !$result);
 
 	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {
-		$connection2 = connect($adminer->credentials());
+		$connection2 = connect(adminer()->credentials());
 		if (is_object($connection2)) {
 			$connection2->select_db(DB);
 		}
@@ -71,7 +71,7 @@ if ($in) {
 	foreach ($in as $key) {
 		$field = $routine["fields"][$key];
 		$name = $field["field"];
-		echo "<tr><th>" . $adminer->fieldName($field);
+		echo "<tr><th>" . adminer()->fieldName($field);
 		$value = idx($_POST["fields"], $name);
 		if ($value != "") {
 			if ($field["type"] == "set") {

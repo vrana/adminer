@@ -12,7 +12,6 @@ if ($_COOKIE["adminer_permanent"]) {
 }
 
 function add_invalid_login(): void {
-	global $adminer;
 	$base = get_temp_dir() . "/adminer.invalid";
 	// adminer.invalid may not be writable by us, try the files with random suffixes
 	foreach (glob("$base*") ?: array($base) as $filename) {
@@ -36,7 +35,7 @@ function add_invalid_login(): void {
 			}
 		}
 	}
-	$invalid = &$invalids[$adminer->bruteForceKey()];
+	$invalid = &$invalids[adminer()->bruteForceKey()];
 	if (!$invalid) {
 		$invalid = array($time + 30*60, 0); // active for 30 minutes
 	}
@@ -46,7 +45,6 @@ function add_invalid_login(): void {
 
 /** @param string[] $permanent */
 function check_invalid_login(array &$permanent): void {
-	global $adminer;
 	$invalids = array();
 	foreach (glob(get_temp_dir() . "/adminer.invalid*") as $filename) {
 		$fp = file_open_lock($filename);
@@ -57,7 +55,7 @@ function check_invalid_login(array &$permanent): void {
 		}
 	}
 	/** @var array{int, int} */
-	$invalid = idx($invalids, $adminer->bruteForceKey(), array());
+	$invalid = idx($invalids, adminer()->bruteForceKey(), array());
 	$next_attempt = ($invalid[1] > 29 ? $invalid[0] - time() : 0); // allow 30 invalid attempts
 	if ($next_attempt > 0) { //! do the same with permanent login
 		auth_error(lang('Too many unsuccessful logins, try again in %d minute(s).', ceil($next_attempt / 60)), $permanent);
@@ -76,7 +74,7 @@ if ($auth) {
 	$_SESSION["db"][$vendor][$server][$username][$db] = true;
 	if ($auth["permanent"]) {
 		$key = implode("-", array_map('base64_encode', array($vendor, $server, $username, $db)));
-		$private = $adminer->permanentLogin(true);
+		$private = adminer()->permanentLogin(true);
 		$permanent[$key] = "$key:" . base64_encode($private ? encrypt_string($password, $private) : "");
 		cookie("adminer_permanent", implode(" ", $permanent));
 	}
@@ -99,7 +97,7 @@ if ($auth) {
 
 } elseif ($permanent && !$_SESSION["pwds"]) {
 	session_regenerate_id();
-	$private = $adminer->permanentLogin();
+	$private = adminer()->permanentLogin();
 	foreach ($permanent as $key => $val) {
 		list(, $cipher) = explode(":", $val);
 		list($vendor, $server, $username, $db) = array_map('base64_decode', explode("-", $key));
@@ -127,7 +125,6 @@ function unset_permanent(array &$permanent): void {
 * @return never
 */
 function auth_error(string $error, array &$permanent) {
-	global $adminer;
 	$session_name = session_name();
 	if (isset($_GET["username"])) {
 		header("HTTP/1.1 403 Forbidden"); // 401 requires sending WWW-Authenticate header
@@ -158,7 +155,7 @@ function auth_error(string $error, array &$permanent) {
 		echo "<p class='message'>" . lang('The action will be performed after successful login with the same credentials.') . "\n";
 	}
 	echo "</div>\n";
-	$adminer->loginForm();
+	adminer()->loginForm();
 	echo "</form>\n";
 	page_footer("auth");
 	exit;
@@ -178,7 +175,7 @@ if (isset($_GET["username"]) && is_string(get_password())) {
 		auth_error(lang('Connecting to privileged ports is not allowed.'), $permanent);
 	}
 	check_invalid_login($permanent);
-	$connection = connect($adminer->credentials());
+	$connection = connect(adminer()->credentials());
 	if (is_object($connection)) {
 		$driver = new Driver($connection);
 		if ($connection->flavor) {
@@ -188,7 +185,7 @@ if (isset($_GET["username"]) && is_string(get_password())) {
 }
 
 $login = null;
-if (!is_object($connection) || ($login = $adminer->login($_GET["username"], get_password())) !== true) {
+if (!is_object($connection) || ($login = adminer()->login($_GET["username"], get_password())) !== true) {
 	$error = (is_string($connection) ? nl_br(h($connection)) : (is_string($login) ? $login : lang('Invalid credentials.')));
 	auth_error(
 		$error . (preg_match('~^ | $~', get_password()) ? '<br>' . lang('There is a space in the input password which might be the cause.') : ''),

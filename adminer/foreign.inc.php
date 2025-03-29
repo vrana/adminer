@@ -69,7 +69,7 @@ $target = array_keys(fields(in_array($row["table"], $referencable) ? $row["table
 $onchange = "this.form['change-js'].value = '1'; this.form.submit();";
 echo "<p>" . lang('Target table') . ": " . html_select("table", $referencable, $row["table"], $onchange) . "\n";
 if (support("scheme")) {
-	$schemas = array_filter($adminer->schemas(), function ($schema) {
+	$schemas = array_filter(adminer()->schemas(), function ($schema) {
 		return !preg_match('~^information_schema$~i', $schema);
 	});
 	echo lang('Schema') . ": " . html_select("ns", $schemas, $row["ns"] != "" ? $row["ns"] : $_GET["ns"], $onchange);
@@ -78,7 +78,7 @@ if (support("scheme")) {
 	}
 } elseif (JUSH != "sqlite") {
 	$dbs = array();
-	foreach ($adminer->databases() as $db) {
+	foreach (adminer()->databases() as $db) {
 		if (!information_schema($db)) {
 			$dbs[] = $db;
 		}

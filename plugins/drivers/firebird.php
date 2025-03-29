@@ -125,8 +125,7 @@ if (isset($_GET["firebird"])) {
 	}
 
 	function logged_user() {
-		$adminer = adminer();
-		$credentials = $adminer->credentials();
+		$credentials = adminer()->credentials();
 		return $credentials[1];
 	}
 

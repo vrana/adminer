@@ -63,19 +63,18 @@ abstract class SqlDriver {
 	}
 
 	/** Select data from table
-	* @param list<string> $select result of $adminer->selectColumnsProcess()[0]
-	* @param list<string> $where result of $adminer->selectSearchProcess()
-	* @param list<string> $group result of $adminer->selectColumnsProcess()[1]
-	* @param list<string> $order result of $adminer->selectOrderProcess()
-	* @param int|numeric-string $limit result of $adminer->selectLimitProcess()
+	* @param list<string> $select result of adminer()->selectColumnsProcess()[0]
+	* @param list<string> $where result of adminer()->selectSearchProcess()
+	* @param list<string> $group result of adminer()->selectColumnsProcess()[1]
+	* @param list<string> $order result of adminer()->selectOrderProcess()
+	* @param int|numeric-string $limit result of adminer()->selectLimitProcess()
 	* @param int $page index of page starting at zero
 	* @param bool $print whether to print the query
 	* @return Result|false
 	*/
 	function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, ?int $page = 0, bool $print = false) {
-		global $adminer;
 		$is_group = (count($group) < count($select));
-		$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
+		$query = adminer()->selectQueryBuild($select, $where, $group, $order, $limit, $page);
 		if (!$query) {
 			$query = "SELECT" . limit(
 				($_GET["page"] != "last" && $limit != "" && $group && $is_group && JUSH == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) . "\nFROM " . table($table),
@@ -88,7 +87,7 @@ abstract class SqlDriver {
 		$start = microtime(true);
 		$return = $this->conn->query($query);
 		if ($print) {
-			echo $adminer->selectQuery($query, $start, !$return);
+			echo adminer()->selectQuery($query, $start, !$return);
 		}
 		return $return;
 	}

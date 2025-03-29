@@ -39,7 +39,7 @@ if ($_GET["script"] == "version") {
 	exit;
 }
 
-global $adminer, $connection, $driver, $translations; // allows including Adminer inside a function
+global $connection, $driver, $translations; // allows including Adminer inside a function
 
 if (!$_SERVER["REQUEST_URI"]) { // IIS 5 compatibility
 	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"];
@@ -81,11 +81,11 @@ include "./include/adminer.inc.php";
 include "../adminer/include/plugins.inc.php";
 
 if (function_exists('adminer_object')) {
-	$adminer = adminer_object();
+	Adminer::$instance = adminer_object();
 } elseif (is_dir("adminer-plugins") || file_exists("adminer-plugins.php")) {
-	$adminer = new Plugins(null);
+	Adminer::$instance = new Plugins(null);
 } else {
-	$adminer = new Adminer;
+	Adminer::$instance = new Adminer;
 }
 
 // this is matched by compile.php

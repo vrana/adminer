@@ -54,7 +54,7 @@ if ($tables_views && !$error && !$_POST["search"]) {
 
 page_header(($_GET["ns"] == "" ? lang('Database') . ": " . h(DB) : lang('Schema') . ": " . h($_GET["ns"])), $error, true);
 
-if ($adminer->homepage()) {
+if (adminer()->homepage()) {
 	if ($_GET["ns"] !== "") {
 		echo "<h3 id='tables-views'>" . lang('Tables and views') . "</h3>\n";
 		$tables_list = tables_list();
@@ -146,7 +146,7 @@ if ($adminer->homepage()) {
 				: "")))
 				. "<input type='submit' name='truncate' value='" . lang('Truncate') . "'> " . on_help(JUSH == "sqlite" ? "'DELETE'" : "'TRUNCATE" . (JUSH == "pgsql" ? "'" : " TABLE'")) . confirm()
 				. "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . on_help("'DROP TABLE'") . confirm() . "\n";
-				$databases = (support("scheme") ? $adminer->schemas() : $adminer->databases());
+				$databases = (support("scheme") ? adminer()->schemas() : adminer()->databases());
 				if (count($databases) != 1 && JUSH != "sqlite") {
 					$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));
 					echo "<p>" . lang('Move to other database') . ": ";

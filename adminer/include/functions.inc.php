@@ -14,8 +14,7 @@ function connection(): Db {
 * @return Adminer|Plugins
 */
 function adminer() {
-	global $adminer;
-	return $adminer;
+	return Adminer::$instance;
 }
 
 /** Get Driver object */
@@ -432,15 +431,15 @@ function redirect(?string $location, string $message = null): void {
 * @param bool $redirect
 */
 function query_redirect(string $query, ?string $location, string $message, $redirect = true, bool $execute = true, bool $failed = false, string $time = ""): bool {
-	global $connection, $adminer;
+	global $connection;
 	if ($execute) {
 		$start = microtime(true);
 		$failed = !$connection->query($query);
 		$time = format_time($start);
 	}
-	$sql = ($query ? $adminer->messageQuery($query, $time, $failed) : "");
+	$sql = ($query ? adminer()->messageQuery($query, $time, $failed) : "");
 	if ($failed) {
-		$adminer->error .= error() . $sql . script("messagesPrint();") . "<br>";
+		adminer()->error .= error() . $sql . script("messagesPrint();") . "<br>";
 		return false;
 	}
 	if ($redirect) {
@@ -589,9 +588,8 @@ function table_status1(string $table, bool $fast = false): array {
 * @return list<ForeignKey>[] [$col => []]
 */
 function column_foreign_keys(string $table): array {
-	global $adminer;
 	$return = array();
-	foreach ($adminer->foreignKeys($table) as $foreign_key) {
+	foreach (adminer()->foreignKeys($table) as $foreign_key) {
 		foreach ($foreign_key["source"] as $val) {
 			$return[$val][] = $foreign_key;
 		}
@@ -628,11 +626,10 @@ function fields_from_edit(): array { // used by Mongo and SimpleDB
 * @return string extension
 */
 function dump_headers(string $identifier, bool $multi_table = false): string {
-	global $adminer;
-	$return = $adminer->dumpHeaders($identifier, $multi_table);
+	$return = adminer()->dumpHeaders($identifier, $multi_table);
 	$output = $_POST["output"];
 	if ($output != "text") {
-		header("Content-Disposition: attachment; filename=" . $adminer->dumpFilename($identifier) . ".$return" . ($output != "file" && preg_match('~^[0-9a-z]+$~', $output) ? ".$output" : ""));
+		header("Content-Disposition: attachment; filename=" . adminer()->dumpFilename($identifier) . ".$return" . ($output != "file" && preg_match('~^[0-9a-z]+$~', $output) ? ".$output" : ""));
 	}
 	session_write_close();
 	if (!ob_get_level()) {
@@ -762,7 +759,6 @@ function rand_string(): string {
 * @return string HTML
 */
 function select_value($val, string $link, array $field, ?string $text_length): string {
-	global $adminer;
 	if (is_array($val)) {
 		$return = "";
 		foreach ($val as $k => $v) {
@@ -774,7 +770,7 @@ function select_value($val, string $link, array $field, ?string $text_length): s
 		return "<table>$return</table>";
 	}
 	if (!$link) {
-		$link = $adminer->selectLink($val, $field);
+		$link = adminer()->selectLink($val, $field);
 	}
 	if ($link === null) {
 		if (is_mail($val)) {
@@ -784,7 +780,7 @@ function select_value($val, string $link, array $field, ?string $text_length): s
 			$link = $val; // IE 11 and all modern browsers hide referrer
 		}
 	}
-	$return = $adminer->editVal($val, $field);
+	$return = adminer()->editVal($val, $field);
 	if ($return !== null) {
 		if (!is_utf8($return)) {
 			$return = "\0"; // htmlspecialchars of binary data returns an empty string
@@ -794,7 +790,7 @@ function select_value($val, string $link, array $field, ?string $text_length): s
 			$return = h($return);
 		}
 	}
-	return $adminer->selectVal($return, $link, $field, $val);
+	return adminer()->selectVal($return, $link, $field, $val);
 }
 
 /** Check whether the string is e-mail address */
@@ -834,13 +830,13 @@ function count_rows(string $table, array $where, bool $is_group, array $group): 
 * @return string[]
 */
 function slow_query(string $query): array {
-	global $adminer, $driver;
-	$db = $adminer->database();
-	$timeout = $adminer->queryTimeout();
+	global $driver;
+	$db = adminer()->database();
+	$timeout = adminer()->queryTimeout();
 	$slow_query = $driver->slowQuery($query, $timeout);
 	$connection2 = null;
 	if (!$slow_query && support("kill")) {
-		$connection2 = connect($adminer->credentials());
+		$connection2 = connect(adminer()->credentials());
 		if (is_object($connection2) && ($db == "" || $connection2->select_db($db))) {
 			$kill = get_val(connection_id(), 0, $connection2); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
 			echo script("const timeout = setTimeout(() => { ajax('" . js_escape(ME) . "script=kill', function () {}, 'kill=$kill&token=" . get_token() . "'); }, 1000 * $timeout);");

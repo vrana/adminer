@@ -26,16 +26,15 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function attach(?string $server, string $username, string $password): string {
-				global $adminer;
 				$connection_info = array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8");
-				$ssl = $adminer->connectSsl();
+				$ssl = adminer()->connectSsl();
 				if (isset($ssl["Encrypt"])) {
 					$connection_info["Encrypt"] = $ssl["Encrypt"];
 				}
 				if (isset($ssl["TrustServerCertificate"])) {
 					$connection_info["TrustServerCertificate"] = $ssl["TrustServerCertificate"];
 				}
-				$db = $adminer->database();
+				$db = adminer()->database();
 				if ($db != "") {
 					$connection_info["Database"] = $db;
 				}

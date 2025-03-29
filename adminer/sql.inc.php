@@ -4,9 +4,9 @@ namespace Adminer;
 if (!$error && $_POST["export"]) {
 	save_settings(array("output" => $_POST["output"], "format" => $_POST["format"]), "adminer_import");
 	dump_headers("sql");
-	$adminer->dumpTable("", "");
-	$adminer->dumpData("", "table", $_POST["query"]);
-	$adminer->dumpFooter();
+	adminer()->dumpTable("", "");
+	adminer()->dumpData("", "table", $_POST["query"]);
+	adminer()->dumpFooter();
 	exit;
 }
 
@@ -25,7 +25,7 @@ if (!$error && $_POST) {
 	if (!isset($_GET["import"])) {
 		$query = $_POST["query"];
 	} elseif ($_POST["webfile"]) {
-		$sql_file_path = $adminer->importServerPath();
+		$sql_file_path = adminer()->importServerPath();
 		$fp = @fopen((file_exists($sql_file_path)
 			? $sql_file_path
 			: "compress.zlib://$sql_file_path.gz"
@@ -54,7 +54,7 @@ if (!$error && $_POST) {
 		$delimiter = ";";
 		$offset = 0;
 		$empty = true;
-		$connection2 = connect($adminer->credentials()); // connection for exploring indexes and EXPLAIN (to not replace FOUND_ROWS()) //! PDO - silent error
+		$connection2 = connect(adminer()->credentials()); // connection for exploring indexes and EXPLAIN (to not replace FOUND_ROWS()) //! PDO - silent error
 		if (is_object($connection2) && DB != "") {
 			$connection2->select_db(DB);
 			if ($_GET["ns"] != "") {
@@ -66,7 +66,7 @@ if (!$error && $_POST) {
 		$parse = '[\'"' . (JUSH == "sql" ? '`#' : (JUSH == "sqlite" ? '`[' : (JUSH == "mssql" ? '[' : ''))) . ']|/\*|-- |$' . (JUSH == "pgsql" ? '|\$[^$]*\$' : '');
 		$total_start = microtime(true);
 		$adminer_export = get_settings("adminer_import"); // this doesn't offer SQL export so we match the import/export style at select
-		$dump_format = $adminer->dumpFormat();
+		$dump_format = adminer()->dumpFormat();
 		unset($dump_format["sql"]);
 
 		while ($query != "") {
@@ -109,7 +109,7 @@ if (!$error && $_POST) {
 						$empty = false;
 						$q = substr($query, 0, $pos);
 						$commands++;
-						$print = "<pre id='sql-$commands'><code class='jush-" . JUSH . "'>" . $adminer->sqlCommandQuery($q) . "</code></pre>\n";
+						$print = "<pre id='sql-$commands'><code class='jush-" . JUSH . "'>" . adminer()->sqlCommandQuery($q) . "</code></pre>\n";
 						if (JUSH == "sqlite" && preg_match("~^$space*+ATTACH\\b~i", $q, $match)) {
 							// PHP doesn't support setting SQLITE_LIMIT_ATTACHED
 							echo $print;
@@ -167,7 +167,7 @@ if (!$error && $_POST) {
 											}
 											$id = "export-$commands";
 											echo ", <a href='#$id'>" . lang('Export') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "") . "<span id='$id' class='hidden'>: "
-												. html_select("output", $adminer->dumpOutput(), $adminer_export["output"]) . " "
+												. html_select("output", adminer()->dumpOutput(), $adminer_export["output"]) . " "
 												. html_select("format", $dump_format, $adminer_export["format"])
 												. input_hidden("query", $q)
 												. "<input type='submit' name='export' value='" . lang('Export') . "'>" . input_token() . "</span>\n"
@@ -237,7 +237,7 @@ if (!isset($_GET["import"])) {
 	textarea("query", $q, 20);
 	echo script(($_POST ? "" : "qs('textarea').focus();\n") . "qs('#form').onsubmit = partial(sqlSubmit, qs('#form'), '" . js_escape(remove_from_uri("sql|limit|error_stops|only_errors|history")) . "');");
 	echo "<p>";
-	$adminer->sqlPrintAfter();
+	adminer()->sqlPrintAfter();
 	echo "$execute\n";
 	echo lang('Limit rows') . ": <input type='number' name='limit' class='size' value='" . h($_POST ? $_POST["limit"] : $_GET["limit"]) . "'>\n";
 
@@ -249,7 +249,7 @@ if (!isset($_GET["import"])) {
 		: lang('File uploads are disabled.')
 	);
 	echo "</div></fieldset>\n";
-	$importServerPath = $adminer->importServerPath();
+	$importServerPath = adminer()->importServerPath();
 	if ($importServerPath) {
 		echo "<fieldset><legend>" . lang('From server') . "</legend><div>";
 		echo lang('Webserver file %s', "<code>" . h($importServerPath) . "$gz</code>");

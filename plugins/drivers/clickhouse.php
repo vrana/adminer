@@ -257,8 +257,7 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function logged_user() {
-		$adminer = adminer();
-		$credentials = $adminer->credentials();
+		$credentials = adminer()->credentials();
 		return $credentials[1];
 	}
 

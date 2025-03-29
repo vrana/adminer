@@ -20,11 +20,10 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function attach(?string $server, string $username, string $password): string {
-				global $adminer;
-				$db = $adminer->database();
+				$db = adminer()->database();
 				set_error_handler(array($this, '_error'));
 				$this->string = "host='" . str_replace(":", "' port='", addcslashes($server, "'\\")) . "' user='" . addcslashes($username, "'\\") . "' password='" . addcslashes($password, "'\\") . "'";
-				$ssl = $adminer->connectSsl();
+				$ssl = adminer()->connectSsl();
 				if (isset($ssl["mode"])) {
 					$this->string .= " sslmode='" . $ssl["mode"] . "'";
 				}
@@ -53,8 +52,7 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function select_db(string $database): bool {
-				global $adminer;
-				if ($database == $adminer->database()) {
+				if ($database == adminer()->database()) {
 					return $this->database;
 				}
 				$return = @pg_connect("$this->string dbname='" . addcslashes($database, "'\\") . "'", PGSQL_CONNECT_FORCE_NEW);
@@ -130,11 +128,10 @@ if (isset($_GET["pgsql"])) {
 			public int $timeout;
 
 			function attach(?string $server, string $username, string $password): string {
-				global $adminer;
-				$db = $adminer->database();
+				$db = adminer()->database();
 				//! client_encoding is supported since 9.1, but we can't yet use min_version here
 				$dsn = "pgsql:host='" . str_replace(":", "' port='", addcslashes($server, "'\\")) . "' client_encoding=utf8 dbname='" . ($db != "" ? addcslashes($db, "'\\") : "postgres") . "'";
-				$ssl = $adminer->connectSsl();
+				$ssl = adminer()->connectSsl();
 				if (isset($ssl["mode"])) {
 					$dsn .= " sslmode='" . $ssl["mode"] . "'";
 				}
@@ -142,8 +139,7 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function select_db(string $database): bool {
-				global $adminer;
-				return ($adminer->database() == $database);
+				return (adminer()->database() == $database);
 			}
 
 			function query(string $query, bool $unbuffered = false) {
