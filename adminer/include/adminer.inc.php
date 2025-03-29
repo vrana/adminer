@@ -1,8 +1,9 @@
 <?php
 namespace Adminer;
 
-// any method change in this file should be transferred to editor/include/adminer.inc.php and plugins.inc.php
+// any method change in this file should be transferred to editor/include/adminer.inc.php
 
+/** Default Adminer plugin; it should call methods via $adminer->f() instead of $this->f() to give chance to other plugins */
 class Adminer {
 	/** @visibility protected(set) */ public string $error = ''; // HTML
 
