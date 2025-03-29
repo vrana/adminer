@@ -58,7 +58,7 @@ if ($_POST) {
 <?php
 $source = array_keys(fields($TABLE)); //! no text and blob
 if ($row["db"] != "") {
-	$connection->select_db($row["db"]);
+	connection()->select_db($row["db"]);
 }
 if ($row["ns"] != "") {
 	$orig_schema = get_schema();

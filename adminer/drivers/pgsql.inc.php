@@ -218,7 +218,6 @@ if (isset($_GET["pgsql"])) {
 		}
 
 		function insertUpdate(string $table, array $rows, array $primary) {
-			global $connection;
 			foreach ($rows as $set) {
 				$update = array();
 				$where = array();
@@ -229,7 +228,7 @@ if (isset($_GET["pgsql"])) {
 					}
 				}
 				if (
-					!(($where && queries("UPDATE " . table($table) . " SET " . implode(", ", $update) . " WHERE " . implode(" AND ", $where)) && $connection->affected_rows)
+					!(($where && queries("UPDATE " . table($table) . " SET " . implode(", ", $update) . " WHERE " . implode(" AND ", $where)) && connection()->affected_rows)
 					|| queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")"))
 				) {
 					return false;
@@ -354,10 +353,9 @@ ORDER BY 1";
 	}
 
 	function count_tables($databases) {
-		global $connection;
 		$return = array();
 		foreach ($databases as $db) {
-			if ($connection->select_db($db)) {
+			if (connection()->select_db($db)) {
 				$return[$db] = count(tables_list());
 			}
 		}
@@ -453,9 +451,8 @@ ORDER BY a.attnum") as $row
 	}
 
 	function indexes($table, $connection2 = null) {
-		global $connection;
 		if (!is_object($connection2)) {
-			$connection2 = $connection;
+			$connection2 = connection();
 		}
 		$return = array();
 		$table_oid = get_val("SELECT oid FROM pg_class WHERE relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = current_schema()) AND relname = " . q($table), 0, $connection2);
@@ -521,8 +518,7 @@ ORDER BY conkey, conname") as $row
 	}
 
 	function error() {
-		global $connection;
-		$return = h($connection->error);
+		$return = h(connection()->error);
 		if (preg_match('~^(.*\n)?([^\n]*)\n( *)\^(\n.*)?$~s', $return, $match)) {
 			$return = $match[1] . preg_replace('~((?:[^&]|&[^;]*;){' . strlen($match[3]) . '})(.*)~', '\1<b>\2</b>', $match[2]) . $match[4];
 		}
@@ -534,14 +530,12 @@ ORDER BY conkey, conname") as $row
 	}
 
 	function drop_databases($databases) {
-		global $connection;
-		$connection->close();
+		connection()->close();
 		return apply_queries("DROP DATABASE", $databases, 'Adminer\idf_escape');
 	}
 
 	function rename_database($name, $collation) {
-		global $connection;
-		$connection->close();
+		connection()->close();
 		return queries("ALTER DATABASE " . idf_escape(DB) . " RENAME TO " . idf_escape($name));
 	}
 
@@ -792,9 +786,8 @@ AND typelem = 0"
 	}
 
 	function set_schema($schema, $connection2 = null) {
-		global $connection;
 		if (!$connection2) {
-			$connection2 = $connection;
+			$connection2 = connection();
 		}
 		$return = $connection2->query("SET search_path TO " . idf_escape($schema));
 		driver()->setUserTypes(types()); //! get types from current_schemas('t')
@@ -929,9 +922,8 @@ AND typelem = 0"
 	}
 
 	function support($feature) {
-		global $connection;
 		return preg_match('~^(check|database|table|columns|sql|indexes|descidx|comment|view|' . (min_version(9.3) ? 'materializedview|' : '') . 'scheme|' . (min_version(11) ? 'procedure|' : '') . 'routine|sequence|trigger|type|variables|drop_col'
-			. ($connection->flavor == 'cockroach' ? '' : '|processlist') // https://github.com/cockroachdb/cockroach/issues/24745
+			. (connection()->flavor == 'cockroach' ? '' : '|processlist') // https://github.com/cockroachdb/cockroach/issues/24745
 			. '|kill|dump)$~', $feature)
 		;
 	}

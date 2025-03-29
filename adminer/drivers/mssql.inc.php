@@ -170,8 +170,7 @@ if (isset($_GET["mssql"])) {
 		}
 
 		function last_id($result) {
-			global $connection;
-			return $connection->lastInsertId();
+			return connection()->lastInsertId();
 		}
 
 		function explain($connection, $query) {
@@ -323,10 +322,9 @@ if (isset($_GET["mssql"])) {
 	}
 
 	function count_tables($databases) {
-		global $connection;
 		$return = array();
 		foreach ($databases as $db) {
-			$connection->select_db($db);
+			connection()->select_db($db);
 			$return[$db] = get_val("SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES");
 		}
 		return $return;
@@ -428,8 +426,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 	}
 
 	function error() {
-		global $connection;
-		return nl_br(h(preg_replace('~^(\[[^]]*])+~m', '', $connection->error)));
+		return nl_br(h(preg_replace('~^(\[[^]]*])+~m', '', connection()->error)));
 	}
 
 	function create_database($db, $collation) {

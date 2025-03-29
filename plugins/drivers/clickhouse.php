@@ -234,7 +234,6 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function get_databases($flush) {
-		$connection = connection();
 		$result = get_rows('SHOW DATABASES');
 
 		$return = array();
@@ -276,9 +275,8 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function table_status($name = "", $fast = false) {
-		$connection = connection();
 		$return = array();
-		$tables = get_rows("SELECT name, engine FROM system.tables WHERE database = " . q($connection->_db));
+		$tables = get_rows("SELECT name, engine FROM system.tables WHERE database = " . q(connection()->_db));
 		foreach ($tables as $table) {
 			$return[$table['name']] = array(
 				'Name' => $table['name'],
@@ -343,8 +341,7 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function error() {
-		$connection = connection();
-		return h($connection->error);
+		return h(connection()->error);
 	}
 
 	function types(): array {

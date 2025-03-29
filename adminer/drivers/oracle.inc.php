@@ -154,7 +154,6 @@ if (isset($_GET["oracle"])) {
 		}
 
 		function insertUpdate(string $table, array $rows, array $primary) {
-			global $connection;
 			foreach ($rows as $set) {
 				$update = array();
 				$where = array();
@@ -165,7 +164,7 @@ if (isset($_GET["oracle"])) {
 					}
 				}
 				if (
-					!(($where && queries("UPDATE " . table($table) . " SET " . implode(", ", $update) . " WHERE " . implode(" AND ", $where)) && $connection->affected_rows)
+					!(($where && queries("UPDATE " . table($table) . " SET " . implode(", ", $update) . " WHERE " . implode(" AND ", $where)) && connection()->affected_rows)
 					|| queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")"))
 				) {
 					return false;
@@ -224,9 +223,8 @@ ORDER BY 1"
 	}
 
 	function get_current_db() {
-		global $connection;
-		$db = $connection->_current_db ?: DB;
-		unset($connection->_current_db);
+		$db = connection()->_current_db ?: DB;
+		unset(connection()->_current_db);
 		return $db;
 	}
 
@@ -347,8 +345,7 @@ ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row
 	}
 
 	function error() {
-		global $connection;
-		return h($connection->error); //! highlight sqltext from offset
+		return h(connection()->error); //! highlight sqltext from offset
 	}
 
 	function explain($connection, $query) {
@@ -474,9 +471,8 @@ AND c_src.TABLE_NAME = " . q($table);
 	}
 
 	function set_schema($scheme, $connection2 = null) {
-		global $connection;
 		if (!$connection2) {
-			$connection2 = $connection;
+			$connection2 = connection();
 		}
 		return $connection2->query("ALTER SESSION SET CURRENT_SCHEMA = " . idf_escape($scheme));
 	}

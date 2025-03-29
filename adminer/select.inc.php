@@ -127,7 +127,7 @@ if ($_POST && !$error) {
 							: driver()->update($TABLE, $set, $where_check)
 						)
 					);
-					$affected = $connection->affected_rows;
+					$affected = connection()->affected_rows;
 					if (is_object($result)) { // PostgreSQL with RETURNING fills num_rows
 						$affected += $result->num_rows;
 					}
@@ -145,7 +145,7 @@ if ($_POST && !$error) {
 						if (!$result) {
 							break;
 						}
-						$affected += $connection->affected_rows;
+						$affected += connection()->affected_rows;
 					}
 				}
 			}
@@ -186,7 +186,7 @@ if ($_POST && !$error) {
 					if (!$result) {
 						break;
 					}
-					$affected += $connection->affected_rows;
+					$affected += connection()->affected_rows;
 				}
 				queries_redirect(remove_from_uri(), lang('%d item(s) have been affected.', $affected), $result);
 			}

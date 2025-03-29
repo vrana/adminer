@@ -47,9 +47,8 @@ class AdminerEmailTable {
 	}
 
 	function selectEmailProcess($where, $foreignKeys) {
-		$connection = Adminer\connection();
 		if ($_POST["email_id"]) {
-			$result = $connection->query("SELECT $this->subject, $this->message FROM $this->table WHERE $this->id = " . Adminer\q($_POST["email_id"]));
+			$result = Adminer\connection()->query("SELECT $this->subject, $this->message FROM $this->table WHERE $this->id = " . Adminer\q($_POST["email_id"]));
 			$row = $result->fetch_row();
 			$_POST["email_subject"] = $row[0];
 			$_POST["email_message"] = $row[1];

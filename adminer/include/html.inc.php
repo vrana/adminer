@@ -331,13 +331,12 @@ function process_input(array $field) {
 * @uses $_POST["tables"]
 */
 function search_tables(): void {
-	global $connection;
 	$_GET["where"][0]["val"] = $_POST["query"];
 	$sep = "<ul>\n";
 	foreach (table_status('', true) as $table => $table_status) {
 		$name = adminer()->tableName($table_status);
 		if (isset($table_status["Engine"]) && $name != "" && (!$_POST["tables"] || in_array($table, $_POST["tables"]))) {
-			$result = $connection->query("SELECT" . limit("1 FROM " . table($table), " WHERE " . implode(" AND ", adminer()->selectSearchProcess(fields($table), array())), 1));
+			$result = connection()->query("SELECT" . limit("1 FROM " . table($table), " WHERE " . implode(" AND ", adminer()->selectSearchProcess(fields($table), array())), 1));
 			if (!$result || $result->fetch_row()) {
 				$print = "<a href='" . h(ME . "select=" . urlencode($table) . "&where[0][op]=" . urlencode($_GET["where"][0]["op"]) . "&where[0][val]=" . urlencode($_GET["where"][0]["val"])) . "'>$name</a>";
 				echo "$sep<li>" . ($result ? $print : "<p class='error'>$print: " . error()) . "\n";

@@ -3,11 +3,12 @@ namespace Adminer;
 
 // This file is used both in Adminer and Adminer Editor.
 
-/** Get database connection */
-function connection(): Db {
-	// can be used in customization, $connection is minified
-	global $connection;
-	return $connection;
+/** Get database connection
+* @return Db|string string means error
+*/
+function connection() {
+	// can be used in customization, Db::$instance is minified
+	return Db::$instance;
 }
 
 /** Get Adminer object
@@ -33,10 +34,9 @@ function idf_unescape(string $idf): string {
 	return str_replace($last . $last, $last, substr($idf, 1, -1));
 }
 
-/** Shortcut for $connection->quote($string) */
+/** Shortcut for connection()->quote($string) */
 function q(string $string): string {
-	global $connection;
-	return $connection->quote($string);
+	return connection()->quote($string);
 }
 
 /** Escape string to use inside '' */
@@ -96,12 +96,11 @@ function bracket_escape(string $idf, bool $back = false): string {
 /** Check if connection has at least the given version
 * @param string|float $version required version
 * @param string|float $maria_db required MariaDB version
-* @param Db $connection2 defaults to $connection
+* @param Db $connection2 defaults to connection()
 */
 function min_version($version, $maria_db = "", Db $connection2 = null): bool {
-	global $connection;
 	if (!$connection2) {
-		$connection2 = $connection;
+		$connection2 = connection();
 	}
 	$server_info = $connection2->server_info;
 	if ($maria_db && preg_match('~([\d.]+)-MariaDB~', $server_info, $match)) {
@@ -157,8 +156,7 @@ function get_password() {
 * @return string|false false if error
 */
 function get_val(string $query, int $field = 0, ?Db $conn = null) {
-	global $connection;
-	$conn = (is_object($conn) ? $conn : $connection);
+	$conn = (is_object($conn) ? $conn : connection());
 	$result = $conn->query($query);
 	if (!is_object($result)) {
 		return false;
@@ -172,9 +170,8 @@ function get_val(string $query, int $field = 0, ?Db $conn = null) {
 * @return list<string>
 */
 function get_vals(string $query, $column = 0): array {
-	global $connection;
 	$return = array();
-	$result = $connection->query($query);
+	$result = connection()->query($query);
 	if (is_object($result)) {
 		while ($row = $result->fetch_row()) {
 			$return[] = $row[$column];
@@ -187,9 +184,8 @@ function get_vals(string $query, $column = 0): array {
 * @return string[]
 */
 function get_key_vals(string $query, Db $connection2 = null, bool $set_keys = true): array {
-	global $connection;
 	if (!is_object($connection2)) {
-		$connection2 = $connection;
+		$connection2 = connection();
 	}
 	$return = array();
 	$result = $connection2->query($query);
@@ -209,8 +205,7 @@ function get_key_vals(string $query, Db $connection2 = null, bool $set_keys = tr
 * @return list<string[]> of associative arrays
 */
 function get_rows(string $query, Db $connection2 = null, string $error = "<p class='error'>"): array {
-	global $connection;
-	$conn = (is_object($connection2) ? $connection2 : $connection);
+	$conn = (is_object($connection2) ? $connection2 : connection());
 	$return = array();
 	$result = $conn->query($query);
 	if (is_object($result)) { // can return true
@@ -256,7 +251,6 @@ function escape_key(string $key): string {
 * @param Field[] $fields
 */
 function where(array $where, array $fields = array()): string {
-	global $connection;
 	$return = array();
 	foreach ((array) $where["where"] as $key => $val) {
 		$key = bracket_escape($key, true); // true - back
@@ -270,7 +264,7 @@ function where(array $where, array $fields = array()): string {
 				: " = " . unconvert_field($field, q($val)))))
 		; //! enum and set
 		if (JUSH == "sql" && preg_match('~char|text~', $field_type) && preg_match("~[^ -@]~", $val)) { // not just [a-z] to catch non-ASCII characters
-			$return[] = "$column = " . q($val) . " COLLATE " . charset($connection) . "_bin";
+			$return[] = "$column = " . q($val) . " COLLATE " . charset(connection()) . "_bin";
 		}
 	}
 	foreach ((array) $where["null"] as $key) {
@@ -430,10 +424,9 @@ function redirect(?string $location, string $message = null): void {
 * @param bool $redirect
 */
 function query_redirect(string $query, ?string $location, string $message, $redirect = true, bool $execute = true, bool $failed = false, string $time = ""): bool {
-	global $connection;
 	if ($execute) {
 		$start = microtime(true);
-		$failed = !$connection->query($query);
+		$failed = !connection()->query($query);
 		$time = format_time($start);
 	}
 	$sql = ($query ? adminer()->messageQuery($query, $time, $failed) : "");
@@ -457,12 +450,11 @@ class Queries {
 * @return Result|bool
 */
 function queries(string $query) {
-	global $connection;
 	if (!Queries::$start) {
 		Queries::$start = microtime(true);
 	}
 	Queries::$queries[] = (preg_match('~;$~', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query) . ";";
-	return $connection->query($query);
+	return connection()->query($query);
 }
 
 /** Apply command to all array items

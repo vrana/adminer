@@ -16,7 +16,7 @@ if ($_POST && !$error) {
 	$is_sql = preg_match('~sql~', $_POST["format"]);
 
 	if ($is_sql) {
-		echo "-- Adminer " . VERSION . " " . get_driver(DRIVER) . " " . str_replace("\n", " ", $connection->server_info) . " dump\n\n";
+		echo "-- Adminer " . VERSION . " " . get_driver(DRIVER) . " " . str_replace("\n", " ", connection()->server_info) . " dump\n\n";
 		if (JUSH == "sql") {
 			echo "SET NAMES utf8;
 SET time_zone = '+00:00';
@@ -24,8 +24,8 @@ SET foreign_key_checks = 0;
 " . ($_POST["data_style"] ? "SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 " : "") . "
 ";
-			$connection->query("SET time_zone = '+00:00'");
-			$connection->query("SET sql_mode = ''");
+			connection()->query("SET time_zone = '+00:00'");
+			connection()->query("SET sql_mode = ''");
 		}
 	}
 
@@ -40,7 +40,7 @@ SET foreign_key_checks = 0;
 
 	foreach ((array) $databases as $db) {
 		adminer()->dumpDatabase($db);
-		if ($connection->select_db($db)) {
+		if (connection()->select_db($db)) {
 			if ($is_sql && preg_match('~CREATE~', $style) && ($create = get_val("SHOW CREATE DATABASE " . idf_escape($db), 1))) {
 				set_utf8mb4($create);
 				if ($style == "DROP+CREATE") {

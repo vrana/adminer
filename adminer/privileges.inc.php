@@ -5,11 +5,11 @@ page_header(lang('Privileges'));
 
 echo '<p class="links"><a href="' . h(ME) . 'user=">' . lang('Create user') . "</a>";
 
-$result = $connection->query("SELECT User, Host FROM mysql." . (DB == "" ? "user" : "db WHERE " . q(DB) . " LIKE Db") . " ORDER BY Host, User");
+$result = connection()->query("SELECT User, Host FROM mysql." . (DB == "" ? "user" : "db WHERE " . q(DB) . " LIKE Db") . " ORDER BY Host, User");
 $grant = $result;
 if (!$result) {
 	// list logged user, information_schema.USER_PRIVILEGES lists just the current user too
-	$result = $connection->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1) AS User, SUBSTRING_INDEX(CURRENT_USER, '@', -1) AS Host");
+	$result = connection()->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1) AS User, SUBSTRING_INDEX(CURRENT_USER, '@', -1) AS Host");
 }
 
 echo "<form action=''><p>\n";

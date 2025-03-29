@@ -521,7 +521,6 @@ class Adminer {
 	* @return list<string> expressions to join by AND
 	*/
 	function selectSearchProcess(array $fields, array $indexes): array {
-		global $connection;
 		$return = array();
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT" && $_GET["fulltext"][$i] != "") {
@@ -793,7 +792,6 @@ class Adminer {
 	* @return void prints data
 	*/
 	function dumpData(string $table, string $style, string $query): void {
-		global $connection;
 		if ($style) {
 			$max_packet = (JUSH == "sqlite" ? 0 : 1048576); // default, minimum is 1024
 			$fields = array();
@@ -813,7 +811,7 @@ class Adminer {
 					}
 				}
 			}
-			$result = $connection->query($query, 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers
+			$result = connection()->query($query, 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers
 			if ($result) {
 				$insert = "";
 				$buffer = "";
@@ -872,7 +870,7 @@ class Adminer {
 					echo $buffer . $suffix;
 				}
 			} elseif ($_POST["format"] == "sql") {
-				echo "-- " . str_replace("\n", " ", $connection->error) . "\n";
+				echo "-- " . str_replace("\n", " ", connection()->error) . "\n";
 			}
 			if ($identity_insert) {
 				echo "SET IDENTITY_INSERT " . table($table) . " OFF;\n";
@@ -938,7 +936,6 @@ class Adminer {
 	* @param string $missing can be "auth" if there is no database connection, "db" if there is no database selected, "ns" with invalid schema
 	*/
 	function navigation(string $missing): void {
-		global $connection;
 		echo "<h1>" . adminer()->name() . " <span class='version'>" . VERSION;
 		$new_version = $_COOKIE["adminer_version"];
 		echo " <a href='https://www.adminer.org/#download'" . target_blank() . " id='version'>" . (version_compare(VERSION, $new_version) < 0 ? h($new_version) : "") . "</a>";
@@ -966,7 +963,7 @@ class Adminer {
 		} else {
 			$tables = array();
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {
-				$connection->select_db(DB);
+				connection()->select_db(DB);
 				$tables = table_status('', true);
 			}
 			adminer()->syntaxHighlighting($tables);
@@ -998,7 +995,6 @@ class Adminer {
 	* @param TableStatus[] $tables
 	*/
 	function syntaxHighlighting(array $tables): void {
-		global $connection;
 		// this is matched by compile.php
 		echo script_src("../externals/jush/modules/jush.js");
 		echo script_src("../externals/jush/modules/jush-textarea.js");
@@ -1019,14 +1015,13 @@ class Adminer {
 			}
 			echo "</script>\n";
 		}
-		echo script("syntaxHighlighting('" . (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '\1', $connection->server_info) : "") . "'"
-			. ($connection->flavor == 'maria' ? ", 'maria'" : ($connection->flavor == 'cockroach' ? ", 'cockroach'" : "")) . ");"
+		echo script("syntaxHighlighting('" . (is_object(connection()) ? preg_replace('~^(\d\.?\d).*~s', '\1', connection()->server_info) : "") . "'"
+			. (connection()->flavor == 'maria' ? ", 'maria'" : (connection()->flavor == 'cockroach' ? ", 'cockroach'" : "")) . ");"
 		);
 	}
 
 	/** Print databases list in menu */
 	function databasesPrint(string $missing): void {
-		global $connection;
 		$databases = adminer()->databases();
 		if (DB && $databases && !in_array(DB, $databases)) {
 			array_unshift($databases, DB);
@@ -1040,7 +1035,7 @@ class Adminer {
 		);
 		echo "<input type='submit' value='" . lang('Use') . "'" . ($databases ? " class='hidden'" : "") . ">\n";
 		if (support("scheme")) {
-			if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
+			if ($missing != "db" && DB != "" && connection()->select_db(DB)) {
 				echo "<br><span>" . lang('Schema') . ":</span> " . html_select("ns", array("" => "") + adminer()->schemas(), $_GET["ns"]) . $db_events;
 				if ($_GET["ns"] != "") {
 					set_schema($_GET["ns"]);

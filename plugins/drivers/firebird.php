@@ -130,9 +130,8 @@ if (isset($_GET["firebird"])) {
 	}
 
 	function tables_list() {
-		$connection = connection();
 		$query = 'SELECT RDB$RELATION_NAME FROM rdb$relations WHERE rdb$system_flag = 0';
-		$result = ibase_query($connection->_link, $query);
+		$result = ibase_query(connection()->_link, $query);
 		$return = array();
 		while ($row = ibase_fetch_assoc($result)) {
 				$return[$row['RDB$RELATION_NAME']] = 'table';
@@ -146,7 +145,6 @@ if (isset($_GET["firebird"])) {
 	}
 
 	function table_status($name = "", $fast = false) {
-		$connection = connection();
 		$return = array();
 		$data = ($name != "" ? array($name => 1) : tables_list());
 		foreach ($data as $index => $val) {
@@ -168,7 +166,6 @@ if (isset($_GET["firebird"])) {
 	}
 
 	function fields($table) {
-		$connection = connection();
 		$return = array();
 		$query = 'SELECT r.RDB$FIELD_NAME AS field_name,
 r.RDB$DESCRIPTION AS field_description,
@@ -203,7 +200,7 @@ LEFT JOIN RDB$COLLATIONS coll ON f.RDB$COLLATION_ID = coll.RDB$COLLATION_ID
 LEFT JOIN RDB$CHARACTER_SETS cset ON f.RDB$CHARACTER_SET_ID = cset.RDB$CHARACTER_SET_ID
 WHERE r.RDB$RELATION_NAME = ' . q($table) . '
 ORDER BY r.RDB$FIELD_POSITION';
-		$result = ibase_query($connection->_link, $query);
+		$result = ibase_query(connection()->_link, $query);
 		while ($row = ibase_fetch_assoc($result)) {
 			$return[trim($row['FIELD_NAME'])] = array(
 				"field" => trim($row["FIELD_NAME"]),
@@ -250,8 +247,7 @@ ORDER BY RDB$INDEX_SEGMENTS.RDB$FIELD_POSITION';
 	}
 
 	function error() {
-		$connection = connection();
-		return h($connection->error);
+		return h(connection()->error);
 	}
 
 	function types(): array {

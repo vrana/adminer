@@ -28,8 +28,7 @@ class AdminerDumpPhp {
 
 	function dumpData($table, $style, $query) {
 		if ($_POST['format'] == 'php') {
-			$connection = Adminer\connection();
-			$result = $connection->query($query, 1);
+			$result = Adminer\connection()->query($query, 1);
 			if ($result) {
 				while ($row = $result->fetch_assoc()) {
 					$this->output[$table][] = $row;

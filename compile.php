@@ -278,7 +278,7 @@ if ($_SERVER["argv"][1]) {
 include __DIR__ . "/adminer/include/db.inc.php";
 include __DIR__ . "/adminer/include/pdo.inc.php";
 include __DIR__ . "/adminer/include/driver.inc.php";
-$connection = (object) array('flavor' => '', 'server_info' => '99'); // used in support()
+Adminer\SqlDb::$instance = (object) array('flavor' => '', 'server_info' => '99'); // used in support()
 $features = array("check", "call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine", "scheme", "sequence", "sql", "status", "trigger", "type", "user" => "privileges", "variables", "view");
 $lang_ids = array(); // global variable simplifies usage in a callback function
 $file = file_get_contents(__DIR__ . "/$project/index.php");

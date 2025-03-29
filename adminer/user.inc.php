@@ -29,7 +29,7 @@ if ($_POST) {
 $grants = array();
 $old_pass = "";
 
-if (isset($_GET["host"]) && ($result = $connection->query("SHOW GRANTS FOR " . q($USER) . "@" . q($_GET["host"])))) { //! use information_schema for MySQL 5 - column names in column privileges are not escaped
+if (isset($_GET["host"]) && ($result = connection()->query("SHOW GRANTS FOR " . q($USER) . "@" . q($_GET["host"])))) { //! use information_schema for MySQL 5 - column names in column privileges are not escaped
 	while ($row = $result->fetch_row()) {
 		if (preg_match('~GRANT (.*) ON (.*) TO ~', $row[0], $match) && preg_match_all('~ *([^(,]*[^ ,(])( *\([^)]+\))?~', $match[1], $matches, PREG_SET_ORDER)) { //! escape the part between ON and TO
 			foreach ($matches as $val) {
@@ -113,7 +113,7 @@ if ($_POST && !$error) {
 
 		if ($created) {
 			// delete new user in case of an error
-			$connection->query("DROP USER $new_user");
+			connection()->query("DROP USER $new_user");
 		}
 	}
 }

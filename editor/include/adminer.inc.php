@@ -31,8 +31,7 @@ class Adminer {
 	}
 
 	function database() {
-		global $connection;
-		if ($connection) {
+		if (connection()) {
 			$databases = adminer()->databases(false);
 			return (!$databases
 				? get_val("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1)") // username without the database list
@@ -558,8 +557,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function dumpData($table, $style, $query) {
-		global $connection;
-		$result = $connection->query($query, 1); // 1 - MYSQLI_USE_RESULT
+		$result = connection()->query($query, 1); // 1 - MYSQLI_USE_RESULT
 		if ($result) {
 			while ($row = $result->fetch_assoc()) {
 				if ($style == "table") {

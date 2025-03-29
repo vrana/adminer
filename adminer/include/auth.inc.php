@@ -1,8 +1,6 @@
 <?php
 namespace Adminer;
 
-$connection = '';
-
 $permanent = array();
 if ($_COOKIE["adminer_permanent"]) {
 	foreach (explode(" ", $_COOKIE["adminer_permanent"]) as $val) {
@@ -175,18 +173,18 @@ if (isset($_GET["username"]) && is_string(get_password())) {
 		auth_error(lang('Connecting to privileged ports is not allowed.'), $permanent);
 	}
 	check_invalid_login($permanent);
-	$connection = connect(adminer()->credentials());
-	if (is_object($connection)) {
-		Driver::$instance = new Driver($connection);
-		if ($connection->flavor) {
+	Db::$instance = connect(adminer()->credentials());
+	if (is_object(Db::$instance)) {
+		Driver::$instance = new Driver(Db::$instance);
+		if (Db::$instance->flavor) {
 			save_settings(array("vendor-" . DRIVER . "-" . SERVER => get_driver(DRIVER)));
 		}
 	}
 }
 
 $login = null;
-if (!is_object($connection) || ($login = adminer()->login($_GET["username"], get_password())) !== true) {
-	$error = (is_string($connection) ? nl_br(h($connection)) : (is_string($login) ? $login : lang('Invalid credentials.')));
+if (!is_object(connection()) || ($login = adminer()->login($_GET["username"], get_password())) !== true) {
+	$error = (is_string(connection()) ? nl_br(h(connection())) : (is_string($login) ? $login : lang('Invalid credentials.')));
 	auth_error(
 		$error . (preg_match('~^ | $~', get_password()) ? '<br>' . lang('There is a space in the input password which might be the cause.') : ''),
 		$permanent

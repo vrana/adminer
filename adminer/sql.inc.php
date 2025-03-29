@@ -126,16 +126,16 @@ if (!$error && $_POST) {
 							}
 							$start = microtime(true);
 							//! don't allow changing of character_set_results, convert encoding of displayed query
-							if ($connection->multi_query($q) && is_object($connection2) && preg_match("~^$space*+USE\\b~i", $q)) {
+							if (connection()->multi_query($q) && is_object($connection2) && preg_match("~^$space*+USE\\b~i", $q)) {
 								$connection2->query($q);
 							}
 
 							do {
-								$result = $connection->store_result();
+								$result = connection()->store_result();
 
-								if ($connection->error) {
+								if (connection()->error) {
 									echo ($_POST["only_errors"] ? $print : "");
-									echo "<p class='error'>" . lang('Error in query') . ($connection->errno ? " ($connection->errno)" : "") . ": " . error() . "\n";
+									echo "<p class='error'>" . lang('Error in query') . (connection()->errno ? " (" . connection()->errno . ")" : "") . ": " . error() . "\n";
 									$errors[] = " <a href='#sql-$commands'>$commands</a>";
 									if ($_POST["error_stops"]) {
 										break 2;
@@ -145,7 +145,7 @@ if (!$error && $_POST) {
 									$time = " <span class='time'>(" . format_time($start) . ")</span>"
 										. (strlen($q) < 1000 ? " <a href='" . h(ME) . "sql=" . urlencode(trim($q)) . "'>" . lang('Edit') . "</a>" : "") // 1000 - maximum length of encoded URL in IE is 2083 characters
 									;
-									$affected = $connection->affected_rows; // getting warnings overwrites this
+									$affected = connection()->affected_rows; // getting warnings overwrites this
 									$warnings = ($_POST["only_errors"] ? "" : driver()->warnings());
 									$warnings_id = "warnings-$commands";
 									if ($warnings) {
@@ -182,7 +182,7 @@ if (!$error && $_POST) {
 											stop_session();
 										}
 										if (!$_POST["only_errors"]) {
-											echo "<p class='message' title='" . h($connection->info) . "'>" . lang('Query executed OK, %d row(s) affected.', $affected) . "$time\n";
+											echo "<p class='message' title='" . h(connection()->info) . "'>" . lang('Query executed OK, %d row(s) affected.', $affected) . "$time\n";
 										}
 									}
 									echo ($warnings ? "<div id='$warnings_id' class='hidden'>\n$warnings</div>\n" : "");
@@ -194,7 +194,7 @@ if (!$error && $_POST) {
 								}
 
 								$start = microtime(true);
-							} while ($connection->next_result());
+							} while (connection()->next_result());
 						}
 
 						$query = substr($query, $offset);

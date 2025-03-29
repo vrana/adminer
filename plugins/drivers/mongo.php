@@ -440,25 +440,24 @@ if (isset($_GET["mongo"])) {
 	}
 
 	function alter_indexes($table, $alter) {
-		$connection = connection();
 		foreach ($alter as $val) {
 			list($type, $name, $set) = $val;
 			if ($set == "DROP") {
-				$return = $connection->_db->command(array("deleteIndexes" => $table, "index" => $name));
+				$return = connection()->_db->command(array("deleteIndexes" => $table, "index" => $name));
 			} else {
 				$columns = array();
 				foreach ($set as $column) {
 					$column = preg_replace('~ DESC$~', '', $column, 1, $count);
 					$columns[$column] = ($count ? -1 : 1);
 				}
-				$return = $connection->_db->selectCollection($table)->ensureIndex($columns, array(
+				$return = connection()->_db->selectCollection($table)->ensureIndex($columns, array(
 					"unique" => ($type == "UNIQUE"),
 					"name" => $name,
 					//! "sparse"
 				));
 			}
 			if ($return['errmsg']) {
-				$connection->error = $return['errmsg'];
+				connection()->error = $return['errmsg'];
 				return false;
 			}
 		}

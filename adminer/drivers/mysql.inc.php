@@ -8,6 +8,7 @@ if (!defined('Adminer\DRIVER')) {
 	// MySQLi supports everything, MySQL doesn't support multiple result sets, PDO_MySQL doesn't support orgtable
 	if (extension_loaded("mysqli") && $_GET["ext"] != "pdo") {
 		class Db extends \MySQLi {
+			/** @var Db|string */ static $instance = '';
 			public string $extension = "MySQLi", $flavor = '';
 
 			function __construct() {
@@ -487,8 +488,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @return Field[]
 	*/
 	function fields(string $table): array {
-		global $connection;
-		$maria = ($connection->flavor == 'maria');
+		$maria = (connection()->flavor == 'maria');
 		$return = array();
 		foreach (get_rows("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . q($table) . " ORDER BY ORDINAL_POSITION") as $row) {
 			$field = $row["COLUMN_NAME"];
@@ -616,8 +616,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get escaped error message */
 	function error(): string {
-		global $connection;
-		return h(preg_replace('~^You have an error.*syntax to use~U', "Syntax error", $connection->error));
+		return h(preg_replace('~^You have an error.*syntax to use~U', "Syntax error", connection()->error));
 	}
 
 	/** Create database
@@ -685,14 +684,13 @@ if (!defined('Adminer\DRIVER')) {
 	* @return Result|bool
 	*/
 	function alter_table(string $table, string $name, array $fields, array $foreign, ?string $comment, string $engine, string $collation, string $auto_increment, string $partitioning) {
-		global $connection;
 		$alter = array();
 		foreach ($fields as $field) {
 			if ($field[1]) {
 				$default = $field[1][3];
 				if (preg_match('~ GENERATED~', $default)) {
 					// swap default and null
-					$field[1][3] = ($connection->flavor == 'maria' ? "" : $field[1][2]); // MariaDB doesn't support NULL on virtual columns
+					$field[1][3] = (connection()->flavor == 'maria' ? "" : $field[1][2]); // MariaDB doesn't support NULL on virtual columns
 					$field[1][2] = $default;
 				}
 				$alter[] = ($table != "" ? ($field[0] != "" ? "CHANGE " . idf_escape($field[0]) : "ADD") : " ") . " " . implode($field[1]) . ($table != "" ? $field[2] : "");
@@ -762,7 +760,6 @@ if (!defined('Adminer\DRIVER')) {
 	* @param list<string> $views
 	*/
 	function move_tables(array $tables, array $views, string $target): bool {
-		global $connection;
 		$rename = array();
 		foreach ($tables as $table) {
 			$rename[] = table($table) . " TO " . idf_escape($target) . "." . table($table);
@@ -772,7 +769,7 @@ if (!defined('Adminer\DRIVER')) {
 			foreach ($views as $table) {
 				$definitions[table($table)] = view($table);
 			}
-			$connection->select_db($target);
+			connection()->select_db($target);
 			$db = idf_escape(DB);
 			foreach ($definitions as $name => $view) {
 				if (!queries("CREATE VIEW $name AS " . str_replace(" $db.", " ", $view["select"])) || !queries("DROP VIEW $db.$name")) {

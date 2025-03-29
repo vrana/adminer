@@ -15,7 +15,6 @@ class AdminerCodemirror {
 	}
 
 	function syntaxHighlighting($tableStatuses) {
-		$connection = Adminer\connection();
 		?>
 <style>
 @import url(<?php echo $this->root; ?>/lib/codemirror.css);
@@ -44,7 +43,7 @@ function getCmMode(el) {
 	if (match) {
 		const modes = {
 			js: 'application/json',
-			sql: 'text/x-<?php echo ($connection->flavor == "maria" ? "mariadb" : "mysql"); ?>',
+			sql: 'text/x-<?php echo (Adminer\connection()->flavor == "maria" ? "mariadb" : "mysql"); ?>',
 			oracle: 'text/x-sql',
 			clickhouse: 'text/x-sql',
 			firebird: 'text/x-sql'

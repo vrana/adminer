@@ -270,9 +270,8 @@ if (isset($_GET["sqlite"])) {
 	}
 
 	function indexes($table, $connection2 = null) {
-		global $connection;
 		if (!is_object($connection2)) {
-			$connection2 = $connection;
+			$connection2 = connection();
 		}
 		$return = array();
 		$sql = get_val("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table), 0, $connection2);
@@ -342,25 +341,22 @@ if (isset($_GET["sqlite"])) {
 	}
 
 	function error() {
-		global $connection;
-		return h($connection->error);
+		return h(connection()->error);
 	}
 
 	function check_sqlite_name($name) {
 		// avoid creating PHP files on unsecured servers
-		global $connection;
 		$extensions = "db|sdb|sqlite";
 		if (!preg_match("~^[^\\0]*\\.($extensions)\$~", $name)) {
-			$connection->error = lang('Please use one of the extensions %s.', str_replace("|", ", ", $extensions));
+			connection()->error = lang('Please use one of the extensions %s.', str_replace("|", ", ", $extensions));
 			return false;
 		}
 		return true;
 	}
 
 	function create_database($db, $collation) {
-		global $connection;
 		if (file_exists($db)) {
-			$connection->error = lang('File exists.');
+			connection()->error = lang('File exists.');
 			return false;
 		}
 		if (!check_sqlite_name($db)) {
@@ -370,7 +366,7 @@ if (isset($_GET["sqlite"])) {
 			$link = new Db();
 			$link->attach($db, '', '');
 		} catch (\Exception $ex) {
-			$connection->error = $ex->getMessage();
+			connection()->error = $ex->getMessage();
 			return false;
 		}
 		$link->query('PRAGMA encoding = "UTF-8"');
@@ -380,11 +376,10 @@ if (isset($_GET["sqlite"])) {
 	}
 
 	function drop_databases($databases) {
-		global $connection;
-		$connection->attach(":memory:", '', ''); // to unlock file, doesn't work in PDO on Windows
+		connection()->attach(":memory:", '', ''); // to unlock file, doesn't work in PDO on Windows
 		foreach ($databases as $db) {
 			if (!@unlink($db)) {
-				$connection->error = lang('File exists.');
+				connection()->error = lang('File exists.');
 				return false;
 			}
 		}
@@ -392,12 +387,11 @@ if (isset($_GET["sqlite"])) {
 	}
 
 	function rename_database($name, $collation) {
-		global $connection;
 		if (!check_sqlite_name($name)) {
 			return false;
 		}
-		$connection->attach(":memory:", '', '');
-		$connection->error = lang('File exists.');
+		connection()->attach(":memory:", '', '');
+		connection()->error = lang('File exists.');
 		return @rename(DB, $name);
 	}
 
@@ -406,7 +400,6 @@ if (isset($_GET["sqlite"])) {
 	}
 
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
-		global $connection;
 		$use_all_fields = ($table == "" || $foreign);
 		foreach ($fields as $field) {
 			if ($field[0] != "" || !$field[1] || $field[2]) {
@@ -439,7 +432,7 @@ if (isset($_GET["sqlite"])) {
 		if ($auto_increment) {
 			queries("BEGIN");
 			queries("UPDATE sqlite_sequence SET seq = $auto_increment WHERE name = " . q($name)); // ignores error
-			if (!$connection->affected_rows) {
+			if (!connection()->affected_rows) {
 				queries("INSERT INTO sqlite_sequence (name, seq) VALUES (" . q($name) . ", $auto_increment)");
 			}
 			queries("COMMIT");
@@ -533,7 +526,7 @@ if (isset($_GET["sqlite"])) {
 		}
 		$temp_name = ($table == $name ? "adminer_$name" : $name);
 		if (!queries("CREATE TABLE " . table($temp_name) . " (\n" . implode(",\n", $changes) . "\n)")) {
-			// implicit ROLLBACK to not overwrite $connection->error
+			// implicit ROLLBACK to not overwrite connection()->error
 			return false;
 		}
 		if ($table != "") {

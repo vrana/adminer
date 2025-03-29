@@ -120,7 +120,6 @@ if (isset($_GET["simpledb"])) {
 		public $primary = "itemName()";
 
 		private function chunkRequest($ids, $action, $params, $expand = array()) {
-			$connection = connection();
 			foreach (array_chunk($ids, 25) as $chunk) {
 				$params2 = $params;
 				foreach ($chunk as $i => $id) {
@@ -133,7 +132,7 @@ if (isset($_GET["simpledb"])) {
 					return false;
 				}
 			}
-			$connection->affected_rows = count($ids);
+			connection()->affected_rows = count($ids);
 			return true;
 		}
 
@@ -150,10 +149,9 @@ if (isset($_GET["simpledb"])) {
 		}
 
 		function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, ?int $page = 0, bool $print = false) {
-			$connection = connection();
-			$connection->next = $_GET["next"];
+			connection()->next = $_GET["next"];
 			$return = parent::select($table, $select, $where, $group, $order, $limit, $page, $print);
-			$connection->next = 0;
+			connection()->next = 0;
 			return $return;
 		}
 
@@ -276,12 +274,11 @@ if (isset($_GET["simpledb"])) {
 	}
 
 	function tables_list() {
-		$connection = connection();
 		$return = array();
 		foreach (sdb_request_all('ListDomains', 'DomainName') as $table) {
 			$return[(string) $table] = 'table';
 		}
-		if ($connection->error && defined('Adminer\PAGE_HEADER')) {
+		if (connection()->error && defined('Adminer\PAGE_HEADER')) {
 			echo "<p class='error'>" . error() . "\n";
 		}
 		return $return;
@@ -315,8 +312,7 @@ if (isset($_GET["simpledb"])) {
 	}
 
 	function error() {
-		$connection = connection();
-		return h($connection->error);
+		return h(connection()->error);
 	}
 
 	function information_schema($db) {
@@ -382,7 +378,6 @@ if (isset($_GET["simpledb"])) {
 	}
 
 	function sdb_request($action, $params = array()) {
-		$connection = connection();
 		list($host, $params['AWSAccessKeyId'], $secret) = adminer()->credentials();
 		$params['Action'] = $action;
 		$params['Timestamp'] = gmdate('Y-m-d\TH:i:s+00:00');
@@ -404,7 +399,7 @@ if (isset($_GET["simpledb"])) {
 			'max_redirects' => 0,
 		))));
 		if (!$file) {
-			$connection->error = lang('Invalid credentials.');
+			connection()->error = lang('Invalid credentials.');
 			return false;
 		}
 		libxml_use_internal_errors(true);
@@ -412,15 +407,15 @@ if (isset($_GET["simpledb"])) {
 		$xml = simplexml_load_string($file);
 		if (!$xml) {
 			$error = libxml_get_last_error();
-			$connection->error = $error->message;
+			connection()->error = $error->message;
 			return false;
 		}
 		if ($xml->Errors) {
 			$error = $xml->Errors->Error;
-			$connection->error = "$error->Message ($error->Code)";
+			connection()->error = "$error->Message ($error->Code)";
 			return false;
 		}
-		$connection->error = '';
+		connection()->error = '';
 		$tag = $action . "Result";
 		return ($xml->$tag ?: true);
 	}

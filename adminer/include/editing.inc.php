@@ -206,9 +206,8 @@ function edit_type(string $key, array $field, array $collations, array $foreign_
 * @return array{partition_by:string, partition:string, partitions:string, partition_names:list<string>, partition_values:list<string>}
 */
 function get_partitions_info(string $table): array {
-	global $connection;
 	$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . q(DB) . " AND TABLE_NAME = " . q($table);
-	$result = $connection->query("SELECT PARTITION_METHOD, PARTITION_EXPRESSION, PARTITION_ORDINAL_POSITION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
+	$result = connection()->query("SELECT PARTITION_METHOD, PARTITION_EXPRESSION, PARTITION_ORDINAL_POSITION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
 	$return = array();
 	list($return["partition_by"], $return["partition"], $return["partitions"]) = $result->fetch_row();
 	$partitions = get_key_vals("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION");
@@ -543,17 +542,16 @@ function ini_bytes(string $ini): int {
 * @return string HTML code
 */
 function doc_link(array $paths, string $text = "<sup>?</sup>"): string {
-	global $connection;
-	$server_info = $connection->server_info;
+	$server_info = connection()->server_info;
 	$version = preg_replace('~^(\d\.?\d).*~s', '\1', $server_info); // two most significant digits
 	$urls = array(
 		'sql' => "https://dev.mysql.com/doc/refman/$version/en/",
 		'sqlite' => "https://www.sqlite.org/",
-		'pgsql' => "https://www.postgresql.org/docs/" . ($connection->flavor == 'cockroach' ? "current" : $version) . "/",
+		'pgsql' => "https://www.postgresql.org/docs/" . (connection()->flavor == 'cockroach' ? "current" : $version) . "/",
 		'mssql' => "https://learn.microsoft.com/en-us/sql/",
 		'oracle' => "https://www.oracle.com/pls/topic/lookup?ctx=db" . preg_replace('~^.* (\d+)\.(\d+)\.\d+\.\d+\.\d+.*~s', '\1\2', $server_info) . "&id=",
 	);
-	if ($connection->flavor == 'maria') {
+	if (connection()->flavor == 'maria') {
 		$urls['sql'] = "https://mariadb.com/kb/en/";
 		$paths['sql'] = (isset($paths['mariadb']) ? $paths['mariadb'] : str_replace(".html", "/", $paths['sql']));
 	}
@@ -564,8 +562,7 @@ function doc_link(array $paths, string $text = "<sup>?</sup>"): string {
 * @return string formatted
 */
 function db_size(string $db): string {
-	global $connection;
-	if (!$connection->select_db($db)) {
+	if (!connection()->select_db($db)) {
 		return "?";
 	}
 	$return = 0;
@@ -577,10 +574,9 @@ function db_size(string $db): string {
 
 /** Print SET NAMES if utf8mb4 might be needed */
 function set_utf8mb4(string $create): void {
-	global $connection;
 	static $set = false;
 	if (!$set && preg_match('~\butf8mb4~i', $create)) { // possible false positive
 		$set = true;
-		echo "SET NAMES " . charset($connection) . ";\n\n";
+		echo "SET NAMES " . charset(connection()) . ";\n\n";
 	}
 }
