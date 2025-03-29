@@ -34,11 +34,15 @@ They are always wrapped (e.g., `fields[col]`), and any `[` in the name is escape
 
 Adminer often checks for empty strings using `$table != ""` instead of `!$table`, since table names can be `0`, and `!$table` would fail in such cases.
 
-## Classes, Functions, Constants, Variables
+## Classes, Functions, Variables, Constants
 
-Adminer defines many functions and some global variables.
-Functions are namespaced to prevent collisions.
-Global variables should be avoided, but Adminer uses them for simplicity.
+There are 4 main classes: `Driver`, `Db`, `Adminer` and `Plugins`.
+They are described in other sections.
+
+Adminer defines many functions which are namespaced to prevent collisions.
+
+There are no global variables.
+Some data is stored in static class variables.
 These variables are minified during compilation into random strings, making them inaccessible externally (e.g., by plugins).
 Plugins can access some of them using helper functions like `Adminer\driver()`.
 
@@ -57,7 +61,7 @@ The required PHP version is only increased if it significantly improves the code
 Older PHP versions had bugs that required workarounds, but modern versions primarily introduce new features.
 
 The same philosophy applies to database systems.
-Even unsupported database versions are still accommodated because they remain in use.
+Even unsupported database versions are still supported because they remain in use.
 Support for an old version is only dropped if maintaining it would overly complicate the code.
 For instance, MySQL 4 lacks `information_schema`, making generated column support impractical, so support for MySQL 4 was removed.
 
@@ -104,7 +108,7 @@ These are removed during minification.
 `else if` is forbidden; use `elseif` instead.
 
 I use empty lines sparingly to separate code blocks.
-My editor shortcut jumps between empty lines, primarily for navigating functions.
+My editor shortcut jumps between empty lines, I use it primarily for navigating functions.
 Lines containing only `}` naturally divide the code visually.
 
 Well-used ternary operators enhance readability, but they are sometimes overused in Adminer.
