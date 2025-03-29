@@ -538,9 +538,10 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get table indexes
+	* @param Db|string $connection2
 	* @return Index[]
 	*/
-	function indexes(string $table, ?Db $connection2 = null): array {
+	function indexes(string $table, $connection2 = null): array {
 		$return = array();
 		foreach (get_rows("SHOW INDEX FROM " . table($table), $connection2) as $row) {
 			$name = $row["Key_name"];
@@ -1068,8 +1069,10 @@ if (!defined('Adminer\DRIVER')) {
 		return "";
 	}
 
-	/** Set current schema */
-	function set_schema(string $schema, Db $connection2 = null): bool {
+	/** Set current schema
+	* @param Db|string $connection2
+	*/
+	function set_schema(string $schema, $connection2 = null): bool {
 		return true;
 	}
 }
