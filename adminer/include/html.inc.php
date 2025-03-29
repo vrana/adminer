@@ -353,7 +353,7 @@ function search_tables(): void {
 
 /** Return events to display help on mouse over
 * @param string $command JS expression
-* @param int $side JS expression
+* @param int $side 0 top, 1 left
 */
 function on_help(string $command, int $side = 0): string {
 	return script("mixin(qsl('select, input'), {onmouseover: function (event) { helpMouseover.call(this, event, $command, $side) }, onmouseout: helpMouseout});", "");

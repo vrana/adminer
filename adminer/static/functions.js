@@ -849,3 +849,9 @@ oninput = event => {
 	const maxLength = target.getAttribute('data-maxlength');
 	alterClass(target, 'maxlength', target.value && maxLength != null && target.value.length > maxLength); // maxLength could be 0
 };
+
+addEvent(document, 'click', event => {
+	if (!qs('#foot').contains(event.target)) {
+		alterClass(qs('#foot'), 'foot', true);
+	}
+});

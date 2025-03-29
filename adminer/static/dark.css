@@ -44,3 +44,7 @@ input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
 #schema div.table a { color: #3c7bb3; }
 #menu .active { color: #398c8d; }
 #edit-fields tbody tr:hover td, #edit-fields tbody tr:hover th { background: #3b6f9d; }
+
+@media all and (max-width: 880px) {
+	#menu { background: #002240; border-color: #a3bdd3; }
+}
