@@ -145,18 +145,36 @@
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Invalid table</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=invalid</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>No tables.</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;create=invalid</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>No tables.</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=invalid</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Unable to select the table:</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Schema</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;schema=</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Permanent link</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Insert</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=interprets</td><td></td></tr>
 <tr><td>type</td><td>fields[id]</td><td>1</td></tr>
 <tr><td>type</td><td>fields[name]</td><td>Michael Jackson</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
-<tr><td>verifyTextPresent</td><td>Item has been inserted.</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>has been inserted.</td><td></td></tr>
 <tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=albums</td><td></td></tr>
 <tr><td>type</td><td>fields[interpret]</td><td>1</td></tr>
 <tr><td>type</td><td>fields[title]</td><td>Dangerous</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
-<tr><td>verifyTextPresent</td><td>Item has been inserted.</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>has been inserted.</td><td></td></tr>
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
@@ -168,13 +186,26 @@
 <tr><td>type</td><td>fields[id]</td><td>2</td></tr>
 <tr><td>type</td><td>fields[title]</td><td>Black and White</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
-<tr><td>verifyTextPresent</td><td>1 item has been affected.</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Item 2 has been inserted.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Select</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
+<tr><td>click</td><td>link=Search</td><td></td></tr>
+<tr><td>select</td><td>name=where[0][col]</td><td>label=title</td></tr>
+<tr><td>type</td><td>name=where[0][val]</td><td>Dangerous</td></tr>
+<tr><td>click</td><td>link=Sort</td><td></td></tr>
+<tr><td>select</td><td>name=order[0]</td><td>label=interpret</td></tr>
+<tr><td>clickAndWait</td><td>xpath=//input[@value='Select']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>1 row</td><td></td></tr>
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3" data-tags="">Enum</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>http://localhost:8080/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public</td><td></td></tr>
 <tr><td>click</td><td>link=Create type</td><td></td></tr>
 <tr><td>type</td><td>name=name</td><td>alive</td></tr>
 <tr><td>runScript</td><td>document.querySelector('[name="as"]').value = "AS ENUM('alive', 'deceased')"</td><td></td></tr>
@@ -191,7 +222,7 @@
 <tr><td>chooseOkOnNextConfirmation</td><td>Drop alive?</td><td></td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Drop']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>cannot drop type</td><td></td></tr>
-<tr><td>open</td><td>http://localhost:8080/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=interprets&amp;where%5Bid%5D=1</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=interprets&amp;where%5Bid%5D=1</td><td></td></tr>
 <tr><td>click</td><td>//input[@value='deceased']</td><td></td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>deceased</td><td></td></tr>
@@ -312,6 +343,26 @@
 <tr><td>type</td><td>name=fields[normal]</td><td>20</td></tr>
 <tr><td>click</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>220</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3" data-tags="">Sequences</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public</td><td></td></tr>
+<tr><td>click</td><td>link=albums_id_seq</td><td></td></tr>
+<tr><td>type</td><td>name</td><td>albums_id_seq2</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Sequence has been altered.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3" data-tags="">Scheme</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=localhost:26257&amp;username=ODBC&amp;db=adminer_test&amp;ns=public</td><td></td></tr>
+<tr><td>click</td><td>link=Alter schema</td><td></td></tr>
+<tr><td>type</td><td>name</td><td>public</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Schema: public</td><td></td></tr>
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">

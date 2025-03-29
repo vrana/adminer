@@ -1,9 +1,8 @@
 <?php
 function adminer_object() {
-	include_once "../plugins/plugin.php";
 	include_once "../plugins/login-password-less.php";
 
-	class AdminerCustomization extends AdminerPlugin {
+	class AdminerCustomization extends Adminer\Plugins {
 		function loginFormField($name, $heading, $value) {
 			return parent::loginFormField($name, $heading, str_replace('value="server"', 'value="sqlite"', $value));
 		}

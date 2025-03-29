@@ -2,7 +2,7 @@
 namespace Adminer;
 
 class Adminer {
-	public $operators = array("<=", ">=");
+	public $error = '';
 	private $values = array();
 
 	function name() {
@@ -30,14 +30,18 @@ class Adminer {
 	}
 
 	function database() {
-		global $connection;
+		global $connection, $adminer;
 		if ($connection) {
-			$databases = $this->databases(false);
+			$databases = $adminer->databases(false);
 			return (!$databases
 				? get_val("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1)") // username without the database list
 				: $databases[(information_schema($databases[0]) ? 1 : 0)] // first available database
 			);
 		}
+	}
+
+	function operators() {
+		return array("<=", ">=");
 	}
 
 	function schemas() {
@@ -75,9 +79,10 @@ class Adminer {
 	}
 
 	function loginForm() {
+		global $adminer;
 		echo "<table class='layout'>\n";
-		echo $this->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input type="hidden" name="auth[driver]" value="server"><input name="auth[username]" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">');
-		echo $this->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">');
+		echo $adminer->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', input_hidden("auth[driver]", "server") . '<input name="auth[username]" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">');
+		echo $adminer->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">');
 		echo "</table>\n";
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
 		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
@@ -114,19 +119,20 @@ class Adminer {
 	}
 
 	function backwardKeys($table, $tableName) {
+		global $adminer;
 		$return = array();
 		foreach (
 			get_rows("SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
 FROM information_schema.KEY_COLUMN_USAGE
-WHERE TABLE_SCHEMA = " . q($this->database()) . "
-AND REFERENCED_TABLE_SCHEMA = " . q($this->database()) . "
+WHERE TABLE_SCHEMA = " . q($adminer->database()) . "
+AND REFERENCED_TABLE_SCHEMA = " . q($adminer->database()) . "
 AND REFERENCED_TABLE_NAME = " . q($table) . "
 ORDER BY ORDINAL_POSITION", null, "") as $row
 		) {
 			$return[$row["TABLE_NAME"]]["keys"][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
 		}
 		foreach ($return as $key => $val) {
-			$name = $this->tableName(table_status($key, true));
+			$name = $adminer->tableName(table_status1($key, true));
 			if ($name != "") {
 				$search = preg_quote($tableName);
 				$separator = "(:|\\s*-)?\\s+";
@@ -232,6 +238,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function selectSearchPrint($where, $columns, $indexes) {
+		global $adminer;
 		$where = (array) $_GET["where"];
 		echo '<fieldset id="fieldset-search"><legend>' . lang('Search') . "</legend><div>\n";
 		$keys = array();
@@ -245,7 +252,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			if (preg_match("~enum~", $field["type"]) || like_bool($field)) { //! set - uses 1 << $i and FIND_IN_SET()
 				$key = $keys[$name];
 				$i--;
-				echo "<div>" . h($desc) . "<input type='hidden' name='where[$i][col]' value='" . h($name) . "'>:";
+				echo "<div>" . h($desc) . input_hidden("where[$i][col]", $name) . ":";
 				echo (like_bool($field)
 					? " <select name='where[$i][val]'>" . optionlist(array("" => "", lang('no'), lang('yes')), $where[$key]["val"], true) . "</select>"
 					: enum_input("checkbox", " name='where[$i][val][]'", $field, (array) $where[$key]["val"], ($field["null"] ? 0 : null))
@@ -258,7 +265,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 				}
 				$key = $keys[$name];
 				$i--;
-				echo "<div>" . h($desc) . "<input type='hidden' name='where[$i][col]' value='" . h($name) . "'><input type='hidden' name='where[$i][op]' value='='>: <select name='where[$i][val]'>" . optionlist($options, $where[$key]["val"], true) . "</select></div>\n";
+				echo "<div>" . h($desc) . input_hidden("where[$i][col]", $name) . input_hidden("where[$i][op]", "=") . ": <select name='where[$i][val]'>" . optionlist($options, idx($where[$key], "val"), true) . "</select></div>\n";
 				unset($columns[$name]);
 			}
 		}
@@ -266,14 +273,14 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		foreach ($where as $val) {
 			if (($val["col"] == "" || $columns[$val["col"]]) && "$val[col]$val[val]" != "") {
 				echo "<div><select name='where[$i][col]'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
-				echo html_select("where[$i][op]", array(-1 => "") + $this->operators, $val["op"]);
+				echo html_select("where[$i][op]", array(-1 => "") + $adminer->operators(), $val["op"]);
 				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'>" . script("mixin(qsl('input'), {onkeydown: selectSearchKeydown, onsearch: selectSearchSearch});", "") . "</div>\n";
 				$i++;
 			}
 		}
 		echo "<div><select name='where[$i][col]'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, null, true) . "</select>";
 		echo script("qsl('select').onchange = selectAddRow;", "");
-		echo html_select("where[$i][op]", array(-1 => "") + $this->operators);
+		echo html_select("where[$i][op]", array(-1 => "") + $adminer->operators());
 		echo "<input type='search' name='where[$i][val]'></div>";
 		echo script("mixin(qsl('input'), {onchange: function () { this.parentNode.firstChild.onchange(); }, onsearch: selectSearchSearch});");
 		echo "</div></fieldset>\n";
@@ -293,7 +300,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		}
 		if ($orders) {
 			echo '<fieldset><legend>' . lang('Sort') . "</legend><div>";
-			echo "<select name='index_order'>" . optionlist(array("" => "") + $orders, ($_GET["order"][0] != "" ? "" : $_GET["index_order"]), true) . "</select>";
+			echo "<select name='index_order'>" . optionlist(array("" => "") + $orders, (idx($_GET["order"], 0) != "" ? "" : $_GET["index_order"]), true) . "</select>";
 			echo "</div></fieldset>\n";
 		}
 		if ($_GET["order"]) {
@@ -337,7 +344,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			echo "<p><textarea name='email_message' rows='15' cols='75'>" . h($_POST["email_message"] . ($_POST["email_append"] ? '{$' . "$_POST[email_addition]}" : "")) . "</textarea>\n";
 			echo "<p>" . script("qsl('p').onkeydown = partialArg(bodyKeydown, 'email_append');", "") . html_select("email_addition", $columns, $_POST["email_addition"]) . "<input type='submit' name='email_append' value='" . lang('Insert') . "'>\n"; //! JavaScript
 			echo "<p>" . lang('Attachments') . ": <input type='file' name='email_files[]'>" . script("qsl('input').onchange = emailFileChange;");
-			echo "<p>" . (count($emailFields) == 1 ? '<input type="hidden" name="email_field" value="' . h(key($emailFields)) . '">' : html_select("email_field", $emailFields));
+			echo "<p>" . (count($emailFields) == 1 ? input_hidden("email_field", key($emailFields)) : html_select("email_field", $emailFields));
 			echo "<input type='submit' name='email' value='" . lang('Send') . "'>" . confirm();
 			echo "</div>\n";
 			echo "</div></fieldset>\n";
@@ -349,7 +356,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function selectSearchProcess($fields, $indexes) {
-		global $driver;
+		global $driver, $adminer;
 		$return = array();
 		foreach ((array) $_GET["where"] as $key => $where) {
 			$col = $where["col"];
@@ -364,9 +371,9 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 							$conds[] = (in_array(0, $val) ? "$name IS NULL OR " : "") . "$name IN (" . implode(", ", array_map('intval', $val)) . ")";
 						} else {
 							$text_type = preg_match('~char|text|enum|set~', $field["type"]);
-							$value = $this->processInput($field, (!$op && $text_type && preg_match('~^[^%]+$~', $val) ? "%$val%" : $val));
+							$value = $adminer->processInput($field, (!$op && $text_type && preg_match('~^[^%]+$~', $val) ? "%$val%" : $val));
 							$conds[] = $driver->convertSearch($name, $where, $field) . ($value == "NULL" ? " IS" . ($op == ">=" ? " NOT" : "") . " $value"
-								: (in_array($op, $this->operators) || $op == "=" ? " $op $value"
+								: (in_array($op, $adminer->operators()) || $op == "=" ? " $op $value"
 								: ($text_type ? " LIKE $value"
 								: " IN (" . str_replace(",", "', '", $value) . ")"
 							)));
@@ -419,6 +426,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function selectEmailProcess($where, $foreignKeys) {
+		global $adminer;
 		if ($_POST["email_append"]) {
 			return true;
 		}
@@ -436,10 +444,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 					. ($_POST["all"] ? "" : " AND ((" . implode(") OR (", array_map('Adminer\where_check', (array) $_POST["check"])) . "))")
 				);
 				$fields = fields($_GET["select"]);
-				foreach ($this->rowDescriptions($rows, $foreignKeys) as $row) {
+				foreach ($adminer->rowDescriptions($rows, $foreignKeys) as $row) {
 					$replace = array('{\\' => '{'); // allow literal {$name}
 					foreach ($matches[1] as $val) {
-						$replace['{$' . "$val}"] = $this->editVal($row[$val], $fields[$val]);
+						$replace['{$' . "$val}"] = $adminer->editVal($row[$val], $fields[$val]);
 					}
 					$email = $row[$_POST["email_field"]];
 					if (is_mail($email) && send_mail($email, strtr($subject, $replace), strtr($message, $replace), $_POST["email_from"], $_FILES["email_files"])) {
@@ -483,7 +491,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	function editInput($table, $field, $attrs, $value) {
 		if ($field["type"] == "enum") {
 			return (isset($_GET["select"]) ? "<label><input type='radio'$attrs value='-1' checked><i>" . lang('original') . "</i></label> " : "")
-				. enum_input("radio", $attrs, $field, ($value || isset($_GET["select"]) ? $value : 0), ($field["null"] ? "" : null))
+				. enum_input("radio", $attrs, $field, ($value || isset($_GET["select"]) ? $value : ""), ($field["null"] ? "" : null))
 			;
 		}
 		$options = $this->foreignKeyOptions($table, $field["field"], $value);
@@ -493,8 +501,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 				: "<input value='" . h($value) . "'$attrs class='hidden'>"
 					. "<input value='" . h($options) . "' class='jsonly'>"
 					. "<div></div>"
-					. script("qsl('input').oninput = partial(whisper, '" . ME . "script=complete&source=" . urlencode($table) . "&field=" . urlencode($field["field"]) . "&value=');
-qsl('div').onclick = whisperClick;", "")
+					. script("qsl('input').oninput = partial(whisper, '" . ME . "script=complete&source=" . urlencode($table) . "&field=" . urlencode($field["field"]) . "&value='); qsl('div').onclick = whisperClick;", "")
 			);
 		}
 		if (like_bool($field)) {
@@ -589,16 +596,11 @@ qsl('div').onclick = whisperClick;", "")
 	}
 
 	function navigation($missing) {
-		global $VERSION;
-		?>
-<h1>
-<?php echo $this->name(); ?>
-<span class="version">
-<?php echo $VERSION; ?>
- <a href="https://www.adminer.org/editor/#download"<?php echo target_blank(); ?> id="version"><?php echo (version_compare($VERSION, $_COOKIE["adminer_version"]) < 0 ? h($_COOKIE["adminer_version"]) : ""); ?></a>
-</span>
-</h1>
-<?php
+		global $adminer;
+		echo "<h1>" . $adminer->name() . " <span class='version'>" . VERSION;
+		$new_version = $_COOKIE["adminer_version"];
+		echo " <a href='https://www.adminer.org/editor/#download'" . target_blank() . " id='version'>" . (version_compare(VERSION, $new_version) < 0 ? h($new_version) : "") . "</a>";
+		echo "</span></h1>\n";
 		switch_lang();
 		if ($missing == "auth") {
 			$first = true;
@@ -615,13 +617,13 @@ qsl('div').onclick = whisperClick;", "")
 				}
 			}
 		} else {
-			$this->databasesPrint($missing);
+			$adminer->databasesPrint($missing);
 			if ($missing != "db" && $missing != "ns") {
 				$table_status = table_status('', true);
 				if (!$table_status) {
 					echo "<p class='message'>" . lang('No tables.') . "\n";
 				} else {
-					$this->tablesPrint($table_status);
+					$adminer->tablesPrint($table_status);
 				}
 			}
 		}
@@ -634,11 +636,12 @@ qsl('div').onclick = whisperClick;", "")
 	}
 
 	function tablesPrint($tables) {
+		global $adminer;
 		echo "<ul id='tables'>";
 		echo script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
 		foreach ($tables as $row) {
 			echo '<li>';
-			$name = $this->tableName($row);
+			$name = $adminer->tableName($row);
 			if ($name != "") { // ignore tables without name
 				echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'"
 					. bold($_GET["select"] == $row["Name"] || $_GET["edit"] == $row["Name"], "select")
@@ -650,9 +653,10 @@ qsl('div').onclick = whisperClick;", "")
 	}
 
 	function _foreignColumn($foreignKeys, $column) {
+		global $adminer;
 		foreach ((array) $foreignKeys[$column] as $foreignKey) {
 			if (count($foreignKey["source"]) == 1) {
-				$name = $this->rowDescription($foreignKey["table"]);
+				$name = $adminer->rowDescription($foreignKey["table"]);
 				if ($name != "") {
 					$id = idf_escape($foreignKey["target"][0]);
 					return array($foreignKey["table"], $id, $name);
@@ -665,7 +669,7 @@ qsl('div').onclick = whisperClick;", "")
 		if (list($target, $id, $name) = $this->_foreignColumn(column_foreign_keys($table), $column)) {
 			$return = &$this->values[$target];
 			if ($return === null) {
-				$table_status = table_status($target);
+				$table_status = table_status1($target);
 				$return = ($table_status["Rows"] > 1000 ? "" : array("" => "") + get_key_vals("SELECT $id, $name FROM " . table($target) . " ORDER BY 2"));
 			}
 			if (!$return && $value !== null) {

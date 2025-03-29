@@ -44,7 +44,7 @@ function getCmMode(el) {
 	if (match) {
 		const modes = {
 			js: 'application/json',
-			sql: 'text/x-<?php echo ($connection->maria ? "mariadb" : "mysql"); ?>',
+			sql: 'text/x-<?php echo ($connection->flavor == "maria" ? "mariadb" : "mysql"); ?>',
 			oracle: 'text/x-sql',
 			clickhouse: 'text/x-sql',
 			firebird: 'text/x-sql'
@@ -56,7 +56,7 @@ function getCmMode(el) {
 for (const el of qsa('code')) {
 	const mode = getCmMode(el);
 	if (mode) {
-		el.className += ' cm-s-default';
+		el.classList.add('cm-s-default');
 		CodeMirror.runMode(el.textContent, mode, el);
 	}
 }
@@ -72,11 +72,11 @@ for (const el of qsa('textarea')) {
 			hintOptions: {
 				completeSingle: false,
 				tables: <?php echo json_encode($tables); ?>,
-				defaultTable: <?php echo json_encode($_GET["trigger"] ? $_GET["trigger"] : ($_GET["check"] ? $_GET["check"] : null)); ?>
+				defaultTable: <?php echo json_encode($_GET["trigger"] ? $_GET["trigger"] : ($_GET["check"] ?: null)); ?>
 			}
 		});
 		cm.setSize(width, height);
-		cm.on('inputRead', function () {
+		cm.on('inputRead', () => {
 			const token = cm.getTokenAt(cm.getCursor());
 			if (/^[.`"\w]\w*$/.test(token.string)) {
 				CodeMirror.commands.autocomplete(cm);

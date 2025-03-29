@@ -92,7 +92,7 @@ if ($_POST["save"]) {
 	}
 }
 
-if (!support("table") && !$fields) {
+if (!support("table") && !$fields) { // used by Mongo and SimpleDB
 	if (!$where) { // insert
 		$result = $driver->select($TABLE, array("*"), $where, array("*"));
 		$row = ($result ? $result->fetch_assoc() : false);
@@ -110,4 +110,4 @@ if (!support("table") && !$fields) {
 	}
 }
 
-edit_form($TABLE, $fields, $row, $update);
+edit_form($TABLE, $fields, $row, $update, $error);

@@ -1,4 +1,10 @@
 /adminer/adminer.css
+/adminer/adminer-dark.css
+/editor/adminer.css
+/editor/adminer-dark.css
 /adminer*.php
 /editor*.php
+/tests/pdo-*.html
 /vendor/
+adminer-plugins/
+adminer-plugins.php

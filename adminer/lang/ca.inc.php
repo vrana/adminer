@@ -267,3 +267,5 @@ $translations = array(
 	'Edit all' => 'Edita-ho tot',
 	'HH:MM:SS' => 'HH:MM:SS',
 );
+
+// run `php ../../lang.php ca` to update this file

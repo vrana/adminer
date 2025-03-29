@@ -17,8 +17,8 @@ $orig_fields = array();
 $table_status = array();
 if ($TABLE != "") {
 	$orig_fields = fields($TABLE);
-	$table_status = table_status($TABLE);
-	if (!$table_status) {
+	$table_status = table_status1($TABLE);
+	if (count($table_status) < 2) { // there's only the Name field
 		$error = lang('No tables.');
 	}
 }
@@ -168,7 +168,10 @@ if (!$_POST) {
 }
 
 $collations = collations();
-$engines = engines();
+if (is_array(reset($collations))) {
+	$collations = call_user_func_array('array_merge', array_values($collations));
+}
+$engines = $driver->engines();
 // case of engine may differ
 foreach ($engines as $engine) {
 	if (!strcasecmp($engine, $row["Engine"])) {
@@ -182,10 +185,10 @@ foreach ($engines as $engine) {
 <p>
 <?php
 if (support("columns") || $TABLE == "") {
-	echo lang('Table name') . "<input name='name'" . ($TABLE == "" && !$_POST ? " autofocus" : "") . " data-maxlength='64' value='" . h($row["name"]) . "' autocapitalize='off'>\n";
-	echo ($engines ? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . on_help("getTarget(event).value", 1) . script("qsl('select').onchange = helpClose;") . "\n" : "");
+	echo lang('Table name') . ": <input name='name'" . ($TABLE == "" && !$_POST ? " autofocus" : "") . " data-maxlength='64' value='" . h($row["name"]) . "' autocapitalize='off'>\n";
+	echo ($engines ? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . on_help("event.target.value", 1) . script("qsl('select').onchange = helpClose;") . "\n" : "");
 	if ($collations) {
-		echo "<datalist id='collations'>" . optionlist($collations) . "</datalist>";
+		echo "<datalist id='collations'>" . optionlist($collations) . "</datalist>\n";
 		echo (preg_match("~sqlite|mssql~", JUSH) ? "" : "<input list='collations' name='Collation' value='" . h($row["Collation"]) . "' placeholder='(" . lang('collation') . ")'>");
 	}
 	echo "<input type='submit' value='" . lang('Save') . "'>\n";
@@ -221,7 +224,7 @@ if (support("columns")) {
 if (support("partitioning")) {
 	$partition_table = preg_match('~RANGE|LIST~', $row["partition_by"]);
 	print_fieldset("partition", lang('Partition by'), $row["partition_by"]);
-	echo "<p>" . html_select("partition_by", array("" => "") + $partition_by, $row["partition_by"]) . on_help("getTarget(event).value.replace(/./, 'PARTITION BY \$&')", 1) . script("qsl('select').onchange = partitionByChange;");
+	echo "<p>" . html_select("partition_by", array("" => "") + $partition_by, $row["partition_by"]) . on_help("event.target.value.replace(/./, 'PARTITION BY \$&')", 1) . script("qsl('select').onchange = partitionByChange;");
 	echo "(<input name='partition' value='" . h($row["partition"]) . "'>)\n";
 	echo lang('Partitions') . ": <input type='number' name='partitions' class='size" . ($partition_table || !$row["partition_by"] ? " hidden" : "") . "' value='" . h($row["partitions"]) . "'>\n";
 	echo "<table id='partition-table'" . ($partition_table ? "" : " class='hidden'") . ">\n";
@@ -230,7 +233,7 @@ if (support("partitioning")) {
 		echo '<tr>';
 		echo '<td><input name="partition_names[]" value="' . h($val) . '" autocapitalize="off">';
 		echo ($key == count($row["partition_names"]) - 1 ? script("qsl('input').oninput = partitionNameChange;") : '');
-		echo '<td><input name="partition_values[]" value="' . h($row["partition_values"][$key]) . '">';
+		echo '<td><input name="partition_values[]" value="' . h(idx($row["partition_values"], $key)) . '">';
 	}
 	echo "</table>\n</div></fieldset>\n";
 }

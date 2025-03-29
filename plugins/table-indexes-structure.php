@@ -9,10 +9,9 @@
 class AdminerTableIndexesStructure {
 
 	/** Print table structure in tabular format
-	* @Param array data about all indexes on a table
-	* @return bool
+	* @param Index[] $indexes data about all indexes on a table
 	*/
-	function tableIndexesPrint($indexes) {
+	function tableIndexesPrint(array $indexes): bool {
 		echo "<table>\n";
 		echo "<thead><tr><th>" . Adminer\lang('Name') . "<th>" . Adminer\lang('Type') . "<th>" . Adminer\lang('Columns') . "</thead>\n";
 		foreach ($indexes as $name => $index) {

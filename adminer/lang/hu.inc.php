@@ -266,3 +266,5 @@ $translations = array(
 	'Edit all' => 'Összes szerkesztése',
 	'HH:MM:SS' => 'óó:pp:mm',
 );
+
+// run `php ../../lang.php hu` to update this file

@@ -10,9 +10,9 @@ class AdminerLoginPasswordLess {
 	protected $password_hash;
 
 	/** Set allowed password
-	* @param string result of password_hash
+	* @param string $password_hash result of password_hash()
 	*/
-	function __construct($password_hash) {
+	function __construct(string $password_hash) {
 		$this->password_hash = $password_hash;
 	}
 

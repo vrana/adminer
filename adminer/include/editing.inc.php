@@ -4,13 +4,13 @@ namespace Adminer;
 // This file is not used in Adminer Editor.
 
 /** Print select result
-* @param Result
-* @param Db connection to examine indexes
-* @param array
-* @param int
-* @return array $orgtables
+* @param Result $result
+* @param Db $connection2 connection to examine indexes
+* @param string[] $orgtables
+* @param int|numeric-string $limit
+* @return string[] $orgtables
 */
-function select($result, $connection2 = null, $orgtables = array(), $limit = 0) {
+function print_select_result($result, Db $connection2 = null, array $orgtables = array(), $limit = 0): array {
 	$links = array(); // colno => orgtable - create links from these columns
 	$indexes = array(); // orgtable => array(column => colno) - primary keys
 	$columns = array(); // orgtable => array(column => ) - not selected columns in primary key
@@ -25,12 +25,14 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 			for ($j=0; $j < count($row); $j++) {
 				$field = $result->fetch_field();
 				$name = $field->name;
-				$orgtable = $field->orgtable;
-				$orgname = $field->orgname;
-				$return[$field->table] = $orgtable;
+				$orgtable = (isset($field->orgtable) ? $field->orgtable : "");
+				$orgname = (isset($field->orgname) ? $field->orgname : $name);
 				if ($orgtables && JUSH == "sql") { // MySQL EXPLAIN
 					$links[$j] = ($name == "table" ? "table=" : ($name == "possible_keys" ? "indexes=" : null));
 				} elseif ($orgtable != "") {
+					if (isset($field->table)) {
+						$return[$field->table] = $orgtable;
+					}
 					if (!isset($indexes[$orgtable])) {
 						// find primary key in each table
 						$indexes[$orgtable] = array();
@@ -99,10 +101,9 @@ function select($result, $connection2 = null, $orgtables = array(), $limit = 0) 
 }
 
 /** Get referencable tables with single column primary key except self
-* @param string
-* @return array [$table_name => $field]
+* @return array<string, Field> [$table_name => $field]
 */
-function referencable_primary($self) {
+function referencable_primary(string $self): array {
 	$return = array(); // table_name => field
 	foreach (table_status('', true) as $table_name => $table) {
 		if ($table_name != $self && fk_support($table)) {
@@ -121,13 +122,9 @@ function referencable_primary($self) {
 }
 
 /** Print SQL <textarea> tag
-* @param string
-* @param string or array in which case [0] of every element is used
-* @param int
-* @param int
-* @return null
+* @param string|list<array{string}> $value
 */
-function textarea($name, $value, $rows = 10, $cols = 80) {
+function textarea(string $name, $value, int $rows = 10, int $cols = 80): void {
 	echo "<textarea name='" . h($name) . "' rows='$rows' cols='$cols' class='sqlarea jush-" . JUSH . "' spellcheck='false' wrap='off'>";
 	if (is_array($value)) {
 		foreach ($value as $val) { // not implode() to save memory
@@ -140,14 +137,9 @@ function textarea($name, $value, $rows = 10, $cols = 80) {
 }
 
 /** Generate HTML <select> or <input> if $options are empty
-* @param string
-* @param array
-* @param string
-* @param string
-* @param string
-* @return string
+* @param string[] $options
 */
-function select_input($attrs, $options, $value = "", $onchange = "", $placeholder = "") {
+function select_input(string $attrs, array $options, ?string $value = "", string $onchange = "", string $placeholder = ""): string {
 	$tag = ($options ? "select" : "input");
 	return "<$tag$attrs" . ($options
 		? "><option value=''>$placeholder" . optionlist($options, $value, true) . "</select>"
@@ -156,11 +148,10 @@ function select_input($attrs, $options, $value = "", $onchange = "", $placeholde
 }
 
 /** Print one row in JSON object
-* @param string or "" to close the object
-* @param string
-* @return null
+* @param string $key or "" to close the object
+* @param string|int $val
 */
-function json_row($key, $val = null) {
+function json_row(string $key, $val = null): void {
 	static $first = true;
 	if ($first) {
 		echo "{";
@@ -175,14 +166,12 @@ function json_row($key, $val = null) {
 }
 
 /** Print table columns for type edit
-* @param string
-* @param array
-* @param array
-* @param array returned by referencable_primary()
-* @param array extra types to prepend
-* @return null
+* @param Field $field
+* @param list<string> $collations
+* @param string[] $foreign_keys
+* @param list<string> $extra_types extra types to prepend
 */
-function edit_type($key, $field, $collations, $foreign_keys = array(), $extra_types = array()) {
+function edit_type(string $key, array $field, array $collations, array $foreign_keys = array(), array $extra_types = array()): void {
 	global $driver;
 	$type = $field["type"];
 	echo "<td><select name='" . h($key) . "[type]' class='type' aria-labelledby='label-type'>";
@@ -215,10 +204,9 @@ function edit_type($key, $field, $collations, $foreign_keys = array(), $extra_ty
 }
 
 /** Get partition info
-* @param string
-* @return array
+* @return array{partition_by:string, partition:string, partitions:string, partition_names:list<string>, partition_values:list<string>}
 */
-function get_partitions_info($table) {
+function get_partitions_info(string $table): array {
 	global $connection;
 	$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . q(DB) . " AND TABLE_NAME = " . q($table);
 	$result = $connection->query("SELECT PARTITION_METHOD, PARTITION_EXPRESSION, PARTITION_ORDINAL_POSITION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
@@ -230,11 +218,8 @@ function get_partitions_info($table) {
 	return $return;
 }
 
-/** Filter length value including enums
-* @param string
-* @return string
-*/
-function process_length($length) {
+/** Filter length value including enums */
+function process_length(?string $length): string {
 	global $driver;
 	$enum_length = $driver->enumLength;
 	return (preg_match("~^\\s*\\(?\\s*$enum_length(?:\\s*,\\s*$enum_length)*+\\s*\\)?\\s*\$~", $length) && preg_match_all("~$enum_length~", $length, $matches)
@@ -244,11 +229,9 @@ function process_length($length) {
 }
 
 /** Create SQL string from field type
-* @param array
-* @param string
-* @return string
+* @param FieldType $field
 */
-function process_type($field, $collate = "COLLATE") {
+function process_type(array $field, string $collate = "COLLATE"): string {
 	global $driver;
 	return " $field[type]"
 		. process_length($field["length"])
@@ -258,11 +241,11 @@ function process_type($field, $collate = "COLLATE") {
 }
 
 /** Create SQL string from field
-* @param array basic field information
-* @param array information about field type
-* @return array ["field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT"]
+* @param Field $field basic field information
+* @param Field $type_field information about field type
+* @return list<string> ["field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT"]
 */
-function process_field($field, $type_field) {
+function process_field(array $field, array $type_field): array {
 	// MariaDB exports CURRENT_TIMESTAMP as a function.
 	if ($field["on_update"]) {
 		$field["on_update"] = str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", $field["on_update"]);
@@ -279,10 +262,9 @@ function process_field($field, $type_field) {
 }
 
 /** Get default value clause
-* @param array
-* @return string
+* @param Field $field
 */
-function default_value($field) {
+function default_value(array $field): string {
 	global $driver;
 	$default = $field["default"];
 	$generated = $field["generated"];
@@ -296,10 +278,9 @@ function default_value($field) {
 }
 
 /** Get type class to use in CSS
-* @param string
-* @return string class=''
+* @return string|void class=''
 */
-function type_class($type) {
+function type_class(string $type) {
 	foreach (
 		array(
 			'char' => 'text',
@@ -315,25 +296,22 @@ function type_class($type) {
 }
 
 /** Print table interior for fields editing
-* @param array
-* @param array
-* @param string TABLE or PROCEDURE
-* @param array returned by referencable_primary()
-* @return null
+* @param (Field|RoutineField)[] $fields
+* @param list<string> $collations
+* @param 'TABLE'|'PROCEDURE' $type
+* @param string[] $foreign_keys
 */
-function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = array()) {
+function edit_fields(array $fields, array $collations, $type = "TABLE", array $foreign_keys = array()): void {
 	global $driver;
 	$fields = array_values($fields);
 	$default_class = (($_POST ? $_POST["defaults"] : get_setting("defaults")) ? "" : " class='hidden'");
 	$comment_class = (($_POST ? $_POST["comments"] : get_setting("comments")) ? "" : " class='hidden'");
-	?>
-<thead><tr>
-<?php echo ($type == "PROCEDURE" ? "<td>" : ""); ?>
-<th id="label-name"><?php echo ($type == "TABLE" ? lang('Column name') : lang('Parameter name')); ?>
-<td id="label-type"><?php echo lang('Type'); ?><textarea id="enum-edit" rows="4" cols="12" wrap="off" style="display: none;"></textarea><?php echo script("qs('#enum-edit').onblur = editingLengthBlur;"); ?>
-<td id="label-length"><?php echo lang('Length'); ?>
-<td><?php
-	echo lang('Options'); // no label required, options have their own label
+	echo "<thead><tr>\n";
+	echo ($type == "PROCEDURE" ? "<td>" : "");
+	echo "<th id='label-name'>" . ($type == "TABLE" ? lang('Column name') : lang('Parameter name'));
+	echo "<td id='label-type'>" . lang('Type') . "<textarea id='enum-edit' rows='4' cols='12' wrap='off' style='display: none;'></textarea>" . script("qs('#enum-edit').onblur = editingLengthBlur;");
+	echo "<td id='label-length'>" . lang('Length');
+	echo "<td>" . lang('Options'); // no label required, options have their own label
 	if ($type == "TABLE") {
 		echo "<td id='label-null'>NULL\n";
 		echo "<td><input type='radio' name='auto_increment_col' value=''><abbr id='label-ai' title='" . lang('Auto Increment') . "'>AI</abbr>";
@@ -347,19 +325,19 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 		echo "<td id='label-default'$default_class>" . lang('Default value');
 		echo (support("comment") ? "<td id='label-comment'$comment_class>" . lang('Comment') : "");
 	}
-	echo "<td><input type='image' class='icon' name='add[" . (support("move_col") ? 0 : count($fields)) . "]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>" . script("row_count = " . count($fields) . ";");
+	echo "<td>" . icon("plus", "add[" . (support("move_col") ? 0 : count($fields)) . "]", "+", lang('Add next'));
 	echo "</thead>\n<tbody>\n";
 	echo script("mixin(qsl('tbody'), {onclick: editingClick, onkeydown: editingKeydown, oninput: editingInput});");
 	foreach ($fields as $i => $field) {
 		$i++;
 		$orig = $field[($_POST ? "orig" : "field")];
-		$display = (isset($_POST["add"][$i-1]) || (isset($field["field"]) && !$_POST["drop_col"][$i])) && (support("drop_col") || $orig == "");
+		$display = (isset($_POST["add"][$i-1]) || (isset($field["field"]) && !idx($_POST["drop_col"], $i))) && (support("drop_col") || $orig == "");
 		echo "<tr" . ($display ? "" : " style='display: none;'") . ">\n";
 		echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", $driver->inout), $field["inout"]) : "") . "<th>";
 		if ($display) {
-			echo "<input name='fields[$i][field]' value='" . h($field["field"]) . "' data-maxlength='64' autocapitalize='off' aria-labelledby='label-name'>\n";
+			echo "<input name='fields[$i][field]' value='" . h($field["field"]) . "' data-maxlength='64' autocapitalize='off' aria-labelledby='label-name'>";
 		}
-		echo "<input type='hidden' name='fields[$i][orig]' value='" . h($orig) . "'>";
+		echo input_hidden("fields[$i][orig]", $orig);
 		edit_type("fields[$i]", $field, $collations, $foreign_keys);
 		if ($type == "TABLE") {
 			echo "<td>" . checkbox("fields[$i][null]", 1, $field["null"], "", "", "block", "label-null");
@@ -373,19 +351,18 @@ function edit_fields($fields, $collations, $type = "TABLE", $foreign_keys = arra
 		}
 		echo "<td>";
 		echo (support("move_col") ?
-			"<input type='image' class='icon' name='add[$i]' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'> "
-			. "<input type='image' class='icon' name='up[$i]' src='../adminer/static/up.gif' alt='↑' title='" . lang('Move up') . "'> "
-			. "<input type='image' class='icon' name='down[$i]' src='../adminer/static/down.gif' alt='↓' title='" . lang('Move down') . "'> "
+			icon("plus", "add[$i]", "+", lang('Add next')) . " "
+			. icon("up", "up[$i]", "↑", lang('Move up')) . " "
+			. icon("down", "down[$i]", "↓", lang('Move down')) . " "
 		: "");
-		echo ($orig == "" || support("drop_col") ? "<input type='image' class='icon' name='drop_col[$i]' src='../adminer/static/cross.gif' alt='x' title='" . lang('Remove') . "'>" : "");
+		echo ($orig == "" || support("drop_col") ? icon("cross", "drop_col[$i]", "x", lang('Remove')) : "");
 	}
 }
 
 /** Move fields up and down or add field
-* @param array
-* @return bool
+* @param Field[] $fields
 */
-function process_fields(&$fields) {
+function process_fields(array &$fields): bool {
 	$offset = 0;
 	if ($_POST["up"]) {
 		$last = 0;
@@ -423,21 +400,19 @@ function process_fields(&$fields) {
 }
 
 /** Callback used in routine()
-* @param array
-* @return string
+* @param list<string> $match
 */
-function normalize_enum($match) {
-	return "'" . str_replace("'", "''", addcslashes(stripcslashes(str_replace($match[0][0] . $match[0][0], $match[0][0], substr($match[0], 1, -1))), '\\')) . "'";
+function normalize_enum(array $match): string {
+	$val = $match[0];
+	return "'" . str_replace("'", "''", addcslashes(stripcslashes(str_replace($val[0] . $val[0], $val[0], substr($val, 1, -1))), '\\')) . "'";
 }
 
 /** Issue grant or revoke commands
-* @param string GRANT or REVOKE
-* @param array
-* @param string
-* @param string
-* @return bool
+* @param 'GRANT'|'REVOKE' $grant
+* @param list<string> $privileges
+* @return Result|bool
 */
-function grant($grant, $privileges, $columns, $on) {
+function grant(string $grant, array $privileges, ?string $columns, string $on) {
 	if (!$privileges) {
 		return true;
 	}
@@ -452,20 +427,14 @@ function grant($grant, $privileges, $columns, $on) {
 }
 
 /** Drop old object and create a new one
-* @param string drop old object query
-* @param string create new object query
-* @param string drop new object query
-* @param string create test object query
-* @param string drop test object query
-* @param string
-* @param string
-* @param string
-* @param string
-* @param string
-* @param string
-* @return null redirect in success
+* @param string $drop drop old object query
+* @param string $create create new object query
+* @param string $drop_created drop new object query
+* @param string $test create test object query
+* @param string $drop_test drop test object query
+* @return void redirect on success
 */
-function drop_create($drop, $create, $drop_created, $test, $drop_test, $location, $message_drop, $message_alter, $message_create, $old_name, $new_name) {
+function drop_create(string $drop, string $create, string $drop_created, string $test, string $drop_test, string $location, string $message_drop, string $message_alter, string $message_create, string $old_name, string $new_name): void {
 	if ($_POST["drop"]) {
 		query_redirect($drop, $location, $message_drop);
 	} elseif ($old_name == "") {
@@ -486,11 +455,9 @@ function drop_create($drop, $create, $drop_created, $test, $drop_test, $location
 }
 
 /** Generate SQL query for creating trigger
-* @param string
-* @param array result of trigger()
-* @return string
+* @param Trigger $row
 */
-function create_trigger($on, $row) {
+function create_trigger(string $on, array $row): string {
 	$timing_event = " $row[Timing] $row[Event]" . (preg_match('~ OF~', $row["Event"]) ? " $row[Of]" : ""); // SQL injection
 	return "CREATE TRIGGER "
 		. idf_escape($row["Trigger"])
@@ -501,11 +468,10 @@ function create_trigger($on, $row) {
 }
 
 /** Generate SQL query for creating routine
-* @param string "PROCEDURE" or "FUNCTION"
-* @param array result of routine()
-* @return string
+* @param 'PROCEDURE'|'FUNCTION' $routine
+* @param Routine $row
 */
-function create_routine($routine, $row) {
+function create_routine($routine, array $row): string {
 	global $driver;
 	$set = array();
 	$fields = (array) $row["fields"];
@@ -525,19 +491,15 @@ function create_routine($routine, $row) {
 	;
 }
 
-/** Remove current user definer from SQL command
-* @param string
-* @return string
-*/
-function remove_definer($query) {
+/** Remove current user definer from SQL command */
+function remove_definer(string $query): string {
 	return preg_replace('~^([A-Z =]+) DEFINER=`' . preg_replace('~@(.*)~', '`@`(%|\1)', logged_user()) . '`~', '\1', $query); //! proper escaping of user
 }
 
 /** Format foreign key to use in SQL query
-* @param array ["db" => string, "ns" => string, "table" => string, "source" => array, "target" => array, "on_delete" => one of $on_actions, "on_update" => one of $on_actions]
-* @return string
+* @param ForeignKey $foreign_key
 */
-function format_foreign_key($foreign_key) {
+function format_foreign_key(array $foreign_key): string {
 	global $driver;
 	$db = $foreign_key["db"];
 	$ns = $foreign_key["ns"];
@@ -552,11 +514,10 @@ function format_foreign_key($foreign_key) {
 }
 
 /** Add a file to TAR
-* @param string
-* @param TmpFile
-* @return null prints the output
+* @param TmpFile $tmp_file
+* @return void prints the output
 */
-function tar_file($filename, $tmp_file) {
+function tar_file(string $filename, $tmp_file): void {
 	$return = pack("a100a8a8a8a12a12", $filename, 644, 0, 0, decoct($tmp_file->size), decoct(time()));
 	$checksum = 8*32; // space for checksum itself
 	for ($i=0; $i < strlen($return); $i++) {
@@ -569,11 +530,8 @@ function tar_file($filename, $tmp_file) {
 	echo str_repeat("\0", 511 - ($tmp_file->size + 511) % 512);
 }
 
-/** Get INI bytes value
-* @param string
-* @return int
-*/
-function ini_bytes($ini) {
+/** Get INI bytes value */
+function ini_bytes(string $ini): int {
 	$val = ini_get($ini);
 	switch (strtolower(substr($val, -1))) {
 		case 'g':
@@ -587,22 +545,22 @@ function ini_bytes($ini) {
 }
 
 /** Create link to database documentation
-* @param array JUSH => $path
-* @param string HTML code
+* @param string[] $paths JUSH => $path
+* @param string $text HTML code
 * @return string HTML code
 */
-function doc_link($paths, $text = "<sup>?</sup>") {
+function doc_link(array $paths, string $text = "<sup>?</sup>"): string {
 	global $connection;
 	$server_info = $connection->server_info;
 	$version = preg_replace('~^(\d\.?\d).*~s', '\1', $server_info); // two most significant digits
 	$urls = array(
 		'sql' => "https://dev.mysql.com/doc/refman/$version/en/",
 		'sqlite' => "https://www.sqlite.org/",
-		'pgsql' => "https://www.postgresql.org/docs/$version/",
+		'pgsql' => "https://www.postgresql.org/docs/" . ($connection->flavor == 'cockroach' ? "current" : $version) . "/",
 		'mssql' => "https://learn.microsoft.com/en-us/sql/",
 		'oracle' => "https://www.oracle.com/pls/topic/lookup?ctx=db" . preg_replace('~^.* (\d+)\.(\d+)\.\d+\.\d+\.\d+.*~s', '\1\2', $server_info) . "&id=",
 	);
-	if ($connection->maria) {
+	if ($connection->flavor == 'maria') {
 		$urls['sql'] = "https://mariadb.com/kb/en/";
 		$paths['sql'] = (isset($paths['mariadb']) ? $paths['mariadb'] : str_replace(".html", "/", $paths['sql']));
 	}
@@ -610,10 +568,9 @@ function doc_link($paths, $text = "<sup>?</sup>") {
 }
 
 /** Compute size of database
-* @param string
 * @return string formatted
 */
-function db_size($db) {
+function db_size(string $db): string {
 	global $connection;
 	if (!$connection->select_db($db)) {
 		return "?";
@@ -625,11 +582,8 @@ function db_size($db) {
 	return format_number($return);
 }
 
-/** Print SET NAMES if utf8mb4 might be needed
-* @param string
-* @return null
-*/
-function set_utf8mb4($create) {
+/** Print SET NAMES if utf8mb4 might be needed */
+function set_utf8mb4(string $create): void {
 	global $connection;
 	static $set = false;
 	if (!$set && preg_match('~\butf8mb4~i', $create)) { // possible false positive

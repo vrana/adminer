@@ -19,6 +19,7 @@ foreach ($routine["fields"] as $i => $field) {
 if (!$error && $_POST) {
 	$call = array();
 	foreach ($routine["fields"] as $key => $field) {
+		$val = "";
 		if (in_array($key, $in)) {
 			$val = process_input($field);
 			if ($val === false) {
@@ -48,7 +49,7 @@ if (!$error && $_POST) {
 		do {
 			$result = $connection->store_result();
 			if (is_object($result)) {
-				select($result, $connection2);
+				print_select_result($result, $connection2);
 			} else {
 				echo "<p class='message'>" . lang('Routine has been called, %d row(s) affected.', $affected)
 					. " <span class='time'>" . @date("H:i:s") . "</span>\n" // @ - time zone may be not set
@@ -57,7 +58,7 @@ if (!$error && $_POST) {
 		} while ($connection->next_result());
 
 		if ($out) {
-			select($connection->query("SELECT " . implode(", ", $out)));
+			print_select_result($connection->query("SELECT " . implode(", ", $out)));
 		}
 	}
 }
@@ -71,13 +72,13 @@ if ($in) {
 		$field = $routine["fields"][$key];
 		$name = $field["field"];
 		echo "<tr><th>" . $adminer->fieldName($field);
-		$value = $_POST["fields"][$name];
+		$value = idx($_POST["fields"], $name);
 		if ($value != "") {
 			if ($field["type"] == "set") {
 				$value = implode(",", $value);
 			}
 		}
-		input($field, $value, (string) $_POST["function"][$name]); // param name can be empty
+		input($field, $value, idx($_POST["function"], $name, "")); // param name can be empty
 		echo "\n";
 	}
 	echo "</table>\n";
@@ -90,9 +91,13 @@ if ($in) {
 
 <pre>
 <?php
-function pre_tr($s) {
+/** Format string as table row
+* @return string HTML
+*/
+function pre_tr(string $s): string {
 	return preg_replace('~^~m', '<tr>', preg_replace('~\|~', '<td>', preg_replace('~\|$~m', "", rtrim($s))));
 }
+
 $table = '(\+--[-+]+\+\n)';
 $row = '(\| .* \|\n)';
 echo preg_replace_callback(

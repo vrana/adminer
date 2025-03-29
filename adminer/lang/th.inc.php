@@ -267,3 +267,5 @@ $translations = array(
 	'Edit all' => 'แก้ไขทั้งหมด',
 	'HH:MM:SS' => 'HH:MM:SS',
 );
+
+// run `php ../../lang.php th` to update this file

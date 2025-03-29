@@ -1,39 +1,51 @@
 <?php
 namespace Adminer;
 
-if (!ob_get_level()) {
-	ob_start(null, 4096);
-}
-
 /** Print HTML header
-* @param string used in title, breadcrumb and heading, should be HTML escaped
-* @param string
-* @param mixed ["key" => "link", "key2" => ["link", "desc"]], null for nothing, false for driver only, true for driver and server
-* @param string used after colon in title and heading, should be HTML escaped
-* @return null
+* @param string $title used in title, breadcrumb and heading, should be HTML escaped
+* @param mixed $breadcrumb ["key" => "link", "key2" => ["link", "desc"]], null for nothing, false for driver only, true for driver and server
+* @param string $title2 used after colon in title and heading, should be HTML escaped
 */
-function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
-	global $LANG, $VERSION, $adminer, $drivers;
+function page_header(string $title, string $error = "", $breadcrumb = array(), string $title2 = ""): void {
+	global $adminer, $drivers;
 	page_headers();
 	if (is_ajax() && $error) {
 		page_messages($error);
 		exit;
 	}
+	if (!ob_get_level()) {
+		ob_start(null, 4096);
+	}
 	$title_all = $title . ($title2 != "" ? ": $title2" : "");
 	$title_page = strip_tags($title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . $adminer->name());
+	// initial-scale=1 is the default but Chrome 134 on iOS is not able to zoom out without it
 	?>
 <!DOCTYPE html>
-<html lang="<?php echo $LANG; ?>" dir="<?php echo lang('ltr'); ?>">
+<html lang="<?php echo LANG; ?>" dir="<?php echo lang('ltr'); ?>">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="robots" content="noindex">
-<meta name="viewport" content="width=device-width">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title><?php echo $title_page; ?></title>
 <link rel="stylesheet" href="../adminer/static/default.css">
 <?php
 	$css = $adminer->css();
-	$dark = (count($css) == 1 ? !!preg_match('~-dark~', $css[0]) : null);
+	$has_light = false;
+	$has_dark = false;
+	foreach ($css as $filename) {
+		if (strpos($filename, "adminer.css") !== false) {
+			$has_light = true;
+		}
+		if (strpos($filename, "adminer-dark.css") !== false) {
+			$has_dark = true;
+		}
+	}
+	$dark = ($has_light
+		? ($has_dark ? null : false) // both styles - autoswitching, only adminer.css - light
+		: ($has_dark ?: null) // only adminer-dark.css - dark, neither - autoswitching
+	);
+	$media = " media='(prefers-color-scheme: dark)'";
 	if ($dark !== false) {
-		echo "<link rel='stylesheet'" . ($dark ? "" : " media='(prefers-color-scheme: dark)'") . " href='../adminer/static/dark.css'>\n";
+		echo "<link rel='stylesheet'" . ($dark ? "" : $media) . " href='../adminer/static/dark.css'>\n";
 	}
 	echo "<meta name='color-scheme' content='" . ($dark === null ? "light dark" : ($dark ? "dark" : "light")) . "'>\n";
 	// this is matched by compile.php
@@ -44,7 +56,7 @@ function page_header($title, $error = "", $breadcrumb = array(), $title2 = "") {
 		echo "<link rel='apple-touch-icon' href='../adminer/static/favicon.ico'>\n";
 	}
 	foreach ($css as $val) {
-		echo "<link rel='stylesheet'" . (preg_match('~-dark~', $val) && !$dark ? " media='(prefers-color-scheme: dark)'" : "") . " href='" . h($val) . "'>\n";
+		echo "<link rel='stylesheet'" . (preg_match('~-dark~', $val) && !$dark ? $media : "") . " href='" . h($val) . "'>\n";
 	}
 	echo "\n<body class='" . lang('ltr') . " nojs'>\n";
 	$filename = get_temp_dir() . "/adminer.version";
@@ -65,14 +77,14 @@ fQIDAQAB
 		}
 	}
 	echo script("mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick"
-		. (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '$VERSION', '" . js_escape(ME) . "', '" . get_token() . "')") // $token may be empty in auth.inc.php
+		. (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '" . VERSION . "', '" . js_escape(ME) . "', '" . get_token() . "')")
 		. "});
-document.body.className = document.body.className.replace(/ nojs/, ' js');
-var offlineMessage = '" . js_escape(lang('You are offline.')) . "';
-var thousandsSeparator = '" . js_escape(lang(',')) . "';")
+document.body.classList.replace('nojs', 'js');
+const offlineMessage = '" . js_escape(lang('You are offline.')) . "';
+const thousandsSeparator = '" . js_escape(lang(',')) . "';")
 	;
 	echo "<div id='help' class='jush-" . JUSH . " jsonly hidden'></div>\n";
-	echo script("mixin(qs('#help'), {onmouseover: function () { helpOpen = 1; }, onmouseout: helpMouseout});");
+	echo script("mixin(qs('#help'), {onmouseover: () => { helpOpen = 1; }, onmouseout: helpMouseout});");
 	echo "<div id='content'>\n";
 	if ($breadcrumb !== null) {
 		$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
@@ -113,10 +125,8 @@ var thousandsSeparator = '" . js_escape(lang(',')) . "';")
 	define('Adminer\PAGE_HEADER', 1);
 }
 
-/** Send HTTP headers
-* @return null
-*/
-function page_headers() {
+/** Send HTTP headers */
+function page_headers(): void {
 	global $adminer;
 	header("Content-Type: text/html; charset=utf-8");
 	header("Cache-Control: no-cache");
@@ -135,9 +145,9 @@ function page_headers() {
 }
 
 /** Get Content Security Policy headers
-* @return array of arrays with directive name in key, allowed sources in value
+* @return list<string[]> of arrays with directive name in key, allowed sources in value
 */
-function csp() {
+function csp(): array {
 	return array(
 		array(
 			"script-src" => "'self' 'unsafe-inline' 'nonce-" . get_nonce() . "' 'strict-dynamic'", // 'self' is a fallback for browsers not supporting 'strict-dynamic', 'unsafe-inline' is a fallback for browsers not supporting 'nonce-'
@@ -153,7 +163,7 @@ function csp() {
 /** Get a CSP nonce
 * @return string Base64 value
 */
-function get_nonce() {
+function get_nonce(): string {
 	static $nonce;
 	if (!$nonce) {
 		$nonce = base64_encode(rand_string());
@@ -161,13 +171,11 @@ function get_nonce() {
 	return $nonce;
 }
 
-/** Print flash and error messages
-* @param string
-* @return null
-*/
-function page_messages($error) {
+/** Print flash and error messages */
+function page_messages(string $error): void {
+	global $adminer;
 	$uri = preg_replace('~^[^?]*~', '', $_SERVER["REQUEST_URI"]);
-	$messages = $_SESSION["messages"][$uri];
+	$messages = idx($_SESSION["messages"], $uri);
 	if ($messages) {
 		echo "<div class='message'>" . implode("</div>\n<div class='message'>", $messages) . "</div>" . script("messagesPrint();");
 		unset($_SESSION["messages"][$uri]);
@@ -175,22 +183,21 @@ function page_messages($error) {
 	if ($error) {
 		echo "<div class='error'>$error</div>\n";
 	}
+	if ($adminer->error) { // separate <div>
+		echo "<div class='error'>$adminer->error</div>\n";
+	}
 }
 
 /** Print HTML footer
-* @param string "auth", "db", "ns"
-* @return null
+* @param ''|'auth'|'db'|'ns' $missing
 */
-function page_footer($missing = "") {
+function page_footer(string $missing = ""): void {
 	global $adminer;
-	?>
-</div>
-
-<div id="menu">
-<?php $adminer->navigation($missing); ?>
-</div>
-
-<?php if ($missing != "auth") { ?>
+	echo "</div>\n\n<div id='menu'>\n";
+	$adminer->navigation($missing);
+	echo "</div>\n\n";
+	if ($missing != "auth") {
+		?>
 <form action="" method="post">
 <p class="logout">
 <span><?php echo h($_GET["username"]) . "\n"; ?></span>
@@ -198,7 +205,7 @@ function page_footer($missing = "") {
 <?php echo input_token(); ?>
 </p>
 </form>
-<?php } ?>
 <?php
+	}
 	echo script("setupSubmitHighlight(document);");
 }

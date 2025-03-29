@@ -11,9 +11,9 @@ $drivers["mssql"] = "MS SQL";
 
 if (isset($_GET["mssql"])) {
 	define('Adminer\DRIVER', "mssql");
-	if (extension_loaded("sqlsrv")) {
-		class Db {
-			public $extension = "sqlsrv", $server_info, $affected_rows, $errno, $error;
+	if (extension_loaded("sqlsrv") && $_GET["ext"] != "pdo") {
+		class Db extends SqlDb {
+			public string $extension = "sqlsrv";
 			private $link, $result;
 
 			private function get_error() {
@@ -25,7 +25,7 @@ if (isset($_GET["mssql"])) {
 				$this->error = rtrim($this->error);
 			}
 
-			function connect($server, $username, $password) {
+			function connect(string $server, string $username, string $password): bool {
 				global $adminer;
 				$connection_info = array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8");
 				$ssl = $adminer->connectSsl();
@@ -49,16 +49,16 @@ if (isset($_GET["mssql"])) {
 				return (bool) $this->link;
 			}
 
-			function quote($string) {
+			function quote(string $string): string {
 				$unicode = strlen($string) != strlen(utf8_decode($string));
 				return ($unicode ? "N" : "") . "'" . str_replace("'", "''", $string) . "'";
 			}
 
-			function select_db($database) {
+			function select_db(string $database): bool {
 				return $this->query(use_sql($database));
 			}
 
-			function query($query, $unbuffered = false) {
+			function query(string $query, bool $unbuffered = false) {
 				$result = sqlsrv_query($this->link, $query); //! , array(), ($unbuffered ? array() : array("Scrollable" => "keyset"))
 				$this->error = "";
 				if (!$result) {
@@ -68,7 +68,7 @@ if (isset($_GET["mssql"])) {
 				return $this->store_result($result);
 			}
 
-			function multi_query($query) {
+			function multi_query(string $query) {
 				$this->result = sqlsrv_query($this->link, $query);
 				$this->error = "";
 				if (!$this->result) {
@@ -92,17 +92,8 @@ if (isset($_GET["mssql"])) {
 				return true;
 			}
 
-			function next_result() {
+			function next_result(): bool {
 				return $this->result ? sqlsrv_next_result($this->result) : null;
-			}
-
-			function result($query, $field = 0) {
-				$result = $this->query($query);
-				if (!is_object($result)) {
-					return false;
-				}
-				$row = $result->fetch_row();
-				return $row[$field];
 			}
 		}
 
@@ -133,15 +124,15 @@ if (isset($_GET["mssql"])) {
 				return $this->convert(sqlsrv_fetch_array($this->result, SQLSRV_FETCH_NUMERIC));
 			}
 
-			function fetch_field() {
+			function fetch_field(): \stdClass {
 				if (!$this->fields) {
 					$this->fields = sqlsrv_field_metadata($this->result);
 				}
 				$field = $this->fields[$this->offset++];
 				$return = new \stdClass;
 				$return->name = $field["Name"];
-				$return->orgname = $field["Name"];
-				$return->type = ($field["Type"] == 1 ? 254 : 0);
+				$return->type = ($field["Type"] == 1 ? 254 : 15);
+				$return->charsetnr = 0;
 				return $return;
 			}
 
@@ -156,57 +147,77 @@ if (isset($_GET["mssql"])) {
 			}
 		}
 
-	} elseif (extension_loaded("pdo_sqlsrv")) {
-		class Db extends PdoDb {
-			public $extension = "PDO_SQLSRV";
+		function last_id($result) {
+			return get_val("SELECT SCOPE_IDENTITY()"); // @@IDENTITY can return trigger INSERT
+		}
 
-			function connect($server, $username, $password) {
-				$this->dsn("sqlsrv:Server=" . str_replace(":", ",", $server), $username, $password);
-				return true;
-			}
+		function explain($connection, $query) {
+			$connection->query("SET SHOWPLAN_ALL ON");
+			$return = $connection->query($query);
+			$connection->query("SET SHOWPLAN_ALL OFF"); // connection is used also for indexes
+			return $return;
+		}
 
-			function select_db($database) {
+	} else {
+		abstract class MssqlDb extends PdoDb {
+			function select_db(string $database): bool {
 				// database selection is separated from the connection so dbname in DSN can't be used
 				return $this->query(use_sql($database));
 			}
+
+			function lastInsertId() {
+				return $this->pdo->lastInsertId();
+			}
 		}
 
-	} elseif (extension_loaded("pdo_dblib")) {
-		class Db extends PdoDb {
-			public $extension = "PDO_DBLIB";
+		function last_id($result) {
+			global $connection;
+			return $connection->lastInsertId();
+		}
 
-			function connect($server, $username, $password) {
-				$this->dsn("dblib:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\d)~', ';port=\1', $server)), $username, $password);
-				return true;
+		function explain($connection, $query) {
+		}
+
+		if (extension_loaded("pdo_sqlsrv")) {
+			class Db extends MssqlDb {
+				public string $extension = "PDO_SQLSRV";
+
+				function connect(string $server, string $username, string $password): bool {
+					$this->dsn("sqlsrv:Server=" . str_replace(":", ",", $server), $username, $password);
+					return true;
+				}
 			}
 
-			function select_db($database) {
-				return $this->query(use_sql($database));
+		} elseif (extension_loaded("pdo_dblib")) {
+			class Db extends MssqlDb {
+				public string $extension = "PDO_DBLIB";
+
+				function connect(string $server, string $username, string $password): bool {
+					$this->dsn("dblib:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\d)~', ';port=\1', $server)), $username, $password);
+					return true;
+				}
 			}
 		}
 	}
 
 
 	class Driver extends SqlDriver {
-		static $possibleDrivers = array("SQLSRV", "PDO_SQLSRV", "PDO_DBLIB");
-		static $jush = "mssql";
+		static array $possibleDrivers = array("SQLSRV", "PDO_SQLSRV", "PDO_DBLIB");
+		static string $jush = "mssql";
 
-		public $editFunctions = array(
-			array(
-				"date|time" => "getdate",
-			), array(
-				"int|decimal|real|float|money|datetime" => "+/-",
-				"char|text" => "+",
-			)
+		public array $insertFunctions = array("date|time" => "getdate");
+		public array $editFunctions = array(
+			"int|decimal|real|float|money|datetime" => "+/-",
+			"char|text" => "+",
 		);
 
-		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL");
-		public $functions = array("len", "lower", "round", "upper");
-		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
-		public $onActions = "NO ACTION|CASCADE|SET NULL|SET DEFAULT";
-		public $generated = array("PERSISTED", "VIRTUAL");
+		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL");
+		public array $functions = array("len", "lower", "round", "upper");
+		public array $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
+		public array $generated = array("PERSISTED", "VIRTUAL");
+		public string $onActions = "NO ACTION|CASCADE|SET NULL|SET DEFAULT";
 
-		function __construct($connection) {
+		function __construct(Db $connection) {
 			parent::__construct($connection);
 			$this->types = array( //! use sys.types
 				lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "int" => 10, "bigint" => 20, "bit" => 1, "decimal" => 0, "real" => 12, "float" => 53, "smallmoney" => 10, "money" => 20),
@@ -216,7 +227,7 @@ if (isset($_GET["mssql"])) {
 			);
 		}
 
-		function insertUpdate($table, $rows, $primary) {
+		function insertUpdate(string $table, array $rows, array $primary) {
 			$fields = fields($table);
 			$update = array();
 			$where = array();
@@ -260,7 +271,7 @@ if (isset($_GET["mssql"])) {
 			return queries("BEGIN TRANSACTION");
 		}
 
-		function tableHelp($name, $is_view = false) {
+		function tableHelp(string $name, bool $is_view = false) {
 			$links = array(
 				"sys" => "catalog-views/sys-",
 				"INFORMATION_SCHEMA" => "information-schema-views/",
@@ -293,7 +304,7 @@ if (isset($_GET["mssql"])) {
 		return $connection->error;
 	}
 
-	function get_databases() {
+	function get_databases($flush) {
 		return get_vals("SELECT name FROM sys.databases WHERE name NOT IN ('master', 'tempdb', 'model', 'msdb')");
 	}
 
@@ -307,10 +318,6 @@ if (isset($_GET["mssql"])) {
 
 	function db_collation($db, $collations) {
 		return get_val("SELECT collation_name FROM sys.databases WHERE name = " . q($db));
-	}
-
-	function engines() {
-		return array();
 	}
 
 	function logged_user() {
@@ -338,9 +345,6 @@ if (isset($_GET["mssql"])) {
 FROM sys.all_objects AS ao
 WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V') " . ($name != "" ? "AND name = " . q($name) : "ORDER BY name")) as $row
 		) {
-			if ($name != "") {
-				return $row;
-			}
 			$return[$row["Name"]] = $row;
 		}
 		return $return;
@@ -359,7 +363,7 @@ WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V')
 		$return = array();
 		$table_id = get_val("SELECT object_id FROM sys.all_objects WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V') AND name = " . q($table));
 		foreach (
-			get_rows("SELECT c.max_length, c.precision, c.scale, c.name, c.is_nullable, c.is_identity, c.collation_name, t.name type, CAST(d.definition as text) [default], d.name default_constraint, i.is_primary_key
+			get_rows("SELECT c.max_length, c.precision, c.scale, c.name, c.is_nullable, c.is_identity, c.collation_name, t.name type, d.definition [default], d.name default_constraint, i.is_primary_key
 FROM sys.all_columns c
 JOIN sys.types t ON c.user_type_id = t.user_type_id
 LEFT JOIN sys.default_constraints d ON c.default_object_id = d.object_id
@@ -369,7 +373,7 @@ WHERE c.object_id = " . q($table_id)) as $row
 		) {
 			$type = $row["type"];
 			$length = (preg_match("~char|binary~", $type)
-				? $row["max_length"] / ($type[0] == 'n' ? 2 : 1)
+				? intval($row["max_length"]) / ($type[0] == 'n' ? 2 : 1)
 				: ($type == "decimal" ? "$row[precision],$row[scale]" : "")
 			);
 			$return[$row["name"]] = array(
@@ -547,17 +551,6 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 		;
 	}
 
-	function last_id($result) {
-		return get_val("SELECT SCOPE_IDENTITY()"); // @@IDENTITY can return trigger INSERT
-	}
-
-	function explain($connection, $query) {
-		$connection->query("SET SHOWPLAN_ALL ON");
-		$return = $connection->query($query);
-		$connection->query("SET SHOWPLAN_ALL OFF"); // connection is used also for indexes
-		return $return;
-	}
-
 	function found_rows($table_status, $where) {
 	}
 
@@ -593,7 +586,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 		return apply_queries("ALTER SCHEMA " . idf_escape($target) . " TRANSFER", array_merge($tables, $views));
 	}
 
-	function trigger($name) {
+	function trigger($name, $table) {
 		if ($name == "") {
 			return array();
 		}
@@ -654,7 +647,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)) as $row
 
 	function create_sql($table, $auto_increment, $style) {
 		global $driver;
-		if (is_view(table_status($table))) {
+		if (is_view(table_status1($table))) {
 			$view = view($table);
 			return "CREATE VIEW " . table($table) . " AS $view[select]";
 		}
@@ -702,7 +695,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)) as $row
 	function trigger_sql($table) {
 		$return = "";
 		foreach (triggers($table) as $name => $trigger) {
-			$return .= create_trigger(" ON " . table($table), trigger($name)) . ";";
+			$return .= create_trigger(" ON " . table($table), trigger($name, $table)) . ";";
 		}
 		return $return;
 	}

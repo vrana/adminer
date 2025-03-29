@@ -279,3 +279,5 @@ $translations = array(
 	'You can upload a big SQL file via FTP and import it from server.' => '큰 SQL 파일은 FTP를 통하여 업로드하여 서버에서 가져올 수 있습니다.',
 	'You have no privileges to update this table.' => '이 테이블을 업데이트할 권한이 없습니다.',
 );
+
+// run `php ../../lang.php ko` to update this file

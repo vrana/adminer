@@ -243,7 +243,7 @@ $translations = array(
 	'Type has been dropped.' => 'Type verwijderd.',
 	'Type has been created.' => 'Type aangemaakt.',
 	'Ctrl+click on a value to modify it.' => 'Ctrl+klik op een waarde om deze te bewerken.',
-	'Use edit link to modify this value.' => 'Gebruik de link "bewerk" om deze waarde te wijzigen.',
+	'Use edit link to modify this value.' => 'Gebruik de link \'bewerk\' om deze waarde te wijzigen.',
 	'last' => 'laatste',
 	'From server' => 'Van server',
 	'System' => 'Databasesysteem',
@@ -302,3 +302,5 @@ $translations = array(
 	'yes' => 'ja',
 	'no' => 'neen',
 );
+
+// run `php ../../lang.php nl` to update this file

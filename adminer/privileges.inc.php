@@ -14,8 +14,8 @@ if (!$result) {
 
 echo "<form action=''><p>\n";
 hidden_fields_get();
-echo "<input type='hidden' name='db' value='" . h(DB) . "'>\n";
-echo ($grant ? "" : "<input type='hidden' name='grant' value=''>\n");
+echo input_hidden("db", DB);
+echo ($grant ? "" : input_hidden("grant"));
 echo "<table class='odds'>\n";
 echo "<thead><tr><th>" . lang('Username') . "<th>" . lang('Server') . "<th></thead>\n";
 

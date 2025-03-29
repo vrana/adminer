@@ -18,9 +18,8 @@ class AdminerPrettyJsonColumn {
 		$json = $this->testJson($value);
 		if ($json !== $value) {
 			$jsonText = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
-			return "<textarea$attrs cols='50' rows='20'>" . Adminer\h($jsonText) . "</textarea>";
+			return "<textarea$attrs cols='50' rows='20' class='jush-js'>" . Adminer\h($jsonText) . "</textarea>";
 		}
-		return '';
 	}
 
 	function processInput($field, $value, $function = '') {

@@ -333,3 +333,5 @@ $translations = array(
 	'Type has been created.' => 'نوع ایجاد شد.',
 	'Alter type' => 'ویرایش نوع',
 );
+
+// run `php ../../lang.php fa` to update this file

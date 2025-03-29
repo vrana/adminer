@@ -5,7 +5,7 @@ $TABLE = $_GET["view"];
 $row = $_POST;
 $orig_type = "VIEW";
 if (JUSH == "pgsql" && $TABLE != "") {
-	$status = table_status($TABLE);
+	$status = table_status1($TABLE);
 	$orig_type = strtoupper($status["Engine"]);
 }
 

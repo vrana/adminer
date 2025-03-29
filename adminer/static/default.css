@@ -22,13 +22,13 @@ fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: .8e
 p { margin: .8em 20px 0 0; }
 img { vertical-align: middle; border: 0; }
 td img { max-width: 200px; max-height: 200px; }
-code { background: #eee; }
 tbody tr:hover td, tbody tr:hover th { background: #eee; }
+code { font-size: 110%; padding: 1px 2px; background: #eee; }
 pre { margin: 1em 0 0; }
 td pre { margin: 0; }
-pre, textarea { font: 100%/1.25 monospace; }
+pre, textarea { font: 110%/1.25 monospace; }
 pre.jush { background: #fff; }
-pre code { display: block; }
+pre code { display: block; font-size: 100%; }
 input, textarea { box-sizing: border-box; }
 input, select { vertical-align: middle; }
 input[type="radio"] { vertical-align: text-bottom; }
@@ -59,9 +59,15 @@ input.wayoff { left: -1000px; position: absolute; }
 .view { font-style: italic; }
 .active { font-weight: bold; }
 .sqlarea { width: 98%; }
+.sql-footer { margin-bottom: 2.5em; }
 .explain table { white-space: pre; }
-.icon { width: 18px; height: 18px; background-color: navy; }
+.icon { width: 18px; height: 18px; background-color: navy; border: 0; vertical-align: middle; }
+.icon span { display: none; }
 .icon:hover { background-color: red; }
+.icon-up { background-image: url(up.gif); }
+.icon-down { background-image: url(down.gif); }
+.icon-plus { background-image: url(plus.gif); }
+.icon-cross { background-image: url(cross.gif); }
 .size { width: 7ex; }
 .help { cursor: help; }
 .footer { position: sticky; bottom: 0; margin-right: -20px; border-top: 20px solid rgba(255, 255, 255, .7); border-image: linear-gradient(rgba(255, 255, 255, .2), #fff) 100% 0; }
@@ -85,6 +91,7 @@ input.wayoff { left: -1000px; position: absolute; }
 #schema { margin-left: 60px; position: relative; user-select: none; -webkit-user-select: none; }
 #schema .table { border: 1px solid silver; padding: 0 2px; cursor: move; position: absolute; }
 #schema .references { position: absolute; }
+#schema .arrow { height: 1.25em; background: url(arrow.gif) no-repeat right center; }
 #help { position: absolute; border: 1px solid #999; background: #eee; padding: 5px; font-family: monospace; z-index: 1; }
 
 .rtl h2 { margin: 0 -18px 20px 0; }
@@ -99,7 +106,7 @@ input.wayoff { left: -1000px; position: absolute; }
 
 @media all and (max-width: 880px) {
 	.pages { left: auto; }
-	.logout { position: static; padding: 0 1em 1em; }
+	.logout { position: static; padding: 1em; }
 	#menu { position: static; width: auto; }
 	#content { margin-left: 10px; }
 	#lang { position: static; }

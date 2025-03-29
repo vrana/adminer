@@ -281,3 +281,5 @@ $translations = array(
 	'Alter type' => 'Endre type',
 	'Saving' => 'Lagrer',
 );
+
+// run `php ../../lang.php no` to update this file

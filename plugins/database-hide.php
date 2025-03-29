@@ -10,9 +10,9 @@ class AdminerDatabaseHide {
 	protected $disabled;
 
 	/**
-	* @param array case insensitive database names in values
+	* @param list<string> $disabled case insensitive database names in values
 	*/
-	function __construct($disabled) {
+	function __construct(array $disabled) {
 		$this->disabled = array_map('strtolower', $disabled);
 	}
 

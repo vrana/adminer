@@ -16,7 +16,7 @@ if ($_POST && !$error) {
 	$is_sql = preg_match('~sql~', $_POST["format"]);
 
 	if ($is_sql) {
-		echo "-- Adminer $VERSION " . $drivers[DRIVER] . " " . str_replace("\n", " ", $connection->server_info) . " dump\n\n";
+		echo "-- Adminer " . VERSION . " " . $drivers[DRIVER] . " " . str_replace("\n", " ", $connection->server_info) . " dump\n\n";
 		if (JUSH == "sql") {
 			echo "SET NAMES utf8;
 SET time_zone = '+00:00';
@@ -93,6 +93,7 @@ SET foreign_key_checks = 0;
 					$table = (DB == "" || in_array($name, (array) $_POST["tables"]));
 					$data = (DB == "" || in_array($name, (array) $_POST["data"]));
 					if ($table || $data) {
+						$tmp_file = null;
 						if ($ext == "tar") {
 							$tmp_file = new TmpFile;
 							ob_start(array($tmp_file, 'write'), 1e5);

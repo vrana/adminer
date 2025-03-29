@@ -281,3 +281,5 @@ $translations = array(
 	'Alter type' => 'Ændre type',
 	'Saving' => 'Gemmer',
 );
+
+// run `php ../../lang.php da` to update this file

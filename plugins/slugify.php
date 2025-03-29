@@ -10,17 +10,17 @@ class AdminerSlugify {
 	protected $from, $to;
 
 	/**
-	* @param string find these characters ...
-	* @param string ... and replace them by these
+	* @param string $from find these characters ...
+	* @param string $to ... and replace them by these
 	*/
-	function __construct($from = 'áčďéěíňóřšťúůýž', $to = 'acdeeinorstuuyz') {
+	function __construct(string $from = 'áčďéěíňóřšťúůýž', string $to = 'acdeeinorstuuyz') {
 		$this->from = $from;
 		$this->to = $to;
 	}
 
 	function editInput($table, $field, $attrs, $value) {
 		static $slugify;
-		if (!$_GET["select"] && !$_GET["where"]) {
+		if (!$_GET["select"] && !$_GET["where"] && $table) {
 			if ($slugify === null) {
 				$slugify = array();
 				$prev = null;
@@ -35,8 +35,8 @@ class AdminerSlugify {
 			if ($slug !== null) {
 				return "<input value='" . Adminer\h($value) . "' data-maxlength='$field[length]' size='40'$attrs>"
 					. Adminer\script("qsl('input').onchange = function () {
-	var find = '$this->from';
-	var repl = '$this->to';
+	const find = '$this->from';
+	const repl = '$this->to';
 	this.form['fields[$slug]'].value = this.value.toLowerCase()
 		.replace(new RegExp('[' + find + ']', 'g'), function (str) { return repl[find.indexOf(str)]; })
 		.replace(/[^a-z0-9_]+/g, '-')

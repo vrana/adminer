@@ -3,6 +3,7 @@ namespace Adminer;
 
 page_header(lang('Database schema'), "", array(), h(DB . ($_GET["ns"] ? ".$_GET[ns]" : "")));
 
+/** @var array{float, float}[] */
 $table_pos = array();
 $table_pos_js = array();
 $SCHEMA = ($_GET["schema"] ?: $_COOKIE["adminer_schema-" . str_replace(".", "_", DB)]); // $_COOKIE["adminer_schema"] was used before 3.2.0 //! ':' in table name
@@ -14,6 +15,7 @@ foreach ($matches as $i => $match) {
 
 $top = 0;
 $base_left = -1;
+/** @var array{fields:Field[], pos:array{float, float}, references:string[][][]}[] */
 $schema = array(); // table => array("fields" => array(name => field), "pos" => array(top, left), "references" => array(table => array(left => array(source, target))))
 $referenced = array(); // target_table => array(table => array(left => target_column))
 $lefts = array(); // float => bool
@@ -32,8 +34,8 @@ foreach (table_status('', true) as $table => $table_status) {
 	foreach ($adminer->foreignKeys($table) as $val) {
 		if (!$val["db"]) {
 			$left = $base_left;
-			if ($table_pos[$table][1] || $table_pos[$val["table"]][1]) {
-				$left = min(floatval($table_pos[$table][1]), floatval($table_pos[$val["table"]][1])) - 1;
+			if (idx($table_pos[$table], 1) || idx($table_pos[$val["table"]], 1)) {
+				$left = min(idx($table_pos[$table], 1, 0), idx($table_pos[$val["table"]], 1, 0)) - 1;
 			} else {
 				$base_left -= .1;
 			}
@@ -52,9 +54,9 @@ foreach (table_status('', true) as $table => $table_status) {
 ?>
 <div id="schema" style="height: <?php echo $top; ?>em;">
 <script<?php echo nonce(); ?>>
-qs('#schema').onselectstart = function () { return false; };
-var tablePos = {<?php echo implode(",", $table_pos_js) . "\n"; ?>};
-var em = qs('#schema').offsetHeight / <?php echo $top; ?>;
+qs('#schema').onselectstart = () => false;
+const tablePos = {<?php echo implode(",", $table_pos_js) . "\n"; ?>};
+const em = qs('#schema').offsetHeight / <?php echo $top; ?>;
 document.onmousemove = schemaMousemove;
 document.onmouseup = partialArg(schemaMouseup, '<?php echo js_escape(DB); ?>');
 </script>
@@ -71,7 +73,7 @@ foreach ($schema as $name => $table) {
 
 	foreach ((array) $table["references"] as $target_name => $refs) {
 		foreach ($refs as $left => $ref) {
-			$left1 = $left - $table_pos[$name][1];
+			$left1 = $left - idx($table_pos[$name], 1);
 			$i = 0;
 			foreach ($ref[0] as $source) {
 				echo "\n<div class='references' title='" . h($target_name) . "' id='refs$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$source]["pos"] . "em; padding-top: .5em;'>"
@@ -83,11 +85,10 @@ foreach ($schema as $name => $table) {
 
 	foreach ((array) $referenced[$name] as $target_name => $refs) {
 		foreach ($refs as $left => $columns) {
-			$left1 = $left - $table_pos[$name][1];
+			$left1 = $left - idx($table_pos[$name], 1);
 			$i = 0;
 			foreach ($columns as $target) {
-				echo "\n<div class='references' title='" . h($target_name) . "' id='refd$left-" . ($i++) . "'"
-					. " style='left: $left1" . "em; top: " . $table["fields"][$target]["pos"] . "em; height: 1.25em; background: url(../adminer/static/arrow.gif) no-repeat right center;'>"
+				echo "\n<div class='references arrow' title='" . h($target_name) . "' id='refd$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$target]["pos"] . "em;'>"
 					. "<div style='height: .5em; border-bottom: 1px solid gray; width: " . (-$left1) . "em;'></div>"
 					. "</div>"
 				;

@@ -11,11 +11,11 @@ class AdminerFileUpload {
 	protected $uploadPath, $displayPath, $extensions;
 
 	/**
-	* @param string prefix for uploading data (create writable subdirectory for each table containing uploadable fields)
-	* @param string prefix for displaying data, null stands for $uploadPath
-	* @param string regular expression with allowed file extensions
+	* @param string $uploadPath prefix for uploading data (create writable subdirectory for each table containing uploadable fields)
+	* @param string $displayPath prefix for displaying data, null stands for $uploadPath
+	* @param string $extensions regular expression with allowed file extensions
 	*/
-	function __construct($uploadPath = "../static/data/", $displayPath = null, $extensions = "[a-zA-Z0-9]+") {
+	function __construct(string $uploadPath = "../static/data/", string $displayPath = null, string $extensions = "[a-zA-Z0-9]+") {
 		$this->uploadPath = $uploadPath;
 		$this->displayPath = ($displayPath !== null ? $displayPath : $uploadPath);
 		$this->extensions = $extensions;

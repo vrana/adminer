@@ -10,40 +10,40 @@ class AdminerTablesFilter {
 	function tablesPrint($tables) {
 		?>
 <script<?php echo Adminer\nonce(); ?>>
-var tablesFilterTimeout = null;
-var tablesFilterValue = '';
+let tablesFilterTimeout = null;
+let tablesFilterValue = '';
 
-function tablesFilter(){
-	var value = qs('#filter-field').value.toLowerCase();
+function tablesFilter() {
+	const value = qs('#filter-field').value.toLowerCase();
 	if (value == tablesFilterValue) {
 		return;
 	}
 	tablesFilterValue = value;
+	let reg;
 	if (value != '') {
-		var reg = (value + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, '\\$1');
+		reg = (value + '').replace(/([\\\.\+\*\?\[\^\]\$\(\)\{\}\=\!\<\>\|\:])/g, '\\$1');
 		reg = new RegExp('('+ reg + ')', 'gi');
 	}
 	if (sessionStorage) {
 		sessionStorage.setItem('adminer_tables_filter', value);
 	}
-	var tables = qsa('li', qs('#tables'));
-	for (var i = 0; i < tables.length; i++) {
-		var a = null;
-		var text = tables[i].getAttribute('data-table-name');
+	for (const table of qsa('li', qs('#tables'))) {
+		let a = null;
+		let text = table.getAttribute('data-table-name');
 		if (text == null) {
-			a = qsa('a', tables[i])[1];
+			a = qsa('a', table)[1];
 			text = a.innerHTML.trim();
 
-			tables[i].setAttribute('data-table-name', text);
+			table.setAttribute('data-table-name', text);
 			a.setAttribute('data-link', 'main');
 		} else {
-			a = qs('a[data-link="main"]', tables[i]);
+			a = qs('a[data-link="main"]', table);
 		}
 		if (value == '') {
-			tables[i].className = '';
+			table.className = '';
 			a.innerHTML = text;
 		} else {
-			tables[i].className = (text.toLowerCase().indexOf(value) == -1 ? 'hidden' : '');
+			table.className = (text.toLowerCase().indexOf(value) == -1 ? 'hidden' : '');
 			a.innerHTML = text.replace(reg, '<strong>$1</strong>');
 		}
 	}
@@ -54,8 +54,8 @@ function tablesFilterInput() {
 	tablesFilterTimeout = window.setTimeout(tablesFilter, 200);
 }
 
-sessionStorage && document.addEventListener('DOMContentLoaded', function () {
-	var db = qs('#dbs').querySelector('select');
+sessionStorage && document.addEventListener('DOMContentLoaded', () => {
+	let db = qs('#dbs').querySelector('select');
 	db = db.options[db.selectedIndex].text;
 	if (db == sessionStorage.getItem('adminer_tables_filter_db') && sessionStorage.getItem('adminer_tables_filter')){
 		qs('#filter-field').value = sessionStorage.getItem('adminer_tables_filter');

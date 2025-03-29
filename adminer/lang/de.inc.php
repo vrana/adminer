@@ -309,3 +309,5 @@ $translations = array(
 	'Create check' => 'Check erstellen',
 	'Checks' => 'Checks',
 );
+
+// run `php ../../lang.php de` to update this file

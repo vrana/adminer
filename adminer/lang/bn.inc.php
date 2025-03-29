@@ -266,3 +266,5 @@ $translations = array(
 	'Edit all' => 'সবগুলো সম্পাদনা করুন',
 	'HH:MM:SS' => 'HH:MM:SS',
 );
+
+// run `php ../../lang.php bn` to update this file

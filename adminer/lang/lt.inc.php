@@ -311,3 +311,5 @@ $translations = array(
 	'Type has been created.' => 'Tipas sukurtas.',
 	'Alter type' => 'Keisti tipą',
 );
+
+// run `php ../../lang.php lt` to update this file

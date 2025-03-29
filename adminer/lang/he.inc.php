@@ -292,3 +292,5 @@ $translations = array(
 	'yes' => 'כן',
 	'no' => 'לא',
 );
+
+// run `php ../../lang.php he` to update this file

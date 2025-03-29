@@ -1,6 +1,34 @@
 ## Adminer dev
+Export: Fix tar (regression from 5.0.3)
+Elasticsearch: Make it work with Elasticsearch 8
+CSS: Invert icons in dark mode
+
+## Adminer 5.1.0 (released 2025-03-24)
+- Display collation at table structure if different from table
+- Ctrl+click in select moves the cursor in modern browsers
+- URL parameter ?ext=pdo to force using PDO
+- PDO: Handle PHP warnings for internal queries
 - PostgreSQL: Display auto_increment of inserted rows
+- PostgreSQL: Display description of system variables
+- PostgreSQL: Avoid warning about crdb_version (bug #924, regression from 5.0.5)
+- PostgreSQL 11: Support PROCEDURE
+- SQLite PDO: Display results in SQL query
+- MS SQL: Fix collation issues when retrieving default values
+- MS SQL PDO: Display last insert ID
 - CSS: Sticky table headers (bug #918)
+- CSS: Allow more custom styles with dark mode (bug #925)
+- CSS: Increase maximum width of string edit (bug #930)
+- CSS: Increase space after SQL result (bug #937)
+- Plugins: autoload plugins from adminer-plugins/
+- Plugins: configure plugins with adminer-plugins.php
+- Plugins: Display loaded plugins in server overview
+- New plugin: AI prompt in SQL command generating the queries with Google Gemini
+- New plugin: Verify new versions from GitHub
+- New plugin: IMAP driver created for fun
+- New plugin: Display links to tables referencing current row
+- New plugin: Allow switching light and dark mode (bug #926)
+- New plugin: Confirm before unloading page with changed form
+- Uzbek translation
 
 ## Adminer 5.0.6 (released 2025-03-17)
 - Align numbers right (bug #912)
@@ -14,6 +42,7 @@
 - CSS: Dark input fields in dark mode
 - Designs named adminer-dark.css use dark basic style
 - Plugins: Add method syntaxHighlighting()
+- New plugin: Use Codemirror 5 for syntax highlighting and SQL with typeahead
 
 ## Adminer 5.0.5 (released 2025-03-13)
 - MySQL: Display converting function for binary, bit or geometry fields

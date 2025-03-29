@@ -18,10 +18,8 @@ CREATE TABLE login (
 class AdminerLoginTable {
 	protected $database;
 
-	/** Set database of login table
-	* @param string
-	*/
-	function __construct($database) {
+	/** Set database of login table */
+	function __construct(string $database) {
 		$this->database = $database;
 	}
 

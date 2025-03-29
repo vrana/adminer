@@ -7,7 +7,6 @@ $has_token = $_SESSION["token"];
 if (!$has_token) {
 	$_SESSION["token"] = rand(1, 1e6); // defense against cross-site request forgery
 }
-$token = get_token(); ///< @var string CSRF protection
 
 $permanent = array();
 if ($_COOKIE["adminer_permanent"]) {
@@ -17,7 +16,7 @@ if ($_COOKIE["adminer_permanent"]) {
 	}
 }
 
-function add_invalid_login() {
+function add_invalid_login(): void {
 	global $adminer;
 	$base = get_temp_dir() . "/adminer.invalid";
 	// adminer.invalid may not be writable by us, try the files with random suffixes
@@ -50,7 +49,7 @@ function add_invalid_login() {
 	file_write_unlock($fp, serialize($invalids));
 }
 
-function check_invalid_login() {
+function check_invalid_login(): void {
 	global $adminer;
 	$invalids = array();
 	foreach (glob(get_temp_dir() . "/adminer.invalid*") as $filename) {
@@ -61,7 +60,8 @@ function check_invalid_login() {
 			break;
 		}
 	}
-	$invalid = ($invalids ? $invalids[$adminer->bruteForceKey()] : array());
+	/** @var array{int, int} */
+	$invalid = idx($invalids, $adminer->bruteForceKey(), array());
 	$next_attempt = ($invalid[1] > 29 ? $invalid[0] - time() : 0); // allow 30 invalid attempts
 	if ($next_attempt > 0) { //! do the same with permanent login
 		auth_error(lang('Too many unsuccessful logins, try again in %d minute(s).', ceil($next_attempt / 60)));
@@ -112,7 +112,7 @@ if ($auth) {
 	}
 }
 
-function unset_permanent() {
+function unset_permanent(): void {
 	global $permanent;
 	foreach ($permanent as $key => $val) {
 		list($vendor, $server, $username, $db) = array_map('base64_decode', explode("-", $key));
@@ -123,11 +123,11 @@ function unset_permanent() {
 	cookie("adminer_permanent", implode(" ", $permanent));
 }
 
-/** Renders an error message and a login form
-* @param string plain text
-* @return null exits
+/** Render an error message and a login form
+* @param string $error plain text
+* @return never
 */
-function auth_error($error) {
+function auth_error(string $error) {
 	global $adminer, $has_token;
 	$session_name = session_name();
 	if (isset($_GET["username"])) {
@@ -184,11 +184,8 @@ if (isset($_GET["username"]) && is_string(get_password())) {
 	$connection = connect($adminer->credentials());
 	if (is_object($connection)) {
 		$driver = new Driver($connection);
-		if ($adminer->operators === null) {
-			$adminer->operators = $driver->operators;
-		}
-		if (isset($connection->maria) || $connection->cockroach) {
-			save_settings(array("vendor-" . SERVER => $drivers[DRIVER]));
+		if ($connection->flavor) {
+			save_settings(array("vendor-" . DRIVER . "-" . SERVER => $drivers[DRIVER]));
 		}
 	}
 }
@@ -206,7 +203,7 @@ if ($_POST["logout"] && $has_token && !verify_token()) {
 }
 
 if ($auth && $_POST["token"]) {
-	$_POST["token"] = $token; // reset token after explicit login
+	$_POST["token"] = get_token(); // reset token after explicit login
 }
 
 $error = ''; ///< @var string

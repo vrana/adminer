@@ -242,7 +242,7 @@ $translations = array(
 	'Type has been dropped.' => 'Le type a été supprimé.',
 	'Type has been created.' => 'Le type a été créé.',
 	'Ctrl+click on a value to modify it.' => 'Ctrl+cliquez sur une valeur pour la modifier.',
-	'Use edit link to modify this value.' => 'Utilisez le lien "modifier" pour modifier cette valeur.',
+	'Use edit link to modify this value.' => 'Utilisez le lien \'modifier\' pour modifier cette valeur.',
 	'last' => 'dernière',
 	'From server' => 'Depuis le serveur',
 	'System' => 'Système',
@@ -302,3 +302,5 @@ $translations = array(
 	'Database does not support password.' => 'La base de données ne support pas les mots de passe.',
 	'Disable %s or enable %s or %s extensions.' => 'Désactiver %s ou activer %s or %s extensions.',
 );
+
+// run `php ../../lang.php fr` to update this file

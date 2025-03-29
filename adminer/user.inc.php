@@ -23,7 +23,7 @@ foreach ($privileges["Tables"] as $key => $val) {
 $new_grants = array();
 if ($_POST) {
 	foreach ($_POST["objects"] as $key => $val) {
-		$new_grants[$val] = (array) $new_grants[$val] + (array) $_POST["grants"][$key];
+		$new_grants[$val] = (array) $new_grants[$val] + idx($_POST["grants"], $key, array());
 	}
 }
 $grants = array();
@@ -150,7 +150,7 @@ $i = 0;
 foreach ($grants as $object => $grant) {
 	echo '<th>' . ($object != "*.*"
 		? "<input name='objects[$i]' value='" . h($object) . "' size='10' autocapitalize='off'>"
-		: "<input type='hidden' name='objects[$i]' value='*.*' size='10'>*.*"
+		: input_hidden("objects[$i]", "*.*") . "*.*"
 	); //! separate db, table, columns, PROCEDURE|FUNCTION, routine
 	$i++;
 }

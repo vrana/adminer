@@ -315,3 +315,5 @@ $translations = array(
 	'Type has been created.' => 'Jenis berhasil dibuat.',
 	'Alter type' => 'Ubah jenis',
 );
+
+// run `php ../../lang.php id` to update this file

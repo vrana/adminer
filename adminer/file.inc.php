@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-if (substr($VERSION, -4) != '-dev') {
+if (substr(VERSION, -4) != '-dev') {
 	if ($_SERVER["HTTP_IF_MODIFIED_SINCE"]) {
 		header("HTTP/1.1 304 Not Modified");
 		exit;
@@ -35,24 +35,5 @@ if ($_GET["file"] == "favicon.ico") {
 ../externals/jush/modules/jush-mssql.js;
 ../externals/jush/modules/jush-oracle.js;
 ../externals/jush/modules/jush-simpledb.js', 'minify_js'));
-} else {
-	header("Content-Type: image/gif");
-	switch ($_GET["file"]) {
-		case "plus.gif":
-			echo compile_file('../adminer/static/plus.gif');
-			break;
-		case "cross.gif":
-			echo compile_file('../adminer/static/cross.gif');
-			break;
-		case "up.gif":
-			echo compile_file('../adminer/static/up.gif');
-			break;
-		case "down.gif":
-			echo compile_file('../adminer/static/down.gif');
-			break;
-		case "arrow.gif":
-			echo compile_file('../adminer/static/arrow.gif');
-			break;
-	}
 }
 exit;

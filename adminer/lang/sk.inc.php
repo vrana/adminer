@@ -309,3 +309,5 @@ $translations = array(
 	'Check has been altered.' => 'Kontrola bola zmenená.',
 	'Check has been dropped.' => 'Kontrola bola odstránená.',
 );
+
+// run `php ../../lang.php sk` to update this file

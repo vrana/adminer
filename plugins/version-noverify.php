@@ -9,6 +9,6 @@
 class AdminerVersionNoverify {
 
 	function head($dark = null) {
-		echo Adminer\script("verifyVersion = function () {};");
+		echo Adminer\script("verifyVersion = () => { };");
 	}
 }

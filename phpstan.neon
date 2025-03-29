@@ -1,0 +1,71 @@
+parameters:
+	level: 6
+	checkNullables: true # level 8
+
+	ignoreErrors:
+		# need to fix
+		- "~^Function Adminer\\\\fields_from_edit\\(\\) should return~" # Mongo and SimpleDB
+		- "~Adminer\\\\Result.*mysqli_result~" # mysqli_result
+
+		# not real problems
+		- identifier: include.fileNotFound # includes in include/ relative from index.php
+		- identifier: includeOnce.fileNotFound # ./adminer-plugins.php
+		- "~^Function (set_magic_quotes_runtime|mysql_)~" # PHP < 7 functions
+		- "~an unknown class OCI-?Lob~" # this looks like PHPStan bug
+		- "~^Variable \\$(adminer|connection|driver|drivers|error|permanent|has_token|translations) might not be defined~" # declared in bootstrap.inc.php
+		- "~expects int, float given~" # this will work
+		- "~expects bool~" # truthy values
+		- "~fread expects int<1, max>, 100000~" # 1e6
+		- "~'strlen' given~" # used as a bool callback
+
+		-
+			message: "~ type specified~" # duplicate functions and methods
+			paths:
+				- adminer/include/pdo.inc.php
+				- adminer/drivers/*
+
+		-
+			message: "~ to an undefined ~" # PostgreSQL has this in its version of Db
+			path: adminer/drivers/pgsql.inc.php
+
+		# it probably doesn't like $ar[$key] instead of isset($ar[$key]) and thinks that $ar[$key] is always set
+		- identifier: identical.alwaysFalse
+		- identifier: notEqual.alwaysFalse
+		- identifier: notIdentical.alwaysTrue
+		- identifier: booleanNot.alwaysFalse
+		- identifier: booleanAnd.alwaysFalse
+		- identifier: booleanAnd.leftAlwaysTrue
+		- identifier: booleanAnd.rightAlwaysTrue
+		- identifier: booleanAnd.rightAlwaysFalse
+		- identifier: ternary.alwaysTrue
+		- identifier: if.alwaysTrue
+		- identifier: while.alwaysTrue
+		- identifier: isset.offset
+		- identifier: deadCode.unreachable
+
+	paths:
+		- adminer/drivers/mysql.inc.php # other drivers inherit the annotations so we take them from here
+		- adminer/
+	scanFiles:
+		- compile.php # compile_file()
+	excludePaths:
+		- adminer/adminer-plugins*
+		- adminer/lang/
+		- adminer/designs.php
+		- adminer/elastic.php
+		- adminer/sqlite.php
+
+	phpVersion:
+		min: 70100
+		max: 80499
+
+	typeAliases:
+		TableStatus: "array{Name:string, Engine?:?string, Comment?:string, Oid?:numeric-string, Rows?:?numeric-string, Collation?:string, Auto_increment?:?numeric-string, Data_length?:numeric-string, Index_length?:numeric-string, Data_free?:numeric-string, Create_options?:string, nspname?:string}"
+		Field: "array{field?:string, full_type:string, type:string, length:numeric-string, unsigned:string, default?:string, null:bool, auto_increment:bool, collation:string, privileges:int[], comment:string, primary:bool, generated:string, orig?:string, on_update?:string, on_delete?:string, default_constraint?: string}"
+		FieldType: "array{type:string, length:numeric-string, unsigned:string, collation:string}" # subset of RoutineField and Field
+		RoutineField: "array{field:string, type:string, length:numeric-string, unsigned:string, null:bool, full_type:string, collation:string, inout?:string}"
+		Index: "array{type:string, columns:list<string>, lengths:list<numeric-string>, descs:list<?bool>}"
+		ForeignKey: "array{db?:string, ns?:string, table:string, source:list<string>, target:list<?string>, on_delete:string, on_update?:string, definition?:string, deferrable?:string}"
+		Trigger: "array{Trigger?:string, Timing?:string, Event?:string, Of?:string, Type?:string, Statement?:string}"
+		Routine: "array{name?:string, fields:list<RoutineField>, comment:string, returns?:FieldType, definition:string, language?:string}"
+		BackwardKey: "array{name:string, keys:string[][]}"

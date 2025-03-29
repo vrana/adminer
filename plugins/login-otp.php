@@ -10,9 +10,9 @@ class AdminerLoginOtp {
 	protected $secret;
 
 	/**
-	* @param string decoded secret, e.g. base64_decode("SECRET")
+	* @param string $secret decoded secret, e.g. base64_decode("SECRET")
 	*/
-	function __construct($secret) {
+	function __construct(string $secret) {
 		$this->secret = $secret;
 		if ($_POST["auth"]) {
 			$_SESSION["otp"] = (string) $_POST["auth"]["otp"];

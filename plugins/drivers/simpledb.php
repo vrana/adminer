@@ -7,15 +7,14 @@ if (isset($_GET["simpledb"])) {
 	define('Adminer\DRIVER', "simpledb");
 
 	if (class_exists('SimpleXMLElement') && ini_bool('allow_url_fopen')) {
-		class Db {
-			public $extension = "SimpleXML", $server_info = '2009-04-15', $error, $timeout, $next, $affected_rows;
-			private $result;
+		class Db extends SqlDb {
+			public string $extension = "SimpleXML", $server_info = '2009-04-15', $timeout, $next;
 
-			function select_db($database) {
+			function select_db(string $database): bool {
 				return ($database == "domain");
 			}
 
-			function query($query, $unbuffered = false) {
+			function query(string $query, bool $unbuffered = false) {
 				$params = array('SelectExpression' => $query, 'ConsistentRead' => 'true');
 				if ($this->next) {
 					$params['NextToken'] = $this->next;
@@ -38,19 +37,7 @@ if (isset($_GET["simpledb"])) {
 				return new Result($result);
 			}
 
-			function multi_query($query) {
-				return $this->result = $this->query($query);
-			}
-
-			function store_result() {
-				return $this->result;
-			}
-
-			function next_result() {
-				return false;
-			}
-
-			function quote($string) {
+			function quote(string $string): string {
 				return "'" . str_replace("'", "''", $string) . "'";
 			}
 		}
@@ -110,9 +97,9 @@ if (isset($_GET["simpledb"])) {
 				return array_values($return);
 			}
 
-			function fetch_field() {
+			function fetch_field(): \stdClass {
 				$keys = array_keys($this->rows[0]);
-				return (object) array('name' => $keys[$this->offset++]);
+				return (object) array('name' => $keys[$this->offset++], 'type' => 15, 'charsetnr' => 0);
 			}
 		}
 	}
@@ -120,11 +107,11 @@ if (isset($_GET["simpledb"])) {
 
 
 	class Driver extends SqlDriver {
-		static $possibleDrivers = array("SimpleXML + allow_url_fopen");
-		static $jush = "simpledb";
+		static array $possibleDrivers = array("SimpleXML + allow_url_fopen");
+		static string $jush = "simpledb";
 
-		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "IS NOT NULL");
-		public $grouping = array("count");
+		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "IS NOT NULL");
+		public array $grouping = array("count");
 
 		public $primary = "itemName()";
 
@@ -158,7 +145,7 @@ if (isset($_GET["simpledb"])) {
 			return $return;
 		}
 
-		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
+		function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, ?int $page = 0, bool $print = false) {
 			$connection = connection();
 			$connection->next = $_GET["next"];
 			$return = parent::select($table, $select, $where, $group, $order, $limit, $page, $print);
@@ -166,7 +153,7 @@ if (isset($_GET["simpledb"])) {
 			return $return;
 		}
 
-		function delete($table, $queryWhere, $limit = 0) {
+		function delete(string $table, string $queryWhere, int $limit = 0) {
 			return $this->chunkRequest(
 				$this->extractIds($table, $queryWhere, $limit),
 				'BatchDeleteAttributes',
@@ -174,7 +161,7 @@ if (isset($_GET["simpledb"])) {
 			);
 		}
 
-		function update($table, $set, $queryWhere, $limit = 0, $separator = "\n") {
+		function update(string $table, array $set, string $queryWhere, int $limit = 0, string $separator = "\n") {
 			$delete = array();
 			$insert = array();
 			$i = 0;
@@ -203,7 +190,7 @@ if (isset($_GET["simpledb"])) {
 			;
 		}
 
-		function insert($table, $set) {
+		function insert(string $table, array $set) {
 			$params = array("DomainName" => $table);
 			$i = 0;
 			foreach ($set as $name => $value) {
@@ -223,7 +210,7 @@ if (isset($_GET["simpledb"])) {
 			return sdb_request('PutAttributes', $params);
 		}
 
-		function insertUpdate($table, $rows, $primary) {
+		function insertUpdate(string $table, array $rows, array $primary) {
 			//! use one batch request
 			foreach ($rows as $set) {
 				if (!$this->update($table, $set, "WHERE `itemName()` = " . q($set["`itemName()`"]))) {
@@ -245,7 +232,7 @@ if (isset($_GET["simpledb"])) {
 			return false;
 		}
 
-		function slowQuery($query, $timeout) {
+		function slowQuery(string $query, int $timeout) {
 			$this->conn->timeout = $timeout;
 			return $query;
 		}
@@ -274,7 +261,7 @@ if (isset($_GET["simpledb"])) {
 		return $credentials[1];
 	}
 
-	function get_databases() {
+	function get_databases($flush) {
 		return array("domain");
 	}
 
@@ -316,9 +303,6 @@ if (isset($_GET["simpledb"])) {
 					}
 				}
 			}
-			if ($name != "") {
-				return $row;
-			}
 			$return[$table] = $row;
 		}
 		return $return;
@@ -332,7 +316,7 @@ if (isset($_GET["simpledb"])) {
 		return h($connection->error);
 	}
 
-	function information_schema() {
+	function information_schema($db) {
 	}
 
 	function indexes($table, $connection2 = null) {
@@ -366,10 +350,6 @@ if (isset($_GET["simpledb"])) {
 	}
 
 	function fk_support($table_status) {
-	}
-
-	function engines() {
-		return array();
 	}
 
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {

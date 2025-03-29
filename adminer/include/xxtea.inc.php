@@ -6,7 +6,7 @@ namespace Adminer;
 * @link http://www.coolcode.cn/?action=show&id=128
 */
 
-function int32($n) {
+function int32(int $n): int {
 	while ($n >= 2147483648) {
 		$n -= 4294967296;
 	}
@@ -16,7 +16,10 @@ function int32($n) {
 	return (int) $n;
 }
 
-function long2str($v, $w) {
+/**
+* @param int[] $v
+*/
+function long2str(array $v, bool $w): string {
 	$s = '';
 	foreach ($v as $val) {
 		$s .= pack('V', $val);
@@ -27,7 +30,10 @@ function long2str($v, $w) {
 	return $s;
 }
 
-function str2long($s, $w) {
+/**
+* @return int[]
+*/
+function str2long(string $s, bool $w): array {
 	$v = array_values(unpack('V*', str_pad($s, 4 * ceil(strlen($s) / 4), "\0")));
 	if ($w) {
 		$v[] = strlen($s);
@@ -35,16 +41,15 @@ function str2long($s, $w) {
 	return $v;
 }
 
-function xxtea_mx($z, $y, $sum, $k) {
+function xxtea_mx(int $z, int $y, int $sum, int $k): int {
 	return int32((($z >> 5 & 0x7FFFFFF) ^ $y << 2) + (($y >> 3 & 0x1FFFFFFF) ^ $z << 4)) ^ int32(($sum ^ $y) + ($k ^ $z));
 }
 
 /** Cipher
-* @param string plain-text password
-* @param string
+* @param string $str plain-text password
 * @return string binary cipher
 */
-function encrypt_string($str, $key) {
+function encrypt_string(string $str, string $key): string {
 	if ($str == "") {
 		return "";
 	}
@@ -73,11 +78,10 @@ function encrypt_string($str, $key) {
 }
 
 /** Decipher
-* @param string binary cipher
-* @param string
-* @return string plain-text password
+* @param string $str binary cipher
+* @return string|false plain-text password
 */
-function decrypt_string($str, $key) {
+function decrypt_string(string $str, string $key) {
 	if ($str == "") {
 		return "";
 	}

@@ -1,6 +1,6 @@
 <?php
 
-/** Log all queries to SQL file (manual queries through SQL command are not logged)
+/** Log all queries to SQL file
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
@@ -10,9 +10,9 @@ class AdminerSqlLog {
 	protected $filename;
 
 	/**
-	* @param string defaults to "$database.sql"
+	* @param string $filename defaults to "$database.sql"
 	*/
-	function __construct($filename = "") {
+	function __construct(string $filename = "") {
 		$this->filename = $filename;
 	}
 

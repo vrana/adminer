@@ -1,0 +1,3 @@
+- Reproducible [bug reports](https://github.com/vrana/adminer/issues/new?template=bug_report.md) are warmly welcomed.
+- [Feature requests](https://github.com/vrana/adminer/issues/new?template=BLANK_ISSUE) are also fine, but I'm quite picky about what to accept into Adminer. Please don't be offended if I close the issue as "Not Planned," especially if it can be achieved with a plugin.
+- [Pull requests](https://github.com/vrana/adminer/pulls) for both bug fixes and simple features are welcome. Before working on anything more complicated, get familiar with the [Adminer philosophy](https://github.com/vrana/adminer/blob/master/developing.md).

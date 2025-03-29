@@ -10,13 +10,13 @@ class AdminerEmailTable {
 	protected $table, $id, $title, $subject, $message;
 
 	/**
-	* @param string quoted table name
-	* @param string quoted column name
-	* @param string quoted column name
-	* @param string quoted column name
-	* @param string quoted column name
+	* @param string $table quoted table name
+	* @param string $id quoted column name
+	* @param string $title quoted column name
+	* @param string $subject quoted column name
+	* @param string $message quoted column name
 	*/
-	function __construct($table = "email", $id = "id", $title = "subject", $subject = "subject", $message = "message") {
+	function __construct(string $table = "email", string $id = "id", string $title = "subject", string $subject = "subject", string $message = "message") {
 		$this->table = $table;
 		$this->id = $id;
 		$this->title = $title;
@@ -34,11 +34,11 @@ class AdminerEmailTable {
 			echo "<p>" . ('Attachments') . ": <input type='file' name='email_files[]'>";
 			echo Adminer\script("qsl('input').onchange = function () {
 	this.onchange = function () { };
-	var el = this.cloneNode(true);
+	const el = this.cloneNode(true);
 	el.value = '';
 	this.parentNode.appendChild(el);
 };");
-			echo "<p>" . (count($emailFields) == 1 ? '<input type="hidden" name="email_field" value="' . Adminer\h(key($emailFields)) . '">' : Adminer\html_select("email_field", $emailFields));
+			echo "<p>" . (count($emailFields) == 1 ? Adminer\input_hidden("email_field", key($emailFields)) : Adminer\html_select("email_field", $emailFields));
 			echo "<input type='submit' name='email' value='" . ('Send') . "'>" . Adminer\confirm();
 			echo "</div>\n";
 			echo "</div></fieldset>\n";

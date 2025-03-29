@@ -13,7 +13,7 @@ $rights = array(); // privilege => 0
 $columns = array(); // selectable columns
 $search_columns = array(); // searchable columns
 $order_columns = array(); // searchable columns
-$text_length = null;
+$text_length = "";
 foreach ($fields as $key => $field) {
 	$name = $adminer->fieldName($field);
 	$name_plain = html_entity_decode(strip_tags($name), ENT_QUOTES);
@@ -48,7 +48,7 @@ if ($_GET["val"] && is_ajax()) {
 		$where[] = where_check($unique_idf, $fields);
 		$return = $driver->select($TABLE, $select, $where, $select);
 		if ($return) {
-			echo reset($return->fetch_row());
+			echo first($return->fetch_row());
 		}
 	}
 	exit;
@@ -118,18 +118,19 @@ if ($_POST && !$error) {
 				}
 			}
 			if ($_POST["delete"] || $set) {
-				if ($_POST["clone"]) {
-					$query = "INTO " . table($TABLE) . " (" . implode(", ", array_keys($set)) . ")\nSELECT " . implode(", ", $set) . "\nFROM " . table($TABLE);
-				}
+				$query = ($_POST["clone"] ? "INTO " . table($TABLE) . " (" . implode(", ", array_keys($set)) . ")\nSELECT " . implode(", ", $set) . "\nFROM " . table($TABLE) : "");
 				if ($_POST["all"] || ($primary && is_array($_POST["check"])) || $is_group) {
 					$result = ($_POST["delete"]
 						? $driver->delete($TABLE, $where_check)
 						: ($_POST["clone"]
-							? queries("INSERT $query$where_check")
+							? queries("INSERT $query$where_check" . $driver->insertReturning($TABLE))
 							: $driver->update($TABLE, $set, $where_check)
 						)
 					);
 					$affected = $connection->affected_rows;
+					if (is_object($result)) { // PostgreSQL with RETURNING fills num_rows
+						$affected += $result->num_rows;
+					}
 				} else {
 					foreach ((array) $_POST["check"] as $val) {
 						// where is not unique so OR can't be used
@@ -158,7 +159,7 @@ if ($_POST && !$error) {
 			queries_redirect(remove_from_uri($_POST["all"] && $_POST["delete"] ? "page" : ""), $message, $result);
 			if (!$_POST["delete"]) {
 				$post_fields = (array) $_POST["fields"];
-				edit_form($TABLE, array_intersect_key($fields, $post_fields), $post_fields, !$_POST["clone"]);
+				edit_form($TABLE, array_intersect_key($fields, $post_fields), $post_fields, !$_POST["clone"], $error);
 				page_footer();
 				exit;
 			}
@@ -172,7 +173,7 @@ if ($_POST && !$error) {
 				foreach ($_POST["val"] as $unique_idf => $row) {
 					$set = array();
 					foreach ($row as $key => $val) {
-						$key = bracket_escape($key, 1); // 1 - back
+						$key = bracket_escape($key, true); // true - back
 						$set[idf_escape($key)] = (preg_match('~char|text~', $fields[$key]["type"]) || $val != "" ? $adminer->processInput($fields[$key], $val) : "NULL");
 					}
 					$result = $driver->update(
@@ -258,8 +259,8 @@ if (!$columns && support("table")) {
 	echo "<form action='' id='form'>\n";
 	echo "<div style='display: none;'>";
 	hidden_fields_get();
-	echo (DB != "" ? '<input type="hidden" name="db" value="' . h(DB) . '">' . (isset($_GET["ns"]) ? '<input type="hidden" name="ns" value="' . h($_GET["ns"]) . '">' : "") : ""); // not used in Editor
-	echo '<input type="hidden" name="select" value="' . h($TABLE) . '">';
+	echo (DB != "" ? input_hidden("db", DB) . (isset($_GET["ns"]) ? input_hidden("ns", $_GET["ns"]) : "") : ""); // not used in Editor
+	echo input_hidden("select", $TABLE);
 	echo "</div>\n";
 	$adminer->selectColumnsPrint($select, $columns);
 	$adminer->selectSearchPrint($where, $search_columns, $indexes);
@@ -272,7 +273,7 @@ if (!$columns && support("table")) {
 	$page = $_GET["page"];
 	if ($page == "last") {
 		$found_rows = get_val(count_rows($TABLE, $where, $is_group, $group));
-		$page = floor(max(0, $found_rows - 1) / $limit);
+		$page = floor(max(0, intval($found_rows) - 1) / $limit);
 	}
 
 	$select2 = $select;
@@ -339,7 +340,8 @@ if (!$columns && support("table")) {
 			$rank = 1;
 			foreach ($rows[0] as $key => $val) {
 				if (!isset($unselected[$key])) {
-					$val = $_GET["columns"][key($select)];
+					/** @var array{fun?:string, col?:string} */
+					$val = idx($_GET["columns"], key($select)) ?: array();
 					$field = $fields[$select ? ($val ? $val["col"] : current($select)) : $key];
 					$name = ($field ? $adminer->fieldName($field, $rank) : ($val["fun"] ? "*" : h($key)));
 					if ($name != "") {
@@ -450,7 +452,7 @@ if (!$columns && support("table")) {
 
 						$val = select_value($val, $link, $field, $text_length);
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
-						$value = $_POST["val"][$unique_idf][bracket_escape($key)];
+						$value = idx(idx($_POST["val"], $unique_idf), bracket_escape($key));
 						$editable = !is_array($row[$key]) && is_utf8($val) && $rows[$n][$key] == $row[$key] && !$functions[$key] && !$field["generated"];
 						$text = preg_match('~text|json|lob~', $field["type"]);
 						echo "<td id='$id'" . (preg_match(number_type(), $field["type"]) && is_numeric(strip_tags($val)) ? " class='number'" : "");
@@ -484,6 +486,7 @@ if (!$columns && support("table")) {
 		if (!is_ajax()) {
 			if ($rows || $page) {
 				$exact_count = true;
+				$found_rows = null;
 				if ($_GET["page"] != "last") {
 					if ($limit == "" || (count($rows) < $limit && ($rows || !$page))) {
 						$found_rows = ($page ? $page * $limit : 0) + count($rows);
@@ -491,7 +494,7 @@ if (!$columns && support("table")) {
 						$found_rows = ($is_group ? false : found_rows($table_status, $where));
 						if ($found_rows < max(1e4, 2 * ($page + 1) * $limit)) {
 							// slow with big tables
-							$found_rows = reset(slow_query(count_rows($TABLE, $where, $is_group, $group)));
+							$found_rows = first(slow_query(count_rows($TABLE, $where, $is_group, $group)));
 						} else {
 							$exact_count = false;
 						}
@@ -507,10 +510,8 @@ if (!$columns && support("table")) {
 					);
 					echo "\n";
 				}
-			}
 
-			echo "<div class='footer'><div>\n";
-			if ($rows || $page) {
+				echo "<div class='footer'><div>\n";
 				if ($pagination) {
 					// display first, previous 4, next 4 and last page
 					$max_page = ($found_rows === false
@@ -544,7 +545,7 @@ if (!$columns && support("table")) {
 				echo "<fieldset>";
 				echo "<legend>" . lang('Whole result') . "</legend>";
 				$display_rows = ($exact_count ? "" : "~ ") . $found_rows;
-				$onclick = "var checked = formChecked(this, /check/); selectCount('selected', this.checked ? '$display_rows' : checked); selectCount('selected2', this.checked || !checked ? '$display_rows' : checked);";
+				$onclick = "const checked = formChecked(this, /check/); selectCount('selected', this.checked ? '$display_rows' : checked); selectCount('selected2', this.checked || !checked ? '$display_rows' : checked);";
 				echo checkbox("all", 1, 0, ($found_rows !== false ? ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) : ""), $onclick) . "\n";
 				echo "</fieldset>\n";
 
@@ -578,9 +579,8 @@ if (!$columns && support("table")) {
 				}
 
 				$adminer->selectEmailPrint(array_filter($email_fields, 'strlen'), $columns);
+				echo "</div></div>\n";
 			}
-
-			echo "</div></div>\n";
 
 			if ($adminer->selectImportPrint()) {
 				echo "<div>";

@@ -243,7 +243,7 @@ $translations = array(
 	'Type has been dropped.' => 'Tips dzēsts.',
 	'Type has been created.' => 'Tips izveidots.',
 	'Ctrl+click on a value to modify it.' => 'Lai izmainītu vērtību, izmanto Ctrl + peles klikšķi.',
-	'Use edit link to modify this value.' => 'Izmainīt vērtību var tikai ar saiti "Izmainīt".',
+	'Use edit link to modify this value.' => 'Izmainīt vērtību var tikai ar saiti \'Izmainīt\'.',
 	'last' => 'pēdējā',
 	'From server' => 'No servera',
 	'System' => 'Sistēma',
@@ -302,3 +302,5 @@ $translations = array(
 	'Unknown error.' => 'Nezināma kļūda.',
 	'Database does not support password.' => 'Datubāze neatbalsta paroli.',
 );
+
+// run `php ../../lang.php lv` to update this file

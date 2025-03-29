@@ -3,7 +3,7 @@ namespace Adminer;
 
 $row = $_POST;
 
-if ($_POST && !$error && !isset($_POST["add_x"])) { // add is an image and PHP changes add.x to add_x
+if ($_POST && !$error && !$_POST["add"]) {
 	$name = trim($row["name"]);
 	if ($_POST["drop"]) {
 		$_GET["db"] = ""; // to save in global history
@@ -60,7 +60,7 @@ if ($_POST) {
 <form action="" method="post">
 <p>
 <?php
-echo ($_POST["add_x"] || strpos($name, "\n")
+echo ($_POST["add"] || strpos($name, "\n")
 	? '<textarea autofocus name="name" rows="10" cols="40">' . h($name) . '</textarea><br>'
 	: '<input name="name" autofocus value="' . h($name) . '" data-maxlength="64" autocapitalize="off">'
 ) . "\n" . ($collations ? html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $row["collation"]) . doc_link(array(
@@ -73,8 +73,8 @@ echo ($_POST["add_x"] || strpos($name, "\n")
 <?php
 if (DB != "") {
 	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . confirm(lang('Drop %s?', DB)) . "\n";
-} elseif (!$_POST["add_x"] && $_GET["db"] == "") {
-	echo "<input type='image' class='icon' name='add' src='../adminer/static/plus.gif' alt='+' title='" . lang('Add next') . "'>\n";
+} elseif (!$_POST["add"] && $_GET["db"] == "") {
+	echo icon("plus", "add[0]", "+", lang('Add next')) . "\n";
 }
 echo input_token();
 ?>

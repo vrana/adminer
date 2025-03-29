@@ -10,9 +10,9 @@ class AdminerDesigns {
 	protected $designs;
 
 	/**
-	* @param array URL in key, name in value
+	* @param list<string> $designs URL in key, name in value
 	*/
-	function __construct($designs) {
+	function __construct(array $designs) {
 		$this->designs = $designs;
 	}
 
@@ -35,7 +35,7 @@ class AdminerDesigns {
 	function navigation($missing) {
 		echo "<form action='' method='post' style='position: fixed; bottom: .5em; right: .5em;'>";
 		echo Adminer\html_select("design", array("" => "(design)") + $this->designs, $_SESSION["design"], "this.form.submit();");
-		echo '<input type="hidden" name="token" value="' . Adminer\get_token() . '">';
+		echo Adminer\input_token();
 		echo "</form>\n";
 	}
 }

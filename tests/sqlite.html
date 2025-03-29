@@ -16,7 +16,8 @@
 <tr><td>select</td><td>name=auth[driver]</td><td>label=SQLite</td></tr>
 <tr><td>type</td><td>id=username</td><td>ODBC</td></tr>
 <tr><td>type</td><td>name=auth[password]</td><td>YOUR_PASSWORD_HERE</td></tr>
-<tr><td>click</td><td>css=input[type="submit"]</td><td></td></tr>
+<tr><td>click</td><td>//input[@value='Login']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>AdminerLoginPasswordLess</td><td></td></tr>
 <tr><td>click</td><td>link=Create database</td><td></td></tr>
 <tr><td>type</td><td>name=name</td><td>adminer_test</td></tr>
 <tr><td>click</td><td>css=input[type="submit"]</td><td></td></tr>
@@ -142,6 +143,24 @@
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Invalid table</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;table=invalid</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>No tables.</td><td></td></tr>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;create=invalid</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>No tables.</td><td></td></tr>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;select=invalid</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Unable to select the table:</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Schema</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;schema=</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Permanent link</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Insert</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;edit=interprets</td><td></td></tr>
@@ -164,6 +183,19 @@
 <tr><td>type</td><td>fields[title]</td><td>Black and White</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Item 2 has been inserted.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Select</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;select=albums</td><td></td></tr>
+<tr><td>click</td><td>link=Search</td><td></td></tr>
+<tr><td>select</td><td>name=where[0][col]</td><td>label=title</td></tr>
+<tr><td>type</td><td>name=where[0][val]</td><td>Dangerous</td></tr>
+<tr><td>click</td><td>link=Sort</td><td></td></tr>
+<tr><td>select</td><td>name=order[0]</td><td>label=interpret</td></tr>
+<tr><td>clickAndWait</td><td>xpath=//input[@value='Select']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>1 row</td><td></td></tr>
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">

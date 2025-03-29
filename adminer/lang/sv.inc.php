@@ -348,3 +348,5 @@ $translations = array(
 	'Type has been created.' => 'Typ har skapats.',
 	'Alter type' => 'Ändra typ',
 );
+
+// run `php ../../lang.php sv` to update this file

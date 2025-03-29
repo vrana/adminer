@@ -1,4 +1,4 @@
-// Editor specific functions
+'use strict'; // Editor specific functions
 
 function messagesPrint() {
 }
@@ -6,7 +6,7 @@ function messagesPrint() {
 function selectFieldChange() {
 }
 
-var helpOpen;
+let helpOpen;
 
 function helpMouseover() {
 }
@@ -14,22 +14,25 @@ function helpMouseover() {
 function helpMouseout() {
 }
 
+function helpClose() {
+}
+
 /** Display typeahead
 * @param string
 * @this HTMLInputElement
 */
 function whisper(url) {
-	var field = this;
+	const field = this;
 	field.orig = field.value;
 	field.previousSibling.value = field.value; // accept number, reject string
-	return ajax(url + encodeURIComponent(field.value), function (xmlhttp) {
+	return ajax(url + encodeURIComponent(field.value), xmlhttp => {
 		if (xmlhttp.status && field.orig == field.value) { // ignore old responses
 			field.nextSibling.innerHTML = xmlhttp.responseText;
 			field.nextSibling.style.display = '';
-			var a = field.nextSibling.firstChild;
+			const a = field.nextSibling.firstChild;
 			if (a && a.firstChild.data == field.value) {
 				field.previousSibling.value = decodeURIComponent(a.href.replace(/.*=/, ''));
-				a.className = 'active';
+				a.classList.add('active');
 			}
 		}
 	});
@@ -41,8 +44,8 @@ function whisper(url) {
 * @this HTMLDivElement
 */
 function whisperClick(event) {
-	var field = this.previousSibling;
-	var el = getTarget(event);
+	const field = this.previousSibling;
+	const el = event.target;
 	if (isTag(el, 'a') && !(event.button || event.shiftKey || event.altKey || isCtrl(event))) {
 		field.value = el.firstChild.data;
 		field.previousSibling.value = decodeURIComponent(el.href.replace(/.*=/, ''));
@@ -55,8 +58,8 @@ function whisperClick(event) {
 * @this HTMLInputElement
 */
 function emailFileChange() {
-	var el = this.cloneNode(true);
-	this.onchange = function () { };
+	const el = this.cloneNode(true);
+	this.onchange = () => { };
 	el.value = '';
 	this.parentNode.appendChild(el);
 }

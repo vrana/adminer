@@ -37,12 +37,12 @@ if (!$error && $_POST) {
 
 	if (is_string($query)) { // get_file() returns error as number, fread() as false
 		if (function_exists('memory_get_usage') && ($memory_limit = ini_bytes("memory_limit")) != "-1") {
-			@ini_set("memory_limit", max($memory_limit, 2 * strlen($query) + memory_get_usage() + 8e6)); // @ - may be disabled, 2 - substr and trim, 8e6 - other variables
+			@ini_set("memory_limit", max($memory_limit, strval(2 * strlen($query) + memory_get_usage() + 8e6))); // @ - may be disabled, 2 - substr and trim, 8e6 - other variables
 		}
 
 		if ($query != "" && strlen($query) < 1e6) { // don't add big queries
 			$q = $query . (preg_match("~;[ \t\r\n]*\$~", $query) ? "" : ";"); //! doesn't work with DELIMITER |
-			if (!$history || reset(end($history)) != $q) { // no repeated queries
+			if (!$history || first(end($history)) != $q) { // no repeated queries
 				restart_session();
 				$history[] = array($q, time()); //! add elapsed time
 				set_session("queries", $history_all); // required because reference is unlinked by stop_session()
@@ -152,14 +152,15 @@ if (!$error && $_POST) {
 										$time .= ", <a href='#$warnings_id'>" . lang('Warnings') . "</a>" . script("qsl('a').onclick = partial(toggle, '$warnings_id');", "");
 									}
 									$explain = null;
+									$orgtables = null;
 									$explain_id = "explain-$commands";
 									if (is_object($result)) {
 										$limit = $_POST["limit"];
-										$orgtables = select($result, $connection2, array(), $limit);
+										$orgtables = print_select_result($result, $connection2, array(), $limit);
 										if (!$_POST["only_errors"]) {
 											echo "<form action='' method='post'>\n";
 											$num_rows = $result->num_rows;
-											echo "<p>" . ($num_rows ? ($limit && $num_rows > $limit ? lang('%d / ', $limit) : "") . lang('%d row(s)', $num_rows) : "");
+											echo "<p class='sql-footer'>" . ($num_rows ? ($limit && $num_rows > $limit ? lang('%d / ', $limit) : "") . lang('%d row(s)', $num_rows) : "");
 											echo $time;
 											if ($connection2 && preg_match("~^($space|\\()*+SELECT\\b~i", $q) && ($explain = explain($connection2, $q))) {
 												echo ", <a href='#$explain_id'>Explain</a>" . script("qsl('a').onclick = partial(toggle, '$explain_id');", "");
@@ -168,8 +169,8 @@ if (!$error && $_POST) {
 											echo ", <a href='#$id'>" . lang('Export') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "") . "<span id='$id' class='hidden'>: "
 												. html_select("output", $adminer->dumpOutput(), $adminer_export["output"]) . " "
 												. html_select("format", $dump_format, $adminer_export["format"])
-												. "<input type='hidden' name='query' value='" . h($q) . "'>"
-												. " <input type='submit' name='export' value='" . lang('Export') . "'>" . input_token() . "</span>\n"
+												. input_hidden("query", $q)
+												. "<input type='submit' name='export' value='" . lang('Export') . "'>" . input_token() . "</span>\n"
 												. "</form>\n"
 											;
 										}
@@ -187,7 +188,7 @@ if (!$error && $_POST) {
 									echo ($warnings ? "<div id='$warnings_id' class='hidden'>\n$warnings</div>\n" : "");
 									if ($explain) {
 										echo "<div id='$explain_id' class='hidden explain'>\n";
-										select($explain, $connection2, $orgtables);
+										print_select_result($explain, $connection2, $orgtables);
 										echo "</div>\n";
 									}
 								}
@@ -230,12 +231,14 @@ if (!isset($_GET["import"])) {
 	} elseif ($_GET["history"] == "all") {
 		$q = $history;
 	} elseif ($_GET["history"] != "") {
-		$q = $history[$_GET["history"]][0];
+		$q = idx($history[$_GET["history"]], 0);
 	}
 	echo "<p>";
 	textarea("query", $q, 20);
 	echo script(($_POST ? "" : "qs('textarea').focus();\n") . "qs('#form').onsubmit = partial(sqlSubmit, qs('#form'), '" . js_escape(remove_from_uri("sql|limit|error_stops|only_errors|history")) . "');");
-	echo "<p>$execute\n";
+	echo "<p>";
+	$adminer->sqlPrintAfter();
+	echo "$execute\n";
 	echo lang('Limit rows') . ": <input type='number' name='limit' class='size' value='" . h($_POST ? $_POST["limit"] : $_GET["limit"]) . "'>\n";
 
 } else {
