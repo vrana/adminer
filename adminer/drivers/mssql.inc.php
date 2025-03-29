@@ -640,7 +640,6 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)) as $row
 	}
 
 	function create_sql($table, $auto_increment, $style) {
-		global $driver;
 		if (is_view(table_status1($table))) {
 			$view = view($table);
 			return "CREATE VIEW " . table($table) . " AS $view[select]";
@@ -664,7 +663,7 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)) as $row
 				$fields[] = ($index["type"] == "INDEX" ? "INDEX $name" : "CONSTRAINT $name " . ($index["type"] == "UNIQUE" ? "UNIQUE" : "PRIMARY KEY")) . " (" . implode(", ", $columns) . ")";
 			}
 		}
-		foreach ($driver->checkConstraints($table) as $name => $check) {
+		foreach (driver()->checkConstraints($table) as $name => $check) {
 			$fields[] = "CONSTRAINT " . idf_escape($name) . " CHECK ($check)";
 		}
 		return "CREATE TABLE " . table($table) . " (\n\t" . implode(",\n\t", $fields) . "\n)";

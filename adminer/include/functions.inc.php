@@ -19,8 +19,7 @@ function adminer() {
 
 /** Get Driver object */
 function driver(): Driver {
-	global $driver;
-	return $driver;
+	return Driver::$instance;
 }
 
 /** Unescape database identifier
@@ -601,7 +600,6 @@ function column_foreign_keys(string $table): array {
 * @return Field[] same as fields()
 */
 function fields_from_edit(): array { // used by Mongo and SimpleDB
-	global $driver;
 	$return = array();
 	foreach ((array) $_POST["field_keys"] as $key => $val) {
 		if ($val != "") {
@@ -616,7 +614,7 @@ function fields_from_edit(): array { // used by Mongo and SimpleDB
 			"field" => $name,
 			"privileges" => array("insert" => 1, "update" => 1, "where" => 1, "order" => 1),
 			"null" => 1,
-			"auto_increment" => ($key == $driver->primary),
+			"auto_increment" => ($key == driver()->primary),
 		);
 	}
 	return $return;
@@ -830,10 +828,9 @@ function count_rows(string $table, array $where, bool $is_group, array $group): 
 * @return string[]
 */
 function slow_query(string $query): array {
-	global $driver;
 	$db = adminer()->database();
 	$timeout = adminer()->queryTimeout();
-	$slow_query = $driver->slowQuery($query, $timeout);
+	$slow_query = driver()->slowQuery($query, $timeout);
 	$connection2 = null;
 	if (!$slow_query && support("kill")) {
 		$connection2 = connect(adminer()->credentials());

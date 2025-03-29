@@ -27,7 +27,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 		queries_redirect(
 			$location,
 			lang('Item has been deleted.'),
-			$driver->delete($TABLE, $query_where, !$unique_array)
+			driver()->delete($TABLE, $query_where, !$unique_array)
 		);
 
 	} else {
@@ -46,7 +46,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 			queries_redirect(
 				$location,
 				lang('Item has been updated.'),
-				$driver->update($TABLE, $set, $query_where, !$unique_array)
+				driver()->update($TABLE, $set, $query_where, !$unique_array)
 			);
 			if (is_ajax()) {
 				page_headers();
@@ -54,7 +54,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 				exit;
 			}
 		} else {
-			$result = $driver->insert($TABLE, $set);
+			$result = driver()->insert($TABLE, $set);
 			$last_id = ($result ? last_id($result) : 0);
 			queries_redirect($location, lang('Item%s has been inserted.', ($last_id ? " $last_id" : "")), $result); //! link
 		}
@@ -77,7 +77,7 @@ if ($_POST["save"]) {
 		$select = array("*");
 	}
 	if ($select) {
-		$result = $driver->select($TABLE, $select, array($where), $select, array(), (isset($_GET["select"]) ? 2 : 1));
+		$result = driver()->select($TABLE, $select, array($where), $select, array(), (isset($_GET["select"]) ? 2 : 1));
 		if (!$result) {
 			$error = error();
 		} else {
@@ -94,10 +94,10 @@ if ($_POST["save"]) {
 
 if (!support("table") && !$fields) { // used by Mongo and SimpleDB
 	if (!$where) { // insert
-		$result = $driver->select($TABLE, array("*"), $where, array("*"));
+		$result = driver()->select($TABLE, array("*"), $where, array("*"));
 		$row = ($result ? $result->fetch_assoc() : false);
 		if (!$row) {
-			$row = array($driver->primary => "");
+			$row = array(driver()->primary => "");
 		}
 	}
 	if ($row) {
@@ -105,7 +105,7 @@ if (!support("table") && !$fields) { // used by Mongo and SimpleDB
 			if (!$where) {
 				$row[$key] = null;
 			}
-			$fields[$key] = array("field" => $key, "null" => ($key != $driver->primary), "auto_increment" => ($key == $driver->primary));
+			$fields[$key] = array("field" => $key, "null" => ($key != driver()->primary), "auto_increment" => ($key == driver()->primary));
 		}
 	}
 }

@@ -24,7 +24,7 @@ if (!$row) {
 <p>
 <?php
 if ($TYPE != "") {
-	$types = $driver->types();
+	$types = driver()->types();
 	$enums = type_values($types[$TYPE]);
 	if ($enums) {
 		echo "<code class='jush-" . JUSH . "'>ENUM (" . h($enums) . ")</code>\n<p>";

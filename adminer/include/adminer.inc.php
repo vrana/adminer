@@ -64,8 +64,7 @@ class Adminer {
 	* @return list<string> operators
 	*/
 	function operators(): array {
-		global $driver;
-		return $driver->operators;
+		return driver()->operators;
 	}
 
 	/** Get list of schemas
@@ -175,7 +174,6 @@ class Adminer {
 	* @param ?string $set new item options, NULL for no new item
 	*/
 	function selectLinks(array $tableStatus, ?string $set = ""): void {
-		global $driver;
 		echo '<p class="links">';
 		$links = array("select" => lang('Select data'));
 		if (support("table") || support("indexes")) {
@@ -197,7 +195,7 @@ class Adminer {
 		foreach ($links as $key => $val) {
 			echo " <a href='" . h(ME) . "$key=" . urlencode($name) . ($key == "edit" ? $set : "") . "'" . bold(isset($_GET[$key])) . ">$val</a>";
 		}
-		echo doc_link(array(JUSH => $driver->tableHelp($name, $is_view)), "?");
+		echo doc_link(array(JUSH => driver()->tableHelp($name, $is_view)), "?");
 		echo "\n";
 	}
 
@@ -227,9 +225,8 @@ class Adminer {
 	* @param float $start start time of the query
 	*/
 	function selectQuery(string $query, float $start, bool $failed = false): string {
-		global $driver;
 		$return = "</p>\n"; // required for IE9 inline edit
-		if (!$failed && ($warnings = $driver->warnings())) {
+		if (!$failed && ($warnings = driver()->warnings())) {
 			$id = "warnings";
 			$return = ", <a href='#$id'>" . lang('Warnings') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "")
 				. "$return<div id='$id' class='hidden'>\n$warnings</div>\n"
@@ -307,11 +304,10 @@ class Adminer {
 	* @param TableStatus $tableStatus
 	*/
 	function tableStructurePrint(array $fields, array $tableStatus = null): void {
-		global $driver;
 		echo "<div class='scrollable'>\n";
 		echo "<table class='nowrap odds'>\n";
 		echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . (support("comment") ? "<td>" . lang('Comment') : "") . "</thead>\n";
-		$structured_types = $driver->structuredTypes();
+		$structured_types = driver()->structuredTypes();
 		foreach ($fields as $field) {
 			echo "<tr><th>" . h($field["field"]);
 			$type = h($field["full_type"]);
@@ -357,7 +353,6 @@ class Adminer {
 	* @param string[] $columns selectable columns
 	*/
 	function selectColumnsPrint(array $select, array $columns): void {
-		global $driver;
 		print_fieldset("select", lang('Select'), $select);
 		$i = 0;
 		$select[""] = array();
@@ -369,7 +364,7 @@ class Adminer {
 				$val["col"],
 				($key !== "" ? "selectFieldChange" : "selectAddRow")
 			);
-			echo "<div>" . ($driver->functions || $driver->grouping ? html_select("columns[$i][fun]", array(-1 => "") + array_filter(array(lang('Functions') => $driver->functions, lang('Aggregation') => $driver->grouping)), $val["fun"])
+			echo "<div>" . (driver()->functions || driver()->grouping ? html_select("columns[$i][fun]", array(-1 => "") + array_filter(array(lang('Functions') => driver()->functions, lang('Aggregation') => driver()->grouping)), $val["fun"])
 				. on_help("event.target.value && event.target.value.replace(/ |\$/, '(') + ')'", 1)
 				. script("qsl('select').onchange = function () { helpClose();" . ($key !== "" ? "" : " qsl('select, input', this.parentNode).onchange();") . " };", "")
 				. "($column)" : $column) . "</div>\n";
@@ -507,13 +502,12 @@ class Adminer {
 	* @return list<list<string>> [[select_expressions], [group_expressions]]
 	*/
 	function selectColumnsProcess(array $columns, array $indexes): array {
-		global $driver;
 		$select = array(); // select expressions, empty for *
 		$group = array(); // expressions without aggregation - will be used for GROUP BY if an aggregation function is used
 		foreach ((array) $_GET["columns"] as $key => $val) {
-			if ($val["fun"] == "count" || ($val["col"] != "" && (!$val["fun"] || in_array($val["fun"], $driver->functions) || in_array($val["fun"], $driver->grouping)))) {
+			if ($val["fun"] == "count" || ($val["col"] != "" && (!$val["fun"] || in_array($val["fun"], driver()->functions) || in_array($val["fun"], driver()->grouping)))) {
 				$select[$key] = apply_sql_function($val["fun"], ($val["col"] != "" ? idf_escape($val["col"]) : "*"));
-				if (!in_array($val["fun"], $driver->grouping)) {
+				if (!in_array($val["fun"], driver()->grouping)) {
 					$group[] = $select[$key];
 				}
 			}
@@ -527,7 +521,7 @@ class Adminer {
 	* @return list<string> expressions to join by AND
 	*/
 	function selectSearchProcess(array $fields, array $indexes): array {
-		global $connection, $driver;
+		global $connection;
 		$return = array();
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT" && $_GET["fulltext"][$i] != "") {
@@ -554,7 +548,7 @@ class Adminer {
 					$cond .= " " . adminer()->processInput($fields[$val["col"]], $val["val"]);
 				}
 				if ($val["col"] != "") {
-					$return[] = $prefix . $driver->convertSearch(idf_escape($val["col"]), $val, $fields[$val["col"]]) . $cond;
+					$return[] = $prefix . driver()->convertSearch(idf_escape($val["col"]), $val, $fields[$val["col"]]) . $cond;
 				} else {
 					// find anywhere
 					$cols = array();
@@ -565,7 +559,7 @@ class Adminer {
 							&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || preg_match('~char|text|enum|set~', $field["type"]))
 							&& (!preg_match('~date|timestamp~', $field["type"]) || preg_match('~^\d+-\d+-\d+~', $val["val"]))
 						) {
-							$cols[] = $prefix . $driver->convertSearch(idf_escape($name), $val, $field) . $cond;
+							$cols[] = $prefix . driver()->convertSearch(idf_escape($name), $val, $field) . $cond;
 						}
 					}
 					$return[] = ($cols ? "(" . implode(" OR ", $cols) . ")" : "1 = 0");
@@ -633,7 +627,6 @@ class Adminer {
 	* @param string $time elapsed time
 	*/
 	function messageQuery(string $query, string $time, bool $failed = false): string {
-		global $driver;
 		restart_session();
 		$history = &get_session("queries");
 		if (!idx($history, $_GET["db"])) {
@@ -645,7 +638,7 @@ class Adminer {
 		$history[$_GET["db"]][] = array($query, time(), $time); // not DB - $_GET["db"] is changed in database.inc.php //! respect $_GET["ns"]
 		$sql_id = "sql-" . count($history[$_GET["db"]]);
 		$return = "<a href='#$sql_id' class='toggle'>" . lang('SQL command') . "</a>\n";
-		if (!$failed && ($warnings = $driver->warnings())) {
+		if (!$failed && ($warnings = driver()->warnings())) {
 			$id = "warnings-" . count($history[$_GET["db"]]);
 			$return = "<a href='#$id' class='toggle'>" . lang('Warnings') . "</a>, $return<div id='$id' class='hidden'>\n$warnings</div>\n";
 		}
@@ -669,10 +662,9 @@ class Adminer {
 	* @return list<string>
 	*/
 	function editFunctions(array $field): array {
-		global $driver;
 		$return = ($field["null"] ? "NULL/" : "");
 		$update = isset($_GET["select"]) || where($_GET);
-		foreach (array($driver->insertFunctions, $driver->editFunctions) as $key => $functions) {
+		foreach (array(driver()->insertFunctions, driver()->editFunctions) as $key => $functions) {
 			if (!$key || (!isset($_GET["call"]) && $update)) { // relative functions
 				foreach ($functions as $pattern => $val) {
 					if (!$pattern || preg_match("~$pattern~", $field["type"])) {

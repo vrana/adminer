@@ -189,7 +189,6 @@ function enum_input(string $type, string $attrs, array $field, $value, string $e
 * @param mixed $value
 */
 function input(array $field, $value, ?string $function, ?bool $autofocus = false): void {
-	global $driver;
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
 	if (is_array($value) && !$function) {
@@ -203,12 +202,12 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 	$functions = (isset($_GET["select"]) || $reset ? array("orig" => lang('original')) : array()) + adminer()->editFunctions($field);
 	$disabled = stripos($field["default"], "GENERATED ALWAYS AS ") === 0 ? " disabled=''" : "";
 	$attrs = " name='fields[$name]'$disabled" . ($autofocus ? " autofocus" : "");
-	$enums = $driver->enumLength($field);
+	$enums = driver()->enumLength($field);
 	if ($enums) {
 		$field["type"] = "enum";
 		$field["length"] = $enums;
 	}
-	echo $driver->unconvertFunction($field) . " ";
+	echo driver()->unconvertFunction($field) . " ";
 	$table = $_GET["edit"] ?: $_GET["select"];
 	if ($field["type"] == "enum") {
 		echo h($functions[""]) . "<td>" . adminer()->editInput($table, $field, $attrs, $value);
@@ -247,7 +246,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 			echo "<textarea$attrs>" . h($value) . '</textarea>';
 		} else {
 			// int(3) is only a display hint
-			$types = $driver->types();
+			$types = driver()->types();
 			$maxlength = (!preg_match('~int~', $field["type"]) && preg_match('~^(\d+)(,(\d+))?$~', $field["length"], $match)
 				? ((preg_match("~binary~", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0))
 				: ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0)
@@ -283,14 +282,13 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 * @return mixed false to leave the original value
 */
 function process_input(array $field) {
-	global $driver;
 	if (stripos($field["default"], "GENERATED ALWAYS AS ") === 0) {
 		return;
 	}
 	$idf = bracket_escape($field["field"]);
 	$function = idx($_POST["function"], $idf);
 	$value = $_POST["fields"][$idf];
-	if ($field["type"] == "enum" || $driver->enumLength($field)) {
+	if ($field["type"] == "enum" || driver()->enumLength($field)) {
 		if ($value == -1) {
 			return false;
 		}
@@ -323,7 +321,7 @@ function process_input(array $field) {
 		if (!is_string($file)) {
 			return false; //! report errors
 		}
-		return $driver->quoteBinary($file);
+		return driver()->quoteBinary($file);
 	}
 	return adminer()->processInput($field, $value, $function);
 }

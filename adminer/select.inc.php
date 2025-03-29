@@ -46,7 +46,7 @@ if ($_GET["val"] && is_ajax()) {
 		$as = convert_field($fields[key($row)]);
 		$select = array($as ?: idf_escape(key($row)));
 		$where[] = where_check($unique_idf, $fields);
-		$return = $driver->select($TABLE, $select, $where, $select);
+		$return = driver()->select($TABLE, $select, $where, $select);
 		if ($return) {
 			echo first($return->fetch_row());
 		}
@@ -121,10 +121,10 @@ if ($_POST && !$error) {
 				$query = ($_POST["clone"] ? "INTO " . table($TABLE) . " (" . implode(", ", array_keys($set)) . ")\nSELECT " . implode(", ", $set) . "\nFROM " . table($TABLE) : "");
 				if ($_POST["all"] || ($primary && is_array($_POST["check"])) || $is_group) {
 					$result = ($_POST["delete"]
-						? $driver->delete($TABLE, $where_check)
+						? driver()->delete($TABLE, $where_check)
 						: ($_POST["clone"]
-							? queries("INSERT $query$where_check" . $driver->insertReturning($TABLE))
-							: $driver->update($TABLE, $set, $where_check)
+							? queries("INSERT $query$where_check" . driver()->insertReturning($TABLE))
+							: driver()->update($TABLE, $set, $where_check)
 						)
 					);
 					$affected = $connection->affected_rows;
@@ -136,10 +136,10 @@ if ($_POST && !$error) {
 						// where is not unique so OR can't be used
 						$where2 = "\nWHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($val, $fields);
 						$result = ($_POST["delete"]
-							? $driver->delete($TABLE, $where2, 1)
+							? driver()->delete($TABLE, $where2, 1)
 							: ($_POST["clone"]
 								? queries("INSERT" . limit1($TABLE, $query, $where2))
-								: $driver->update($TABLE, $set, $where2, 1)
+								: driver()->update($TABLE, $set, $where2, 1)
 							)
 						);
 						if (!$result) {
@@ -176,7 +176,7 @@ if ($_POST && !$error) {
 						$key = bracket_escape($key, true); // true - back
 						$set[idf_escape($key)] = (preg_match('~char|text~', $fields[$key]["type"]) || $val != "" ? adminer()->processInput($fields[$key], $val) : "NULL");
 					}
-					$result = $driver->update(
+					$result = driver()->update(
 						$TABLE,
 						$set,
 						" WHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($unique_idf, $fields),
@@ -201,7 +201,7 @@ if ($_POST && !$error) {
 			$cols = array_keys($fields);
 			preg_match_all('~(?>"[^"]*"|[^"\r\n]+)+~', $file, $matches);
 			$affected = count($matches[0]);
-			$driver->begin();
+			driver()->begin();
 			$separator = ($_POST["separator"] == "csv" ? "," : ($_POST["separator"] == "tsv" ? "\t" : ";"));
 			$rows = array();
 			foreach ($matches[0] as $key => $val) {
@@ -218,12 +218,12 @@ if ($_POST && !$error) {
 					$rows[] = $set;
 				}
 			}
-			$result = (!$rows || $driver->insertUpdate($TABLE, $rows, $primary));
+			$result = (!$rows || driver()->insertUpdate($TABLE, $rows, $primary));
 			if ($result) {
-				$driver->commit();
+				driver()->commit();
 			}
 			queries_redirect(remove_from_uri("page"), lang('%d row(s) have been imported.', $affected), $result);
-			$driver->rollback(); // after queries_redirect() to not overwrite error
+			driver()->rollback(); // after queries_redirect() to not overwrite error
 
 		}
 	}
@@ -299,7 +299,7 @@ if (!$columns && support("table")) {
 			}
 		}
 	}
-	$result = $driver->select($TABLE, $select2, $where, $group2, $order, $limit, $page, true);
+	$result = driver()->select($TABLE, $select2, $where, $group2, $order, $limit, $page, true);
 
 	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
@@ -411,7 +411,7 @@ if (!$columns && support("table")) {
 				foreach ($row as $key => $val) {
 					if (isset($names[$key])) {
 						$field = $fields[$key];
-						$val = $driver->value($val, $field);
+						$val = driver()->value($val, $field);
 						if ($val != "" && (!isset($email_fields[$key]) || $email_fields[$key] != "")) {
 							$email_fields[$key] = (is_mail($val) ? $names[$key] : ""); //! filled e-mails can be contained on other pages
 						}

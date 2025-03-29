@@ -26,7 +26,7 @@ if ($fields) {
 	adminer()->tableStructurePrint($fields, $table_status);
 }
 
-if (support("indexes") && $driver->supportsIndex($table_status)) {
+if (support("indexes") && driver()->supportsIndex($table_status)) {
 	echo "<h3 id='indexes'>" . lang('Indexes') . "</h3>\n";
 	$indexes = indexes($TABLE);
 	if ($indexes) {
@@ -68,7 +68,7 @@ if (!is_view($table_status)) {
 
 	if (support("check")) {
 		echo "<h3 id='checks'>" . lang('Checks') . "</h3>\n";
-		$check_constraints = $driver->checkConstraints($TABLE);
+		$check_constraints = driver()->checkConstraints($TABLE);
 		if ($check_constraints) {
 			echo "<table>\n";
 			foreach ($check_constraints as $key => $val) {

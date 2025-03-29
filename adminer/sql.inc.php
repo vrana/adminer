@@ -85,7 +85,7 @@ if (!$error && $_POST) {
 					$offset = $pos + strlen($found);
 
 					if ($found && rtrim($found) != $delimiter) { // find matching quote or comment end
-						$c_style_escapes = $driver->hasCStyleEscapes() || (JUSH == "pgsql" && ($pos > 0 && strtolower($query[$pos - 1]) == "e"));
+						$c_style_escapes = driver()->hasCStyleEscapes() || (JUSH == "pgsql" && ($pos > 0 && strtolower($query[$pos - 1]) == "e"));
 
 						$pattern = ($found == '/*' ? '\*/'
 							: ($found == '[' ? ']'
@@ -146,7 +146,7 @@ if (!$error && $_POST) {
 										. (strlen($q) < 1000 ? " <a href='" . h(ME) . "sql=" . urlencode(trim($q)) . "'>" . lang('Edit') . "</a>" : "") // 1000 - maximum length of encoded URL in IE is 2083 characters
 									;
 									$affected = $connection->affected_rows; // getting warnings overwrites this
-									$warnings = ($_POST["only_errors"] ? "" : $driver->warnings());
+									$warnings = ($_POST["only_errors"] ? "" : driver()->warnings());
 									$warnings_id = "warnings-$commands";
 									if ($warnings) {
 										$time .= ", <a href='#$warnings_id'>" . lang('Warnings') . "</a>" . script("qsl('a').onclick = partial(toggle, '$warnings_id');", "");

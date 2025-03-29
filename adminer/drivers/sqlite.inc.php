@@ -459,7 +459,6 @@ if (isset($_GET["sqlite"])) {
 	* @param string $add_check CHECK constraint to add
 	*/
 	function recreate_table(string $table, string $name, array $fields, array $originals, array $foreign, int $auto_increment = 0, $indexes = array(), string $drop_check = "", string $add_check = ""): bool {
-		global $driver;
 		if ($table != "") {
 			if (!$fields) {
 				foreach (fields($table) as $key => $field) {
@@ -524,7 +523,7 @@ if (isset($_GET["sqlite"])) {
 			$changes[] = "  " . implode($field);
 		}
 		$changes = array_merge($changes, array_filter($foreign));
-		foreach ($driver->checkConstraints($table) as $check) {
+		foreach (driver()->checkConstraints($table) as $check) {
 			if ($check != $drop_check) {
 				$changes[] = "  CHECK ($check)";
 			}

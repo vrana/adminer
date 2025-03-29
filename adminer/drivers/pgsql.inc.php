@@ -484,7 +484,6 @@ ORDER BY indisprimary DESC, indisunique DESC", $connection2) as $row
 	}
 
 	function foreign_keys($table) {
-		global $driver;
 		$return = array();
 		foreach (
 			get_rows("SELECT conname, condeferrable::int AS deferrable, pg_get_constraintdef(oid) AS definition
@@ -500,8 +499,8 @@ ORDER BY conkey, conname") as $row
 					$row['table'] = idf_unescape($match2[4]);
 				}
 				$row['target'] = array_map('Adminer\idf_unescape', array_map('trim', explode(',', $match[3])));
-				$row['on_delete'] = (preg_match("~ON DELETE ($driver->onActions)~", $match[4], $match2) ? $match2[1] : 'NO ACTION');
-				$row['on_update'] = (preg_match("~ON UPDATE ($driver->onActions)~", $match[4], $match2) ? $match2[1] : 'NO ACTION');
+				$row['on_delete'] = (preg_match("~ON DELETE (driver()->onActions)~", $match[4], $match2) ? $match2[1] : 'NO ACTION');
+				$row['on_update'] = (preg_match("~ON UPDATE (driver()->onActions)~", $match[4], $match2) ? $match2[1] : 'NO ACTION');
 				$return[$row['conname']] = $row;
 			}
 		}
@@ -793,12 +792,12 @@ AND typelem = 0"
 	}
 
 	function set_schema($schema, $connection2 = null) {
-		global $connection, $driver;
+		global $connection;
 		if (!$connection2) {
 			$connection2 = $connection;
 		}
 		$return = $connection2->query("SET search_path TO " . idf_escape($schema));
-		$driver->setUserTypes(types()); //! get types from current_schemas('t')
+		driver()->setUserTypes(types()); //! get types from current_schemas('t')
 		return $return;
 	}
 
@@ -820,7 +819,6 @@ AND typelem = 0"
 	}
 
 	function create_sql($table, $auto_increment, $style) {
-		global $driver;
 		$return_parts = array();
 		$sequences = array();
 
@@ -872,7 +870,7 @@ AND typelem = 0"
 			}
 		}
 
-		foreach ($driver->checkConstraints($table) as $conname => $consrc) {
+		foreach (driver()->checkConstraints($table) as $conname => $consrc) {
 			$return_parts[] = "CONSTRAINT " . idf_escape($conname) . " CHECK $consrc";
 		}
 

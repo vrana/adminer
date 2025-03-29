@@ -140,7 +140,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 page_header(($TABLE != "" ? lang('Alter table') : lang('Create table')), $error, array("table" => $TABLE), h($TABLE));
 
 if (!$_POST) {
-	$types = $driver->types();
+	$types = driver()->types();
 	$row = array(
 		"Engine" => $_COOKIE["adminer_engine"],
 		"fields" => array(array("field" => "", "type" => (isset($types["int"]) ? "int" : (isset($types["integer"]) ? "integer" : "")), "on_update" => "")),
@@ -171,7 +171,7 @@ $collations = collations();
 if (is_array(reset($collations))) {
 	$collations = call_user_func_array('array_merge', array_values($collations));
 }
-$engines = $driver->engines();
+$engines = driver()->engines();
 // case of engine may differ
 foreach ($engines as $engine) {
 	if (!strcasecmp($engine, $row["Engine"])) {

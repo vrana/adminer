@@ -177,7 +177,7 @@ if (isset($_GET["username"]) && is_string(get_password())) {
 	check_invalid_login($permanent);
 	$connection = connect(adminer()->credentials());
 	if (is_object($connection)) {
-		$driver = new Driver($connection);
+		Driver::$instance = new Driver($connection);
 		if ($connection->flavor) {
 			save_settings(array("vendor-" . DRIVER . "-" . SERVER => get_driver(DRIVER)));
 		}

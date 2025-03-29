@@ -354,7 +354,6 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function selectSearchProcess($fields, $indexes) {
-		global $driver;
 		$return = array();
 		foreach ((array) $_GET["where"] as $key => $where) {
 			$col = $where["col"];
@@ -370,7 +369,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 						} else {
 							$text_type = preg_match('~char|text|enum|set~', $field["type"]);
 							$value = adminer()->processInput($field, (!$op && $text_type && preg_match('~^[^%]+$~', $val) ? "%$val%" : $val));
-							$conds[] = $driver->convertSearch($name, $where, $field) . ($value == "NULL" ? " IS" . ($op == ">=" ? " NOT" : "") . " $value"
+							$conds[] = driver()->convertSearch($name, $where, $field) . ($value == "NULL" ? " IS" . ($op == ">=" ? " NOT" : "") . " $value"
 								: (in_array($op, adminer()->operators()) || $op == "=" ? " $op $value"
 								: ($text_type ? " LIKE $value"
 								: " IN (" . str_replace(",", "', '", $value) . ")"

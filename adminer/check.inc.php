@@ -24,7 +24,7 @@ if ($row && !$error) {
 page_header(($name != "" ? lang('Alter check') . ": " . h($name) : lang('Create check')), $error, array("table" => $TABLE));
 
 if (!$row) {
-	$checks = $driver->checkConstraints($TABLE);
+	$checks = driver()->checkConstraints($TABLE);
 	$row = array("name" => $name, "clause" => $checks[$name]);
 }
 ?>
