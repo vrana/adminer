@@ -17,7 +17,7 @@ if (isset($_GET["elastic"])) {
 			 */
 			function rootQuery(string $path, ?array $content = null, string $method = 'GET') {
 				$file = @file_get_contents("$this->url/" . ltrim($path, '/'), false, stream_context_create(array(
-					//~ 'ssl' => array('verify_peer' => false),
+					//~ 'ssl' => array('verify_peer' => false), // Elasticsearch responses in over 4 s on https://localhost:9200 without this line for me
 					'http' => array(
 						'method' => $method,
 						'content' => $content !== null ? json_encode($content) : null,
