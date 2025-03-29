@@ -1,6 +1,10 @@
 /** @author Robert Mesaros, https://www.rmsoft.sk */
 
-body { color: #829bb0; background: #002240; }
+html {
+	--bg: #002240;
+}
+
+body { color: #829bb0; }
 a { color: #517fa8; }
 a:visited { color: #517fa8; }
 a:link:hover, a:visited:hover { color: #9bc0e1; }
@@ -21,7 +25,7 @@ input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
 .error { color: red; background: #efdada; border: 1px solid #e76f6f; }
 .error b { background: #efeaea; }
 .message { color: #0b860b; background: #efe; border: 1px solid #7fbd7f; }
-.message table { color: #829bb0; background: #002240; }
+.message table { color: #829bb0; }
 .char { color: #a949a9; }
 .date { color: #59c159; }
 .enum { color: #d55c5c; }
@@ -32,10 +36,8 @@ input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
 .js .checkable .checked a { color: #67a4a5; }
 .icon { filter: invert(1); background-color: #062642; }
 .icon:hover { background-color: #d1394e; }
-.footer { border-top-color: rgba(0, 34, 64, .7); border-image-source: linear-gradient(rgba(0, 34, 64, 0.2), #002240); }
-.footer > div { background: #002240; }
+#menu { border-color: #a3bdd3; }
 #menu p, #logins, #tables { border-color: #326b9c; }
-#logins a, #tables a, #tables span { background: #002240; }
 #breadcrumb { background: #154269; }
 #h1 { color: #ffddbf; }
 #version { color: #d2b397; }
@@ -44,7 +46,3 @@ input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
 #schema div.table a { color: #3c7bb3; }
 #menu .active { color: #398c8d; }
 #edit-fields tbody tr:hover td, #edit-fields tbody tr:hover th { background: #3b6f9d; }
-
-@media all and (max-width: 880px) {
-	#menu { background: #002240; border-color: #a3bdd3; }
-}
