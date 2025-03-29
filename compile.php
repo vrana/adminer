@@ -204,11 +204,8 @@ if (!$translations) {
 function minify_css($file) {
 	global $project;
 	if ($project == "editor") {
-		$file = preg_replace('~.*\.gif.*~', '', $file);
+		$file = preg_replace('~.*\.url\(.*~', '', $file);
 	}
-	$file = preg_replace_callback('~url\((\w+\.(gif))\)~', function ($match) {
-		return "url(data:image/$match[2];base64," . base64_encode(file_get_contents(__DIR__ . "/adminer/static/$match[1]")) . ")";
-	}, $file);
 	return lzw_compress(preg_replace('~\s*([:;{},])\s*~', '\1', preg_replace('~/\*.*?\*/\s*~s', '', $file)));
 }
 

@@ -64,10 +64,6 @@ input.wayoff { left: -1000px; position: absolute; }
 .icon { width: 18px; height: 18px; background-color: navy; border: 0; vertical-align: middle; }
 .icon span { display: none; }
 .icon:hover { background-color: red; }
-.icon-up { background-image: url(up.gif); }
-.icon-down { background-image: url(down.gif); }
-.icon-plus { background-image: url(plus.gif); }
-.icon-cross { background-image: url(cross.gif); }
 .size { width: 7ex; }
 .help { cursor: help; }
 .footer { position: sticky; bottom: 0; margin-right: -20px; border-top: 20px solid rgba(255, 255, 255, .7); border-image: linear-gradient(rgba(255, 255, 255, .2), #fff) 100% 0; }
@@ -91,8 +87,14 @@ input.wayoff { left: -1000px; position: absolute; }
 #schema { margin-left: 60px; position: relative; user-select: none; -webkit-user-select: none; }
 #schema .table { border: 1px solid silver; padding: 0 2px; cursor: move; position: absolute; }
 #schema .references { position: absolute; }
-#schema .arrow { height: 1.25em; background: url(arrow.gif) no-repeat right center; }
 #help { position: absolute; border: 1px solid #999; background: #eee; padding: 5px; font-family: monospace; z-index: 1; }
+
+/* inlined here and not in compile.php because otherwise the development version flickers a little bit when loading the images */
+.icon-up { background-image: url(data:image/gif;base64,R0lGODlhEgASAIEAMe7u7gAAgJmZmQAAACH5BAEAAAEALAAAAAASABIAAQIghI+py+0PTQhRTgrvfRP0nmEVOIoReZphxbauAMfyHBcAOw==); }
+.icon-down { background-image: url(data:image/gif;base64,R0lGODlhEgASAIEAMe7u7gAAgJmZmQAAACH5BAEAAAEALAAAAAASABIAAQIghI+py+0PTQjxzCopvltX/lyix0wm2ZwdxraVAMfyHBcAOw==); }
+.icon-plus { background-image: url(data:image/gif;base64,R0lGODlhEgASAIEAMe7u7gAAgJmZmQAAACH5BAEAAAEALAAAAAASABIAAQIhhI+py+0PTQjxzCopvm/6rykgCHGVGaFliLXuI8TyTMsFADs=); }
+.icon-cross { background-image: url(data:image/gif;base64,R0lGODlhEgASAIEAMe7u7gAAgJmZmQAAACH5BAEAAAEALAAAAAASABIAAQIjhI+py+0PIwph1kZvfnnDLoFfd2GU4THnsUruC0fCTNc2XQAAOw==); }
+#schema .arrow { height: 1.25em; background: url(data:image/gif;base64,R0lGODlhCAAKAIAAAICAgP///yH5BAEAAAEALAAAAAAIAAoAAAIPBIJplrGLnpQRqtOy3rsAADs=) no-repeat right center; }
 
 .rtl h2 { margin: 0 -18px 20px 0; }
 .rtl p, .rtl table, .rtl .error, .rtl .message { margin: 1em 0 0 20px; }
