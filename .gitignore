@@ -5,6 +5,8 @@
 /adminer*.php
 /editor*.php
 /tests/pdo-*.html
+/tests/screenshots/
+/tests/cropped/
 /vendor/
 adminer-plugins/
 adminer-plugins.php

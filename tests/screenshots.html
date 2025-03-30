@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+	<title>Katalon screenshots</title>
+</head>
+<body>
+
+<!-- Before:
+fill DB cds with https://demo.adminer.org/adminer.php?username=
+log out some users
+delete some DBs
+enable dark-switcher plugin
+disable other plugins
+-->
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Login</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/</td><td></td></tr>
+<tr><td>select</td><td>name=lang</td><td>label=English</td></tr>
+<tr><td>clickAndWait</td><td>css=#lang &gt; input[type="submit"]</td><td></td></tr>
+<tr><td>type</td><td>name=auth[password]</td><td></td></tr>
+<tr><td>check</td><td>name=auth[permanent]</td><td></td></tr>
+<tr><td>type</td><td>id=username</td><td>ODBC</td></tr>
+<tr><td>captureEntirePageScreenshot</td><td>auth</td><td></td></tr>
+<tr><td>type</td><td>name=auth[password]</td><td>ODBC</td></tr>
+<tr><td>type</td><td>name=auth[db]</td><td>cds</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Login']</td><td></td></tr>
+<tr><td>captureEntirePageScreenshot</td><td>db</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Screenshots</td></tr></thead>
+<tbody>
+<tr><td>clickAndWait</td><td>link=albums</td><td></td></tr>
+<tr><td>captureEntirePageScreenshot</td><td>table</td><td></td></tr>
+<tr><td>clickAndWait</td><td>xpath=//big</td><td></td></tr>
+<tr><td>captureEntirePageScreenshot</td><td>dark</td><td></td></tr>
+<tr><td>clickAndWait</td><td>xpath=//big</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Alter table</td><td></td></tr>
+<tr><td>check</td><td>name=comments</td><td></td></tr>
+<tr><td>clickAndWait</td><td>name=comments</td><td></td></tr>
+<tr><td>check</td><td>name=defaults</td><td></td></tr>
+<tr><td>clickAndWait</td><td>name=defaults</td><td></td></tr>
+<tr><td>captureEntirePageScreenshot</td><td>create</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=cds&amp;select=songs</td><td></td></tr>
+<tr><td>captureEntirePageScreenshot</td><td>select</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=cds&amp;edit=songs&amp;where[id]=14</td><td></td></tr>
+<tr><td>click</td><td>name=fields[title]</td><td></td></tr>
+<tr><td>captureEntirePageScreenshot</td><td>edit</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;dbsize=1</td><td></td></tr>
+<tr><td>captureEntirePageScreenshot</td><td>database</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=cds&amp;schema=albums:1x8_interprets:8x6_songs:6x-1</td><td></td></tr>
+<tr><td>captureEntirePageScreenshot</td><td>schema</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=cds&amp;dump=</td><td></td></tr>
+<tr><td>captureEntirePageScreenshot</td><td>dump</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?username=ODBC&amp;db=cds&amp;sql=SELECT+%2A%0AFROM+%60albums%60%0ALIMIT+50</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Execute']</td><td></td></tr>
+<tr><td>captureEntirePageScreenshot</td><td>sql</td><td></td></tr>
+</tbody></table>
+
+</body>
+</html>
