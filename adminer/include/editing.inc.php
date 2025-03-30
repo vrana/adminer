@@ -5,7 +5,6 @@ namespace Adminer;
 
 /** Print select result
 * @param Result $result
-* @param Db|string $connection2
 * @param string[] $orgtables
 * @param int|numeric-string $limit
 * @return string[] $orgtables

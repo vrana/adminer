@@ -4,7 +4,7 @@ namespace Adminer;
 // this could be interface when "Db extends \mysqli" can have compatible type declarations (PHP 7)
 // interfaces can include properties only since PHP 8.4
 abstract class SqlDb {
-	/** @var Db|string */ static $instance = ''; // string means error
+	/** @var Db */ static $instance;
 
 	public string $extension; // extension name
 	public string $flavor = ''; // different vendor with the same API, e.g. MariaDB; usually stays empty

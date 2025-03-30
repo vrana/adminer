@@ -8,7 +8,7 @@ if (!defined('Adminer\DRIVER')) {
 	// MySQLi supports everything, MySQL doesn't support multiple result sets, PDO_MySQL doesn't support orgtable
 	if (extension_loaded("mysqli") && $_GET["ext"] != "pdo") {
 		class Db extends \MySQLi {
-			/** @var Db|string */ static $instance = '';
+			/** @var Db */ static $instance;
 			public string $extension = "MySQLi", $flavor = '';
 
 			function __construct() {
@@ -533,10 +533,9 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get table indexes
-	* @param Db|string $connection2
 	* @return Index[]
 	*/
-	function indexes(string $table, $connection2 = null): array {
+	function indexes(string $table, Db $connection2 = null): array {
 		$return = array();
 		foreach (get_rows("SHOW INDEX FROM " . table($table), $connection2) as $row) {
 			$name = $row["Key_name"];
@@ -1065,9 +1064,8 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Set current schema
-	* @param Db|string $connection2
 	*/
-	function set_schema(string $schema, $connection2 = null): bool {
+	function set_schema(string $schema, Db $connection2 = null): bool {
 		return true;
 	}
 }

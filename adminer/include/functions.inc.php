@@ -4,12 +4,12 @@ namespace Adminer;
 // This file is used both in Adminer and Adminer Editor.
 
 /** Get database connection
-* @param Db|string $connection2 custom connection to use instead of the default
-* @return Db|string string means error
+* @param ?Db $connection2 custom connection to use instead of the default
+* @return Db
 */
-function connection($connection2 = null) {
+function connection(Db $connection2 = null) {
 	// can be used in customization, Db::$instance is minified
-	return (is_object($connection2) ? $connection2 : Db::$instance);
+	return ($connection2 ?: Db::$instance);
 }
 
 /** Get Adminer object
@@ -26,10 +26,10 @@ function driver(): Driver {
 
 /** Connect to the database
 * @param array{?string, string, string} $credentials [$server, $username, $password]
-* @return Db|string string for error
 */
-function connect(array $credentials) {
-	return driver()->connect($credentials[0], $credentials[1], $credentials[2]);
+function connect(array $credentials): ?Db {
+	$return = driver()->connect($credentials[0], $credentials[1], $credentials[2]);
+	return (is_object($return) ? $return : null);
 }
 
 /** Unescape database identifier
@@ -105,9 +105,8 @@ function bracket_escape(string $idf, bool $back = false): string {
 /** Check if connection has at least the given version
 * @param string|float $version required version
 * @param string|float $maria_db required MariaDB version
-* @param Db|string $connection2 defaults to connection()
 */
-function min_version($version, $maria_db = "", $connection2 = null): bool {
+function min_version($version, $maria_db = "", Db $connection2 = null): bool {
 	$connection2 = connection($connection2);
 	$server_info = $connection2->server_info;
 	if ($maria_db && preg_match('~([\d.]+)-MariaDB~', $server_info, $match)) {
@@ -188,10 +187,9 @@ function get_vals(string $query, $column = 0): array {
 }
 
 /** Get keys from first column and values from second
-* @param Db|string $connection2
 * @return string[]
 */
-function get_key_vals(string $query, $connection2 = null, bool $set_keys = true): array {
+function get_key_vals(string $query, Db $connection2 = null, bool $set_keys = true): array {
 	$connection2 = connection($connection2);
 	$return = array();
 	$result = $connection2->query($query);
@@ -208,10 +206,9 @@ function get_key_vals(string $query, $connection2 = null, bool $set_keys = true)
 }
 
 /** Get all rows of result
-* @param Db|string $connection2
 * @return list<string[]> of associative arrays
 */
-function get_rows(string $query, $connection2 = null, string $error = "<p class='error'>"): array {
+function get_rows(string $query, Db $connection2 = null, string $error = "<p class='error'>"): array {
 	$conn = connection($connection2);
 	$return = array();
 	$result = $conn->query($query);
@@ -219,7 +216,7 @@ function get_rows(string $query, $connection2 = null, string $error = "<p class=
 		while ($row = $result->fetch_assoc()) {
 			$return[] = $row;
 		}
-	} elseif (!$result && $connection2 === null && $error && (defined('Adminer\PAGE_HEADER') || $error == "-- ")) {
+	} elseif (!$result && !$connection2 && $error && (defined('Adminer\PAGE_HEADER') || $error == "-- ")) {
 		echo $error . error() . "\n";
 	}
 	return $return;
@@ -833,7 +830,7 @@ function slow_query(string $query): array {
 	$connection2 = null;
 	if (!$slow_query && support("kill")) {
 		$connection2 = connect(adminer()->credentials());
-		if (is_object($connection2) && ($db == "" || $connection2->select_db($db))) {
+		if ($connection2 && ($db == "" || $connection2->select_db($db))) {
 			$kill = get_val(connection_id(), 0, $connection2); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
 			echo script("const timeout = setTimeout(() => { ajax('" . js_escape(ME) . "script=kill', function () {}, 'kill=$kill&token=" . get_token() . "'); }, 1000 * $timeout);");
 		}

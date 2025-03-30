@@ -55,7 +55,7 @@ if (!$error && $_POST) {
 		$offset = 0;
 		$empty = true;
 		$connection2 = connect(adminer()->credentials()); // connection for exploring indexes and EXPLAIN (to not replace FOUND_ROWS()) //! PDO - silent error
-		if (is_object($connection2) && DB != "") {
+		if ($connection2 && DB != "") {
 			$connection2->select_db(DB);
 			if ($_GET["ns"] != "") {
 				set_schema($_GET["ns"], $connection2);
@@ -126,7 +126,7 @@ if (!$error && $_POST) {
 							}
 							$start = microtime(true);
 							//! don't allow changing of character_set_results, convert encoding of displayed query
-							if (connection()->multi_query($q) && is_object($connection2) && preg_match("~^$space*+USE\\b~i", $q)) {
+							if (connection()->multi_query($q) && $connection2 && preg_match("~^$space*+USE\\b~i", $q)) {
 								$connection2->query($q);
 							}
 

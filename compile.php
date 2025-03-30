@@ -278,7 +278,6 @@ if ($_SERVER["argv"][1]) {
 include __DIR__ . "/adminer/include/db.inc.php";
 include __DIR__ . "/adminer/include/pdo.inc.php";
 include __DIR__ . "/adminer/include/driver.inc.php";
-Adminer\SqlDb::$instance = (object) array('flavor' => '', 'server_info' => '99'); // used in support()
 $features = array("check", "call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine", "scheme", "sequence", "sql", "status", "trigger", "type", "user" => "privileges", "variables", "view");
 $lang_ids = array(); // global variable simplifies usage in a callback function
 $file = file_get_contents(__DIR__ . "/$project/index.php");
@@ -286,6 +285,7 @@ $file = preg_replace('~\*/~', "* @version " . Adminer\VERSION . "\n*/", $file, 1
 if ($vendor) {
 	$_GET[$vendor] = true; // to load the driver
 	include_once __DIR__ . $driver_path;
+	Adminer\Db::$instance = (object) array('flavor' => '', 'server_info' => '99'); // used in support()
 	foreach ($features as $key => $feature) {
 		if (!Adminer\support($feature)) {
 			if (!is_int($key)) {
