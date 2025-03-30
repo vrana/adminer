@@ -281,7 +281,7 @@ Lang::$translations = array(
 	'Warnings' => 'Varovania',
 	'%d / ' => '%d / ',
 	'Limit rows' => 'Limit riadkov',
-	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer nepodporuje prístup k databáze bez hesla, <a href="https://www.adminer.org/en/password/"%s>viac informácií</a>.',
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer nepodporuje prístup k databáze bez hesla, <a href="https://www.adminer.org/sk/password/"%s>viac informácií</a>.',
 	'Default value' => 'Predvolená hodnota',
 	'Full table scan' => 'Prechod celej tabuľky',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Príliš veľa pokusov o prihlásenie, skúste to znova za %d minutu.', 'Príliš veľa pokusov o prihlásenie, skúste to znova za %d minuty.', 'Príliš veľa pokusov o prihlásenie, skúste to znova za %d minút.'),
