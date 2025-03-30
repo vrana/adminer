@@ -738,7 +738,7 @@ function schemaMouseup(event, db) {
 		that = undefined;
 		let s = '';
 		for (const key in tablePos) {
-			s += '_' + key + ':' + Math.round(tablePos[key][0] * 10000) / 10000 + 'x' + Math.round(tablePos[key][1] * 10000) / 10000;
+			s += '_' + key + ':' + Math.round(tablePos[key][0]) + 'x' + Math.round(tablePos[key][1]);
 		}
 		s = encodeURIComponent(s.substr(1));
 		const link = qs('#schema-link');
