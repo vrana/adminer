@@ -110,6 +110,16 @@ if (isset($_GET["elastic"])) {
 		public array $insertFunctions = array("json");
 		public array $operators = array("=", "must", "should", "must_not");
 
+		static function connect(?string $server, string $username, string $password) {
+			if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
+				return lang('Invalid server.');
+			}
+			if ($password != "" && is_object(parent::connect($server, $username, ""))) {
+				return lang('Database does not support password.');
+			}
+			return parent::connect($server, $username, $password);
+		}
+
 		function __construct(Db $connection) {
 			parent::__construct($connection);
 			$this->types = array(
@@ -281,20 +291,6 @@ if (isset($_GET["elastic"])) {
 		function convertOperator(string $operator): string {
 			return $operator == "LIKE %%" ? "should" : $operator;
 		}
-	}
-
-	function connect($credentials) {
-		$connection = new Db;
-
-		list($server, $username, $password) = $credentials;
-		if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
-			return lang('Invalid server.');
-		}
-		if ($password != "" && $connection->attach($server, $username, "")) {
-			return lang('Database does not support password.');
-		}
-
-		return ($connection->attach($server, $username, $password) ?: $connection);
 	}
 
 	function support($feature) {

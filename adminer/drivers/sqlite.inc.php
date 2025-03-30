@@ -122,6 +122,13 @@ if (isset($_GET["sqlite"])) {
 		public array $functions = array("hex", "length", "lower", "round", "unixepoch", "upper");
 		public array $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 
+		static function connect(?string $server, string $username, string $password) {
+			if ($password != "") {
+				return lang('Database does not support password.');
+			}
+			return parent::connect(":memory:", "", "");
+		}
+
 		function __construct(Db $connection) {
 			parent::__construct($connection);
 			if (min_version(3.31, 0, $connection)) {
@@ -164,15 +171,6 @@ if (isset($_GET["sqlite"])) {
 
 	function table($idf) {
 		return idf_escape($idf);
-	}
-
-	function connect($credentials) {
-		list(, , $password) = $credentials;
-		if ($password != "") {
-			return lang('Database does not support password.');
-		}
-		$connection = new Db;
-		return ($connection->attach(":memory:", "", "") ?: $connection);
 	}
 
 	function get_databases($flush) {

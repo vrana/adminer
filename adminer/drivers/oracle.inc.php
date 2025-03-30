@@ -188,11 +188,6 @@ if (isset($_GET["oracle"])) {
 		return idf_escape($idf);
 	}
 
-	function connect($credentials) {
-		$connection = new Db;
-		return ($connection->attach($credentials[0], $credentials[1], $credentials[2]) ?: $connection);
-	}
-
 	function get_databases($flush) {
 		return get_vals(
 			"SELECT DISTINCT tablespace_name FROM (

@@ -270,11 +270,6 @@ if (isset($_GET["imap"])) {
 		return connection()->expunge();
 	}
 
-	function connect($credentials) {
-		$connection = new Db;
-		return ($connection->attach($credentials[0], $credentials[1], $credentials[2]) ?: $connection);
-	}
-
 	function support($feature) {
 		return false;
 	}

@@ -171,6 +171,23 @@ if (isset($_GET["pgsql"])) {
 		public array $functions = array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper");
 		public array $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 
+		static function connect(?string $server, string $username, string $password) {
+			$connection = parent::connect($server, $username, $password);
+			if (is_string($connection)) {
+				return $connection;
+			}
+			if (min_version(9, 0, $connection)) {
+				$connection->query("SET application_name = 'Adminer'");
+			}
+			$version = get_val("SELECT version()", 0, $connection);
+			$connection->flavor = (preg_match('~CockroachDB~', $version) ? 'cockroach' : '');
+			$connection->server_info = preg_replace('~^\D*([\d.]+[-\w]*).*~', '\1', $version);
+			if ($connection->flavor == 'cockroach') { // we don't use "PostgreSQL / CockroachDB" by default because it's too long
+				add_driver(DRIVER, "CockroachDB");
+			}
+			return $connection;
+		}
+
 		function __construct(Db $connection) {
 			parent::__construct($connection);
 			$this->types = array( //! arrays
@@ -293,24 +310,6 @@ if (isset($_GET["pgsql"])) {
 
 	function table($idf) {
 		return idf_escape($idf);
-	}
-
-	function connect($credentials) {
-		$connection = new Db;
-		$error = $connection->attach($credentials[0], $credentials[1], $credentials[2]);
-		if ($error) {
-			return $error;
-		}
-		if (min_version(9, 0, $connection)) {
-			$connection->query("SET application_name = 'Adminer'");
-		}
-		$version = get_val("SELECT version()", 0, $connection);
-		$connection->flavor = (preg_match('~CockroachDB~', $version) ? 'cockroach' : '');
-		$connection->server_info = preg_replace('~^\D*([\d.]+[-\w]*).*~', '\1', $version);
-		if ($connection->flavor == 'cockroach') { // we don't use "PostgreSQL / CockroachDB" by default because it's too long
-			add_driver(DRIVER, "CockroachDB");
-		}
-		return $connection;
 	}
 
 	function get_databases($flush) {

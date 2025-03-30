@@ -101,11 +101,6 @@ if (isset($_GET["firebird"])) {
 		return idf_escape($idf);
 	}
 
-	function connect($credentials) {
-		$connection = new Db;
-		return ($connection->attach($credentials[0], $credentials[1], $credentials[2]) ?: $connection);
-	}
-
 	function get_databases($flush) {
 		return array("domain");
 	}

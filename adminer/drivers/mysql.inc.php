@@ -210,6 +210,21 @@ if (!defined('Adminer\DRIVER')) {
 		/** @var list<string> */ public array $functions = array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper");
 		/** @var list<string> */ public array $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 
+		static function connect(?string $server, string $username, string $password) {
+			$connection = parent::connect($server, $username, $password);
+			if (is_string($connection)) {
+				if (function_exists('iconv') && !is_utf8($connection) && strlen($s = iconv("windows-1250", "utf-8", $connection)) > strlen($connection)) { // windows-1250 - most common Windows encoding
+					$connection = $s;
+				}
+				return $connection;
+			}
+			$connection->set_charset(charset($connection));
+			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
+			$connection->flavor = (preg_match('~MariaDB~', $connection->server_info) ? 'maria' : 'mysql');
+			add_driver(DRIVER, ($connection->flavor == 'maria' ? "MariaDB" : "MySQL"));
+			return $connection;
+		}
+
 		function __construct(Db $connection) {
 			parent::__construct($connection);
 			$this->types = array(
@@ -349,26 +364,6 @@ if (!defined('Adminer\DRIVER')) {
 	/** Get escaped table name */
 	function table(string $idf): string {
 		return idf_escape($idf);
-	}
-
-	/** Connect to the database
-	* @param array{?string, string, string} $credentials [$server, $username, $password]
-	* @return string|Db string for error
-	*/
-	function connect(array $credentials) {
-		$connection = new Db;
-		$error = $connection->attach($credentials[0], $credentials[1], $credentials[2]);
-		if ($error) {
-			if (function_exists('iconv') && !is_utf8($error) && strlen($s = iconv("windows-1250", "utf-8", $error)) > strlen($error)) { // windows-1250 - most common Windows encoding
-				$error = $s;
-			}
-			return $error;
-		}
-		$connection->set_charset(charset($connection));
-		$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
-		$connection->flavor = (preg_match('~MariaDB~', $connection->server_info) ? 'maria' : 'mysql');
-		add_driver(DRIVER, ($connection->flavor == 'maria' ? "MariaDB" : "MySQL"));
-		return $connection;
 	}
 
 	/** Get cached list of databases

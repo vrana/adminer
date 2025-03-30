@@ -123,6 +123,13 @@ if (isset($_GET["clickhouse"])) {
 		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
 		public array $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 
+		static function connect(?string $server, string $username, string $password) {
+			if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
+				return lang('Invalid server.');
+			}
+			return parent::connect($server, $username, $password);
+		}
+
 		function __construct(Db $connection) {
 			parent::__construct($connection);
 			$this->types = array( //! arrays
@@ -222,15 +229,6 @@ if (isset($_GET["clickhouse"])) {
 
 	function drop_tables($tables) {
 		return apply_queries("DROP TABLE", $tables);
-	}
-
-	function connect($credentials) {
-		$connection = new Db;
-		list($server, $username, $password) = $credentials;
-		if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
-			return lang('Invalid server.');
-		}
-		return ($connection->attach($server, $username, $password) ?: $connection);
 	}
 
 	function get_databases($flush) {

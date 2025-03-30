@@ -24,6 +24,14 @@ function driver(): Driver {
 	return Driver::$instance;
 }
 
+/** Connect to the database
+* @param array{?string, string, string} $credentials [$server, $username, $password]
+* @return Db|string string for error
+*/
+function connect(array $credentials) {
+	return driver()->connect($credentials[0], $credentials[1], $credentials[2]);
+}
+
 /** Unescape database identifier
 * @param string $idf text inside ``
 */

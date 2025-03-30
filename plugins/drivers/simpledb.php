@@ -119,6 +119,16 @@ if (isset($_GET["simpledb"])) {
 
 		public $primary = "itemName()";
 
+		static function connect(?string $server, string $username, string $password) {
+			if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
+				return lang('Invalid server.');
+			}
+			if ($password != "") {
+				return lang('Database does not support password.');
+			}
+			return parent::connect($server, $username, $password);
+		}
+
 		private function chunkRequest($ids, $action, $params, $expand = array()) {
 			foreach (array_chunk($ids, 25) as $chunk) {
 				$params2 = $params;
@@ -241,17 +251,6 @@ if (isset($_GET["simpledb"])) {
 	}
 
 
-
-	function connect($credentials) {
-		list($host, , $password) = $credentials;
-		if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $host)) {
-			return lang('Invalid server.');
-		}
-		if ($password != "") {
-			return lang('Database does not support password.');
-		}
-		return new Db;
-	}
 
 	function support($feature) {
 		return preg_match('~sql~', $feature);

@@ -323,6 +323,13 @@ if (isset($_GET["mongo"])) {
 
 		public $primary = "_id";
 
+		static function connect(?string $server, string $username, string $password) {
+			if ($server == "") {
+				$server = "localhost:27017";
+			}
+			return parent::connect($server, $username, $password);
+		}
+
 		function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, ?int $page = 0, bool $print = false) {
 			$select = ($select == array("*")
 				? array()
@@ -428,15 +435,6 @@ if (isset($_GET["mongo"])) {
 	function logged_user() {
 		$credentials = adminer()->credentials();
 		return $credentials[1];
-	}
-
-	function connect($credentials) {
-		$connection = new Db;
-		list($server, $username, $password) = $credentials;
-		if ($server == "") {
-			$server = "localhost:27017";
-		}
-		return ($connection->attach($server, $username, $password) ?: $connection);
 	}
 
 	function alter_indexes($table, $alter) {

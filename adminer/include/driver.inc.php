@@ -30,6 +30,14 @@ abstract class SqlDriver {
 	public string $enumLength = "'(?:''|[^'\\\\]|\\\\.)*'"; // regular expression for parsing enum lengths
 	/** @var list<string> */ public array $generated = array(); // allowed types of generated columns
 
+	/** Connect to the database
+	* @return Db|string string for error
+	*/
+	static function connect(?string $server, string $username, string $password) {
+		$connection = new Db;
+		return ($connection->attach($server, $username, $password) ?: $connection);
+	}
+
 	/** Create object for performing database operations */
 	function __construct(Db $connection) {
 		$this->conn = $connection;

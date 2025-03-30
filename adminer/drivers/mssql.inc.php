@@ -213,6 +213,13 @@ if (isset($_GET["mssql"])) {
 		public array $generated = array("PERSISTED", "VIRTUAL");
 		public string $onActions = "NO ACTION|CASCADE|SET NULL|SET DEFAULT";
 
+		static function connect(?string $server, string $username, string $password) {
+			if ($server == "") {
+				$server = "localhost:1433";
+			}
+			return parent::connect($server, $username, $password);
+		}
+
 		function __construct(Db $connection) {
 			parent::__construct($connection);
 			$this->types = array( //! use sys.types
@@ -287,14 +294,6 @@ if (isset($_GET["mssql"])) {
 
 	function table($idf) {
 		return ($_GET["ns"] != "" ? idf_escape($_GET["ns"]) . "." : "") . idf_escape($idf);
-	}
-
-	function connect($credentials) {
-		$connection = new Db;
-		if ($credentials[0] == "") {
-			$credentials[0] = "localhost:1433";
-		}
-		return ($connection->attach($credentials[0], $credentials[1], $credentials[2]) ?: $connection);
 	}
 
 	function get_databases($flush) {
