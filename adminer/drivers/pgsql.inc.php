@@ -8,7 +8,7 @@ if (isset($_GET["pgsql"])) {
 	if (extension_loaded("pgsql") && $_GET["ext"] != "pdo") {
 		class Db extends SqlDb {
 			public string $extension = "PgSQL";
-			public int $timeout;
+			public int $timeout = 0;
 			private $link, $string, $database = true;
 
 			function _error($errno, $error) {
@@ -125,7 +125,7 @@ if (isset($_GET["pgsql"])) {
 	} elseif (extension_loaded("pdo_pgsql")) {
 		class Db extends PdoDb {
 			public string $extension = "PDO_PgSQL";
-			public int $timeout;
+			public int $timeout = 0;
 
 			function attach(?string $server, string $username, string $password): string {
 				$db = adminer()->database();
@@ -176,12 +176,12 @@ if (isset($_GET["pgsql"])) {
 			if (is_string($connection)) {
 				return $connection;
 			}
-			if (min_version(9, 0, $connection)) {
-				$connection->query("SET application_name = 'Adminer'");
-			}
 			$version = get_val("SELECT version()", 0, $connection);
 			$connection->flavor = (preg_match('~CockroachDB~', $version) ? 'cockroach' : '');
 			$connection->server_info = preg_replace('~^\D*([\d.]+[-\w]*).*~', '\1', $version);
+			if (min_version(9, 0, $connection)) {
+				$connection->query("SET application_name = 'Adminer'");
+			}
 			if ($connection->flavor == 'cockroach') { // we don't use "PostgreSQL / CockroachDB" by default because it's too long
 				add_driver(DRIVER, "CockroachDB");
 			}
