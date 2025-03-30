@@ -310,7 +310,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 
 	function selectLimitPrint($limit) {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
-		echo html_select("limit", array("", "50", "100"), $limit);
+		echo html_select("limit", array("", 50, 100), $limit);
 		echo "</div></fieldset>\n";
 	}
 
@@ -414,7 +414,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function selectLimitProcess() {
-		return (isset($_GET["limit"]) ? $_GET["limit"] : "50");
+		return (isset($_GET["limit"]) ? intval($_GET["limit"]) : 50);
 	}
 
 	function selectLengthProcess() {

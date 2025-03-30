@@ -3,7 +3,10 @@ namespace Adminer;
 
 $TABLE = $_GET["edit"];
 $fields = fields($TABLE);
-$where = (isset($_GET["select"]) ? ($_POST["check"] && count($_POST["check"]) == 1 ? where_check($_POST["check"][0], $fields) : "") : where($_GET, $fields));
+$where = (isset($_GET["select"])
+	? ($_POST["check"] && count($_POST["check"]) == 1 ? where_check($_POST["check"][0], $fields) : "")
+	: where($_GET, $fields)
+);
 $update = (isset($_GET["select"]) ? $_POST["edit"] : $where);
 foreach ($fields as $name => $field) {
 	if (!isset($field["privileges"][$update ? "update" : "insert"]) || adminer()->fieldName($field) == "" || $field["generated"]) {
@@ -27,7 +30,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 		queries_redirect(
 			$location,
 			lang('Item has been deleted.'),
-			driver()->delete($TABLE, $query_where, !$unique_array)
+			driver()->delete($TABLE, $query_where, $unique_array ? 0 : 1)
 		);
 
 	} else {
@@ -46,7 +49,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 			queries_redirect(
 				$location,
 				lang('Item has been updated.'),
-				driver()->update($TABLE, $set, $query_where, !$unique_array)
+				driver()->update($TABLE, $set, $query_where, $unique_array ? 0 : 1)
 			);
 			if (is_ajax()) {
 				page_headers();
@@ -94,7 +97,7 @@ if ($_POST["save"]) {
 
 if (!support("table") && !$fields) { // used by Mongo and SimpleDB
 	if (!$where) { // insert
-		$result = driver()->select($TABLE, array("*"), $where, array("*"));
+		$result = driver()->select($TABLE, array("*"), array(), array("*"));
 		$row = ($result ? $result->fetch_assoc() : false);
 		if (!$row) {
 			$row = array(driver()->primary => "");

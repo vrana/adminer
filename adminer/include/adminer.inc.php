@@ -159,7 +159,7 @@ class Adminer {
 	}
 
 	/** Field caption used in select and edit
-	* @param Field $field
+	* @param Field|RoutineField $field
 	* @param int $order order of column in select
 	* @return string HTML code, "" to ignore field
 	*/
@@ -259,7 +259,7 @@ class Adminer {
 
 	/** Get descriptions of selected data
 	* @param list<string[]> $rows all data to print
-	* @param ForeignKey[] $foreignKeys
+	* @param list<ForeignKey>[] $foreignKeys
 	* @return list<string[]>
 	*/
 	function rowDescriptions(array $rows, array $foreignKeys): array {
@@ -428,10 +428,8 @@ class Adminer {
 		echo "</div></fieldset>\n";
 	}
 
-	/** Print limit box in select
-	* @param string $limit result of selectLimitProcess()
-	*/
-	function selectLimitPrint(string $limit): void {
+	/** Print limit box in select */
+	function selectLimitPrint(int $limit): void {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
 		echo "<input type='number' name='limit' class='size' value='" . h($limit) . "'>";
 		echo script("qsl('input').oninput = selectFieldChange;", "");
@@ -585,11 +583,9 @@ class Adminer {
 		return $return;
 	}
 
-	/** Process limit box in select
-	* @return string expression to use in LIMIT, will be escaped
-	*/
-	function selectLimitProcess(): string {
-		return (isset($_GET["limit"]) ? $_GET["limit"] : "50");
+	/** Process limit box in select */
+	function selectLimitProcess(): int {
+		return (isset($_GET["limit"]) ? intval($_GET["limit"]) : 50);
 	}
 
 	/** Process length box in select
@@ -601,7 +597,7 @@ class Adminer {
 
 	/** Process extras in select form
 	* @param string[] $where AND conditions
-	* @param ForeignKey[] $foreignKeys
+	* @param list<ForeignKey>[] $foreignKeys
 	* @return bool true if processed, false to process other parts of form
 	*/
 	function selectEmailProcess(array $where, array $foreignKeys): bool {
@@ -657,8 +653,8 @@ class Adminer {
 	}
 
 	/** Functions displayed in edit form
-	* @param Field $field
-	* @return list<string>
+	* @param Field|array{null:bool} $field
+	* @return string[]
 	*/
 	function editFunctions(array $field): array {
 		$return = ($field["null"] ? "NULL/" : "");
@@ -1015,7 +1011,7 @@ class Adminer {
 			}
 			echo "</script>\n";
 		}
-		echo script("syntaxHighlighting('" . (is_object(connection()) ? preg_replace('~^(\d\.?\d).*~s', '\1', connection()->server_info) : "") . "'"
+		echo script("syntaxHighlighting('" . preg_replace('~^(\d\.?\d).*~s', '\1', connection()->server_info) . "'"
 			. (connection()->flavor == 'maria' ? ", 'maria'" : (connection()->flavor == 'cockroach' ? ", 'cockroach'" : "")) . ");"
 		);
 	}

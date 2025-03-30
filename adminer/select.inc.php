@@ -180,7 +180,7 @@ if ($_POST && !$error) {
 						$TABLE,
 						$set,
 						" WHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($unique_idf, $fields),
-						!$is_group && !$primary,
+						($is_group || $primary ? 0 : 1),
 						" "
 					);
 					if (!$result) {
@@ -273,7 +273,7 @@ if (!$columns && support("table")) {
 	$page = $_GET["page"];
 	if ($page == "last") {
 		$found_rows = get_val(count_rows($TABLE, $where, $is_group, $group));
-		$page = floor(max(0, intval($found_rows) - 1) / $limit);
+		$page = floor(max(0, intval($found_rows) - 1) / intval($limit));
 	}
 
 	$select2 = $select;
@@ -492,7 +492,7 @@ if (!$columns && support("table")) {
 						$found_rows = ($page ? $page * $limit : 0) + count($rows);
 					} elseif (JUSH != "sql" || !$is_group) {
 						$found_rows = ($is_group ? false : found_rows($table_status, $where));
-						if ($found_rows < max(1e4, 2 * ($page + 1) * $limit)) {
+						if (intval($found_rows) < max(1e4, 2 * ($page + 1) * intval($limit))) {
 							// slow with big tables
 							$found_rows = first(slow_query(count_rows($TABLE, $where, $is_group, $group)));
 						} else {
@@ -505,7 +505,7 @@ if (!$columns && support("table")) {
 				if ($pagination) {
 					echo (($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit
 						? '<p><a href="' . h(remove_from_uri("page") . "&page=" . ($page + 1)) . '" class="loadmore">' . lang('Load more data') . '</a>'
-							. script("qsl('a').onclick = partial(selectLoadMore, " . (+$limit) . ", '" . lang('Loading') . "…');", "")
+							. script("qsl('a').onclick = partial(selectLoadMore, " . intval($limit) . ", '" . lang('Loading') . "…');", "")
 						: ''
 					);
 					echo "\n";
@@ -516,7 +516,7 @@ if (!$columns && support("table")) {
 					// display first, previous 4, next 4 and last page
 					$max_page = ($found_rows === false
 						? $page + (count($rows) >= $limit ? 2 : 1)
-						: floor(($found_rows - 1) / $limit)
+						: floor(($found_rows - 1) / intval($limit))
 					);
 					echo "<fieldset>";
 					if (JUSH != "simpledb") {
