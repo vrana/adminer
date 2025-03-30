@@ -319,7 +319,7 @@ ORDER BY datname");
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
-		return " $query$where" . ($limit !== null ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
+		return " $query$where" . ($limit ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
 	function limit1($table, $query, $where, $separator = "\n") {

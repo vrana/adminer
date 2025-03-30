@@ -146,7 +146,7 @@ if (isset($_GET["elastic"])) {
 			}
 
 			if ($limit) {
-				$data["size"] = +$limit;
+				$data["size"] = $limit;
 				if ($page) {
 					$data["from"] = ($page * $limit);
 				}
@@ -308,7 +308,7 @@ if (isset($_GET["elastic"])) {
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
-		return " $query$where" . ($limit !== null ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
+		return " $query$where" . ($limit ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
 	function collations() {

@@ -107,7 +107,7 @@ if (isset($_GET["firebird"])) {
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
 		$return = '';
-		$return .= ($limit !== null ? $separator . "FIRST $limit" . ($offset ? " SKIP $offset" : "") : "");
+		$return .= ($limit ? $separator . "FIRST $limit" . ($offset ? " SKIP $offset" : "") : "");
 		$return .= " $query$where";
 		return $return;
 	}

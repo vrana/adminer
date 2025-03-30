@@ -344,10 +344,7 @@ if (isset($_GET["mongo"])) {
 				$val = preg_replace('~ DESC$~', '', $val, 1, $count);
 				$sort[$val] = ($count ? -1 : 1);
 			}
-			if (isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit'] > 0) {
-				$limit = $_GET['limit'];
-			}
-			$limit = min(200, max(1, (int) $limit));
+			$limit = min(200, max(1, $limit));
 			$skip = $page * $limit;
 			try {
 				return new Result($this->conn->_link->executeQuery($this->conn->_db_name . ".$table", new \MongoDB\Driver\Query($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))));

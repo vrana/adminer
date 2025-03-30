@@ -200,7 +200,7 @@ ORDER BY 1"
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
 		return ($offset ? " * FROM (SELECT t.*, rownum AS rnum FROM (SELECT $query$where) t WHERE rownum <= " . ($limit + $offset) . ") WHERE rnum > $offset"
-			: ($limit !== null ? " * FROM (SELECT $query$where) WHERE rownum <= " . ($limit + $offset)
+			: ($limit ? " * FROM (SELECT $query$where) WHERE rownum <= " . ($limit + $offset)
 			: " $query$where"
 		));
 	}

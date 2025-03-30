@@ -431,7 +431,7 @@ class Adminer {
 	/** Print limit box in select */
 	function selectLimitPrint(int $limit): void {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
-		echo "<input type='number' name='limit' class='size' value='" . h($limit) . "'>";
+		echo "<input type='number' name='limit' class='size' value='" . intval($limit) . "'>";
 		echo script("qsl('input').oninput = selectFieldChange;", "");
 		echo "</div></fieldset>\n";
 	}
@@ -613,7 +613,7 @@ class Adminer {
 	* @param int $page index of page starting at zero
 	* @return string empty string to use default query
 	*/
-	function selectQueryBuild(array $select, array $where, array $group, array $order, ?int $limit, ?int $page): string {
+	function selectQueryBuild(array $select, array $where, array $group, array $order, int $limit, ?int $page): string {
 		return "";
 	}
 

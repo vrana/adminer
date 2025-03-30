@@ -340,7 +340,7 @@ if (isset($_GET["simpledb"])) {
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
-		return " $query$where" . ($limit !== null ? $separator . "LIMIT $limit" : "");
+		return " $query$where" . ($limit ? $separator . "LIMIT $limit" : "");
 	}
 
 	function unconvert_field($field, $return) {

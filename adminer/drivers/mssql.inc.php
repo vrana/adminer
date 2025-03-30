@@ -301,7 +301,7 @@ if (isset($_GET["mssql"])) {
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
-		return ($limit !== null ? " TOP (" . ($limit + $offset) . ")" : "") . " $query$where"; // seek later
+		return ($limit ? " TOP (" . ($limit + $offset) . ")" : "") . " $query$where"; // seek later
 	}
 
 	function limit1($table, $query, $where, $separator = "\n") {

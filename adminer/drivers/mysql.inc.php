@@ -387,7 +387,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @param string $where including WHERE
 	*/
 	function limit(string $query, string $where, int $limit, int $offset = 0, string $separator = " "): string {
-		return " $query$where" . ($limit !== null ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
+		return " $query$where" . ($limit ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
 	/** Formulate SQL modification query with limit 1

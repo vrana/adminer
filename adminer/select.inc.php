@@ -273,7 +273,7 @@ if (!$columns && support("table")) {
 	$page = $_GET["page"];
 	if ($page == "last") {
 		$found_rows = get_val(count_rows($TABLE, $where, $is_group, $group));
-		$page = floor(max(0, intval($found_rows) - 1) / intval($limit));
+		$page = floor(max(0, intval($found_rows) - 1) / $limit);
 	}
 
 	$select2 = $select;
@@ -318,7 +318,7 @@ if (!$columns && support("table")) {
 		}
 
 		// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
-		if ($_GET["page"] != "last" && $limit != "" && $group && $is_group && JUSH == "sql") {
+		if ($_GET["page"] != "last" && $limit && $group && $is_group && JUSH == "sql") {
 			$found_rows = get_val(" SELECT FOUND_ROWS()"); // space to allow mysql.trace_mode
 		}
 
@@ -488,11 +488,11 @@ if (!$columns && support("table")) {
 				$exact_count = true;
 				$found_rows = null;
 				if ($_GET["page"] != "last") {
-					if ($limit == "" || (count($rows) < $limit && ($rows || !$page))) {
+					if (!$limit || (count($rows) < $limit && ($rows || !$page))) {
 						$found_rows = ($page ? $page * $limit : 0) + count($rows);
 					} elseif (JUSH != "sql" || !$is_group) {
 						$found_rows = ($is_group ? false : found_rows($table_status, $where));
-						if (intval($found_rows) < max(1e4, 2 * ($page + 1) * intval($limit))) {
+						if (intval($found_rows) < max(1e4, 2 * ($page + 1) * $limit)) {
 							// slow with big tables
 							$found_rows = first(slow_query(count_rows($TABLE, $where, $is_group, $group)));
 						} else {
@@ -501,11 +501,11 @@ if (!$columns && support("table")) {
 					}
 				}
 
-				$pagination = ($limit != "" && ($found_rows === false || $found_rows > $limit || $page));
+				$pagination = ($limit && ($found_rows === false || $found_rows > $limit || $page));
 				if ($pagination) {
 					echo (($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit
 						? '<p><a href="' . h(remove_from_uri("page") . "&page=" . ($page + 1)) . '" class="loadmore">' . lang('Load more data') . '</a>'
-							. script("qsl('a').onclick = partial(selectLoadMore, " . intval($limit) . ", '" . lang('Loading') . "…');", "")
+							. script("qsl('a').onclick = partial(selectLoadMore, $limit, '" . lang('Loading') . "…');", "")
 						: ''
 					);
 					echo "\n";
@@ -516,7 +516,7 @@ if (!$columns && support("table")) {
 					// display first, previous 4, next 4 and last page
 					$max_page = ($found_rows === false
 						? $page + (count($rows) >= $limit ? 2 : 1)
-						: floor(($found_rows - 1) / intval($limit))
+						: floor(($found_rows - 1) / $limit)
 					);
 					echo "<fieldset>";
 					if (JUSH != "simpledb") {
