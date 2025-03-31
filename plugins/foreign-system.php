@@ -44,7 +44,7 @@ class AdminerForeignSystem {
 				"COLUMNS" => array($schemata, $tables, $character_sets, $collations),
 				"COLUMN_PRIVILEGES" => array($schemata, $tables, $columns),
 				"COLUMNS_EXTENSIONS" => array($schemata, $tables, $columns),
-				"TABLES" => array($schemata, $this->collations("TABLE_COLLATION")),
+				"TABLES" => array($schemata, $this->collations("TABLE_COLLATION"), array("table" => "ENGINES", "source" => array("ENGINE"), "target" => array("ENGINE"))),
 				"SCHEMATA" => array($this->character_sets("DEFAULT_CHARACTER_SET_NAME"), $this->collations("DEFAULT_COLLATION_NAME")),
 				"EVENTS" => array_merge(array($this->schemata("EVENT")), $routine_charsets),
 				"FILES" => array($schemata, $tables),
@@ -57,6 +57,7 @@ class AdminerForeignSystem {
 					$this->tables("TABLE", "REFERENCED_TABLE"),
 					array("source" => array("TABLE_CATALOG", "REFERENCED_TABLE_SCHEMA", "REFERENCED_TABLE_NAME", "REFERENCED_COLUMN_NAME")) + $columns,
 				),
+				"PARAMETERS" => array($this->schemata("SPECIFIC"), array("table" => "ROUTINES", "source" => array("SPECIFIC_CATALOG", "SPECIFIC_SCHEMA", "SPECIFIC_NAME"), "target" => array("ROUTINE_CATALOG", "ROUTINE_SCHEMA", "SPECIFIC_NAME"))),
 				"PARTITIONS" => array($schemata, $tables),
 				"REFERENTIAL_CONSTRAINTS" => array(
 					$this->schemata("CONSTRAINT"),
@@ -66,6 +67,7 @@ class AdminerForeignSystem {
 				),
 				"ROUTINES" => array_merge(array($this->schemata("ROUTINE")), $routine_charsets),
 				"SCHEMA_PRIVILEGES" => array($schemata),
+				"SCHEMATA_EXTENSIONS" => array(array("table" => "SCHEMATA", "source" => array("CATALOG_NAME", "SCHEMA_NAME"), "target" => array("CATALOG_NAME", "SCHEMA_NAME"))),
 				"STATISTICS" => array($schemata, $tables, $columns, $this->schemata("TABLE", "INDEX")),
 				"TABLE_CONSTRAINTS" => array(
 					$this->schemata("CONSTRAINT"),
@@ -74,12 +76,14 @@ class AdminerForeignSystem {
 				),
 				"TABLE_CONSTRAINTS_EXTENSIONS" => array($this->schemata("CONSTRAINT"), $this->tables("CONSTRAINT", "CONSTRAINT", "TABLE_NAME")),
 				"TABLE_PRIVILEGES" => array($schemata, $tables),
+				"TABLES_EXTENSIONS" => array($schemata, $tables),
 				"TRIGGERS" => array_merge(array(
 					$this->schemata("TRIGGER"),
 					$this->schemata("EVENT_OBJECT"),
 					$this->tables("EVENT_OBJECT", "EVENT_OBJECT", "EVENT_OBJECT_TABLE"),
 				), $routine_charsets),
 				"VIEWS" => array($schemata, $this->character_sets("CHARACTER_SET_CLIENT"), $this->collations("COLLATION_CONNECTION")),
+				"VIEW_TABLE_USAGE" => array($schemata, $this->schemata("VIEW"), $tables, array("table" => "VIEWS", "source" => array("VIEW_CATALOG", "VIEW_SCHEMA", "VIEW_NAME"), "target" => array("TABLE_CATALOG", "TABLE_SCHEMA", "TABLE_NAME"))),
 			);
 			return $return[$table];
 		}
