@@ -28,7 +28,7 @@ function driver(): Driver {
 * @param array{?string, string, string} $credentials [$server, $username, $password]
 */
 function connect(array $credentials): ?Db {
-	$return = driver()->connect($credentials[0], $credentials[1], $credentials[2]);
+	$return = Driver::connect($credentials[0], $credentials[1], $credentials[2]);
 	return (is_object($return) ? $return : null);
 }
 
