@@ -9,10 +9,10 @@ abstract class SqlDb {
 	public string $extension; // extension name
 	public string $flavor = ''; // different vendor with the same API, e.g. MariaDB; usually stays empty
 	public string $server_info; // server version
-	public int $affected_rows; // number of affected rows
-	public string $info; // see https://php.net/mysql_info
-	public int $errno; // last error code
-	public string $error; // last error message
+	public int $affected_rows = 0; // number of affected rows
+	public string $info = ''; // see https://php.net/mysql_info
+	public int $errno = 0; // last error code
+	public string $error = ''; // last error message
 	/** @var Result|bool */ protected $multi; // used for multiquery
 
 	/** Connect to server
