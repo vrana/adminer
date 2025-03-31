@@ -210,7 +210,7 @@ if (isset($_GET["sqlite"])) {
 			$row["Rows"] = get_val("SELECT COUNT(*) FROM " . idf_escape($row["Name"]));
 			$return[$row["Name"]] = $row;
 		}
-		foreach (get_rows("SELECT * FROM sqlite_sequence", null, "") as $row) {
+		foreach (get_rows("SELECT * FROM sqlite_sequence" . ($name != "" ? " WHERE name = " . q($name) : ""), null, "") as $row) {
 			$return[$row["name"]]["Auto_increment"] = $row["seq"];
 		}
 		return $return;
