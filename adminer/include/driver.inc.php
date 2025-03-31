@@ -249,6 +249,21 @@ FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS c
 JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS t ON c.CONSTRAINT_SCHEMA = t.CONSTRAINT_SCHEMA AND c.CONSTRAINT_NAME = t.CONSTRAINT_NAME
 WHERE c.CONSTRAINT_SCHEMA = " . q($_GET["ns"] != "" ? $_GET["ns"] : DB) . "
 AND t.TABLE_NAME = " . q($table) . "
-AND CHECK_CLAUSE NOT LIKE '% IS NOT NULL'"); // ignore default IS NOT NULL checks in PostrgreSQL
+AND CHECK_CLAUSE NOT LIKE '% IS NOT NULL'", $this->conn); // ignore default IS NOT NULL checks in PostrgreSQL
+	}
+
+	/** Get all fields in the current schema
+	* @return array<list<array{field:string, null:bool, type:string, length:?numeric-string, primary?:numeric-string}>>
+	*/
+	function allFields(): array {
+		$return = array();
+		foreach (get_rows("SELECT TABLE_NAME AS tab, COLUMN_NAME AS field, IS_NULLABLE AS nullable, DATA_TYPE AS type, CHARACTER_MAXIMUM_LENGTH AS length" . (JUSH == 'sql' ? ", COLUMN_KEY = 'PRI' AS `primary`" : "") . "
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = " . q($_GET["ns"] != "" ? $_GET["ns"] : DB) . "
+ORDER BY TABLE_NAME, ORDINAL_POSITION", $this->conn) as $row) {
+			$row["null"] = ($row["nullable"] == "YES");
+			$return[$row["tab"]][] = $row;
+		}
+		return $return;
 	}
 }

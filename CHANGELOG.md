@@ -1,5 +1,6 @@
 ## Adminer dev
 - Export: Fix tar (regression from 5.0.3)
+- Optimize retrieving columns for schema
 - Elasticsearch: Make it work with Elasticsearch 8
 - CSS: Hide menu on mobile
 - CSS: Invert icons in dark mode

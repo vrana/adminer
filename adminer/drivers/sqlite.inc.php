@@ -161,6 +161,16 @@ if (isset($_GET["sqlite"])) {
 			preg_match_all('~ CHECK *(\( *(((?>[^()]*[^() ])|(?1))*) *\))~', get_val("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table), 0, $this->conn), $matches); //! could be inside a comment
 			return array_combine($matches[2], $matches[2]);
 		}
+
+		function allFields(): array {
+			$return = array();
+			foreach (tables_list() as $table => $type) {
+				foreach (fields($table) as $field) {
+					$return[$table][] = $field;
+				}
+			}
+			return $return;
+		}
 	}
 
 
