@@ -17,6 +17,7 @@ if (!$error && $_POST["clear"]) {
 	$history = array();
 	redirect(remove_from_uri("history"));
 }
+stop_session();
 
 page_header((isset($_GET["import"]) ? lang('Import') : lang('SQL command')), $error);
 
