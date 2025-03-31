@@ -86,10 +86,11 @@ class Adminer {
 	}
 
 	/** Get Content Security Policy headers
-	* @return list<string[]> of arrays with directive name in key, allowed sources in value
+	* @param list<string[]> $csp of arrays with directive name in key, allowed sources in value
+	* @return list<string[]> same as $csp
 	*/
-	function csp(): array {
-		return csp();
+	function csp(array $csp): array {
+		return $csp;
 	}
 
 	/** Print HTML code inside <head>

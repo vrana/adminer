@@ -133,7 +133,7 @@ function page_headers(): void {
 	header("X-XSS-Protection: 0"); // prevents introducing XSS in IE8 by removing safe parts of the page
 	header("X-Content-Type-Options: nosniff");
 	header("Referrer-Policy: origin-when-cross-origin");
-	foreach (adminer()->csp() as $csp) {
+	foreach (adminer()->csp(csp()) as $csp) {
 		$header = array();
 		foreach ($csp as $key => $val) {
 			$header[] = "$key $val";

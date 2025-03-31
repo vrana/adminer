@@ -59,8 +59,8 @@ class Adminer {
 	function headers() {
 	}
 
-	function csp() {
-		return csp();
+	function csp($csp) {
+		return $csp;
 	}
 
 	function head($dark = null) {
