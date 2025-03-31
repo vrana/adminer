@@ -82,6 +82,7 @@ for (const el of qsa('textarea')) {
 			}
 		});
 		setupSubmitHighlightInput(cm.getWrapperElement());
+		el.onchange = () => cm.setValue(el.value);
 	}
 }
 </script>

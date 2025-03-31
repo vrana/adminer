@@ -59,17 +59,9 @@ const geminiText = qsl('textarea');
 const geminiButton = qsl('input');
 
 function setSqlareaValue(value) {
-	qs('textarea.sqlarea').value = value;
-	const jushPre = qs('pre.sqlarea');
-	if (jushPre) {
-		jushPre.textContent = value;
-		jushPre.oninput(); // syntax highlighting
-	}
-	const cmPre = qs('.CodeMirror');
-	if (cmPre) {
-		cmPre.CodeMirror.setValue(value);
-		cmPre.CodeMirror.refresh();
-	}
+	const sqlarea = qs('textarea.sqlarea');
+	sqlarea.value = value;
+	sqlarea.onchange();
 }
 
 geminiButton.onclick = () => {

@@ -46,6 +46,10 @@ function syntaxHighlighting(version, vendor) {
 				const pre = jush.textarea(tag);
 				if (pre) {
 					setupSubmitHighlightInput(pre);
+					tag.onchange = () => {
+						pre.textContent = tag.value;
+						pre.oninput();
+					};
 				}
 			}
 		}
