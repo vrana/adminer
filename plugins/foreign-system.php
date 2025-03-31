@@ -30,55 +30,75 @@ class AdminerForeignSystem {
 			);
 			return $return[$table];
 		} elseif (Adminer\DB == "information_schema") {
-			$schemata = array("table" => "SCHEMATA", "source" => array("TABLE_CATALOG", "TABLE_SCHEMA"), "target" => array("CATALOG_NAME", "SCHEMA_NAME"));
-			$tables = array("table" => "TABLES", "source" => array("TABLE_CATALOG", "TABLE_SCHEMA", "TABLE_NAME"), "target" => array("TABLE_CATALOG", "TABLE_SCHEMA", "TABLE_NAME"));
+			$schemata = $this->schemata("TABLE");
+			$tables = $this->tables("TABLE");
 			$columns = array("table" => "COLUMNS", "source" => array("TABLE_CATALOG", "TABLE_SCHEMA", "TABLE_NAME", "COLUMN_NAME"), "target" => array("TABLE_CATALOG", "TABLE_SCHEMA", "TABLE_NAME", "COLUMN_NAME"));
-			$character_sets = array("table" => "CHARACTER_SETS", "source" => array("CHARACTER_SET_NAME"), "target" => array("CHARACTER_SET_NAME"));
-			$collations = array("table" => "COLLATIONS", "source" => array("COLLATION_NAME"), "target" => array("COLLATION_NAME"));
-			$routine_charsets = array(array("source" => array("CHARACTER_SET_CLIENT")) + $character_sets, array("source" => array("COLLATION_CONNECTION")) + $collations, array("source" => array("DATABASE_COLLATION")) + $collations);
+			$character_sets = $this->character_sets("CHARACTER_SET_NAME");
+			$collations = $this->collations("COLLATION_NAME");
+			$routine_charsets = array($this->character_sets("CHARACTER_SET_CLIENT"), $this->collations("COLLATION_CONNECTION"), $this->collations("DATABASE_COLLATION"));
 			$return = array(
-				"CHARACTER_SETS" => array(array("source" => array("DEFAULT_COLLATE_NAME")) + $collations),
+				"CHARACTER_SETS" => array($this->collations("DEFAULT_COLLATE_NAME")),
+				"CHECK_CONSTRAINTS" => array($this->schemata("CONSTRAINT")),
 				"COLLATIONS" => array($character_sets),
 				"COLLATION_CHARACTER_SET_APPLICABILITY" => array($collations, $character_sets),
 				"COLUMNS" => array($schemata, $tables, $character_sets, $collations),
 				"COLUMN_PRIVILEGES" => array($schemata, $tables, $columns),
-				"TABLES" => array($schemata, array("source" => array("TABLE_COLLATION")) + $collations),
-				"SCHEMATA" => array(array("source" => array("DEFAULT_CHARACTER_SET_NAME")) + $character_sets, array("source" => array("DEFAULT_COLLATION_NAME")) + $collations),
-				"EVENTS" => array_merge(array(array("source" => array("EVENT_CATALOG", "EVENT_SCHEMA")) + $schemata), $routine_charsets),
+				"COLUMNS_EXTENSIONS" => array($schemata, $tables, $columns),
+				"TABLES" => array($schemata, $this->collations("TABLE_COLLATION")),
+				"SCHEMATA" => array($this->character_sets("DEFAULT_CHARACTER_SET_NAME"), $this->collations("DEFAULT_COLLATION_NAME")),
+				"EVENTS" => array_merge(array($this->schemata("EVENT")), $routine_charsets),
 				"FILES" => array($schemata, $tables),
 				"KEY_COLUMN_USAGE" => array(
-					array("source" => array("CONSTRAINT_CATALOG", "CONSTRAINT_SCHEMA")) + $schemata,
+					$this->schemata("CONSTRAINT"),
 					$schemata,
 					$tables,
 					$columns,
-					array("source" => array("TABLE_CATALOG", "REFERENCED_TABLE_SCHEMA")) + $schemata,
-					array("source" => array("TABLE_CATALOG", "REFERENCED_TABLE_SCHEMA", "REFERENCED_TABLE_NAME")) + $tables,
+					$this->schemata("TABLE", "REFERENCED_TABLE"),
+					$this->tables("TABLE", "REFERENCED_TABLE"),
 					array("source" => array("TABLE_CATALOG", "REFERENCED_TABLE_SCHEMA", "REFERENCED_TABLE_NAME", "REFERENCED_COLUMN_NAME")) + $columns,
 				),
 				"PARTITIONS" => array($schemata, $tables),
 				"REFERENTIAL_CONSTRAINTS" => array(
-					array("source" => array("CONSTRAINT_CATALOG", "CONSTRAINT_SCHEMA")) + $schemata,
-					array("source" => array("UNIQUE_CONSTRAINT_CATALOG", "UNIQUE_CONSTRAINT_SCHEMA")) + $schemata,
-					array("source" => array("CONSTRAINT_CATALOG", "CONSTRAINT_SCHEMA", "TABLE_NAME")) + $tables,
-					array("source" => array("CONSTRAINT_CATALOG", "CONSTRAINT_SCHEMA", "REFERENCED_TABLE_NAME")) + $tables,
+					$this->schemata("CONSTRAINT"),
+					$this->schemata("UNIQUE_CONSTRAINT"),
+					$this->tables("CONSTRAINT", "CONSTRAINT", "TABLE_NAME"),
+					$this->tables("CONSTRAINT", "CONSTRAINT", "REFERENCED_TABLE_NAME"),
 				),
-				"ROUTINES" => array_merge(array(array("source" => array("ROUTINE_CATALOG", "ROUTINE_SCHEMA")) + $schemata), $routine_charsets),
+				"ROUTINES" => array_merge(array($this->schemata("ROUTINE")), $routine_charsets),
 				"SCHEMA_PRIVILEGES" => array($schemata),
-				"STATISTICS" => array($schemata, $tables, $columns, array("source" => array("TABLE_CATALOG", "INDEX_SCHEMA")) + $schemata),
+				"STATISTICS" => array($schemata, $tables, $columns, $this->schemata("TABLE", "INDEX")),
 				"TABLE_CONSTRAINTS" => array(
-					array("source" => array("CONSTRAINT_CATALOG", "CONSTRAINT_SCHEMA")) + $schemata,
-					array("source" => array("CONSTRAINT_CATALOG", "TABLE_SCHEMA")) + $schemata,
-					array("source" => array("CONSTRAINT_CATALOG", "TABLE_SCHEMA", "TABLE_NAME")) + $tables,
+					$this->schemata("CONSTRAINT"),
+					$this->schemata("CONSTRAINT", "TABLE"),
+					$this->tables("CONSTRAINT", "TABLE"),
 				),
+				"TABLE_CONSTRAINTS_EXTENSIONS" => array($this->schemata("CONSTRAINT"), $this->tables("CONSTRAINT", "CONSTRAINT", "TABLE_NAME")),
 				"TABLE_PRIVILEGES" => array($schemata, $tables),
 				"TRIGGERS" => array_merge(array(
-					array("source" => array("TRIGGER_CATALOG", "TRIGGER_SCHEMA")) + $schemata,
-					array("source" => array("EVENT_OBJECT_CATALOG", "EVENT_OBJECT_SCHEMA")) + $schemata,
-					array("source" => array("EVENT_OBJECT_CATALOG", "EVENT_OBJECT_SCHEMA", "EVENT_OBJECT_TABLE")) + $tables,
+					$this->schemata("TRIGGER"),
+					$this->schemata("EVENT_OBJECT"),
+					$this->tables("EVENT_OBJECT", "EVENT_OBJECT", "EVENT_OBJECT_TABLE"),
 				), $routine_charsets),
-				"VIEWS" => array($schemata),
+				"VIEWS" => array($schemata, $this->character_sets("CHARACTER_SET_CLIENT"), $this->collations("COLLATION_CONNECTION")),
 			);
 			return $return[$table];
 		}
+	}
+
+	private function schemata($catalog, $schema = null) {
+		return array("table" => "SCHEMATA", "source" => array($catalog . "_CATALOG", ($schema ?: $catalog) . "_SCHEMA"), "target" => array("CATALOG_NAME", "SCHEMA_NAME"));
+	}
+
+	private function tables($catalog, $schema = null, $table_name = null) {
+		$schema = ($schema ?: $catalog);
+		return array("table" => "TABLES", "source" => array($catalog . "_CATALOG", $schema . "_SCHEMA", ($table_name ?: $schema . "_NAME")), "target" => array("TABLE_CATALOG", "TABLE_SCHEMA", "TABLE_NAME"));
+	}
+
+	private function character_sets($source) {
+		return array("table" => "CHARACTER_SETS", "source" => array($source), "target" => array("CHARACTER_SET_NAME"));
+	}
+
+	private function collations($source) {
+		return array("table" => "COLLATIONS", "source" => array($source), "target" => array("COLLATION_NAME"));
 	}
 }
