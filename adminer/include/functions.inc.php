@@ -164,7 +164,7 @@ function get_password() {
 * @return string|false false if error
 */
 function get_val(string $query, int $field = 0, ?Db $conn = null) {
-	$conn = (is_object($conn) ? $conn : connection());
+	$conn = connection($conn);
 	$result = $conn->query($query);
 	if (!is_object($result)) {
 		return false;
