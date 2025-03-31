@@ -9,26 +9,28 @@
 */
 class AdminerCodemirror {
 	private $root;
+	private $minified;
 
-	function __construct($root = "codemirror5") {
+	function __construct($root = "https://cdn.jsdelivr.net/npm/codemirror@5.65.19", $minified = ".min") {
 		$this->root = $root;
+		$this->minified = $minified;
 	}
 
 	function syntaxHighlighting($tableStatuses) {
 		?>
 <style>
-@import url(<?php echo $this->root; ?>/lib/codemirror.css);
-@import url(<?php echo $this->root; ?>/addon/hint/show-hint.css);
+@import url(<?php echo $this->root; ?>/lib/codemirror<?php echo $this->minified; ?>.css);
+@import url(<?php echo $this->root; ?>/addon/hint/show-hint<?php echo $this->minified; ?>.css);
 .CodeMirror { border: 1px inset #ccc; resize: both; }
 </style>
 <?php
-		echo Adminer\script_src("$this->root/lib/codemirror.js");
-		echo Adminer\script_src("$this->root/addon/runmode/runmode.js");
+		echo Adminer\script_src("$this->root/lib/codemirror$this->minified.js");
+		echo Adminer\script_src("$this->root/addon/runmode/runmode$this->minified.js");
 		echo Adminer\script_src("$this->root/addon/hint/show-hint.js");
-		echo Adminer\script_src("$this->root/mode/javascript/javascript.js");
+		echo Adminer\script_src("$this->root/mode/javascript/javascript$this->minified.js");
 		if (Adminer\support("sql")) {
-			echo Adminer\script_src("$this->root/mode/sql/sql.js");
-			echo Adminer\script_src("$this->root/addon/hint/sql-hint.js");
+			echo Adminer\script_src("$this->root/mode/sql/sql$this->minified.js");
+			echo Adminer\script_src("$this->root/addon/hint/sql-hint$this->minified.js");
 		}
 		$tables = array();
 		foreach ($tableStatuses as $status) {
