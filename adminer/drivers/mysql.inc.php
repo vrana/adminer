@@ -675,7 +675,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @param string $name new name
 	* @param list<array{string, list<string>, string}> $fields of [$orig, $process_field, $after]
 	* @param string[] $foreign
-	* @param string $auto_increment number
+	* @param numeric-string $auto_increment
 	* @return Result|bool
 	*/
 	function alter_table(string $table, string $name, array $fields, array $foreign, ?string $comment, string $engine, string $collation, string $auto_increment, string $partitioning) {

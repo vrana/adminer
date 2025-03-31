@@ -64,7 +64,9 @@ function idx(?array $array, $key, $default = null) {
 	return ($array && array_key_exists($key, $array) ? $array[$key] : $default);
 }
 
-/** Remove non-digits from a string */
+/** Remove non-digits from a string; used instead of intval() to not corrupt big numbers
+* @return numeric-string
+*/
 function number(string $val): string {
 	return preg_replace('~[^0-9]+~', '', $val);
 }

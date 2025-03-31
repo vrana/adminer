@@ -442,12 +442,12 @@ if (isset($_GET["sqlite"])) {
 	* @param list<list<string>> $fields [process_field()], empty to preserve
 	* @param string[] $originals [$original => idf_escape($new_column)], empty to preserve
 	* @param string[] $foreign [format_foreign_key()], empty to preserve
-	* @param int $auto_increment set auto_increment to this value, 0 to preserve
+	* @param numeric-string $auto_increment set auto_increment to this value, "" to preserve
 	* @param list<array{string, string, list<string>|'DROP'}> $indexes [[$type, $name, $columns]], empty to preserve
 	* @param string $drop_check CHECK constraint to drop
 	* @param string $add_check CHECK constraint to add
 	*/
-	function recreate_table(string $table, string $name, array $fields, array $originals, array $foreign, int $auto_increment = 0, $indexes = array(), string $drop_check = "", string $add_check = ""): bool {
+	function recreate_table(string $table, string $name, array $fields, array $originals, array $foreign, string $auto_increment = "", $indexes = array(), string $drop_check = "", string $add_check = ""): bool {
 		if ($table != "") {
 			if (!$fields) {
 				foreach (fields($table) as $key => $field) {
@@ -534,7 +534,7 @@ if (isset($_GET["sqlite"])) {
 				$trigger = trigger($trigger_name, $table);
 				$triggers[] = "CREATE TRIGGER " . idf_escape($trigger_name) . " " . implode(" ", $timing_event) . " ON " . table($name) . "\n$trigger[Statement]";
 			}
-			$auto_increment = $auto_increment ? 0 : get_val("SELECT seq FROM sqlite_sequence WHERE name = " . q($table)); // if $auto_increment is set then it will be updated later
+			$auto_increment = $auto_increment ? "" : get_val("SELECT seq FROM sqlite_sequence WHERE name = " . q($table)); // if $auto_increment is set then it will be updated later
 			if (
 				!queries("DROP TABLE " . table($table)) // drop before creating indexes and triggers to allow using old names
 				|| ($table == $name && !queries("ALTER TABLE " . table($temp_name) . " RENAME TO " . table($name)))
@@ -566,7 +566,7 @@ if (isset($_GET["sqlite"])) {
 	function alter_indexes($table, $alter) {
 		foreach ($alter as $primary) {
 			if ($primary[0] == "PRIMARY") {
-				return recreate_table($table, $table, array(), array(), array(), 0, $alter);
+				return recreate_table($table, $table, array(), array(), array(), "", $alter);
 			}
 		}
 		foreach (array_reverse($alter) as $val) {
