@@ -5,7 +5,7 @@
 
 chdir(__DIR__);
 foreach (glob("*.html") as $filename) {
-	if (!preg_match('~^pdo-|elastic~', $filename)) {
+	if (!preg_match('~^pdo-|elastic|screenshots~', $filename)) {
 		$file = file_get_contents($filename);
 		$file = preg_replace_callback('~/(adminer(/sqlite)?|editor/example)\.php(\??)~', function ($match) {
 			return "/$match[1].php?ext=pdo" . ($match[3] ? "&amp;" : "");
