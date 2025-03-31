@@ -92,7 +92,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function next_result(): bool {
-				return $this->result ? sqlsrv_next_result($this->result) : null;
+				return $this->result ? !!sqlsrv_next_result($this->result) : false;
 			}
 		}
 
