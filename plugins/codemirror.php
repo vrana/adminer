@@ -28,14 +28,16 @@ class AdminerCodemirror {
 		echo Adminer\script_src("$this->root/addon/runmode/runmode$this->minified.js");
 		echo Adminer\script_src("$this->root/addon/hint/show-hint.js");
 		echo Adminer\script_src("$this->root/mode/javascript/javascript$this->minified.js");
+		$tables = array_fill_keys(array_keys($tableStatuses), array());
 		if (Adminer\support("sql")) {
 			echo Adminer\script_src("$this->root/mode/sql/sql$this->minified.js");
 			echo Adminer\script_src("$this->root/addon/hint/sql-hint$this->minified.js");
-		}
-		$tables = array();
-		foreach ($tableStatuses as $status) {
-			foreach (Adminer\fields($status["Name"]) as $name => $field) {
-				$tables[$status["Name"]][] = $name;
+			if (isset($_GET["sql"]) || isset($_GET["trigger"]) || isset($_GET["check"])) {
+				foreach (Adminer\driver()->allFields() as $table => $fields) {
+					foreach ($fields as $field) {
+						$tables[$table][] = $field["field"];
+					}
+				}
 			}
 		}
 		?>
