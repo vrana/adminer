@@ -23,7 +23,7 @@ class AdminerSqlGemini {
 	}
 
 	function headers() {
-		if ($_POST["gemini"] && !isset($_POST["query"])) {
+		if (isset($_POST["gemini"]) && !isset($_POST["query"])) {
 			$prompt = "I have a " . Adminer\get_driver(Adminer\DRIVER) . " database with this structure:\n\n";
 			foreach (Adminer\tables_list() as $table => $type) {
 				$prompt .= Adminer\create_sql($table, false, "CREATE") . ";\n\n";
@@ -51,7 +51,7 @@ class AdminerSqlGemini {
 	}
 
 	function sqlPrintAfter() {
-		echo "<p><textarea name='gemini' rows='5' cols='50' title='AI prompt'>" . Adminer\h($_POST["gemini"]) . "</textarea>\n";
+		echo "<p><textarea name='gemini' rows='5' cols='50' placeholder='Ask Gemini'>" . Adminer\h($_POST["gemini"]) . "</textarea>\n";
 		?>
 <p><input type='button' value='Gemini'>
 <script <?php echo Adminer\nonce(); ?>>
