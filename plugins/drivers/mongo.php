@@ -58,7 +58,7 @@ if (isset($_GET["mongo"])) {
 				return false;
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				$this->_db_name = $database;
 				return true;
 			}

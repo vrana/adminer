@@ -14,7 +14,7 @@ if (isset($_GET["simpledb"])) {
 				return '';
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				return ($database == "domain");
 			}
 

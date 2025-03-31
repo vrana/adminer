@@ -29,7 +29,7 @@ if (isset($_GET["firebird"])) {
 				return "'" . str_replace("'", "''", $string) . "'";
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				return ($database == "domain");
 			}
 

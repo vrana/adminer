@@ -25,8 +25,10 @@ abstract class SqlDb {
 	*/
 	abstract function quote(string $string): string;
 
-	/** Select database */
-	abstract function select_db(string $database): bool;
+	/** Select database
+	* @return bool boolish
+	*/
+	abstract function select_db(string $database);
 
 	/** Send query
 	* @return Result|bool

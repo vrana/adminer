@@ -71,7 +71,7 @@ if (isset($_GET["elastic"])) {
 				return ($return ? '' : $this->error);
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				return true;
 			}
 

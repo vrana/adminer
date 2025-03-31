@@ -53,7 +53,7 @@ if (isset($_GET["mssql"])) {
 				return ($unicode ? "N" : "") . "'" . str_replace("'", "''", $string) . "'";
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				return $this->query(use_sql($database));
 			}
 
@@ -159,7 +159,7 @@ if (isset($_GET["mssql"])) {
 
 	} else {
 		abstract class MssqlDb extends PdoDb {
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				// database selection is separated from the connection so dbname in DSN can't be used
 				return $this->query(use_sql($database));
 			}

@@ -30,7 +30,7 @@ if (isset($_GET["imap"])) {
 				return ($this->imap ? '' : imap_last_error());
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				return ($database == "mail");
 			}
 

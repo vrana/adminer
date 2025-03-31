@@ -91,7 +91,7 @@ if (!defined('Adminer\DRIVER')) {
 				return "'" . mysql_real_escape_string($string, $this->link) . "'";
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				return mysql_select_db($database, $this->link);
 			}
 
@@ -186,7 +186,7 @@ if (!defined('Adminer\DRIVER')) {
 				return $this->query("SET NAMES $charset"); // charset in DSN is ignored before PHP 5.3.6
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				// database selection is separated from the connection so dbname in DSN can't be used
 				return $this->query("USE " . idf_escape($database));
 			}

@@ -63,7 +63,7 @@ if (isset($_GET["clickhouse"])) {
 				return ($return ? '' : $this->error);
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				$this->_db = $database;
 				return true;
 			}

@@ -33,7 +33,7 @@ if (isset($_GET["oracle"])) {
 				return "'" . str_replace("'", "''", $string) . "'";
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				$this->_current_db = $database;
 				return true;
 			}
@@ -109,7 +109,7 @@ if (isset($_GET["oracle"])) {
 				return $this->dsn("oci:dbname=//$server;charset=AL32UTF8", $username, $password);
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				$this->_current_db = $database;
 				return true;
 			}

@@ -51,7 +51,7 @@ if (isset($_GET["pgsql"])) {
 				return ($field["type"] == "bytea" && $val !== null ? pg_unescape_bytea($val) : $val);
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				if ($database == adminer()->database()) {
 					return $this->database;
 				}
@@ -138,7 +138,7 @@ if (isset($_GET["pgsql"])) {
 				return $this->dsn($dsn, $username, $password);
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				return (adminer()->database() == $database);
 			}
 
