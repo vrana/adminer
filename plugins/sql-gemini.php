@@ -61,7 +61,7 @@ const geminiButton = qsl('input');
 function setSqlareaValue(value) {
 	const sqlarea = qs('textarea.sqlarea');
 	sqlarea.value = value;
-	sqlarea.onchange();
+	sqlarea.onchange && sqlarea.onchange();
 }
 
 geminiButton.onclick = () => {
