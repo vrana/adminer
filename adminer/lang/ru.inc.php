@@ -302,6 +302,15 @@ Lang::$translations = array(
 	'Unknown error.' => 'Неизвестная ошибка.',
 	'Database does not support password.' => 'База данных не поддерживает пароль.',
 	'Disable %s or enable %s or %s extensions.' => 'Отключите %s или включите расширения %s или %s.',
+	'Check has been dropped.' => 'Проверка удалена.',
+	'Check has been altered.' => 'Проверка изменена.',
+	'Check has been created.' => 'Проверка создана.',
+	'Alter check' => 'Изменить проверку',
+	'Create check' => 'Создать проверку',
+	'Checks' => 'Проверки',
+	'Loaded plugins' => 'Загруженные плагины',
+	'%s must <a%s>return an array</a>.' => '%s должна <a%s>вернуть массив</a>.',
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Настроить</a> %s в %s.',
 );
 
 // run `php ../../lang.php ru` to update this file
