@@ -20,8 +20,11 @@ class AdminerPrism {
 
 	function syntaxHighlighting($tableStatuses) {
 		?>
-<link rel="stylesheet" href="<?php echo $this->editorRoot; ?>/layout.min.css">
-<link rel="stylesheet" href="<?php echo $this->editorRoot; ?>/themes/<?php echo $this->theme . $this->minified; ?>.css">
+<style>
+@import url(<?php echo "$this->editorRoot/layout$this->minified.css"; ?>);
+@import url(<?php echo "$this->editorRoot/themes/$this->theme$this->minified.css"; ?>);
+.prism-code-editor { border: 1px inset #ccc; resize: both; }
+</style>
 <script type="module"<?php echo Adminer\nonce(); ?>>
 import { editorFromPlaceholder } from '<?php echo $this->editorRoot; ?>/index.js';
 import { highlightText } from '<?php echo $this->editorRoot; ?>/prism/index.js';
