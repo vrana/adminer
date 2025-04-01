@@ -41,6 +41,7 @@ function syntaxHighlighting(version, vendor) {
 			jush.custom_links = jushLinks;
 		}
 		jush.highlight_tag('code', 0);
+		adminerHighlighter = els => jush.highlight_tag(els, 0);
 		for (const tag of qsa('textarea')) {
 			if (/(^|\s)jush-/.test(tag.className)) {
 				const pre = jush.textarea(tag);

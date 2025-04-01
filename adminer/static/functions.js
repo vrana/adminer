@@ -618,6 +618,7 @@ function ajaxSetHtml(url) {
 }
 
 let editChanged; // used by plugins
+let adminerHighlighter = els => {}; // overwritten by syntax highlighters
 
 /** Save form contents through AJAX
 * @param HTMLFormElement
@@ -650,9 +651,7 @@ function ajaxForm(form, message, button) {
 		if (qs('.message', ajaxstatus)) { // success
 			editChanged = null;
 		}
-		if (window.jush) {
-			jush.highlight_tag(qsa('code', ajaxstatus), 0);
-		}
+		adminerHighlighter(qsa('code', ajaxstatus));
 		messagesPrint(ajaxstatus);
 	}, data, message);
 }

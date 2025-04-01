@@ -56,13 +56,15 @@ function getCmMode(el) {
 	}
 }
 
-for (const el of qsa('code')) {
+adminerHighlighter = els => els.forEach(el => {
 	const mode = getCmMode(el);
 	if (mode) {
 		el.classList.add('cm-s-default');
 		CodeMirror.runMode(el.textContent, mode, el);
 	}
-}
+});
+
+adminerHighlighter(qsa('code'));
 
 for (const el of qsa('textarea')) {
 	const mode = getCmMode(el);
