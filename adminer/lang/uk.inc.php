@@ -344,6 +344,18 @@ Lang::$translations = array(
 	'Saving' => 'Збереження',
 	'Unknown error.' => 'Невідома помилка.',
 	'Database does not support password.' => 'База даних не підтримує пароль.',
+	'Disable %s or enable %s or %s extensions.' => 'Вимкніть %s або увімкніть розширення %s або %s.',
+	'Check has been dropped.' => 'Перевірку видалено',
+	'Check has been altered.' => 'Перевірка змінена',
+	'Check has been created.' => 'Перевірку створено',
+	'Alter check' => 'Змінити перевірку',
+	'Create check' => 'Створити перевірку',
+	'Vacuum' => 'Вакуум',
+	'%d / ' => '%d / ',
+	'Checks' => 'Перевірки',
+	'Loaded plugins' => 'Завантажені плагіни',
+	'%s must <a%s>return an array</a>.' => '%s має <a%s>повернути масив</a>.',,
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Налаштувати</a> %s у %s.',
 );
 
 // run `php ../../lang.php uk` to update this file
