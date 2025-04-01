@@ -97,7 +97,7 @@ class Adminer {
 	* @param bool $dark dark CSS: false to disable, true to force, null to base on user preferences
 	* @return bool true to link favicon.ico
 	*/
-	function head(bool $dark = null): bool {
+	function head(?bool $dark = null): bool {
 		// this is matched by compile.php
 		echo "<link rel='stylesheet' href='../externals/jush/jush.css'>\n";
 		echo ($dark !== false ? "<link rel='stylesheet'" . ($dark ? "" : " media='(prefers-color-scheme: dark)'") . " href='../externals/jush/jush-dark.css'>\n" : "");
@@ -304,7 +304,7 @@ class Adminer {
 	* @param Field[] $fields
 	* @param TableStatus $tableStatus
 	*/
-	function tableStructurePrint(array $fields, array $tableStatus = null): void {
+	function tableStructurePrint(array $fields, ?array $tableStatus = null): void {
 		echo "<div class='scrollable'>\n";
 		echo "<table class='nowrap odds'>\n";
 		echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . (support("comment") ? "<td>" . lang('Comment') : "") . "</thead>\n";

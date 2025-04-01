@@ -173,7 +173,7 @@ function hidden_fields_get(): void {
 * @param Field $field
 * @param mixed $value string|array
 */
-function enum_input(string $type, string $attrs, array $field, $value, string $empty = null): string {
+function enum_input(string $type, string $attrs, array $field, $value, ?string $empty = null): string {
 	preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 	$return = ($empty !== null ? "<label><input type='$type'$attrs value='$empty'" . ((is_array($value) ? in_array($empty, $value) : $value === $empty) ? " checked" : "") . "><i>" . lang('empty') . "</i></label>" : "");
 	foreach ($matches[1] as $i => $val) {

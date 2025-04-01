@@ -386,7 +386,7 @@ function set_session(string $key, $val) {
 }
 
 /** Get authenticated URL */
-function auth_url(string $vendor, ?string $server, string $username, string $db = null): string {
+function auth_url(string $vendor, ?string $server, string $username, ?string $db = null): string {
 	$uri = remove_from_uri(implode("|", array_keys(SqlDriver::$drivers))
 		. "|username|ext|"
 		. ($db !== null ? "db|" : "")
@@ -412,7 +412,7 @@ function is_ajax(): bool {
 /** Send Location header and exit
 * @param ?string $location null to only set a message
 */
-function redirect(?string $location, string $message = null): void {
+function redirect(?string $location, ?string $message = null): void {
 	if ($message !== null) {
 		restart_session();
 		$_SESSION["messages"][preg_replace('~^[^?]*~', '', ($location !== null ? $location : $_SERVER["REQUEST_URI"]))][] = $message;
