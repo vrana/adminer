@@ -354,7 +354,7 @@ Lang::$translations = array(
 	'%d / ' => '%d / ',
 	'Checks' => 'Перевірки',
 	'Loaded plugins' => 'Завантажені плагіни',
-	'%s must <a%s>return an array</a>.' => '%s має <a%s>повернути масив</a>.',,
+	'%s must <a%s>return an array</a>.' => '%s має <a%s>повернути масив</a>.',
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Налаштувати</a> %s у %s.',
 );
 
