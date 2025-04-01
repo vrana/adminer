@@ -11,7 +11,7 @@ class AdminerCodemirror {
 	private $root;
 	private $minified;
 
-	function __construct($root = "https://cdn.jsdelivr.net/npm/codemirror@5.65.19", $minified = ".min") {
+	function __construct($root = "https://cdn.jsdelivr.net/npm/codemirror@5", $minified = ".min") {
 		$this->root = $root;
 		$this->minified = $minified;
 	}
@@ -26,7 +26,7 @@ class AdminerCodemirror {
 <?php
 		echo Adminer\script_src("$this->root/lib/codemirror$this->minified.js");
 		echo Adminer\script_src("$this->root/addon/runmode/runmode$this->minified.js");
-		echo Adminer\script_src("$this->root/addon/hint/show-hint.js");
+		echo Adminer\script_src("$this->root/addon/hint/show-hint$this->minified.js");
 		echo Adminer\script_src("$this->root/mode/javascript/javascript$this->minified.js");
 		$tables = array_fill_keys(array_keys($tableStatuses), array());
 		if (Adminer\support("sql")) {
