@@ -5,6 +5,7 @@
 - CSS: Hide menu on mobile
 - CSS: Invert icons in dark mode
 - Plugins: Allow changing CSP by more plugins
+- New plugin: Use Prism for syntax highlighting
 
 ## Adminer 5.1.0 (released 2025-03-24)
 - Display collation at table structure if different from table
