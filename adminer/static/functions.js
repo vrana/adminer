@@ -471,9 +471,7 @@ function bodyKeydown(event, button) {
 		if (target.form[button]) {
 			target.form[button].click();
 		} else {
-			if (target.form.onsubmit) {
-				target.form.onsubmit();
-			}
+			target.form.dispatchEvent(new Event('submit', {bubbles: true}));
 			target.form.submit();
 		}
 		target.focus();
