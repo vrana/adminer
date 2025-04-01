@@ -316,7 +316,7 @@ if ($vendor) {
 		if (!$count) {
 			echo "auth[driver] form field not found\n";
 		}
-		$file = str_replace(" . script(\"qs('#username').form['auth[driver]'].onchange();\")", "", $file);
+		$file = str_replace(" . script(\"const authDriver = qs('#username').form['auth[driver]']; authDriver && authDriver.onchange();\")", "", $file);
 		if ($vendor == "sqlite") {
 			$file = str_replace(");\n\t\techo \$this->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', '<input name=\"auth[server]", ' . \'<input type="hidden" name="auth[server]"', $file);
 		}
