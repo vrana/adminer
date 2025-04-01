@@ -9,7 +9,7 @@ namespace Adminer;
 * @param int|numeric-string $limit
 * @return string[] $orgtables
 */
-function print_select_result($result, Db $connection2 = null, array $orgtables = array(), $limit = 0): array {
+function print_select_result($result, ?Db $connection2 = null, array $orgtables = array(), $limit = 0): array {
 	$links = array(); // colno => orgtable - create links from these columns
 	$indexes = array(); // orgtable => array(column => colno) - primary keys
 	$columns = array(); // orgtable => array(column => ) - not selected columns in primary key

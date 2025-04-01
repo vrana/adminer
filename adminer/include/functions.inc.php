@@ -7,7 +7,7 @@ namespace Adminer;
 * @param ?Db $connection2 custom connection to use instead of the default
 * @return Db
 */
-function connection(Db $connection2 = null) {
+function connection(?Db $connection2 = null) {
 	// can be used in customization, Db::$instance is minified
 	return ($connection2 ?: Db::$instance);
 }
@@ -108,7 +108,7 @@ function bracket_escape(string $idf, bool $back = false): string {
 * @param string|float $version required version
 * @param string|float $maria_db required MariaDB version
 */
-function min_version($version, $maria_db = "", Db $connection2 = null): bool {
+function min_version($version, $maria_db = "", ?Db $connection2 = null): bool {
 	$connection2 = connection($connection2);
 	$server_info = $connection2->server_info;
 	if ($maria_db && preg_match('~([\d.]+)-MariaDB~', $server_info, $match)) {
@@ -191,7 +191,7 @@ function get_vals(string $query, $column = 0): array {
 /** Get keys from first column and values from second
 * @return string[]
 */
-function get_key_vals(string $query, Db $connection2 = null, bool $set_keys = true): array {
+function get_key_vals(string $query, ?Db $connection2 = null, bool $set_keys = true): array {
 	$connection2 = connection($connection2);
 	$return = array();
 	$result = $connection2->query($query);
@@ -210,7 +210,7 @@ function get_key_vals(string $query, Db $connection2 = null, bool $set_keys = tr
 /** Get all rows of result
 * @return list<string[]> of associative arrays
 */
-function get_rows(string $query, Db $connection2 = null, string $error = "<p class='error'>"): array {
+function get_rows(string $query, ?Db $connection2 = null, string $error = "<p class='error'>"): array {
 	$conn = connection($connection2);
 	$return = array();
 	$result = $conn->query($query);
