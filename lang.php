@@ -5,7 +5,7 @@ include __DIR__ . "/adminer/include/errors.inc.php";
 unset($_COOKIE["adminer_lang"]);
 $_SESSION["lang"] = $_SERVER["argv"][1]; // Adminer functions read language from session
 if (isset($_SESSION["lang"])) {
-	if (isset($_SERVER["argv"][2]) || !file_exists($filename)) {
+	if (isset($_SERVER["argv"][2]) || !file_exists(__DIR__ . "/adminer/lang/$_SESSION[lang].inc.php")) {
 		echo "Usage: php lang.php [lang]\nPurpose: Update adminer/lang/*.inc.php from source code messages.\n";
 		exit(1);
 	}
@@ -69,7 +69,7 @@ foreach (glob(__DIR__ . "/adminer/lang/" . ($_SESSION["lang"] ?: "*") . ".inc.ph
 			}
 		}
 	}
-	$s = "<?php\nnamespace Adminer;\n\nLang::\$translations = array(\n$s\t);\n\n// run `php ../../lang.php $lang` to update this file\n";
+	$s = "<?php\nnamespace Adminer;\n\nLang::\$translations = array(\n$s);\n\n// run `php ../../lang.php $lang` to update this file\n";
 	if ($s != $file) {
 		file_put_contents($filename, $s);
 		echo "$filename updated.\n";
