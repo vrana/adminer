@@ -256,6 +256,12 @@ adminer()->selectLinks($table_status, $set);
 if (!$columns && support("table")) {
 	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "." : ": " . error()) . "\n";
 } else {
+	foreach ($select as $val) {
+		if (!array_key_exists(trim($val, '`'), $order_columns)) {
+			$order_columns[$val] = html_entity_decode(strip_tags($val), ENT_QUOTES);
+		}
+	}
+
 	echo "<form action='' id='form'>\n";
 	echo "<div style='display: none;'>";
 	hidden_fields_get();
