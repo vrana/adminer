@@ -11,7 +11,7 @@ Lang::$translations = array(
 	'Loaded plugins' => '読込済プラグイン',
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Adminerのご利用ありがとうございました。(寄付は<a href="https://www.adminer.org/en/donation/">こちら</a>)',
 	'%s must <a%s>return an array</a>.' => '%s は<a%s>配列を返す</a>必要があります。',
-	'Configure <b>%s</b> in <b>%s</b>.' => '<b>%2$s</b> の <b>%1$s</b> を設定してください。',
+	'<a%s>Configure</a> %s in %s.' => '%2$s の %1$s <a%s>を設定してください</a>。',
 	'There is a space in the input password which might be the cause.' => '入力されたパスワードに空白が含まれているので、それが原因かもしれません。',
 	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer はパスワードのないデータベースへの接続には対応していません。(<a href="https://www.adminer.org/en/password/"%s>詳細</a>)',
 	'Database does not support password.' => 'データベースがパスワードに対応していません。',
