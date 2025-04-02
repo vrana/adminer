@@ -1,4 +1,5 @@
 ## Adminer dev
+- MySQL: Display number of found rows in group queries (regression from 5.1.1)
 
 ## Adminer 5.1.1 (released 2025-04-02)
 - Export: Fix tar (regression from 5.0.3)

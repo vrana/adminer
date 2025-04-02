@@ -271,6 +271,7 @@ if (!$columns && support("table")) {
 	echo "</form>\n";
 
 	$page = $_GET["page"];
+	$found_rows = null;
 	if ($page == "last") {
 		$found_rows = get_val(count_rows($TABLE, $where, $is_group, $group));
 		$page = floor(max(0, intval($found_rows) - 1) / $limit);
@@ -487,7 +488,6 @@ if (!$columns && support("table")) {
 		if (!is_ajax()) {
 			if ($rows || $page) {
 				$exact_count = true;
-				$found_rows = null;
 				if ($_GET["page"] != "last") {
 					if (!$limit || (count($rows) < $limit && ($rows || !$page))) {
 						$found_rows = ($page ? $page * $limit : 0) + count($rows);
