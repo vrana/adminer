@@ -217,6 +217,16 @@
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Search in tables</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite</td><td></td></tr>
+<tr><td>type</td><td>name=query</td><td>Jackson</td></tr>
+<tr><td>clickAndWait</td><td>name=search</td><td></td></tr>
+<tr><td>click</td><td>link=interprets</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Michael Jackson</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Update</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/sqlite.php?sqlite=&amp;username=ODBC&amp;db=adminer_test.sqlite&amp;edit=albums&amp;where%5Bid%5D=2</td><td></td></tr>
