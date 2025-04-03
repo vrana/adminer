@@ -1,5 +1,6 @@
 ## Adminer dev
 - Do not edit NULL values by Modify (bug #967)
+- PostgreSQL: Support COPY FROM stdin in SQL query (bug #942)
 - MySQL: Display number of found rows in group queries (regression from 5.1.1)
 - non-MySQL: Parse '--' as comment in SQL command (bug SF-842)
 

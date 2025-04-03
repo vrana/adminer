@@ -72,10 +72,13 @@ if (!$error && $_POST) {
 
 		while ($query != "") {
 			if (!$offset && preg_match("~^$space*+DELIMITER\\s+(\\S+)~i", $query, $match)) {
-				$delimiter = $match[1];
+				$delimiter = preg_quote($match[1]);
 				$query = substr($query, strlen($match[0]));
+			} elseif (!$offset && JUSH == 'pgsql' && preg_match("~^($space*+COPY\\s+)[^;]+\\s+FROM\\s+stdin;~i", $query, $match)) {
+				$delimiter = "\n\\\\\\.\r?\n";
+				$offset = strlen($match[0]);
 			} else {
-				preg_match('(' . preg_quote($delimiter) . "\\s*|$parse)", $query, $match, PREG_OFFSET_CAPTURE, $offset); // should always match
+				preg_match("($delimiter\\s*|$parse)", $query, $match, PREG_OFFSET_CAPTURE, $offset); // always matches
 				list($found, $pos) = $match[0];
 				if (!$found && $fp && !feof($fp)) {
 					$query .= fread($fp, 1e5);
@@ -85,14 +88,15 @@ if (!$error && $_POST) {
 					}
 					$offset = $pos + strlen($found);
 
-					if ($found && rtrim($found) != $delimiter) { // find matching quote or comment end
+					if ($found && !preg_match("(^$delimiter)", $found)) { // find matching quote or comment end
 						$c_style_escapes = driver()->hasCStyleEscapes() || (JUSH == "pgsql" && ($pos > 0 && strtolower($query[$pos - 1]) == "e"));
 
-						$pattern = ($found == '/*' ? '\*/'
-							: ($found == '[' ? ']'
-							: (preg_match('~^-- |^#~', $found) ? "\n"
-							: preg_quote($found) . ($c_style_escapes ? "|\\\\." : "")))
-						);
+						$pattern =
+							($found == '/*' ? '\*/' :
+							($found == '[' ? ']' :
+							(preg_match('~^-- |^#~', $found) ? "\n" :
+							preg_quote($found) . ($c_style_escapes ? '|\\\\.' : ''))))
+						;
 
 						while (preg_match("($pattern|\$)s", $query, $match, PREG_OFFSET_CAPTURE, $offset)) {
 							$s = $match[0][0];
@@ -108,7 +112,7 @@ if (!$error && $_POST) {
 
 					} else { // end of a query
 						$empty = false;
-						$q = substr($query, 0, $pos);
+						$q = substr($query, 0, $pos + ($delimiter[0] == "\n" ? 3 : 0)); // 3 - pass "\n\\." to PostgreSQL COPY
 						$commands++;
 						$print = "<pre id='sql-$commands'><code class='jush-" . JUSH . "'>" . adminer()->sqlCommandQuery($q) . "</code></pre>\n";
 						if (JUSH == "sqlite" && preg_match("~^$space*+ATTACH\\b~i", $q, $match)) {

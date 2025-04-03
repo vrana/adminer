@@ -6,7 +6,7 @@ add_driver("pgsql", "PostgreSQL");
 if (isset($_GET["pgsql"])) {
 	define('Adminer\DRIVER', "pgsql");
 	if (extension_loaded("pgsql") && $_GET["ext"] != "pdo") {
-		class Db extends SqlDb {
+		class PgsqlDb extends SqlDb {
 			public string $extension = "PgSQL";
 			public int $timeout = 0;
 			private $link, $string, $database = true;
@@ -88,6 +88,19 @@ if (isset($_GET["pgsql"])) {
 			function warnings() {
 				return h(pg_last_notice($this->link)); // second parameter is available since PHP 7.1.0
 			}
+
+			/** Copy from array into a table
+			* @param list<string> $rows
+			*/
+			function copyFrom(string $table, array $rows): bool {
+				$this->error = '';
+				set_error_handler(function ($errno, $error) {
+					$this->error = (ini_bool('html_errors') ? html_entity_decode($error) : $error);
+				});
+				$return = pg_copy_from($this->link, $table, $rows);
+				restore_error_handler();
+				return $return;
+			}
 		}
 
 		class Result {
@@ -123,7 +136,7 @@ if (isset($_GET["pgsql"])) {
 		}
 
 	} elseif (extension_loaded("pdo_pgsql")) {
-		class Db extends PdoDb {
+		class PgsqlDb extends PdoDb {
 			public string $extension = "PDO_PgSQL";
 			public int $timeout = 0;
 
@@ -155,10 +168,31 @@ if (isset($_GET["pgsql"])) {
 				// not implemented in PDO_PgSQL as of PHP 7.2.1
 			}
 
+			function copyFrom(string $table, array $rows): bool {
+				$return = $this->pdo->pgsqlCopyFromArray($table, $rows);
+				$this->error = idx($this->pdo->errorInfo(), 2) ?: '';
+				return $return;
+			}
+
 			function close() {
 			}
 		}
 
+	}
+
+
+
+	if (class_exists('Adminer\PgsqlDb')) {
+		class Db extends PgsqlDb {
+			function multi_query(string $query) {
+				if (preg_match('~\bCOPY\s+(.+?)\s+FROM\s+stdin;\n?(.*)\n\\\\\.$~is', str_replace("\r\n", "\n", $query), $match)) { // no ^ to allow leading comments
+					$rows = explode("\n", $match[2]);
+					$this->affected_rows = count($rows);
+					return $this->copyFrom($match[1], $rows);
+				}
+				return parent::multi_query($query);
+			}
+		}
 	}
 
 
