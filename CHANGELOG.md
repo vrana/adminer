@@ -1,6 +1,7 @@
 ## Adminer dev
 - Do not edit NULL values by Modify (bug #967)
 - MySQL: Display number of found rows in group queries (regression from 5.1.1)
+- non-MySQL: Parse '--' as comment in SQL command (bug SF-842)
 
 ## Adminer 5.1.1 (released 2025-04-02)
 - Export: Fix tar (regression from 5.0.3)

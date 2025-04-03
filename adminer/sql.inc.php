@@ -64,7 +64,7 @@ if (!$error && $_POST) {
 		}
 		$commands = 0;
 		$errors = array();
-		$parse = '[\'"' . (JUSH == "sql" ? '`#' : (JUSH == "sqlite" ? '`[' : (JUSH == "mssql" ? '[' : ''))) . ']|/\*|-- |$' . (JUSH == "pgsql" ? '|\$[^$]*\$' : '');
+		$parse = '[\'"' . (JUSH == "sql" ? '`#' : (JUSH == "sqlite" ? '`[' : (JUSH == "mssql" ? '[' : ''))) . ']|/\*|--' . (JUSH == 'sql' ? ' ' : '') . '|$' . (JUSH == "pgsql" ? '|\$[^$]*\$' : '');
 		$total_start = microtime(true);
 		$adminer_export = get_settings("adminer_import"); // this doesn't offer SQL export so we match the import/export style at select
 		$dump_format = adminer()->dumpFormat();
