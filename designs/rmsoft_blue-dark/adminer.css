@@ -1,9 +1,7 @@
 /*!
  * @package    Adminer.css - Theme CSS for Adminer   ---   [theme dark]   blue    B  (with icons)
- *
- *//*!
- * @version    5.1.0.1
- * @date       Sat, 29 Mar 2025 13:55:32 +0100
+ * @version    5.1.1.1
+ * @date       Thu, 03 Apr 2025 13:24:32 +0100
  * @author     Robert Mesaros
  * @copyright  Copyright 2025 Robert Mesaros, rmSOFT, Slovakia
  * @web        https://www.rmsoft.sk
@@ -35,16 +33,11 @@
  *   Modified icons by Robert Mesaros
  *
  */
-html {
-	--bg: #002240;
-	--fg: #829bb0;
-}
-
 #menu{padding:0 0 30px 0}
 .ltr .logout{right:0;left:auto;margin-top:.5em}
 .rtl .logout{left:0;right:auto;margin-top:.5em}
-html{-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box}
-*,*:before,*:after{box-sizing:inherit}
+html{-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box;--bg:#002240;--fg:#829bb0}
+*:before,*:after{box-sizing:inherit}
 body{color:#829bb0;background:#002240;font-family:Verdana,Arial,Helvetica,sans-serif;font-weight:normal;cursor:default;margin:0}
 a{color:#829bb0;text-decoration:none}
 a:visited{color:#517fa8}
