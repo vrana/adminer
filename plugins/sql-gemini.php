@@ -14,10 +14,10 @@ class AdminerSqlGemini {
 	private $model;
 
 	/**
-	* @param string $apiKey Get API key at: https://aistudio.google.com/apikey
+	* @param string $apiKey The default key is shared with all users and may run out of quota; get your own API key at: https://aistudio.google.com/apikey
 	* @param string $model Available models: https://ai.google.dev/gemini-api/docs/models#available-models
 	*/
-	function __construct(string $apiKey, string $model = "gemini-2.0-flash") {
+	function __construct(string $apiKey = 'AIzaSyDWDbPjmvH9_hphsnY_yJGdue42qRMG3do', string $model = "gemini-2.0-flash") {
 		$this->apiKey = $apiKey;
 		$this->model = $model;
 	}
