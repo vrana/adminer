@@ -116,7 +116,7 @@ input.wayoff { left: -1000px; position: absolute; }
 @media all and (max-width: 880px) {
 	.pages { left: auto; }
 	.logout { padding: 1em; top: 3em; }
-	#menu { width: auto; background: var(--bg); border: 1px solid var(--fg); box-shadow: 0 0 20px rgb(from var(--fg) r g b / .7); }
+	#menu { width: auto; background: var(--bg); border: 1px solid var(--fg); margin-top: 9px; box-shadow: 0 0 20px rgb(from var(--fg) r g b / .7); }
 	#content { margin-left: 10px; }
 	#lang { position: static; }
 	#breadcrumb { left: 48px; }
