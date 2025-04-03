@@ -56,14 +56,14 @@ if (isset($_GET["clickhouse"])) {
 				return $this->rootQuery($this->_db, $query);
 			}
 
-			function connect(string $server, string $username, string $password): bool {
+			function attach(?string $server, string $username, string $password): string {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
 				$this->url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
 				$return = $this->query('SELECT 1');
-				return (bool) $return;
+				return ($return ? '' : $this->error);
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				$this->_db = $database;
 				return true;
 			}
@@ -117,11 +117,18 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	class Driver extends SqlDriver {
-		static array $possibleDrivers = array("allow_url_fopen");
+		static array $extensions = array("allow_url_fopen");
 		static string $jush = "clickhouse";
 
 		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
 		public array $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
+
+		static function connect(?string $server, string $username, string $password) {
+			if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
+				return lang('Invalid server.');
+			}
+			return parent::connect($server, $username, $password);
+		}
 
 		function __construct(Db $connection) {
 			parent::__construct($connection);
@@ -224,20 +231,7 @@ if (isset($_GET["clickhouse"])) {
 		return apply_queries("DROP TABLE", $tables);
 	}
 
-	function connect($credentials) {
-		$connection = new Db;
-		list($server, $username, $password) = $credentials;
-		if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
-			return lang('Invalid server.');
-		}
-		if ($connection->connect($server, $username, $password)) {
-			return $connection;
-		}
-		return $connection->error;
-	}
-
 	function get_databases($flush) {
-		$connection = connection();
 		$result = get_rows('SHOW DATABASES');
 
 		$return = array();
@@ -249,7 +243,7 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
-		return " $query$where" . ($limit !== null ? $separator . "LIMIT $limit" . ($offset ? ", $offset" : "") : "");
+		return " $query$where" . ($limit ? $separator . "LIMIT $limit" . ($offset ? ", $offset" : "") : "");
 	}
 
 	function limit1($table, $query, $where, $separator = "\n") {
@@ -260,8 +254,7 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function logged_user() {
-		$adminer = adminer();
-		$credentials = $adminer->credentials();
+		$credentials = adminer()->credentials();
 		return $credentials[1];
 	}
 
@@ -280,9 +273,8 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function table_status($name = "", $fast = false) {
-		$connection = connection();
 		$return = array();
-		$tables = get_rows("SELECT name, engine FROM system.tables WHERE database = " . q($connection->_db));
+		$tables = get_rows("SELECT name, engine FROM system.tables WHERE database = " . q(connection()->_db));
 		foreach ($tables as $table) {
 			$return[$table['name']] = array(
 				'Name' => $table['name'],
@@ -347,8 +339,7 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function error() {
-		$connection = connection();
-		return h($connection->error);
+		return h(connection()->error);
 	}
 
 	function types(): array {

@@ -16,6 +16,10 @@ Icons from http://FlatIcon.com:
 Background adapted from "All Work and No Play", http://thenewcode.com/1008/SVG-Movie-Backgrounds-Andys-Room-and-Overlook-Hotel
 */
 html {
+	--bg: #41658a;
+}
+
+html {
 	height: 100%;
 }
 body {

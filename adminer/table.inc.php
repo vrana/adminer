@@ -7,7 +7,7 @@ if (!$fields) {
 	$error = error() ?: lang('No tables.');
 }
 $table_status = table_status1($TABLE);
-$name = $adminer->tableName($table_status);
+$name = adminer()->tableName($table_status);
 
 page_header(($fields && is_view($table_status) ? $table_status['Engine'] == 'materialized view' ? lang('Materialized view') : lang('View') : lang('Table')) . ": " . ($name != "" ? $name : h($TABLE)), $error);
 
@@ -15,7 +15,7 @@ $rights = array();
 foreach ($fields as $key => $field) {
 	$rights += $field["privileges"];
 }
-$adminer->selectLinks($table_status, (isset($rights["insert"]) || !support("table") ? "" : null));
+adminer()->selectLinks($table_status, (isset($rights["insert"]) || !support("table") ? "" : null));
 
 $comment = $table_status["Comment"];
 if ($comment != "") {
@@ -23,14 +23,14 @@ if ($comment != "") {
 }
 
 if ($fields) {
-	$adminer->tableStructurePrint($fields, $table_status);
+	adminer()->tableStructurePrint($fields, $table_status);
 }
 
-if (support("indexes") && $driver->supportsIndex($table_status)) {
+if (support("indexes") && driver()->supportsIndex($table_status)) {
 	echo "<h3 id='indexes'>" . lang('Indexes') . "</h3>\n";
 	$indexes = indexes($TABLE);
 	if ($indexes) {
-		$adminer->tableIndexesPrint($indexes);
+		adminer()->tableIndexesPrint($indexes);
 	}
 	echo '<p class="links"><a href="' . h(ME) . 'indexes=' . urlencode($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
 }
@@ -68,7 +68,7 @@ if (!is_view($table_status)) {
 
 	if (support("check")) {
 		echo "<h3 id='checks'>" . lang('Checks') . "</h3>\n";
-		$check_constraints = $driver->checkConstraints($TABLE);
+		$check_constraints = driver()->checkConstraints($TABLE);
 		if ($check_constraints) {
 			echo "<table>\n";
 			foreach ($check_constraints as $key => $val) {

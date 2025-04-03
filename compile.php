@@ -18,9 +18,8 @@ function add_quo_slashes($s) {
 }
 
 function remove_lang($match) {
-	global $translations;
 	$idf = strtr($match[2], array("\\'" => "'", "\\\\" => "\\"));
-	$s = ($translations[$idf] ?: $idf);
+	$s = (Adminer\Lang::$translations[$idf] ?: $idf);
 	if ($match[3] == ",") { // lang() has parameters
 		return $match[1] . (is_array($s) ? "lang(array('" . implode("', '", array_map('add_apo_slashes', $s)) . "')," : "sprintf('" . add_apo_slashes($s) . "',");
 	}
@@ -77,7 +76,7 @@ function put_file($match) {
 					}
 				}
 			}
-			unset($functions["__construct"], $functions["__destruct"], $functions["set_charset"]);
+			unset($functions["__construct"], $functions["__destruct"], $functions["set_charset"], $functions["multi_query"], $functions["store_result"], $functions["next_result"]);
 			foreach ($functions as $val) {
 				if (!strpos($return, "$val(")) {
 					fprintf(STDERR, "Missing $val in $vendor\n");
@@ -167,9 +166,9 @@ function put_file_lang($match) {
 	}
 	$return = "";
 	foreach (Adminer\langs() as $lang => $val) {
-		include __DIR__ . "/adminer/lang/$lang.inc.php"; // assign $translations
+		include __DIR__ . "/adminer/lang/$lang.inc.php";
 		$translation_ids = array_flip($lang_ids); // default translation
-		foreach ($translations as $key => $val) {
+		foreach (Adminer\Lang::$translations as $key => $val) {
 			if ($val !== null) {
 				$translation_ids[$lang_ids[$key]] = implode("\t", (array) $val);
 			}
@@ -178,10 +177,14 @@ function put_file_lang($match) {
 		case "' . $lang . '": $compressed = "' . add_quo_slashes(lzw_compress(implode("\n", $translation_ids))) . '"; break;';
 	}
 	$translations_version = crc32($return);
-	return '$translations = $_SESSION["translations"];
-if ($_SESSION["translations_version"] != ' . $translations_version . ') {
-	$translations = array();
-	$_SESSION["translations_version"] = ' . $translations_version . ';
+	return 'Lang::$translations = $_SESSION["translations"];
+if ($_SESSION["translations_version"] != LANG . ' . $translations_version . ') {
+	Lang::$translations = array();
+	$_SESSION["translations_version"] = LANG . ' . $translations_version . ';
+}
+if (!Lang::$translations) {
+	Lang::$translations = get_translations(LANG);
+	$_SESSION["translations"] = Lang::$translations;
 }
 
 function get_translations($lang) {
@@ -193,22 +196,14 @@ function get_translations($lang) {
 	}
 	return $translations;
 }
-
-if (!$translations) {
-	$translations = get_translations(LANG);
-	$_SESSION["translations"] = $translations;
-}
 ';
 }
 
 function minify_css($file) {
 	global $project;
 	if ($project == "editor") {
-		$file = preg_replace('~.*\.gif.*~', '', $file);
+		$file = preg_replace('~.*\.url\(.*~', '', $file);
 	}
-	$file = preg_replace_callback('~url\((\w+\.(gif))\)~', function ($match) {
-		return "url(data:image/$match[2];base64," . base64_encode(file_get_contents(__DIR__ . "/adminer/static/$match[1]")) . ")";
-	}, $file);
 	return lzw_compress(preg_replace('~\s*([:;{},])\s*~', '\1', preg_replace('~/\*.*?\*/\s*~s', '', $file)));
 }
 
@@ -237,10 +232,6 @@ function compile_file($match, $callback = '') { // $callback only to match signa
 		$file = call_user_func($callback, $file);
 	}
 	return '"' . add_quo_slashes($file) . '"';
-}
-
-function min_version() {
-	return true;
 }
 
 function number_type() {
@@ -285,7 +276,6 @@ if ($_SERVER["argv"][1]) {
 include __DIR__ . "/adminer/include/db.inc.php";
 include __DIR__ . "/adminer/include/pdo.inc.php";
 include __DIR__ . "/adminer/include/driver.inc.php";
-$connection = (object) array('flavor' => ''); // used in support()
 $features = array("check", "call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine", "scheme", "sequence", "sql", "status", "trigger", "type", "user" => "privileges", "variables", "view");
 $lang_ids = array(); // global variable simplifies usage in a callback function
 $file = file_get_contents(__DIR__ . "/$project/index.php");
@@ -293,6 +283,7 @@ $file = preg_replace('~\*/~', "* @version " . Adminer\VERSION . "\n*/", $file, 1
 if ($vendor) {
 	$_GET[$vendor] = true; // to load the driver
 	include_once __DIR__ . $driver_path;
+	Adminer\Db::$instance = (object) array('flavor' => '', 'server_info' => '99'); // used in support()
 	foreach ($features as $key => $feature) {
 		if (!Adminer\support($feature)) {
 			if (!is_int($key)) {
@@ -320,12 +311,12 @@ if ($vendor) {
 			$file = preg_replace("((\t*)" . preg_quote('if (support("' . $feature . '")') . ".*?\n\\1\\}( else)?)s", '', $file);
 		}
 	}
-	if ($project != "editor" && count($drivers) == 1) {
-		$file = str_replace('html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);")', 'input_hidden("auth[driver]", "' . ($vendor == "mysql" ? "server" : $vendor) . '") . "' . reset($drivers) . '"', $file, $count);
+	if ($project != "editor" && count(Adminer\SqlDriver::$drivers) == 1) {
+		$file = str_replace('html_select("auth[driver]", SqlDriver::$drivers, DRIVER, "loginDriver(this);")', 'input_hidden("auth[driver]", "' . ($vendor == "mysql" ? "server" : $vendor) . '") . "' . reset(Adminer\SqlDriver::$drivers) . '"', $file, $count);
 		if (!$count) {
 			echo "auth[driver] form field not found\n";
 		}
-		$file = str_replace(" . script(\"qs('#username').form['auth[driver]'].onchange();\")", "", $file);
+		$file = str_replace(" . script(\"const authDriver = qs('#username').form['auth[driver]']; authDriver && authDriver.onchange();\")", "", $file);
 		if ($vendor == "sqlite") {
 			$file = str_replace(");\n\t\techo \$this->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', '<input name=\"auth[server]", ' . \'<input type="hidden" name="auth[server]"', $file);
 		}

@@ -1,4 +1,8 @@
 /* CSS by Brade - www.bradezone.com */
+html {
+	--fg: #333;
+}
+
 *{margin:0;padding:0}
 body{font:13px/18px Helvetica,Arial,sans-serif;background:#fff;color:#333}
 /* generic */

@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$translations = array(
+Lang::$translations = array(
 	'Login' => 'ログイン',
 	'Logout successful.' => 'ログアウトしました。',
 	'Invalid credentials.' => '不正なログインです。',
@@ -10,6 +10,8 @@ $translations = array(
 	'Password' => 'パスワード',
 	'Loaded plugins' => '読込済プラグイン',
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Adminerのご利用ありがとうございました。(寄付は<a href="https://www.adminer.org/en/donation/">こちら</a>)',
+	'%s must <a%s>return an array</a>.' => '%s は<a%s>配列を返す</a>必要があります。',
+	'<a%s>Configure</a> %s in %s.' => '%2$s の %1$s <a%s>を設定してください</a>。',
 	'There is a space in the input password which might be the cause.' => '入力されたパスワードに空白が含まれているので、それが原因かもしれません。',
 	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer はパスワードのないデータベースへの接続には対応していません。(<a href="https://www.adminer.org/en/password/"%s>詳細</a>)',
 	'Database does not support password.' => 'データベースがパスワードに対応していません。',
@@ -226,8 +228,8 @@ $translations = array(
 	'Stop on error' => 'エラーの場合は停止',
 	'Select data' => 'データ',
 	'%.3f s' => '%.3f 秒',
-	'$1-$3-$5' => '$1.$3.$5',
-	'[yyyy]-mm-dd' => '[yyyy].mm.dd',
+	'$1-$3-$5' => '$1/$3/$5',
+	'[yyyy]-mm-dd' => '[yyyy]/mm/dd',
 	'History' => '履歴',
 	'Variables' => '変数',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'ソースとターゲットの列は同じデータ型でなければなりません。ターゲット列に索引があり、データが存在しなければなりません。',

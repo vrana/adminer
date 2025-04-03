@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$translations = array(
+Lang::$translations = array(
 	'Login' => 'Authentification',
 	'Logout successful.' => 'Au revoir !',
 	'Invalid credentials.' => 'Authentification échouée.',

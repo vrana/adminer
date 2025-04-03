@@ -5,6 +5,11 @@
  * @version  02/18/2014
  */
 
+html {
+	--bg: #F9F9F9;
+	--fg: #333;
+}
+
 body {
 margin: 0;
 font-size: 12px;

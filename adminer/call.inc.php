@@ -26,7 +26,7 @@ if (!$error && $_POST) {
 				$val = "''";
 			}
 			if (isset($out[$key])) {
-				$connection->query("SET @" . idf_escape($field["field"]) . " = $val");
+				connection()->query("SET @" . idf_escape($field["field"]) . " = $val");
 			}
 		}
 		$call[] = (isset($out[$key]) ? "@" . idf_escape($field["field"]) : $val);
@@ -34,20 +34,20 @@ if (!$error && $_POST) {
 
 	$query = (isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . table($PROCEDURE) . "(" . implode(", ", $call) . ")";
 	$start = microtime(true);
-	$result = $connection->multi_query($query);
-	$affected = $connection->affected_rows; // getting warnings overwrites this
-	echo $adminer->selectQuery($query, $start, !$result);
+	$result = connection()->multi_query($query);
+	$affected = connection()->affected_rows; // getting warnings overwrites this
+	echo adminer()->selectQuery($query, $start, !$result);
 
 	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {
-		$connection2 = connect($adminer->credentials());
-		if (is_object($connection2)) {
+		$connection2 = connect();
+		if ($connection2) {
 			$connection2->select_db(DB);
 		}
 
 		do {
-			$result = $connection->store_result();
+			$result = connection()->store_result();
 			if (is_object($result)) {
 				print_select_result($result, $connection2);
 			} else {
@@ -55,10 +55,10 @@ if (!$error && $_POST) {
 					. " <span class='time'>" . @date("H:i:s") . "</span>\n" // @ - time zone may be not set
 				;
 			}
-		} while ($connection->next_result());
+		} while (connection()->next_result());
 
 		if ($out) {
-			print_select_result($connection->query("SELECT " . implode(", ", $out)));
+			print_select_result(connection()->query("SELECT " . implode(", ", $out)));
 		}
 	}
 }
@@ -71,7 +71,7 @@ if ($in) {
 	foreach ($in as $key) {
 		$field = $routine["fields"][$key];
 		$name = $field["field"];
-		echo "<tr><th>" . $adminer->fieldName($field);
+		echo "<tr><th>" . adminer()->fieldName($field);
 		$value = idx($_POST["fields"], $name);
 		if ($value != "") {
 			if ($field["type"] == "set") {

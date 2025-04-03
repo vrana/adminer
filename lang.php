@@ -5,8 +5,7 @@ include __DIR__ . "/adminer/include/errors.inc.php";
 unset($_COOKIE["adminer_lang"]);
 $_SESSION["lang"] = $_SERVER["argv"][1]; // Adminer functions read language from session
 if (isset($_SESSION["lang"])) {
-	include __DIR__ . "/adminer/include/lang.inc.php";
-	if (isset($_SERVER["argv"][2]) || (!idx(Adminer\langs(), $_SESSION["lang"]) && $_SESSION["lang"] != "xx")) {
+	if (isset($_SERVER["argv"][2]) || !file_exists(__DIR__ . "/adminer/lang/$_SESSION[lang].inc.php")) {
 		echo "Usage: php lang.php [lang]\nPurpose: Update adminer/lang/*.inc.php from source code messages.\n";
 		exit(1);
 	}
@@ -20,9 +19,9 @@ foreach (
 		glob(__DIR__ . "/adminer/drivers/*.php"),
 		glob(__DIR__ . "/editor/*.php"),
 		glob(__DIR__ . "/editor/include/*.php")
-	) as $filename
+	) as $include
 ) {
-	$file = file_get_contents($filename);
+	$file = file_get_contents($include);
 	if (preg_match_all("~lang\\(('(?:[^\\\\']+|\\\\.)*')([),])~", $file, $matches)) { // lang() always uses apostrophes
 		$messages_all += array_combine($matches[1], $matches[2]);
 	}
@@ -70,7 +69,7 @@ foreach (glob(__DIR__ . "/adminer/lang/" . ($_SESSION["lang"] ?: "*") . ".inc.ph
 			}
 		}
 	}
-	$s = "<?php\nnamespace Adminer;\n\n\$translations = array(\n$s);\n\n// run `php ../../lang.php $lang` to update this file\n";
+	$s = "<?php\nnamespace Adminer;\n\nLang::\$translations = array(\n$s);\n\n// run `php ../../lang.php $lang` to update this file\n";
 	if ($s != $file) {
 		file_put_contents($filename, $s);
 		echo "$filename updated.\n";

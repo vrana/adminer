@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$translations = array(
+Lang::$translations = array(
 	'System' => 'System',
 	'Server' => 'Server',
 	'Username' => 'Brukernavn',

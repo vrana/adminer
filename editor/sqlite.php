@@ -4,7 +4,7 @@ function adminer_object() {
 
 	class AdminerCustomization extends Adminer\Plugins {
 		function loginFormField($name, $heading, $value) {
-			return parent::loginFormField($name, $heading, str_replace('value="server"', 'value="sqlite"', $value));
+			return parent::loginFormField($name, $heading, str_replace("value='server'", "value='sqlite'", $value));
 		}
 		function database() {
 			return "PATH_TO_YOUR_SQLITE_HERE";

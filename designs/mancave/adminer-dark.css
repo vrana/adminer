@@ -21,6 +21,10 @@
 /** (ORIGINAL THEME cReDiTs) theme "easy on the eyes" for Adminer by p.galkaev@miraidenshi-tech.jp */
 
 
+html {
+	--bg: #110236;
+	--fg: #eee;
+}
 
 @import url(//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css);
 

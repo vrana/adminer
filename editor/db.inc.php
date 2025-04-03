@@ -3,7 +3,7 @@ namespace Adminer;
 
 page_header(lang('Server'), "", false);
 
-if ($adminer->homepage()) {
+if (adminer()->homepage()) {
 	echo "<form action='' method='post'>\n";
 	echo "<p>" . lang('Search data in tables') . ": <input type='search' name='query' value='" . h($_POST["query"]) . "'> <input type='submit' value='" . lang('Search') . "'>\n";
 	if ($_POST["query"] != "") {
@@ -19,7 +19,7 @@ if ($adminer->homepage()) {
 	echo "</thead>\n";
 
 	foreach (table_status() as $table => $row) {
-		$name = $adminer->tableName($row);
+		$name = adminer()->tableName($row);
 		if ($name != "") {
 			echo '<tr><td>' . checkbox("tables[]", $table, in_array($table, (array) $_POST["tables"], true));
 			echo "<th><a href='" . h(ME) . 'select=' . urlencode($table) . "'>$name</a>";

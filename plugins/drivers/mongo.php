@@ -12,7 +12,7 @@ if (isset($_GET["mongo"])) {
 			public \MongoDB\Driver\Manager $_link;
 			public $_db, $_db_name;
 
-			function connect(string $server, string $username, string $password): bool {
+			function attach(?string $server, string $username, string $password): string {
 				$options = array();
 				if ($username . $password != "") {
 					$options["username"] = $username;
@@ -27,6 +27,7 @@ if (isset($_GET["mongo"])) {
 				}
 				$this->_link = new \MongoDB\Driver\Manager("mongodb://$server", $options);
 				$this->executeDbCommand($options["db"], array('ping' => 1));
+				return '';
 			}
 
 			function executeCommand($command) {
@@ -57,7 +58,7 @@ if (isset($_GET["mongo"])) {
 				return false;
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				$this->_db_name = $database;
 				return true;
 			}
@@ -293,7 +294,7 @@ if (isset($_GET["mongo"])) {
 
 
 	class Driver extends SqlDriver {
-		static array $possibleDrivers = array("mongodb");
+		static array $extensions = array("mongodb");
 		static string $jush = "mongo";
 
 		public array $insertFunctions = array("json");
@@ -322,6 +323,13 @@ if (isset($_GET["mongo"])) {
 
 		public $primary = "_id";
 
+		static function connect(?string $server, string $username, string $password) {
+			if ($server == "") {
+				$server = "localhost:27017";
+			}
+			return parent::connect($server, $username, $password);
+		}
+
 		function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, ?int $page = 0, bool $print = false) {
 			$select = ($select == array("*")
 				? array()
@@ -336,10 +344,7 @@ if (isset($_GET["mongo"])) {
 				$val = preg_replace('~ DESC$~', '', $val, 1, $count);
 				$sort[$val] = ($count ? -1 : 1);
 			}
-			if (isset($_GET['limit']) && is_numeric($_GET['limit']) && $_GET['limit'] > 0) {
-				$limit = $_GET['limit'];
-			}
-			$limit = min(200, max(1, (int) $limit));
+			$limit = min(200, max(1, $limit));
 			$skip = $page * $limit;
 			try {
 				return new Result($this->conn->_link->executeQuery($this->conn->_db_name . ".$table", new \MongoDB\Driver\Query($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))));
@@ -429,39 +434,25 @@ if (isset($_GET["mongo"])) {
 		return $credentials[1];
 	}
 
-	function connect($credentials) {
-		$connection = new Db;
-		list($server, $username, $password) = $credentials;
-		if ($server == "") {
-			$server = "localhost:27017";
-		}
-		$connection->connect($server, $username, $password);
-		if ($connection->error) {
-			return $connection->error;
-		}
-		return $connection;
-	}
-
 	function alter_indexes($table, $alter) {
-		$connection = connection();
 		foreach ($alter as $val) {
 			list($type, $name, $set) = $val;
 			if ($set == "DROP") {
-				$return = $connection->_db->command(array("deleteIndexes" => $table, "index" => $name));
+				$return = connection()->_db->command(array("deleteIndexes" => $table, "index" => $name));
 			} else {
 				$columns = array();
 				foreach ($set as $column) {
 					$column = preg_replace('~ DESC$~', '', $column, 1, $count);
 					$columns[$column] = ($count ? -1 : 1);
 				}
-				$return = $connection->_db->selectCollection($table)->ensureIndex($columns, array(
+				$return = connection()->_db->selectCollection($table)->ensureIndex($columns, array(
 					"unique" => ($type == "UNIQUE"),
 					"name" => $name,
 					//! "sparse"
 				));
 			}
 			if ($return['errmsg']) {
-				$connection->error = $return['errmsg'];
+				connection()->error = $return['errmsg'];
 				return false;
 			}
 		}

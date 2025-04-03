@@ -173,14 +173,13 @@ function hidden_fields_get(): void {
 * @param Field $field
 * @param mixed $value string|array
 */
-function enum_input(string $type, string $attrs, array $field, $value, string $empty = null): string {
-	global $adminer;
+function enum_input(string $type, string $attrs, array $field, $value, ?string $empty = null): string {
 	preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 	$return = ($empty !== null ? "<label><input type='$type'$attrs value='$empty'" . ((is_array($value) ? in_array($empty, $value) : $value === $empty) ? " checked" : "") . "><i>" . lang('empty') . "</i></label>" : "");
 	foreach ($matches[1] as $i => $val) {
 		$val = stripcslashes(str_replace("''", "'", $val));
 		$checked = (is_array($value) ? in_array($val, $value) : $value === $val);
-		$return .= " <label><input type='$type'$attrs value='" . h($val) . "'" . ($checked ? ' checked' : '') . '>' . h($adminer->editVal($val, $field)) . '</label>';
+		$return .= " <label><input type='$type'$attrs value='" . h($val) . "'" . ($checked ? ' checked' : '') . '>' . h(adminer()->editVal($val, $field)) . '</label>';
 	}
 	return $return;
 }
@@ -190,7 +189,6 @@ function enum_input(string $type, string $attrs, array $field, $value, string $e
 * @param mixed $value
 */
 function input(array $field, $value, ?string $function, ?bool $autofocus = false): void {
-	global $driver, $adminer;
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
 	if (is_array($value) && !$function) {
@@ -201,18 +199,18 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 	if ($reset && !$_POST["save"]) {
 		$function = null;
 	}
-	$functions = (isset($_GET["select"]) || $reset ? array("orig" => lang('original')) : array()) + $adminer->editFunctions($field);
+	$functions = (isset($_GET["select"]) || $reset ? array("orig" => lang('original')) : array()) + adminer()->editFunctions($field);
 	$disabled = stripos($field["default"], "GENERATED ALWAYS AS ") === 0 ? " disabled=''" : "";
 	$attrs = " name='fields[$name]'$disabled" . ($autofocus ? " autofocus" : "");
-	$enums = $driver->enumLength($field);
+	$enums = driver()->enumLength($field);
 	if ($enums) {
 		$field["type"] = "enum";
 		$field["length"] = $enums;
 	}
-	echo $driver->unconvertFunction($field) . " ";
+	echo driver()->unconvertFunction($field) . " ";
 	$table = $_GET["edit"] ?: $_GET["select"];
 	if ($field["type"] == "enum") {
-		echo h($functions[""]) . "<td>" . $adminer->editInput($table, $field, $attrs, $value);
+		echo h($functions[""]) . "<td>" . adminer()->editInput($table, $field, $attrs, $value);
 	} else {
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
@@ -221,7 +219,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 				. script("qsl('select').onchange = functionChange;", "")
 			: h(reset($functions))
 		) . '<td>';
-		$input = $adminer->editInput($table, $field, $attrs, $value); // usage in call is without a table
+		$input = adminer()->editInput($table, $field, $attrs, $value); // usage in call is without a table
 		if ($input != "") {
 			echo $input;
 		} elseif (preg_match('~bool~', $field["type"])) {
@@ -232,7 +230,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 			foreach ($matches[1] as $i => $val) {
 				$val = stripcslashes(str_replace("''", "'", $val));
 				$checked = in_array($val, explode(",", $value), true);
-				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . h($val) . "'" . ($checked ? ' checked' : '') . ">" . h($adminer->editVal($val, $field)) . '</label>';
+				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . h($val) . "'" . ($checked ? ' checked' : '') . ">" . h(adminer()->editVal($val, $field)) . '</label>';
 			}
 		} elseif (preg_match('~blob|bytea|raw|file~', $field["type"]) && ini_bool("file_uploads")) {
 			echo "<input type='file' name='fields-$name'>";
@@ -248,7 +246,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 			echo "<textarea$attrs>" . h($value) . '</textarea>';
 		} else {
 			// int(3) is only a display hint
-			$types = $driver->types();
+			$types = driver()->types();
 			$maxlength = (!preg_match('~int~', $field["type"]) && preg_match('~^(\d+)(,(\d+))?$~', $field["length"], $match)
 				? ((preg_match("~binary~", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0))
 				: ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0)
@@ -264,7 +262,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 				. "$attrs>"
 			;
 		}
-		echo $adminer->editHint($table, $field, $value);
+		echo adminer()->editHint($table, $field, $value);
 		// skip 'original'
 		$first = 0;
 		foreach ($functions as $key => $val) {
@@ -284,14 +282,13 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 * @return mixed false to leave the original value
 */
 function process_input(array $field) {
-	global $adminer, $driver;
 	if (stripos($field["default"], "GENERATED ALWAYS AS ") === 0) {
 		return;
 	}
 	$idf = bracket_escape($field["field"]);
 	$function = idx($_POST["function"], $idf);
 	$value = $_POST["fields"][$idf];
-	if ($field["type"] == "enum" || $driver->enumLength($field)) {
+	if ($field["type"] == "enum" || driver()->enumLength($field)) {
 		if ($value == -1) {
 			return false;
 		}
@@ -324,9 +321,9 @@ function process_input(array $field) {
 		if (!is_string($file)) {
 			return false; //! report errors
 		}
-		return $driver->quoteBinary($file);
+		return driver()->quoteBinary($file);
 	}
-	return $adminer->processInput($field, $value, $function);
+	return adminer()->processInput($field, $value, $function);
 }
 
 /** Print results of search in all tables
@@ -334,13 +331,12 @@ function process_input(array $field) {
 * @uses $_POST["tables"]
 */
 function search_tables(): void {
-	global $adminer, $connection;
 	$_GET["where"][0]["val"] = $_POST["query"];
 	$sep = "<ul>\n";
 	foreach (table_status('', true) as $table => $table_status) {
-		$name = $adminer->tableName($table_status);
+		$name = adminer()->tableName($table_status);
 		if (isset($table_status["Engine"]) && $name != "" && (!$_POST["tables"] || in_array($table, $_POST["tables"]))) {
-			$result = $connection->query("SELECT" . limit("1 FROM " . table($table), " WHERE " . implode(" AND ", $adminer->selectSearchProcess(fields($table), array())), 1));
+			$result = connection()->query("SELECT" . limit("1 FROM " . table($table), " WHERE " . implode(" AND ", adminer()->selectSearchProcess(fields($table), array())), 1));
 			if (!$result || $result->fetch_row()) {
 				$print = "<a href='" . h(ME . "select=" . urlencode($table) . "&where[0][op]=" . urlencode($_GET["where"][0]["op"]) . "&where[0][val]=" . urlencode($_GET["where"][0]["val"])) . "'>$name</a>";
 				echo "$sep<li>" . ($result ? $print : "<p class='error'>$print: " . error()) . "\n";
@@ -353,7 +349,7 @@ function search_tables(): void {
 
 /** Return events to display help on mouse over
 * @param string $command JS expression
-* @param int $side JS expression
+* @param int $side 0 top, 1 left
 */
 function on_help(string $command, int $side = 0): string {
 	return script("mixin(qsl('select, input'), {onmouseover: function (event) { helpMouseover.call(this, event, $command, $side) }, onmouseout: helpMouseout});", "");
@@ -364,15 +360,14 @@ function on_help(string $command, int $side = 0): string {
 * @param mixed $row
 */
 function edit_form(string $table, array $fields, $row, ?bool $update, string $error = ''): void {
-	global $adminer;
-	$table_name = $adminer->tableName(table_status1($table, true));
+	$table_name = adminer()->tableName(table_status1($table, true));
 	page_header(
 		($update ? lang('Edit') : lang('Insert')),
 		$error,
 		array("select" => array($table, $table_name)),
 		$table_name
 	);
-	$adminer->editRowPrint($table, $fields, $row, $update);
+	adminer()->editRowPrint($table, $fields, $row, $update);
 	if ($row === false) {
 		echo "<p class='error'>" . lang('No rows.') . "\n";
 		return;
@@ -384,7 +379,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 		echo "<table class='layout'>" . script("qsl('table').onkeydown = editingKeydown;");
 		$autofocus = !$_POST;
 		foreach ($fields as $name => $field) {
-			echo "<tr><th>" . $adminer->fieldName($field);
+			echo "<tr><th>" . adminer()->fieldName($field);
 			$default = idx($_GET["set"], bracket_escape($name));
 			if ($default === null) {
 				$default = $field["default"];
@@ -406,7 +401,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 				)
 			);
 			if (!$_POST["save"] && is_string($value)) {
-				$value = $adminer->editVal($value, $field);
+				$value = adminer()->editVal($value, $field);
 			}
 			$function = ($_POST["save"]
 				? idx($_POST["function"], $name, "")
@@ -439,7 +434,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 			echo "<tr>"
 				. "<th><input name='field_keys[]'>"
 				. script("qsl('input').oninput = fieldChange;")
-				. "<td class='function'>" . html_select("field_funs[]", $adminer->editFunctions(array("null" => isset($_GET["select"]))))
+				. "<td class='function'>" . html_select("field_funs[]", adminer()->editFunctions(array("null" => isset($_GET["select"]))))
 				. "<td><input name='field_vals[]'>"
 				. "\n"
 			;
@@ -465,6 +460,16 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 	echo input_hidden("save", 1);
 	echo input_token();
 	echo "</form>\n";
+}
+
+/** Shorten UTF-8 string
+* @return string escaped string with appended ...
+*/
+function shorten_utf8(string $string, int $length = 80, string $suffix = ""): string {
+	if (!preg_match("(^(" . repeat_pattern("[\t\r\n -\x{10FFFF}]", $length) . ")($)?)u", $string, $match)) { // ~s causes trash in $match[2] under some PHP versions, (.|\n) is slow
+		preg_match("(^(" . repeat_pattern("[\t\r\n -~]", $length) . ")($)?)", $string, $match);
+	}
+	return h($match[1]) . $suffix . (isset($match[2]) ? "" : "<i>…</i>");
 }
 
 /** Get button with icon */

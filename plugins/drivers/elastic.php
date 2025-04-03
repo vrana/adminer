@@ -17,7 +17,7 @@ if (isset($_GET["elastic"])) {
 			 */
 			function rootQuery(string $path, ?array $content = null, string $method = 'GET') {
 				$file = @file_get_contents("$this->url/" . ltrim($path, '/'), false, stream_context_create(array(
-					//~ 'ssl' => array('verify_peer' => false),
+					//~ 'ssl' => array('verify_peer' => false), // Elasticsearch responses in over 4 s on https://localhost:9200 without this line for me
 					'http' => array(
 						'method' => $method,
 						'content' => $content !== null ? json_encode($content) : null,
@@ -61,17 +61,17 @@ if (isset($_GET["elastic"])) {
 				}
 			}
 
-			function connect(string $server, string $username, string $password): bool {
+			function attach(?string $server, string $username, string $password): string {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
 				$this->url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
 				$return = $this->rootQuery('');
 				if ($return) {
 					$this->server_info = $return['version']['number'];
 				}
-				return (bool) $return;
+				return ($return ? '' : $this->error);
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				return true;
 			}
 
@@ -104,11 +104,21 @@ if (isset($_GET["elastic"])) {
 	}
 
 	class Driver extends SqlDriver {
-		static array $possibleDrivers = array("json + allow_url_fopen");
+		static array $extensions = array("json + allow_url_fopen");
 		static string $jush = "elastic";
 
 		public array $insertFunctions = array("json");
 		public array $operators = array("=", "must", "should", "must_not");
+
+		static function connect(?string $server, string $username, string $password) {
+			if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
+				return lang('Invalid server.');
+			}
+			if ($password != "" && is_object(parent::connect($server, $username, ""))) {
+				return lang('Database does not support password.');
+			}
+			return parent::connect($server, $username, $password);
+		}
 
 		function __construct(Db $connection) {
 			parent::__construct($connection);
@@ -136,7 +146,7 @@ if (isset($_GET["elastic"])) {
 			}
 
 			if ($limit) {
-				$data["size"] = +$limit;
+				$data["size"] = $limit;
 				if ($page) {
 					$data["from"] = ($page * $limit);
 				}
@@ -283,24 +293,6 @@ if (isset($_GET["elastic"])) {
 		}
 	}
 
-	function connect($credentials) {
-		$connection = new Db;
-
-		list($server, $username, $password) = $credentials;
-		if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
-			return lang('Invalid server.');
-		}
-		if ($password != "" && $connection->connect($server, $username, "")) {
-			return lang('Database does not support password.');
-		}
-
-		if ($connection->connect($server, $username, $password)) {
-			return $connection;
-		}
-
-		return $connection->error;
-	}
-
 	function support($feature) {
 		return preg_match("~table|columns~", $feature);
 	}
@@ -316,7 +308,7 @@ if (isset($_GET["elastic"])) {
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
-		return " $query$where" . ($limit !== null ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
+		return " $query$where" . ($limit ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
 	function collations() {

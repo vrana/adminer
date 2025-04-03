@@ -468,12 +468,10 @@ function bodyKeydown(event, button) {
 	}
 	if (isCtrl(event) && (event.keyCode == 13 || event.keyCode == 10) && isTag(target, 'select|textarea|input')) { // 13|10 - Enter
 		target.blur();
-		if (button) {
+		if (target.form[button]) {
 			target.form[button].click();
 		} else {
-			if (target.form.onsubmit) {
-				target.form.onsubmit();
-			}
+			target.form.dispatchEvent(new Event('submit', {bubbles: true}));
 			target.form.submit();
 		}
 		target.focus();
@@ -618,6 +616,7 @@ function ajaxSetHtml(url) {
 }
 
 let editChanged; // used by plugins
+let adminerHighlighter = els => {}; // overwritten by syntax highlighters
 
 /** Save form contents through AJAX
 * @param HTMLFormElement
@@ -650,9 +649,7 @@ function ajaxForm(form, message, button) {
 		if (qs('.message', ajaxstatus)) { // success
 			editChanged = null;
 		}
-		if (window.jush) {
-			jush.highlight_tag(qsa('code', ajaxstatus), 0);
-		}
+		adminerHighlighter(qsa('code', ajaxstatus));
 		messagesPrint(ajaxstatus);
 	}, data, message);
 }
@@ -849,3 +846,9 @@ oninput = event => {
 	const maxLength = target.getAttribute('data-maxlength');
 	alterClass(target, 'maxlength', target.value && maxLength != null && target.value.length > maxLength); // maxLength could be 0
 };
+
+addEvent(document, 'click', event => {
+	if (!qs('#foot').contains(event.target)) {
+		alterClass(qs('#foot'), 'foot', true);
+	}
+});

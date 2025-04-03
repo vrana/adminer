@@ -32,8 +32,7 @@ class AdminerTranslation {
 		$return = &$translations[$idf];
 		if ($return === null) {
 			$return = $idf;
-			$connection = Adminer\connection();
-			$connection->query("INSERT INTO translation (language_id, idf, translation) VALUES (" . Adminer\q($lang) . ", " . Adminer\q($idf) . ", " . Adminer\q($idf) . ")");
+			Adminer\connection()->query("INSERT INTO translation (language_id, idf, translation) VALUES (" . Adminer\q($lang) . ", " . Adminer\q($idf) . ", " . Adminer\q($idf) . ")");
 		}
 		return $return;
 	}

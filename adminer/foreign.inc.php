@@ -58,7 +58,7 @@ if ($_POST) {
 <?php
 $source = array_keys(fields($TABLE)); //! no text and blob
 if ($row["db"] != "") {
-	$connection->select_db($row["db"]);
+	connection()->select_db($row["db"]);
 }
 if ($row["ns"] != "") {
 	$orig_schema = get_schema();
@@ -69,7 +69,7 @@ $target = array_keys(fields(in_array($row["table"], $referencable) ? $row["table
 $onchange = "this.form['change-js'].value = '1'; this.form.submit();";
 echo "<p>" . lang('Target table') . ": " . html_select("table", $referencable, $row["table"], $onchange) . "\n";
 if (support("scheme")) {
-	$schemas = array_filter($adminer->schemas(), function ($schema) {
+	$schemas = array_filter(adminer()->schemas(), function ($schema) {
 		return !preg_match('~^information_schema$~i', $schema);
 	});
 	echo lang('Schema') . ": " . html_select("ns", $schemas, $row["ns"] != "" ? $row["ns"] : $_GET["ns"], $onchange);
@@ -78,7 +78,7 @@ if (support("scheme")) {
 	}
 } elseif (JUSH != "sqlite") {
 	$dbs = array();
-	foreach ($adminer->databases() as $db) {
+	foreach (adminer()->databases() as $db) {
 		if (!information_schema($db)) {
 			$dbs[] = $db;
 		}
@@ -101,8 +101,8 @@ foreach ($row["source"] as $key => $val) {
 ?>
 </table>
 <p>
-<?php echo lang('ON DELETE'); ?>: <?php echo html_select("on_delete", array(-1 => "") + explode("|", $driver->onActions), $row["on_delete"]); ?>
- <?php echo lang('ON UPDATE'); ?>: <?php echo html_select("on_update", array(-1 => "") + explode("|", $driver->onActions), $row["on_update"]); ?>
+<?php echo lang('ON DELETE'); ?>: <?php echo html_select("on_delete", array(-1 => "") + explode("|", driver()->onActions), $row["on_delete"]); ?>
+ <?php echo lang('ON UPDATE'); ?>: <?php echo html_select("on_update", array(-1 => "") + explode("|", driver()->onActions), $row["on_update"]); ?>
 <?php echo doc_link(array(
 	'sql' => "innodb-foreign-key-constraints.html",
 	'mariadb' => "foreign-keys/",

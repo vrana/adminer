@@ -4,15 +4,20 @@ parameters:
 
 	ignoreErrors:
 		# need to fix
-		- "~^Function Adminer\\\\fields_from_edit\\(\\) should return~" # Mongo and SimpleDB
+		- "~^Function Adminer\\\\fields_from_edit\\(\\) should return|Adminer\\\\Driver::\\$primary~" # Mongo and SimpleDB
 		- "~Adminer\\\\Result.*mysqli_result~" # mysqli_result
+		- "~Function Adminer\\\\queries\\(\\) never returns Adminer\\\\Result~" # mysqli_result
 
 		# not real problems
 		- identifier: include.fileNotFound # includes in include/ relative from index.php
 		- identifier: includeOnce.fileNotFound # ./adminer-plugins.php
 		- "~^Function (set_magic_quotes_runtime|mysql_)~" # PHP < 7 functions
 		- "~an unknown class OCI-?Lob~" # this looks like PHPStan bug
-		- "~^Variable \\$(adminer|connection|driver|drivers|error|permanent|has_token|translations) might not be defined~" # declared in bootstrap.inc.php
+		- "~^Variable \\$error might not be defined~" # declared in bootstrap.inc.php
+		- "~^Constant LANG not found~" # defined in lang.inc.php
+		- "~ an undefined \\w+ Adminer\\\\Db::~" # defined in that versions of Db
+		- "~^Call to an undefined method Adminer\\\\Result::seek~" # defined in MS SQL
+		- "~^Call to an undefined method Adminer\\\\Driver::setUserTypes~" # defined in PostgreSQL
 		- "~expects int, float given~" # this will work
 		- "~expects bool~" # truthy values
 		- "~fread expects int<1, max>, 100000~" # 1e6
@@ -24,14 +29,11 @@ parameters:
 				- adminer/include/pdo.inc.php
 				- adminer/drivers/*
 
-		-
-			message: "~ to an undefined ~" # PostgreSQL has this in its version of Db
-			path: adminer/drivers/pgsql.inc.php
-
 		# it probably doesn't like $ar[$key] instead of isset($ar[$key]) and thinks that $ar[$key] is always set
 		- identifier: identical.alwaysFalse
 		- identifier: notEqual.alwaysFalse
 		- identifier: notIdentical.alwaysTrue
+		- identifier: booleanNot.alwaysTrue
 		- identifier: booleanNot.alwaysFalse
 		- identifier: booleanAnd.alwaysFalse
 		- identifier: booleanAnd.leftAlwaysTrue
@@ -50,7 +52,6 @@ parameters:
 		- compile.php # compile_file()
 	excludePaths:
 		- adminer/adminer-plugins*
-		- adminer/lang/
 		- adminer/designs.php
 		- adminer/elastic.php
 		- adminer/sqlite.php

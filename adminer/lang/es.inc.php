@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$translations = array(
+Lang::$translations = array(
 	'Login' => 'Login',
 	'Logout successful.' => 'Sesión finalizada con éxito.',
 	'Invalid credentials.' => 'Usuario y/o clave de acceso incorrecta.',

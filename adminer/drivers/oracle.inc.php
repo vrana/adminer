@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$drivers["oracle"] = "Oracle (beta)";
+add_driver("oracle", "Oracle (beta)");
 
 if (isset($_GET["oracle"])) {
 	define('Adminer\DRIVER', "oracle");
@@ -19,22 +19,21 @@ if (isset($_GET["oracle"])) {
 				$this->error = $error;
 			}
 
-			function connect(string $server, string $username, string $password): bool {
+			function attach(?string $server, string $username, string $password): string {
 				$this->link = @oci_new_connect($username, $password, $server, "AL32UTF8");
 				if ($this->link) {
 					$this->server_info = oci_server_version($this->link);
-					return true;
+					return '';
 				}
 				$error = oci_error();
-				$this->error = $error["message"];
-				return false;
+				return $error["message"];
 			}
 
 			function quote(string $string): string {
 				return "'" . str_replace("'", "''", $string) . "'";
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				$this->_current_db = $database;
 				return true;
 			}
@@ -106,12 +105,11 @@ if (isset($_GET["oracle"])) {
 			public string $extension = "PDO_OCI";
 			public $_current_db;
 
-			function connect(string $server, string $username, string $password): bool {
-				$this->dsn("oci:dbname=//$server;charset=AL32UTF8", $username, $password);
-				return true;
+			function attach(?string $server, string $username, string $password): string {
+				return $this->dsn("oci:dbname=//$server;charset=AL32UTF8", $username, $password);
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				$this->_current_db = $database;
 				return true;
 			}
@@ -122,7 +120,7 @@ if (isset($_GET["oracle"])) {
 
 
 	class Driver extends SqlDriver {
-		static array $possibleDrivers = array("OCI8", "PDO_OCI");
+		static array $extensions = array("OCI8", "PDO_OCI");
 		static string $jush = "oracle";
 
 	public array $insertFunctions = array( //! no parentheses
@@ -156,7 +154,6 @@ if (isset($_GET["oracle"])) {
 		}
 
 		function insertUpdate(string $table, array $rows, array $primary) {
-			global $connection;
 			foreach ($rows as $set) {
 				$update = array();
 				$where = array();
@@ -167,7 +164,7 @@ if (isset($_GET["oracle"])) {
 					}
 				}
 				if (
-					!(($where && queries("UPDATE " . table($table) . " SET " . implode(", ", $update) . " WHERE " . implode(" AND ", $where)) && $connection->affected_rows)
+					!(($where && queries("UPDATE " . table($table) . " SET " . implode(", ", $update) . " WHERE " . implode(" AND ", $where)) && connection()->affected_rows)
 					|| queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")"))
 				) {
 					return false;
@@ -191,14 +188,6 @@ if (isset($_GET["oracle"])) {
 		return idf_escape($idf);
 	}
 
-	function connect($credentials) {
-		$connection = new Db;
-		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
-			return $connection;
-		}
-		return $connection->error;
-	}
-
 	function get_databases($flush) {
 		return get_vals(
 			"SELECT DISTINCT tablespace_name FROM (
@@ -211,7 +200,7 @@ ORDER BY 1"
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
 		return ($offset ? " * FROM (SELECT t.*, rownum AS rnum FROM (SELECT $query$where) t WHERE rownum <= " . ($limit + $offset) . ") WHERE rnum > $offset"
-			: ($limit !== null ? " * FROM (SELECT $query$where) WHERE rownum <= " . ($limit + $offset)
+			: ($limit ? " * FROM (SELECT $query$where) WHERE rownum <= " . ($limit + $offset)
 			: " $query$where"
 		));
 	}
@@ -229,9 +218,8 @@ ORDER BY 1"
 	}
 
 	function get_current_db() {
-		global $connection;
-		$db = $connection->_current_db ?: DB;
-		unset($connection->_current_db);
+		$db = connection()->_current_db ?: DB;
+		unset(connection()->_current_db);
 		return $db;
 	}
 
@@ -352,8 +340,7 @@ ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row
 	}
 
 	function error() {
-		global $connection;
-		return h($connection->error); //! highlight sqltext from offset
+		return h(connection()->error); //! highlight sqltext from offset
 	}
 
 	function explain($connection, $query) {
@@ -479,9 +466,8 @@ AND c_src.TABLE_NAME = " . q($table);
 	}
 
 	function set_schema($scheme, $connection2 = null) {
-		global $connection;
 		if (!$connection2) {
-			$connection2 = $connection;
+			$connection2 = connection();
 		}
 		return $connection2->query("ALTER SESSION SET CURRENT_SCHEMA = " . idf_escape($scheme));
 	}

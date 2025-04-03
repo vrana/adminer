@@ -14,16 +14,16 @@ class AdminerSqlGemini {
 	private $model;
 
 	/**
-	* @param string $apiKey Get API key at: https://aistudio.google.com/apikey
+	* @param string $apiKey The default key is shared with all users and may run out of quota; get your own API key at: https://aistudio.google.com/apikey
 	* @param string $model Available models: https://ai.google.dev/gemini-api/docs/models#available-models
 	*/
-	function __construct(string $apiKey, string $model = "gemini-2.0-flash") {
+	function __construct(string $apiKey = 'AIzaSyDWDbPjmvH9_hphsnY_yJGdue42qRMG3do', string $model = "gemini-2.0-flash") {
 		$this->apiKey = $apiKey;
 		$this->model = $model;
 	}
 
 	function headers() {
-		if ($_POST["gemini"] && !isset($_POST["query"])) {
+		if (isset($_POST["gemini"]) && !isset($_POST["query"])) {
 			$prompt = "I have a " . Adminer\get_driver(Adminer\DRIVER) . " database with this structure:\n\n";
 			foreach (Adminer\tables_list() as $table => $type) {
 				$prompt .= Adminer\create_sql($table, false, "CREATE") . ";\n\n";
@@ -51,7 +51,7 @@ class AdminerSqlGemini {
 	}
 
 	function sqlPrintAfter() {
-		echo "<p><textarea name='gemini' rows='5' cols='50' title='AI prompt'>" . Adminer\h($_POST["gemini"]) . "</textarea>\n";
+		echo "<p><textarea name='gemini' rows='5' cols='50' placeholder='Ask Gemini'>" . Adminer\h($_POST["gemini"]) . "</textarea>\n";
 		?>
 <p><input type='button' value='Gemini'>
 <script <?php echo Adminer\nonce(); ?>>
@@ -59,17 +59,9 @@ const geminiText = qsl('textarea');
 const geminiButton = qsl('input');
 
 function setSqlareaValue(value) {
-	qs('textarea.sqlarea').value = value;
-	const jushPre = qs('pre.sqlarea');
-	if (jushPre) {
-		jushPre.textContent = value;
-		jushPre.oninput(); // syntax highlighting
-	}
-	const cmPre = qs('.CodeMirror');
-	if (cmPre) {
-		cmPre.CodeMirror.setValue(value);
-		cmPre.CodeMirror.refresh();
-	}
+	const sqlarea = qs('textarea.sqlarea');
+	sqlarea.value = value;
+	sqlarea.onchange && sqlarea.onchange();
 }
 
 geminiButton.onclick = () => {

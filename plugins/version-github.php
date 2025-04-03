@@ -26,9 +26,7 @@ verifyVersion = (current, url, token) => {
 <?php
 	}
 
-	function csp() {
-		$csp = Adminer\csp();
+	function csp(&$csp) {
 		$csp[0]["connect-src"] .= " https://api.github.com/repos/vrana/adminer/releases/latest";
-		return $csp;
 	}
 }

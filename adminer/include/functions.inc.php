@@ -3,27 +3,32 @@ namespace Adminer;
 
 // This file is used both in Adminer and Adminer Editor.
 
-/** Get database connection */
-function connection(): Db {
-	// can be used in customization, $connection is minified
-	global $connection;
-	return $connection;
+/** Get database connection
+* @param ?Db $connection2 custom connection to use instead of the default
+* @return Db
+*/
+function connection(?Db $connection2 = null) {
+	// can be used in customization, Db::$instance is minified
+	return ($connection2 ?: Db::$instance);
 }
 
 /** Get Adminer object
-* @return Adminer
+* @return Adminer|Plugins
 */
 function adminer() {
-	global $adminer;
-	return $adminer;
+	return Adminer::$instance;
 }
 
-/** Get Driver object
-* @return Driver
-*/
-function driver() {
-	global $driver;
-	return $driver;
+/** Get Driver object */
+function driver(): Driver {
+	return Driver::$instance;
+}
+
+/** Connect to the database */
+function connect(): ?Db {
+	$credentials = adminer()->credentials();
+	$return = Driver::connect($credentials[0], $credentials[1], $credentials[2]);
+	return (is_object($return) ? $return : null);
 }
 
 /** Unescape database identifier
@@ -37,10 +42,9 @@ function idf_unescape(string $idf): string {
 	return str_replace($last . $last, $last, substr($idf, 1, -1));
 }
 
-/** Shortcut for $connection->quote($string) */
+/** Shortcut for connection()->quote($string) */
 function q(string $string): string {
-	global $connection;
-	return $connection->quote($string);
+	return connection()->quote($string);
 }
 
 /** Escape string to use inside '' */
@@ -59,7 +63,9 @@ function idx(?array $array, $key, $default = null) {
 	return ($array && array_key_exists($key, $array) ? $array[$key] : $default);
 }
 
-/** Remove non-digits from a string */
+/** Remove non-digits from a string; used instead of intval() to not corrupt big numbers
+* @return numeric-string
+*/
 function number(string $val): string {
 	return preg_replace('~[^0-9]+~', '', $val);
 }
@@ -70,7 +76,7 @@ function number_type(): string {
 }
 
 /** Disable magic_quotes_gpc
-* @param list<array> $process e.g. (&$_GET, &$_POST, &$_COOKIE)
+* @param list<array> $process e.g. [&$_GET, &$_POST, &$_COOKIE]
 * @param bool $filter whether to leave values as is
 * @return void modified in place
 */
@@ -100,13 +106,9 @@ function bracket_escape(string $idf, bool $back = false): string {
 /** Check if connection has at least the given version
 * @param string|float $version required version
 * @param string|float $maria_db required MariaDB version
-* @param Db $connection2 defaults to $connection
 */
-function min_version($version, $maria_db = "", Db $connection2 = null): bool {
-	global $connection;
-	if (!$connection2) {
-		$connection2 = $connection;
-	}
+function min_version($version, $maria_db = "", ?Db $connection2 = null): bool {
+	$connection2 = connection($connection2);
 	$server_info = $connection2->server_info;
 	if ($maria_db && preg_match('~([\d.]+)-MariaDB~', $server_info, $match)) {
 		$server_info = $match[1];
@@ -161,8 +163,7 @@ function get_password() {
 * @return string|false false if error
 */
 function get_val(string $query, int $field = 0, ?Db $conn = null) {
-	global $connection;
-	$conn = (is_object($conn) ? $conn : $connection);
+	$conn = connection($conn);
 	$result = $conn->query($query);
 	if (!is_object($result)) {
 		return false;
@@ -172,13 +173,12 @@ function get_val(string $query, int $field = 0, ?Db $conn = null) {
 }
 
 /** Get list of values from database
-* @param mixed $column
+* @param array-key $column
 * @return list<string>
 */
 function get_vals(string $query, $column = 0): array {
-	global $connection;
 	$return = array();
-	$result = $connection->query($query);
+	$result = connection()->query($query);
 	if (is_object($result)) {
 		while ($row = $result->fetch_row()) {
 			$return[] = $row[$column];
@@ -190,11 +190,8 @@ function get_vals(string $query, $column = 0): array {
 /** Get keys from first column and values from second
 * @return string[]
 */
-function get_key_vals(string $query, Db $connection2 = null, bool $set_keys = true): array {
-	global $connection;
-	if (!is_object($connection2)) {
-		$connection2 = $connection;
-	}
+function get_key_vals(string $query, ?Db $connection2 = null, bool $set_keys = true): array {
+	$connection2 = connection($connection2);
 	$return = array();
 	$result = $connection2->query($query);
 	if (is_object($result)) {
@@ -212,16 +209,15 @@ function get_key_vals(string $query, Db $connection2 = null, bool $set_keys = tr
 /** Get all rows of result
 * @return list<string[]> of associative arrays
 */
-function get_rows(string $query, Db $connection2 = null, string $error = "<p class='error'>"): array {
-	global $connection;
-	$conn = (is_object($connection2) ? $connection2 : $connection);
+function get_rows(string $query, ?Db $connection2 = null, string $error = "<p class='error'>"): array {
+	$conn = connection($connection2);
 	$return = array();
 	$result = $conn->query($query);
 	if (is_object($result)) { // can return true
 		while ($row = $result->fetch_assoc()) {
 			$return[] = $row;
 		}
-	} elseif (!$result && !is_object($connection2) && $error && (defined('Adminer\PAGE_HEADER') || $error == "-- ")) {
+	} elseif (!$result && !$connection2 && $error && (defined('Adminer\PAGE_HEADER') || $error == "-- ")) {
 		echo $error . error() . "\n";
 	}
 	return $return;
@@ -260,7 +256,6 @@ function escape_key(string $key): string {
 * @param Field[] $fields
 */
 function where(array $where, array $fields = array()): string {
-	global $connection;
 	$return = array();
 	foreach ((array) $where["where"] as $key => $val) {
 		$key = bracket_escape($key, true); // true - back
@@ -274,7 +269,7 @@ function where(array $where, array $fields = array()): string {
 				: " = " . unconvert_field($field, q($val)))))
 		; //! enum and set
 		if (JUSH == "sql" && preg_match('~char|text~', $field_type) && preg_match("~[^ -@]~", $val)) { // not just [a-z] to catch non-ASCII characters
-			$return[] = "$column = " . q($val) . " COLLATE " . charset($connection) . "_bin";
+			$return[] = "$column = " . q($val) . " COLLATE " . charset(connection()) . "_bin";
 		}
 	}
 	foreach ((array) $where["null"] as $key) {
@@ -390,9 +385,8 @@ function set_session(string $key, $val) {
 }
 
 /** Get authenticated URL */
-function auth_url(string $vendor, ?string $server, string $username, string $db = null): string {
-	global $drivers;
-	$uri = remove_from_uri(implode("|", array_keys($drivers))
+function auth_url(string $vendor, ?string $server, string $username, ?string $db = null): string {
+	$uri = remove_from_uri(implode("|", array_keys(SqlDriver::$drivers))
 		. "|username|ext|"
 		. ($db !== null ? "db|" : "")
 		. ($vendor == 'mssql' || $vendor == 'pgsql' ? "" : "ns|") // we don't have access to support() here
@@ -417,7 +411,7 @@ function is_ajax(): bool {
 /** Send Location header and exit
 * @param ?string $location null to only set a message
 */
-function redirect(?string $location, string $message = null): void {
+function redirect(?string $location, ?string $message = null): void {
 	if ($message !== null) {
 		restart_session();
 		$_SESSION["messages"][preg_replace('~^[^?]*~', '', ($location !== null ? $location : $_SERVER["REQUEST_URI"]))][] = $message;
@@ -435,15 +429,14 @@ function redirect(?string $location, string $message = null): void {
 * @param bool $redirect
 */
 function query_redirect(string $query, ?string $location, string $message, $redirect = true, bool $execute = true, bool $failed = false, string $time = ""): bool {
-	global $connection, $adminer;
 	if ($execute) {
 		$start = microtime(true);
-		$failed = !$connection->query($query);
+		$failed = !connection()->query($query);
 		$time = format_time($start);
 	}
-	$sql = ($query ? $adminer->messageQuery($query, $time, $failed) : "");
+	$sql = ($query ? adminer()->messageQuery($query, $time, $failed) : "");
 	if ($failed) {
-		$adminer->error .= error() . $sql . script("messagesPrint();") . "<br>";
+		adminer()->error .= error() . $sql . script("messagesPrint();") . "<br>";
 		return false;
 	}
 	if ($redirect) {
@@ -462,12 +455,11 @@ class Queries {
 * @return Result|bool
 */
 function queries(string $query) {
-	global $connection;
 	if (!Queries::$start) {
 		Queries::$start = microtime(true);
 	}
 	Queries::$queries[] = (preg_match('~;$~', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query) . ";";
-	return $connection->query($query);
+	return connection()->query($query);
 }
 
 /** Apply command to all array items
@@ -567,16 +559,6 @@ function is_utf8(?string $val): bool {
 	return (preg_match('~~u', $val) && !preg_match('~[\0-\x8\xB\xC\xE-\x1F]~', $val));
 }
 
-/** Shorten UTF-8 string
-* @return string escaped string with appended ...
-*/
-function shorten_utf8(string $string, int $length = 80, string $suffix = ""): string {
-	if (!preg_match("(^(" . repeat_pattern("[\t\r\n -\x{10FFFF}]", $length) . ")($)?)u", $string, $match)) { // ~s causes trash in $match[2] under some PHP versions, (.|\n) is slow
-		preg_match("(^(" . repeat_pattern("[\t\r\n -~]", $length) . ")($)?)", $string, $match);
-	}
-	return h($match[1]) . $suffix . (isset($match[2]) ? "" : "<i>…</i>");
-}
-
 /** Format decimal number
 * @param float|numeric-string $val
 */
@@ -602,9 +584,8 @@ function table_status1(string $table, bool $fast = false): array {
 * @return list<ForeignKey>[] [$col => []]
 */
 function column_foreign_keys(string $table): array {
-	global $adminer;
 	$return = array();
-	foreach ($adminer->foreignKeys($table) as $foreign_key) {
+	foreach (adminer()->foreignKeys($table) as $foreign_key) {
 		foreach ($foreign_key["source"] as $val) {
 			$return[$val][] = $foreign_key;
 		}
@@ -616,7 +597,6 @@ function column_foreign_keys(string $table): array {
 * @return Field[] same as fields()
 */
 function fields_from_edit(): array { // used by Mongo and SimpleDB
-	global $driver;
 	$return = array();
 	foreach ((array) $_POST["field_keys"] as $key => $val) {
 		if ($val != "") {
@@ -631,7 +611,7 @@ function fields_from_edit(): array { // used by Mongo and SimpleDB
 			"field" => $name,
 			"privileges" => array("insert" => 1, "update" => 1, "where" => 1, "order" => 1),
 			"null" => 1,
-			"auto_increment" => ($key == $driver->primary),
+			"auto_increment" => ($key == driver()->primary),
 		);
 	}
 	return $return;
@@ -641,11 +621,10 @@ function fields_from_edit(): array { // used by Mongo and SimpleDB
 * @return string extension
 */
 function dump_headers(string $identifier, bool $multi_table = false): string {
-	global $adminer;
-	$return = $adminer->dumpHeaders($identifier, $multi_table);
+	$return = adminer()->dumpHeaders($identifier, $multi_table);
 	$output = $_POST["output"];
 	if ($output != "text") {
-		header("Content-Disposition: attachment; filename=" . $adminer->dumpFilename($identifier) . ".$return" . ($output != "file" && preg_match('~^[0-9a-z]+$~', $output) ? ".$output" : ""));
+		header("Content-Disposition: attachment; filename=" . adminer()->dumpFilename($identifier) . ".$return" . ($output != "file" && preg_match('~^[0-9a-z]+$~', $output) ? ".$output" : ""));
 	}
 	session_write_close();
 	if (!ob_get_level()) {
@@ -740,16 +719,16 @@ function first(array $array) {
 }
 
 /** Read password from file adminer.key in temporary directory or create one
-* @return string|false false if the file can not be created
+* @return string '' if the file can not be created
 */
-function password_file(bool $create) {
+function password_file(bool $create): string {
 	$filename = get_temp_dir() . "/adminer.key";
 	if (!$create && !file_exists($filename)) {
-		return false;
+		return '';
 	}
 	$fp = file_open_lock($filename);
 	if (!$fp) {
-		return false;
+		return '';
 	}
 	$return = stream_get_contents($fp);
 	if (!$return) {
@@ -775,7 +754,6 @@ function rand_string(): string {
 * @return string HTML
 */
 function select_value($val, string $link, array $field, ?string $text_length): string {
-	global $adminer;
 	if (is_array($val)) {
 		$return = "";
 		foreach ($val as $k => $v) {
@@ -787,7 +765,7 @@ function select_value($val, string $link, array $field, ?string $text_length): s
 		return "<table>$return</table>";
 	}
 	if (!$link) {
-		$link = $adminer->selectLink($val, $field);
+		$link = adminer()->selectLink($val, $field);
 	}
 	if ($link === null) {
 		if (is_mail($val)) {
@@ -797,7 +775,7 @@ function select_value($val, string $link, array $field, ?string $text_length): s
 			$link = $val; // IE 11 and all modern browsers hide referrer
 		}
 	}
-	$return = $adminer->editVal($val, $field);
+	$return = adminer()->editVal($val, $field);
 	if ($return !== null) {
 		if (!is_utf8($return)) {
 			$return = "\0"; // htmlspecialchars of binary data returns an empty string
@@ -807,7 +785,7 @@ function select_value($val, string $link, array $field, ?string $text_length): s
 			$return = h($return);
 		}
 	}
-	return $adminer->selectVal($return, $link, $field, $val);
+	return adminer()->selectVal($return, $link, $field, $val);
 }
 
 /** Check whether the string is e-mail address */
@@ -847,14 +825,13 @@ function count_rows(string $table, array $where, bool $is_group, array $group): 
 * @return string[]
 */
 function slow_query(string $query): array {
-	global $adminer, $driver;
-	$db = $adminer->database();
-	$timeout = $adminer->queryTimeout();
-	$slow_query = $driver->slowQuery($query, $timeout);
+	$db = adminer()->database();
+	$timeout = adminer()->queryTimeout();
+	$slow_query = driver()->slowQuery($query, $timeout);
 	$connection2 = null;
 	if (!$slow_query && support("kill")) {
-		$connection2 = connect($adminer->credentials());
-		if (is_object($connection2) && ($db == "" || $connection2->select_db($db))) {
+		$connection2 = connect();
+		if ($connection2 && ($db == "" || $connection2->select_db($db))) {
 			$kill = get_val(connection_id(), 0, $connection2); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
 			echo script("const timeout = setTimeout(() => { ajax('" . js_escape(ME) . "script=kill', function () {}, 'kill=$kill&token=" . get_token() . "'); }, 1000 * $timeout);");
 		}

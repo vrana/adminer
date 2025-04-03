@@ -19,19 +19,20 @@ $base_left = -1;
 $schema = array(); // table => array("fields" => array(name => field), "pos" => array(top, left), "references" => array(table => array(left => array(source, target))))
 $referenced = array(); // target_table => array(table => array(left => target_column))
 $lefts = array(); // float => bool
+$all_fields = driver()->allFields();
 foreach (table_status('', true) as $table => $table_status) {
 	if (is_view($table_status)) {
 		continue;
 	}
 	$pos = 0;
 	$schema[$table]["fields"] = array();
-	foreach (fields($table) as $name => $field) {
+	foreach ($all_fields[$table] as $field) {
 		$pos += 1.25;
 		$field["pos"] = $pos;
-		$schema[$table]["fields"][$name] = $field;
+		$schema[$table]["fields"][$field["field"]] = $field;
 	}
 	$schema[$table]["pos"] = ($table_pos[$table] ?: array($top, 0));
-	foreach ($adminer->foreignKeys($table) as $val) {
+	foreach (adminer()->foreignKeys($table) as $val) {
 		if (!$val["db"]) {
 			$left = $base_left;
 			if (idx($table_pos[$table], 1) || idx($table_pos[$val["table"]], 1)) {
@@ -67,7 +68,7 @@ foreach ($schema as $name => $table) {
 	echo script("qsl('div').onmousedown = schemaMousedown;");
 
 	foreach ($table["fields"] as $field) {
-		$val = '<span' . type_class($field["type"]) . ' title="' . h($field["full_type"] . ($field["null"] ? " NULL" : '')) . '">' . h($field["field"]) . '</span>';
+		$val = '<span' . type_class($field["type"]) . ' title="' . h($field["type"] . ($field["length"] ? "($field[length])" : "") . ($field["null"] ? " NULL" : '')) . '">' . h($field["field"]) . '</span>';
 		echo "<br>" . ($field["primary"] ? "<i>$val</i>" : $val);
 	}
 

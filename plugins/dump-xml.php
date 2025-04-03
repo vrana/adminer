@@ -25,8 +25,7 @@ class AdminerDumpXml {
 				$this->database = true;
 				echo "<database name='" . Adminer\h(Adminer\DB) . "'>\n";
 			}
-			$connection = Adminer\connection();
-			$result = $connection->query($query, 1);
+			$result = Adminer\connection()->query($query, 1);
 			if ($result) {
 				while ($row = $result->fetch_assoc()) {
 					echo "\t<table name='" . Adminer\h($table) . "'>\n";

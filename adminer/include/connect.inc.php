@@ -10,7 +10,7 @@ if (isset($_GET["import"])) {
 
 if (
 	!(DB != ""
-		? $connection->select_db(DB)
+		? connection()->select_db(DB)
 		: isset($_GET["sql"]) || isset($_GET["dump"]) || isset($_GET["database"]) || isset($_GET["processlist"]) || isset($_GET["privileges"]) || isset($_GET["user"]) || isset($_GET["variables"])
 			|| $_GET["script"] == "connect" || $_GET["script"] == "kill"
 	)
@@ -42,17 +42,17 @@ if (
 				echo "<a href='" . h(ME) . "$key='>$val</a>\n";
 			}
 		}
-		echo "<p>" . lang('%s version: %s through PHP extension %s', $drivers[DRIVER], "<b>" . h($connection->server_info) . "</b>", "<b>$connection->extension</b>") . "\n";
+		echo "<p>" . lang('%s version: %s through PHP extension %s', get_driver(DRIVER), "<b>" . h(connection()->server_info) . "</b>", "<b>" . connection()->extension . "</b>") . "\n";
 		echo "<p>" . lang('Logged as: %s', "<b>" . h(logged_user()) . "</b>") . "\n";
-		if (isset($adminer->plugins) && is_array($adminer->plugins)) {
+		if (isset(adminer()->plugins) && is_array(adminer()->plugins)) {
 			echo "<p>" . lang('Loaded plugins') . ":\n<ul>\n";
-			foreach ($adminer->plugins as $plugin) {
+			foreach (adminer()->plugins as $plugin) {
 				$reflection = new \ReflectionObject($plugin);
 				echo "<li><b>" . get_class($plugin) . "</b>" . h(preg_match('~^/[\s*]+(.+)~', $reflection->getDocComment(), $match) ? ": $match[1]" : "") . "\n";
 			}
 			echo "</ul>\n";
 		}
-		$databases = $adminer->databases();
+		$databases = adminer()->databases();
 		if ($databases) {
 			$scheme = support("scheme");
 			$collations = collations();

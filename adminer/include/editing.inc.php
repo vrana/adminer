@@ -5,12 +5,11 @@ namespace Adminer;
 
 /** Print select result
 * @param Result $result
-* @param Db $connection2 connection to examine indexes
 * @param string[] $orgtables
 * @param int|numeric-string $limit
 * @return string[] $orgtables
 */
-function print_select_result($result, Db $connection2 = null, array $orgtables = array(), $limit = 0): array {
+function print_select_result($result, ?Db $connection2 = null, array $orgtables = array(), $limit = 0): array {
 	$links = array(); // colno => orgtable - create links from these columns
 	$indexes = array(); // orgtable => array(column => colno) - primary keys
 	$columns = array(); // orgtable => array(column => ) - not selected columns in primary key
@@ -172,13 +171,12 @@ function json_row(string $key, $val = null): void {
 * @param list<string> $extra_types extra types to prepend
 */
 function edit_type(string $key, array $field, array $collations, array $foreign_keys = array(), array $extra_types = array()): void {
-	global $driver;
 	$type = $field["type"];
 	echo "<td><select name='" . h($key) . "[type]' class='type' aria-labelledby='label-type'>";
-	if ($type && !array_key_exists($type, $driver->types()) && !isset($foreign_keys[$type]) && !in_array($type, $extra_types)) {
+	if ($type && !array_key_exists($type, driver()->types()) && !isset($foreign_keys[$type]) && !in_array($type, $extra_types)) {
 		$extra_types[] = $type;
 	}
-	$structured_types = $driver->structuredTypes();
+	$structured_types = driver()->structuredTypes();
 	if ($foreign_keys) {
 		$structured_types[lang('Foreign keys')] = $foreign_keys;
 	}
@@ -192,13 +190,13 @@ function edit_type(string $key, array $field, array $collations, array $foreign_
 		? "<input list='collations' name='" . h($key) . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'") . " value='" . h($field["collation"]) . "' placeholder='(" . lang('collation') . ")'>"
 		: ''
 	);
-	echo ($driver->unsigned ? "<select name='" . h($key) . "[unsigned]'" . (!$type || preg_match(number_type(), $type) ? "" : " class='hidden'") . '><option>' . optionlist($driver->unsigned, $field["unsigned"]) . '</select>' : '');
+	echo (driver()->unsigned ? "<select name='" . h($key) . "[unsigned]'" . (!$type || preg_match(number_type(), $type) ? "" : " class='hidden'") . '><option>' . optionlist(driver()->unsigned, $field["unsigned"]) . '</select>' : '');
 	echo (isset($field['on_update']) ? "<select name='" . h($key) . "[on_update]'" . (preg_match('~timestamp|datetime~', $type) ? "" : " class='hidden'") . '>'
 		. optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), (preg_match('~^CURRENT_TIMESTAMP~i', $field["on_update"]) ? "CURRENT_TIMESTAMP" : $field["on_update"]))
 		. '</select>' : ''
 	);
 	echo ($foreign_keys
-		? "<select name='" . h($key) . "[on_delete]'" . (preg_match("~`~", $type) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", $driver->onActions), $field["on_delete"]) . "</select> "
+		? "<select name='" . h($key) . "[on_delete]'" . (preg_match("~`~", $type) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", driver()->onActions), $field["on_delete"]) . "</select> "
 		: " " // space for IE
 	);
 }
@@ -207,9 +205,8 @@ function edit_type(string $key, array $field, array $collations, array $foreign_
 * @return array{partition_by:string, partition:string, partitions:string, partition_names:list<string>, partition_values:list<string>}
 */
 function get_partitions_info(string $table): array {
-	global $connection;
 	$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . q(DB) . " AND TABLE_NAME = " . q($table);
-	$result = $connection->query("SELECT PARTITION_METHOD, PARTITION_EXPRESSION, PARTITION_ORDINAL_POSITION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
+	$result = connection()->query("SELECT PARTITION_METHOD, PARTITION_EXPRESSION, PARTITION_ORDINAL_POSITION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
 	$return = array();
 	list($return["partition_by"], $return["partition"], $return["partitions"]) = $result->fetch_row();
 	$partitions = get_key_vals("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION");
@@ -220,8 +217,7 @@ function get_partitions_info(string $table): array {
 
 /** Filter length value including enums */
 function process_length(?string $length): string {
-	global $driver;
-	$enum_length = $driver->enumLength;
+	$enum_length = driver()->enumLength;
 	return (preg_match("~^\\s*\\(?\\s*$enum_length(?:\\s*,\\s*$enum_length)*+\\s*\\)?\\s*\$~", $length) && preg_match_all("~$enum_length~", $length, $matches)
 		? "(" . implode(",", $matches[0]) . ")"
 		: preg_replace('~^[0-9].*~', '(\0)', preg_replace('~[^-0-9,+()[\]]~', '', $length))
@@ -232,10 +228,9 @@ function process_length(?string $length): string {
 * @param FieldType $field
 */
 function process_type(array $field, string $collate = "COLLATE"): string {
-	global $driver;
 	return " $field[type]"
 		. process_length($field["length"])
-		. (preg_match(number_type(), $field["type"]) && in_array($field["unsigned"], $driver->unsigned) ? " $field[unsigned]" : "")
+		. (preg_match(number_type(), $field["type"]) && in_array($field["unsigned"], driver()->unsigned) ? " $field[unsigned]" : "")
 		. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " $collate " . (JUSH == "mssql" ? $field["collation"] : q($field["collation"])) : "")
 	;
 }
@@ -265,10 +260,9 @@ function process_field(array $field, array $type_field): array {
 * @param Field $field
 */
 function default_value(array $field): string {
-	global $driver;
 	$default = $field["default"];
 	$generated = $field["generated"];
-	return ($default === null ? "" : (in_array($generated, $driver->generated)
+	return ($default === null ? "" : (in_array($generated, driver()->generated)
 		? (JUSH == "mssql" ? " AS ($default)" . ($generated == "VIRTUAL" ? "" : " $generated") . "" : " GENERATED ALWAYS AS ($default) $generated")
 		: " DEFAULT " . (!preg_match('~^GENERATED ~i', $default) && (preg_match('~char|binary|text|json|enum|set~', $field["type"]) || preg_match('~^(?![a-z])~i', $default))
 			? (JUSH == "sql" && preg_match('~text|json~', $field["type"]) ? "(" . q($default) . ")" : q($default)) // MySQL requires () around default value of text column
@@ -302,7 +296,6 @@ function type_class(string $type) {
 * @param string[] $foreign_keys
 */
 function edit_fields(array $fields, array $collations, $type = "TABLE", array $foreign_keys = array()): void {
-	global $driver;
 	$fields = array_values($fields);
 	$default_class = (($_POST ? $_POST["defaults"] : get_setting("defaults")) ? "" : " class='hidden'");
 	$comment_class = (($_POST ? $_POST["comments"] : get_setting("comments")) ? "" : " class='hidden'");
@@ -333,7 +326,7 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 		$orig = $field[($_POST ? "orig" : "field")];
 		$display = (isset($_POST["add"][$i-1]) || (isset($field["field"]) && !idx($_POST["drop_col"], $i))) && (support("drop_col") || $orig == "");
 		echo "<tr" . ($display ? "" : " style='display: none;'") . ">\n";
-		echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", $driver->inout), $field["inout"]) : "") . "<th>";
+		echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", driver()->inout), $field["inout"]) : "") . "<th>";
 		if ($display) {
 			echo "<input name='fields[$i][field]' value='" . h($field["field"]) . "' data-maxlength='64' autocapitalize='off' aria-labelledby='label-name'>";
 		}
@@ -342,8 +335,8 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 		if ($type == "TABLE") {
 			echo "<td>" . checkbox("fields[$i][null]", 1, $field["null"], "", "", "block", "label-null");
 			echo "<td><label class='block'><input type='radio' name='auto_increment_col' value='$i'" . ($field["auto_increment"] ? " checked" : "") . " aria-labelledby='label-ai'></label>";
-			echo "<td$default_class>" . ($driver->generated
-				? html_select("fields[$i][generated]", array_merge(array("", "DEFAULT"), $driver->generated), $field["generated"]) . " "
+			echo "<td$default_class>" . (driver()->generated
+				? html_select("fields[$i][generated]", array_merge(array("", "DEFAULT"), driver()->generated), $field["generated"]) . " "
 				: checkbox("fields[$i][generated]", 1, $field["generated"], "", "", "", "label-default")
 			);
 			echo "<input name='fields[$i][default]' value='" . h($field["default"]) . "' aria-labelledby='label-default'>";
@@ -472,13 +465,12 @@ function create_trigger(string $on, array $row): string {
 * @param Routine $row
 */
 function create_routine($routine, array $row): string {
-	global $driver;
 	$set = array();
 	$fields = (array) $row["fields"];
 	ksort($fields); // enforce fields order
 	foreach ($fields as $field) {
 		if ($field["field"] != "") {
-			$set[] = (preg_match("~^($driver->inout)\$~", $field["inout"]) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
+			$set[] = (preg_match("~^(driver()->inout)\$~", $field["inout"]) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
 		}
 	}
 	$definition = rtrim($row["definition"], ";");
@@ -500,7 +492,6 @@ function remove_definer(string $query): string {
 * @param ForeignKey $foreign_key
 */
 function format_foreign_key(array $foreign_key): string {
-	global $driver;
 	$db = $foreign_key["db"];
 	$ns = $foreign_key["ns"];
 	return " FOREIGN KEY (" . implode(", ", array_map('Adminer\idf_escape', $foreign_key["source"])) . ") REFERENCES "
@@ -508,8 +499,8 @@ function format_foreign_key(array $foreign_key): string {
 		. ($ns != "" && $ns != $_GET["ns"] ? idf_escape($ns) . "." : "")
 		. idf_escape($foreign_key["table"])
 		. " (" . implode(", ", array_map('Adminer\idf_escape', $foreign_key["target"])) . ")" //! reuse $name - check in older MySQL versions
-		. (preg_match("~^($driver->onActions)\$~", $foreign_key["on_delete"]) ? " ON DELETE $foreign_key[on_delete]" : "")
-		. (preg_match("~^($driver->onActions)\$~", $foreign_key["on_update"]) ? " ON UPDATE $foreign_key[on_update]" : "")
+		. (preg_match("~^(driver()->onActions)\$~", $foreign_key["on_delete"]) ? " ON DELETE $foreign_key[on_delete]" : "")
+		. (preg_match("~^(driver()->onActions)\$~", $foreign_key["on_update"]) ? " ON UPDATE $foreign_key[on_update]" : "")
 	;
 }
 
@@ -550,17 +541,16 @@ function ini_bytes(string $ini): int {
 * @return string HTML code
 */
 function doc_link(array $paths, string $text = "<sup>?</sup>"): string {
-	global $connection;
-	$server_info = $connection->server_info;
+	$server_info = connection()->server_info;
 	$version = preg_replace('~^(\d\.?\d).*~s', '\1', $server_info); // two most significant digits
 	$urls = array(
 		'sql' => "https://dev.mysql.com/doc/refman/$version/en/",
 		'sqlite' => "https://www.sqlite.org/",
-		'pgsql' => "https://www.postgresql.org/docs/" . ($connection->flavor == 'cockroach' ? "current" : $version) . "/",
+		'pgsql' => "https://www.postgresql.org/docs/" . (connection()->flavor == 'cockroach' ? "current" : $version) . "/",
 		'mssql' => "https://learn.microsoft.com/en-us/sql/",
 		'oracle' => "https://www.oracle.com/pls/topic/lookup?ctx=db" . preg_replace('~^.* (\d+)\.(\d+)\.\d+\.\d+\.\d+.*~s', '\1\2', $server_info) . "&id=",
 	);
-	if ($connection->flavor == 'maria') {
+	if (connection()->flavor == 'maria') {
 		$urls['sql'] = "https://mariadb.com/kb/en/";
 		$paths['sql'] = (isset($paths['mariadb']) ? $paths['mariadb'] : str_replace(".html", "/", $paths['sql']));
 	}
@@ -571,8 +561,7 @@ function doc_link(array $paths, string $text = "<sup>?</sup>"): string {
 * @return string formatted
 */
 function db_size(string $db): string {
-	global $connection;
-	if (!$connection->select_db($db)) {
+	if (!connection()->select_db($db)) {
 		return "?";
 	}
 	$return = 0;
@@ -584,10 +573,9 @@ function db_size(string $db): string {
 
 /** Print SET NAMES if utf8mb4 might be needed */
 function set_utf8mb4(string $create): void {
-	global $connection;
 	static $set = false;
 	if (!$set && preg_match('~\butf8mb4~i', $create)) { // possible false positive
 		$set = true;
-		echo "SET NAMES " . charset($connection) . ";\n\n";
+		echo "SET NAMES " . charset(connection()) . ";\n\n";
 	}
 }

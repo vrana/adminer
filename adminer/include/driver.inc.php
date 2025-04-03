@@ -1,22 +1,20 @@
 <?php
 namespace Adminer;
 
-$drivers = array();
-
-/** Add a driver */
+/** Add or overwrite a driver */
 function add_driver(string $id, string $name): void {
-	global $drivers;
-	$drivers[$id] = $name;
+	SqlDriver::$drivers[$id] = $name;
 }
 
 /** Get driver name */
 function get_driver(string $id): string {
-	global $drivers;
-	return $drivers[$id];
+	return SqlDriver::$drivers[$id];
 }
 
 abstract class SqlDriver {
-	/** @var list<string> */ static array $possibleDrivers = array();
+	static Driver $instance;
+	/** @var string[] */ static array $drivers = array(); // all available drivers
+	/** @var list<string> */ static array $extensions = array(); // possible extensions in the current driver
 	static string $jush; // JUSH identifier
 
 	protected Db $conn;
@@ -31,6 +29,14 @@ abstract class SqlDriver {
 	public string $inout = "IN|OUT|INOUT"; // used in routines
 	public string $enumLength = "'(?:''|[^'\\\\]|\\\\.)*'"; // regular expression for parsing enum lengths
 	/** @var list<string> */ public array $generated = array(); // allowed types of generated columns
+
+	/** Connect to the database
+	* @return Db|string string for error
+	*/
+	static function connect(?string $server, string $username, string $password) {
+		$connection = new Db;
+		return ($connection->attach($server, $username, $password) ?: $connection);
+	}
 
 	/** Create object for performing database operations */
 	function __construct(Db $connection) {
@@ -66,24 +72,23 @@ abstract class SqlDriver {
 	}
 
 	/** Select data from table
-	* @param list<string> $select result of $adminer->selectColumnsProcess()[0]
-	* @param list<string> $where result of $adminer->selectSearchProcess()
-	* @param list<string> $group result of $adminer->selectColumnsProcess()[1]
-	* @param list<string> $order result of $adminer->selectOrderProcess()
-	* @param int|numeric-string $limit result of $adminer->selectLimitProcess()
+	* @param list<string> $select result of adminer()->selectColumnsProcess()[0]
+	* @param list<string> $where result of adminer()->selectSearchProcess()
+	* @param list<string> $group result of adminer()->selectColumnsProcess()[1]
+	* @param list<string> $order result of adminer()->selectOrderProcess()
+	* @param int $limit result of adminer()->selectLimitProcess()
 	* @param int $page index of page starting at zero
 	* @param bool $print whether to print the query
 	* @return Result|false
 	*/
-	function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, ?int $page = 0, bool $print = false) {
-		global $adminer;
+	function select(string $table, array $select, array $where, array $group, array $order = array(), int $limit = 1, ?int $page = 0, bool $print = false) {
 		$is_group = (count($group) < count($select));
-		$query = $adminer->selectQueryBuild($select, $where, $group, $order, $limit, $page);
+		$query = adminer()->selectQueryBuild($select, $where, $group, $order, $limit, $page);
 		if (!$query) {
 			$query = "SELECT" . limit(
-				($_GET["page"] != "last" && $limit != "" && $group && $is_group && JUSH == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) . "\nFROM " . table($table),
+				($_GET["page"] != "last" && $limit && $group && $is_group && JUSH == "sql" ? "SQL_CALC_FOUND_ROWS " : "") . implode(", ", $select) . "\nFROM " . table($table),
 				($where ? "\nWHERE " . implode(" AND ", $where) : "") . ($group && $is_group ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : ""),
-				($limit != "" ? +$limit : null),
+				$limit,
 				($page ? $limit * $page : 0),
 				"\n"
 			);
@@ -91,7 +96,7 @@ abstract class SqlDriver {
 		$start = microtime(true);
 		$return = $this->conn->query($query);
 		if ($print) {
-			echo $adminer->selectQuery($query, $start, !$return);
+			echo adminer()->selectQuery($query, $start, !$return);
 		}
 		return $return;
 	}
@@ -244,6 +249,21 @@ FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS c
 JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS t ON c.CONSTRAINT_SCHEMA = t.CONSTRAINT_SCHEMA AND c.CONSTRAINT_NAME = t.CONSTRAINT_NAME
 WHERE c.CONSTRAINT_SCHEMA = " . q($_GET["ns"] != "" ? $_GET["ns"] : DB) . "
 AND t.TABLE_NAME = " . q($table) . "
-AND CHECK_CLAUSE NOT LIKE '% IS NOT NULL'"); // ignore default IS NOT NULL checks in PostrgreSQL
+AND CHECK_CLAUSE NOT LIKE '% IS NOT NULL'", $this->conn); // ignore default IS NOT NULL checks in PostrgreSQL
+	}
+
+	/** Get all fields in the current schema
+	* @return array<list<array{field:string, null:bool, type:string, length:?numeric-string, primary?:numeric-string}>>
+	*/
+	function allFields(): array {
+		$return = array();
+		foreach (get_rows("SELECT TABLE_NAME AS tab, COLUMN_NAME AS field, IS_NULLABLE AS nullable, DATA_TYPE AS type, CHARACTER_MAXIMUM_LENGTH AS length" . (JUSH == 'sql' ? ", COLUMN_KEY = 'PRI' AS `primary`" : "") . "
+FROM INFORMATION_SCHEMA.COLUMNS
+WHERE TABLE_SCHEMA = " . q($_GET["ns"] != "" ? $_GET["ns"] : DB) . "
+ORDER BY TABLE_NAME, ORDINAL_POSITION", $this->conn) as $row) {
+			$row["null"] = ($row["nullable"] == "YES");
+			$return[$row["tab"]][] = $row;
+		}
+		return $return;
 	}
 }

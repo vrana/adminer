@@ -9,32 +9,35 @@
 */
 class AdminerCodemirror {
 	private $root;
+	private $minified;
 
-	function __construct($root = "codemirror5") {
+	function __construct($root = "https://cdn.jsdelivr.net/npm/codemirror@5", $minified = ".min") {
 		$this->root = $root;
+		$this->minified = $minified;
 	}
 
 	function syntaxHighlighting($tableStatuses) {
-		$connection = Adminer\connection();
 		?>
 <style>
-@import url(<?php echo $this->root; ?>/lib/codemirror.css);
-@import url(<?php echo $this->root; ?>/addon/hint/show-hint.css);
+@import url(<?php echo $this->root; ?>/lib/codemirror<?php echo $this->minified; ?>.css);
+@import url(<?php echo $this->root; ?>/addon/hint/show-hint<?php echo $this->minified; ?>.css);
 .CodeMirror { border: 1px inset #ccc; resize: both; }
 </style>
 <?php
-		echo Adminer\script_src("$this->root/lib/codemirror.js");
-		echo Adminer\script_src("$this->root/addon/runmode/runmode.js");
-		echo Adminer\script_src("$this->root/addon/hint/show-hint.js");
-		echo Adminer\script_src("$this->root/mode/javascript/javascript.js");
+		echo Adminer\script_src("$this->root/lib/codemirror$this->minified.js");
+		echo Adminer\script_src("$this->root/addon/runmode/runmode$this->minified.js");
+		echo Adminer\script_src("$this->root/addon/hint/show-hint$this->minified.js");
+		echo Adminer\script_src("$this->root/mode/javascript/javascript$this->minified.js");
+		$tables = array_fill_keys(array_keys($tableStatuses), array());
 		if (Adminer\support("sql")) {
-			echo Adminer\script_src("$this->root/mode/sql/sql.js");
-			echo Adminer\script_src("$this->root/addon/hint/sql-hint.js");
-		}
-		$tables = array();
-		foreach ($tableStatuses as $status) {
-			foreach (Adminer\fields($status["Name"]) as $name => $field) {
-				$tables[$status["Name"]][] = $name;
+			echo Adminer\script_src("$this->root/mode/sql/sql$this->minified.js");
+			echo Adminer\script_src("$this->root/addon/hint/sql-hint$this->minified.js");
+			if (isset($_GET["sql"]) || isset($_GET["trigger"]) || isset($_GET["check"])) {
+				foreach (Adminer\driver()->allFields() as $table => $fields) {
+					foreach ($fields as $field) {
+						$tables[$table][] = $field["field"];
+					}
+				}
 			}
 		}
 		?>
@@ -44,7 +47,7 @@ function getCmMode(el) {
 	if (match) {
 		const modes = {
 			js: 'application/json',
-			sql: 'text/x-<?php echo ($connection->flavor == "maria" ? "mariadb" : "mysql"); ?>',
+			sql: 'text/x-<?php echo (Adminer\connection()->flavor == "maria" ? "mariadb" : "mysql"); ?>',
 			oracle: 'text/x-sql',
 			clickhouse: 'text/x-sql',
 			firebird: 'text/x-sql'
@@ -53,13 +56,15 @@ function getCmMode(el) {
 	}
 }
 
-for (const el of qsa('code')) {
+adminerHighlighter = els => els.forEach(el => {
 	const mode = getCmMode(el);
 	if (mode) {
 		el.classList.add('cm-s-default');
 		CodeMirror.runMode(el.textContent, mode, el);
 	}
-}
+});
+
+adminerHighlighter(qsa('code'));
 
 for (const el of qsa('textarea')) {
 	const mode = getCmMode(el);
@@ -72,7 +77,7 @@ for (const el of qsa('textarea')) {
 			hintOptions: {
 				completeSingle: false,
 				tables: <?php echo json_encode($tables); ?>,
-				defaultTable: <?php echo json_encode($_GET["trigger"] ? $_GET["trigger"] : ($_GET["check"] ?: null)); ?>
+				defaultTable: <?php echo json_encode($_GET["trigger"] ?: ($_GET["check"] ?: null)); ?>
 			}
 		});
 		cm.setSize(width, height);
@@ -83,6 +88,7 @@ for (const el of qsa('textarea')) {
 			}
 		});
 		setupSubmitHighlightInput(cm.getWrapperElement());
+		el.onchange = () => cm.setValue(el.value);
 	}
 }
 </script>

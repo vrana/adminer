@@ -39,7 +39,7 @@ if ($_GET["script"] == "version") {
 	exit;
 }
 
-global $adminer, $connection, $driver, $drivers, $permanent, $has_token, $translations; // allows including Adminer inside a function
+// Adminer doesn't use any global variables; they used to be declared here
 
 if (!$_SERVER["REQUEST_URI"]) { // IIS 5 compatibility
 	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"];
@@ -81,18 +81,18 @@ include "./include/adminer.inc.php";
 include "../adminer/include/plugins.inc.php";
 
 if (function_exists('adminer_object')) {
-	$adminer = adminer_object();
+	Adminer::$instance = adminer_object();
 } elseif (is_dir("adminer-plugins") || file_exists("adminer-plugins.php")) {
-	$adminer = new Plugins(null);
+	Adminer::$instance = new Plugins(null);
 } else {
-	$adminer = new Adminer;
+	Adminer::$instance = new Adminer;
 }
 
 // this is matched by compile.php
 include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
 
 define('Adminer\JUSH', Driver::$jush);
-define('Adminer\SERVER', $_GET[DRIVER]); // read from pgsql=localhost
+define('Adminer\SERVER', $_GET[DRIVER]); // read from pgsql=localhost, '' means default server, null means no server
 define('Adminer\DB', $_GET["db"]); // for the sake of speed and size
 define(
 	'Adminer\ME',

@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-$translations = array(
+Lang::$translations = array(
 	'Login' => 'Login',
 	'Logout successful.' => 'Abmeldung erfolgreich.',
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Danke, dass Sie Adminer genutzt haben. <a href="https://www.adminer.org/de/donation/">Spenden willkommen!</a>.',
@@ -294,7 +294,7 @@ $translations = array(
 	'DB' => 'DB',
 	'ATTACH queries are not supported.' => 'ATTACH Abfragen werden nicht unterstützt.',
 	'Warnings' => 'Warnungen',
-	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer unterstützt den Zugriff auf eine Datenbank ohne Passwort nicht, <a href="https://www.adminer.org/en/password/"%s>mehr Informationen</a>.',
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer unterstützt den Zugriff auf eine Datenbank ohne Passwort nicht, <a href="https://www.adminer.org/de/password/"%s>mehr Informationen</a>.',
 	'Full table scan' => 'Vollständige Überprüfung der Tabelle',
 	'The action will be performed after successful login with the same credentials.' => 'Die Aktion wird nach erfolgreicher Anmeldung mit denselben Anmeldedaten ausgeführt.',
 	'Connecting to privileged ports is not allowed.' => 'Die Verbindung zu privilegierten Ports ist nicht erlaubt.',

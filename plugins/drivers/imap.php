@@ -24,16 +24,13 @@ if (isset($_GET["imap"])) {
 			private $mailbox;
 			private $imap;
 
-			function connect(string $server, string $username, string $password): bool {
+			function attach(?string $server, string $username, string $password): string {
 				$this->mailbox = "{" . "$server:993/ssl}"; // Adminer disallows specifying privileged port in server name
 				$this->imap = @imap_open($this->mailbox, $username, $password, OP_HALFOPEN, 1);
-				if (!$this->imap) {
-					$this->error = imap_last_error();
-				}
-				return $this->imap;
+				return ($this->imap ? '' : imap_last_error());
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				return ($database == "mail");
 			}
 
@@ -143,7 +140,7 @@ if (isset($_GET["imap"])) {
 	}
 
 	class Driver extends SqlDriver {
-		static array $possibleDrivers = array("imap");
+		static array $extensions = array("imap");
 		static string $jush = "imap";
 		public array $insertFunctions = array("json");
 	}
@@ -211,7 +208,7 @@ if (isset($_GET["imap"])) {
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
-		return " $query$where" . ($limit !== null ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
+		return " $query$where" . ($limit ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
 	function idf_escape($idf) {
@@ -271,14 +268,6 @@ if (isset($_GET["imap"])) {
 
 	function truncate_tables($tables) {
 		return connection()->expunge();
-	}
-
-	function connect($credentials) {
-		$connection = new Db;
-		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
-			return $connection;
-		}
-		return $connection->error;
 	}
 
 	function support($feature) {

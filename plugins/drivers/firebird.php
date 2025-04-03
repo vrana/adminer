@@ -14,24 +14,22 @@ if (isset($_GET["firebird"])) {
 		class Db extends SqlDb {
 			public string $extension = "Firebird", $_link;
 
-			function connect(string $server, string $username, string $password): bool {
+			function attach(?string $server, string $username, string $password): string {
 				$this->_link = ibase_connect($server, $username, $password);
 				if ($this->_link) {
 					$url_parts = explode(':', $server);
 					$service_link = ibase_service_attach($url_parts[0], $username, $password);
 					$this->server_info = ibase_server_info($service_link, IBASE_SVC_SERVER_VERSION);
-				} else {
-					$this->errno = ibase_errcode();
-					$this->error = ibase_errmsg();
+					return '';
 				}
-				return (bool) $this->_link;
+				return ibase_errmsg();
 			}
 
 			function quote(string $string): string {
 				return "'" . str_replace("'", "''", $string) . "'";
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				return ($database == "domain");
 			}
 
@@ -87,7 +85,7 @@ if (isset($_GET["firebird"])) {
 
 
 	class Driver extends SqlDriver {
-		static array $possibleDrivers = array("interbase");
+		static array $extensions = array("interbase");
 		static string $jush = "firebird";
 
 		public array $operators = array("=");
@@ -103,21 +101,13 @@ if (isset($_GET["firebird"])) {
 		return idf_escape($idf);
 	}
 
-	function connect($credentials) {
-		$connection = new Db;
-		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
-			return $connection;
-		}
-		return $connection->error;
-	}
-
 	function get_databases($flush) {
 		return array("domain");
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
 		$return = '';
-		$return .= ($limit !== null ? $separator . "FIRST $limit" . ($offset ? " SKIP $offset" : "") : "");
+		$return .= ($limit ? $separator . "FIRST $limit" . ($offset ? " SKIP $offset" : "") : "");
 		$return .= " $query$where";
 		return $return;
 	}
@@ -130,15 +120,13 @@ if (isset($_GET["firebird"])) {
 	}
 
 	function logged_user() {
-		$adminer = adminer();
-		$credentials = $adminer->credentials();
+		$credentials = adminer()->credentials();
 		return $credentials[1];
 	}
 
 	function tables_list() {
-		$connection = connection();
 		$query = 'SELECT RDB$RELATION_NAME FROM rdb$relations WHERE rdb$system_flag = 0';
-		$result = ibase_query($connection->_link, $query);
+		$result = ibase_query(connection()->_link, $query);
 		$return = array();
 		while ($row = ibase_fetch_assoc($result)) {
 				$return[$row['RDB$RELATION_NAME']] = 'table';
@@ -152,7 +140,6 @@ if (isset($_GET["firebird"])) {
 	}
 
 	function table_status($name = "", $fast = false) {
-		$connection = connection();
 		$return = array();
 		$data = ($name != "" ? array($name => 1) : tables_list());
 		foreach ($data as $index => $val) {
@@ -174,7 +161,6 @@ if (isset($_GET["firebird"])) {
 	}
 
 	function fields($table) {
-		$connection = connection();
 		$return = array();
 		$query = 'SELECT r.RDB$FIELD_NAME AS field_name,
 r.RDB$DESCRIPTION AS field_description,
@@ -209,7 +195,7 @@ LEFT JOIN RDB$COLLATIONS coll ON f.RDB$COLLATION_ID = coll.RDB$COLLATION_ID
 LEFT JOIN RDB$CHARACTER_SETS cset ON f.RDB$CHARACTER_SET_ID = cset.RDB$CHARACTER_SET_ID
 WHERE r.RDB$RELATION_NAME = ' . q($table) . '
 ORDER BY r.RDB$FIELD_POSITION';
-		$result = ibase_query($connection->_link, $query);
+		$result = ibase_query(connection()->_link, $query);
 		while ($row = ibase_fetch_assoc($result)) {
 			$return[trim($row['FIELD_NAME'])] = array(
 				"field" => trim($row["FIELD_NAME"]),
@@ -256,8 +242,7 @@ ORDER BY RDB$INDEX_SEGMENTS.RDB$FIELD_POSITION';
 	}
 
 	function error() {
-		$connection = connection();
-		return h($connection->error);
+		return h(connection()->error);
 	}
 
 	function types(): array {

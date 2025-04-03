@@ -1,13 +1,18 @@
 /** @author Ondrej Valka, http://valka.info */
 
-body { color: #000; background: #fff; font: 90%/1.25 Verdana, Arial, Helvetica, sans-serif; margin: 0; min-width: fit-content; }
+html {
+	--bg: #fff;
+	--fg: #000;
+}
+
+body { color: var(--fg); background: var(--bg); font: 90%/1.25 Verdana, Arial, Helvetica, sans-serif; margin: 0; min-width: fit-content; }
 a { color: blue; text-decoration: none; }
 a:visited { color: navy; }
 a:link:hover, a:visited:hover { color: red; text-decoration: underline; }
 a.text:hover { text-decoration: none; }
 a.jush-help:hover { color: inherit; }
 h1 { font-size: 150%; margin: 0; padding: .8em 1em; border-bottom: 1px solid #999; font-weight: normal; color: #777; background: #eee; }
-h2 { font-size: 150%; margin: 0 0 20px -18px; padding: .8em 1em; border-bottom: 1px solid #000; color: #000; font-weight: normal; background: #ddf; }
+h2 { font-size: 150%; margin: 0 0 20px -18px; padding: .8em 1em; border-bottom: 1px solid var(--fg); font-weight: normal; background: #ddf; }
 h3 { font-weight: normal; font-size: 130%; margin: 1em 0 0; }
 form { margin: 0; }
 td table { width: 100%; margin: 0; }
@@ -27,7 +32,7 @@ code { font-size: 110%; padding: 1px 2px; background: #eee; }
 pre { margin: 1em 0 0; }
 td pre { margin: 0; }
 pre, textarea { font: 110%/1.25 monospace; }
-pre.jush { background: #fff; }
+pre.jush { background: var(--bg); }
 pre code { display: block; font-size: 100%; }
 input, textarea { box-sizing: border-box; }
 input, select { vertical-align: middle; }
@@ -42,9 +47,9 @@ input.wayoff { left: -1000px; position: absolute; }
 .nowrap td, .nowrap th, td.nowrap, p.nowrap { white-space: pre; }
 .wrap td { white-space: normal; }
 .error { color: red; background: #fee; }
-.error b { background: #fff; font-weight: normal; }
+.error b { background: var(--bg); font-weight: normal; }
 .message { color: green; background: #efe; }
-.message table { color: #000; background: #fff; }
+.message table { color: var(--fg); background: var(--bg); }
 .error, .message { padding: .5em .8em; margin: 1em 20px 0 0; }
 .char { color: #007F00; }
 .date { color: #7F007F; }
@@ -64,14 +69,10 @@ input.wayoff { left: -1000px; position: absolute; }
 .icon { width: 18px; height: 18px; background-color: navy; border: 0; vertical-align: middle; }
 .icon span { display: none; }
 .icon:hover { background-color: red; }
-.icon-up { background-image: url(up.gif); }
-.icon-down { background-image: url(down.gif); }
-.icon-plus { background-image: url(plus.gif); }
-.icon-cross { background-image: url(cross.gif); }
 .size { width: 7ex; }
 .help { cursor: help; }
-.footer { position: sticky; bottom: 0; margin-right: -20px; border-top: 20px solid rgba(255, 255, 255, .7); border-image: linear-gradient(rgba(255, 255, 255, .2), #fff) 100% 0; }
-.footer > div { background: #fff; padding: 0 0 .5em; }
+.footer { position: sticky; bottom: 0; margin-right: -20px; border-top: 20px solid rgb(from var(--bg) r g b / .7); border-image: linear-gradient(rgb(from var(--bg) r g b / .2), var(--bg)) 100% 0; }
+.footer > div { background: var(--bg); padding: 0 0 .5em; }
 .footer fieldset { margin-top: 0; }
 .links a { white-space: nowrap; margin-right: 20px; }
 .logout { margin-top: .5em; position: absolute; top: 0; right: 0; }
@@ -82,17 +83,25 @@ input.wayoff { left: -1000px; position: absolute; }
 #logins li, #tables li { list-style: none; }
 #dbs { overflow: hidden; }
 #logins, #tables { white-space: nowrap; overflow: hidden; }
-#logins a, #tables a, #tables span { background: #fff; }
+#logins a, #tables a, #tables span { background: var(--bg); }
 #content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
 #lang { position: absolute; top: -2.6em; left: 0; padding: .3em 1em; }
+#menuopen { display: none; }
 #breadcrumb { white-space: nowrap; position: absolute; top: 0; left: 21em; background: #eee; height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0 0 0 -18px; }
 #h1 { color: #777; text-decoration: none; font-style: italic; }
 #version { color: red; }
 #schema { margin-left: 60px; position: relative; user-select: none; -webkit-user-select: none; }
 #schema .table { border: 1px solid silver; padding: 0 2px; cursor: move; position: absolute; }
 #schema .references { position: absolute; }
-#schema .arrow { height: 1.25em; background: url(arrow.gif) no-repeat right center; }
 #help { position: absolute; border: 1px solid #999; background: #eee; padding: 5px; font-family: monospace; z-index: 1; }
+
+/* inlined here and not in compile.php because otherwise the development version flickers a little bit when loading the images */
+.icon-up { background-image: url(data:image/gif;base64,R0lGODlhEgASAIEAMe7u7gAAgJmZmQAAACH5BAEAAAEALAAAAAASABIAAQIghI+py+0PTQhRTgrvfRP0nmEVOIoReZphxbauAMfyHBcAOw==); }
+.icon-down { background-image: url(data:image/gif;base64,R0lGODlhEgASAIEAMe7u7gAAgJmZmQAAACH5BAEAAAEALAAAAAASABIAAQIghI+py+0PTQjxzCopvltX/lyix0wm2ZwdxraVAMfyHBcAOw==); }
+.icon-plus { background-image: url(data:image/gif;base64,R0lGODlhEgASAIEAMe7u7gAAgJmZmQAAACH5BAEAAAEALAAAAAASABIAAQIhhI+py+0PTQjxzCopvm/6rykgCHGVGaFliLXuI8TyTMsFADs=); }
+.icon-cross { background-image: url(data:image/gif;base64,R0lGODlhEgASAIEAMe7u7gAAgJmZmQAAACH5BAEAAAEALAAAAAASABIAAQIjhI+py+0PIwph1kZvfnnDLoFfd2GU4THnsUruC0fCTNc2XQAAOw==); }
+.icon-move { background-image: url(data:image/gif;base64,R0lGODlhEgASAJEAAO7u7gAAAJmZmQAAACH5BAEAAAEALAAAAAASABIAAAIfhI+py+3vgpyU0Rug3gnX5U3cqIWSZZLqigjuC8dvAQA7); }
+#schema .arrow { height: 1.25em; background: url(data:image/gif;base64,R0lGODlhCAAKAIAAAICAgP///yH5BAEAAAEALAAAAAAIAAoAAAIPBIJplrGLnpQRqtOy3rsAADs=) no-repeat right center; }
 
 .rtl h2 { margin: 0 -18px 20px 0; }
 .rtl p, .rtl table, .rtl .error, .rtl .message { margin: 1em 0 0 20px; }
@@ -106,11 +115,14 @@ input.wayoff { left: -1000px; position: absolute; }
 
 @media all and (max-width: 880px) {
 	.pages { left: auto; }
-	.logout { position: static; padding: 1em; }
-	#menu { position: static; width: auto; }
+	.logout { padding: 1em; top: 3em; }
+	#menu { width: auto; background: var(--bg); border: 1px solid var(--fg); }
 	#content { margin-left: 10px; }
 	#lang { position: static; }
-	#breadcrumb { left: auto; }
+	#breadcrumb { left: 48px; }
+	.js .foot { display: none; }
+	.js #menuopen { display: block; position: absolute; top: 3px; left: 6px; }
+	.nojs .logout, .nojs #menu { position: static; }
 	.rtl .pages { right: auto; }
 	.rtl #content { margin-right: 10px; }
 	.rtl #breadcrumb { right: auto; }

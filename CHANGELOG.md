@@ -1,7 +1,20 @@
 ## Adminer dev
-Export: Fix tar (regression from 5.0.3)
-Elasticsearch: Make it work with Elasticsearch 8
-CSS: Invert icons in dark mode
+- Autocomplete SQL commands
+- Do not edit NULL values by Modify (bug #967)
+- PostgreSQL: Support COPY FROM stdin in SQL query (bug #942)
+- MySQL: Display number of found rows in group queries (regression from 5.1.1)
+- non-MySQL: Parse '--' without trailing space as comment in SQL command (bug SF-842)
+
+## Adminer 5.1.1 (released 2025-04-02)
+- Export: Fix tar (regression from 5.0.3)
+- Select: Allow ordering by COUNT(*) (bug #966, regression from 5.0.2)
+- Optimize retrieving columns for schema
+- Elasticsearch: Make it work with Elasticsearch 8
+- CSS: Hide menu on mobile
+- CSS: Invert icons in dark mode
+- Plugins: Allow changing CSP by more plugins
+- New plugin: Use Monaco Editor for syntax highlighting
+- New plugin: Use Prism for syntax highlighting
 
 ## Adminer 5.1.0 (released 2025-03-24)
 - Display collation at table structure if different from table

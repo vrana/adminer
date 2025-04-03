@@ -15,6 +15,10 @@
 /*! normalize.css v4.2.0 | MIT License | github.com/necolas/normalize.css */
 
 html {
+	--bg: #eef0f0;
+}
+
+html {
 	font-family: sans-serif;
 	line-height: 1.15;
 	-ms-text-size-adjust: 100%;

@@ -27,8 +27,7 @@ class AdminerDumpJson {
 				$this->database = true;
 				echo "{\n";
 			}
-			$connection = Adminer\connection();
-			$result = $connection->query($query, 1);
+			$result = Adminer\connection()->query($query, 1);
 			if ($result) {
 				echo '"' . addcslashes($table, "\r\n\"\\") . "\": [\n";
 				$first = true;

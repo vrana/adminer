@@ -1,39 +1,38 @@
 <?php
 namespace Adminer;
 
-$drivers = array("server" => "MySQL / MariaDB") + $drivers;
+SqlDriver::$drivers = array("server" => "MySQL / MariaDB") + SqlDriver::$drivers;
 
 if (!defined('Adminer\DRIVER')) {
 	define('Adminer\DRIVER', "server"); // server - backwards compatibility
 	// MySQLi supports everything, MySQL doesn't support multiple result sets, PDO_MySQL doesn't support orgtable
 	if (extension_loaded("mysqli") && $_GET["ext"] != "pdo") {
 		class Db extends \MySQLi {
+			/** @var Db */ static $instance;
 			public string $extension = "MySQLi", $flavor = '';
 
 			function __construct() {
 				parent::init();
 			}
 
-			/** @see https://php.net/mysqli.construct */
-			function connect($server = "", $username = "", $password = "", $database = null, $port = null, $socket = null) {
-				global $adminer;
+			function attach(?string $server, string $username, string $password): string {
 				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
 				list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
-				$ssl = $adminer->connectSsl();
+				$ssl = adminer()->connectSsl();
 				if ($ssl) {
 					$this->ssl_set($ssl['key'], $ssl['cert'], $ssl['ca'], '', '');
 				}
 				$return = @$this->real_connect(
-					($server != "" ? $host : null),
-					($server . $username != "" ? $username : null),
-					($server . $username . $password != "" ? $password : null),
-					$database,
-					(is_numeric($port) ? intval($port) : null),
-					(!is_numeric($port) ? $port : $socket),
+					($server != "" ? $host : ini_get("mysqli.default_host")),
+					($server . $username != "" ? $username : ini_get("mysqli.default_user")),
+					($server . $username . $password != "" ? $password : ini_get("mysqli.default_pw")),
+					null,
+					(is_numeric($port) ? intval($port) : ini_get("mysqli.default_port")),
+					(is_numeric($port) ? $port : null),
 					($ssl ? ($ssl['verify'] !== false ? 2048 : 64) : 0) // 2048 - MYSQLI_CLIENT_SSL, 64 - MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT (not available before PHP 5.6.16)
 				);
 				$this->options(MYSQLI_OPT_LOCAL_INFILE, false);
-				return $return;
+				return ($return ? '' : $this->error);
 			}
 
 			function set_charset($charset) {
@@ -49,15 +48,6 @@ if (!defined('Adminer\DRIVER')) {
 				return self::more_results() && parent::next_result(); // triggers E_STRICT on PHP < 7.4 otherwise
 			}
 
-			function result($query, $field = 0) {
-				$result = $this->query($query);
-				if (!is_object($result)) {
-					return false;
-				}
-				$row = $result->fetch_array();
-				return ($row ? $row[$field] : false);
-			}
-
 			function quote(string $string): string {
 				return "'" . $this->escape_string($string) . "'";
 			}
@@ -67,10 +57,9 @@ if (!defined('Adminer\DRIVER')) {
 		class Db extends SqlDb {
 			/** @var resource */ private $link;
 
-			function connect(string $server, string $username, string $password): bool {
+			function attach(?string $server, string $username, string $password): string {
 				if (ini_bool("mysql.allow_local_infile")) {
-					$this->error = lang('Disable %s or enable %s or %s extensions.', "'mysql.allow_local_infile'", "MySQLi", "PDO_MySQL");
-					return false;
+					return lang('Disable %s or enable %s or %s extensions.', "'mysql.allow_local_infile'", "MySQLi", "PDO_MySQL");
 				}
 				$this->link = @mysql_connect(
 					($server != "" ? $server : ini_get("mysql.default_host")),
@@ -79,12 +68,11 @@ if (!defined('Adminer\DRIVER')) {
 					true,
 					131072 // CLIENT_MULTI_RESULTS for CALL
 				);
-				if ($this->link) {
-					$this->server_info = mysql_get_server_info($this->link);
-				} else {
-					$this->error = mysql_error();
+				if (!$this->link) {
+					return mysql_error();
 				}
-				return (bool) $this->link;
+				$this->server_info = mysql_get_server_info($this->link);
+				return '';
 			}
 
 			/** Set the client character set */
@@ -103,7 +91,7 @@ if (!defined('Adminer\DRIVER')) {
 				return "'" . mysql_real_escape_string($string, $this->link) . "'";
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				return mysql_select_db($database, $this->link);
 			}
 
@@ -169,10 +157,9 @@ if (!defined('Adminer\DRIVER')) {
 		class Db extends PdoDb {
 			public string $extension = "PDO_MySQL";
 
-			function connect(string $server, string $username, string $password): bool {
-				global $adminer;
+			function attach(?string $server, string $username, string $password): string {
 				$options = array(\PDO::MYSQL_ATTR_LOCAL_INFILE => false);
-				$ssl = $adminer->connectSsl();
+				$ssl = adminer()->connectSsl();
 				if ($ssl) {
 					if ($ssl['key']) {
 						$options[\PDO::MYSQL_ATTR_SSL_KEY] = $ssl['key'];
@@ -187,20 +174,19 @@ if (!defined('Adminer\DRIVER')) {
 						$options[\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $ssl['verify'];
 					}
 				}
-				$this->dsn(
+				return $this->dsn(
 					"mysql:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\d)~', ';port=\1', $server)),
 					$username,
 					$password,
 					$options
 				);
-				return true;
 			}
 
 			function set_charset($charset) {
 				return $this->query("SET NAMES $charset"); // charset in DSN is ignored before PHP 5.3.6
 			}
 
-			function select_db(string $database): bool {
+			function select_db(string $database) {
 				// database selection is separated from the connection so dbname in DSN can't be used
 				return $this->query("USE " . idf_escape($database));
 			}
@@ -216,13 +202,28 @@ if (!defined('Adminer\DRIVER')) {
 
 
 	class Driver extends SqlDriver {
-		/** @var list<string> */ static array $possibleDrivers = array("MySQLi", "MySQL", "PDO_MySQL");
+		/** @var list<string> */ static array $extensions = array("MySQLi", "MySQL", "PDO_MySQL");
 		static string $jush = "sql"; // JUSH identifier
 
 		/** @var list<string> */ public array $unsigned = array("unsigned", "zerofill", "unsigned zerofill");
 		/** @var list<string> */ public array $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL");
 		/** @var list<string> */ public array $functions = array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper");
 		/** @var list<string> */ public array $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
+
+		static function connect(?string $server, string $username, string $password) {
+			$connection = parent::connect($server, $username, $password);
+			if (is_string($connection)) {
+				if (function_exists('iconv') && !is_utf8($connection) && strlen($s = iconv("windows-1250", "utf-8", $connection)) > strlen($connection)) { // windows-1250 - most common Windows encoding
+					$connection = $s;
+				}
+				return $connection;
+			}
+			$connection->set_charset(charset($connection));
+			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
+			$connection->flavor = (preg_match('~MariaDB~', $connection->server_info) ? 'maria' : 'mysql');
+			add_driver(DRIVER, ($connection->flavor == 'maria' ? "MariaDB" : "MySQL"));
+			return $connection;
+		}
 
 		function __construct(Db $connection) {
 			parent::__construct($connection);
@@ -365,27 +366,6 @@ if (!defined('Adminer\DRIVER')) {
 		return idf_escape($idf);
 	}
 
-	/** Connect to the database
-	* @param array{string, string, string} $credentials [$server, $username, $password]
-	* @return string|Db string for error
-	*/
-	function connect(array $credentials) {
-		global $drivers;
-		$connection = new Db;
-		if ($connection->connect($credentials[0], $credentials[1], $credentials[2])) {
-			$connection->set_charset(charset($connection));
-			$connection->query("SET sql_quote_show_create = 1, autocommit = 1");
-			$connection->flavor = (preg_match('~MariaDB~', $connection->server_info) ? 'maria' : 'mysql');
-			$drivers[DRIVER] = ($connection->flavor == 'maria' ? "MariaDB" : "MySQL");
-			return $connection;
-		}
-		$return = $connection->error;
-		if (function_exists('iconv') && !is_utf8($return) && strlen($s = iconv("windows-1250", "utf-8", $return)) > strlen($return)) { // windows-1250 - most common Windows encoding
-			$return = $s;
-		}
-		return $return;
-	}
-
 	/** Get cached list of databases
 	* @return list<string>
 	*/
@@ -407,7 +387,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @param string $where including WHERE
 	*/
 	function limit(string $query, string $where, int $limit, int $offset = 0, string $separator = " "): string {
-		return " $query$where" . ($limit !== null ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
+		return " $query$where" . ($limit ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
 	/** Formulate SQL modification query with limit 1
@@ -503,8 +483,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @return Field[]
 	*/
 	function fields(string $table): array {
-		global $connection;
-		$maria = ($connection->flavor == 'maria');
+		$maria = (connection()->flavor == 'maria');
 		$return = array();
 		foreach (get_rows("SELECT * FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = " . q($table) . " ORDER BY ORDINAL_POSITION") as $row) {
 			$field = $row["COLUMN_NAME"];
@@ -572,13 +551,12 @@ if (!defined('Adminer\DRIVER')) {
 	* @return ForeignKey[]
 	*/
 	function foreign_keys(string $table): array {
-		global $driver;
 		static $pattern = '(?:`(?:[^`]|``)+`|"(?:[^"]|"")+")';
 		$return = array();
 		$create_table = get_val("SHOW CREATE TABLE " . table($table), 1);
 		if ($create_table) {
 			preg_match_all(
-				"~CONSTRAINT ($pattern) FOREIGN KEY ?\\(((?:$pattern,? ?)+)\\) REFERENCES ($pattern)(?:\\.($pattern))? \\(((?:$pattern,? ?)+)\\)(?: ON DELETE ($driver->onActions))?(?: ON UPDATE ($driver->onActions))?~",
+				"~CONSTRAINT ($pattern) FOREIGN KEY ?\\(((?:$pattern,? ?)+)\\) REFERENCES ($pattern)(?:\\.($pattern))? \\(((?:$pattern,? ?)+)\\)(?: ON DELETE (driver()->onActions))?(?: ON UPDATE (driver()->onActions))?~",
 				$create_table,
 				$matches,
 				PREG_SET_ORDER
@@ -633,8 +611,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get escaped error message */
 	function error(): string {
-		global $connection;
-		return h(preg_replace('~^You have an error.*syntax to use~U', "Syntax error", $connection->error));
+		return h(preg_replace('~^You have an error.*syntax to use~U', "Syntax error", connection()->error));
 	}
 
 	/** Create database
@@ -698,18 +675,17 @@ if (!defined('Adminer\DRIVER')) {
 	* @param string $name new name
 	* @param list<array{string, list<string>, string}> $fields of [$orig, $process_field, $after]
 	* @param string[] $foreign
-	* @param string $auto_increment number
+	* @param numeric-string $auto_increment
 	* @return Result|bool
 	*/
 	function alter_table(string $table, string $name, array $fields, array $foreign, ?string $comment, string $engine, string $collation, string $auto_increment, string $partitioning) {
-		global $connection;
 		$alter = array();
 		foreach ($fields as $field) {
 			if ($field[1]) {
 				$default = $field[1][3];
 				if (preg_match('~ GENERATED~', $default)) {
 					// swap default and null
-					$field[1][3] = ($connection->flavor == 'maria' ? "" : $field[1][2]); // MariaDB doesn't support NULL on virtual columns
+					$field[1][3] = (connection()->flavor == 'maria' ? "" : $field[1][2]); // MariaDB doesn't support NULL on virtual columns
 					$field[1][2] = $default;
 				}
 				$alter[] = ($table != "" ? ($field[0] != "" ? "CHANGE " . idf_escape($field[0]) : "ADD") : " ") . " " . implode($field[1]) . ($table != "" ? $field[2] : "");
@@ -779,7 +755,6 @@ if (!defined('Adminer\DRIVER')) {
 	* @param list<string> $views
 	*/
 	function move_tables(array $tables, array $views, string $target): bool {
-		global $connection;
 		$rename = array();
 		foreach ($tables as $table) {
 			$rename[] = table($table) . " TO " . idf_escape($target) . "." . table($table);
@@ -789,7 +764,7 @@ if (!defined('Adminer\DRIVER')) {
 			foreach ($views as $table) {
 				$definitions[table($table)] = view($table);
 			}
-			$connection->select_db($target);
+			connection()->select_db($target);
 			$db = idf_escape(DB);
 			foreach ($definitions as $name => $view) {
 				if (!queries("CREATE VIEW $name AS " . str_replace(" $db.", " ", $view["select"])) || !queries("DROP VIEW $db.$name")) {
@@ -876,13 +851,12 @@ if (!defined('Adminer\DRIVER')) {
 	* @return Routine
 	*/
 	function routine(string $name, string $type): array {
-		global $driver;
 		$aliases = array("bool", "boolean", "integer", "double precision", "real", "dec", "numeric", "fixed", "national char", "national varchar");
 		$space = "(?:\\s|/\\*[\s\S]*?\\*/|(?:#|-- )[^\n]*\n?|--\r?\n)";
-		$enum = $driver->enumLength;
-		$type_pattern = "((" . implode("|", array_merge(array_keys($driver->types()), $aliases)) . ")\\b(?:\\s*\\(((?:[^'\")]|$enum)++)\\))?"
+		$enum = driver()->enumLength;
+		$type_pattern = "((" . implode("|", array_merge(array_keys(driver()->types()), $aliases)) . ")\\b(?:\\s*\\(((?:[^'\")]|$enum)++)\\))?"
 			. "\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?)(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s,]+)['\"]?)?";
-		$pattern = "$space*(" . ($type == "FUNCTION" ? "" : $driver->inout) . ")?\\s*(?:`((?:[^`]|``)*)`\\s*|\\b(\\S+)\\s+)$type_pattern";
+		$pattern = "$space*(" . ($type == "FUNCTION" ? "" : driver()->inout) . ")?\\s*(?:`((?:[^`]|``)*)`\\s*|\\b(\\S+)\\s+)$type_pattern";
 		$create = get_val("SHOW CREATE $type " . idf_escape($name), 2);
 		preg_match("~\\(((?:$pattern\\s*,?)*)\\)\\s*" . ($type == "FUNCTION" ? "RETURNS\\s+$type_pattern\\s+" : "") . "(.*)~is", $create, $match);
 		$fields = array();
@@ -1089,8 +1063,9 @@ if (!defined('Adminer\DRIVER')) {
 		return "";
 	}
 
-	/** Set current schema */
-	function set_schema(string $schema, Db $connection2 = null): bool {
+	/** Set current schema
+	*/
+	function set_schema(string $schema, ?Db $connection2 = null): bool {
 		return true;
 	}
 }

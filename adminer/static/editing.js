@@ -1,12 +1,14 @@
 'use strict'; // Adminer specific functions
 
+let autocompleter; // set in adminer.inc.php
+
 /** Load syntax highlighting
 * @param string first three characters of database system version
 * @param [string]
 */
 function syntaxHighlighting(version, vendor) {
 	if (window.jush) {
-		jush.create_links = ' target="_blank" rel="noreferrer noopener"';
+		jush.create_links = 'target="_blank" rel="noreferrer noopener"';
 		if (version) {
 			for (let key in jush.urls) {
 				let obj = jush.urls;
@@ -41,11 +43,16 @@ function syntaxHighlighting(version, vendor) {
 			jush.custom_links = jushLinks;
 		}
 		jush.highlight_tag('code', 0);
+		adminerHighlighter = els => jush.highlight_tag(els, 0);
 		for (const tag of qsa('textarea')) {
 			if (/(^|\s)jush-/.test(tag.className)) {
-				const pre = jush.textarea(tag);
+				const pre = jush.textarea(tag, autocompleter);
 				if (pre) {
 					setupSubmitHighlightInput(pre);
+					tag.onchange = () => {
+						pre.textContent = tag.value;
+						pre.oninput();
+					};
 				}
 			}
 		}
@@ -738,7 +745,7 @@ function schemaMouseup(event, db) {
 		that = undefined;
 		let s = '';
 		for (const key in tablePos) {
-			s += '_' + key + ':' + Math.round(tablePos[key][0] * 10000) / 10000 + 'x' + Math.round(tablePos[key][1] * 10000) / 10000;
+			s += '_' + key + ':' + Math.round(tablePos[key][0]) + 'x' + Math.round(tablePos[key][1]);
 		}
 		s = encodeURIComponent(s.substr(1));
 		const link = qs('#schema-link');

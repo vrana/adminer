@@ -24,16 +24,14 @@ class AdminerMasterSlave {
 
 	function login($login, $password) {
 		if (!$_POST && ($master = &$_SESSION["master"])) {
-			$connection = Adminer\connection();
-			$connection->query("DO MASTER_POS_WAIT('" . Adminer\q($master['File']) . "', $master[Position])");
+			Adminer\connection()->query("DO MASTER_POS_WAIT('" . Adminer\q($master['File']) . "', $master[Position])");
 			$master = null;
 		}
 	}
 
 	function messageQuery($query, $time, $failed = false) {
 		//! doesn't work with sql.inc.php
-		$connection = Adminer\connection();
-		$result = $connection->query('SHOW MASTER STATUS');
+		$result = Adminer\connection()->query('SHOW MASTER STATUS');
 		if ($result) {
 			Adminer\restart_session();
 			$_SESSION["master"] = $result->fetch_assoc();

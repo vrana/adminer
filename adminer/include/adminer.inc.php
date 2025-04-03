@@ -1,9 +1,11 @@
 <?php
 namespace Adminer;
 
-// any method change in this file should be transferred to editor/include/adminer.inc.php and plugins.inc.php
+// any method change in this file should be transferred to editor/include/adminer.inc.php
 
+/** Default Adminer plugin; it should call methods via adminer()->f() instead of $this->f() to give chance to other plugins */
 class Adminer {
+	/** @var Adminer|Plugins */ static $instance;
 	/** @visibility protected(set) */ public string $error = ''; // HTML
 
 	/** Name in title and navigation
@@ -27,7 +29,7 @@ class Adminer {
 	}
 
 	/** Get key used for permanent login
-	* @return string cryptic string which gets combined with password or false in case of an error
+	* @return string cryptic string which gets combined with password or '' in case of an error
 	*/
 	function permanentLogin(bool $create = false): string {
 		return password_file($create);
@@ -62,8 +64,7 @@ class Adminer {
 	* @return list<string> operators
 	*/
 	function operators(): array {
-		global $driver;
-		return $driver->operators;
+		return driver()->operators;
 	}
 
 	/** Get list of schemas
@@ -85,17 +86,18 @@ class Adminer {
 	}
 
 	/** Get Content Security Policy headers
-	* @return list<string[]> of arrays with directive name in key, allowed sources in value
+	* @param list<string[]> $csp of arrays with directive name in key, allowed sources in value
+	* @return list<string[]> same as $csp
 	*/
-	function csp(): array {
-		return csp();
+	function csp(array $csp): array {
+		return $csp;
 	}
 
 	/** Print HTML code inside <head>
 	* @param bool $dark dark CSS: false to disable, true to force, null to base on user preferences
 	* @return bool true to link favicon.ico
 	*/
-	function head(bool $dark = null): bool {
+	function head(?bool $dark = null): bool {
 		// this is matched by compile.php
 		echo "<link rel='stylesheet' href='../externals/jush/jush.css'>\n";
 		echo ($dark !== false ? "<link rel='stylesheet'" . ($dark ? "" : " media='(prefers-color-scheme: dark)'") . " href='../externals/jush/jush-dark.css'>\n" : "");
@@ -118,15 +120,14 @@ class Adminer {
 
 	/** Print login form */
 	function loginForm(): void {
-		global $drivers, $adminer;
 		echo "<table class='layout'>\n";
 		// this is matched by compile.php
-		echo $adminer->loginFormField('driver', '<tr><th>' . lang('System') . '<td>', html_select("auth[driver]", $drivers, DRIVER, "loginDriver(this);"));
-		echo $adminer->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', '<input name="auth[server]" value="' . h(SERVER) . '" title="hostname[:port]" placeholder="localhost" autocapitalize="off">');
+		echo adminer()->loginFormField('driver', '<tr><th>' . lang('System') . '<td>', html_select("auth[driver]", SqlDriver::$drivers, DRIVER, "loginDriver(this);"));
+		echo adminer()->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', '<input name="auth[server]" value="' . h(SERVER) . '" title="hostname[:port]" placeholder="localhost" autocapitalize="off">');
 		// this is matched by compile.php
-		echo $adminer->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input name="auth[username]" id="username" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">' . script("qs('#username').form['auth[driver]'].onchange();"));
-		echo $adminer->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">');
-		echo $adminer->loginFormField('db', '<tr><th>' . lang('Database') . '<td>', '<input name="auth[db]" value="' . h($_GET["db"]) . '" autocapitalize="off">');
+		echo adminer()->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input name="auth[username]" id="username" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">' . script("const authDriver = qs('#username').form['auth[driver]']; authDriver && authDriver.onchange();"));
+		echo adminer()->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">');
+		echo adminer()->loginFormField('db', '<tr><th>' . lang('Database') . '<td>', '<input name="auth[db]" value="' . h($_GET["db"]) . '" autocapitalize="off">');
 		echo "</table>\n";
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
 		echo checkbox("auth[permanent]", 1, $_COOKIE["adminer_permanent"], lang('Permanent login')) . "\n";
@@ -159,7 +160,7 @@ class Adminer {
 	}
 
 	/** Field caption used in select and edit
-	* @param Field $field
+	* @param Field|RoutineField $field
 	* @param int $order order of column in select
 	* @return string HTML code, "" to ignore field
 	*/
@@ -174,7 +175,6 @@ class Adminer {
 	* @param ?string $set new item options, NULL for no new item
 	*/
 	function selectLinks(array $tableStatus, ?string $set = ""): void {
-		global $driver;
 		echo '<p class="links">';
 		$links = array("select" => lang('Select data'));
 		if (support("table") || support("indexes")) {
@@ -196,7 +196,7 @@ class Adminer {
 		foreach ($links as $key => $val) {
 			echo " <a href='" . h(ME) . "$key=" . urlencode($name) . ($key == "edit" ? $set : "") . "'" . bold(isset($_GET[$key])) . ">$val</a>";
 		}
-		echo doc_link(array(JUSH => $driver->tableHelp($name, $is_view)), "?");
+		echo doc_link(array(JUSH => driver()->tableHelp($name, $is_view)), "?");
 		echo "\n";
 	}
 
@@ -226,9 +226,8 @@ class Adminer {
 	* @param float $start start time of the query
 	*/
 	function selectQuery(string $query, float $start, bool $failed = false): string {
-		global $driver;
 		$return = "</p>\n"; // required for IE9 inline edit
-		if (!$failed && ($warnings = $driver->warnings())) {
+		if (!$failed && ($warnings = driver()->warnings())) {
 			$id = "warnings";
 			$return = ", <a href='#$id'>" . lang('Warnings') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "")
 				. "$return<div id='$id' class='hidden'>\n$warnings</div>\n"
@@ -261,7 +260,7 @@ class Adminer {
 
 	/** Get descriptions of selected data
 	* @param list<string[]> $rows all data to print
-	* @param ForeignKey[] $foreignKeys
+	* @param list<ForeignKey>[] $foreignKeys
 	* @return list<string[]>
 	*/
 	function rowDescriptions(array $rows, array $foreignKeys): array {
@@ -305,12 +304,11 @@ class Adminer {
 	* @param Field[] $fields
 	* @param TableStatus $tableStatus
 	*/
-	function tableStructurePrint(array $fields, array $tableStatus = null): void {
-		global $driver;
+	function tableStructurePrint(array $fields, ?array $tableStatus = null): void {
 		echo "<div class='scrollable'>\n";
 		echo "<table class='nowrap odds'>\n";
 		echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . (support("comment") ? "<td>" . lang('Comment') : "") . "</thead>\n";
-		$structured_types = $driver->structuredTypes();
+		$structured_types = driver()->structuredTypes();
 		foreach ($fields as $field) {
 			echo "<tr><th>" . h($field["field"]);
 			$type = h($field["full_type"]);
@@ -356,7 +354,6 @@ class Adminer {
 	* @param string[] $columns selectable columns
 	*/
 	function selectColumnsPrint(array $select, array $columns): void {
-		global $driver;
 		print_fieldset("select", lang('Select'), $select);
 		$i = 0;
 		$select[""] = array();
@@ -368,7 +365,7 @@ class Adminer {
 				$val["col"],
 				($key !== "" ? "selectFieldChange" : "selectAddRow")
 			);
-			echo "<div>" . ($driver->functions || $driver->grouping ? html_select("columns[$i][fun]", array(-1 => "") + array_filter(array(lang('Functions') => $driver->functions, lang('Aggregation') => $driver->grouping)), $val["fun"])
+			echo "<div>" . (driver()->functions || driver()->grouping ? html_select("columns[$i][fun]", array(-1 => "") + array_filter(array(lang('Functions') => driver()->functions, lang('Aggregation') => driver()->grouping)), $val["fun"])
 				. on_help("event.target.value && event.target.value.replace(/ |\$/, '(') + ')'", 1)
 				. script("qsl('select').onchange = function () { helpClose();" . ($key !== "" ? "" : " qsl('select, input', this.parentNode).onchange();") . " };", "")
 				. "($column)" : $column) . "</div>\n";
@@ -383,7 +380,6 @@ class Adminer {
 	* @param Index[] $indexes
 	*/
 	function selectSearchPrint(array $where, array $columns, array $indexes): void {
-		global $adminer;
 		print_fieldset("search", lang('Search'), $where);
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
@@ -396,7 +392,7 @@ class Adminer {
 		}
 		$change_next = "this.parentNode.firstChild.onchange();";
 		foreach (array_merge((array) $_GET["where"], array(array())) as $i => $val) {
-			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $adminer->operators()))) {
+			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], adminer()->operators()))) {
 				echo "<div>" . select_input(
 					" name='where[$i][col]'",
 					$columns,
@@ -404,7 +400,7 @@ class Adminer {
 					($val ? "selectFieldChange" : "selectAddRow"),
 					"(" . lang('anywhere') . ")"
 				);
-				echo html_select("where[$i][op]", $adminer->operators(), $val["op"], $change_next);
+				echo html_select("where[$i][op]", adminer()->operators(), $val["op"], $change_next);
 				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'>";
 				echo script("mixin(qsl('input'), {oninput: function () { $change_next }, onkeydown: selectSearchKeydown, onsearch: selectSearchSearch});", "");
 				echo "</div>\n";
@@ -433,12 +429,10 @@ class Adminer {
 		echo "</div></fieldset>\n";
 	}
 
-	/** Print limit box in select
-	* @param string $limit result of selectLimitProcess()
-	*/
-	function selectLimitPrint(string $limit): void {
+	/** Print limit box in select */
+	function selectLimitPrint(int $limit): void {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
-		echo "<input type='number' name='limit' class='size' value='" . h($limit) . "'>";
+		echo "<input type='number' name='limit' class='size' value='" . intval($limit) . "'>";
 		echo script("qsl('input').oninput = selectFieldChange;", "");
 		echo "</div></fieldset>\n";
 	}
@@ -507,13 +501,12 @@ class Adminer {
 	* @return list<list<string>> [[select_expressions], [group_expressions]]
 	*/
 	function selectColumnsProcess(array $columns, array $indexes): array {
-		global $driver;
 		$select = array(); // select expressions, empty for *
 		$group = array(); // expressions without aggregation - will be used for GROUP BY if an aggregation function is used
 		foreach ((array) $_GET["columns"] as $key => $val) {
-			if ($val["fun"] == "count" || ($val["col"] != "" && (!$val["fun"] || in_array($val["fun"], $driver->functions) || in_array($val["fun"], $driver->grouping)))) {
+			if ($val["fun"] == "count" || ($val["col"] != "" && (!$val["fun"] || in_array($val["fun"], driver()->functions) || in_array($val["fun"], driver()->grouping)))) {
 				$select[$key] = apply_sql_function($val["fun"], ($val["col"] != "" ? idf_escape($val["col"]) : "*"));
-				if (!in_array($val["fun"], $driver->grouping)) {
+				if (!in_array($val["fun"], driver()->grouping)) {
 					$group[] = $select[$key];
 				}
 			}
@@ -527,7 +520,6 @@ class Adminer {
 	* @return list<string> expressions to join by AND
 	*/
 	function selectSearchProcess(array $fields, array $indexes): array {
-		global $connection, $driver, $adminer;
 		$return = array();
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT" && $_GET["fulltext"][$i] != "") {
@@ -535,7 +527,7 @@ class Adminer {
 			}
 		}
 		foreach ((array) $_GET["where"] as $key => $val) {
-			if ("$val[col]$val[val]" != "" && in_array($val["op"], $adminer->operators())) {
+			if ("$val[col]$val[val]" != "" && in_array($val["op"], adminer()->operators())) {
 				$prefix = "";
 				$cond = " $val[op]";
 				if (preg_match('~IN$~', $val["op"])) {
@@ -544,17 +536,17 @@ class Adminer {
 				} elseif ($val["op"] == "SQL") {
 					$cond = " $val[val]"; // SQL injection
 				} elseif ($val["op"] == "LIKE %%") {
-					$cond = " LIKE " . $adminer->processInput($fields[$val["col"]], "%$val[val]%");
+					$cond = " LIKE " . adminer()->processInput($fields[$val["col"]], "%$val[val]%");
 				} elseif ($val["op"] == "ILIKE %%") {
-					$cond = " ILIKE " . $adminer->processInput($fields[$val["col"]], "%$val[val]%");
+					$cond = " ILIKE " . adminer()->processInput($fields[$val["col"]], "%$val[val]%");
 				} elseif ($val["op"] == "FIND_IN_SET") {
 					$prefix = "$val[op](" . q($val["val"]) . ", ";
 					$cond = ")";
 				} elseif (!preg_match('~NULL$~', $val["op"])) {
-					$cond .= " " . $adminer->processInput($fields[$val["col"]], $val["val"]);
+					$cond .= " " . adminer()->processInput($fields[$val["col"]], $val["val"]);
 				}
 				if ($val["col"] != "") {
-					$return[] = $prefix . $driver->convertSearch(idf_escape($val["col"]), $val, $fields[$val["col"]]) . $cond;
+					$return[] = $prefix . driver()->convertSearch(idf_escape($val["col"]), $val, $fields[$val["col"]]) . $cond;
 				} else {
 					// find anywhere
 					$cols = array();
@@ -565,7 +557,7 @@ class Adminer {
 							&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || preg_match('~char|text|enum|set~', $field["type"]))
 							&& (!preg_match('~date|timestamp~', $field["type"]) || preg_match('~^\d+-\d+-\d+~', $val["val"]))
 						) {
-							$cols[] = $prefix . $driver->convertSearch(idf_escape($name), $val, $field) . $cond;
+							$cols[] = $prefix . driver()->convertSearch(idf_escape($name), $val, $field) . $cond;
 						}
 					}
 					$return[] = ($cols ? "(" . implode(" OR ", $cols) . ")" : "1 = 0");
@@ -592,11 +584,9 @@ class Adminer {
 		return $return;
 	}
 
-	/** Process limit box in select
-	* @return string expression to use in LIMIT, will be escaped
-	*/
-	function selectLimitProcess(): string {
-		return (isset($_GET["limit"]) ? $_GET["limit"] : "50");
+	/** Process limit box in select */
+	function selectLimitProcess(): int {
+		return (isset($_GET["limit"]) ? intval($_GET["limit"]) : 50);
 	}
 
 	/** Process length box in select
@@ -608,7 +598,7 @@ class Adminer {
 
 	/** Process extras in select form
 	* @param string[] $where AND conditions
-	* @param ForeignKey[] $foreignKeys
+	* @param list<ForeignKey>[] $foreignKeys
 	* @return bool true if processed, false to process other parts of form
 	*/
 	function selectEmailProcess(array $where, array $foreignKeys): bool {
@@ -624,7 +614,7 @@ class Adminer {
 	* @param int $page index of page starting at zero
 	* @return string empty string to use default query
 	*/
-	function selectQueryBuild(array $select, array $where, array $group, array $order, ?int $limit, ?int $page): string {
+	function selectQueryBuild(array $select, array $where, array $group, array $order, int $limit, ?int $page): string {
 		return "";
 	}
 
@@ -633,7 +623,6 @@ class Adminer {
 	* @param string $time elapsed time
 	*/
 	function messageQuery(string $query, string $time, bool $failed = false): string {
-		global $driver;
 		restart_session();
 		$history = &get_session("queries");
 		if (!idx($history, $_GET["db"])) {
@@ -645,7 +634,7 @@ class Adminer {
 		$history[$_GET["db"]][] = array($query, time(), $time); // not DB - $_GET["db"] is changed in database.inc.php //! respect $_GET["ns"]
 		$sql_id = "sql-" . count($history[$_GET["db"]]);
 		$return = "<a href='#$sql_id' class='toggle'>" . lang('SQL command') . "</a>\n";
-		if (!$failed && ($warnings = $driver->warnings())) {
+		if (!$failed && ($warnings = driver()->warnings())) {
 			$id = "warnings-" . count($history[$_GET["db"]]);
 			$return = "<a href='#$id' class='toggle'>" . lang('Warnings') . "</a>, $return<div id='$id' class='hidden'>\n$warnings</div>\n";
 		}
@@ -665,14 +654,13 @@ class Adminer {
 	}
 
 	/** Functions displayed in edit form
-	* @param Field $field
-	* @return list<string>
+	* @param Field|array{null:bool} $field
+	* @return string[]
 	*/
 	function editFunctions(array $field): array {
-		global $driver;
 		$return = ($field["null"] ? "NULL/" : "");
 		$update = isset($_GET["select"]) || where($_GET);
-		foreach (array($driver->insertFunctions, $driver->editFunctions) as $key => $functions) {
+		foreach (array(driver()->insertFunctions, driver()->editFunctions) as $key => $functions) {
 			if (!$key || (!isset($_GET["call"]) && $update)) { // relative functions
 				foreach ($functions as $pattern => $val) {
 					if (!$pattern || preg_match("~$pattern~", $field["type"])) {
@@ -801,7 +789,6 @@ class Adminer {
 	* @return void prints data
 	*/
 	function dumpData(string $table, string $style, string $query): void {
-		global $connection;
 		if ($style) {
 			$max_packet = (JUSH == "sqlite" ? 0 : 1048576); // default, minimum is 1024
 			$fields = array();
@@ -821,7 +808,7 @@ class Adminer {
 					}
 				}
 			}
-			$result = $connection->query($query, 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers
+			$result = connection()->query($query, 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers
 			if ($result) {
 				$insert = "";
 				$buffer = "";
@@ -880,7 +867,7 @@ class Adminer {
 					echo $buffer . $suffix;
 				}
 			} elseif ($_POST["format"] == "sql") {
-				echo "-- " . str_replace("\n", " ", $connection->error) . "\n";
+				echo "-- " . str_replace("\n", " ", connection()->error) . "\n";
 			}
 			if ($identity_insert) {
 				echo "SET IDENTITY_INSERT " . table($table) . " OFF;\n";
@@ -946,8 +933,7 @@ class Adminer {
 	* @param string $missing can be "auth" if there is no database connection, "db" if there is no database selected, "ns" with invalid schema
 	*/
 	function navigation(string $missing): void {
-		global $drivers, $connection, $adminer;
-		echo "<h1>" . $adminer->name() . " <span class='version'>" . VERSION;
+		echo "<h1>" . adminer()->name() . " <span class='version'>" . VERSION;
 		$new_version = $_COOKIE["adminer_version"];
 		echo " <a href='https://www.adminer.org/#download'" . target_blank() . " id='version'>" . (version_compare(VERSION, $new_version) < 0 ? h($new_version) : "") . "</a>";
 		echo "</span></h1>\n";
@@ -957,12 +943,12 @@ class Adminer {
 			$output = "";
 			foreach ((array) $_SESSION["pwds"] as $vendor => $servers) {
 				foreach ($servers as $server => $usernames) {
-					$name = h(get_setting("vendor-$vendor-$server") ?: $drivers[$vendor]);
+					$name = h(get_setting("vendor-$vendor-$server") ?: get_driver($vendor));
 					foreach ($usernames as $username => $password) {
 						if ($password !== null) {
 							$dbs = $_SESSION["db"][$vendor][$server][$username];
 							foreach (($dbs ? array_keys($dbs) : array("")) as $db) {
-								$output .= "<li><a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($name) " . h($username . ($server != "" ? "@" . $adminer->serverName($server) : "") . ($db != "" ? " - $db" : "")) . "</a>\n";
+								$output .= "<li><a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($name) " . h($username . ($server != "" ? "@" . adminer()->serverName($server) : "") . ($db != "" ? " - $db" : "")) . "</a>\n";
 							}
 						}
 					}
@@ -974,11 +960,11 @@ class Adminer {
 		} else {
 			$tables = array();
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {
-				$connection->select_db(DB);
+				connection()->select_db(DB);
 				$tables = table_status('', true);
 			}
-			$adminer->syntaxHighlighting($tables);
-			$adminer->databasesPrint($missing);
+			adminer()->syntaxHighlighting($tables);
+			adminer()->databasesPrint($missing);
 			$actions = array();
 			if (DB == "" || !$missing) {
 				if (support("sql")) {
@@ -994,7 +980,7 @@ class Adminer {
 			echo ($actions ? "<p class='links'>\n" . implode("\n", $actions) . "\n" : "");
 			if ($in_db) {
 				if ($tables) {
-					$adminer->tablesPrint($tables);
+					adminer()->tablesPrint($tables);
 				} else {
 					echo "<p class='message'>" . lang('No tables.') . "</p>\n";
 				}
@@ -1006,9 +992,9 @@ class Adminer {
 	* @param TableStatus[] $tables
 	*/
 	function syntaxHighlighting(array $tables): void {
-		global $connection;
 		// this is matched by compile.php
 		echo script_src("../externals/jush/modules/jush.js");
+		echo script_src("../externals/jush/modules/jush-autocomplete-sql.js");
 		echo script_src("../externals/jush/modules/jush-textarea.js");
 		echo script_src("../externals/jush/modules/jush-txt.js");
 		echo script_src("../externals/jush/modules/jush-js.js");
@@ -1024,18 +1010,24 @@ class Adminer {
 				foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
 					echo "jushLinks.$val = jushLinks." . JUSH . ";\n";
 				}
+				$tablesColumns = array_fill_keys(array_keys($tables), array());
+				foreach (driver()->allFields() as $table => $fields) {
+					foreach ($fields as $field) {
+						$tablesColumns[$table][] = $field["field"];
+					}
+				}
+				echo "autocompleter = jush.autocompleteSql('" . idf_escape("") . "', " . json_encode($tablesColumns) . ");\n";
 			}
 			echo "</script>\n";
 		}
-		echo script("syntaxHighlighting('" . (is_object($connection) ? preg_replace('~^(\d\.?\d).*~s', '\1', $connection->server_info) : "") . "'"
-			. ($connection->flavor == 'maria' ? ", 'maria'" : ($connection->flavor == 'cockroach' ? ", 'cockroach'" : "")) . ");"
+		echo script("syntaxHighlighting('" . preg_replace('~^(\d\.?\d).*~s', '\1', connection()->server_info) . "'"
+			. (connection()->flavor == 'maria' ? ", 'maria'" : (connection()->flavor == 'cockroach' ? ", 'cockroach'" : "")) . ");"
 		);
 	}
 
 	/** Print databases list in menu */
 	function databasesPrint(string $missing): void {
-		global $adminer, $connection;
-		$databases = $adminer->databases();
+		$databases = adminer()->databases();
 		if (DB && $databases && !in_array(DB, $databases)) {
 			array_unshift($databases, DB);
 		}
@@ -1048,8 +1040,8 @@ class Adminer {
 		);
 		echo "<input type='submit' value='" . lang('Use') . "'" . ($databases ? " class='hidden'" : "") . ">\n";
 		if (support("scheme")) {
-			if ($missing != "db" && DB != "" && $connection->select_db(DB)) {
-				echo "<br><span>" . lang('Schema') . ":</span> " . html_select("ns", array("" => "") + $adminer->schemas(), $_GET["ns"]) . $db_events;
+			if ($missing != "db" && DB != "" && connection()->select_db(DB)) {
+				echo "<br><span>" . lang('Schema') . ":</span> " . html_select("ns", array("" => "") + adminer()->schemas(), $_GET["ns"]) . $db_events;
 				if ($_GET["ns"] != "") {
 					set_schema($_GET["ns"]);
 				}
@@ -1068,10 +1060,9 @@ class Adminer {
 	* @param TableStatus[] $tables
 	*/
 	function tablesPrint(array $tables): void {
-		global $adminer;
 		echo "<ul id='tables'>" . script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
 		foreach ($tables as $table => $status) {
-			$name = $adminer->tableName($status);
+			$name = adminer()->tableName($status);
 			if ($name != "") {
 				echo '<li><a href="' . h(ME) . 'select=' . urlencode($table) . '"'
 					. bold($_GET["select"] == $table || $_GET["edit"] == $table, "select")
