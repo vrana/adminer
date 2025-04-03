@@ -536,7 +536,7 @@ class Adminer {
 				} elseif ($val["op"] == "SQL") {
 					$cond = " $val[val]"; // SQL injection
 				} elseif ($val["op"] == "LIKE %%") {
-					$cond = " LIKE " . adminer()->processInput($fields[$val["col"]], "%$val[val]%");
+					$cond = " LIKE " . adminer()->processInput(idx($fields, $val["col"], array()), "%$val[val]%"); // this is used by search anywhere which doesn't set $val["col"]
 				} elseif ($val["op"] == "ILIKE %%") {
 					$cond = " ILIKE " . adminer()->processInput($fields[$val["col"]], "%$val[val]%");
 				} elseif ($val["op"] == "FIND_IN_SET") {
