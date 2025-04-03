@@ -1,5 +1,7 @@
 'use strict'; // Adminer specific functions
 
+let autocompleter; // set in adminer.inc.php
+
 /** Load syntax highlighting
 * @param string first three characters of database system version
 * @param [string]
@@ -44,7 +46,7 @@ function syntaxHighlighting(version, vendor) {
 		adminerHighlighter = els => jush.highlight_tag(els, 0);
 		for (const tag of qsa('textarea')) {
 			if (/(^|\s)jush-/.test(tag.className)) {
-				const pre = jush.textarea(tag);
+				const pre = jush.textarea(tag, autocompleter);
 				if (pre) {
 					setupSubmitHighlightInput(pre);
 					tag.onchange = () => {

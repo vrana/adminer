@@ -994,6 +994,7 @@ class Adminer {
 	function syntaxHighlighting(array $tables): void {
 		// this is matched by compile.php
 		echo script_src("../externals/jush/modules/jush.js");
+		echo script_src("../externals/jush/modules/jush-autocomplete-sql.js");
 		echo script_src("../externals/jush/modules/jush-textarea.js");
 		echo script_src("../externals/jush/modules/jush-txt.js");
 		echo script_src("../externals/jush/modules/jush-js.js");
@@ -1009,6 +1010,13 @@ class Adminer {
 				foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
 					echo "jushLinks.$val = jushLinks." . JUSH . ";\n";
 				}
+				$tablesColumns = array_fill_keys(array_keys($tables), array());
+				foreach (driver()->allFields() as $table => $fields) {
+					foreach ($fields as $field) {
+						$tablesColumns[$table][] = $field["field"];
+					}
+				}
+				echo "autocompleter = jush.autocompleteSql('" . idf_escape("") . "', " . json_encode($tablesColumns) . ");\n";
 			}
 			echo "</script>\n";
 		}
