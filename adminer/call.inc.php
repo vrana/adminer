@@ -41,7 +41,7 @@ if (!$error && $_POST) {
 	if (!$result) {
 		echo "<p class='error'>" . error() . "\n";
 	} else {
-		$connection2 = connect(adminer()->credentials());
+		$connection2 = connect();
 		if ($connection2) {
 			$connection2->select_db(DB);
 		}
