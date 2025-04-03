@@ -28,23 +28,22 @@ class AdminerSqlGemini {
 			foreach (Adminer\tables_list() as $table => $type) {
 				$prompt .= Adminer\create_sql($table, false, "CREATE") . ";\n\n";
 			}
-			$prompt .= "Prefer returning more columns including primary key.\n\n";
+			$prompt .= "Prefer returning relevant columns including primary key.\n\n";
 			$prompt .= "Give me this SQL query and nothing else:\n\n$_POST[gemini]\n\n";
 			//~ echo $prompt; exit;
 			$context = stream_context_create(array("http" => array(
 				"method" => "POST",
 				"header" => array("User-Agent: AdminerSqlGemini", "Content-Type: application/json"),
 				"content" => '{"contents": [{"parts":[{"text": ' . json_encode($prompt) . '}]}]}',
+				"ignore_errors" => true,
 			)));
 			$response = json_decode(file_get_contents("https://generativelanguage.googleapis.com/v1beta/models/$this->model:generateContent?key=$this->apiKey", false, $context));
-			$text = $response->candidates[0]->content->parts[0]->text;
-			$in_code = false;
-			foreach (preg_split('~(^|\n)```(sql)?(\n|$)~', $text) as $part) {
-				$part = trim($part);
-				if ($part) {
-					echo ($in_code ? $part : "/*\n$part\n*/") . "\n\n";
-				}
-				$in_code = !$in_code;
+			if (isset($response->error)) {
+				echo "-- " . $response->error->message;
+			} else {
+				$text = $response->candidates[0]->content->parts[0]->text;
+				$text = preg_replace('~(\n|^)```sql\n(.+)\n```(\n|$)~sU', "*/\n\n\\2\n\n/*", "/*\n$text*/\n");
+				echo preg_replace('~/\*\s*\*/\n*~', '', $text);
 			}
 			exit;
 		}
