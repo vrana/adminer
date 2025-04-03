@@ -4,6 +4,7 @@
 - PostgreSQL: Support COPY FROM stdin in SQL query (bug #942)
 - MySQL: Display number of found rows in group queries (regression from 5.1.1)
 - non-MySQL: Parse '--' without trailing space as comment in SQL command (bug SF-842)
+- New plugin: Set up driver, server and database in Adminer Editor
 
 ## Adminer 5.1.1 (released 2025-04-02)
 - Export: Fix tar (regression from 5.0.3)

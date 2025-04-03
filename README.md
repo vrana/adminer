@@ -18,9 +18,6 @@ If downloaded from Git then run: `git submodule update --init`
 - `adminer/index.php` - Run development version of Adminer
 - `editor/index.php` - Run development version of Adminer Editor
 - `editor/example.php` - Example customization
-- `adminer/sqlite.php` - Development version of Adminer with SQLite allowed
-- `editor/sqlite.php` - Development version of Editor with SQLite allowed
-- `adminer/designs.php` - Development version of Adminer with `adminer.css` switcher
 - `compile.php` - Create a single file version
 - `lang.php` - Update translations
 - `tests/*.html` - Katalon Recorder test suites

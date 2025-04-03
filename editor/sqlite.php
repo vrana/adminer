@@ -1,4 +1,6 @@
 <?php
+// see ../plugins/editor-setup.php for an easier solution
+
 function adminer_object() {
 	include_once "../plugins/login-password-less.php";
 
