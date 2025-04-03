@@ -452,20 +452,20 @@ if (!$columns && support("table")) {
 							}
 						}
 
-						$val = select_value($val, $link, $field, $text_length);
+						$html = select_value($val, $link, $field, $text_length);
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
-						$value = idx(idx($_POST["val"], $unique_idf), bracket_escape($key));
-						$editable = !is_array($row[$key]) && is_utf8($val) && $rows[$n][$key] == $row[$key] && !$functions[$key] && !$field["generated"];
+						$posted = idx(idx($_POST["val"], $unique_idf), bracket_escape($key));
+						$editable = !is_array($row[$key]) && is_utf8($html) && $rows[$n][$key] == $row[$key] && !$functions[$key] && !$field["generated"];
 						$text = preg_match('~text|json|lob~', $field["type"]);
-						echo "<td id='$id'" . (preg_match(number_type(), $field["type"]) && ($val == '<i>NULL</i>' || is_numeric(strip_tags($val))) ? " class='number'" : "");
-						if (($_GET["modify"] && $editable) || $value !== null) {
-							$h_value = h($value !== null ? $value : $row[$key]);
+						echo "<td id='$id'" . (preg_match(number_type(), $field["type"]) && ($val === null || is_numeric(strip_tags($html))) ? " class='number'" : "");
+						if (($_GET["modify"] && $editable && $val !== null) || $posted !== null) {
+							$h_value = h($posted !== null ? $posted : $row[$key]);
 							echo ">" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>");
 						} else {
-							$long = strpos($val, "<i>…</i>");
+							$long = strpos($html, "<i>…</i>");
 							echo " data-text='" . ($long ? 2 : ($text ? 1 : 0)) . "'"
 								. ($editable ? "" : " data-warning='" . h(lang('Use edit link to modify this value.')) . "'")
-								. ">$val"
+								. ">$html"
 							;
 						}
 					}
