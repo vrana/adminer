@@ -7,7 +7,7 @@ class Adminer {
 	private $values = array();
 
 	function name() {
-		return "<a href='https://www.adminer.org/editor/'" . target_blank() . " id='h1'><span id='logo'></span>" . lang('Editor') . "</a>";
+		return "<a href='https://www.adminer.org/editor/'" . target_blank() . " id='h1'><img src='../adminer/static/logo.png' width='24' height='24' alt='' id='logo'>" . lang('Editor') . "</a>";
 	}
 
 	//! driver, ns
