@@ -297,13 +297,6 @@ Lang::$translations = array(
 	'Delete' => 'O\'chirish',
 	'You have no privileges to update this table.' => 'Bu jadvalni yangilash uchun sizda huquqlar yo\'q.',
 
-	'E-mail' => 'E-pochta',
-	'From' => 'Kimdan',
-	'Subject' => 'Mavzu',
-	'Attachments' => 'Ilovalar',
-	'Send' => 'Yuborish',
-	'%d e-mail(s) have been sent.' => array('%d e-pochta yuborildi.', '%d e-pochtalar yuborildi.'),
-
 	// data type descriptions
 	'Numbers' => 'Raqamlar',
 	'Date and time' => 'Sana va vaqt',

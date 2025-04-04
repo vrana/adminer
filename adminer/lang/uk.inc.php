@@ -259,13 +259,6 @@ Lang::$translations = array(
 	'Clone' => 'Клонувати',
 	'Delete' => 'Видалити',
 
-	'E-mail' => 'E-mail',
-	'From' => 'Від',
-	'Subject' => 'Заголовок',
-	'Attachments' => 'Додатки',
-	'Send' => 'Надіслати',
-	'%d e-mail(s) have been sent.' => array('Було надіслано %d повідомлення.', 'Було надіслано %d повідомлення.', 'Було надіслано %d повідомлень.'),
-
 	// data type descriptions
 	'Numbers' => 'Числа',
 	'Date and time' => 'Дата і час',

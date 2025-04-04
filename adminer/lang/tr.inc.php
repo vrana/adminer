@@ -286,13 +286,6 @@ Lang::$translations = array(
 	'Delete' => 'Sil',
 	'You have no privileges to update this table.' => 'Bu tabloyu güncellemek için yetkiniz yok.',
 
-	'E-mail' => 'E-posta',
-	'From' => 'Gönderen',
-	'Subject' => 'Konu',
-	'Attachments' => 'Ekler',
-	'Send' => 'Gönder',
-	'%d e-mail(s) have been sent.' => array('%d e-posta gönderildi.', '%d adet e-posta gönderildi.'),
-
 	// data type descriptions
 	'Numbers' => 'Sayılar',
 	'Date and time' => 'Tarih ve zaman',

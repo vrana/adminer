@@ -208,7 +208,6 @@ Lang::$translations = array(
 	'Alter indexes' => '修改索引',
 	'Add next' => '下一行插入',
 	'Index Type' => '索引类型',
-	// 'Column (length)' => '列（长度）',
 
 	'Foreign keys' => '外键',
 	'Foreign key' => '外键',
@@ -291,13 +290,6 @@ Lang::$translations = array(
 	'Clone' => '复制',
 	'Delete' => '删除',
 	'You have no privileges to update this table.' => '您没有权限更新这个表。',
-
-	'E-mail' => '电子邮件',
-	'From' => '来自',
-	'Subject' => '主题',
-	'Attachments' => '附件',
-	'Send' => '发送',
-	'%d e-mail(s) have been sent.' => '%d 封邮件已发送。',
 
 	// data type descriptions
 	'Numbers' => '数字',

@@ -295,13 +295,6 @@ Lang::$translations = array(
 	'Delete' => 'Smazat',
 	'You have no privileges to update this table.' => 'Nemáte oprávnění editovat tuto tabulku.',
 
-	'E-mail' => 'E-mail',
-	'From' => 'Odesílatel',
-	'Subject' => 'Předmět',
-	'Attachments' => 'Přílohy',
-	'Send' => 'Odeslat',
-	'%d e-mail(s) have been sent.' => array('Byl odeslán %d e-mail.', 'Byly odeslány %d e-maily.', 'Bylo odesláno %d e-mailů.'),
-
 	// data type descriptions
 	'Numbers' => 'Čísla',
 	'Date and time' => 'Datum a čas',

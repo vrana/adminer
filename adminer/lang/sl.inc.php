@@ -254,13 +254,6 @@ Lang::$translations = array(
 	'Clone' => 'Kloniraj',
 	'Delete' => 'Izbriši',
 
-	'E-mail' => 'E-mail',
-	'From' => 'Od',
-	'Subject' => 'Zadeva',
-	'Attachments' => 'Priponke',
-	'Send' => 'Pošlji',
-	'%d e-mail(s) have been sent.' => array('Poslan je %d e-mail.', 'Poslana sta %d e-maila.', 'Poslani so %d e-maili.', 'Poslanih je %d e-mailov.'),
-
 	// data type descriptions
 	'Numbers' => 'Števila',
 	'Date and time' => 'Datum in čas',

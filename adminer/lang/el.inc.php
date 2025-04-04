@@ -279,13 +279,6 @@ Lang::$translations = array(
 	'Delete' => 'Διαγραφή',
 	'You have no privileges to update this table.' => 'Δεν έχετε δικαίωμα να τροποποιήσετε αυτό τον πίνακα.',
 
-	'E-mail' => 'E-mail',
-	'From' => 'Από',
-	'Subject' => 'Θέμα',
-	'Attachments' => 'Συνημμένα',
-	'Send' => 'Αποστολή',
-	'%d e-mail(s) have been sent.' => array('%d e-mail απεστάλη.', '%d e-mail απεστάλησαν.'),
-
 	// data type descriptions
 	'Numbers' => 'Αριθμοί',
 	'Date and time' => 'Ημερομηνία και ώρα',

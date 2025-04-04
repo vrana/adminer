@@ -292,13 +292,6 @@ Lang::$translations = array(
 	'Delete' => '刪除',
 	'You have no privileges to update this table.' => '您沒有許可權更新這個資料表。',
 
-	'E-mail' => '電子郵件',
-	'From' => '來自',
-	'Subject' => '主旨',
-	'Attachments' => '附件',
-	'Send' => '寄出',
-	'%d e-mail(s) have been sent.' => '已寄出 %d 封郵件。',
-
 	// data type descriptions
 	'Numbers' => '數字',
 	'Date and time' => '日期時間',

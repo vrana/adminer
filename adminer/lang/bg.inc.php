@@ -279,13 +279,6 @@ Lang::$translations = array(
 	'Delete' => 'Изтриване',
 	'You have no privileges to update this table.' => 'Нямате праве за обновяване на таблицата.',
 
-	'E-mail' => 'E-mail',
-	'From' => 'От',
-	'Subject' => 'Тема',
-	'Attachments' => 'Прикачени',
-	'Send' => 'Изпращане',
-	'%d e-mail(s) have been sent.' => array('%d писмо беше изпратено.', '%d писма бяха изпратени.'),
-
 	// data type descriptions
 	'Numbers' => 'Числа',
 	'Date and time' => 'Дата и час',

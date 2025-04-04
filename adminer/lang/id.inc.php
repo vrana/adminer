@@ -259,13 +259,6 @@ Lang::$translations = array(
 	'Clone' => 'Gandakan',
 	'Delete' => 'Hapus',
 
-	'E-mail' => 'Surel',
-	'From' => 'Dari',
-	'Subject' => 'Judul',
-	'Attachments' => 'Lampiran',
-	'Send' => 'Kirim',
-	'%d e-mail(s) have been sent.' => '%d surel berhasil dikirim.',
-
 	// data type descriptions
 	'Numbers' => 'Angka',
 	'Date and time' => 'Tanggal dan waktu',

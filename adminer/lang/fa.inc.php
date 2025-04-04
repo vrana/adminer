@@ -277,13 +277,6 @@ Lang::$translations = array(
 	'Delete' => 'حذف',
 	'You have no privileges to update this table.' => 'شما اختیار ویرایش این جدول را ندارید.',
 
-	'E-mail' => 'پست الکترونیک',
-	'From' => 'فرستنده',
-	'Subject' => 'موضوع',
-	'Attachments' => 'پیوست ها',
-	'Send' => 'ارسال',
-	'%d e-mail(s) have been sent.' => array('%d ایمیل ارسال شد.', '%d ایمیل ارسال شد.'),
-
 	// data type descriptions
 	'Numbers' => 'اعداد',
 	'Date and time' => 'تاریخ و زمان',

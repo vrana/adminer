@@ -5,6 +5,7 @@
 - MySQL: Display number of found rows in group queries (regression from 5.1.1)
 - non-MySQL: Parse '--' without trailing space as comment in SQL command (bug SF-842)
 - CSS: Add logo
+- Editor: Move mass sending e-mails to a plugin
 - Plugins: Allow formatting translations using Adminer\lang_format()
 - New plugin: Set up driver, server and database in Adminer Editor
 

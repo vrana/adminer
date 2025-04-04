@@ -264,13 +264,6 @@ Lang::$translations = array(
 	'Delete' => 'Izbriši',
 	'Modify' => 'Izmjene',
 
-	'E-mail' => 'El. pošta',
-	'From' => 'Od',
-	'Subject' => 'Naslov',
-	'Attachments' => 'Prilozi',
-	'Send' => 'Pošalji',
-	'%d e-mail(s) have been sent.' => array('%d poruka el. pošte je poslata.', '%d poruke el. pošte su poslate.', '%d poruka el. pošte je poslato.'),
-
 	// data type descriptions
 	'Numbers' => 'Broj',
 	'Date and time' => 'Datum i vrijeme',

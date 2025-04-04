@@ -292,13 +292,6 @@ Lang::$translations = array(
 	'Delete' => 'Ta bort',
 	'You have no privileges to update this table.' => 'Du har inga privilegier för att uppdatera den här tabellen.',
 
-	'E-mail' => 'Email',
-	'From' => 'Från',
-	'Subject' => 'Ämne',
-	'Attachments' => 'Bilagor',
-	'Send' => 'Skicka',
-	'%d e-mail(s) have been sent.' => array('%d email har blivit skickat.', '%d email har blivit skickade.'),
-
 	// data type descriptions
 	'Numbers' => 'Nummer',
 	'Date and time' => 'Datum och tid',

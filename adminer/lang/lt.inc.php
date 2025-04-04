@@ -257,13 +257,6 @@ Lang::$translations = array(
 	'Clone' => 'Klonuoti',
 	'Delete' => 'Trinti',
 
-	'E-mail' => 'El. paštas',
-	'From' => 'Nuo',
-	'Subject' => 'Antraštė',
-	'Attachments' => 'Priedai',
-	'Send' => 'Siųsti',
-	'%d e-mail(s) have been sent.' => array('Išsiųstas %d laiškas.', 'Išsiųsti %d laiškai.', 'Išsiųsta %d laiškų.'),
-
 	// data type descriptions
 	'Numbers' => 'Skaičiai',
 	'Date and time' => 'Data ir laikas',

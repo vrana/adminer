@@ -279,13 +279,6 @@ Lang::$translations = array(
 	'Delete' => 'Poista',
 	'You have no privileges to update this table.' => 'Sinulla ei ole oikeutta päivittää tätä taulua.',
 
-	'E-mail' => 'S-posti',
-	'From' => 'Lähettäjä',
-	'Subject' => 'Aihe',
-	'Attachments' => 'Liitteet',
-	'Send' => 'Lähetä',
-	'%d e-mail(s) have been sent.' => array('% sähköpostiviestiä lähetetty.', '% sähköpostiviestiä lähetetty.'),
-
 	// data type descriptions
 	'Numbers' => 'Numerot',
 	'Date and time' => 'Päiväys ja aika',

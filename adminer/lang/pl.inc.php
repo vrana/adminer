@@ -295,13 +295,6 @@ Lang::$translations = array(
 	'Delete' => 'Usuń',
 	'You have no privileges to update this table.' => 'Brak uprawnień do edycji tej tabeli.',
 
-	'E-mail' => 'E-mail',
-	'From' => 'Nadawca',
-	'Subject' => 'Temat',
-	'Attachments' => 'Załączniki',
-	'Send' => 'Wyślij',
-	'%d e-mail(s) have been sent.' => array('Wysłano %d e-mail.', 'Wysłano %d e-maile.', 'Wysłano %d e-maili.'),
-
 	// data type descriptions
 	'Numbers' => 'Numeryczne',
 	'Date and time' => 'Data i czas',

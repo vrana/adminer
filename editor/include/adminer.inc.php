@@ -332,20 +332,6 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function selectEmailPrint($emailFields, $columns) {
-		if ($emailFields) {
-			print_fieldset("email", lang('E-mail'), $_POST["email_append"]);
-			echo "<div>";
-			echo script("qsl('div').onkeydown = partialArg(bodyKeydown, 'email');");
-			echo "<p>" . lang('From') . ": <input name='email_from' value='" . h($_POST ? $_POST["email_from"] : $_COOKIE["adminer_email"]) . "'>\n";
-			echo lang('Subject') . ": <input name='email_subject' value='" . h($_POST["email_subject"]) . "'>\n";
-			echo "<p><textarea name='email_message' rows='15' cols='75'>" . h($_POST["email_message"] . ($_POST["email_append"] ? '{$' . "$_POST[email_addition]}" : "")) . "</textarea>\n";
-			echo "<p>" . script("qsl('p').onkeydown = partialArg(bodyKeydown, 'email_append');", "") . html_select("email_addition", $columns, $_POST["email_addition"]) . "<input type='submit' name='email_append' value='" . lang('Insert') . "'>\n"; //! JavaScript
-			echo "<p>" . lang('Attachments') . ": <input type='file' name='email_files[]'>" . script("qsl('input').onchange = emailFileChange;");
-			echo "<p>" . (count($emailFields) == 1 ? input_hidden("email_field", key($emailFields)) : html_select("email_field", $emailFields));
-			echo "<input type='submit' name='email' value='" . lang('Send') . "'>" . confirm();
-			echo "</div>\n";
-			echo "</div></fieldset>\n";
-		}
 	}
 
 	function selectColumnsProcess($columns, $indexes) {
@@ -422,37 +408,6 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function selectEmailProcess($where, $foreignKeys) {
-		if ($_POST["email_append"]) {
-			return true;
-		}
-		if ($_POST["email"]) {
-			$sent = 0;
-			if ($_POST["all"] || $_POST["check"]) {
-				$field = idf_escape($_POST["email_field"]);
-				$subject = $_POST["email_subject"];
-				$message = $_POST["email_message"];
-				preg_match_all('~\{\$([a-z0-9_]+)\}~i', "$subject.$message", $matches); // allows {$name} in subject or message
-				$rows = get_rows(
-					"SELECT DISTINCT $field" . ($matches[1] ? ", " . implode(", ", array_map('Adminer\idf_escape', array_unique($matches[1]))) : "") . " FROM " . table($_GET["select"])
-					. " WHERE $field IS NOT NULL AND $field != ''"
-					. ($where ? " AND " . implode(" AND ", $where) : "")
-					. ($_POST["all"] ? "" : " AND ((" . implode(") OR (", array_map('Adminer\where_check', (array) $_POST["check"])) . "))")
-				);
-				$fields = fields($_GET["select"]);
-				foreach (adminer()->rowDescriptions($rows, $foreignKeys) as $row) {
-					$replace = array('{\\' => '{'); // allow literal {$name}
-					foreach ($matches[1] as $val) {
-						$replace['{$' . "$val}"] = adminer()->editVal($row[$val], $fields[$val]);
-					}
-					$email = $row[$_POST["email_field"]];
-					if (is_mail($email) && send_mail($email, strtr($subject, $replace), strtr($message, $replace), $_POST["email_from"], $_FILES["email_files"])) {
-						$sent++;
-					}
-				}
-			}
-			cookie("adminer_email", $_POST["email_from"]);
-			redirect(remove_from_uri(), lang('%d e-mail(s) have been sent.', $sent));
-		}
 		return false;
 	}
 

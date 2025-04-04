@@ -283,13 +283,6 @@ Lang::$translations = array(
 	'Delete' => 'Padam',
 	'You have no privileges to update this table.' => 'Anda tidak mempunyai keistimewaan untuk mengemaskini jadual ini.',
 
-	'E-mail' => 'Emel',
-	'From' => 'Dari',
-	'Subject' => 'Subjek',
-	'Attachments' => 'Lampiran',
-	'Send' => 'Hantar',
-	'%d e-mail(s) have been sent.' => '%d emel telah dihantar.',
-
 	// data type descriptions
 	'Numbers' => 'Nombor',
 	'Date and time' => 'Tarikh dan masa',
