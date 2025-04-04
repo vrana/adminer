@@ -55,7 +55,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 		echo "<link rel='apple-touch-icon' href='../adminer/static/logo.png'>\n";
 	}
 	foreach ($css as $val) {
-		echo "<link rel='stylesheet'" . (preg_match('~-dark~', $val) && !$dark ? $media : "") . " href='" . h($val) . "'>\n";
+		echo "<link rel='stylesheet'" . (preg_match('~-dark\.~', $val) && !$dark ? $media : "") . " href='" . h($val) . "'>\n";
 	}
 	echo "\n<body class='" . lang('ltr') . " nojs'>\n";
 	$filename = get_temp_dir() . "/adminer.version";
