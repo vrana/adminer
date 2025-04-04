@@ -4,6 +4,7 @@
 - PostgreSQL: Support COPY FROM stdin in SQL query (bug #942)
 - MySQL: Display number of found rows in group queries (regression from 5.1.1)
 - non-MySQL: Parse '--' without trailing space as comment in SQL command (bug SF-842)
+- MS SQL: Limit one INSERT in export to 1000 rows (bug #983)
 - CSS: Add logo
 - Editor: Move mass sending e-mails to a plugin
 - Plugins: Allow formatting translations using Adminer\lang_format()

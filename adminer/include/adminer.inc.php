@@ -816,6 +816,7 @@ class Adminer {
 				$generated = array();
 				$suffix = "";
 				$fetch_function = ($table != '' ? 'fetch_assoc' : 'fetch_row');
+				$count = 0;
 				while ($row = $result->$fetch_function()) {
 					if (!$keys) {
 						$values = array();
@@ -855,13 +856,17 @@ class Adminer {
 						$s = ($max_packet ? "\n" : " ") . "(" . implode(",\t", $row) . ")";
 						if (!$buffer) {
 							$buffer = $insert . $s;
-						} elseif (strlen($buffer) + 4 + strlen($s) + strlen($suffix) < $max_packet) { // 4 - length specification
+						} elseif (JUSH == 'mssql'
+							? $count % 1000 != 0 // https://learn.microsoft.com/en-us/sql/t-sql/queries/table-value-constructor-transact-sql#limitations-and-restrictions
+							: strlen($buffer) + 4 + strlen($s) + strlen($suffix) < $max_packet // 4 - length specification
+						) {
 							$buffer .= ",$s";
 						} else {
 							echo $buffer . $suffix;
 							$buffer = $insert . $s;
 						}
 					}
+					$count++;
 				}
 				if ($buffer) {
 					echo $buffer . $suffix;
