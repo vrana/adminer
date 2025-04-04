@@ -1,7 +1,48 @@
 <?php
 namespace Adminer;
 
-// not used in a single language version
+/** Translate string
+* @param literal-string $idf
+* @param float|string $number
+*/
+function lang(string $idf, $number = null): string {
+	// this is matched by compile.php
+	$args = func_get_args();
+	$args[0] = Lang::$translations[$idf] ?: $idf;
+	return call_user_func_array('Adminer\lang_format', $args);
+}
+
+/** Format translation, usable also by plugins
+* @param string|list<string> $translation
+* @param float|string $number
+*/
+function lang_format($translation, $number = null): string {
+	if (is_array($translation)) {
+		// this is matched by compile.php
+		$pos = ($number == 1 ? 0
+			: (LANG == 'cs' || LANG == 'sk' ? ($number && $number < 5 ? 1 : 2) // different forms for 1, 2-4, other
+			: (LANG == 'fr' ? (!$number ? 0 : 1) // different forms for 0-1, other
+			: (LANG == 'pl' ? ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2) // different forms for 1, 2-4 except 12-14, other
+			: (LANG == 'sl' ? ($number % 100 == 1 ? 0 : ($number % 100 == 2 ? 1 : ($number % 100 == 3 || $number % 100 == 4 ? 2 : 3))) // different forms for 1, 2, 3-4, other
+			: (LANG == 'lt' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 12-19, other
+			: (LANG == 'lv' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number ? 1 : 2)) // different forms for 1 except 11, other, 0
+			: (in_array(LANG, array('bs', 'ru', 'sr', 'uk')) ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1 except 11, 2-4 except 12-14, other
+			: 1)))))))) // different forms for 1, other
+		; // http://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
+		$translation = $translation[$pos];
+	}
+	$translation = str_replace("'", '’', $translation); // translations can contain HTML or be used in optionlist (we couldn't escape them here) but they can also be used e.g. in title='' //! escape plaintext translations
+	$args = func_get_args();
+	array_shift($args);
+	$format = str_replace("%d", "%s", $translation);
+	if ($format != $translation) {
+		$args[0] = format_number($number);
+	}
+	return vsprintf($format, $args);
+}
+
+// this is matched by compile.php
+// not used in a single language version from here
 
 /** Get available languages
 * @return string[]
@@ -54,37 +95,6 @@ function langs(): array {
 		'zh' => '简体中文', // Mr. Lodar, vea - urn2.net - vea.urn2@gmail.com
 		'zh-tw' => '繁體中文', // http://tzangms.com
 	);
-}
-
-/** Translate string
-* @param literal-string $idf
-* @param float|string $number
-*/
-function lang(string $idf, $number = null): string {
-	// this is matched by compile.php
-	$translation = (Lang::$translations[$idf] ?: $idf);
-	if (is_array($translation)) {
-		// this is matched by compile.php
-		$pos = ($number == 1 ? 0
-			: (LANG == 'cs' || LANG == 'sk' ? ($number && $number < 5 ? 1 : 2) // different forms for 1, 2-4, other
-			: (LANG == 'fr' ? (!$number ? 0 : 1) // different forms for 0-1, other
-			: (LANG == 'pl' ? ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2) // different forms for 1, 2-4 except 12-14, other
-			: (LANG == 'sl' ? ($number % 100 == 1 ? 0 : ($number % 100 == 2 ? 1 : ($number % 100 == 3 || $number % 100 == 4 ? 2 : 3))) // different forms for 1, 2, 3-4, other
-			: (LANG == 'lt' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1, 12-19, other
-			: (LANG == 'lv' ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number ? 1 : 2)) // different forms for 1 except 11, other, 0
-			: (in_array(LANG, array('bs', 'ru', 'sr', 'uk')) ? ($number % 10 == 1 && $number % 100 != 11 ? 0 : ($number % 10 > 1 && $number % 10 < 5 && $number / 10 % 10 != 1 ? 1 : 2)) // different forms for 1 except 11, 2-4 except 12-14, other
-			: 1)))))))) // different forms for 1, other
-		; // http://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
-		$translation = $translation[$pos];
-	}
-	$translation = str_replace("'", '’', $translation); // translations can contain HTML or be used in optionlist (we couldn't escape them here) but they can also be used e.g. in title='' //! escape plaintext translations
-	$args = func_get_args();
-	array_shift($args);
-	$format = str_replace("%d", "%s", $translation);
-	if ($format != $translation) {
-		$args[0] = format_number($number);
-	}
-	return vsprintf($format, $args);
 }
 
 function switch_lang(): void {

@@ -21,7 +21,7 @@ function remove_lang($match) {
 	$idf = strtr($match[2], array("\\'" => "'", "\\\\" => "\\"));
 	$s = (Adminer\Lang::$translations[$idf] ?: $idf);
 	if ($match[3] == ",") { // lang() has parameters
-		return $match[1] . (is_array($s) ? "lang(array('" . implode("', '", array_map('add_apo_slashes', $s)) . "')," : "sprintf('" . add_apo_slashes($s) . "',");
+		return $match[1] . (is_array($s) ? "lang_format(array('" . implode("', '", array_map('add_apo_slashes', $s)) . "')," : "sprintf('" . add_apo_slashes($s) . "',");
 	}
 	return ($match[1] && $match[4] ? $s : "$match[1]'" . add_apo_slashes($s) . "'$match[4]");
 }
@@ -84,8 +84,8 @@ function put_file($match) {
 			}
 		}
 	}
-	if (basename($match[2]) != "lang.inc.php" || !$_SESSION["lang"]) {
-		if (basename($match[2]) == "lang.inc.php") {
+	if (basename($match[2]) == "lang.inc.php") {
+		if (!$_SESSION["lang"]) {
 			$return = str_replace('function lang(string $idf, $number = null): string {', 'function lang($idf, $number = null) {
 	if (is_string($idf)) { // compiled version uses numbers, string comes from a plugin
 		// English translation is closest to the original identifiers //! pluralized translations are not found
@@ -97,27 +97,17 @@ function put_file($match) {
 			if (!$count) {
 				echo "lang() not found\n";
 			}
+		} else {
+			$return = preg_replace('~// not used in a single language version from here\n.*~s', '', $return);
+			$return = preg_replace_callback('~(\$pos = (.+\n).+;)~sU', function ($match) {
+				return "\$pos = $match[2]\t\t\t: " . (preg_match("~'$_SESSION[lang]'.* \\? (.+)\n~U", $match[1], $match2) ? $match2[1] : "1") . "\n\t\t);";
+			}, $return);
+			$return = str_replace('Lang::$translations[$idf] ?: $idf', '$idf', $return); // lang() is used only by old plugins
+			$return .= "define('Adminer\\LANG', '$_SESSION[lang]');\n";
 		}
-		$tokens = token_get_all($return); // to find out the last token
-		return "?>\n$return" . (in_array($tokens[count($tokens) - 1][0], array(T_CLOSE_TAG, T_INLINE_HTML), true) ? "<?php" : "");
-	} elseif (preg_match('~\s*(\$pos = (.+\n).+;)~sU', $return, $match2)) {
-		// single language lang() is used for plural
-		return "define('Adminer\\LANG', '$_SESSION[lang]');
-
-function lang(\$translation, \$number = null) {
-	if (is_array(\$translation)) {
-		\$pos = $match2[2]\t\t\t: " . (preg_match("~'$_SESSION[lang]'.* \\? (.+)\n~U", $match2[1], $match3) ? $match3[1] : "1") . '
-		);
-		$translation = $translation[$pos];
 	}
-	$translation = str_replace("%d", "%s", $translation);
-	$number = format_number($number);
-	return sprintf($translation, $number);
-}
-';
-	} else {
-		echo "lang() \$pos not found\n";
-	}
+	$tokens = token_get_all($return); // to find out the last token
+	return "?>\n$return" . (in_array($tokens[count($tokens) - 1][0], array(T_CLOSE_TAG, T_INLINE_HTML), true) ? "<?php" : "");
 }
 
 function lzw_compress($string) {
