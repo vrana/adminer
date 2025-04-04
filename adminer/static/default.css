@@ -75,7 +75,7 @@ input.wayoff { left: -1000px; position: absolute; }
 .footer > div { background: var(--bg); padding: 0 0 .5em; }
 .footer fieldset { margin-top: 0; }
 .links a { white-space: nowrap; margin-right: 20px; }
-.logout { position: fixed; top: .5em; right: 20px; }
+.logout { margin-top: .5em; position: absolute; top: 0; right: 0; }
 .loadmore { margin-left: 1ex; }
 /* .edit used in designs */
 #menu { position: absolute; margin: 10px 0 0; top: 2em; left: 0; width: 19em; }
@@ -116,15 +116,15 @@ input.wayoff { left: -1000px; position: absolute; }
 
 @media all and (max-width: 880px) {
 	.pages { left: auto; }
-	.logout { position: absolute; top: 1.667em; }
-	#menu { width: auto; background: var(--bg); border: 1px solid var(--fg); margin-top: 9px; box-shadow: 0 0 20px rgb(from var(--fg) r g b / .7); }
+	.js .logout { top: 1.667em; }
+	#menu { position: static; width: auto; min-width: 23em; background: var(--bg); border: 1px solid var(--fg); margin-top: 9px; box-shadow: 0 0 20px rgb(from var(--fg) r g b / .7); }
 	#content { margin-left: 10px; }
 	#lang { position: static; }
 	#breadcrumb { left: 48px; }
+	.js #foot { position: absolute; top: 2em; left: 0; }
 	.js .foot { display: none; }
 	.js #menuopen { display: block; position: absolute; top: 3px; left: 6px; }
 	.nojs #menu { position: static; }
-	.nojs .logout { position: static; padding: 1em; }
 	.rtl .pages { right: auto; }
 	.rtl #content { margin-right: 10px; }
 	.rtl #breadcrumb { right: auto; }
