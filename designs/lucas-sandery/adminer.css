@@ -364,7 +364,7 @@ tbody tr:nth-child(n):hover th {
 }
 .icon {
 	width: 1.2em;
-	background: #4c3957 center no-repeat;
+	background-color: #4c3957;
 	background-size: 66%;
 }
 .icon-plus {
@@ -497,7 +497,7 @@ button,
 	display: inline-block;
 	font-size: 85%;
 	text-align: center;
-	background: #4c3957;
+	background-color: #4c3957;
 	color: #fff;
 	padding: 0.5em 0.8em 0.6em;
 	margin: 0;
@@ -517,7 +517,7 @@ button:focus,
 .links a:link:focus,
 .links a:visited:focus {
 	color: #fff;
-	background: #ec5f12;
+	background-color: #ec5f12;
 	text-decoration: none;
 }
 input[type="submit"]:disabled,

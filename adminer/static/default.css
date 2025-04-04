@@ -66,7 +66,7 @@ input.wayoff { left: -1000px; position: absolute; }
 .sqlarea { width: 98%; }
 .sql-footer { margin-bottom: 2.5em; }
 .explain table { white-space: pre; }
-.icon { width: 18px; height: 18px; background-color: navy; border: 0; vertical-align: middle; }
+.icon { width: 18px; height: 18px; background: navy center no-repeat; border: 0; vertical-align: middle; }
 .icon span { display: none; }
 .icon:hover { background-color: red; }
 .size { width: 7ex; }
@@ -118,9 +118,9 @@ input.wayoff { left: -1000px; position: absolute; }
 	.pages { left: auto; }
 	.js .logout { top: 1.667em; }
 	#menu { position: static; width: auto; min-width: 23em; background: var(--bg); border: 1px solid var(--fg); margin-top: 9px; box-shadow: 0 0 20px rgb(from var(--fg) r g b / .7); }
-	#content { margin-left: 10px; }
+	#content { margin-left: 10px !important; }
 	#lang { position: static; }
-	#breadcrumb { left: 48px; }
+	#breadcrumb { left: 48px !important; }
 	.js #foot { position: absolute; top: 2em; left: 0; }
 	.js .foot { display: none; }
 	.js #menuopen { display: block; position: absolute; top: 3px; left: 6px; }

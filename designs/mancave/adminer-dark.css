@@ -726,6 +726,10 @@ legend{
 /* menu
    ----------------------------------------------------------------------- */
 
+#foot{
+	height: 100%;
+}
+
 #menu{
 	height: 100%;
 	width: 300px;
@@ -739,6 +743,7 @@ legend{
 	top: 0;
 	overflow-y: overlay;
     overflow-y: auto; /* needed for firefox 2017-03-05 */
+	z-index: 10;
 }
 
 #menu p {

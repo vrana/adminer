@@ -692,6 +692,7 @@ legend{
 	padding: 0;
 	top: 0;
 	overflow-y: overlay;
+	z-index: 1;
 }
 
 #menu p {
