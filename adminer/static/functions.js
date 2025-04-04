@@ -848,7 +848,7 @@ oninput = event => {
 };
 
 addEvent(document, 'click', event => {
-	if (!qs('#foot').contains(event.target)) {
-		alterClass(qs('#foot'), 'foot', true);
+	if (!qs('#menu').contains(event.target)) {
+		alterClass(qs('#menu'), 'foot', true);
 	}
 });

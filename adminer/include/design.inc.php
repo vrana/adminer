@@ -85,7 +85,7 @@ const thousandsSeparator = '" . js_escape(lang(',')) . "';")
 	echo "<div id='help' class='jush-" . JUSH . " jsonly hidden'></div>\n";
 	echo script("mixin(qs('#help'), {onmouseover: () => { helpOpen = 1; }, onmouseout: helpMouseout});");
 	echo "<div id='content'>\n";
-	echo "<span id='menuopen' class='jsonly'>" . icon("move", "", "menu", "") . "</span>" . script("qs('#menuopen').onclick = event => { qs('#foot').classList.toggle('foot'); event.stopPropagation(); }");
+	echo "<span id='menuopen' class='jsonly'>" . icon("move", "", "menu", "") . "</span>" . script("qs('#menuopen').onclick = event => { qs('#menu').classList.toggle('foot'); event.stopPropagation(); }");
 	if ($breadcrumb !== null) {
 		$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
 		echo '<p id="breadcrumb"><a href="' . h($link ?: ".") . '">' . get_driver(DRIVER) . '</a> » ';
@@ -190,16 +190,16 @@ function page_messages(string $error): void {
 * @param ''|'auth'|'db'|'ns' $missing
 */
 function page_footer(string $missing = ""): void {
-	echo "</div>\n\n<div id='foot' class='foot'>\n<div id='menu'>\n";
+	echo "</div>\n\n<div id='menu' class='foot'>\n";
 	adminer()->navigation($missing);
-	echo "</div>\n";
 	if ($missing != "auth") {
 		?>
 <form action="" method="post">
-<p class="logout">
+<div class="logout">
 <span><?php echo h($_GET["username"]) . "\n"; ?></span>
 <input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" id="logout">
 <?php echo input_token(); ?>
+</div>
 </form>
 <?php
 	}
