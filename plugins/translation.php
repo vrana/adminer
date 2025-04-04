@@ -21,7 +21,7 @@ class AdminerTranslation {
 	private function translate($idf) {
 		static $translations, $lang;
 		if ($lang === null) {
-			$lang = Adminer\get_lang();
+			$lang = Adminer\LANG;
 		}
 		if ($idf == "" || $lang == "en") {
 			return $idf;

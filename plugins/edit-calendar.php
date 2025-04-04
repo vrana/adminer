@@ -28,7 +28,7 @@ class AdminerEditCalendar {
 			. Adminer\script_src("jquery-ui/jquery-ui-timepicker-addon.js")
 		);
 		if ($this->langPath) {
-			$lang = Adminer\get_lang();
+			$lang = Adminer\LANG;
 			$lang = ($lang == "zh" ? "zh-CN" : ($lang == "zh-tw" ? "zh-TW" : $lang));
 			if ($lang != "en" && file_exists(sprintf($this->langPath, $lang))) {
 				echo Adminer\script_src(sprintf($this->langPath, $lang));

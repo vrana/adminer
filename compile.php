@@ -102,9 +102,7 @@ function put_file($match) {
 		return "?>\n$return" . (in_array($tokens[count($tokens) - 1][0], array(T_CLOSE_TAG, T_INLINE_HTML), true) ? "<?php" : "");
 	} elseif (preg_match('~\s*(\$pos = (.+\n).+;)~sU', $return, $match2)) {
 		// single language lang() is used for plural
-		return "function get_lang() {
-	return '$_SESSION[lang]';
-}
+		return "define('Adminer\\LANG', '$_SESSION[lang]');
 
 function lang(\$translation, \$number = null) {
 	if (is_array(\$translation)) {
