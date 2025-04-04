@@ -308,6 +308,9 @@ Lang::$translations = array(
 	'Alter check' => 'Check ändern',
 	'Create check' => 'Check erstellen',
 	'Checks' => 'Checks',
+	'Loaded plugins' => 'Geladene Plugins',
+	'%s must <a%s>return an array</a>.' => '%s muss <a%s>ein Array zurückgeben</a>.',
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Konfigure</a> %s mit %s.',
 );
 
 // run `php ../../lang.php de` to update this file
