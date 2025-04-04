@@ -42,7 +42,6 @@ body{color:#829bb0;background:#002240;font-family:Verdana,Arial,Helvetica,sans-s
 a{color:#829bb0;text-decoration:none}
 a:visited{color:#517fa8}
 a:link:hover,a:visited:hover{color:#9bc0e1;text-decoration:underline}
-img{width:100%;max-width:100%}
 #menu #h1{margin-left:10px}
 #menu h1{background-color:#1d4e78}
 .rtl table.layout tbody td{display:flex}
