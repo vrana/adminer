@@ -6,8 +6,8 @@ namespace Adminer;
 * @param float|string $number
 */
 function lang(string $idf, $number = null): string {
-	// this is matched by compile.php
 	$args = func_get_args();
+	// this is matched by compile.php
 	$args[0] = Lang::$translations[$idf] ?: $idf;
 	return call_user_func_array('Adminer\lang_format', $args);
 }
