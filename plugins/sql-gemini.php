@@ -50,7 +50,7 @@ class AdminerSqlGemini {
 	}
 
 	function sqlPrintAfter() {
-		echo "<p><textarea name='gemini' rows='5' cols='50' placeholder='Ask Gemini'>" . Adminer\h($_POST["gemini"]) . "</textarea>\n";
+		echo "<p><textarea name='gemini' rows='5' cols='50' placeholder='" . $this->lang('Ask Gemini') . "'>" . Adminer\h($_POST["gemini"]) . "</textarea>\n";
 		?>
 <p><input type='button' value='Gemini'>
 <script <?php echo Adminer\nonce(); ?>>
@@ -64,7 +64,7 @@ function setSqlareaValue(value) {
 }
 
 geminiButton.onclick = () => {
-	setSqlareaValue('-- Just a sec...'); // this is the phrase used by Google Gemini
+	setSqlareaValue('-- <?php echo $this->lang('Just a sec...'); ?>'); // this is the phrase used by Google Gemini
 	ajax(
 		'',
 		req => setSqlareaValue(req.responseText),
@@ -91,4 +91,15 @@ geminiText.onkeydown = event => {
 </script>
 <?php
 	}
+
+	private function lang($idf, $number = null) {
+		return Adminer\lang_format(Adminer\idx(self::$translations[Adminer\LANG], $idf) ?: $idf, $number);
+	}
+
+	private static $translations = array(
+		'cs' => array(
+			'Ask Gemini' => 'Zeptat se Gemini',
+			'Just a sec...' => 'Chviličku...',
+		),
+	);
 }
