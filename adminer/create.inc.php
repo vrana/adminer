@@ -189,7 +189,7 @@ if (support("columns") || $TABLE == "") {
 	echo ($engines ? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . on_help("event.target.value", 1) . script("qsl('select').onchange = helpClose;") . "\n" : "");
 	if ($collations) {
 		echo "<datalist id='collations'>" . optionlist($collations) . "</datalist>\n";
-		echo (preg_match("~sqlite|mssql~", JUSH) ? "" : "<input list='collations' name='Collation' value='" . h($row["Collation"]) . "' placeholder='(" . lang('collation') . ")'>");
+		echo (preg_match("~sqlite|mssql~", JUSH) ? "" : "<input list='collations' name='Collation' value='" . h($row["Collation"]) . "' placeholder='(" . lang('collation') . ")'>\n");
 	}
 	echo "<input type='submit' value='" . lang('Save') . "'>\n";
 }
