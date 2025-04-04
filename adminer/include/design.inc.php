@@ -51,7 +51,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	echo script_src("../adminer/static/functions.js");
 	echo script_src("static/editing.js");
 	if (adminer()->head($dark)) {
-		echo "<link rel='shortcut icon' type='image/x-icon' href='../adminer/static/favicon.ico'>\n";
+		echo "<link rel='icon' href='data:image/gif;base64,R0lGODlhEAAQAJEAAAQCBPz+/PwCBAROZCH5BAEAAAAALAAAAAAQABAAAAI2hI+pGO1rmghihiUdvUBnZ3XBQA7f05mOak1RWXrNq5nQWHMKvuoJ37BhVEEfYxQzHjWQ5qIAADs='>\n";
 		echo "<link rel='apple-touch-icon' href='../adminer/static/logo.png'>\n";
 	}
 	foreach ($css as $val) {

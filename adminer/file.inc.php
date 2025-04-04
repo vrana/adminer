@@ -11,10 +11,7 @@ if (substr(VERSION, -4) != '-dev') {
 	header("Cache-Control: immutable");
 }
 
-if ($_GET["file"] == "favicon.ico") {
-	header("Content-Type: image/x-icon");
-	echo lzw_decompress(compile_file('../adminer/static/favicon.ico', 'lzw_compress'));
-} elseif ($_GET["file"] == "default.css") {
+if ($_GET["file"] == "default.css") {
 	header("Content-Type: text/css; charset=utf-8");
 	echo lzw_decompress(compile_file('../adminer/static/default.css;../externals/jush/jush.css', 'minify_css'));
 } elseif ($_GET["file"] == "dark.css") {
