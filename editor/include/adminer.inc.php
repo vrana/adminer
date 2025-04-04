@@ -7,7 +7,7 @@ class Adminer {
 	private $values = array();
 
 	function name() {
-		return "<a href='https://www.adminer.org/editor/'" . target_blank() . " id='h1'>" . lang('Editor') . "</a>";
+		return "<a href='https://www.adminer.org/editor/'" . target_blank() . " id='h1'><span id='logo'></span>" . lang('Editor') . "</a>";
 	}
 
 	//! driver, ns
@@ -545,7 +545,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function navigation($missing) {
-		echo "<h1><span id='logo'></span>" . adminer()->name() . " <span class='version'>" . VERSION;
+		echo "<h1>" . adminer()->name() . " <span class='version'>" . VERSION;
 		$new_version = $_COOKIE["adminer_version"];
 		echo " <a href='https://www.adminer.org/editor/#download'" . target_blank() . " id='version'>" . (version_compare(VERSION, $new_version) < 0 ? h($new_version) : "") . "</a>";
 		echo "</span></h1>\n";
