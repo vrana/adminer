@@ -52,7 +52,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	echo script_src("static/editing.js");
 	if (adminer()->head($dark)) {
 		echo "<link rel='shortcut icon' type='image/x-icon' href='../adminer/static/favicon.ico'>\n";
-		echo "<link rel='apple-touch-icon' href='../adminer/static/favicon.ico'>\n";
+		echo "<link rel='apple-touch-icon' href='../adminer/static/logo.png'>\n";
 	}
 	foreach ($css as $val) {
 		echo "<link rel='stylesheet'" . (preg_match('~-dark~', $val) && !$dark ? $media : "") . " href='" . h($val) . "'>\n";

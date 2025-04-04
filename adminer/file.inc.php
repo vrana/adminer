@@ -35,5 +35,8 @@ if ($_GET["file"] == "favicon.ico") {
 ../externals/jush/modules/jush-mssql.js;
 ../externals/jush/modules/jush-oracle.js;
 ../externals/jush/modules/jush-simpledb.js', 'minify_js'));
+} elseif ($_GET["file"] == "logo.png") {
+	header("Content-Type: image/png");
+	echo compile_file('../adminer/static/logo.png');
 }
 exit;

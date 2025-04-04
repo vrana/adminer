@@ -88,6 +88,7 @@ input.wayoff { left: -1000px; position: absolute; }
 #lang { position: absolute; top: -2.6em; left: 0; padding: .3em 1em; }
 #menuopen { display: none; }
 #breadcrumb { white-space: nowrap; position: absolute; top: 0; left: 21em; background: #eee; height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0 0 0 -18px; }
+#logo { width: 24px; height: 24px; background-size: cover; display: inline-block; background-image: url(logo.png); margin-bottom: -3px; }
 #h1 { color: #777; text-decoration: none; font-style: italic; }
 #version { color: red; }
 #schema { margin-left: 60px; position: relative; user-select: none; -webkit-user-select: none; }
