@@ -276,8 +276,8 @@ Lang::$translations = array(
 	'HH:MM:SS' => 'HH:MM:SS',
 
 	'Loaded plugins' => 'Plugins cargados',
-	// '<b>%s</b> must return an array.' => '<b>%s</b> tiene que retornar un arreglo.',
-	// 'Configure <b>%s</b> in <b>%s</b>.' => 'Configurar <b>%s</b> en <b>%s</b>.',
+	'%s must <a%s>return an array</a>.' => '%s tiene que <a%s>retornar un arreglo</a>.',
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Configurar</a> %s en %s.',
 	'There is a space in the input password which might be the cause.' => 'Hay un espacio en el password, lo cual puede ser la causa.',
 	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer no soporta accesar una base de datos sin clave, <a href="https://www.adminer.org/en/password/"%s>Ver detalles</a>.',
 	'Database does not support password.' => 'La base de datos no soporta password.',
