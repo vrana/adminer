@@ -114,7 +114,7 @@ input.wayoff { left: -1000px; position: absolute; }
 .rtl #lang, .rtl #menu { left: auto; right: 0; }
 .rtl pre, .rtl code { direction: ltr; }
 
-@media all and (max-width: 880px) {
+@media all and (max-width: 800px) {
 	.pages { left: auto; }
 	.js .logout { top: 1.667em; }
 	#menu { position: static; width: auto; min-width: 23em; background: var(--bg); border: 1px solid var(--fg); margin-top: 9px; box-shadow: 0 0 20px rgb(from var(--fg) r g b / .7); }
