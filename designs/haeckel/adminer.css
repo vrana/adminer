@@ -42,7 +42,7 @@ html>/**/body .message, html>/**/body #menu p.message {
 
 /* Adminer logo */
 html>/**/body h1 {
-	background: #eee url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQBAMAAADt3eJSAAAAMFBMVEXAwMD/////AAAATmEAAAAA%0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB5w%2BL8AAAAAXRSTlMAQObYZgAAAAlwSFlz%0AAAALEgAACxIB0t1%2B/AAAAEVJREFUCJljYEAGjIKCAmCGoKKSIFhASFBQEcgFkoJCggyMwsaGQiA1%0AjIaCwoKKQkCGsbGxIEwErJcoBtAcqEWCgiguAADa1AZzThzIfQAAAABJRU5ErkJggg%3D%3D%0A") no-repeat 14px 7px;
+	background: #eee;
 	box-shadow: 0px 0px 3px rgba(0,0,0,0.30) !important;
 	font-size: 1em;
 	padding: 7px 6px 5px 35px;
