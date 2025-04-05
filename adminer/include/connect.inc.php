@@ -44,16 +44,7 @@ if (
 		}
 		echo "<p>" . lang('%s version: %s through PHP extension %s', get_driver(DRIVER), "<b>" . h(connection()->server_info) . "</b>", "<b>" . connection()->extension . "</b>") . "\n";
 		echo "<p>" . lang('Logged as: %s', "<b>" . h(logged_user()) . "</b>") . "\n";
-		if (isset(adminer()->plugins) && is_array(adminer()->plugins)) {
-			echo "<div class='plugins'>\n";
-			echo "<p>" . lang('Loaded plugins') . ":\n<ul>\n";
-			foreach (adminer()->plugins as $plugin) {
-				$reflection = new \ReflectionObject($plugin);
-				echo "<li><b>" . get_class($plugin) . "</b>" . h(preg_match('~^/[\s*]+(.+)~', $reflection->getDocComment(), $match) ? ": $match[1]" : "") . "\n";
-			}
-			echo "</ul>\n";
-			echo "</div>\n";
-		}
+
 		$databases = adminer()->databases();
 		if ($databases) {
 			$scheme = support("scheme");
@@ -71,7 +62,6 @@ if (
 			;
 
 			$databases = ($_GET["dbsize"] ? count_tables($databases) : array_flip($databases));
-
 			foreach ($databases as $db => $tables) {
 				$root = h(ME) . "db=" . urlencode($db);
 				$id = h("Db-" . $db);
@@ -97,6 +87,17 @@ if (
 			echo input_token();
 			echo "</form>\n";
 			echo script("tableCheck();");
+		}
+
+		if (isset(adminer()->plugins) && is_array(adminer()->plugins)) {
+			echo "<div class='plugins'>\n";
+			echo "<h3>" . lang('Loaded plugins') . "</h3>\n<ul>\n";
+			foreach (adminer()->plugins as $plugin) {
+				$reflection = new \ReflectionObject($plugin);
+				echo "<li><b>" . get_class($plugin) . "</b>" . h(preg_match('~^/[\s*]+(.+)~', $reflection->getDocComment(), $match) ? ": $match[1]" : "") . "\n";
+			}
+			echo "</ul>\n";
+			echo "</div>\n";
 		}
 	}
 
