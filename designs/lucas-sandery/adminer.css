@@ -413,6 +413,7 @@ tbody tr:nth-child(n):hover th {
 	position: fixed;
 }
 #lang {
+	top: 0;
 	left: 18em;
 }
 .rtl #lang {
@@ -691,9 +692,12 @@ input[type="file"]:disabled::file-selector-button {
 	margin-left: 0;
 }
 
-@media all and (max-width: 880px) {
+@media all and (max-width: 800px) {
 	body {
 		padding-bottom: 2em;
+	}
+	.js #menuopen {
+		left: 14px;
 	}
 	body,
 	#content,
@@ -710,7 +714,7 @@ input[type="file"]:disabled::file-selector-button {
 		width: auto;
 	}
 	#breadcrumb {
-		padding: 0 0 0 10px;
+		padding: 0 28px;
 		height: 2em;
 		line-height: 2em;
 		margin: 0 -10px;
