@@ -5,8 +5,8 @@ html {
 	--fg: #829bb0;
 }
 
-a { color: #517fa8; }
-a:visited { color: #517fa8; }
+a { color: #618CB3; }
+a:visited { color: #618CB3; }
 a:link:hover, a:visited:hover { color: #9bc0e1; }
 h1 { border-color: #5e94c1; color: #ffddbf; background: #154269; }
 h2 { border-color: #a3bdd3; color: #000; background: #3c678d; }
