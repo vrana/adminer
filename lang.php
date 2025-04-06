@@ -28,48 +28,55 @@ foreach (
 }
 
 foreach (glob(__DIR__ . "/adminer/lang/" . ($_SESSION["lang"] ?: "*") . ".inc.php") as $filename) {
-	$messages = $messages_all;
+	$lang = basename($filename, ".inc.php");
+	update_translations($lang, $messages_all, $filename, '~(\$translations = array\(\n)(.*\n)(?=\);)~sU');
+}
+
+function update_translations($lang, $messages, $filename, $pattern) {
 	$file = file_get_contents($filename);
 	$file = str_replace("\r", "", $file);
-	preg_match_all("~^(\\s*(?:// [^'].*\\s+)?)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => (.*[^,\n])),?~m", $file, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
-	$s = "";
-	$lang = basename($filename, ".inc.php");
-	$fullstop = ($lang == "bn" ? '।' : (preg_match('~^(ja|zh)~', $lang) ? '。' : ($lang == 'he' ? '[^.]' : '\.')));
-	foreach ($matches as $match) {
-		list(, list($indent), list($line, $offset), list($en), list($translation)) = $match;
-		if (isset($messages[$en])) {
-			// keep current messages
-			$s .= "$indent$line,\n";
-			unset($messages[$en]);
-			$en_fullstop = (substr($en, -2, 1) == ".");
-			//! check in array
-			if ($en != "','" && ($en_fullstop xor preg_match("~$fullstop'\)?\$~", $line))) {
-				if ($lang != ($en_fullstop ? "ja" : "he")) { // fullstop is optional in 'ja', forbidden in 'he'
-					echo "$filename:" . (substr_count($file, "\n", 0, $offset) + 1) . ":Not matching fullstop: $line\n";
+	$s = preg_replace_callback($pattern, function ($match) use ($lang, $messages, $filename, $file) {
+		$prefix = $match[1][0];
+		$start = $match[2][1];
+		preg_match_all("~^(\\s*(?:// [^'].*\\s+)?)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => (.*[^,\n])),?~m", $match[2][0], $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
+		$s = "";
+		$fullstop = ($lang == "bn" ? '।' : (preg_match('~^(ja|zh)~', $lang) ? '。' : ($lang == 'he' ? '[^.]' : '\.')));
+		foreach ($matches as $match) {
+			list(, list($indent), list($line, $offset), list($en), list($translation)) = $match;
+			if (isset($messages[$en])) {
+				// keep current messages
+				$s .= "$indent$line,\n";
+				unset($messages[$en]);
+				$en_fullstop = (substr($en, -2, 1) == ".");
+				//! check in array
+				if ($en != "','" && ($en_fullstop xor preg_match("~$fullstop'\)?\$~", $line))) {
+					if ($lang != ($en_fullstop ? "ja" : "he")) { // fullstop is optional in 'ja', forbidden in 'he'
+						echo "$filename:" . (substr_count($file, "\n", 0, $start + $offset) + 1) . ":Not matching fullstop: $line\n";
+					}
+				}
+				if (preg_match('~%~', $en) xor preg_match('~%~', $translation)) {
+					echo "$filename:" . (substr_count($file, "\n", 0, $start + $offset) + 1) . ":Not matching placeholder.\n";
+				}
+			} else {
+				// comment deprecated messages
+				$s .= "$indent// $line,\n";
+			}
+		}
+		if ($messages) {
+			if ($lang != "en") {
+				$s .= "\n";
+			}
+			foreach ($messages as $idf => $val) {
+				// add new messages
+				if ($val == "," && strpos($idf, "%d")) {
+					$s .= "\t$idf => array(),\n";
+				} elseif ($lang != "en") {
+					$s .= "\t$idf => null,\n";
 				}
 			}
-			if (preg_match('~%~', $en) xor preg_match('~%~', $translation)) {
-				echo "$filename:" . (substr_count($file, "\n", 0, $offset) + 1) . ":Not matching placeholder.\n";
-			}
-		} else {
-			// comment deprecated messages
-			$s .= "$indent// $line,\n";
 		}
-	}
-	if ($messages) {
-		if ($lang != "en") {
-			$s .= "\n";
-		}
-		foreach ($messages as $idf => $val) {
-			// add new messages
-			if ($val == "," && strpos($idf, "%d")) {
-				$s .= "\t$idf => array(),\n";
-			} elseif ($lang != "en") {
-				$s .= "\t$idf => null,\n";
-			}
-		}
-	}
-	$s = "<?php\nnamespace Adminer;\n\nLang::\$translations = array(\n$s);\n\n// run `php ../../lang.php $lang` to update this file\n";
+		return $prefix . $s;
+	}, $file, -1, $count, PREG_OFFSET_CAPTURE);
 	if ($s != $file) {
 		file_put_contents($filename, $s);
 		echo "$filename updated.\n";
