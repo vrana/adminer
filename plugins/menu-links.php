@@ -42,9 +42,10 @@ class AdminerMenuLinks extends Adminer\Plugin {
 						. " title='$titles[select]'>" . Adminer\lang('select') . "</a> "
 					;
 				}
-				$actives = array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"]);
+				$actives = array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"], $_GET["check"], $_GET["view"]);
 				if ($menu) {
 					$actives[] = $_GET["select"];
+					$actives[] = $_GET["edit"];
 				}
 				$link =
 					($menu == 'select' ? 'select' :
