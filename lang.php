@@ -30,12 +30,23 @@ foreach (
 foreach (glob(__DIR__ . "/adminer/lang/" . ($_SESSION["lang"] ?: "*") . ".inc.php") as $filename) {
 	$lang = basename($filename, ".inc.php");
 	update_translations($lang, $messages_all, $filename, '~(\$translations = array\(\n)(.*\n)(?=\);)~sU');
+	if ($lang != "xx") {
+		foreach (glob(__DIR__ . "/plugins/*.php") as $filename) {
+			$file = file_get_contents($filename);
+			if (preg_match_all("~\\\$this->lang\\(('(?:[^\\\\']+|\\\\.)*')([),])~", $file, $matches)) {
+				$messages = array_combine($matches[1], $matches[2]);
+				$file = preg_replace("~(static \\\$translations = array\\((?!.*'$lang').*?)\t\\);~s", "\\1\t\t'$lang' => array(\n\t\t),\n\t);", $file);
+				file_put_contents($filename, $file);
+				update_translations($lang, $messages, $filename, "~(static \\\$translations = array\\(.*'$lang' => array\\(\n)(.*)(?=^\t\t\\),)~msU", "\t\t\t");
+			}
+		}
+	}
 }
 
-function update_translations($lang, $messages, $filename, $pattern) {
+function update_translations($lang, $messages, $filename, $pattern, $tabs = "\t") {
 	$file = file_get_contents($filename);
 	$file = str_replace("\r", "", $file);
-	$s = preg_replace_callback($pattern, function ($match) use ($lang, $messages, $filename, $file) {
+	$s = preg_replace_callback($pattern, function ($match) use ($lang, $messages, $filename, $file, $tabs) {
 		$prefix = $match[1][0];
 		$start = $match[2][1];
 		preg_match_all("~^(\\s*(?:// [^'].*\\s+)?)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => (.*[^,\n])),?~m", $match[2][0], $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
@@ -63,15 +74,12 @@ function update_translations($lang, $messages, $filename, $pattern) {
 			}
 		}
 		if ($messages) {
-			if ($lang != "en") {
-				$s .= "\n";
-			}
 			foreach ($messages as $idf => $val) {
 				// add new messages
 				if ($val == "," && strpos($idf, "%d")) {
-					$s .= "\t$idf => array(),\n";
+					$s .= "$tabs$idf => array(),\n";
 				} elseif ($lang != "en") {
-					$s .= "\t$idf => null,\n";
+					$s .= "$tabs$idf => null,\n";
 				}
 			}
 		}
