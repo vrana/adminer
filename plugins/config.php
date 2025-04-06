@@ -12,7 +12,7 @@ class AdminerConfig extends Adminer\Plugin {
 		static $called; // this function is called from page_header() and it also calls page_header()
 		if (isset($_GET["config"]) && !$called && Adminer\connection()) {
 			$called = true;
-			if ($_GET["config"]) { // using $_GET allows sharing links between devices but doesn't protect against CSRF
+			if ($_GET["config"]) { // using $_GET allows sharing links between devices but doesn't protect against same-site RF; CSRF is protected by SameSite cookies
 				Adminer\save_settings($_GET["config"], "adminer_config");
 				Adminer\redirect(null, $this->lang('Configuration saved.'));
 			}
