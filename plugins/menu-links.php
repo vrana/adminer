@@ -73,5 +73,10 @@ class AdminerMenuLinks extends Adminer\Plugin {
 			'Both' => 'Oboje',
 			'Auto (select on select page, structure otherwise)' => 'Auto (vypsat na výpisech, jinak struktura)',
 		),
+		'pl' => array(
+			'Menu table links' => 'Linki do tabel w menu',
+			'Both' => 'Obie',
+			'Auto (select on select page, structure otherwise)' => 'Auto (pokaż na stronie przeglądania, w przeciwnym razie struktura)',
+		),
 	);
 }
