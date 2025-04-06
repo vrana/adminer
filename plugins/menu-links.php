@@ -16,10 +16,10 @@ class AdminerMenuLinks extends Adminer\Plugin {
 
 	function config() {
 		$options = array(
-			'select' => Adminer\lang('Select'),
-			'table' => Adminer\lang('Table'),
+			'select' => Adminer\lang('Select data'),
+			'table' => Adminer\lang('Show structure'),
 			'' => $this->lang('Both'),
-			'auto' => $this->lang('Auto (Select on select page, Table otherwise)'),
+			'auto' => $this->lang('Auto (select on select page, structure otherwise)'),
 		);
 		$menu = Adminer\get_setting("menu", "adminer_config") ?: $this->menu;
 		return array($this->lang('Menu table links') => Adminer\html_radios('config[menu]', $options, $menu, "<br>"));
@@ -71,7 +71,7 @@ class AdminerMenuLinks extends Adminer\Plugin {
 		'cs' => array(
 			'Menu table links' => 'Odkazy na tabulky v menu',
 			'Both' => 'Oboje',
-			'Auto (Select on select page, Table otherwise)' => 'Auto (Vypsat na výpisech, jinak Tabulka)',
+			'Auto (select on select page, structure otherwise)' => 'Auto (vypsat na výpisech, jinak struktura)',
 		),
 	);
 }
