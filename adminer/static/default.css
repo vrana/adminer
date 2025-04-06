@@ -3,6 +3,7 @@
 html {
 	--bg: #fff;
 	--fg: #000;
+	--dim: var(--dim);
 }
 
 body { color: var(--fg); background: var(--bg); font: 90%/1.25 Verdana, Arial, Helvetica, sans-serif; margin: 0; min-width: fit-content; }
@@ -11,7 +12,7 @@ a:visited { color: navy; }
 a:link:hover, a:visited:hover { color: red; text-decoration: underline; }
 a.text:hover { text-decoration: none; }
 a.jush-help:hover { color: inherit; }
-h1 { font-size: 150%; margin: 0; padding: .8em .667em; border-bottom: 1px solid #999; font-weight: normal; color: #777; background: #eee; }
+h1 { font-size: 150%; margin: 0; padding: .8em .667em; border-bottom: 1px solid #999; font-weight: normal; color: #777; background: var(--dim); }
 h2 { font-size: 150%; margin: 0 0 20px -18px; padding: .8em 1em; border-bottom: 1px solid var(--fg); font-weight: normal; background: #ddf; }
 h3 { font-weight: normal; font-size: 130%; margin: 1em 0 0; }
 form { margin: 0; }
@@ -19,7 +20,7 @@ td table { width: 100%; margin: 0; }
 table { margin: 1em 20px 0 0; font-size: 90%; border-spacing: 0; border-width: 1px 0 0 1px; }
 table, td, th { border-color: #999; border-style: solid; }
 td, th { border-width: 0 1px 1px 0; padding: .2em .3em; margin: 0; }
-th { background: #eee; text-align: left; }
+th { background: var(--dim); text-align: left; }
 thead { position: sticky; top: 0; }
 thead th { text-align: center; padding: .2em .5em; }
 thead td, thead th { background: #ddf; }
@@ -27,8 +28,8 @@ fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: .8e
 p { margin: .8em 20px 0 0; }
 img { vertical-align: middle; border: 0; }
 td img { max-width: 200px; max-height: 200px; }
-tbody tr:hover td, tbody tr:hover th { background: #eee; }
-code { font-size: 110%; padding: 1px 2px; background: #eee; }
+tbody tr:hover td, tbody tr:hover th { background: var(--dim); }
+code { font-size: 110%; padding: 1px 2px; background: var(--dim); }
 pre { margin: 1em 0 0; }
 td pre { margin: 0; }
 pre, textarea { font: 110%/1.25 monospace; }
@@ -87,14 +88,14 @@ input.wayoff { left: -1000px; position: absolute; }
 #content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
 #lang { position: absolute; top: -2.6em; left: 0; padding: .3em 1em; }
 #menuopen { display: none; }
-#breadcrumb { white-space: nowrap; position: absolute; top: 0; left: 21em; background: #eee; height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0 0 0 -18px; }
+#breadcrumb { white-space: nowrap; position: absolute; top: 0; left: 21em; background: var(--dim); height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0 0 0 -18px; }
 #logo { vertical-align: baseline; margin-bottom: -3px; }
 #h1 { color: #777; text-decoration: none; font-style: italic; }
 #version { color: red; }
 #schema { margin-left: 60px; position: relative; user-select: none; -webkit-user-select: none; }
 #schema .table { border: 1px solid silver; padding: 0 2px; cursor: move; position: absolute; }
 #schema .references { position: absolute; }
-#help { position: absolute; border: 1px solid #999; background: #eee; padding: 5px; font-family: monospace; z-index: 1; }
+#help { position: absolute; border: 1px solid #999; background: var(--dim); padding: 5px; font-family: monospace; z-index: 1; }
 
 /* inlined here and not in compile.php because otherwise the development version flickers a little bit when loading the images */
 .icon-up { background-image: url(data:image/gif;base64,R0lGODlhEgASAIEAMe7u7gAAgJmZmQAAACH5BAEAAAEALAAAAAASABIAAQIghI+py+0PTQhRTgrvfRP0nmEVOIoReZphxbauAMfyHBcAOw==); }
@@ -116,7 +117,7 @@ input.wayoff { left: -1000px; position: absolute; }
 
 @media all and (max-width: 800px) {
 	.pages { left: auto; }
-	.js .logout { top: 1.667em; background-color: #eee; box-shadow: 0 0 5px 5px #eee; }
+	.js .logout { top: 1.667em; background-color: var(--dim); box-shadow: 0 0 5px 5px var(--dim); }
 	#menu { position: static; width: auto; min-width: 23em; background: var(--bg); border: 1px solid var(--fg); margin-top: 9px; box-shadow: 0 0 20px -3px var(--fg); }
 	#content { margin-left: 10px !important; }
 	#lang { position: static; }

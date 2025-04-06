@@ -3,12 +3,13 @@
 html {
 	--bg: #002240;
 	--fg: #829bb0;
+	--dim: #154269;
 }
 
 a { color: #618CB3; }
 a:visited { color: #618CB3; }
 a:link:hover, a:visited:hover { color: #9bc0e1; }
-h1 { border-color: #5e94c1; color: #ffddbf; background: #154269; }
+h1 { border-color: #5e94c1; color: #ffddbf; }
 h2 { border-color: #a3bdd3; color: #000; background: #3c678d; }
 table, td, th { border-color: #0e416d; }
 th { background: #11385a; }
@@ -37,7 +38,6 @@ input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
 .icon:hover { background-color: #d1394e; }
 #menu { border-color: #a3bdd3; }
 #menu p, #logins, #tables { border-color: #326b9c; }
-#breadcrumb { background: #154269; }
 #h1 { color: #ffddbf; }
 #version { color: #d2b397; }
 #schema .table { border-color: #093459; }
