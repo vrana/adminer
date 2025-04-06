@@ -348,7 +348,9 @@ function get_setting(string $key, string $cookie = "adminer_settings") {
 * @param mixed[] $settings
 */
 function save_settings(array $settings, string $cookie = "adminer_settings"): void {
-	cookie($cookie, http_build_query($settings + get_settings($cookie)));
+	$value = http_build_query($settings + get_settings($cookie));
+	cookie($cookie, $value);
+	$_COOKIE[$cookie] = $value;
 }
 
 /** Restart stopped session */

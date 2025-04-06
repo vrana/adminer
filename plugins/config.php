@@ -12,10 +12,9 @@ class AdminerConfig extends Adminer\Plugin {
 		static $called; // this function is called from page_header() and it also calls page_header()
 		if (isset($_GET["config"]) && !$called && Adminer\connection()) {
 			$called = true;
-			if ($_POST) { //! check $error
-				unset($_POST["token"]);
-				Adminer\save_settings($_POST, "adminer_config");
-				Adminer\redirect($_SERVER["REQUEST_URI"], $this->lang('Configuration saved.'));
+			if ($_GET["config"]) { // using $_GET allows sharing links between devices but doesn't protect against CSRF
+				Adminer\save_settings($_GET["config"], "adminer_config");
+				Adminer\redirect(null, $this->lang('Configuration saved.'));
 			}
 			Adminer\page_header($this->lang('Configuration'));
 			$config = Adminer\adminer()->config();
@@ -23,14 +22,14 @@ class AdminerConfig extends Adminer\Plugin {
 				// this plugin itself defines config() so this branch is not currently used
 				echo "<p>" . $this->lang('Only some plugins support configuration, e.g. %s.', '<a href="https://github.com/vrana/adminer/blob/master/plugins/menu-links.php"' . Adminer\target_blank() . '>menu-links</a>') . "\n";
 			} else {
-				echo "<form action='' method='post'>\n";
+				echo "<form action=''>\n";
+				Adminer\hidden_fields_get();
 				echo "<table>\n";
 				foreach (array_reverse($config) as $title => $html) { // Plugins::$append actually prepends
 					echo "<tr><th>$title<td>$html\n";
 				}
 				echo "</table>\n";
 				echo "<p><input type='submit' value='" . Adminer\lang('Save') . "'>\n";
-				echo Adminer\input_token();
 				echo "</form>\n";
 			}
 			Adminer\page_footer('db');
@@ -43,7 +42,7 @@ class AdminerConfig extends Adminer\Plugin {
 			'' => $this->lang('Use %s if exists', "adminer.css"),
 			'builtin' => $this->lang('Use builtin design'),
 		);
-		return array($this->lang('Design') => Adminer\html_radios('design', $options, Adminer\get_setting("design", "adminer_config"), "<br>"));
+		return array($this->lang('Design') => Adminer\html_radios('config[design]', $options, Adminer\get_setting("design", "adminer_config"), "<br>"));
 	}
 
 	function css() {
