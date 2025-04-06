@@ -100,7 +100,7 @@ function html_select(string $name, array $options, ?string $value = "", string $
 /** Generate HTML radio list
 * @param string[] $options
 */
-function html_radios(string $name, array $options, string $value = ""): string {
+function html_radios(string $name, array $options, ?string $value = ""): string {
 	$return = "";
 	foreach ($options as $key => $val) {
 		$return .= "<label><input type='radio' name='" . h($name) . "' value='" . h($key) . "'" . ($key == $value ? " checked" : "") . ">" . h($val) . "</label>";

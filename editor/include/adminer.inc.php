@@ -231,6 +231,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		return $val;
 	}
 
+	function config() {
+		return array();
+	}
+
 	function selectColumnsPrint($select, $columns) {
 		// can allow grouping functions by indexes
 	}

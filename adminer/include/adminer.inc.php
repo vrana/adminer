@@ -300,6 +300,13 @@ class Adminer {
 		return $val;
 	}
 
+	/** Get configuration options for AdminerConfig
+	* @return string[] key is config description, value is HTML
+	*/
+	function config(): array {
+		return array();
+	}
+
 	/** Print table structure in tabular format
 	* @param Field[] $fields
 	* @param TableStatus $tableStatus

@@ -2,7 +2,7 @@
 namespace Adminer;
 
 class Plugins {
-	/** @var true[] */ private static array $append = array('dumpFormat' => true, 'dumpOutput' => true, 'editRowPrint' => true, 'editFunctions' => true); // these hooks expect the value to be appended to the result
+	/** @var true[] */ private static array $append = array('dumpFormat' => true, 'dumpOutput' => true, 'editRowPrint' => true, 'editFunctions' => true, 'config' => true); // these hooks expect the value to be appended to the result
 
 	/** @var list<object> @visibility protected(set) */ public array $plugins;
 	/** @visibility protected(set) */ public string $error = ''; // HTML
