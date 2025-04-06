@@ -20,11 +20,12 @@ class AdminerConfig extends Adminer\Plugin {
 			Adminer\page_header($this->lang('Configuration'));
 			$config = Adminer\adminer()->config();
 			if (!$config) {
+				// this plugin itself defines config() so this branch is not currently used
 				echo "<p>" . $this->lang('Only some plugins support configuration, e.g. %s.', '<a href="https://github.com/vrana/adminer/blob/master/plugins/menu-links.php"' . Adminer\target_blank() . '>menu-links</a>') . "\n";
 			} else {
 				echo "<form action='' method='post'>\n";
 				echo "<table>\n";
-				foreach ($config as $title => $html) {
+				foreach (array_reverse($config) as $title => $html) { // Plugins::$append actually prepends
 					echo "<tr><th>$title<td>$html\n";
 				}
 				echo "</table>\n";
@@ -37,8 +38,22 @@ class AdminerConfig extends Adminer\Plugin {
 		}
 	}
 
+	function config() {
+		$options = array(
+			'' => $this->lang('Use %s if exists', "adminer.css"),
+			'builtin' => $this->lang('Use builtin design'),
+		);
+		return array($this->lang('Design') => Adminer\html_radios('design', $options, Adminer\get_setting("design", "adminer_config"), "<br>"));
+	}
+
+	function css() {
+		if (Adminer\get_setting("design", "adminer_config") == "builtin") {
+			return array();
+		}
+	}
+
 	function navigation() {
-		if (Adminer\connection()) {
+		if (Adminer\connection()) { // don't display on login page
 			$link = substr(preg_replace('~\b(db|ns)=[^&]*&~', '', Adminer\ME), 0, -1);
 			?>
 <style>
@@ -58,6 +73,9 @@ class AdminerConfig extends Adminer\Plugin {
 			'Configuration' => 'Konfigurace',
 			'Configuration saved.' => 'Konfigurace uložena.',
 			'Only some plugins support configuration, e.g. %s.' => 'Konfiguraci podporují jen některé pluginy, např. %s.',
+			'Design' => 'Vzhled',
+			'Use %s if exists' => 'Použít %s, pokud existuje',
+			'Use builtin design' => 'Použít vestavěný vzhled',
 		),
 	);
 }
