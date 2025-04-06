@@ -76,5 +76,13 @@ class AdminerConfig extends Adminer\Plugin {
 			'Use %s if exists' => 'Použít %s, pokud existuje',
 			'Use builtin design' => 'Použít vestavěný vzhled',
 		),
+		'pl' => array(
+			'Configuration' => 'Konfiguracja',
+			'Configuration saved.' => 'Konfiguracja zapisana.',
+			'Only some plugins support configuration, e.g. %s.' => 'Tylko niektóre wtyczki obsługują konfigurację, np. %s.',
+			'Design' => 'Wygląd',
+			'Use %s if exists' => 'Użyj %s, jeśli istnieje',
+			'Use builtin design' => 'Użyj wbudowanego wyglądu',
+		),
 	);
 }

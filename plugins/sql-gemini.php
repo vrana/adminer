@@ -97,5 +97,9 @@ geminiText.onkeydown = event => {
 			'Ask Gemini' => 'Zeptat se Gemini',
 			'Just a sec...' => 'Chviličku...',
 		),
+		'pl' => array(
+			'Ask Gemini' => 'Zapytaj Gemini',
+			'Just a sec...' => 'Chwileczkę...',
+		),
 	);
 }
