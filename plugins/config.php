@@ -6,7 +6,7 @@
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
-class AdminerConfig {
+class AdminerConfig extends Adminer\Plugin {
 
 	function headers() {
 		static $called; // this function is called from page_header() and it also calls page_header()
@@ -51,10 +51,6 @@ class AdminerConfig {
 <?php
 			echo "<div id='configlink'><a href='" . Adminer\h($link) . "&config=' title='" . $this->lang('Configuration') . "'>⚙</a></div>\n";
 		}
-	}
-
-	protected function lang($idf, $number = null) {
-		return Adminer\lang_format(Adminer\idx(self::$translations[Adminer\LANG], $idf) ?: $idf, $number);
 	}
 
 	protected static $translations = array(

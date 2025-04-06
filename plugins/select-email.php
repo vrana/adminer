@@ -6,7 +6,7 @@
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
-class AdminerSelectEmail {
+class AdminerSelectEmail extends Adminer\Plugin {
 
 	function selectEmailPrint($emailFields, $columns) {
 		if ($emailFields) {
@@ -100,11 +100,7 @@ class AdminerSelectEmail {
 		return mail($email, $this->emailHeader($subject), $beginning . $message . $attachments, $headers);
 	}
 
-	private function lang($idf, $number = null) {
-		return Adminer\lang_format(Adminer\idx(self::$translations[Adminer\LANG], $idf) ?: $idf, $number);
-	}
-
-	private static $translations = array(
+	protected static $translations = array(
 		'ar' => array('E-mail' => 'البريد الإلكتروني', 'From' => 'من', 'Subject' => 'الموضوع', 'Send' => 'إرسال', '%d e-mail(s) have been sent.' => 'تم إرسال %d رسالة.', 'Attachments' => 'ملفات مرفقة'),
 		'bg' => array('E-mail' => 'E-mail', 'From' => 'От', 'Subject' => 'Тема', 'Attachments' => 'Прикачени', 'Send' => 'Изпращане', '%d e-mail(s) have been sent.' => array('%d писмо беше изпратено.', '%d писма бяха изпратени.')),
 		'bn' => array('E-mail' => '​​ই-মেইল', 'From' => 'থেকে', 'Subject' => 'বিষয়', 'Send' => 'পাঠান', '%d e-mail(s) have been sent.' => array('%d ইমেইল(গুলি) পাঠানো হয়েছে।', '%d ইমেইল(গুলি) পাঠানো হয়েছে।'), 'Attachments' => 'সংযুক্তিগুলো'),

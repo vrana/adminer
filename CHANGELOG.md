@@ -7,7 +7,7 @@
 - MS SQL: Limit one INSERT in export to 1000 rows (bug #983)
 - CSS: Add logo
 - Editor: Move mass sending e-mails to a plugin
-- Plugins: Allow formatting translations using Adminer\lang_format()
+- Plugins: Support translations by extending Adminer\Plugin
 - New plugin: Configure options by end-users and store them to a cookie
 - New plugin: Configure menu table links
 - New plugin: Set up driver, server and database in Adminer Editor

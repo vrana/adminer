@@ -79,14 +79,13 @@ include "../adminer/drivers/oracle.inc.php";
 include "../adminer/drivers/mssql.inc.php";
 include "./include/adminer.inc.php";
 include "../adminer/include/plugins.inc.php";
+include "../adminer/include/plugin.inc.php";
 
-if (function_exists('adminer_object')) {
-	Adminer::$instance = adminer_object();
-} elseif (is_dir("adminer-plugins") || file_exists("adminer-plugins.php")) {
-	Adminer::$instance = new Plugins(null);
-} else {
-	Adminer::$instance = new Adminer;
-}
+Adminer::$instance =
+	(function_exists('adminer_object') ? adminer_object() :
+	(is_dir("adminer-plugins") || file_exists("adminer-plugins.php") ? new Plugins(null) :
+	new Adminer
+));
 
 // this is matched by compile.php
 include "../adminer/drivers/mysql.inc.php"; // must be included as last driver

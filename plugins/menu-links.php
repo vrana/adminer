@@ -6,7 +6,7 @@
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
-class AdminerMenuLinks {
+class AdminerMenuLinks extends Adminer\Plugin {
 	private $menu;
 
 	/** @param ''|'table'|'select'|'auto' $menu see config() for explanation */
@@ -63,10 +63,6 @@ class AdminerMenuLinks {
 		}
 		echo "</ul>\n";
 		return true;
-	}
-
-	protected function lang($idf, $number = null) {
-		return Adminer\lang_format(Adminer\idx(self::$translations[Adminer\LANG], $idf) ?: $idf, $number);
 	}
 
 	protected static $translations = array(
