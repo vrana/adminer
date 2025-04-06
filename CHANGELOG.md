@@ -9,6 +9,7 @@
 - Editor: Move mass sending e-mails to a plugin
 - Plugins: Allow formatting translations using Adminer\lang_format()
 - New plugin: Configure options by end-users and store them to a cookie
+- New plugin: Configure menu table links
 - New plugin: Set up driver, server and database in Adminer Editor
 
 ## Adminer 5.1.1 (released 2025-04-02)
