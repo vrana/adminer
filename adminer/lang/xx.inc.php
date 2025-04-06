@@ -46,6 +46,7 @@ Lang::$translations = array(
 	'User has been created.' => 'Xx.',
 	'Hashed' => 'Xx',
 	'Column' => 'Xx',
+	'Columns' => 'Xx',
 	'Routine' => 'Xx',
 	'Grant' => 'Xx',
 	'Revoke' => 'Xx',

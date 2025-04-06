@@ -45,6 +45,7 @@ Lang::$translations = array(
 	'User has been created.' => 'Uživatel byl vytvořen.',
 	'Hashed' => 'Zahašované',
 	'Column' => 'Sloupec',
+	'Columns' => 'Sloupce',
 	'Routine' => 'Procedura',
 	'Grant' => 'Povolit',
 	'Revoke' => 'Zakázat',
