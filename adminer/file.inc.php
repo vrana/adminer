@@ -23,6 +23,7 @@ if ($_GET["file"] == "default.css") {
 } elseif ($_GET["file"] == "jush.js") {
 	header("Content-Type: text/javascript; charset=utf-8");
 	echo lzw_decompress(compile_file('../externals/jush/modules/jush.js;
+../externals/jush/modules/jush-autocomplete-sql.js;
 ../externals/jush/modules/jush-textarea.js;
 ../externals/jush/modules/jush-txt.js;
 ../externals/jush/modules/jush-js.js;

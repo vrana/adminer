@@ -312,7 +312,7 @@ if ($vendor) {
 			$file = str_replace(");\n\t\techo \$this->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', '<input name=\"auth[server]", ' . \'<input type="hidden" name="auth[server]"', $file);
 		}
 	}
-	$file = preg_replace('(;\s*../externals/jush/modules/jush-(?!textarea\.|txt\.|js\.|' . preg_quote($vendor == "mysql" ? "sql" : $vendor) . '\.)[^.]+.js)', '', $file);
+	$file = preg_replace('(;\s*../externals/jush/modules/jush-(?!autocomplete-sql\.|textarea\.|txt\.|js\.|' . preg_quote($vendor == "mysql" ? "sql" : $vendor) . '\.)[^.]+.js)', '', $file);
 	$file = preg_replace_callback('~doc_link\(array\((.*)\)\)~sU', function ($match) use ($vendor) {
 		list(, $links) = $match;
 		$links = preg_replace("~'(?!(" . ($vendor == "mysql" ? "sql|mariadb" : $vendor) . ")')[^']*' => [^,]*,?~", '', $links);
@@ -334,7 +334,7 @@ if ($_SESSION["lang"]) {
 	$file = str_replace('<?php echo LANG; ?>', $_SESSION["lang"], $file);
 }
 $file = str_replace('echo script_src("static/editing.js");' . "\n", "", $file); // merged into functions.js
-$file = preg_replace('~\s+echo script_src\("\.\./externals/jush/modules/jush-(textarea|txt|js|" \. JUSH \. ")\.js"\);~', '', $file); // merged into jush.js
+$file = preg_replace('~\s+echo script_src\("\.\./externals/jush/modules/jush-(autocomplete-sql|textarea|txt|js|" \. JUSH \. ")\.js"\);~', '', $file); // merged into jush.js
 $file = preg_replace('~echo .*/jush(-dark)?.css\'>.*~', '', $file); // merged into default.css or dark.css
 if (function_exists('stripTypes')) {
 	$file = stripTypes($file);
