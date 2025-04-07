@@ -93,8 +93,14 @@ if (
 			echo "<div class='plugins'>\n";
 			echo "<h3>" . lang('Loaded plugins') . "</h3>\n<ul>\n";
 			foreach (adminer()->plugins as $plugin) {
-				$reflection = new \ReflectionObject($plugin);
-				echo "<li><b>" . get_class($plugin) . "</b>" . h(preg_match('~^/[\s*]+(.+)~', $reflection->getDocComment(), $match) ? ": $match[1]" : "") . "\n";
+				$description = (method_exists($plugin, 'description') ? $plugin->description() : "");
+				if (!$description) {
+					$reflection = new \ReflectionObject($plugin);
+					if (preg_match('~^/[\s*]+(.+)~', $reflection->getDocComment(), $match)) {
+						$description = $match[1];
+					}
+				}
+				echo "<li><b>" . get_class($plugin) . "</b>" . h($description ? ": $description" : "") . "\n";
 			}
 			echo "</ul>\n";
 			echo "</div>\n";
