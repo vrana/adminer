@@ -64,7 +64,7 @@ function setSqlareaValue(value) {
 }
 
 geminiButton.onclick = () => {
-	setSqlareaValue('-- <?php echo $this->lang('Just a sec...'); ?>'); // this is the phrase used by Google Gemini
+	setSqlareaValue('-- <?php echo $this->lang('Just a sec...'); ?>');
 	ajax(
 		'',
 		req => setSqlareaValue(req.responseText),
@@ -92,6 +92,7 @@ geminiText.onkeydown = event => {
 <?php
 	}
 
+	// use the phrases from https://gemini.google.com/
 	protected static $translations = array(
 		'cs' => array(
 			'Ask Gemini' => 'Zeptat se Gemini',
