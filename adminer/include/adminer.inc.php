@@ -1005,13 +1005,13 @@ class Adminer {
 	*/
 	function syntaxHighlighting(array $tables): void {
 		// this is matched by compile.php
-		echo script_src("../externals/jush/modules/jush.js");
-		echo script_src("../externals/jush/modules/jush-autocomplete-sql.js");
-		echo script_src("../externals/jush/modules/jush-textarea.js");
-		echo script_src("../externals/jush/modules/jush-txt.js");
-		echo script_src("../externals/jush/modules/jush-js.js");
+		echo script_src("../externals/jush/modules/jush.js", true);
+		echo script_src("../externals/jush/modules/jush-autocomplete-sql.js", true);
+		echo script_src("../externals/jush/modules/jush-textarea.js", true);
+		echo script_src("../externals/jush/modules/jush-txt.js", true);
+		echo script_src("../externals/jush/modules/jush-js.js", true);
 		if (support("sql")) {
-			echo script_src("../externals/jush/modules/jush-" . JUSH . ".js");
+			echo script_src("../externals/jush/modules/jush-" . JUSH . ".js", true);
 			echo "<script" . nonce() . ">\n";
 			if ($tables) {
 				$links = array();
@@ -1028,13 +1028,11 @@ class Adminer {
 						$tablesColumns[$table][] = $field["field"];
 					}
 				}
-				echo "autocompleter = jush.autocompleteSql('" . idf_escape("") . "', " . json_encode($tablesColumns) . ");\n";
+				echo "addEventListener('DOMContentLoaded', () => { autocompleter = jush.autocompleteSql('" . idf_escape("") . "', " . json_encode($tablesColumns) . "); });\n";
 			}
 			echo "</script>\n";
 		}
-		echo script("syntaxHighlighting('" . preg_replace('~^(\d\.?\d).*~s', '\1', connection()->server_info) . "'"
-			. (connection()->flavor == 'maria' ? ", 'maria'" : (connection()->flavor == 'cockroach' ? ", 'cockroach'" : "")) . ");"
-		);
+		echo script("syntaxHighlighting('" . preg_replace('~^(\d\.?\d).*~s', '\1', connection()->server_info) . "', '" . connection()->flavor . "');");
 	}
 
 	/** Print databases list in menu */

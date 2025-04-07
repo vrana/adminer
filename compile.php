@@ -334,7 +334,7 @@ if ($_SESSION["lang"]) {
 	$file = str_replace('<?php echo LANG; ?>', $_SESSION["lang"], $file);
 }
 $file = str_replace('echo script_src("static/editing.js");' . "\n", "", $file); // merged into functions.js
-$file = preg_replace('~\s+echo script_src\("\.\./externals/jush/modules/jush-(autocomplete-sql|textarea|txt|js|" \. JUSH \. ")\.js"\);~', '', $file); // merged into jush.js
+$file = preg_replace('~\s+echo script_src\("\.\./externals/jush/modules/jush-(autocomplete-sql|textarea|txt|js|" \. JUSH \. ")\.js", true\);~', '', $file); // merged into jush.js
 $file = preg_replace('~echo .*/jush(-dark)?.css\'>.*~', '', $file); // merged into default.css or dark.css
 if (function_exists('stripTypes')) {
 	$file = stripTypes($file);

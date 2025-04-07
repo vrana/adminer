@@ -7,8 +7,8 @@ function script(string $source, string $trailing = "\n"): string {
 }
 
 /** Return <script src> element */
-function script_src(string $url): string {
-	return "<script src='" . h($url) . "'" . nonce() . "></script>\n";
+function script_src(string $url, bool $defer = false): string {
+	return "<script src='" . h($url) . "'" . nonce() . ($defer ? " defer" : "") . "></script>\n";
 }
 
 /** Get a nonce="" attribute with CSP nonce */

@@ -7,56 +7,58 @@ let autocompleter; // set in adminer.inc.php
 * @param [string]
 */
 function syntaxHighlighting(version, vendor) {
-	if (window.jush) {
-		jush.create_links = 'target="_blank" rel="noreferrer noopener"';
-		if (version) {
-			for (let key in jush.urls) {
-				let obj = jush.urls;
-				if (typeof obj[key] != 'string') {
-					obj = obj[key];
-					key = 0;
-					if (vendor == 'maria') {
-						for (let i = 1; i < obj.length; i++) {
-							obj[i] = obj[i]
-								.replace('.html', '/')
-								.replace('-type-syntax', '-data-types')
-								.replace(/numeric-(data-types)/, '$1-$&')
-								.replace(/replication-options-(master|binary-log)\//, 'replication-and-binary-log-system-variables/')
-								.replace('server-options/', 'server-system-variables/')
-								.replace('innodb-parameters/', 'innodb-system-variables/')
-								.replace(/#(statvar|sysvar|option_mysqld)_(.*)/, '#$2')
-								.replace(/#sysvar_(.*)/, '#$1')
-							;
+	addEventListener('DOMContentLoaded', () => {
+		if (window.jush) {
+			jush.create_links = 'target="_blank" rel="noreferrer noopener"';
+			if (version) {
+				for (let key in jush.urls) {
+					let obj = jush.urls;
+					if (typeof obj[key] != 'string') {
+						obj = obj[key];
+						key = 0;
+						if (vendor == 'maria') {
+							for (let i = 1; i < obj.length; i++) {
+								obj[i] = obj[i]
+									.replace('.html', '/')
+									.replace('-type-syntax', '-data-types')
+									.replace(/numeric-(data-types)/, '$1-$&')
+									.replace(/replication-options-(master|binary-log)\//, 'replication-and-binary-log-system-variables/')
+									.replace('server-options/', 'server-system-variables/')
+									.replace('innodb-parameters/', 'innodb-system-variables/')
+									.replace(/#(statvar|sysvar|option_mysqld)_(.*)/, '#$2')
+									.replace(/#sysvar_(.*)/, '#$1')
+								;
+							}
 						}
 					}
-				}
 
-				obj[key] = (vendor == 'maria' ? obj[key].replace('dev.mysql.com/doc/mysql', 'mariadb.com/kb') : obj[key]) // MariaDB
-					.replace('/doc/mysql', '/doc/refman/' + version) // MySQL
-				;
-				if (vendor != 'cockroach') {
-					obj[key] = obj[key].replace('/docs/current', '/docs/' + version); // PostgreSQL
+					obj[key] = (vendor == 'maria' ? obj[key].replace('dev.mysql.com/doc/mysql', 'mariadb.com/kb') : obj[key]) // MariaDB
+						.replace('/doc/mysql', '/doc/refman/' + version) // MySQL
+					;
+					if (vendor != 'cockroach') {
+						obj[key] = obj[key].replace('/docs/current', '/docs/' + version); // PostgreSQL
+					}
+				}
+			}
+			if (window.jushLinks) {
+				jush.custom_links = jushLinks;
+			}
+			jush.highlight_tag('code', 0);
+			adminerHighlighter = els => jush.highlight_tag(els, 0);
+			for (const tag of qsa('textarea')) {
+				if (/(^|\s)jush-/.test(tag.className)) {
+					const pre = jush.textarea(tag, autocompleter);
+					if (pre) {
+						setupSubmitHighlightInput(pre);
+						tag.onchange = () => {
+							pre.textContent = tag.value;
+							pre.oninput();
+						};
+					}
 				}
 			}
 		}
-		if (window.jushLinks) {
-			jush.custom_links = jushLinks;
-		}
-		jush.highlight_tag('code', 0);
-		adminerHighlighter = els => jush.highlight_tag(els, 0);
-		for (const tag of qsa('textarea')) {
-			if (/(^|\s)jush-/.test(tag.className)) {
-				const pre = jush.textarea(tag, autocompleter);
-				if (pre) {
-					setupSubmitHighlightInput(pre);
-					tag.onchange = () => {
-						pre.textContent = tag.value;
-						pre.oninput();
-					};
-				}
-			}
-		}
-	}
+	});
 }
 
 /** Get value of dynamically created form field
