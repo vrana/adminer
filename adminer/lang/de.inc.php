@@ -137,6 +137,7 @@ Lang::$translations = array(
 	'User has been created.' => 'Benutzer wurde erstellt.',
 	'Hashed' => 'Hashed',
 	'Column' => 'Spalte',
+	'Columns' => 'Spalten',
 	'Routine' => 'Routine',
 	'Grant' => 'Erlauben',
 	'Revoke' => 'Widerrufen',
