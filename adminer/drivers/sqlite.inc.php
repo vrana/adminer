@@ -8,7 +8,7 @@ if (isset($_GET["sqlite"])) {
 	if (class_exists("SQLite3") && $_GET["ext"] != "pdo") {
 
 		abstract class SqliteDb extends SqlDb {
-			public string $extension = "SQLite3";
+			public $extension = "SQLite3";
 			private $link;
 
 			function attach(?string $filename, string $username, string $password): string {
@@ -73,7 +73,7 @@ if (isset($_GET["sqlite"])) {
 
 	} elseif (extension_loaded("pdo_sqlite")) {
 		abstract class SqliteDb extends PdoDb {
-			public string $extension = "PDO_SQLite";
+			public $extension = "PDO_SQLite";
 
 			function attach(?string $filename, string $username, string $password): string {
 				$this->dsn(DRIVER . ":$filename", "", "");
@@ -106,21 +106,21 @@ if (isset($_GET["sqlite"])) {
 
 
 	class Driver extends SqlDriver {
-		static array $extensions = array("SQLite3", "PDO_SQLite");
-		static string $jush = "sqlite";
+		static $extensions = array("SQLite3", "PDO_SQLite");
+		static $jush = "sqlite";
 
-		protected array $types = array(array("integer" => 0, "real" => 0, "numeric" => 0, "text" => 0, "blob" => 0));
+		protected $types = array(array("integer" => 0, "real" => 0, "numeric" => 0, "text" => 0, "blob" => 0));
 
-		public array $insertFunctions = array(); // "text" => "date('now')/time('now')/datetime('now')",
-		public array $editFunctions = array(
+		public $insertFunctions = array(); // "text" => "date('now')/time('now')/datetime('now')",
+		public $editFunctions = array(
 			"integer|real|numeric" => "+/-",
 			// "text" => "date/time/datetime",
 			"text" => "||",
 		);
 
-		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"); // REGEXP can be user defined function
-		public array $functions = array("hex", "length", "lower", "round", "unixepoch", "upper");
-		public array $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
+		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"); // REGEXP can be user defined function
+		public $functions = array("hex", "length", "lower", "round", "unixepoch", "upper");
+		public $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 
 		static function connect(?string $server, string $username, string $password) {
 			if ($password != "") {

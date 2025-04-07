@@ -8,7 +8,7 @@ if (isset($_GET["clickhouse"])) {
 
 	if (ini_bool('allow_url_fopen')) {
 		class Db extends SqlDb {
-			public string $extension = "JSON";
+			public $extension = "JSON";
 			public $_db = 'default';
 			private $url;
 
@@ -52,23 +52,23 @@ if (isset($_GET["clickhouse"])) {
 				return (bool) preg_match('~^(select|show)~i', $query);
 			}
 
-			function query(string $query, bool $unbuffered = false) {
+			function query($query, $unbuffered = false) {
 				return $this->rootQuery($this->_db, $query);
 			}
 
-			function attach(?string $server, string $username, string $password): string {
+			function attach($server, $username, $password): string {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
 				$this->url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
 				$return = $this->query('SELECT 1');
 				return ($return ? '' : $this->error);
 			}
 
-			function select_db(string $database) {
+			function select_db($database) {
 				$this->_db = $database;
 				return true;
 			}
 
-			function quote(string $string): string {
+			function quote($string): string {
 				return "'" . addcslashes($string, "\\'") . "'";
 			}
 		}
@@ -117,13 +117,13 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	class Driver extends SqlDriver {
-		static array $extensions = array("allow_url_fopen");
-		static string $jush = "clickhouse";
+		static $extensions = array("allow_url_fopen");
+		static $jush = "clickhouse";
 
-		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
-		public array $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
+		public $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
+		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 
-		static function connect(?string $server, string $username, string $password) {
+		static function connect($server, $username, $password) {
 			if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
 				return lang('Invalid server.');
 			}
@@ -145,14 +145,14 @@ if (isset($_GET["clickhouse"])) {
 			);
 		}
 
-		function delete(string $table, string $queryWhere, int $limit = 0) {
+		function delete($table, $queryWhere, $limit = 0) {
 			if ($queryWhere === '') {
 				$queryWhere = 'WHERE 1=1';
 			}
 			return queries("ALTER TABLE " . table($table) . " DELETE $queryWhere");
 		}
 
-		function update(string $table, array $set, string $queryWhere, int $limit = 0, string $separator = "\n") {
+		function update($table, array $set, $queryWhere, $limit = 0, $separator = "\n") {
 			$values = array();
 			foreach ($set as $key => $val) {
 				$values[] = "$key = $val";

@@ -9,13 +9,13 @@ if (isset($_GET["elastic"])) {
 	if (ini_bool('allow_url_fopen')) {
 
 		class Db extends SqlDb {
-			public string $extension = "JSON";
+			public $extension = "JSON";
 			private $url;
 
 			/**
 			 * @return array|false
 			 */
-			function rootQuery(string $path, ?array $content = null, string $method = 'GET') {
+			function rootQuery($path, $content = null, $method = 'GET') {
 				$file = @file_get_contents("$this->url/" . ltrim($path, '/'), false, stream_context_create(array(
 					//~ 'ssl' => array('verify_peer' => false), // Elasticsearch responses in over 4 s on https://localhost:9200 without this line for me
 					'http' => array(
@@ -53,7 +53,7 @@ if (isset($_GET["elastic"])) {
 			}
 
 			/** Perform query relative to actual selected DB */
-			function query(string $query, bool $unbuffered = false) {
+			function query($query, $unbuffered = false) {
 				// Support for global search through all tables
 				if ($query[0] == "S" && preg_match('/SELECT 1 FROM ([^ ]+) WHERE (.+) LIMIT ([0-9]+)/', $query, $matches)) {
 					$where = explode(" AND ", $matches[2]);
@@ -61,7 +61,7 @@ if (isset($_GET["elastic"])) {
 				}
 			}
 
-			function attach(?string $server, string $username, string $password): string {
+			function attach($server, $username, $password): string {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
 				$this->url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
 				$return = $this->rootQuery('');
@@ -71,11 +71,11 @@ if (isset($_GET["elastic"])) {
 				return ($return ? '' : $this->error);
 			}
 
-			function select_db(string $database) {
+			function select_db($database) {
 				return true;
 			}
 
-			function quote(string $string): string {
+			function quote($string): string {
 				return $string;
 			}
 		}
@@ -104,13 +104,13 @@ if (isset($_GET["elastic"])) {
 	}
 
 	class Driver extends SqlDriver {
-		static array $extensions = array("json + allow_url_fopen");
-		static string $jush = "elastic";
+		static $extensions = array("json + allow_url_fopen");
+		static $jush = "elastic";
 
-		public array $insertFunctions = array("json");
-		public array $operators = array("=", "must", "should", "must_not");
+		public $insertFunctions = array("json");
+		public $operators = array("=", "must", "should", "must_not");
 
-		static function connect(?string $server, string $username, string $password) {
+		static function connect($server, $username, $password) {
 			if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
 				return lang('Invalid server.');
 			}
@@ -130,7 +130,7 @@ if (isset($_GET["elastic"])) {
 			);
 		}
 
-		function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, ?int $page = 0, bool $print = false) {
+		function select($table, array $select, array $where, array $group, array $order = array(), $limit = 1, $page = 0, $print = false) {
 			$data = array();
 			if ($select != array("*")) {
 				$data["fields"] = array_values($select);
@@ -227,7 +227,7 @@ if (isset($_GET["elastic"])) {
 			return new Result($return);
 		}
 
-		function update(string $table, array $set, string $queryWhere, int $limit = 0, string $separator = "\n") {
+		function update($table, array $set, $queryWhere, $limit = 0, $separator = "\n") {
 			//! use $limit
 			$parts = preg_split('~ *= *~', $queryWhere);
 			if (count($parts) == 2) {
@@ -240,7 +240,7 @@ if (isset($_GET["elastic"])) {
 			return false;
 		}
 
-		function insert(string $type, array $record) {
+		function insert($type, array $record) {
 			$query = "$type/_doc/";
 			if (isset($record["_id"]) && $record["_id"] != "NULL") {
 				$query .= $record["_id"];
@@ -260,7 +260,7 @@ if (isset($_GET["elastic"])) {
 			return $response['result'];
 		}
 
-		function delete(string $table, string $queryWhere, int $limit = 0) {
+		function delete($table, $queryWhere, $limit = 0) {
 			//! use $limit
 			$ids = array();
 			if (idx($_GET["where"], "_id")) {
@@ -288,7 +288,7 @@ if (isset($_GET["elastic"])) {
 			return !!$this->conn->affected_rows;
 		}
 
-		function convertOperator(string $operator): string {
+		function convertOperator($operator): string {
 			return $operator == "LIKE %%" ? "should" : $operator;
 		}
 	}
@@ -510,7 +510,7 @@ if (isset($_GET["elastic"])) {
 	/** Alter type
 	 * @return mixed
 	 */
-	function alter_table(string $table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
 		$properties = array();
 		foreach ($fields as $f) {
 			if ($f[1]) {

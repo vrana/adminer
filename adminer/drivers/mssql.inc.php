@@ -13,7 +13,7 @@ if (isset($_GET["mssql"])) {
 	define('Adminer\DRIVER', "mssql");
 	if (extension_loaded("sqlsrv") && $_GET["ext"] != "pdo") {
 		class Db extends SqlDb {
-			public string $extension = "sqlsrv";
+			public $extension = "sqlsrv";
 			private $link, $result;
 
 			private function get_error() {
@@ -178,7 +178,7 @@ if (isset($_GET["mssql"])) {
 
 		if (extension_loaded("pdo_sqlsrv")) {
 			class Db extends MssqlDb {
-				public string $extension = "PDO_SQLSRV";
+				public $extension = "PDO_SQLSRV";
 
 				function attach(?string $server, string $username, string $password): string {
 					return $this->dsn("sqlsrv:Server=" . str_replace(":", ",", $server), $username, $password);
@@ -187,7 +187,7 @@ if (isset($_GET["mssql"])) {
 
 		} elseif (extension_loaded("pdo_dblib")) {
 			class Db extends MssqlDb {
-				public string $extension = "PDO_DBLIB";
+				public $extension = "PDO_DBLIB";
 
 				function attach(?string $server, string $username, string $password): string {
 					return $this->dsn("dblib:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\d)~', ';port=\1', $server)), $username, $password);
@@ -198,20 +198,20 @@ if (isset($_GET["mssql"])) {
 
 
 	class Driver extends SqlDriver {
-		static array $extensions = array("SQLSRV", "PDO_SQLSRV", "PDO_DBLIB");
-		static string $jush = "mssql";
+		static $extensions = array("SQLSRV", "PDO_SQLSRV", "PDO_DBLIB");
+		static $jush = "mssql";
 
-		public array $insertFunctions = array("date|time" => "getdate");
-		public array $editFunctions = array(
+		public $insertFunctions = array("date|time" => "getdate");
+		public $editFunctions = array(
 			"int|decimal|real|float|money|datetime" => "+/-",
 			"char|text" => "+",
 		);
 
-		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL");
-		public array $functions = array("len", "lower", "round", "upper");
-		public array $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
-		public array $generated = array("PERSISTED", "VIRTUAL");
-		public string $onActions = "NO ACTION|CASCADE|SET NULL|SET DEFAULT";
+		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL");
+		public $functions = array("len", "lower", "round", "upper");
+		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
+		public $generated = array("PERSISTED", "VIRTUAL");
+		public $onActions = "NO ACTION|CASCADE|SET NULL|SET DEFAULT";
 
 		static function connect(?string $server, string $username, string $password) {
 			if ($server == "") {

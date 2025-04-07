@@ -19,22 +19,22 @@ if (isset($_GET["imap"])) {
 
 	if (extension_loaded("imap")) {
 		class Db extends SqlDb {
-			public string $extension = "IMAP";
+			public $extension = "IMAP";
 			public $server_info = "?"; // imap_mailboxmsginfo() or imap_check() don't return anything useful
 			private $mailbox;
 			private $imap;
 
-			function attach(?string $server, string $username, string $password): string {
+			function attach($server, $username, $password): string {
 				$this->mailbox = "{" . "$server:993/ssl}"; // Adminer disallows specifying privileged port in server name
 				$this->imap = @imap_open($this->mailbox, $username, $password, OP_HALFOPEN, 1);
 				return ($this->imap ? '' : imap_last_error());
 			}
 
-			function select_db(string $database) {
+			function select_db($database) {
 				return ($database == "mail");
 			}
 
-			function query(string $query, bool $unbuffered = false) {
+			function query($query, $unbuffered = false) {
 				if (preg_match('~DELETE FROM "(.+?)"~', $query)) {
 					preg_match_all('~"uid" = (\d+)~', $query, $matches);
 					return imap_delete($this->imap, implode(",", $matches[1]), FT_UID);
@@ -67,7 +67,7 @@ if (isset($_GET["imap"])) {
 				return false;
 			}
 
-			function quote(string $string): string {
+			function quote($string): string {
 				return $string;
 			}
 
@@ -140,9 +140,9 @@ if (isset($_GET["imap"])) {
 	}
 
 	class Driver extends SqlDriver {
-		static array $extensions = array("imap");
-		static string $jush = "imap";
-		public array $insertFunctions = array("json");
+		static $extensions = array("imap");
+		static $jush = "imap";
+		public $insertFunctions = array("json");
 	}
 
 	function logged_user() {

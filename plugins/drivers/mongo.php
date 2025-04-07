@@ -8,11 +8,11 @@ if (isset($_GET["mongo"])) {
 
 	if (class_exists('MongoDB\Driver\Manager')) {
 		class Db extends SqlDb {
-			public string $extension = "MongoDB", $server_info = MONGODB_VERSION, $last_id;
-			public \MongoDB\Driver\Manager $_link;
+			public $extension = "MongoDB", $server_info = MONGODB_VERSION, $last_id;
+			/** @var \MongoDB\Driver\Manager */ public $_link;
 			public $_db, $_db_name;
 
-			function attach(?string $server, string $username, string $password): string {
+			function attach($server, $username, $password): string {
 				$options = array();
 				if ($username . $password != "") {
 					$options["username"] = $username;
@@ -54,16 +54,16 @@ if (isset($_GET["mongo"])) {
 				}
 			}
 
-			function query(string $query, bool $unbuffered = false) {
+			function query($query, $unbuffered = false) {
 				return false;
 			}
 
-			function select_db(string $database) {
+			function select_db($database) {
 				$this->_db_name = $database;
 				return true;
 			}
 
-			function quote(string $string): string {
+			function quote($string): string {
 				return $string;
 			}
 		}
@@ -294,12 +294,12 @@ if (isset($_GET["mongo"])) {
 
 
 	class Driver extends SqlDriver {
-		static array $extensions = array("mongodb");
-		static string $jush = "mongo";
+		static $extensions = array("mongodb");
+		static $jush = "mongo";
 
-		public array $insertFunctions = array("json");
+		public $insertFunctions = array("json");
 
-		public array $operators = array(
+		public $operators = array(
 			"=",
 			"!=",
 			">",
@@ -323,14 +323,14 @@ if (isset($_GET["mongo"])) {
 
 		public $primary = "_id";
 
-		static function connect(?string $server, string $username, string $password) {
+		static function connect($server, $username, $password) {
 			if ($server == "") {
 				$server = "localhost:27017";
 			}
 			return parent::connect($server, $username, $password);
 		}
 
-		function select(string $table, array $select, array $where, array $group, array $order = array(), $limit = 1, ?int $page = 0, bool $print = false) {
+		function select($table, array $select, array $where, array $group, array $order = array(), $limit = 1, $page = 0, $print = false) {
 			$select = ($select == array("*")
 				? array()
 				: array_fill_keys($select, 1)
@@ -354,7 +354,7 @@ if (isset($_GET["mongo"])) {
 			}
 		}
 
-		function update(string $table, array $set, string $queryWhere, int $limit = 0, string $separator = "\n") {
+		function update($table, array $set, $queryWhere, $limit = 0, $separator = "\n") {
 			$db = $this->conn->_db_name;
 			$where = sql_query_where_parser($queryWhere);
 			$bulk = new \MongoDB\Driver\BulkWrite(array());
@@ -376,7 +376,7 @@ if (isset($_GET["mongo"])) {
 			return $this->conn->executeBulkWrite("$db.$table", $bulk, 'getModifiedCount');
 		}
 
-		function delete(string $table, string $queryWhere, int $limit = 0) {
+		function delete($table, $queryWhere, $limit = 0) {
 			$db = $this->conn->_db_name;
 			$where = sql_query_where_parser($queryWhere);
 			$bulk = new \MongoDB\Driver\BulkWrite(array());
@@ -384,7 +384,7 @@ if (isset($_GET["mongo"])) {
 			return $this->conn->executeBulkWrite("$db.$table", $bulk, 'getDeletedCount');
 		}
 
-		function insert(string $table, array $set) {
+		function insert($table, array $set) {
 			$db = $this->conn->_db_name;
 			$bulk = new \MongoDB\Driver\BulkWrite(array());
 			if ($set['_id'] == '') {

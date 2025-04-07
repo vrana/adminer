@@ -7,8 +7,8 @@ if (isset($_GET["pgsql"])) {
 	define('Adminer\DRIVER', "pgsql");
 	if (extension_loaded("pgsql") && $_GET["ext"] != "pdo") {
 		class PgsqlDb extends SqlDb {
-			public string $extension = "PgSQL";
-			public int $timeout = 0;
+			public $extension = "PgSQL";
+			public $timeout = 0;
 			private $link, $string, $database = true;
 
 			function _error($errno, $error) {
@@ -137,8 +137,8 @@ if (isset($_GET["pgsql"])) {
 
 	} elseif (extension_loaded("pdo_pgsql")) {
 		class PgsqlDb extends PdoDb {
-			public string $extension = "PDO_PgSQL";
-			public int $timeout = 0;
+			public $extension = "PDO_PgSQL";
+			public $timeout = 0;
 
 			function attach(?string $server, string $username, string $password): string {
 				$db = adminer()->database();
@@ -198,12 +198,12 @@ if (isset($_GET["pgsql"])) {
 
 
 	class Driver extends SqlDriver {
-		static array $extensions = array("PgSQL", "PDO_PgSQL");
-		static string $jush = "pgsql";
+		static $extensions = array("PgSQL", "PDO_PgSQL");
+		static $jush = "pgsql";
 
-		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // no "SQL" to avoid CSRF
-		public array $functions = array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper");
-		public array $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
+		public $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // no "SQL" to avoid CSRF
+		public $functions = array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper");
+		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 
 		static function connect(?string $server, string $username, string $password) {
 			$connection = parent::connect($server, $username, $password);

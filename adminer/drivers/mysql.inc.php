@@ -9,7 +9,7 @@ if (!defined('Adminer\DRIVER')) {
 	if (extension_loaded("mysqli") && $_GET["ext"] != "pdo") {
 		class Db extends \MySQLi {
 			/** @var Db */ static $instance;
-			public string $extension = "MySQLi", $flavor = '';
+			public $extension = "MySQLi", $flavor = '';
 
 			function __construct() {
 				parent::init();
@@ -113,7 +113,7 @@ if (!defined('Adminer\DRIVER')) {
 		}
 
 		class Result {
-			public int $num_rows; // number of rows in the result
+			public $num_rows; // number of rows in the result
 			/** @var resource */ private $result;
 			private int $offset = 0;
 
@@ -155,7 +155,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	} elseif (extension_loaded("pdo_mysql")) {
 		class Db extends PdoDb {
-			public string $extension = "PDO_MySQL";
+			public $extension = "PDO_MySQL";
 
 			function attach(?string $server, string $username, string $password): string {
 				$options = array(\PDO::MYSQL_ATTR_LOCAL_INFILE => false);
@@ -202,13 +202,13 @@ if (!defined('Adminer\DRIVER')) {
 
 
 	class Driver extends SqlDriver {
-		/** @var list<string> */ static array $extensions = array("MySQLi", "MySQL", "PDO_MySQL");
-		static string $jush = "sql"; // JUSH identifier
+		static $extensions = array("MySQLi", "MySQL", "PDO_MySQL");
+		static $jush = "sql"; // JUSH identifier
 
-		/** @var list<string> */ public array $unsigned = array("unsigned", "zerofill", "unsigned zerofill");
-		/** @var list<string> */ public array $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL");
-		/** @var list<string> */ public array $functions = array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper");
-		/** @var list<string> */ public array $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
+		public $unsigned = array("unsigned", "zerofill", "unsigned zerofill");
+		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL");
+		public $functions = array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper");
+		public $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 
 		static function connect(?string $server, string $username, string $password) {
 			$connection = parent::connect($server, $username, $password);

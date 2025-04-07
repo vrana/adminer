@@ -12,9 +12,9 @@ if (isset($_GET["firebird"])) {
 
 	if (extension_loaded("interbase")) {
 		class Db extends SqlDb {
-			public string $extension = "Firebird", $_link;
+			public $extension = "Firebird", $_link;
 
-			function attach(?string $server, string $username, string $password): string {
+			function attach($server, $username, $password): string {
 				$this->_link = ibase_connect($server, $username, $password);
 				if ($this->_link) {
 					$url_parts = explode(':', $server);
@@ -25,15 +25,15 @@ if (isset($_GET["firebird"])) {
 				return ibase_errmsg();
 			}
 
-			function quote(string $string): string {
+			function quote($string): string {
 				return "'" . str_replace("'", "''", $string) . "'";
 			}
 
-			function select_db(string $database) {
+			function select_db($database) {
 				return ($database == "domain");
 			}
 
-			function query(string $query, bool $unbuffered = false) {
+			function query($query, $unbuffered = false) {
 				$result = ibase_query($this->_link, $query);
 				if (!$result) {
 					$this->errno = ibase_errcode();
@@ -85,10 +85,10 @@ if (isset($_GET["firebird"])) {
 
 
 	class Driver extends SqlDriver {
-		static array $extensions = array("interbase");
-		static string $jush = "firebird";
+		static $extensions = array("interbase");
+		static $jush = "firebird";
 
-		public array $operators = array("=");
+		public $operators = array("=");
 	}
 
 

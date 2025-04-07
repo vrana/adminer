@@ -7,7 +7,7 @@ if (isset($_GET["oracle"])) {
 	define('Adminer\DRIVER', "oracle");
 	if (extension_loaded("oci8") && $_GET["ext"] != "pdo") {
 		class Db extends SqlDb {
-			public string $extension = "oci8";
+			public $extension = "oci8";
 			public $_current_db;
 			private $link;
 
@@ -102,7 +102,7 @@ if (isset($_GET["oracle"])) {
 
 	} elseif (extension_loaded("pdo_oci")) {
 		class Db extends PdoDb {
-			public string $extension = "PDO_OCI";
+			public $extension = "PDO_OCI";
 			public $_current_db;
 
 			function attach(?string $server, string $username, string $password): string {
@@ -120,22 +120,22 @@ if (isset($_GET["oracle"])) {
 
 
 	class Driver extends SqlDriver {
-		static array $extensions = array("OCI8", "PDO_OCI");
-		static string $jush = "oracle";
+		static $extensions = array("OCI8", "PDO_OCI");
+		static $jush = "oracle";
 
-	public array $insertFunctions = array( //! no parentheses
+		public $insertFunctions = array( //! no parentheses
 			"date" => "current_date",
 			"timestamp" => "current_timestamp",
 		);
-		public array $editFunctions = array(
+		public $editFunctions = array(
 			"number|float|double" => "+/-",
 			"date|timestamp" => "+ interval/- interval",
 			"char|clob" => "||",
 		);
 
-		public array $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
-		public array $functions = array("length", "lower", "round", "upper");
-		public array $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
+		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
+		public $functions = array("length", "lower", "round", "upper");
+		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 
 		function __construct(Db $connection) {
 			parent::__construct($connection);
