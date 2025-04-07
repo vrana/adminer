@@ -2,7 +2,6 @@
 
 /** AI prompt in SQL command generating the queries with Google Gemini
 * Beware that this sends your whole database structure (not data) to Google Gemini.
-* @link https://www.adminer.org/static/plugins/sql-gemini.gif
 * @link https://gemini.google.com/
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
@@ -90,6 +89,10 @@ geminiText.onkeydown = event => {
 };
 </script>
 <?php
+	}
+
+	function screenshot() {
+		return "https://www.adminer.org/static/plugins/sql-gemini.gif";
 	}
 
 	// use the phrases from https://gemini.google.com/

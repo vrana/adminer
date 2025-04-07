@@ -100,7 +100,12 @@ if (
 						$description = $match[1];
 					}
 				}
-				echo "<li><b>" . get_class($plugin) . "</b>" . h($description ? ": $description" : "") . "\n";
+				$screenshot = (method_exists($plugin, 'screenshot') ? $plugin->screenshot() : "");
+				echo "<li><b>" . get_class($plugin) . "</b>"
+					. h($description ? ": $description" : "")
+					. ($screenshot ? " (<a href='" . h($screenshot) . "'" . target_blank() . ">" . lang('screenshot') . "</a>)" : "")
+					. "\n"
+				;
 			}
 			echo "</ul>\n";
 			echo "</div>\n";

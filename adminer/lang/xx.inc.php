@@ -13,9 +13,6 @@ Lang::$translations = array(
 	'Logged as: %s' => 'Xx: %s',
 	'Logout successful.' => 'Xx.',
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Xx <a href="https://www.adminer.org/en/donation/">xx</a>.',
-	'Loaded plugins' => 'Xx',
-	'%s must <a%s>return an array</a>.' => '%s xx <a%s>xx</a>.',
-	'<a%s>Configure</a> %s in %s.' => '<a%s>Xx</a> %s xx %s.',
 	'Invalid credentials.' => 'Xx.',
 	'There is a space in the input password which might be the cause.' => 'Xx.',
 	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Xx, <a href="https://www.adminer.org/en/password/"%s>xx</a>.',
@@ -354,6 +351,11 @@ Lang::$translations = array(
 	'Check has been created.' => 'Xx.',
 	'Check has been altered.' => 'Xx.',
 	'Check has been dropped.' => 'Xx.',
+
+	'Loaded plugins' => 'Xx',
+	'%s must <a%s>return an array</a>.' => '%s xx <a%s>xx</a>.',
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Xx</a> %s xx %s.',
+	'screenshot' => 'xx',
 );
 
 // run `php ../../lang.php xx` to update this file

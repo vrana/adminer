@@ -39,6 +39,10 @@ class AdminerDesigns extends Adminer\Plugin {
 		echo "</form>\n";
 	}
 
+	function screenshot() {
+		return "https://www.adminer.org/static/plugins/designs.png";
+	}
+
 	protected static $translations = array(
 		'cs' => array('' => 'Umožní změnit vzhled'),
 		'de' => array('' => 'Designwechsel ermöglichen'),

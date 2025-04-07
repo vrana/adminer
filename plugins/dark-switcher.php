@@ -39,6 +39,10 @@ if (saved) {
 		;
 	}
 
+	function screenshot() {
+		return "https://www.adminer.org/static/plugins/dark-switcher.gif";
+	}
+
 	protected static $translations = array(
 		'cs' => array('' => 'Dovoluje přepínání světlého a tmavého vzhledu'),
 	);

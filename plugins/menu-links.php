@@ -67,6 +67,10 @@ class AdminerMenuLinks extends Adminer\Plugin {
 		return true;
 	}
 
+	function screenshot() {
+		return "https://www.adminer.org/static/plugins/menu-links.png";
+	}
+
 	protected static $translations = array(
 		'cs' => array(
 			'' => 'Konfigurace odkazů na tabulky v menu; kombinovatelné s AdminerConfig',

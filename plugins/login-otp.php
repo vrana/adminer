@@ -51,6 +51,10 @@ class AdminerLoginOtp extends Adminer\Plugin {
 		return ($unpacked[1] & 0x7FFFFFFF) % 1e6;
 	}
 
+	function screenshot() {
+		return "https://www.adminer.org/static/login-otp.png";
+	}
+
 	protected static $translations = array(
 		'cs' => array('' => 'Při přihlášení požaduje jednorázové heslo'),
 		'de' => array('' => 'Bei der Anmeldung ist ein Einmalpasswort (Zwei-Faktor-Authentifizierung) erforderlich'),

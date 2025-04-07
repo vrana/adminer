@@ -13,9 +13,6 @@ Lang::$translations = array(
 	'Logged as: %s' => 'Přihlášen jako: %s',
 	'Logout successful.' => 'Odhlášení proběhlo v pořádku.',
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Díky za použití Admineru, <a href="https://www.adminer.org/cs/donation/">přispějte</a> na vývoj.',
-	'Loaded plugins' => 'Nahrané pluginy',
-	'%s must <a%s>return an array</a>.' => '%s musí <a%s>vracet pole</a>.',
-	'<a%s>Configure</a> %s in %s.' => '<a%s>Nakonfigurujte</a> %s v %s.',
 	'Invalid credentials.' => 'Neplatné přihlašovací údaje.',
 	'There is a space in the input password which might be the cause.' => 'Problém může být, že je v zadaném hesle mezera.',
 	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer nepodporuje přístup k databázi bez hesla, <a href="https://www.adminer.org/cs/password/"%s>více informací</a>.',
@@ -352,6 +349,11 @@ Lang::$translations = array(
 	'Check has been created.' => 'Kontrola byla vytvořena.',
 	'Check has been altered.' => 'Kontrola byla změněna.',
 	'Check has been dropped.' => 'Kontrola byla odstraněna.',
+
+	'Loaded plugins' => 'Nahrané pluginy',
+	'%s must <a%s>return an array</a>.' => '%s musí <a%s>vracet pole</a>.',
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Nakonfigurujte</a> %s v %s.',
+	'screenshot' => 'obrázek',
 );
 
 // run `php ../../lang.php cs` to update this file

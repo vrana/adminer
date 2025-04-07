@@ -12,6 +12,13 @@ abstract class Plugin {
 		return $this->lang('');
 	}
 
+	/** Get URL of plugin screenshot
+	* @return string
+	*/
+	function screenshot() {
+		return "";
+	}
+
 	/** Translate a string from static::$translations; use Adminer\lang() for strings used by Adminer
 	* @param literal-string $idf
 	* @param float|string $number

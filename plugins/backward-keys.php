@@ -1,7 +1,6 @@
 <?php
 
 /** Display links to tables referencing current row, same as in Adminer Editor
-* @link https://www.adminer.org/static/plugins/backward-keys.png
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
@@ -51,6 +50,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 				echo "<a href='" . Adminer\h($link) . "' title='" . Adminer\lang('New item') . "'>+</a> ";
 			}
 		}
+	}
+
+	function screenshot() {
+		return "https://www.adminer.org/static/plugins/backward-keys.png";
 	}
 
 	protected static $translations = array(
