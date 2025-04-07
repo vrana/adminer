@@ -32,7 +32,7 @@ class AdminerSqlGemini extends Adminer\Plugin {
 			//~ echo $prompt; exit;
 			$context = stream_context_create(array("http" => array(
 				"method" => "POST",
-				"header" => array("User-Agent: AdminerSqlGemini", "Content-Type: application/json"),
+				"header" => array("User-Agent: AdminerSqlGemini/" . Adminer\VERSION, "Content-Type: application/json"),
 				"content" => '{"contents": [{"parts":[{"text": ' . json_encode($prompt) . '}]}]}',
 				"ignore_errors" => true,
 			)));
