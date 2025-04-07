@@ -13,7 +13,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 		exit;
 	}
 	if (!ob_get_level()) {
-		ob_start(null, 4096);
+		ob_start('ob_gzhandler', 4096);
 	}
 	$title_all = $title . ($title2 != "" ? ": $title2" : "");
 	$title_page = strip_tags($title_all . (SERVER != "" && SERVER != "localhost" ? h(" - " . SERVER) : "") . " - " . adminer()->name());
