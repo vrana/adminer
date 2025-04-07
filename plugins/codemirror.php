@@ -24,14 +24,14 @@ class AdminerCodemirror {
 .CodeMirror { border: 1px inset #ccc; resize: both; }
 </style>
 <?php
-		echo Adminer\script_src("$this->root/lib/codemirror$this->minified.js");
-		echo Adminer\script_src("$this->root/addon/runmode/runmode$this->minified.js");
-		echo Adminer\script_src("$this->root/addon/hint/show-hint$this->minified.js");
-		echo Adminer\script_src("$this->root/mode/javascript/javascript$this->minified.js");
+		echo Adminer\script_src("$this->root/lib/codemirror$this->minified.js", true);
+		echo Adminer\script_src("$this->root/addon/runmode/runmode$this->minified.js", true);
+		echo Adminer\script_src("$this->root/addon/hint/show-hint$this->minified.js", true);
+		echo Adminer\script_src("$this->root/mode/javascript/javascript$this->minified.js", true);
 		$tables = array_fill_keys(array_keys($tableStatuses), array());
 		if (Adminer\support("sql")) {
-			echo Adminer\script_src("$this->root/mode/sql/sql$this->minified.js");
-			echo Adminer\script_src("$this->root/addon/hint/sql-hint$this->minified.js");
+			echo Adminer\script_src("$this->root/mode/sql/sql$this->minified.js", true);
+			echo Adminer\script_src("$this->root/addon/hint/sql-hint$this->minified.js", true);
 			if (isset($_GET["sql"]) || isset($_GET["trigger"]) || isset($_GET["check"])) {
 				foreach (Adminer\driver()->allFields() as $table => $fields) {
 					foreach ($fields as $field) {
@@ -42,55 +42,57 @@ class AdminerCodemirror {
 		}
 		?>
 <script <?php echo Adminer\nonce(); ?>>
-function getCmMode(el) {
-	const match = el.className.match(/(^|\s)jush-([^ ]+)/);
-	if (match) {
-		const modes = {
-			js: 'application/json',
-			sql: 'text/x-<?php echo (Adminer\connection()->flavor == "maria" ? "mariadb" : "mysql"); ?>',
-			oracle: 'text/x-sql',
-			clickhouse: 'text/x-sql',
-			firebird: 'text/x-sql'
-		};
-		return modes[match[2]] || 'text/x-' + match[2];
+addEventListener('DOMContentLoaded', () => {
+	function getCmMode(el) {
+		const match = el.className.match(/(^|\s)jush-([^ ]+)/);
+		if (match) {
+			const modes = {
+				js: 'application/json',
+				sql: 'text/x-<?php echo (Adminer\connection()->flavor == "maria" ? "mariadb" : "mysql"); ?>',
+				oracle: 'text/x-sql',
+				clickhouse: 'text/x-sql',
+				firebird: 'text/x-sql'
+			};
+			return modes[match[2]] || 'text/x-' + match[2];
+		}
 	}
-}
 
-adminerHighlighter = els => els.forEach(el => {
-	const mode = getCmMode(el);
-	if (mode) {
-		el.classList.add('cm-s-default');
-		CodeMirror.runMode(el.textContent, mode, el);
+	adminerHighlighter = els => els.forEach(el => {
+		const mode = getCmMode(el);
+		if (mode) {
+			el.classList.add('cm-s-default');
+			CodeMirror.runMode(el.textContent, mode, el);
+		}
+	});
+
+	adminerHighlighter(qsa('code'));
+
+	for (const el of qsa('textarea')) {
+		const mode = getCmMode(el);
+		if (mode) {
+			const width = el.clientWidth;
+			const height = el.clientHeight;
+			const cm = CodeMirror.fromTextArea(el, {
+				mode: mode,
+				extraKeys: { 'Ctrl-Space': 'autocomplete' },
+				hintOptions: {
+					completeSingle: false,
+					tables: <?php echo json_encode($tables); ?>,
+					defaultTable: <?php echo json_encode($_GET["trigger"] ?: ($_GET["check"] ?: null)); ?>
+				}
+			});
+			cm.setSize(width, height);
+			cm.on('inputRead', () => {
+				const token = cm.getTokenAt(cm.getCursor());
+				if (/^[.`"\w]\w*$/.test(token.string)) {
+					CodeMirror.commands.autocomplete(cm);
+				}
+			});
+			setupSubmitHighlightInput(cm.getWrapperElement());
+			el.onchange = () => cm.setValue(el.value);
+		}
 	}
 });
-
-adminerHighlighter(qsa('code'));
-
-for (const el of qsa('textarea')) {
-	const mode = getCmMode(el);
-	if (mode) {
-		const width = el.clientWidth;
-		const height = el.clientHeight;
-		const cm = CodeMirror.fromTextArea(el, {
-			mode: mode,
-			extraKeys: { 'Ctrl-Space': 'autocomplete' },
-			hintOptions: {
-				completeSingle: false,
-				tables: <?php echo json_encode($tables); ?>,
-				defaultTable: <?php echo json_encode($_GET["trigger"] ?: ($_GET["check"] ?: null)); ?>
-			}
-		});
-		cm.setSize(width, height);
-		cm.on('inputRead', () => {
-			const token = cm.getTokenAt(cm.getCursor());
-			if (/^[.`"\w]\w*$/.test(token.string)) {
-				CodeMirror.commands.autocomplete(cm);
-			}
-		});
-		setupSubmitHighlightInput(cm.getWrapperElement());
-		el.onchange = () => cm.setValue(el.value);
-	}
-}
 </script>
 <?php
 		return true;

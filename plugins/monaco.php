@@ -15,56 +15,58 @@ class AdminerMonaco {
 	}
 
 	function syntaxHighlighting($tableStatuses) {
-		echo Adminer\script_src("$this->root/loader.js");
+		echo Adminer\script_src("$this->root/loader.js", true);
 		?>
 <script <?php echo Adminer\nonce(); ?>>
-require.config({ paths: { vs: '<?php echo $this->root; ?>' } });
-require(['vs/editor/editor.main'], function (monaco) {
-	adminerHighlighter = els => els.forEach(el => {
-		const lang = getMonacoLang(el);
-		if (lang) {
-			monaco.editor.colorize(el.textContent, lang).then(html => el.innerHTML = html);
+addEventListener('DOMContentLoaded', () => {
+	require.config({ paths: { vs: '<?php echo $this->root; ?>' } });
+	require(['vs/editor/editor.main'], function (monaco) {
+		adminerHighlighter = els => els.forEach(el => {
+			const lang = getMonacoLang(el);
+			if (lang) {
+				monaco.editor.colorize(el.textContent, lang).then(html => el.innerHTML = html);
+			}
+		});
+		adminerHighlighter(qsa('code'));
+
+		for (const el of qsa('textarea')) {
+			const lang = getMonacoLang(el);
+			if (lang) {
+				const container = document.createElement('div');
+				container.style.border = '1px inset #ccc';
+				container.style.width = el.clientWidth + 'px';
+				container.style.height = el.clientHeight + 'px';
+				el.before(container);
+				el.style.display = 'none';
+				var editor = monaco.editor.create(container, {
+					value: el.value,
+					lineNumbers: 'off',
+					glyphMargin: false,
+					folding: false,
+					lineDecorationsWidth: 1,
+					minimap: {enabled: false},
+					language: lang
+				});
+				editor.onDidChangeModelContent(() => el.value = editor.getValue());
+				el.onchange = () => editor.setValue(el.value);
+				monaco.editor.addKeybindingRules([
+					{keybinding: monaco.KeyCode.Tab, command: null}
+					//! Ctrl+Enter
+				]);
+			}
 		}
 	});
-	adminerHighlighter(qsa('code'));
 
-	for (const el of qsa('textarea')) {
-		const lang = getMonacoLang(el);
-		if (lang) {
-			const container = document.createElement('div');
-			container.style.border = '1px inset #ccc';
-			container.style.width = el.clientWidth + 'px';
-			container.style.height = el.clientHeight + 'px';
-			el.before(container);
-			el.style.display = 'none';
-			var editor = monaco.editor.create(container, {
-				value: el.value,
-				lineNumbers: 'off',
-				glyphMargin: false,
-				folding: false,
-				lineDecorationsWidth: 1,
-				minimap: {enabled: false},
-				language: lang
-			});
-			editor.onDidChangeModelContent(() => el.value = editor.getValue());
-			el.onchange = () => editor.setValue(el.value);
-			monaco.editor.addKeybindingRules([
-				{keybinding: monaco.KeyCode.Tab, command: null}
-				//! Ctrl+Enter
-			]);
-		}
+	function getMonacoLang(el) {
+		return (
+			/jush-js/.test(el.className) ? 'javascript' : (
+			/jush-sql/.test(el.className) ? 'mysql' : (
+			/jush-pgsql/.test(el.className) ? 'pgsql' : (
+			/jush-(sqlite|mssql|oracle|clickhouse|firebird)/.test(el.className) ? 'sql' : (
+			''
+		)))));
 	}
 });
-
-function getMonacoLang(el) {
-	return (
-		/jush-js/.test(el.className) ? 'javascript' : (
-		/jush-sql/.test(el.className) ? 'mysql' : (
-		/jush-pgsql/.test(el.className) ? 'pgsql' : (
-		/jush-(sqlite|mssql|oracle|clickhouse|firebird)/.test(el.className) ? 'sql' : (
-		''
-	)))));
-}
 </script>
 <?php
 		return true;
