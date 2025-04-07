@@ -527,8 +527,8 @@ ORDER BY conkey, conname") as $row
 					$row['table'] = idf_unescape($match2[4]);
 				}
 				$row['target'] = array_map('Adminer\idf_unescape', array_map('trim', explode(',', $match[3])));
-				$row['on_delete'] = (preg_match("~ON DELETE (driver()->onActions)~", $match[4], $match2) ? $match2[1] : 'NO ACTION');
-				$row['on_update'] = (preg_match("~ON UPDATE (driver()->onActions)~", $match[4], $match2) ? $match2[1] : 'NO ACTION');
+				$row['on_delete'] = (preg_match("~ON DELETE (" . driver()->onActions . ")~", $match[4], $match2) ? $match2[1] : 'NO ACTION');
+				$row['on_update'] = (preg_match("~ON UPDATE (" . driver()->onActions . ")~", $match[4], $match2) ? $match2[1] : 'NO ACTION');
 				$return[$row['conname']] = $row;
 			}
 		}

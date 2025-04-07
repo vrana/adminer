@@ -556,7 +556,7 @@ if (!defined('Adminer\DRIVER')) {
 		$create_table = get_val("SHOW CREATE TABLE " . table($table), 1);
 		if ($create_table) {
 			preg_match_all(
-				"~CONSTRAINT ($pattern) FOREIGN KEY ?\\(((?:$pattern,? ?)+)\\) REFERENCES ($pattern)(?:\\.($pattern))? \\(((?:$pattern,? ?)+)\\)(?: ON DELETE (driver()->onActions))?(?: ON UPDATE (driver()->onActions))?~",
+				"~CONSTRAINT ($pattern) FOREIGN KEY ?\\(((?:$pattern,? ?)+)\\) REFERENCES ($pattern)(?:\\.($pattern))? \\(((?:$pattern,? ?)+)\\)(?: ON DELETE (" . driver()->onActions . "))?(?: ON UPDATE (" . driver()->onActions . "))?~",
 				$create_table,
 				$matches,
 				PREG_SET_ORDER

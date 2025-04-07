@@ -470,7 +470,7 @@ function create_routine($routine, array $row): string {
 	ksort($fields); // enforce fields order
 	foreach ($fields as $field) {
 		if ($field["field"] != "") {
-			$set[] = (preg_match("~^(driver()->inout)\$~", $field["inout"]) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
+			$set[] = (preg_match("~^(" . driver()->inout . ")\$~", $field["inout"]) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
 		}
 	}
 	$definition = rtrim($row["definition"], ";");
@@ -499,8 +499,8 @@ function format_foreign_key(array $foreign_key): string {
 		. ($ns != "" && $ns != $_GET["ns"] ? idf_escape($ns) . "." : "")
 		. idf_escape($foreign_key["table"])
 		. " (" . implode(", ", array_map('Adminer\idf_escape', $foreign_key["target"])) . ")" //! reuse $name - check in older MySQL versions
-		. (preg_match("~^(driver()->onActions)\$~", $foreign_key["on_delete"]) ? " ON DELETE $foreign_key[on_delete]" : "")
-		. (preg_match("~^(driver()->onActions)\$~", $foreign_key["on_update"]) ? " ON UPDATE $foreign_key[on_update]" : "")
+		. (preg_match("~^(" . driver()->onActions . ")\$~", $foreign_key["on_delete"]) ? " ON DELETE $foreign_key[on_delete]" : "")
+		. (preg_match("~^(" . driver()->onActions . ")\$~", $foreign_key["on_update"]) ? " ON UPDATE $foreign_key[on_update]" : "")
 	;
 }
 
