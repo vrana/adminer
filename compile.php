@@ -324,12 +324,12 @@ if ($project == "editor") {
 	$file = preg_replace('~;.\.\/externals/jush/jush(-dark)?\.css~', '', $file);
 	$file = preg_replace('~compile_file\(\'\.\./(externals/jush/modules/jush\.js)[^)]+\)~', "''", $file);
 }
-$file = preg_replace_callback("~lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
+$file = preg_replace_callback("~(?<!>)lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 $file = preg_replace_callback('~\b(include|require) "([^"]*" . LANG . ".inc.php)";~', 'put_file_lang', $file);
 $file = str_replace("\r", "", $file);
 if ($_SESSION["lang"]) {
 	// single language version
-	$file = preg_replace_callback("~(<\\?php\\s*echo )?lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
+	$file = preg_replace_callback("~(<\\?php\\s*echo )?(?<!>)lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
 	$file = str_replace("switch_lang();", "", $file);
 	$file = str_replace('<?php echo LANG; ?>', $_SESSION["lang"], $file);
 }
