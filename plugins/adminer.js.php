@@ -16,4 +16,11 @@ class AdminerDotJs extends Adminer\Plugin {
 			echo Adminer\script_src(self::FILENAME . "?v=" . crc32(file_get_contents(self::FILENAME))), "\n";
 		}
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Nahraje adminer.js'),
+		'de' => array('' => 'Laden Sie adminer.js'),
+		'pl' => array('' => 'Wczytuj adminer.js'),
+		'ro' => array('' => 'Încarcă adminer.js'),
+	);
 }
