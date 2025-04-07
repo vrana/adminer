@@ -1046,14 +1046,14 @@ class Adminer {
 		echo "<form action=''>\n<p id='dbs'>\n";
 		hidden_fields_get();
 		$db_events = script("mixin(qsl('select'), {onmousedown: dbMouseDown, onchange: dbChange});");
-		echo "<span title='" . lang('Database') . "'>" . lang('DB') . ":</span> " . ($databases
+		echo "<label title='" . lang('Database') . "'>" . lang('DB') . ": " . ($databases
 			? html_select("db", array("" => "") + $databases, DB) . $db_events
 			: "<input name='db' value='" . h(DB) . "' autocapitalize='off' size='19'>\n"
-		);
+		) . "</label>";
 		echo "<input type='submit' value='" . lang('Use') . "'" . ($databases ? " class='hidden'" : "") . ">\n";
 		if (support("scheme")) {
 			if ($missing != "db" && DB != "" && connection()->select_db(DB)) {
-				echo "<br><span>" . lang('Schema') . ":</span> " . html_select("ns", array("" => "") + adminer()->schemas(), $_GET["ns"]) . $db_events;
+				echo "<br><label>" . lang('Schema') . ": " . html_select("ns", array("" => "") + adminer()->schemas(), $_GET["ns"]) . "$db_events</label>";
 				if ($_GET["ns"] != "") {
 					set_schema($_GET["ns"]);
 				}

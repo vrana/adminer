@@ -149,9 +149,9 @@ if (adminer()->homepage()) {
 				$databases = (support("scheme") ? adminer()->schemas() : adminer()->databases());
 				if (count($databases) != 1 && JUSH != "sqlite") {
 					$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));
-					echo "<p>" . lang('Move to other database') . ": ";
+					echo "<p><label>" . lang('Move to other database') . ": ";
 					echo ($databases ? html_select("target", $databases, $db) : '<input name="target" value="' . h($db) . '" autocapitalize="off">');
-					echo " <input type='submit' name='move' value='" . lang('Move') . "'>";
+					echo "</label> <input type='submit' name='move' value='" . lang('Move') . "'>";
 					echo (support("copy") ? " <input type='submit' name='copy' value='" . lang('Copy') . "'> " . checkbox("overwrite", 1, $_POST["overwrite"], lang('overwrite')) : "");
 					echo "\n";
 				}

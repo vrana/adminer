@@ -48,7 +48,7 @@ echo ($collations ? "<datalist id='collations'>" . optionlist($collations) . "</
 
 <form action="" method="post" id="form">
 <p><?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" data-maxlength="64" autocapitalize="off">
-<?php echo ($routine_languages ? lang('Language') . ": " . html_select("language", $routine_languages, $row["language"]) . "\n" : ""); ?>
+<?php echo ($routine_languages ? "<label>" . lang('Language') . ": " . html_select("language", $routine_languages, $row["language"]) . "</label>\n" : ""); ?>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <div class="scrollable">
 <table class="nowrap">

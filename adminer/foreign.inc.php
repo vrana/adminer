@@ -67,12 +67,12 @@ if ($row["ns"] != "") {
 $referencable = array_keys(array_filter(table_status('', true), 'Adminer\fk_support'));
 $target = array_keys(fields(in_array($row["table"], $referencable) ? $row["table"] : reset($referencable)));
 $onchange = "this.form['change-js'].value = '1'; this.form.submit();";
-echo "<p>" . lang('Target table') . ": " . html_select("table", $referencable, $row["table"], $onchange) . "\n";
+echo "<p><label>" . lang('Target table') . ": " . html_select("table", $referencable, $row["table"], $onchange) . "</label>\n";
 if (support("scheme")) {
 	$schemas = array_filter(adminer()->schemas(), function ($schema) {
 		return !preg_match('~^information_schema$~i', $schema);
 	});
-	echo lang('Schema') . ": " . html_select("ns", $schemas, $row["ns"] != "" ? $row["ns"] : $_GET["ns"], $onchange);
+	echo "<label>" . lang('Schema') . ": " . html_select("ns", $schemas, $row["ns"] != "" ? $row["ns"] : $_GET["ns"], $onchange) . "</label>";
 	if ($row["ns"] != "") {
 		set_schema($orig_schema);
 	}
@@ -83,7 +83,7 @@ if (support("scheme")) {
 			$dbs[] = $db;
 		}
 	}
-	echo lang('DB') . ": " . html_select("db", $dbs, $row["db"] != "" ? $row["db"] : $_GET["db"], $onchange);
+	echo "<label>" . lang('DB') . ": " . html_select("db", $dbs, $row["db"] != "" ? $row["db"] : $_GET["db"], $onchange) . "</label>";
 }
 echo input_hidden("change-js");
 ?>
@@ -101,8 +101,8 @@ foreach ($row["source"] as $key => $val) {
 ?>
 </table>
 <p>
-<?php echo lang('ON DELETE'); ?>: <?php echo html_select("on_delete", array(-1 => "") + explode("|", driver()->onActions), $row["on_delete"]); ?>
- <?php echo lang('ON UPDATE'); ?>: <?php echo html_select("on_update", array(-1 => "") + explode("|", driver()->onActions), $row["on_update"]); ?>
+<label><?php echo lang('ON DELETE'); ?>: <?php echo html_select("on_delete", array(-1 => "") + explode("|", driver()->onActions), $row["on_delete"]); ?></label>
+<label><?php echo lang('ON UPDATE'); ?>: <?php echo html_select("on_update", array(-1 => "") + explode("|", driver()->onActions), $row["on_update"]); ?></label>
 <?php echo doc_link(array(
 	'sql' => "innodb-foreign-key-constraints.html",
 	'mariadb' => "foreign-keys/",
