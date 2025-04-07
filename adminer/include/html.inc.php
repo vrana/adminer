@@ -90,9 +90,17 @@ function optionlist($options, $selected = null, bool $use_keys = false): string 
 * @param string[] $options
 */
 function html_select(string $name, array $options, ?string $value = "", string $onchange = "", string $labelled_by = ""): string {
+	static $label = 0;
+	$label_option = "";
+	if (!$labelled_by && substr($options[""], 0, 1) == "(") {
+		$label++;
+		$labelled_by = "label-$label";
+		$label_option = "<option value='' id='$labelled_by'>" . h($options[""]);
+		unset($options[""]);
+	}
 	return "<select name='" . h($name) . "'"
 		. ($labelled_by ? " aria-labelledby='$labelled_by'" : "")
-		. ">" . optionlist($options, $value) . "</select>"
+		. ">" . $label_option . optionlist($options, $value) . "</select>"
 		. ($onchange ? script("qsl('select').onchange = function () { $onchange };", "") : "")
 	;
 }
