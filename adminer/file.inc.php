@@ -11,6 +11,8 @@ if (substr(VERSION, -4) != '-dev') {
 	header("Cache-Control: immutable");
 }
 
+@ini_set("zlib.output_compression", 1); // @ - may be disabled
+
 if ($_GET["file"] == "default.css") {
 	header("Content-Type: text/css; charset=utf-8");
 	echo lzw_decompress(compile_file('../adminer/static/default.css;../externals/jush/jush.css', 'minify_css'));
