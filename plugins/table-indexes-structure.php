@@ -29,4 +29,11 @@ class AdminerTableIndexesStructure extends Adminer\Plugin {
 		echo "</table>\n";
 		return true;
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Rozšířené informace o indexech'),
+		'de' => array('' => 'Erweiterte Ausgabe der Tabellenindize'),
+		'pl' => array('' => 'Rozszerzona tabela wyników struktury indeksów'),
+		'ro' => array('' => 'Ieșirea expandată a structurii indecsilor tabelului'),
+	);
 }

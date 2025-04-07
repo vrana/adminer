@@ -97,4 +97,8 @@ addEventListener('DOMContentLoaded', () => {
 <?php
 		return true;
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Použít CodeMirror 5 pro zvýrazňování syntaxe a <textarea> včetně našeptávání klíčových slov  a tabulek'),
+	);
 }

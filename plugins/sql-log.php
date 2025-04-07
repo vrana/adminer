@@ -35,4 +35,11 @@ class AdminerSqlLog extends Adminer\Plugin {
 		flock($fp, LOCK_UN);
 		fclose($fp);
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Zaznamenává všechny příkazy do souboru SQL'),
+		'de' => array('' => 'Protokollieren Sie alle Abfragen in einer SQL-Datei'),
+		'pl' => array('' => 'Rejestruj wszystkie zapytania do pliku SQL'),
+		'ro' => array('' => 'Logați toate interogările în fișierul SQL'),
+	);
 }

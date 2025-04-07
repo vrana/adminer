@@ -37,4 +37,8 @@ class AdminerEditorSetup extends Adminer\Plugin {
 			return $this->database;
 		}
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Nastavit ovladač, server a databázi pro použití s Adminer Editorem'),
+	);
 }

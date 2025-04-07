@@ -54,4 +54,11 @@ class AdminerEmailTable extends Adminer\Plugin {
 			$_POST["email_message"] = $row[1];
 		}
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Získá předmět a zprávu e-mailu z databáze (Adminer Editor)'),
+		'de' => array('' => 'E-Mail-Betreff und Nachricht aus der Datenbank abrufen (Adminer Editor)'),
+		'pl' => array('' => 'Pobieraj temat i wiadomość e-mail z bazy danych (Adminer Editor)'),
+		'ro' => array('' => 'Obțineți subiectul e-mailului și mesajul din baza de date (Adminer Editor)'),
+	);
 }

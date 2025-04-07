@@ -37,4 +37,11 @@ class AdminerMasterSlave extends Adminer\Plugin {
 			$_SESSION["master"] = $result->fetch_assoc();
 		}
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Zápisy provádět na masteru a čtení na slave'),
+		'de' => array('' => 'Schreibvorgänge auf dem Master und Lesevorgänge auf dem Slave ausführen'),
+		'pl' => array('' => 'Wykonuje zapisy na komputerze głównym i odczyty na komputerze podrzędnym'),
+		'ro' => array('' => 'Executarea scrierilor pe master și a citirilor pe slave'),
+	);
 }

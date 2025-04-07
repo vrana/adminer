@@ -50,4 +50,11 @@ class AdminerLoginOtp extends Adminer\Plugin {
 		$unpacked = unpack('N', substr($hash, $offset, 4));
 		return ($unpacked[1] & 0x7FFFFFFF) % 1e6;
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Při přihlášení požaduje jednorázové heslo'),
+		'de' => array('' => 'Bei der Anmeldung ist ein Einmalpasswort (Zwei-Faktor-Authentifizierung) erforderlich'),
+		'pl' => array('' => 'Wymagaj jednorazowego hasła przy logowaniu'),
+		'ro' => array('' => 'Cereți o parolă unică la autentificare'),
+	);
 }

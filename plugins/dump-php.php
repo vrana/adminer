@@ -45,4 +45,11 @@ class AdminerDumpPhp extends Adminer\Plugin {
 			echo ";\n";
 		}
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Export do formátu PHP'),
+		'de' => array('' => 'Export im PHP-Format'),
+		'pl' => array('' => 'Zrzucaj do formatu PHP'),
+		'ro' => array('' => 'Dump în format PHP'),
+	);
 }

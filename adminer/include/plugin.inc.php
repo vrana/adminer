@@ -9,7 +9,7 @@ abstract class Plugin {
 	* @return string
 	*/
 	function description() {
-		return '';
+		return $this->lang('');
 	}
 
 	/** Translate a string from static::$translations; use Adminer\lang() for strings used by Adminer

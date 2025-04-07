@@ -38,4 +38,11 @@ class AdminerDesigns extends Adminer\Plugin {
 		echo Adminer\input_token();
 		echo "</form>\n";
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Umožní změnit vzhled'),
+		'de' => array('' => 'Designwechsel ermöglichen'),
+		'pl' => array('' => 'Zezwalaj na przełączanie motywów'),
+		'ro' => array('' => 'Permiteți comutarea designurilor'),
+	);
 }

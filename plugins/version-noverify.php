@@ -11,4 +11,11 @@ class AdminerVersionNoverify extends Adminer\Plugin {
 	function head($dark = null) {
 		echo Adminer\script("verifyVersion = () => { };");
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Zakáže kontrolu nových verzí'),
+		'de' => array('' => 'Deaktivieren Sie die Versionsprüfung'),
+		'pl' => array('' => 'Wyłącz sprawdzanie wersji'),
+		'ro' => array('' => 'Dezactivați verificatorul de versiuni'),
+	);
 }

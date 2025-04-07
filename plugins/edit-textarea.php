@@ -13,4 +13,11 @@ class AdminerEditTextarea extends Adminer\Plugin {
 			return "<textarea cols='30' rows='1'$attrs>" . Adminer\h($value) . '</textarea>';
 		}
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Použije <textarea> pro char a varchar'),
+		'de' => array('' => 'Verwenden Sie <textarea> für char und varchar Felder'),
+		'pl' => array('' => 'Użyj <textarea> dla char i varchar'),
+		'ro' => array('' => 'Utilizați <textarea> pentru char și varchar.'),
+	);
 }

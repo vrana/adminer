@@ -11,4 +11,11 @@ class AdminerEditorViews extends Adminer\Plugin {
 	function tableName($tableStatus) {
 		return Adminer\h($tableStatus["Comment"] != "" ? $tableStatus["Comment"] : $tableStatus["Name"]);
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Zobrazení pohledů v Adminer Editoru'),
+		'de' => array('' => 'Views im Adminer Editor anzeigen'),
+		'pl' => array('' => 'Wyświetlaj widoki w Adminer Editorze'),
+		'ro' => array('' => 'Afișează vizualizări în Adminer Editor'),
+	);
 }

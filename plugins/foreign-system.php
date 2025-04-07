@@ -105,4 +105,11 @@ class AdminerForeignSystem extends Adminer\Plugin {
 	private function collations($source) {
 		return array("table" => "COLLATIONS", "source" => array($source), "target" => array("COLLATION_NAME"));
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Propojuje systémové tabulky (v databázích "mysql" a "information_schema") pomocí cizích klíčů'),
+		'de' => array('' => 'Verknüpfen Sie Systemtabellen (in "mysql"- und "information_schema"-Datenbanken) durch Fremdschlüssel'),
+		'pl' => array('' => 'Połącz tabele systemowe (w bazach danych "mysql" i "information_schema") za pomocą kluczy obcych'),
+		'ro' => array('' => 'Conectați tabelele de sistem (în bazele de date "mysql" și "information_schema") prin chei străine'),
+	);
 }

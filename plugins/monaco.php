@@ -71,4 +71,8 @@ addEventListener('DOMContentLoaded', () => {
 <?php
 		return true;
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Použije Monaco Editor z VS Code pro zvýrazňování syntaxe a <textarea>'),
+	);
 }

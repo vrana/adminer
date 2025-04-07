@@ -52,4 +52,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			}
 		}
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Zobrazí odkazy na tabulky odkazující aktuální řádek, stejně jako Adminer Editor'),
+	);
 }

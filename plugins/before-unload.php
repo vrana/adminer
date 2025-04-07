@@ -30,4 +30,8 @@ onbeforeunload = () => editChanged;
 </script>
 <?php
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Zobrazí potvrzení před odnahráním stránky, pokud bylo změněno formulářové políčko'),
+	);
 }

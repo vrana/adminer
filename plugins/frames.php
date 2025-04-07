@@ -23,4 +23,11 @@ class AdminerFrames extends Adminer\Plugin {
 			header_remove("X-Frame-Options");
 		}
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Dovolí pracovat Admineru uvnitř rámu'),
+		'de' => array('' => 'Erlauben Sie die Verwendung von Adminer innerhalb eines Frames'),
+		'pl' => array('' => 'Zezwalaj na używanie Adminera wewnątrz ramki'),
+		'ro' => array('' => 'Permiteți utilizarea Adminer în interiorul unui cadru'),
+	);
 }

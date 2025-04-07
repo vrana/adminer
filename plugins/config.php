@@ -69,6 +69,7 @@ class AdminerConfig extends Adminer\Plugin {
 
 	protected static $translations = array(
 		'cs' => array(
+			'' => 'Konfigurace možností uživateli a jejich uložení do cookie',
 			'Configuration' => 'Konfigurace',
 			'Configuration saved.' => 'Konfigurace uložena.',
 			'Only some plugins support configuration, e.g. %s.' => 'Konfiguraci podporují jen některé pluginy, např. %s.',

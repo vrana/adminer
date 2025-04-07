@@ -69,6 +69,7 @@ class AdminerMenuLinks extends Adminer\Plugin {
 
 	protected static $translations = array(
 		'cs' => array(
+			'' => 'Konfigurace odkazů na tabulky v menu; kombinovatelné s AdminerConfig',
 			'Menu table links' => 'Odkazy na tabulky v menu',
 			'Both' => 'Oboje',
 			'Auto (select on select page, structure otherwise)' => 'Auto (vypsat na výpisech, jinak struktura)',

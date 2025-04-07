@@ -37,4 +37,11 @@ class AdminerLoginServers extends Adminer\Plugin {
 			return $heading . Adminer\html_select("auth[server]", array_keys($this->servers), Adminer\SERVER) . "\n";
 		}
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'V přihlašovacím formuláři zobrazuje předdefinovaný seznam serverů'),
+		'de' => array('' => 'Anzeige einer konstanten Serverliste im Anmeldeformular'),
+		'pl' => array('' => 'Wyświetlaj stałą listę serwerów w formularzu logowania'),
+		'ro' => array('' => 'Afișarea unei liste constante de servere în formularul de conectare'),
+	);
 }

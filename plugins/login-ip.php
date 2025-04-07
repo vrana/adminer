@@ -35,4 +35,11 @@ class AdminerLoginIp extends Adminer\Plugin {
 		}
 		return false;
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Zkontroluje IP adresu a povolí prázdné heslo'),
+		'de' => array('' => 'Überprüft die IP-Adresse und lässt ein leeres Passwort zu'),
+		'pl' => array('' => 'Sprawdzaj adres IP i zezwakaj na puste hasło'),
+		'ro' => array('' => 'Verificați adresa IP și permiteți parola goală'),
+	);
 }

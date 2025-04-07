@@ -67,4 +67,11 @@ sessionStorage && document.addEventListener('DOMContentLoaded', () => {
 <p class="jsonly"><input id="filter-field" autocomplete="off" type="search"><?php echo Adminer\script("qs('#filter-field').oninput = tablesFilterInput;"); ?>
 <?php
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Filtruje názvy v seznamu tabulek'),
+		'de' => array('' => 'Filtern Sie Namen in der Tabellenliste'),
+		'pl' => array('' => 'Filtruj nazwy na liście tabel'),
+		'ro' => array('' => 'Nume de filtre în lista de tabele'),
+	);
 }

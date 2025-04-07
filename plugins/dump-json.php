@@ -57,4 +57,11 @@ class AdminerDumpJson extends Adminer\Plugin {
 			echo "}\n";
 		}
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Export do formátu JSON'),
+		'de' => array('' => 'Export im JSON-Format'),
+		'pl' => array('' => 'Zrzuć do formatu JSON'),
+		'ro' => array('' => 'Dump în format JSON'),
+	);
 }

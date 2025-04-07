@@ -38,4 +38,8 @@ if (saved) {
 			. Adminer\script("if (adminerDark != null) adminerDarkSet(); qsl('big').onclick = adminerDarkSwitch;") . "\n"
 		;
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Dovoluje přepínání světlého a tmavého vzhledu'),
+	);
 }

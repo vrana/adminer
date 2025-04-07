@@ -48,4 +48,11 @@ class AdminerFileUpload extends Adminer\Plugin {
 			$link = "$this->displayPath$_GET[select]/$regs[1]-$val";
 		}
 	}
+
+	protected static $translations = array(
+		'cs' => array('' => 'Políčka končící na "_path" upravuje pomocí <input type="file"> a odkazuje na nahrané soubory z výpisu'),
+		'de' => array('' => 'Bearbeiten Sie Felder, die mit "_path" enden, um <input type="file"> und verknüpfen Sie sie mit den hochgeladenen Dateien beim Select'),
+		'pl' => array('' => 'Edytuj pola kończące się na "_path" za pomocą <input type="file"> i link do przesłanych plików z wybierz'),
+		'ro' => array('' => 'Modificați câmpurile care se termină cu "_path" prin <input type="file"> și creați un link către fișierele încărcate din select'),
+	);
 }
