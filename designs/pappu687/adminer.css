@@ -318,6 +318,8 @@ input[name=logout]:hover {
 .logout {
 	position: fixed;
 	z-index:3;
+	background-color: #48A5BF;
+	box-shadow: 0 0 4px 4px #48A5BF;
 }
 
 .logout form {

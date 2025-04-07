@@ -413,6 +413,8 @@ thead td abbr, thead td sup, thead th acronym, thead th sup {
 
 .logout {
 	top: 28px;
+	background-color: #31587d;
+	box-shadow: 0 0 3px 3px #31587d;
 }
 
 .js .column {

@@ -1077,6 +1077,10 @@ body > form{
 	/*position: relative;*/
 }
 
+.logout{
+	z-index: 5000;
+}
+
 #lang {
     z-index: 5000;
     position: absolute;

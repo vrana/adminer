@@ -240,6 +240,8 @@ th {
 
 .logout {
 	z-index: 2;
+	background-color: #f2eee1;
+	box-shadow: 0 0 5px 5px #f2eee1;
 }
 
 .js .column {

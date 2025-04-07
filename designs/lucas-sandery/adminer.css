@@ -411,6 +411,7 @@ tbody tr:nth-child(n):hover th {
 	width: 2em;
 	height: 2em;
 	position: fixed;
+	box-shadow: none;
 }
 #lang {
 	top: 0;

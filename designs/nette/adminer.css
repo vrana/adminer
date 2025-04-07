@@ -558,6 +558,8 @@ input[name="delete"]:hover, input[name="drop"]:hover {
 
 .logout {
 	color: #fff;
+	background-color: #333;
+	box-shadow: 0 0 4px 4px #333;
 	margin-top: 0.7em;
 }
 

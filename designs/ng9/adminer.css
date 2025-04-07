@@ -238,6 +238,8 @@ th {
 
 .logout {
 	z-index: 5;
+	background-color: #f2eee1;
+	box-shadow: 0 0 4px 4px #f2eee1;
 }
 
 .js .column {
