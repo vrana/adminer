@@ -7,7 +7,7 @@
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
-class AdminerDumpBz2 {
+class AdminerDumpBz2 extends Adminer\Plugin {
 	protected $filename, $fp;
 
 	function dumpOutput() {

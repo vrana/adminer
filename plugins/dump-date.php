@@ -6,7 +6,7 @@
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
-class AdminerDumpDate {
+class AdminerDumpDate extends Adminer\Plugin {
 
 	function dumpFilename($identifier) {
 		return Adminer\friendly_url(($identifier != "" ? $identifier : (Adminer\SERVER != "" ? Adminer\SERVER : "localhost")) . "-" . Adminer\get_val("SELECT NOW()"));

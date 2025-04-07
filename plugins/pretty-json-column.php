@@ -6,7 +6,7 @@
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
-class AdminerPrettyJsonColumn {
+class AdminerPrettyJsonColumn extends Adminer\Plugin {
 	private function testJson($value) {
 		if ((substr($value, 0, 1) == '{' || substr($value, 0, 1) == '[') && ($json = json_decode($value, true))) {
 			return $json;

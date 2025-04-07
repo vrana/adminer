@@ -1,13 +1,13 @@
 <?php
 
-/** Use Codemirror 5 for syntax highlighting and SQL <textarea> including type-ahead of keywords and tables
+/** Use CodeMirror 5 for syntax highlighting and <textarea> including type-ahead of keywords and tables
 * @link https://codemirror.net/5/
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
-class AdminerCodemirror {
+class AdminerCodemirror extends Adminer\Plugin {
 	private $root;
 	private $minified;
 
