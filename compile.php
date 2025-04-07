@@ -2,7 +2,6 @@
 <?php
 include __DIR__ . "/adminer/include/version.inc.php";
 include __DIR__ . "/adminer/include/errors.inc.php";
-include __DIR__ . "/externals/JsShrink/jsShrink.php";
 include __DIR__ . "/externals/PhpShrink/phpShrink.php";
 
 function add_apo_slashes($s) {
@@ -199,14 +198,12 @@ function minify_css($file) {
 }
 
 function minify_js($file) {
-	$file = preg_replace_callback("~'use strict';~", function ($match) { // keep only the first one
-		static $count = 0;
-		$count++;
-		return ($count == 1 ? $match[0] : '');
-	}, $file);
-	if (function_exists('jsShrink')) {
-		$file = jsShrink($file);
+	file_put_contents("compile.js", $file);
+	$terser = shell_exec("terser -c --comments false compile.js"); // prints warning to stderr if terser is not available
+	if ($terser) {
+		$file = $terser;
 	}
+	unlink("compile.js");
 	return lzw_compress($file);
 }
 
