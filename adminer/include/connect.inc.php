@@ -108,6 +108,7 @@ if (
 				;
 			}
 			echo "</ul>\n";
+			adminer()->pluginsLinks();
 			echo "</div>\n";
 		}
 	}

@@ -52,6 +52,9 @@ class Adminer {
 		return get_databases($flush);
 	}
 
+	function pluginsLinks(): void {
+	}
+
 	function queryTimeout() {
 		return 5;
 	}

@@ -51,20 +51,9 @@ class AdminerConfig extends Adminer\Plugin {
 		}
 	}
 
-	function navigation() {
-		if (Adminer\connection()) { // don't display on login page
-			$link = substr(preg_replace('~\b(db|ns)=[^&]*&~', '', Adminer\ME), 0, -1);
-			?>
-<style>
-#configlink { position: absolute; top: -2.6em; left: 17.8em; }
-#configlink a { font-size: 150%; }
-@media all and (max-width: 800px) {
-	#configlink { top: 5em; left: auto; right: 20px; }
-}
-</style>
-<?php
-			echo "<div id='configlink'><a href='" . Adminer\h($link) . "&config=' title='" . $this->lang('Configuration') . "'>⚙</a></div>\n";
-		}
+	function pluginsLinks() {
+		$link = preg_replace('~\b(db|ns)=[^&]*&~', '', Adminer\ME);
+		echo "<p><a href='" . Adminer\h($link) . "config='>" . $this->lang('Configuration') . "</a>\n";
 	}
 
 	function screenshot() {

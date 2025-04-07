@@ -60,6 +60,10 @@ class Adminer {
 		return get_databases($flush);
 	}
 
+	/** Print links after list of plugins */
+	function pluginsLinks(): void {
+	}
+
 	/** Operators used in select
 	* @return list<string> operators
 	*/

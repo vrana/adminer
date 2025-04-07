@@ -32,4 +32,5 @@ if (adminer()->homepage()) {
 	echo "</div>\n";
 	echo "</form>\n";
 	echo script("tableCheck();");
+	adminer()->pluginsLinks();
 }
