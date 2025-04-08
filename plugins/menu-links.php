@@ -16,8 +16,8 @@ class AdminerMenuLinks extends Adminer\Plugin {
 
 	function config() {
 		$options = array(
-			'select' => Adminer\lang('Select data'),
-			'table' => Adminer\lang('Show structure'),
+			'select' => $this->lang('Select data'),
+			'table' => $this->lang('Show structure'),
 			'' => $this->lang('Both'),
 			'auto' => $this->lang('Auto (select on select page, structure otherwise)'),
 		);
@@ -28,8 +28,8 @@ class AdminerMenuLinks extends Adminer\Plugin {
 	function tablesPrint(array $tables) {
 		$menu = Adminer\get_setting("menu", "adminer_config") ?: $this->menu;
 		$titles = array(
-			'select' => Adminer\lang('Select data'),
-			'table' => Adminer\lang('Show structure'),
+			'select' => $this->lang('Select data'),
+			'table' => $this->lang('Show structure'),
 		);
 		// this is copied from Adminer::tablesPrint()
 		echo "<ul id='tables'>" . Adminer\script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
@@ -40,7 +40,7 @@ class AdminerMenuLinks extends Adminer\Plugin {
 				if (!$menu) {
 					echo '<a href="' . Adminer\h(Adminer\ME) . 'select=' . urlencode($table) . '"'
 						. Adminer\bold($_GET["select"] == $table || $_GET["edit"] == $table, "select")
-						. " title='$titles[select]'>" . Adminer\lang('select') . "</a> "
+						. " title='$titles[select]'>" . $this->lang('select') . "</a> "
 					;
 				}
 				$actives = array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"], $_GET["check"], $_GET["view"]);
@@ -77,23 +77,39 @@ class AdminerMenuLinks extends Adminer\Plugin {
 			'Menu table links' => 'Odkazy na tabulky v menu',
 			'Both' => 'Oboje',
 			'Auto (select on select page, structure otherwise)' => 'Auto (vypsat na výpisech, jinak struktura)',
+			// this is copied from adminer/lang/
+			'select' => 'vypsat',
+			'Select data' => 'Vypsat data',
+			'Show structure' => 'Zobrazit strukturu',
 		),
 		'pl' => array(
 			'Menu table links' => 'Linki do tabel w menu',
 			'Both' => 'Obie',
 			'Auto (select on select page, structure otherwise)' => 'Auto (pokaż na stronie przeglądania, w przeciwnym razie struktura)',
+			// this is copied from adminer/lang/
+			'select' => 'przeglądaj',
+			'Select data' => 'Pokaż dane',
+			'Show structure' => 'Struktura tabeli',
 		),
 		'de' => array(
 			'' => 'Menü- und Tabellen-Links konfigurieren. Kombinierbar mit AdminerConfig',
 			'Both' => 'Beide',
 			'Auto (select on select page, structure otherwise)' => 'Auto (Auswahl auf der ausgewählten Seite, sonst Struktur)',
 			'Menu table links' => 'Links verwenden in „Tabelle“',
+			// this is copied from adminer/lang/
+			'select' => 'zeigen',
+			'Select data' => 'Daten auswählen',
+			'Show structure' => 'Struktur anzeigen',
 		),
 		'ja' => array(
 			'' => 'メニュー内テーブルへのリンク設定; AdminerConfig との併用可',
 			'Both' => '両方',
 			'Auto (select on select page, structure otherwise)' => '自動 (選択ページでは選択、それ以外では構造)',
 			'Menu table links' => 'メニューテーブルへのリンク',
+			// this is copied from adminer/lang/
+			'select' => '選択',
+			'Select data' => 'データ',
+			'Show structure' => '構造',
 		),
 	);
 }

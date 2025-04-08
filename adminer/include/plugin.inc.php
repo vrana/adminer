@@ -19,7 +19,7 @@ abstract class Plugin {
 		return "";
 	}
 
-	/** Translate a string from static::$translations; use Adminer\lang() for strings used by Adminer
+	/** Translate a string from $this->translations; Adminer\lang() doesn't work for single language versions
 	* @param literal-string $idf
 	* @param float|string $number
 	*/
