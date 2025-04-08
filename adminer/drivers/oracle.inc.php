@@ -5,6 +5,7 @@ add_driver("oracle", "Oracle (beta)");
 
 if (isset($_GET["oracle"])) {
 	define('Adminer\DRIVER', "oracle");
+
 	if (extension_loaded("oci8") && $_GET["ext"] != "pdo") {
 		class Db extends SqlDb {
 			public $extension = "oci8";

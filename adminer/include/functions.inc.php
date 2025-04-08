@@ -595,10 +595,10 @@ function column_foreign_keys(string $table): array {
 	return $return;
 }
 
-/** Compute fields() from $_POST edit data
+/** Compute fields() from $_POST edit data; used by Mongo and SimpleDB
 * @return Field[] same as fields()
 */
-function fields_from_edit(): array { // used by Mongo and SimpleDB
+function fields_from_edit(): array {
 	$return = array();
 	foreach ((array) $_POST["field_keys"] as $key => $val) {
 		if ($val != "") {

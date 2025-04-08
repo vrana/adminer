@@ -5,8 +5,8 @@ add_driver("sqlite", "SQLite");
 
 if (isset($_GET["sqlite"])) {
 	define('Adminer\DRIVER', "sqlite");
-	if (class_exists("SQLite3") && $_GET["ext"] != "pdo") {
 
+	if (class_exists("SQLite3") && $_GET["ext"] != "pdo") {
 		abstract class SqliteDb extends SqlDb {
 			public $extension = "SQLite3";
 			private $link;

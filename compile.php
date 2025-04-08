@@ -199,10 +199,10 @@ function minify_css($file) {
 }
 
 function minify_js($file) {
-	$file = preg_replace_callback("~'use strict';~", function ($match) { // keep only the first one
+	$file = preg_replace_callback("~'use strict';~", function ($match) {
 		static $count = 0;
 		$count++;
-		return ($count == 1 ? $match[0] : '');
+		return ($count == 1 ? $match[0] : ''); // keep only the first one
 	}, $file);
 	if (function_exists('jsShrink')) {
 		$file = jsShrink($file);
@@ -210,7 +210,8 @@ function minify_js($file) {
 	return lzw_compress($file);
 }
 
-function compile_file($match, $callback = '') { // $callback only to match signature
+// $callback only to match signature
+function compile_file($match, $callback = '') {
 	global $project;
 	$file = "";
 	list(, $filenames, $callback) = $match;
@@ -303,7 +304,12 @@ if ($vendor) {
 		}
 	}
 	if ($project != "editor" && count(Adminer\SqlDriver::$drivers) == 1) {
-		$file = str_replace('html_select("auth[driver]", SqlDriver::$drivers, DRIVER, "loginDriver(this);")', 'input_hidden("auth[driver]", "' . ($vendor == "mysql" ? "server" : $vendor) . '") . "' . reset(Adminer\SqlDriver::$drivers) . '"', $file, $count);
+		$file = str_replace(
+			'html_select("auth[driver]", SqlDriver::$drivers, DRIVER, "loginDriver(this);")',
+			'input_hidden("auth[driver]", "' . ($vendor == "mysql" ? "server" : $vendor) . '") . "' . reset(Adminer\SqlDriver::$drivers) . '"',
+			$file,
+			$count
+		);
 		if (!$count) {
 			echo "auth[driver] form field not found\n";
 		}

@@ -257,10 +257,12 @@ AND CHECK_CLAUSE NOT LIKE '% IS NOT NULL'", $this->conn); // ignore default IS N
 	*/
 	function allFields(): array {
 		$return = array();
-		foreach (get_rows("SELECT TABLE_NAME AS tab, COLUMN_NAME AS field, IS_NULLABLE AS nullable, DATA_TYPE AS type, CHARACTER_MAXIMUM_LENGTH AS length" . (JUSH == 'sql' ? ", COLUMN_KEY = 'PRI' AS `primary`" : "") . "
+		foreach (
+			get_rows("SELECT TABLE_NAME AS tab, COLUMN_NAME AS field, IS_NULLABLE AS nullable, DATA_TYPE AS type, CHARACTER_MAXIMUM_LENGTH AS length" . (JUSH == 'sql' ? ", COLUMN_KEY = 'PRI' AS `primary`" : "") . "
 FROM INFORMATION_SCHEMA.COLUMNS
 WHERE TABLE_SCHEMA = " . q($_GET["ns"] != "" ? $_GET["ns"] : DB) . "
-ORDER BY TABLE_NAME, ORDINAL_POSITION", $this->conn) as $row) {
+ORDER BY TABLE_NAME, ORDINAL_POSITION", $this->conn) as $row
+		) {
 			$row["null"] = ($row["nullable"] == "YES");
 			$return[$row["tab"]][] = $row;
 		}

@@ -47,7 +47,9 @@
 
 	<rule ref="PSR1.Methods.CamelCapsMethodName.NotCamelCaps">
 		<exclude-pattern>adminer/drivers/</exclude-pattern>
+		<exclude-pattern>adminer/include/db.inc.php</exclude-pattern>
 		<exclude-pattern>adminer/include/pdo.inc.php</exclude-pattern>
+		<exclude-pattern>adminer/plugins/foreign-system.php</exclude-pattern>
 		<exclude-pattern>adminer/plugins/drivers/</exclude-pattern>
 	</rule>
 

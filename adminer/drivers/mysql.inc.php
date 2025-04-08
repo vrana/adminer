@@ -5,6 +5,7 @@ SqlDriver::$drivers = array("server" => "MySQL / MariaDB") + SqlDriver::$drivers
 
 if (!defined('Adminer\DRIVER')) {
 	define('Adminer\DRIVER', "server"); // server - backwards compatibility
+
 	// MySQLi supports everything, MySQL doesn't support multiple result sets, PDO_MySQL doesn't support orgtable
 	if (extension_loaded("mysqli") && $_GET["ext"] != "pdo") {
 		class Db extends \MySQLi {

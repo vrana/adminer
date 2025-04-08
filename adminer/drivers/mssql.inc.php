@@ -11,6 +11,7 @@ add_driver("mssql", "MS SQL");
 
 if (isset($_GET["mssql"])) {
 	define('Adminer\DRIVER', "mssql");
+
 	if (extension_loaded("sqlsrv") && $_GET["ext"] != "pdo") {
 		class Db extends SqlDb {
 			public $extension = "sqlsrv";

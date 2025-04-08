@@ -5,6 +5,7 @@ add_driver("pgsql", "PostgreSQL");
 
 if (isset($_GET["pgsql"])) {
 	define('Adminer\DRIVER', "pgsql");
+
 	if (extension_loaded("pgsql") && $_GET["ext"] != "pdo") {
 		class PgsqlDb extends SqlDb {
 			public $extension = "PgSQL";
@@ -94,8 +95,9 @@ if (isset($_GET["pgsql"])) {
 			*/
 			function copyFrom(string $table, array $rows): bool {
 				$this->error = '';
-				set_error_handler(function ($errno, $error) {
+				set_error_handler(function (int $errno, string $error): bool {
 					$this->error = (ini_bool('html_errors') ? html_entity_decode($error) : $error);
+					return true;
 				});
 				$return = pg_copy_from($this->link, $table, $rows);
 				restore_error_handler();
