@@ -10,7 +10,7 @@
 class AdminerTinymce extends Adminer\Plugin {
 	protected $path;
 
-	function __construct(string $path = "tiny_mce/tiny_mce.js") {
+	function __construct($path = "tiny_mce/tiny_mce.js") {
 		$this->path = $path;
 	}
 

@@ -12,7 +12,7 @@ class AdminerSqlLog extends Adminer\Plugin {
 	/**
 	* @param string $filename defaults to "$database.sql"
 	*/
-	function __construct(string $filename = "") {
+	function __construct($filename = "") {
 		$this->filename = $filename;
 	}
 

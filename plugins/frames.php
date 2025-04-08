@@ -12,7 +12,7 @@ class AdminerFrames extends Adminer\Plugin {
 	/**
 	* @param bool $sameOrigin allow running from the same origin only
 	*/
-	function __construct(bool $sameOrigin = false) {
+	function __construct($sameOrigin = false) {
 		$this->sameOrigin = $sameOrigin;
 	}
 

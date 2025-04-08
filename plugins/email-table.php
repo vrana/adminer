@@ -16,7 +16,7 @@ class AdminerEmailTable extends Adminer\Plugin {
 	* @param string $subject quoted column name
 	* @param string $message quoted column name
 	*/
-	function __construct(string $table = "email", string $id = "id", string $title = "subject", string $subject = "subject", string $message = "message") {
+	function __construct($table = "email", $id = "id", $title = "subject", $subject = "subject", $message = "message") {
 		$this->table = $table;
 		$this->id = $id;
 		$this->title = $title;
