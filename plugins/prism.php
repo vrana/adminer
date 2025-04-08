@@ -62,6 +62,7 @@ if (el) {
 
 	protected $translations = array(
 		'cs' => array('' => 'Použije Prism Code Editor pro zvýrazňování syntaxe a <textarea>'),
+		'de' => array('' => 'Prism Code Editor verwenden, für die Syntaxhervorhebung und <textarea>'),
 		'ja' => array('' => '構文や <textarea> の強調表示に Prism Code Editor を使用'),
 	);
 }

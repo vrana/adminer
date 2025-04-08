@@ -45,6 +45,7 @@ if (saved) {
 
 	protected $translations = array(
 		'cs' => array('' => 'Dovoluje přepínání světlého a tmavého vzhledu'),
+		'de' => array('' => 'Umschalten zwischen hellem und dunklem Design erlauben'),
 		'ja' => array('' => 'ダークモードへの切替え'),
 	);
 }

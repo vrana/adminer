@@ -32,6 +32,7 @@ verifyVersion = (current, url, token) => {
 
 	protected $translations = array(
 		'cs' => array('' => 'Kontrola nových verzí z GitHubu'),
+		'de' => array('' => 'Neue Versionen von GitHub verifizieren'),
 		'ja' => array('' => 'GitHub の新版を管理'),
 	);
 }

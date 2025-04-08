@@ -107,6 +107,7 @@ geminiText.onkeydown = event => {
 			'Just a sec...' => 'Chwileczkę...',
 		),
 		'de' => array(
+			'' => 'KI-Eingabeaufforderung im SQL-Befehl zur Erstellung der Abfragen mit Google Gemini',
 			'Ask Gemini' => 'Gemini fragen',
 			'Just a sec...' => 'Einen Moment...',
 		),

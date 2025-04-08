@@ -84,6 +84,7 @@ class AdminerMenuLinks extends Adminer\Plugin {
 			'Auto (select on select page, structure otherwise)' => 'Auto (pokaż na stronie przeglądania, w przeciwnym razie struktura)',
 		),
 		'de' => array(
+			'' => 'Menü- und Tabellen-Links konfigurieren. Kombinierbar mit AdminerConfig',
 			'Both' => 'Beide',
 			'Auto (select on select page, structure otherwise)' => 'Auto (Auswahl auf der ausgewählten Seite, sonst Struktur)',
 			'Menu table links' => 'Links verwenden in „Tabelle“',

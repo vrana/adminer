@@ -306,6 +306,7 @@ Lang::$translations = array(
 	'Loaded plugins' => 'Geladene Plugins',
 	'%s must <a%s>return an array</a>.' => '%s muss <a%s>ein Array zurückgeben</a>.',
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Konfigure</a> %s mit %s.',
+	'screenshot' => 'Screenshot',
 );
 
 // run `php ../../lang.php de` to update this file

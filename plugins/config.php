@@ -79,6 +79,7 @@ class AdminerConfig extends Adminer\Plugin {
 			'Use builtin design' => 'Użyj wbudowanego wyglądu',
 		),
 		'de' => array(
+			'' => 'Optionen durch den Endbenutzer konfigurieren und dies in einem Cookie speichern',
 			'Configuration' => 'Konfiguration',
 			'Configuration saved.' => 'Konfiguration gespeichert.',
 			'Only some plugins support configuration, e.g. %s.' => 'Nur einige Plugins unterstützen die Konfiguration, z.B. %s.',

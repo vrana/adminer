@@ -74,6 +74,7 @@ addEventListener('DOMContentLoaded', () => {
 
 	protected $translations = array(
 		'cs' => array('' => 'Použije Monaco Editor z VS Code pro zvýrazňování syntaxe a <textarea>'),
+		'de' => array('' => 'Monaco-Editor von VS Code verwenden, für die Syntaxhervorhebung und SQL <textarea>'),
 		'ja' => array('' => '構文や <textarea> の強調表示に VS Code の Monaco Editor を使用'),
 	);
 }
