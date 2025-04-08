@@ -36,9 +36,9 @@ foreach (glob(__DIR__ . "/adminer/lang/" . ($_SESSION["lang"] ?: "*") . ".inc.ph
 			if (preg_match('~extends Adminer\\\\Plugin~', $file)) {
 				preg_match_all("~\\\$this->lang\\(('(?:[^\\\\']+|\\\\.)*')([),])~", $file, $matches);
 				$messages = array("''" => "") + array_combine($matches[1], $matches[2]);
-				$file = preg_replace("~(static \\\$translations = array\\((?!.*'$lang').*?)\t\\);~s", "\\1\t\t'$lang' => array(\n\t\t),\n\t);", $file);
+				$file = preg_replace("~(\\\$translations = array\\((?!.*'$lang').*?)\t\\);~s", "\\1\t\t'$lang' => array(\n\t\t),\n\t);", $file);
 				file_put_contents($filename, $file);
-				update_translations($lang, $messages, $filename, "~(static \\\$translations = array\\(.*'$lang' => array\\(\n)(.*)(?=^\t\t\\),)~msU", "\t\t\t");
+				update_translations($lang, $messages, $filename, "~(\\\$translations = array\\(.*'$lang' => array\\(\n)(.*)(?=^\t\t\\),)~msU", "\t\t\t");
 			}
 		}
 	}
