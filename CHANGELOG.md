@@ -1,3 +1,5 @@
+## Adminer dev
+
 ## Adminer 5.2.0 (released 2025-04-08)
 - Autocomplete SQL commands
 - Do not edit NULL values by Modify (bug #967)
