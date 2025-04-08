@@ -28,10 +28,10 @@ class AdminerLoginTable extends Adminer\Plugin {
 	}
 
 	protected $translations = array(
-		'cs' => array('' => 'Autentizace uživatele podle tabulky "login'),
-		'de' => array('' => 'Authentifizieren Sie einen Benutzer über die Tabelle "login'),
-		'pl' => array('' => 'Uwierzytelnij użytkownika z tabeli "login'),
-		'ro' => array('' => 'Autentificați un utilizator din tabelul "login".'),
+		'cs' => array('' => 'Autentizace uživatele podle tabulky "login"'),
+		'de' => array('' => 'Authentifizieren Sie einen Benutzer über die Tabelle "login"'),
+		'pl' => array('' => 'Uwierzytelnij użytkownika z tabeli "login"'),
+		'ro' => array('' => 'Autentificați un utilizator din tabelul "login"'),
 		'ja' => array('' => '"login" テーブルによるユーザ認証'),
 	);
 }
