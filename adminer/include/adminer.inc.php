@@ -1026,13 +1026,15 @@ class Adminer {
 				foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
 					echo "jushLinks.$val = jushLinks." . JUSH . ";\n";
 				}
-				$tablesColumns = array_fill_keys(array_keys($tables), array());
-				foreach (driver()->allFields() as $table => $fields) {
-					foreach ($fields as $field) {
-						$tablesColumns[$table][] = $field["field"];
+				if (isset($_GET["sql"]) || isset($_GET["trigger"]) || isset($_GET["check"])) {
+					$tablesColumns = array_fill_keys(array_keys($tables), array());
+					foreach (driver()->allFields() as $table => $fields) {
+						foreach ($fields as $field) {
+							$tablesColumns[$table][] = $field["field"];
+						}
 					}
+					echo "addEventListener('DOMContentLoaded', () => { autocompleter = jush.autocompleteSql('" . idf_escape("") . "', " . json_encode($tablesColumns) . "); });\n";
 				}
-				echo "addEventListener('DOMContentLoaded', () => { autocompleter = jush.autocompleteSql('" . idf_escape("") . "', " . json_encode($tablesColumns) . "); });\n";
 			}
 			echo "</script>\n";
 		}
