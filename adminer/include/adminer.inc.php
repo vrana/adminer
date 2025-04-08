@@ -538,41 +538,39 @@ class Adminer {
 			}
 		}
 		foreach ((array) $_GET["where"] as $key => $val) {
-			if ("$val[col]$val[val]" != "" && in_array($val["op"], adminer()->operators())) {
-				$prefix = "";
-				$cond = " $val[op]";
-				if (preg_match('~IN$~', $val["op"])) {
-					$in = process_length($val["val"]);
-					$cond .= " " . ($in != "" ? $in : "(NULL)");
-				} elseif ($val["op"] == "SQL") {
-					$cond = " $val[val]"; // SQL injection
-				} elseif ($val["op"] == "LIKE %%") {
-					$cond = " LIKE " . adminer()->processInput(idx($fields, $val["col"], array()), "%$val[val]%"); // this is used by search anywhere which doesn't set $val["col"]
-				} elseif ($val["op"] == "ILIKE %%") {
-					$cond = " ILIKE " . adminer()->processInput($fields[$val["col"]], "%$val[val]%");
-				} elseif ($val["op"] == "FIND_IN_SET") {
-					$prefix = "$val[op](" . q($val["val"]) . ", ";
-					$cond = ")";
-				} elseif (!preg_match('~NULL$~', $val["op"])) {
-					$cond .= " " . adminer()->processInput($fields[$val["col"]], $val["val"]);
-				}
-				if ($val["col"] != "") {
-					$return[] = $prefix . driver()->convertSearch(idf_escape($val["col"]), $val, $fields[$val["col"]]) . $cond;
-				} else {
-					// find anywhere
-					$cols = array();
-					foreach ($fields as $name => $field) {
-						if (
-							isset($field["privileges"]["where"])
-							&& (preg_match('~^[-\d.' . (preg_match('~IN$~', $val["op"]) ? ',' : '') . ']+$~', $val["val"]) || !preg_match('~' . number_type() . '|bit~', $field["type"]))
-							&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || preg_match('~char|text|enum|set~', $field["type"]))
-							&& (!preg_match('~date|timestamp~', $field["type"]) || preg_match('~^\d+-\d+-\d+~', $val["val"]))
-						) {
-							$cols[] = $prefix . driver()->convertSearch(idf_escape($name), $val, $field) . $cond;
-						}
+			$col = $val["col"];
+			if ("$col$val[val]" != "" && in_array($val["op"], adminer()->operators())) {
+				$conds = array();
+				foreach (($col != "" ? array($col => $fields[$col]) : $fields) as $name => $field) {
+					$prefix = "";
+					$cond = " $val[op]";
+					if (preg_match('~IN$~', $val["op"])) {
+						$in = process_length($val["val"]);
+						$cond .= " " . ($in != "" ? $in : "(NULL)");
+					} elseif ($val["op"] == "SQL") {
+						$cond = " $val[val]"; // SQL injection
+					} elseif (preg_match('~^(I?LIKE) %%$~', $val["op"], $match)) {
+						$cond = " $match[1] " . adminer()->processInput($field, "%$val[val]%");
+					} elseif ($val["op"] == "FIND_IN_SET") {
+						$prefix = "$val[op](" . q($val["val"]) . ", ";
+						$cond = ")";
+					} elseif (!preg_match('~NULL$~', $val["op"])) {
+						$cond .= " " . adminer()->processInput($field, $val["val"]);
 					}
-					$return[] = ($cols ? "(" . implode(" OR ", $cols) . ")" : "1 = 0");
+					if ($col != "" || ( // find anywhere
+						isset($field["privileges"]["where"])
+						&& (preg_match('~^[-\d.' . (preg_match('~IN$~', $val["op"]) ? ',' : '') . ']+$~', $val["val"]) || !preg_match('~' . number_type() . '|bit~', $field["type"]))
+						&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || preg_match('~char|text|enum|set~', $field["type"]))
+						&& (!preg_match('~date|timestamp~', $field["type"]) || preg_match('~^\d+-\d+-\d+~', $val["val"]))
+					)) {
+						$conds[] = $prefix . driver()->convertSearch(idf_escape($name), $val, $field) . $cond;
+					}
 				}
+				$return[] =
+					(count($conds) == 1 ? $conds[0] :
+					($conds ? "(" . implode(" OR ", $conds) . ")" :
+					"1 = 0"
+				));
 			}
 		}
 		return $return;
