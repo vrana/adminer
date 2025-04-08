@@ -58,7 +58,7 @@ class AdminerDumpJson extends Adminer\Plugin {
 		}
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Export do formátu JSON'),
 		'de' => array('' => 'Export im JSON-Format'),
 		'pl' => array('' => 'Zrzuć do formatu JSON'),

@@ -40,7 +40,7 @@ class AdminerEditForeign extends Adminer\Plugin {
 		}
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Výběr cizího klíče v editačním formuláři'),
 		'de' => array('' => 'Wählen Sie im Bearbeitungsformular den Fremdschlüssel aus'),
 		'pl' => array('' => 'Wybierz klucz obcy w formularzu edycji'),

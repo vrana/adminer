@@ -67,7 +67,7 @@ qs('#form').onsubmit = () => {
 		}
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Upravuje všechna políčka obsahující "_html" pomocí HTML editoru TinyMCE a zobrazuje výsledné HTML ve výpisu'),
 		'de' => array('' => 'Bearbeiten Sie alle Felder, die "_html" enthalten, mit dem HTML-Editor TinyMCE und zeigen Sie den HTML-Code in Select an'),
 		'pl' => array('' => 'Edytuj wszystkie pola zawierające "_html" za pomocą edytora HTML TinyMCE i wyświetl kod HTML w wybranych'),

@@ -24,7 +24,7 @@ class AdminerFrames extends Adminer\Plugin {
 		}
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Dovolí pracovat Admineru uvnitř rámu'),
 		'de' => array('' => 'Erlauben Sie die Verwendung von Adminer innerhalb eines Frames'),
 		'pl' => array('' => 'Zezwalaj na używanie Adminera wewnątrz ramki'),

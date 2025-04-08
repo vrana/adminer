@@ -30,7 +30,7 @@ verifyVersion = (current, url, token) => {
 		$csp[0]["connect-src"] .= " https://api.github.com/repos/vrana/adminer/releases/latest";
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Kontrola nových verzí z GitHubu'),
 	);
 }

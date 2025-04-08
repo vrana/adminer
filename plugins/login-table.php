@@ -27,7 +27,7 @@ class AdminerLoginTable extends Adminer\Plugin {
 		return (bool) Adminer\get_val("SELECT COUNT(*) FROM " . Adminer\idf_escape($this->database) . ".login WHERE login = " . Adminer\q($login) . " AND password_sha1 = " . Adminer\q(sha1($password)));
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Autentizace uživatele podle tabulky "login'),
 		'de' => array('' => 'Authentifizieren Sie einen Benutzer über die Tabelle "login'),
 		'pl' => array('' => 'Uwierzytelnij użytkownika z tabeli "login'),

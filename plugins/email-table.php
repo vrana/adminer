@@ -55,7 +55,7 @@ class AdminerEmailTable extends Adminer\Plugin {
 		}
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Získá předmět a zprávu e-mailu z databáze (Adminer Editor)'),
 		'de' => array('' => 'E-Mail-Betreff und Nachricht aus der Datenbank abrufen (Adminer Editor)'),
 		'pl' => array('' => 'Pobieraj temat i wiadomość e-mail z bazy danych (Adminer Editor)'),

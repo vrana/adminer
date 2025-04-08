@@ -56,7 +56,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		return "https://www.adminer.org/static/plugins/backward-keys.png";
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Zobrazí odkazy na tabulky odkazující aktuální řádek, stejně jako Adminer Editor'),
 	);
 }

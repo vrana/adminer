@@ -30,7 +30,7 @@ class AdminerTableIndexesStructure extends Adminer\Plugin {
 		return true;
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Rozšířené informace o indexech'),
 		'de' => array('' => 'Erweiterte Ausgabe der Tabellenindize'),
 		'pl' => array('' => 'Rozszerzona tabela wyników struktury indeksów'),

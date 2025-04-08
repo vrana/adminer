@@ -38,7 +38,7 @@ class AdminerTableStructure extends Adminer\Plugin {
 		return true;
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Rozšířené informace o tabulkách'),
 		'de' => array('' => 'Erweiterte Ausgabe der Tabellenstruktur'),
 		'pl' => array('' => 'Rozszerzone wyjście struktury tabeli'),

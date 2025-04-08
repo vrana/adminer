@@ -100,7 +100,7 @@ class AdminerSelectEmail extends Adminer\Plugin {
 		return mail($email, $this->emailHeader($subject), $beginning . $message . $attachments, $headers);
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'ar' => array('E-mail' => 'البريد الإلكتروني', 'From' => 'من', 'Subject' => 'الموضوع', 'Send' => 'إرسال', '%d e-mail(s) have been sent.' => 'تم إرسال %d رسالة.', 'Attachments' => 'ملفات مرفقة'),
 		'bg' => array('E-mail' => 'E-mail', 'From' => 'От', 'Subject' => 'Тема', 'Attachments' => 'Прикачени', 'Send' => 'Изпращане', '%d e-mail(s) have been sent.' => array('%d писмо беше изпратено.', '%d писма бяха изпратени.')),
 		'bn' => array('E-mail' => '​​ই-মেইল', 'From' => 'থেকে', 'Subject' => 'বিষয়', 'Send' => 'পাঠান', '%d e-mail(s) have been sent.' => array('%d ইমেইল(গুলি) পাঠানো হয়েছে।', '%d ইমেইল(গুলি) পাঠানো হয়েছে।'), 'Attachments' => 'সংযুক্তিগুলো'),

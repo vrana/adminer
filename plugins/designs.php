@@ -43,7 +43,7 @@ class AdminerDesigns extends Adminer\Plugin {
 		return "https://www.adminer.org/static/plugins/designs.png";
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Umožní změnit vzhled'),
 		'de' => array('' => 'Designwechsel ermöglichen'),
 		'pl' => array('' => 'Zezwalaj na przełączanie motywów'),

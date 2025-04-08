@@ -52,7 +52,7 @@ class AdminerDumpXml extends Adminer\Plugin {
 		}
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Export do formátu XML ve struktuře <database name=""><table name=""><column name="">value'),
 		'de' => array('' => 'Export im XML-Format in der Struktur <database name="><table name=""><column name="">value'),
 		'pl' => array('' => 'Zrzut do formatu XML w strukturze <database name=""><table name=""><column name="">value'),

@@ -38,7 +38,7 @@ class AdminerMasterSlave extends Adminer\Plugin {
 		}
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Zápisy provádět na masteru a čtení na slave'),
 		'de' => array('' => 'Schreibvorgänge auf dem Master und Lesevorgänge auf dem Slave ausführen'),
 		'pl' => array('' => 'Wykonuje zapisy na komputerze głównym i odczyty na komputerze podrzędnym'),

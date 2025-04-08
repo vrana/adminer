@@ -37,7 +37,7 @@ class AdminerDumpBz2 extends Adminer\Plugin {
 		}
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Export do formátu Bzip2'),
 		'de' => array('' => 'Export im Bzip2-Format'),
 		'pl' => array('' => 'Zrzuć do formatu Bzip2'),

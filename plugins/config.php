@@ -60,7 +60,7 @@ class AdminerConfig extends Adminer\Plugin {
 		return "https://www.adminer.org/static/plugins/config.png";
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array(
 			'' => 'Konfigurace možností uživateli a jejich uložení do cookie',
 			'Configuration' => 'Konfigurace',

@@ -38,7 +38,7 @@ class AdminerLoginServers extends Adminer\Plugin {
 		}
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'V přihlašovacím formuláři zobrazuje předdefinovaný seznam serverů'),
 		'de' => array('' => 'Anzeige einer konstanten Serverliste im Anmeldeformular'),
 		'pl' => array('' => 'Wyświetlaj stałą listę serwerów w formularzu logowania'),

@@ -46,7 +46,7 @@ class AdminerJsonColumn extends Adminer\Plugin {
 		}
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Hodnoty JSON v editaci zobrazí formou tabulky'),
 		'de' => array('' => 'Zeigen Sie JSON-Werte als Tabelle in der Bearbeitung an'),
 		'pl' => array('' => 'Wyświetl wartości JSON jako tabelę w edycji'),

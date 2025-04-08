@@ -49,7 +49,7 @@ class AdminerFileUpload extends Adminer\Plugin {
 		}
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Políčka končící na "_path" upravuje pomocí <input type="file"> a odkazuje na nahrané soubory z výpisu'),
 		'de' => array('' => 'Bearbeiten Sie Felder, die mit "_path" enden, um <input type="file"> und verknüpfen Sie sie mit den hochgeladenen Dateien beim Select'),
 		'pl' => array('' => 'Edytuj pola kończące się na "_path" za pomocą <input type="file"> i link do przesłanych plików z wybierz'),

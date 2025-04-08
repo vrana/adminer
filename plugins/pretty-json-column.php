@@ -31,7 +31,7 @@ class AdminerPrettyJsonColumn extends Adminer\Plugin {
 		}
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'V editaci zobrazí syntaxi u JSONu'),
 		'de' => array('' => 'JSON-Werte in der Bearbeitung hübsch drucken'),
 		'pl' => array('' => 'Ładnie drukuj wartości JSON w edycji'),

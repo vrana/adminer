@@ -68,7 +68,7 @@ sessionStorage && document.addEventListener('DOMContentLoaded', () => {
 <?php
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Filtruje názvy v seznamu tabulek'),
 		'de' => array('' => 'Filtern Sie Namen in der Tabellenliste'),
 		'pl' => array('' => 'Filtruj nazwy na liście tabel'),

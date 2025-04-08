@@ -102,7 +102,7 @@ addEventListener('DOMContentLoaded', () => {
 		return "https://www.adminer.org/static/plugins/codemirror.gif";
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Použít CodeMirror 5 pro zvýrazňování syntaxe a <textarea> včetně našeptávání klíčových slov  a tabulek'),
 	);
 }

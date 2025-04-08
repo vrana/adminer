@@ -12,7 +12,7 @@ class AdminerDumpDate extends Adminer\Plugin {
 		return Adminer\friendly_url(($identifier != "" ? $identifier : (Adminer\SERVER != "" ? Adminer\SERVER : "localhost")) . "-" . Adminer\get_val("SELECT NOW()"));
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Do názvu souboru s exportem přidá aktuální datum a čas'),
 		'de' => array('' => 'Aktuelle Datum und die aktuelle Uhrzeit in den Namen der Exportdatei einfügen'),
 		'pl' => array('' => 'Dołącz bieżącą datę i godzinę do nazwy pliku eksportu'),

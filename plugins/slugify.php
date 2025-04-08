@@ -47,7 +47,7 @@ class AdminerSlugify extends Adminer\Plugin {
 		}
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Předvyplní políčko obsahující "_slug" URLizovanou hodnotou předchozího políčka (JavaScript)'),
 		'de' => array('' => 'Feld, das "_slug" enthält, mit dem Slugified-Wert eines vorherigen Felds vorab füllen (JavaScript)'),
 		'pl' => array('' => 'Wstępnie wypełnij pole zawierające "_slug" osłabioną wartością poprzedniego pola (JavaScript)'),

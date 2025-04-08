@@ -43,7 +43,7 @@ if (saved) {
 		return "https://www.adminer.org/static/plugins/dark-switcher.gif";
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Dovoluje přepínání světlého a tmavého vzhledu'),
 	);
 }

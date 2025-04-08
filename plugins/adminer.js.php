@@ -17,7 +17,7 @@ class AdminerDotJs extends Adminer\Plugin {
 		}
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Nahraje adminer.js'),
 		'de' => array('' => 'Laden Sie adminer.js'),
 		'pl' => array('' => 'Wczytuj adminer.js'),

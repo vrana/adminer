@@ -96,7 +96,7 @@ geminiText.onkeydown = event => {
 	}
 
 	// use the phrases from https://gemini.google.com/
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array(
 			'' => 'Generování SQL příkazů pomocí umělé inteligence Google Gemini',
 			'Ask Gemini' => 'Zeptat se Gemini',

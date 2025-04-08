@@ -22,7 +22,7 @@ class AdminerLoginSsl extends Adminer\Plugin {
 		return $this->ssl;
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Připojení k MySQL, PostgreSQL a MS SQL pomocí SSL'),
 		'de' => array('' => 'Stellen Sie eine Verbindung zu MySQL, PostgreSQL, MS SQL über SSL her'),
 		'pl' => array('' => 'Połącz się z MySQL, PostgreSQL, MS SQL za pomocą protokołu SSL'),

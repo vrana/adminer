@@ -14,7 +14,7 @@ class AdminerEditTextarea extends Adminer\Plugin {
 		}
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Použije <textarea> pro char a varchar'),
 		'de' => array('' => 'Verwenden Sie <textarea> für char und varchar Felder'),
 		'pl' => array('' => 'Użyj <textarea> dla char i varchar'),

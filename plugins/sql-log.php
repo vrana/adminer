@@ -36,7 +36,7 @@ class AdminerSqlLog extends Adminer\Plugin {
 		fclose($fp);
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Zaznamenává všechny příkazy do souboru SQL'),
 		'de' => array('' => 'Protokollieren Sie alle Abfragen in einer SQL-Datei'),
 		'pl' => array('' => 'Rejestruj wszystkie zapytania do pliku SQL'),

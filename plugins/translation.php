@@ -51,7 +51,7 @@ class AdminerTranslation extends Adminer\Plugin {
 		}
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Přeloží všechny komentáře tabulek a sloupců, hodnoty políček enum a set pomocí tabulky "translation" (automaticky vkládá nové překlady)'),
 		'de' => array('' => 'Übersetzen Sie alle Tabellen- und Feldkommentare, enum- und set-Werte aus der "translation"-Tabelle (fügt automatisch neue Übersetzungen ein)'),
 		'pl' => array('' => 'Przetłumacz wszystkie komentarze do tabeli i pól, wartości enum i set z tabeli "translation" (automatycznie wstawia nowe tłumaczenia)'),

@@ -46,7 +46,7 @@ class AdminerDumpPhp extends Adminer\Plugin {
 		}
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Export do formátu PHP'),
 		'de' => array('' => 'Export im PHP-Format'),
 		'pl' => array('' => 'Zrzucaj do formatu PHP'),

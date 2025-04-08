@@ -60,7 +60,7 @@ if (el) {
 		return true;
 	}
 
-	protected static $translations = array(
+	protected $translations = array(
 		'cs' => array('' => 'Použije Prism Code Editor pro zvýrazňování syntaxe a <textarea>'),
 	);
 }
