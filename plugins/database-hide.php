@@ -28,7 +28,7 @@ class AdminerDatabaseHide extends Adminer\Plugin {
 
 	protected $translations = array(
 		'cs' => array('' => 'Skryje některé databáze z rozhraní – pouze vylepší vzhled, nikoliv bezpečnost'),
-		'de' => array('' => 'Verstecken Sie einige Datenbanken vor der Benutzeroberfläche – nur um das Design zu verbessern, verbessert nicht die Sicherheit.'),
+		'de' => array('' => 'Verstecken Sie einige Datenbanken vor der Benutzeroberfläche – nur um das Design zu verbessern, verbessert nicht die Sicherheit'),
 		'pl' => array('' => 'Ukryj niektóre bazy danych w interfejsie – tylko po to, aby ulepszyć motyw, a nie wtyczkę zabezpieczającą'),
 		'ro' => array('' => 'Ascundeți unele baze de date din interfață - doar pentru a îmbunătăți designul, nu un plugin de securitate'),
 		'ja' => array('' => '一部データベースを UI 上で表示禁止 (デザイン的な効果のみでセキュリティ的には効果なし)'),

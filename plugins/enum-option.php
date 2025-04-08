@@ -37,7 +37,7 @@ class AdminerEnumOption extends Adminer\Plugin {
 		'cs' => array('' => 'Editace políčka enum pomocí <select><option> místo <input type="radio">'),
 		'de' => array('' => 'Verwenden Sie <select><option> für die enum-Bearbeitung anstelle von <input type="radio">'),
 		'pl' => array('' => 'Użyj <select><option> do edycji enum zamiast <input type="radio">'),
-		'ro' => array('' => 'Utilizați <select><option> pentru editarea enum în loc de <input type="radio">.'),
+		'ro' => array('' => 'Utilizați <select><option> pentru editarea enum în loc de <input type="radio">'),
 		'ja' => array('' => '列挙型の編集に <input type="radio"> ではなく <select><option> を使用'),
 	);
 }
