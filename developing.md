@@ -244,6 +244,17 @@ Adminer generates simple HTML and styles it with basic CSS, respecting user pref
 Users can customize styles via `adminer.css`.
 If styling an element without a class name is difficult, I generally accept patches that add meaningful class names.
 
+## Translations
+
+All user-visible strings should be translatable using `lang('')`.
+This extracts them for translation and applies translations if available.
+
+Translations are updated via [lang.php](/lang.php), which also checks for style consistency, such as matching punctuation.
+Plurals are stored as arrays, with selection logic handled in [lang.inc.php](/adminer/include/lang.inc.php).
+
+Plugins extending [`Adminer\Plugin`](/adminer/include/plugin.inc.php) can use `$this->lang()` and store translations in `static $translations = array('en' => array('' => 'Plugin description'))`.
+The website translations are managed at https://www.adminer.org/en/translations/.
+
 ## Compilation
 
 Adminer’s source code is divided into a manageable number of reasonably small files.
@@ -272,15 +283,6 @@ However, this means that adminer.org has access to the IP addresses of Adminer i
 I do not review logs with this information, and no one else has access to the server.
 A [plugin](/plugins/version-noverify.php) disables version checks, but users should verify versions by other means to ensure security updates.
 There's also a [plugin](/plugins/version-github.php) checking for new versions [from GitHub](https://github.com/vrana/adminer/releases).
-
-## Translations
-
-All user-visible strings should be translatable using `lang('')`.
-This extracts them for translation and applies translations if available.
-
-Translations are updated via [lang.php](/lang.php), which also checks for style consistency, such as matching punctuation.
-Plurals are stored as arrays, with selection logic handled in [lang.inc.php](/adminer/include/lang.inc.php).
-The website translations are managed separately via Google Sheets.
 
 ## Commits
 
