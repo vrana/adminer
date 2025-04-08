@@ -47,5 +47,6 @@ if (saved) {
 		'cs' => array('' => 'Dovoluje přepínání světlého a tmavého vzhledu'),
 		'de' => array('' => 'Umschalten zwischen hellem und dunklem Design erlauben'),
 		'ja' => array('' => 'ダークモードへの切替え'),
+		'pl' => array('' => 'Zezwalaj na przełączanie trybu jasnego i ciemnego'),
 	);
 }

@@ -42,5 +42,6 @@ class AdminerEditorSetup extends Adminer\Plugin {
 		'cs' => array('' => 'Nastavit ovladač, server a databázi pro použití s Adminer Editorem'),
 		'de' => array('' => 'Treiber, Server und Datenbank für die Verwendung mit Adminer Editor einrichten'),
 		'ja' => array('' => 'Adminer Editor で使用するドライバ、サーバ、データベースを設定'),
+		'pl' => array('' => 'Konfiguruj sterownik, serwer i bazę danych do użycia z Adminer Editorem'),
 	);
 }
