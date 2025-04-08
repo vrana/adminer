@@ -17,5 +17,6 @@ class AdminerVersionNoverify extends Adminer\Plugin {
 		'de' => array('' => 'Deaktivieren Sie die Versionsprüfung'),
 		'pl' => array('' => 'Wyłącz sprawdzanie wersji'),
 		'ro' => array('' => 'Dezactivați verificatorul de versiuni'),
+		'ja' => array('' => 'バージョンチェックを無効化'),
 	);
 }

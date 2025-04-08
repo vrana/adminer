@@ -45,5 +45,6 @@ class AdminerEditForeign extends Adminer\Plugin {
 		'de' => array('' => 'Wählen Sie im Bearbeitungsformular den Fremdschlüssel aus'),
 		'pl' => array('' => 'Wybierz klucz obcy w formularzu edycji'),
 		'ro' => array('' => 'Selectați cheia străină în formularul de editare'),
+		'ja' => array('' => '外部キーを編集フォームで選択'),
 	);
 }

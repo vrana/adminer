@@ -43,5 +43,6 @@ class AdminerMasterSlave extends Adminer\Plugin {
 		'de' => array('' => 'Schreibvorgänge auf dem Master und Lesevorgänge auf dem Slave ausführen'),
 		'pl' => array('' => 'Wykonuje zapisy na komputerze głównym i odczyty na komputerze podrzędnym'),
 		'ro' => array('' => 'Executarea scrierilor pe master și a citirilor pe slave'),
+		'ja' => array('' => 'マスタ書込みとスレーブ読込みの有効化'),
 	);
 }

@@ -73,5 +73,6 @@ sessionStorage && document.addEventListener('DOMContentLoaded', () => {
 		'de' => array('' => 'Filtern Sie Namen in der Tabellenliste'),
 		'pl' => array('' => 'Filtruj nazwy na liście tabel'),
 		'ro' => array('' => 'Nume de filtre în lista de tabele'),
+		'ja' => array('' => 'テーブル一覧をテーブル名でフィルタリング'),
 	);
 }

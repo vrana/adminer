@@ -22,5 +22,6 @@ class AdminerDotJs extends Adminer\Plugin {
 		'de' => array('' => 'Laden Sie adminer.js'),
 		'pl' => array('' => 'Wczytuj adminer.js'),
 		'ro' => array('' => 'Încarcă adminer.js'),
+		'ja' => array('' => 'adminer.js を読込み'),
 	);
 }

@@ -56,5 +56,6 @@ class AdminerEditCalendar extends Adminer\Plugin {
 		'de' => array('' => 'Zeigen Sie die jQuery-UI Timepicker für jedes Datums- und Datum/Uhrzeit-Feld an'),
 		'pl' => array('' => 'Wyświetl interfejs jQuery Timepicker dla każdego pola daty i godziny'),
 		'ro' => array('' => 'Afișați jQuery UI Timepicker pentru fiecare câmp de dată și dată-timp'),
+		'ja' => array('' => '各日時列に jQuery UI の Timepicker を表示'),
 	);
 }

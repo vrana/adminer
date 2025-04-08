@@ -121,7 +121,7 @@ class AdminerSelectEmail extends Adminer\Plugin {
 		'hu' => array('E-mail' => 'E-mail', 'From' => 'Feladó', 'Subject' => 'Tárgy', 'Send' => 'Küldés', '%d e-mail(s) have been sent.' => array('%d e-mail elküldve.', '%d e-mail elküldve.', '%d e-mail elküldve.'), 'Attachments' => 'Csatolmány'),
 		'id' => array('E-mail' => 'Surel', 'From' => 'Dari', 'Subject' => 'Judul', 'Attachments' => 'Lampiran', 'Send' => 'Kirim', '%d e-mail(s) have been sent.' => '%d surel berhasil dikirim.'),
 		'it' => array('E-mail' => 'E-mail', 'From' => 'Da', 'Subject' => 'Oggetto', 'Send' => 'Invia', '%d e-mail(s) have been sent.' => array('%d e-mail inviata.', '%d e-mail inviate.'), 'Attachments' => 'Allegati'),
-		'ja' => array('E-mail' => 'メール', 'From' => '差出人', 'Subject' => '題名', 'Send' => '送信', '%d e-mail(s) have been sent.' => '%d メールを送信しました。', 'Attachments' => '添付ファイル'),
+		'ja' => array('' => 'テーブルに含まれるアドレスにメールを送信', 'E-mail' => 'メール', 'From' => '差出人', 'Subject' => '題名', 'Send' => '送信', '%d e-mail(s) have been sent.' => '%d メールを送信しました。', 'Attachments' => '添付ファイル'),
 		'ka' => array('E-mail' => 'ელ. ფოსტა', 'From' => 'ავტორი:', 'Subject' => 'თემა', 'Send' => 'გაგზავნა', '%d e-mail(s) have been sent.' => 'გაიგზავნა %d წერილი.', 'Attachments' => 'მიმაგრებული ფაილები'),
 		'ko' => array('%d e-mail(s) have been sent.' => '%d개 메일을 보냈습니다.', 'Attachments' => '첨부 파일', 'E-mail' => '메일', 'From' => '보낸 사람', 'Send' => '보내기', 'Subject' => '제목'),
 		'lt' => array('E-mail' => 'El. paštas', 'From' => 'Nuo', 'Subject' => 'Antraštė', 'Attachments' => 'Priedai', 'Send' => 'Siųsti', '%d e-mail(s) have been sent.' => array('Išsiųstas %d laiškas.', 'Išsiųsti %d laiškai.', 'Išsiųsta %d laiškų.')),

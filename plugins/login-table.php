@@ -32,5 +32,6 @@ class AdminerLoginTable extends Adminer\Plugin {
 		'de' => array('' => 'Authentifizieren Sie einen Benutzer über die Tabelle "login'),
 		'pl' => array('' => 'Uwierzytelnij użytkownika z tabeli "login'),
 		'ro' => array('' => 'Autentificați un utilizator din tabelul "login".'),
+		'ja' => array('' => '"login" テーブルによるユーザ認証'),
 	);
 }

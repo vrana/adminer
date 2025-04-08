@@ -60,5 +60,6 @@ class AdminerEmailTable extends Adminer\Plugin {
 		'de' => array('' => 'E-Mail-Betreff und Nachricht aus der Datenbank abrufen (Adminer Editor)'),
 		'pl' => array('' => 'Pobieraj temat i wiadomość e-mail z bazy danych (Adminer Editor)'),
 		'ro' => array('' => 'Obțineți subiectul e-mailului și mesajul din baza de date (Adminer Editor)'),
+		'ja' => array('' => 'メールの件名と本文をデータベースから取得 (Adminer Editor)'),
 	);
 }

@@ -41,5 +41,6 @@ class AdminerSqlLog extends Adminer\Plugin {
 		'de' => array('' => 'Protokollieren Sie alle Abfragen in einer SQL-Datei'),
 		'pl' => array('' => 'Rejestruj wszystkie zapytania do pliku SQL'),
 		'ro' => array('' => 'Logați toate interogările în fișierul SQL'),
+		'ja' => array('' => '全クエリを SQL ファイルに記録'),
 	);
 }

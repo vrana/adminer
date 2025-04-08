@@ -86,5 +86,14 @@ class AdminerConfig extends Adminer\Plugin {
 			'Use %s if exists' => '%s verwenden, falls vorhanden',
 			'Use builtin design' => 'Standard Design verwenden',
 		),
+		'ja' => array(
+			'' => 'ユーザオプションを設定し cookie に保存',
+			'Configuration' => '設定',
+			'Configuration saved.' => '設定を保存しました。',
+			'Only some plugins support configuration, e.g. %s.' => '設定変更に対応しているのは一部のプラグインのみです。例: %s。',
+			'Design' => 'デザイン',
+			'Use %s if exists' => 'あれば %s を使う',
+			'Use builtin design' => '組込みのデザインを使う',
+		),
 	);
 }

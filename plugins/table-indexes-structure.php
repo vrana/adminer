@@ -35,5 +35,6 @@ class AdminerTableIndexesStructure extends Adminer\Plugin {
 		'de' => array('' => 'Erweiterte Ausgabe der Tabellenindize'),
 		'pl' => array('' => 'Rozszerzona tabela wyników struktury indeksów'),
 		'ro' => array('' => 'Ieșirea expandată a structurii indecsilor tabelului'),
+		'ja' => array('' => 'テーブルのインデックス構造を拡張表示'),
 	);
 }

@@ -36,5 +36,6 @@ class AdminerPrettyJsonColumn extends Adminer\Plugin {
 		'de' => array('' => 'JSON-Werte in der Bearbeitung hübsch drucken'),
 		'pl' => array('' => 'Ładnie drukuj wartości JSON w edycji'),
 		'ro' => array('' => 'Afisare frumoasa a valorilor JSON în editare'),
+		'ja' => array('' => '編集時に JSON 文字列を見易く表示'),
 	);
 }

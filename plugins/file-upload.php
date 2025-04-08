@@ -54,5 +54,6 @@ class AdminerFileUpload extends Adminer\Plugin {
 		'de' => array('' => 'Bearbeiten Sie Felder, die mit "_path" enden, um <input type="file"> und verknüpfen Sie sie mit den hochgeladenen Dateien beim Select'),
 		'pl' => array('' => 'Edytuj pola kończące się na "_path" za pomocą <input type="file"> i link do przesłanych plików z wybierz'),
 		'ro' => array('' => 'Modificați câmpurile care se termină cu "_path" prin <input type="file"> și creați un link către fișierele încărcate din select'),
+		'ja' => array('' => '列名が "_path" で終わる列を <input type="file"> で変更し、"選択" からアップロードされたファイルにリンク'),
 	);
 }

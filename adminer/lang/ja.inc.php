@@ -11,7 +11,7 @@ Lang::$translations = array(
 	'Loaded plugins' => '読込済プラグイン',
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Adminerのご利用ありがとうございました。(寄付は<a href="https://www.adminer.org/en/donation/">こちら</a>)',
 	'%s must <a%s>return an array</a>.' => '%s は<a%s>配列を返す</a>必要があります。',
-	'<a%s>Configure</a> %s in %s.' => '%2$s の %1$s <a%s>を設定してください</a>。',
+	'<a%s>Configure</a> %s in %s.' => '%2$s の %1$s を<a%s>設定</a>してください。',
 	'There is a space in the input password which might be the cause.' => '入力されたパスワードに空白が含まれているので、それが原因かもしれません。',
 	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer はパスワードのないデータベースへの接続には対応していません。(<a href="https://www.adminer.org/en/password/"%s>詳細</a>)',
 	'Database does not support password.' => 'データベースがパスワードに対応していません。',
@@ -107,8 +107,8 @@ Lang::$translations = array(
 	'Foreign key has been dropped.' => '外部キーを削除しました。',
 	'Foreign key has been altered.' => '外部キーを変更しました。',
 	'Foreign key has been created.' => '外部キーを作成しました。',
-	'Foreign key' => '外キー',
-	'Target table' => 'テーブル',
+	'Foreign key' => '外部キー',
+	'Target table' => '対象テーブル',
 	'Change' => '変更',
 	'Source' => 'ソース',
 	'Target' => 'ターゲット',
@@ -158,6 +158,7 @@ Lang::$translations = array(
 	'User has been created.' => 'ユーザを作成しました。',
 	'Hashed' => 'Hashed',
 	'Column' => '列',
+	'Columns' => '列',
 	'Routine' => 'ルーチン',
 	'Grant' => '権限の付与',
 	'Revoke' => '権限の取消し',
@@ -307,6 +308,8 @@ Lang::$translations = array(
 	'Check has been created.' => 'チェックを作成しました。',
 	'Check has been altered.' => 'チェックを変更しました。',
 	'Check has been dropped.' => 'チェックを削除しました。',
+
+	'screenshot' => 'スクリーンショット',
 );
 
 // run `php ../../lang.php ja` to update this file

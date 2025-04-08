@@ -17,5 +17,6 @@ class AdminerEditorViews extends Adminer\Plugin {
 		'de' => array('' => 'Views im Adminer Editor anzeigen'),
 		'pl' => array('' => 'Wyświetlaj widoki w Adminer Editorze'),
 		'ro' => array('' => 'Afișează vizualizări în Adminer Editor'),
+		'ja' => array('' => 'Adminer Editor にビューを表示'),
 	);
 }

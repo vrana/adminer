@@ -88,5 +88,11 @@ class AdminerMenuLinks extends Adminer\Plugin {
 			'Auto (select on select page, structure otherwise)' => 'Auto (Auswahl auf der ausgewählten Seite, sonst Struktur)',
 			'Menu table links' => 'Links verwenden in „Tabelle“',
 		),
+		'ja' => array(
+			'' => 'メニュー内テーブルへのリンク設定; AdminerConfig との併用可',
+			'Both' => '両方',
+			'Auto (select on select page, structure otherwise)' => '自動 (選択ページでは選択、それ以外では構造)',
+			'Menu table links' => 'メニューテーブルへのリンク',
+		),
 	);
 }

@@ -27,5 +27,6 @@ class AdminerLoginSsl extends Adminer\Plugin {
 		'de' => array('' => 'Stellen Sie eine Verbindung zu MySQL, PostgreSQL, MS SQL über SSL her'),
 		'pl' => array('' => 'Połącz się z MySQL, PostgreSQL, MS SQL za pomocą protokołu SSL'),
 		'ro' => array('' => 'Conectați-vă la MySQL, PostgreSQL, MS SQL utilizând SSL'),
+		'ja' => array('' => 'MySQL, PostgreSQL, MS SQL への接続時に SSL を利用'),
 	);
 }

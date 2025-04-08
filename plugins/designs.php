@@ -48,5 +48,6 @@ class AdminerDesigns extends Adminer\Plugin {
 		'de' => array('' => 'Designwechsel ermöglichen'),
 		'pl' => array('' => 'Zezwalaj na przełączanie motywów'),
 		'ro' => array('' => 'Permiteți comutarea designurilor'),
+		'ja' => array('' => 'テーマ設定を有効化'),
 	);
 }

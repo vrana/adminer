@@ -58,5 +58,6 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 
 	protected $translations = array(
 		'cs' => array('' => 'Zobrazí odkazy na tabulky odkazující aktuální řádek, stejně jako Adminer Editor'),
+		'ja' => array('' => 'Adminer Editor と同様に、カレント行を参照しているテーブルへのリンクを表示'),
 	);
 }

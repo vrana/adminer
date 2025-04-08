@@ -19,5 +19,6 @@ class AdminerEditTextarea extends Adminer\Plugin {
 		'de' => array('' => 'Verwenden Sie <textarea> für char und varchar Felder'),
 		'pl' => array('' => 'Użyj <textarea> dla char i varchar'),
 		'ro' => array('' => 'Utilizați <textarea> pentru char și varchar.'),
+		'ja' => array('' => 'char や varchar に <textarea> を使用'),
 	);
 }

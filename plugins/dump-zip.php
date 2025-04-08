@@ -46,5 +46,6 @@ class AdminerDumpZip extends Adminer\Plugin {
 		'de' => array('' => 'Export Im ZIP-Format'),
 		'pl' => array('' => 'Zrzuć do formatu ZIP'),
 		'ro' => array('' => 'Dump în format ZIP'),
+		'ja' => array('' => 'ZIP 形式でエクスポート'),
 	);
 }

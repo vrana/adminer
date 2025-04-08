@@ -32,5 +32,6 @@ class AdminerLoginPasswordLess extends Adminer\Plugin {
 		'de' => array('' => 'Ermöglicht die Anmeldung ohne Passwort'),
 		'pl' => array('' => 'Włącz logowanie bez hasła'),
 		'ro' => array('' => 'Activați autentificarea fără parolă'),
+		'ja' => array('' => 'パスワードなしのログインを許可'),
 	);
 }

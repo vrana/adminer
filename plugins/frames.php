@@ -29,5 +29,6 @@ class AdminerFrames extends Adminer\Plugin {
 		'de' => array('' => 'Erlauben Sie die Verwendung von Adminer innerhalb eines Frames'),
 		'pl' => array('' => 'Zezwalaj na używanie Adminera wewnątrz ramki'),
 		'ro' => array('' => 'Permiteți utilizarea Adminer în interiorul unui cadru'),
+		'ja' => array('' => 'フレーム内での Adminer 利用を許可'),
 	);
 }

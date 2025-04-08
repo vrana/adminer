@@ -111,5 +111,6 @@ class AdminerForeignSystem extends Adminer\Plugin {
 		'de' => array('' => 'Verknüpfen Sie Systemtabellen (in "mysql"- und "information_schema"-Datenbanken) durch Fremdschlüssel'),
 		'pl' => array('' => 'Połącz tabele systemowe (w bazach danych "mysql" i "information_schema") za pomocą kluczy obcych'),
 		'ro' => array('' => 'Conectați tabelele de sistem (în bazele de date "mysql" și "information_schema") prin chei străine'),
+		'ja' => array('' => 'システムテーブル ("mysql" と "information_schema") を外部キーを用いて接続'),
 	);
 }

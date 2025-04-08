@@ -56,5 +56,6 @@ class AdminerTranslation extends Adminer\Plugin {
 		'de' => array('' => 'Übersetzen Sie alle Tabellen- und Feldkommentare, enum- und set-Werte aus der "translation"-Tabelle (fügt automatisch neue Übersetzungen ein)'),
 		'pl' => array('' => 'Przetłumacz wszystkie komentarze do tabeli i pól, wartości enum i set z tabeli "translation" (automatycznie wstawia nowe tłumaczenia)'),
 		'ro' => array('' => 'Traduceți toate comentariile tabelelor și câmpurilor, valorile enum și set din tabelul "translation" (inserează automat noi traduceri)'),
+		'ja' => array('' => 'テーブル "translation" を用いてすべてのテーブルや列のコメント、列挙型、セット値を翻訳 (自動的に翻訳文で更新)'),
 	);
 }

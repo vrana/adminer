@@ -33,5 +33,6 @@ onbeforeunload = () => editChanged;
 
 	protected $translations = array(
 		'cs' => array('' => 'Zobrazí potvrzení před odnahráním stránky, pokud bylo změněno formulářové políčko'),
+		'ja' => array('' => 'フォームの列が変更された時、ページを再読込みする前に確認を表示'),
 	);
 }

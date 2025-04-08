@@ -60,5 +60,6 @@ class AdminerLoginOtp extends Adminer\Plugin {
 		'de' => array('' => 'Bei der Anmeldung ist ein Einmalpasswort (Zwei-Faktor-Authentifizierung) erforderlich'),
 		'pl' => array('' => 'Wymagaj jednorazowego hasła przy logowaniu'),
 		'ro' => array('' => 'Cereți o parolă unică la autentificare'),
+		'ja' => array('' => 'ログイン時にワンタイムパスワード (二要素認証) が必要'),
 	);
 }

@@ -57,5 +57,6 @@ class AdminerDumpXml extends Adminer\Plugin {
 		'de' => array('' => 'Export im XML-Format in der Struktur <database name="><table name=""><column name="">value'),
 		'pl' => array('' => 'Zrzut do formatu XML w strukturze <database name=""><table name=""><column name="">value'),
 		'ro' => array('' => 'Dump în format XML în structura <database name=""><table name=""><column name="">value.'),
+		'ja' => array('' => '構造化 XML 形式でエクスポート <database name=""><table name=""><column name="">value'),
 	);
 }

@@ -110,5 +110,10 @@ geminiText.onkeydown = event => {
 			'Ask Gemini' => 'Gemini fragen',
 			'Just a sec...' => 'Einen Moment...',
 		),
+		'ja' => array(
+			'' => 'Google Gemini AI を用いて SQL 文を生成',
+			'Ask Gemini' => 'Gemini に聞く',
+			'Just a sec...' => 'しばらくお待ち下さい...',
+		),
 	);
 }

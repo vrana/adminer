@@ -43,5 +43,6 @@ class AdminerLoginServers extends Adminer\Plugin {
 		'de' => array('' => 'Anzeige einer konstanten Serverliste im Anmeldeformular'),
 		'pl' => array('' => 'Wyświetlaj stałą listę serwerów w formularzu logowania'),
 		'ro' => array('' => 'Afișarea unei liste constante de servere în formularul de conectare'),
+		'ja' => array('' => 'ログイン画面に定義済のサーバリストを表示'),
 	);
 }

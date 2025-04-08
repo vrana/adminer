@@ -51,5 +51,6 @@ class AdminerJsonColumn extends Adminer\Plugin {
 		'de' => array('' => 'Zeigen Sie JSON-Werte als Tabelle in der Bearbeitung an'),
 		'pl' => array('' => 'Wyświetl wartości JSON jako tabelę w edycji'),
 		'ro' => array('' => 'Afișează valorile JSON sub formă de tabel în editare'),
+		'ja' => array('' => 'JSON 値をテーブルとして編集画面に表示'),
 	);
 }
