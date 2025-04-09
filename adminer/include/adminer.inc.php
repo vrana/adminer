@@ -1076,6 +1076,7 @@ class Adminer {
 	function tablesPrint(array $tables): void {
 		echo "<ul id='tables'>" . script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
 		foreach ($tables as $table => $status) {
+			$table = "$table"; // do not highlight "0" as active everywhere
 			$name = adminer()->tableName($status);
 			if ($name != "") {
 				echo '<li><a href="' . h(ME) . 'select=' . urlencode($table) . '"'

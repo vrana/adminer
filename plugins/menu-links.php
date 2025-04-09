@@ -34,6 +34,7 @@ class AdminerMenuLinks extends Adminer\Plugin {
 		// this is copied from Adminer::tablesPrint()
 		echo "<ul id='tables'>" . Adminer\script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
 		foreach ($tables as $table => $status) {
+			$table = "$table"; // do not highlight "0" as active everywhere
 			$name = Adminer\adminer()->tableName($status);
 			if ($name != "") {
 				echo '<li>';
