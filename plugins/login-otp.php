@@ -22,7 +22,7 @@ class AdminerLoginOtp extends Adminer\Plugin {
 	function loginFormField($name, $heading, $value) {
 		if ($name == 'password') {
 			return $heading . $value . "\n"
-				. "<tr><th><acronym title='One Time Password' lang='en'>OTP</acronym>"
+				. "<tr><th><abbr title='" . $this->lang('One Time Password') . "'>OTP</abbr>"
 				. "<td><input type='number' name='auth[otp]' value='" . Adminer\h($_SESSION["otp"]) . "' size='6' autocomplete='one-time-code' inputmode='numeric' maxlength='6' pattern='\d{6}'>\n"
 			;
 		}
@@ -39,7 +39,7 @@ class AdminerLoginOtp extends Adminer\Plugin {
 					return;
 				}
 			}
-			return 'Invalid OTP.';
+			return $this->lang('Invalid OTP.');
 		}
 	}
 
@@ -56,10 +56,24 @@ class AdminerLoginOtp extends Adminer\Plugin {
 	}
 
 	protected $translations = array(
-		'cs' => array('' => 'Při přihlášení požaduje jednorázové heslo'),
-		'de' => array('' => 'Bei der Anmeldung ist ein Einmalpasswort (Zwei-Faktor-Authentifizierung) erforderlich'),
-		'pl' => array('' => 'Wymagaj jednorazowego hasła przy logowaniu'),
-		'ro' => array('' => 'Cereți o parolă unică la autentificare'),
-		'ja' => array('' => 'ログイン時にワンタイムパスワード (二要素認証) が必要'),
+		'cs' => array(
+			'' => 'Při přihlášení požaduje jednorázové heslo',
+			'One Time Password' => 'Jednorázové heslo',
+			'Invalid OTP.' => 'Neplatné jednorázové heslo.',
+		),
+		'de' => array(
+			'' => 'Bei der Anmeldung ist ein Einmalpasswort (Zwei-Faktor-Authentifizierung) erforderlich',
+			'One Time Password' => 'Einmal-Passwort',
+			'Invalid OTP.' => 'Ungültiger OTP.',
+		),
+		'pl' => array(
+			'' => 'Wymagaj jednorazowego hasła przy logowaniu',
+		),
+		'ro' => array(
+			'' => 'Cereți o parolă unică la autentificare',
+		),
+		'ja' => array(
+			'' => 'ログイン時にワンタイムパスワード (二要素認証) が必要',
+		),
 	);
 }
