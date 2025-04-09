@@ -37,6 +37,9 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 		if (strpos($filename, "adminer-dark.css") !== false) {
 			$has_dark = true;
 		}
+		if (strpos($filename, "adminer-auto.css") !== false) {
+			$has_light = $has_dark = true;
+		}
 	}
 	$dark = ($has_light
 		? ($has_dark ? null : false) // both styles - autoswitching, only adminer.css - light
