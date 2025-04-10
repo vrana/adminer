@@ -89,7 +89,7 @@ if (
 			echo script("tableCheck();");
 		}
 
-		if (isset(adminer()->plugins) && is_array(adminer()->plugins)) {
+		if (!empty(adminer()->plugins)) {
 			echo "<div class='plugins'>\n";
 			echo "<h3>" . lang('Loaded plugins') . "</h3>\n<ul>\n";
 			foreach (adminer()->plugins as $plugin) {
