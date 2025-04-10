@@ -54,7 +54,7 @@ if ($_GET["val"] && is_ajax()) {
 	exit;
 }
 
-$primary = $unselected = null;
+$primary = $unselected = array();
 foreach ($indexes as $index) {
 	if ($index["type"] == "PRIMARY") {
 		$primary = array_flip($index["columns"]);
