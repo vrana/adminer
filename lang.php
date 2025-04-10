@@ -47,7 +47,8 @@ foreach (glob(__DIR__ . "/adminer/lang/" . ($_SESSION["lang"] ?: "*") . ".inc.ph
 function update_translations($lang, $messages, $filename, $pattern, $tabs = "\t") {
 	$file = file_get_contents($filename);
 	$file = str_replace("\r", "", $file);
-	$s = preg_replace_callback($pattern, function ($match) use ($lang, $messages, $filename, $file, $tabs) {
+	$start = 0;
+	$s = preg_replace_callback($pattern, function ($match) use ($lang, $messages, $filename, $file, $tabs, &$start) {
 		$prefix = $match[1][0];
 		$start = $match[2][1];
 		preg_match_all("~^(\\s*(?:// [^'].*\\s+)?)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => (.*[^,\n])),?~m", $match[2][0], $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
@@ -75,6 +76,7 @@ function update_translations($lang, $messages, $filename, $pattern, $tabs = "\t"
 			}
 		}
 		if ($messages) {
+			$start += strlen($s);
 			foreach ($messages as $idf => $val) {
 				// add new messages
 				if ($val == "," && strpos($idf, "%d")) {
@@ -89,6 +91,6 @@ function update_translations($lang, $messages, $filename, $pattern, $tabs = "\t"
 	if ($s != $file) {
 		$s = str_replace("array(\n\t\t\t'' => null,\n\t\t),", "array('' => null),", $s);
 		file_put_contents($filename, $s);
-		echo "$filename updated.\n";
+		echo "$filename:" . (substr_count($s, "\n", 0, $start) + 1) . ":Updated.\n";
 	}
 }
