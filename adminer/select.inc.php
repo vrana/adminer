@@ -584,7 +584,7 @@ if (!$columns && support("table")) {
 			}
 
 			if (adminer()->selectImportPrint()) {
-				echo "<div>";
+				echo "<p>";
 				echo "<a href='#import'>" . lang('Import') . "</a>";
 				echo script("qsl('a').onclick = partial(toggle, 'import');", "");
 				echo "<span id='import'" . ($_POST["import"] ? "" : " class='hidden'") . ">: ";
@@ -592,7 +592,6 @@ if (!$columns && support("table")) {
 				echo html_select("separator", array("csv" => "CSV,", "csv;" => "CSV;", "tsv" => "TSV"), $adminer_import["format"]);
 				echo " <input type='submit' name='import' value='" . lang('Import') . "'>";
 				echo "</span>";
-				echo "</div>";
 			}
 
 			echo input_token();
