@@ -71,11 +71,20 @@ if (extension_loaded('pdo')) {
 		public $_offset = 0, $num_rows;
 
 		function fetch_assoc() {
-			return $this->fetch(\PDO::FETCH_ASSOC);
+			return $this->fetch_array(\PDO::FETCH_ASSOC);
 		}
 
 		function fetch_row() {
-			return $this->fetch(\PDO::FETCH_NUM);
+			return $this->fetch_array(\PDO::FETCH_NUM);
+		}
+
+		private function fetch_array(int $mode) {
+			$return = $this->fetch($mode);
+			return ($return ? array_map(array($this, 'unresource'), $return) : $return);
+		}
+
+		private function unresource($val) {
+			return (is_resource($val) ? stream_get_contents($val) : $val);
 		}
 
 		function fetch_field(): \stdClass {

@@ -197,10 +197,7 @@ abstract class SqlDriver {
 	* @param Field $field
 	*/
 	function value(?string $val, array $field): ?string {
-		return (method_exists($this->conn, 'value')
-			? $this->conn->value($val, $field)
-			: (is_resource($val) ? stream_get_contents($val) : $val)
-		);
+		return (method_exists($this->conn, 'value') ? $this->conn->value($val, $field) : $val);
 	}
 
 	/** Quote binary string */
