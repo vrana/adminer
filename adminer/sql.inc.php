@@ -20,6 +20,7 @@ if (!$error && $_POST["clear"]) {
 stop_session();
 
 page_header((isset($_GET["import"]) ? lang('Import') : lang('SQL command')), $error);
+$line_comment = '--' . (JUSH == 'sql' ? ' ' : '');
 
 if (!$error && $_POST) {
 	$fp = false;
@@ -51,7 +52,7 @@ if (!$error && $_POST) {
 			}
 		}
 
-		$space = "(?:\\s|/\\*[\s\S]*?\\*/|(?:#|-- )[^\n]*\n?|--\r?\n)";
+		$space = "(?:\\s|/\\*[\s\S]*?\\*/|(?:#|$line_comment)[^\n]*\n?|--\r?\n)";
 		$delimiter = ";";
 		$offset = 0;
 		$empty = true;
@@ -64,7 +65,7 @@ if (!$error && $_POST) {
 		}
 		$commands = 0;
 		$errors = array();
-		$parse = '[\'"' . (JUSH == "sql" ? '`#' : (JUSH == "sqlite" ? '`[' : (JUSH == "mssql" ? '[' : ''))) . ']|/\*|--' . (JUSH == 'sql' ? ' ' : '') . '|$' . (JUSH == "pgsql" ? '|\$[^$]*\$' : '');
+		$parse = '[\'"' . (JUSH == "sql" ? '`#' : (JUSH == "sqlite" ? '`[' : (JUSH == "mssql" ? '[' : ''))) . ']|/\*|' . $line_comment . '|$' . (JUSH == "pgsql" ? '|\$[^$]*\$' : '');
 		$total_start = microtime(true);
 		$adminer_export = get_settings("adminer_import"); // this doesn't offer SQL export so we match the import/export style at select
 		$dump_format = adminer()->dumpFormat();
@@ -94,7 +95,7 @@ if (!$error && $_POST) {
 						$pattern =
 							($found == '/*' ? '\*/' :
 							($found == '[' ? ']' :
-							(preg_match('~^-- |^#~', $found) ? "\n" :
+							(preg_match("~^$line_comment|^#~", $found) ? "\n" :
 							preg_quote($found) . ($c_style_escapes ? '|\\\\.' : ''))))
 						;
 
@@ -275,7 +276,7 @@ if (!isset($_GET["import"]) && $history) {
 		list($q, $time, $elapsed) = $val;
 		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a>"
 			. " <span class='time' title='" . @date('Y-m-d', $time) . "'>" . @date("H:i:s", $time) . "</span>" // @ - time zone may be not set
-			. " <code class='jush-" . JUSH . "'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace('~^(#|-- ).*~m', '', $q)))), 80, "</code>")
+			. " <code class='jush-" . JUSH . "'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace("~^(#|$line_comment).*~m", '', $q)))), 80, "</code>")
 			. ($elapsed ? " <span class='time'>($elapsed)</span>" : "")
 			. "<br>\n"
 		;
