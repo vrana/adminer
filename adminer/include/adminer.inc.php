@@ -113,7 +113,7 @@ class Adminer {
 	*/
 	function css(): array {
 		$return = array();
-		foreach (array("", "-dark") as $mode) {
+		foreach (array("", "-dark", "-auto") as $mode) {
 			$filename = "adminer$mode.css";
 			if (file_exists($filename)) {
 				$return[] = "$filename?v=" . crc32(file_get_contents($filename));
