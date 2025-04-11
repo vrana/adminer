@@ -1,4 +1,4 @@
-## Adminer dev
+## Adminer 5.2.1 (released 2025-04-11)
 - Fix search anywhere (bug #1004, regression from 5.1.1)
 - Fix import without primary key (bug #1017, regression from 5.1.1)
 - PostgreSQL PDO: Fix bytea without primary key (bug #1021)
