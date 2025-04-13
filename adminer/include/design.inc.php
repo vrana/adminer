@@ -27,14 +27,19 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 <title><?php echo $title_page; ?></title>
 <link rel="stylesheet" href="../adminer/static/default.css">
 <?php
+
 	$css = adminer()->css();
 	$has_light = false;
 	$has_dark = false;
-	foreach ($css as $filename) {
-		if (strpos($filename, "adminer.css") !== false) {
+	foreach ($css as $url) {
+		if (strpos($url, "adminer.css") !== false) {
 			$has_light = true;
+			$filename = preg_replace('~\?.*~', '', $url);
+			if (!preg_match('~:~', $url) && is_readable($filename) && preg_match('~prefers-color-scheme:\s*dark~', file_get_contents($filename))) {
+				$has_dark = true;
+			}
 		}
-		if (strpos($filename, "adminer-dark.css") !== false) {
+		if (strpos($url, "adminer-dark.css") !== false) {
 			$has_dark = true;
 		}
 	}
@@ -47,6 +52,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 		echo "<link rel='stylesheet'" . ($dark ? "" : $media) . " href='../adminer/static/dark.css'>\n";
 	}
 	echo "<meta name='color-scheme' content='" . ($dark === null ? "light dark" : ($dark ? "dark" : "light")) . "'>\n";
+
 	// this is matched by compile.php
 	echo script_src("../adminer/static/functions.js");
 	echo script_src("static/editing.js");

@@ -1,4 +1,5 @@
 ## Adminer dev
+- Designs: adminer.css with 'prefers-color-scheme: dark' don't disable dark mode
 - Plugins: Method bodyClass() to add &lt;body class>
 
 ## Adminer 5.2.1 (released 2025-04-11)
