@@ -95,3 +95,13 @@ if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
 	}
 	echo '<p class="links"><a href="' . h(ME) . 'trigger=' . urlencode($TABLE) . '">' . lang('Add trigger') . "</a>\n";
 }
+
+$inherited = driver()->inheritedTables($TABLE);
+if ($inherited) {
+	echo "<h3 id='inherited'>" . lang('Inherited tables') . "</h3>\n";
+	echo "<ul>\n";
+	foreach ($inherited as $val) {
+		echo "<li><a href='" . h(ME . "table=" . urlencode($val)) . "'>" . h($val) . "</a>\n";
+	}
+	echo "</ul>\n";
+}

@@ -217,6 +217,13 @@ abstract class SqlDriver {
 	function tableHelp(string $name, bool $is_view = false) {
 	}
 
+	/** Get inherited tables
+	* @return list<string>
+	*/
+	function inheritedTables(string $table): array {
+		return array();
+	}
+
 	/** Check if C-style escapes are supported */
 	function hasCStyleEscapes(): bool {
 		return false;

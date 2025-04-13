@@ -1,5 +1,5 @@
 ## Adminer dev
-- PostgreSQL: Show partitioned tables as tables, not views
+- PostgreSQL: Move partitioned tables from table list to parent table
 - Designs: adminer.css with 'prefers-color-scheme: dark' don't disable dark mode
 - Plugins: Method bodyClass() to add &lt;body class>
 

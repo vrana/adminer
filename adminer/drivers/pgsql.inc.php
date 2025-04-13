@@ -324,6 +324,16 @@ if (isset($_GET["pgsql"])) {
 			}
 		}
 
+		function inheritedTables(string $table): array {
+			return get_vals("SELECT c.relname
+FROM pg_class p
+JOIN pg_namespace n ON n.nspname = current_schema() AND n.oid = p.relnamespace
+JOIN pg_inherits ON inhparent = p.oid
+JOIN pg_class c ON inhrelid = c.oid
+WHERE p.relname = " . q($table) . " AND p.relkind = 'p'
+ORDER BY 1");
+		}
+
 		function supportsIndex(array $table_status): bool {
 			// returns true for "materialized view"
 			return $table_status["Engine"] != "view";
@@ -415,9 +425,10 @@ ORDER BY 1";
 	c.reltuples as \"Rows\",
 	n.nspname
 FROM pg_class c
-JOIN pg_namespace n ON(n.nspname = current_schema() AND n.oid = c.relnamespace)
+JOIN pg_namespace n ON n.nspname = current_schema() AND n.oid = c.relnamespace
+LEFT JOIN pg_inherits ON inhrelid = c.oid
 WHERE relkind IN ('r', 'm', 'v', 'f', 'p')
-" . ($name != "" ? "AND relname = " . q($name) : "ORDER BY relname")) as $row //! Index_length, Auto_increment
+" . ($name != "" ? "AND relname = " . q($name) : "AND inhparent IS NULL ORDER BY relname")) as $row //! Auto_increment
 		) {
 			$return[$row["Name"]] = $row;
 		}
