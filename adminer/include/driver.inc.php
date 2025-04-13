@@ -7,7 +7,7 @@ function add_driver(string $id, string $name): void {
 }
 
 /** Get driver name */
-function get_driver(string $id): string {
+function get_driver(string $id): ?string {
 	return SqlDriver::$drivers[$id];
 }
 
