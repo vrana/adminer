@@ -165,7 +165,7 @@ function put_file_lang($match) {
 		case "' . $lang . '": $compressed = "' . add_quo_slashes(lzw_compress(implode("\n", $translation_ids))) . '"; break;';
 	}
 	$translations_version = crc32($return);
-	return 'Lang::$translations = $_SESSION["translations"];
+	return 'Lang::$translations = (array) $_SESSION["translations"];
 if ($_SESSION["translations_version"] != LANG . ' . $translations_version . ') {
 	Lang::$translations = array();
 	$_SESSION["translations_version"] = LANG . ' . $translations_version . ';
