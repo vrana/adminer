@@ -108,6 +108,11 @@ class Adminer {
 		return true;
 	}
 
+	/** Print extra classes in <body class>; must start with a space */
+	function bodyClass(): void {
+		echo " adminer";
+	}
+
 	/** Get URLs of the CSS files
 	* @return list<string>
 	*/

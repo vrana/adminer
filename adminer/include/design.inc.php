@@ -57,7 +57,9 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	foreach ($css as $val) {
 		echo "<link rel='stylesheet'" . (preg_match('~-dark\.~', $val) && !$dark ? $media : "") . " href='" . h($val) . "'>\n";
 	}
-	echo "\n<body class='" . lang('ltr') . " nojs'>\n";
+	echo "\n<body class='" . lang('ltr') . " nojs";
+	adminer()->bodyClass();
+	echo "'>\n";
 	$filename = get_temp_dir() . "/adminer.version";
 	if (!$_COOKIE["adminer_version"] && function_exists('openssl_verify') && file_exists($filename) && filemtime($filename) + 86400 > time()) { // 86400 - 1 day in seconds
 		$version = unserialize(file_get_contents($filename));

@@ -1,4 +1,5 @@
 ## Adminer dev
+- Plugins: Method bodyClass() to add &lt;body class>
 
 ## Adminer 5.2.1 (released 2025-04-11)
 - Fix search anywhere (bug #1004, regression from 5.1.1)
@@ -48,8 +49,8 @@
 - CSS: Allow more custom styles with dark mode (bug #925)
 - CSS: Increase maximum width of string edit (bug #930)
 - CSS: Increase space after SQL result (bug #937)
-- Plugins: autoload plugins from adminer-plugins/
-- Plugins: configure plugins with adminer-plugins.php
+- Plugins: Autoload plugins from adminer-plugins/
+- Plugins: Configure plugins with adminer-plugins.php
 - Plugins: Display loaded plugins in server overview
 - New plugin: AI prompt in SQL command generating the queries with Google Gemini
 - New plugin: Verify new versions from GitHub

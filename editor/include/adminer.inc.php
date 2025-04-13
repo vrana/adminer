@@ -70,6 +70,10 @@ class Adminer {
 		return true;
 	}
 
+	function bodyClass(): void {
+		echo " editor";
+	}
+
 	function css() {
 		$return = array();
 		foreach (array("", "-dark") as $mode) {
