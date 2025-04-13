@@ -10,7 +10,7 @@
 	<exclude-pattern>/(adminer|editor)[-.]</exclude-pattern>
 
 	<rule ref="PSR12">
-		<exclude name="Generic.Whitespace.DisallowTabIndent"/><!-- Replaced by: Generic.Whitespace.DisallowSpaceIndent -->
+		<exclude name="Generic.WhiteSpace.DisallowTabIndent"/><!-- Replaced by: Generic.WhiteSpace.DisallowSpaceIndent -->
 		<exclude name="PSR1.Files.SideEffects.FoundWithSymbols"/>
 		<exclude name="PSR1.Classes.ClassDeclaration.MultipleClasses"/>
 		<exclude name="PSR2.Classes.ClassDeclaration.OpenBraceNewLine"/><!-- Replaced by: Generic.Classes.OpeningBraceSameLine -->
@@ -86,7 +86,7 @@
 	<rule ref="Generic.PHP.ForbiddenFunctions"/>
 	<rule ref="Generic.Strings.UnnecessaryHeredoc"/>
 	<rule ref="Generic.VersionControl.GitMergeConflict"/>
-	<rule ref="Generic.Whitespace.DisallowSpaceIndent"/>
+	<rule ref="Generic.WhiteSpace.DisallowSpaceIndent"/>
 	<rule ref="Generic.WhiteSpace.LanguageConstructSpacing"/>
 
 	<rule ref="Squiz.Arrays.ArrayBracketSpacing"/>
