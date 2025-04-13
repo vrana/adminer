@@ -407,7 +407,7 @@ ORDER BY 1";
 		foreach (
 			get_rows("SELECT
 	c.relname AS \"Name\",
-	CASE c.relkind WHEN 'r' THEN 'table' WHEN 'm' THEN 'materialized view' ELSE 'view' END AS \"Engine\"" . ($has_size ? ",
+	CASE c.relkind WHEN 'v' THEN 'view' WHEN 'm' THEN 'materialized view' ELSE 'table' END AS \"Engine\"" . ($has_size ? ",
 	pg_table_size(c.oid) AS \"Data_length\",
 	pg_indexes_size(c.oid) AS \"Index_length\"" : "") . ",
 	obj_description(c.oid, 'pg_class') AS \"Comment\",
