@@ -29,6 +29,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 			$columns = array();
 			$lengths = array();
 			$descs = array();
+			$indexMethod = array_key_exists("method", $index) && in_array($index["method"], index_methods()) ? $index["method"] : "";
 			$set = array();
 			ksort($index["columns"]);
 			foreach ($index["columns"] as $key => $column) {
@@ -52,14 +53,15 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 					&& array_values($existing["columns"]) === $columns
 					&& (!$existing["lengths"] || array_values($existing["lengths"]) === $lengths)
 					&& array_values($existing["descs"]) === $descs
-				) {
+                    && (array_key_exists("method", $existing) && $existing["method"] === $indexMethod)
+                ) {
 					// skip existing index
 					unset($indexes[$name]);
 					continue;
 				}
 			}
 			if ($columns) {
-				$alter[] = array($index["type"], $name, $set);
+				$alter[] = array($index["type"], $name, $set, $indexMethod);
 			}
 		}
 	}
@@ -105,6 +107,11 @@ $show_options = ($_POST ? $_POST["options"] : get_setting("index_options"));
 <table class="nowrap">
 <thead><tr>
 <th id="label-type"><?php echo lang('Index Type'); ?>
+<?php
+if (index_methods()) {
+    echo "<th id=\"label-method\">" . lang('Index method');
+}
+?>
 <th><input type="submit" class="wayoff"><?php
 echo lang('Columns') . ($lengths ? "<span class='idxopts" . ($show_options ? "" : " hidden") . "'> (" . lang('length') . ")</span>" : "");
 if ($lengths || support("descidx")) {
@@ -128,7 +135,11 @@ foreach ($row["indexes"] as $index) {
 	if (!$_POST["drop_col"] || $j != key($_POST["drop_col"])) {
 		echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow.call(this);" : ""), "label-type");
 
-		echo "<td>";
+        if (index_methods()) {
+            echo "<td>" . html_select("indexes[$j][method]", array_merge([""], index_methods()), $index['method'], $onchange = true, "label-method");
+        }
+
+        echo "<td>";
 		ksort($index["columns"]);
 		$i = 1;
 		foreach ($index["columns"] as $key => $column) {

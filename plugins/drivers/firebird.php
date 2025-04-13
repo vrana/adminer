@@ -229,6 +229,15 @@ ORDER BY RDB$INDEX_SEGMENTS.RDB$FIELD_POSITION';
 		return $return;
 	}
 
+	/**
+	 * return list of supported index methods first one is default
+	 * @return string[]
+	 */
+	function index_methods() : array
+	{
+		return array();
+	}
+
 	function foreign_keys($table) {
 		return array();
 	}

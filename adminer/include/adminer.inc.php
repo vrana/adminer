@@ -360,7 +360,7 @@ class Adminer {
 					. ($index["descs"][$key] ? " DESC" : "")
 				;
 			}
-			echo "<tr title='" . h($name) . "'><th>$index[type]<td>" . implode(", ", $print) . "\n";
+			echo "<tr title='" . h($name) . "'><th>$index[type]" . (index_methods() ? " (" . $index['method'] . ")" : "") . "<td>" . implode(", ", $print) . "\n";
 		}
 		echo "</table>\n";
 	}
