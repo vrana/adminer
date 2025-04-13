@@ -184,6 +184,7 @@ class Adminer {
 	* @param ?string $set new item options, NULL for no new item
 	*/
 	function selectLinks(array $tableStatus, ?string $set = ""): void {
+		$name = $tableStatus["Name"];
 		echo '<p class="links">';
 		$links = array("select" => lang('Select data'));
 		if (support("table") || support("indexes")) {
@@ -194,14 +195,13 @@ class Adminer {
 			$is_view = is_view($tableStatus);
 			if ($is_view) {
 				$links["view"] = lang('Alter view');
-			} else {
+			} elseif (!driver()->inheritsFrom($name)) {
 				$links["create"] = lang('Alter table');
 			}
 		}
 		if ($set !== null) {
 			$links["edit"] = lang('New item');
 		}
-		$name = $tableStatus["Name"];
 		foreach ($links as $key => $val) {
 			echo " <a href='" . h(ME) . "$key=" . urlencode($name) . ($key == "edit" ? $set : "") . "'" . bold(isset($_GET[$key])) . ">$val</a>";
 		}

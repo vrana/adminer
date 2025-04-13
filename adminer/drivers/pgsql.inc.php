@@ -324,6 +324,16 @@ if (isset($_GET["pgsql"])) {
 			}
 		}
 
+		function inheritsFrom(string $table): array {
+			return get_vals("SELECT p.relname
+FROM pg_class c
+JOIN pg_namespace n ON n.nspname = current_schema() AND n.oid = c.relnamespace
+JOIN pg_inherits ON inhrelid = c.oid
+JOIN pg_class p ON inhparent = p.oid
+WHERE c.relname = " . q($table) . " AND c.relkind = 'r'
+ORDER BY 1");
+		}
+
 		function inheritedTables(string $table): array {
 			return get_vals("SELECT c.relname
 FROM pg_class p

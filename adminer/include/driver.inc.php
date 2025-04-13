@@ -217,6 +217,13 @@ abstract class SqlDriver {
 	function tableHelp(string $name, bool $is_view = false) {
 	}
 
+	/** Get tables this table inherits from
+	* @return list<string>
+	*/
+	function inheritsFrom(string $table): array {
+		return array();
+	}
+
 	/** Get inherited tables
 	* @return list<string>
 	*/

@@ -22,7 +22,19 @@ if ($comment != "") {
 	echo "<p class='nowrap'>" . lang('Comment') . ": " . h($comment) . "\n";
 }
 
-if ($fields) {
+function tables_links($tables) {
+	echo "<ul>\n";
+	foreach ($tables as $table) {
+		echo "<li><a href='" . h(ME . "table=" . urlencode($table)) . "'>" . h($table) . "</a>";
+	}
+	echo "</ul>\n";
+}
+
+$inherits = driver()->inheritsFrom($TABLE);
+if ($inherits) {
+	echo "<h3>" . lang('Inherits from') . "</h3>\n";
+	tables_links($inherits);
+} elseif ($fields) {
 	adminer()->tableStructurePrint($fields, $table_status);
 }
 
@@ -99,9 +111,5 @@ if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
 $inherited = driver()->inheritedTables($TABLE);
 if ($inherited) {
 	echo "<h3 id='inherited'>" . lang('Inherited tables') . "</h3>\n";
-	echo "<ul>\n";
-	foreach ($inherited as $val) {
-		echo "<li><a href='" . h(ME . "table=" . urlencode($val)) . "'>" . h($val) . "</a>\n";
-	}
-	echo "</ul>\n";
+	tables_links($inherited);
 }
