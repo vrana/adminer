@@ -321,15 +321,6 @@ if (isset($_GET["sqlite"])) {
 		return $return;
 	}
 
-	/**
-	 * return list of supported index methods first one is default
-	 * @return string[]
-	 */
-	function index_methods()
-	{
-		return array();
-	}
-
 	function foreign_keys($table) {
 		$return = array();
 		foreach (get_rows("PRAGMA foreign_key_list(" . table($table) . ")") as $row) {

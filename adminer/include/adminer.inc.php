@@ -351,6 +351,12 @@ class Adminer {
 	*/
 	function tableIndexesPrint(array $indexes): void {
 		echo "<table>\n";
+		$index_methods = driver()->indexMethods();
+		$default_index_method = "";
+		if ($index_methods)
+		{
+			$default_index_method = $index_methods[0];
+		}
 		foreach ($indexes as $name => $index) {
 			ksort($index["columns"]); // enforce correct columns order
 			$print = array();
@@ -360,7 +366,10 @@ class Adminer {
 					. ($index["descs"][$key] ? " DESC" : "")
 				;
 			}
-			echo "<tr title='" . h($name) . "'><th>$index[type]" . (index_methods() ? " (" . $index['method'] . ")" : "") . "<td>" . implode(", ", $print) . "\n";
+
+			$index_method = ($index_methods && ($default_index_method != $index['method'])) ? " (" . $index['method'] . ")" : "";
+			echo "<tr title='" . h($name) . "'><th>$index[type]" . $index_method;
+			echo "<td>" . implode(", ", $print) . "\n";
 		}
 		echo "</table>\n";
 	}

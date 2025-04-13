@@ -339,6 +339,26 @@ if (isset($_GET["pgsql"])) {
 			return "(SELECT oid FROM pg_class WHERE relnamespace = $this->nsOid AND relname = " . q($table) . " AND relkind IN ('r', 'm', 'v', 'f', 'p'))";
 		}
 
+		/**
+		 * return list of supported index methods first one is default
+		 * @return string[]
+		 */
+		function indexMethods(): array {
+			static $methods = array();
+			if (!$methods) {
+				$amtype_condition = "";
+				if (min_version(9.6)) {
+					$amtype_condition = "WHERE amtype = 'i'";
+				}
+
+				$methods = array();
+				foreach (get_rows("SELECT amname FROM pg_am " . $amtype_condition . " ORDER BY amname='btree' DESC, amname ASC") as $row) {
+					$methods[] = $row['amname'];
+				}
+			}
+			return $methods;
+		}
+
 		function supportsIndex(array $table_status): bool {
 			// returns true for "materialized view"
 			return $table_status["Engine"] != "view";
@@ -530,32 +550,6 @@ ORDER BY indisprimary DESC, indisunique DESC", $connection2) as $row
 		return $return;
 	}
 
-	/**
-	 * return list of supported index methods first one is default
-	 * @return string[]
-	 */
-	function index_methods() : array
-	{
-		static $methods = [];
-		if (!$methods) {
-
-			// default guess for old PG instances
-			$methods = array(
-				"btree",
-				"gin",
-				"gist"
-			);
-			if (min_version(9.6)) {
-				// better approach is to take that from DB
-				$methods = [];
-				foreach (get_rows("SELECT amname FROM pg_am WHERE amtype = 'i' ORDER BY amname ASC") as $row) {
-					$methods[] = $row['amname'];
-				}
-			}
-		}
-		return $methods;
-	}
-
 	function foreign_keys($table) {
 		$return = array();
 		foreach (
@@ -721,7 +715,7 @@ ORDER BY conkey, conname") as $row
 			} elseif ($val[2] == "DROP") {
 				$drop[] = idf_escape($val[1]);
 			} else {
-				$queries[] = "CREATE INDEX " . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table) . ($val[3] ? "USING " . $val[3] : "") . " (" . implode(", ", $val[2]) . ")";
+				$queries[] = "CREATE INDEX " . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table) . ($val[3] ? " USING " . $val[3] : "") . " (" . implode(", ", $val[2]) . ")";
 			}
 		}
 		if ($create) {

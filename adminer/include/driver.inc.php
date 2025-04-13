@@ -258,6 +258,14 @@ abstract class SqlDriver {
 		return !is_view($table_status);
 	}
 
+	/**
+	 * Return list of supported index methods, first one is default
+	 * @return string[]
+	 */
+	function indexMethods(): array {
+		return array();
+	}
+
 	/** Get defined check constraints
 	* @return string[] [$name => $clause]
 	*/
