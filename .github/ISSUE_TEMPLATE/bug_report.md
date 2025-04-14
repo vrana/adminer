@@ -8,8 +8,10 @@ assignees: ''
 ---
 
 **Adminer version:** please use latest published or Git
+**Compiled:** single file / source codes / custom compilation
 **Driver:** e.g. MySQLi
 **Database version:** e.g. 10.2.12-MariaDB
+**Plugins used:**
 
 _Please provide reproducible steps including a SQL dump (with no personal information) if applicable.
 Also please include a screenshot._
