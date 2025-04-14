@@ -427,12 +427,13 @@ ORDER BY 1";
 	obj_description(oid, 'pg_class') AS \"Comment\",
 	" . (min_version(12) ? "''" : "CASE WHEN relhasoids THEN 'oid' ELSE '' END") . " AS \"Oid\",
 	reltuples as \"Rows\",
+	inhparent AS inherited,
 	current_schema() AS nspname
 FROM pg_class
 LEFT JOIN pg_inherits ON inhrelid = oid
 WHERE relkind IN ('r', 'm', 'v', 'f', 'p')
 AND relnamespace = " . driver()->nsOid . "
-AND " . ($name != "" ? "relname = " . q($name) : "inhparent IS NULL ORDER BY relname")) as $row //! Auto_increment
+" . ($name != "" ? "AND relname = " . q($name) : "ORDER BY relname")) as $row //! Auto_increment
 		) {
 			$return[$row["Name"]] = $row;
 		}

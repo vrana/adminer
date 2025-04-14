@@ -36,7 +36,7 @@ class AdminerMenuLinks extends Adminer\Plugin {
 		foreach ($tables as $table => $status) {
 			$table = "$table"; // do not highlight "0" as active everywhere
 			$name = Adminer\adminer()->tableName($status);
-			if ($name != "") {
+			if ($name != "" && !$status["inherited"]) {
 				echo '<li>';
 				if (!$menu) {
 					echo '<a href="' . Adminer\h(Adminer\ME) . 'select=' . urlencode($table) . '"'
