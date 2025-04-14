@@ -201,20 +201,6 @@ function edit_type(string $key, array $field, array $collations, array $foreign_
 	);
 }
 
-/** Get partition info
-* @return array{partition_by:string, partition:string, partitions:string, partition_names:list<string>, partition_values:list<string>}
-*/
-function get_partitions_info(string $table): array {
-	$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . q(DB) . " AND TABLE_NAME = " . q($table);
-	$result = connection()->query("SELECT PARTITION_METHOD, PARTITION_EXPRESSION, PARTITION_ORDINAL_POSITION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
-	$return = array();
-	list($return["partition_by"], $return["partition"], $return["partitions"]) = $result->fetch_row();
-	$partitions = get_key_vals("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION");
-	$return["partition_names"] = array_keys($partitions);
-	$return["partition_values"] = array_values($partitions);
-	return $return;
-}
-
 /** Filter length value including enums */
 function process_length(?string $length): string {
 	$enum_length = driver()->enumLength;

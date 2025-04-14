@@ -258,6 +258,9 @@ if (!defined('Adminer\DRIVER')) {
 				$this->types[lang('Numbers')]["vector"] = 16383;
 				$this->insertFunctions['vector'] = 'string_to_vector';
 			}
+			if (min_version(5.1, '', $connection)) {
+				$this->partitionBy = array("HASH", "LINEAR HASH", "KEY", "LINEAR KEY", "RANGE", "LIST");
+			}
 			if (min_version(5.7, 10.2, $connection)) {
 				$this->generated = array("STORED", "VIRTUAL");
 			}
@@ -333,6 +336,17 @@ if (!defined('Adminer\DRIVER')) {
 			if (DB == "mysql") {
 				return ($maria ? "mysql$name-table/" : "system-schema.html"); //! more precise link
 			}
+		}
+
+		function partitionsInfo(string $table): array {
+			$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . q(DB) . " AND TABLE_NAME = " . q($table);
+			$result = connection()->query("SELECT PARTITION_METHOD, PARTITION_EXPRESSION, PARTITION_ORDINAL_POSITION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
+			$return = array();
+			list($return["partition_by"], $return["partition"], $return["partitions"]) = $result->fetch_row();
+			$partitions = get_key_vals("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION");
+			$return["partition_names"] = array_keys($partitions);
+			$return["partition_values"] = array_values($partitions);
+			return $return;
 		}
 
 		function hasCStyleEscapes(): bool {
@@ -1012,10 +1026,10 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Check whether a feature is supported
-	* @param literal-string $feature "check|comment|copy|database|descidx|drop_col|dump|event|indexes|kill|materializedview|partitioning|privileges|procedure|processlist|routine|scheme|sequence|status|table|trigger|type|variables|view|view_trigger"
+	* @param literal-string $feature "check|comment|copy|database|descidx|drop_col|dump|event|indexes|kill|materializedview|privileges|procedure|processlist|routine|scheme|sequence|status|table|trigger|type|variables|view|view_trigger"
 	*/
 	function support(string $feature): bool {
-		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(8) ? "" : "|descidx" . (min_version(5.1) ? "" : "|event|partitioning")) . (min_version('8.0.16', '10.2.1') ? "" : "|check") . "~", $feature);
+		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(8) ? "" : "|descidx" . (min_version(5.1) ? "" : "|event")) . (min_version('8.0.16', '10.2.1') ? "" : "|check") . "~", $feature);
 	}
 
 	/** Kill a process

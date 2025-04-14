@@ -26,6 +26,7 @@ abstract class SqlDriver {
 	/** @var list<string> */ public $functions = array(); // functions used in select
 	/** @var list<string> */ public $grouping = array(); // grouping functions used in select
 	/** @var string */ public $onActions = "RESTRICT|NO ACTION|CASCADE|SET NULL|SET DEFAULT"; // used in foreign_keys()
+	/** @var list<string> */ public $partitionBy = array(); // supported partitioning types
 	/** @var string */ public $inout = "IN|OUT|INOUT"; // used in routines
 	/** @var string */ public $enumLength = "'(?:''|[^'\\\\]|\\\\.)*'"; // regular expression for parsing enum lengths
 	/** @var list<string> */ public $generated = array(); // allowed types of generated columns
@@ -228,6 +229,13 @@ abstract class SqlDriver {
 	* @return list<string>
 	*/
 	function inheritedTables(string $table): array {
+		return array();
+	}
+
+	/** Get partitions info
+	* @return array{partition_by?:string, partition?:string, partitions?:string, partition_names?:list<string>, partition_values?:list<string>}
+	*/
+	function partitionsInfo(string $table): array {
 		return array();
 	}
 

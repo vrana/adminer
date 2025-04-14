@@ -2,10 +2,8 @@
 namespace Adminer;
 
 $TABLE = $_GET["create"];
-$partition_by = array();
-foreach (array('HASH', 'LINEAR HASH', 'KEY', 'LINEAR KEY', 'RANGE', 'LIST') as $key) {
-	$partition_by[$key] = $key;
-}
+$partition_by = driver()->partitionBy;
+$partitions_info = driver()->partitionsInfo($TABLE);
 
 $referencable_primary = referencable_primary($TABLE);
 $foreign_keys = array();
@@ -81,39 +79,37 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 		}
 
 		$partitioning = "";
-		if (support("partitioning")) {
-			if (isset($partition_by[$row["partition_by"]])) {
-				$params = array();
-				foreach ($row as $key => $val) {
-					if (preg_match('~^partition~', $key)) {
-						$params[$key] = $val;
-					}
+		if (in_array($row["partition_by"], $partition_by)) {
+			$params = array();
+			foreach ($row as $key => $val) {
+				if (preg_match('~^partition~', $key)) {
+					$params[$key] = $val;
 				}
-				foreach ($params["partition_names"] as $key => $name) {
-					if ($name == "") {
-						unset($params["partition_names"][$key]);
-						unset($params["partition_values"][$key]);
-					}
-				}
-				if ($params != get_partitions_info($TABLE)) {
-					$partitions = array();
-					if ($params["partition_by"] == 'RANGE' || $params["partition_by"] == 'LIST') {
-						foreach ($params["partition_names"] as $key => $name) {
-							$value = $params["partition_values"][$key];
-							$partitions[] = "\n  PARTITION " . idf_escape($name) . " VALUES " . ($params["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . ($value != "" ? " ($value)" : " MAXVALUE"); //! SQL injection
-						}
-					}
-					// $params["partition"] can be expression, not only column
-					$partitioning .= "\nPARTITION BY $params[partition_by]($params[partition])";
-					if ($partitions) {
-						$partitioning .= " (" . implode(",", $partitions) . "\n)";
-					} elseif ($params["partitions"]) {
-						$partitioning .= " PARTITIONS " . (+$params["partitions"]);
-					}
-				}
-			} elseif (preg_match("~partitioned~", $table_status["Create_options"])) {
-				$partitioning .= "\nREMOVE PARTITIONING";
 			}
+			foreach ($params["partition_names"] as $key => $name) {
+				if ($name == "") {
+					unset($params["partition_names"][$key]);
+					unset($params["partition_values"][$key]);
+				}
+			}
+			if ($params != $partitions_info) {
+				$partitions = array();
+				if ($params["partition_by"] == 'RANGE' || $params["partition_by"] == 'LIST') {
+					foreach ($params["partition_names"] as $key => $name) {
+						$value = $params["partition_values"][$key];
+						$partitions[] = "\n  PARTITION " . idf_escape($name) . " VALUES " . ($params["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . ($value != "" ? " ($value)" : " MAXVALUE"); //! SQL injection
+					}
+				}
+				// $params["partition"] can be expression, not only column
+				$partitioning .= "\nPARTITION BY $params[partition_by]($params[partition])";
+				if ($partitions) {
+					$partitioning .= " (" . implode(",", $partitions) . "\n)";
+				} elseif ($params["partitions"]) {
+					$partitioning .= " PARTITIONS " . (+$params["partitions"]);
+				}
+			}
+		} elseif (preg_match("~partitioned~", $table_status["Create_options"])) {
+			$partitioning .= "\nREMOVE PARTITIONING";
 		}
 
 		$message = lang('Table has been altered.');
@@ -159,8 +155,8 @@ if (!$_POST) {
 			$row["fields"][] = $field;
 		}
 
-		if (support("partitioning")) {
-			$row += get_partitions_info($TABLE);
+		if ($partition_by) {
+			$row += $partitions_info;
 			$row["partition_names"][] = "";
 			$row["partition_values"][] = "";
 		}
@@ -221,10 +217,10 @@ if (support("columns")) {
 <input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $TABLE)); ?>
 <?php } ?>
 <?php
-if (support("partitioning")) {
+if ($partition_by && (JUSH == 'sql' || $TABLE == "")) {
 	$partition_table = preg_match('~RANGE|LIST~', $row["partition_by"]);
 	print_fieldset("partition", lang('Partition by'), $row["partition_by"]);
-	echo "<p>" . html_select("partition_by", array("" => "") + $partition_by, $row["partition_by"]) . on_help("event.target.value.replace(/./, 'PARTITION BY \$&')", 1) . script("qsl('select').onchange = partitionByChange;");
+	echo "<p>" . html_select("partition_by", array_merge(array(""), $partition_by), $row["partition_by"]) . on_help("event.target.value.replace(/./, 'PARTITION BY \$&')", 1) . script("qsl('select').onchange = partitionByChange;");
 	echo "(<input name='partition' value='" . h($row["partition"]) . "'>)\n";
 	echo lang('Partitions') . ": <input type='number' name='partitions' class='size" . ($partition_table || !$row["partition_by"] ? " hidden" : "") . "' value='" . h($row["partitions"]) . "'>\n";
 	echo "<table id='partition-table'" . ($partition_table ? "" : " class='hidden'") . ">\n";
