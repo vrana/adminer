@@ -936,8 +936,18 @@ AND typelem = 0"
 		foreach (driver()->checkConstraints($table) as $conname => $consrc) {
 			$return_parts[] = "CONSTRAINT " . idf_escape($conname) . " CHECK $consrc";
 		}
+		$return .= implode(",\n    ", $return_parts) . "\n)";
 
-		$return .= implode(",\n    ", $return_parts) . "\n) WITH (oids = " . ($status['Oid'] ? 'true' : 'false') . ");";
+		$table_oid = driver()->tableOid($status['Name']);
+		$row = connection()->query("SELECT * FROM pg_partitioned_table WHERE partrelid = $table_oid")->fetch_assoc();
+		if ($row) {
+			$attrs = get_vals("SELECT attname FROM pg_attribute WHERE attrelid = $row[partrelid] AND attnum IN (" . str_replace(" ", ", ", $row["partattrs"]) . ")"); //! ordering
+			$by = array('h' => 'HASH', 'l' => 'LIST', 'r' => 'RANGE');
+			$return .= "\nPARTITION BY $by[partstrat](" . implode(", ", array_map('Adminer\idf_escape', $attrs)) . ")";
+		}
+		//! parse pg_class.relpartbound to create PARTITION OF
+
+		$return .= "\nWITH (oids = " . ($status['Oid'] ? 'true' : 'false') . ");";
 
 		// comments for table & fields
 		if ($status['Comment']) {
