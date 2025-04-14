@@ -420,18 +420,18 @@ ORDER BY 1";
 		$return = array();
 		foreach (
 			get_rows("SELECT
-	c.relname AS \"Name\",
-	CASE c.relkind WHEN 'v' THEN 'view' WHEN 'm' THEN 'materialized view' ELSE 'table' END AS \"Engine\"" . ($has_size ? ",
-	pg_table_size(c.oid) AS \"Data_length\",
-	pg_indexes_size(c.oid) AS \"Index_length\"" : "") . ",
-	obj_description(c.oid, 'pg_class') AS \"Comment\",
-	" . (min_version(12) ? "''" : "CASE WHEN c.relhasoids THEN 'oid' ELSE '' END") . " AS \"Oid\",
-	c.reltuples as \"Rows\",
+	relname AS \"Name\",
+	CASE relkind WHEN 'v' THEN 'view' WHEN 'm' THEN 'materialized view' ELSE 'table' END AS \"Engine\"" . ($has_size ? ",
+	pg_table_size(oid) AS \"Data_length\",
+	pg_indexes_size(oid) AS \"Index_length\"" : "") . ",
+	obj_description(oid, 'pg_class') AS \"Comment\",
+	" . (min_version(12) ? "''" : "CASE WHEN relhasoids THEN 'oid' ELSE '' END") . " AS \"Oid\",
+	reltuples as \"Rows\",
 	current_schema() AS nspname
-FROM pg_class c
-LEFT JOIN pg_inherits ON inhrelid = c.oid
+FROM pg_class
+LEFT JOIN pg_inherits ON inhrelid = oid
 WHERE relkind IN ('r', 'm', 'v', 'f', 'p')
-AND c.relnamespace = " . driver()->nsOid . "
+AND relnamespace = " . driver()->nsOid . "
 AND " . ($name != "" ? "relname = " . q($name) : "inhparent IS NULL ORDER BY relname")) as $row //! Auto_increment
 		) {
 			$return[$row["Name"]] = $row;
@@ -504,9 +504,9 @@ ORDER BY a.attnum") as $row
 		$columns = get_key_vals("SELECT attnum, attname FROM pg_attribute WHERE attrelid = $table_oid AND attnum > 0", $connection2);
 		foreach (
 			get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey, indoption, (indpred IS NOT NULL)::int as indispartial
-FROM pg_index i
-JOIN pg_class c ON i.indexrelid = c.oid
-WHERE i.indrelid = $table_oid
+FROM pg_index
+JOIN pg_class ON indexrelid = oid
+WHERE indrelid = $table_oid
 ORDER BY indisprimary DESC, indisunique DESC", $connection2) as $row
 		) {
 			$relname = $row["relname"];
