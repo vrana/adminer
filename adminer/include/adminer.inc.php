@@ -400,7 +400,7 @@ class Adminer {
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
 				echo "<div>(<i>" . implode("</i>, <i>", array_map('Adminer\h', $index["columns"])) . "</i>) AGAINST";
-				echo " <input type='search' name='fulltext[$i]' value='" . h($_GET["fulltext"][$i]) . "'>";
+				echo " <input type='search' name='fulltext[$i]' value='" . h(idx($_GET["fulltext"], $i)) . "'>";
 				echo script("qsl('input').oninput = selectFieldChange;", "");
 				echo checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL");
 				echo "</div>\n";
@@ -538,7 +538,7 @@ class Adminer {
 	function selectSearchProcess(array $fields, array $indexes): array {
 		$return = array();
 		foreach ($indexes as $i => $index) {
-			if ($index["type"] == "FULLTEXT" && $_GET["fulltext"][$i] != "") {
+			if ($index["type"] == "FULLTEXT" && idx($_GET["fulltext"], $i) != "") {
 				$return[] = "MATCH (" . implode(", ", array_map('Adminer\idf_escape', $index["columns"])) . ") AGAINST (" . q($_GET["fulltext"][$i]) . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
 			}
 		}
