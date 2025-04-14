@@ -195,7 +195,7 @@ class Adminer {
 			$is_view = is_view($tableStatus);
 			if ($is_view) {
 				$links["view"] = lang('Alter view');
-			} elseif (!driver()->inheritsFrom($name)) {
+			} else {
 				$links["create"] = lang('Alter table');
 			}
 		}
