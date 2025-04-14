@@ -691,9 +691,10 @@ if (!defined('Adminer\DRIVER')) {
 	* @param list<array{string, list<string>, string}> $fields of [$orig, $process_field, $after]
 	* @param string[] $foreign
 	* @param numeric-string $auto_increment
+	* @param ?Partitions $partitioning null means remove partitioning
 	* @return Result|bool
 	*/
-	function alter_table(string $table, string $name, array $fields, array $foreign, ?string $comment, string $engine, string $collation, string $auto_increment, string $partitioning) {
+	function alter_table(string $table, string $name, array $fields, array $foreign, ?string $comment, string $engine, string $collation, string $auto_increment, ?array $partitioning) {
 		$alter = array();
 		foreach ($fields as $field) {
 			if ($field[1]) {
@@ -714,8 +715,28 @@ if (!defined('Adminer\DRIVER')) {
 			. ($collation ? " COLLATE " . q($collation) : "")
 			. ($auto_increment != "" ? " AUTO_INCREMENT=$auto_increment" : "")
 		;
+
+		if ($partitioning) {
+			$partitions = array();
+			if ($partitioning["partition_by"] == 'RANGE' || $partitioning["partition_by"] == 'LIST') {
+				foreach ($partitioning["partition_names"] as $key => $val) {
+					$value = $partitioning["partition_values"][$key];
+					$partitions[] = "\n  PARTITION " . idf_escape($val) . " VALUES " . ($partitioning["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . ($value != "" ? " ($value)" : " MAXVALUE"); //! SQL injection
+				}
+			}
+			// $partitioning["partition"] can be expression, not only column
+			$status .= "\nPARTITION BY $partitioning[partition_by]($partitioning[partition])";
+			if ($partitions) {
+				$status .= " (" . implode(",", $partitions) . "\n)";
+			} elseif ($partitioning["partitions"]) {
+				$status .= " PARTITIONS " . (+$partitioning["partitions"]);
+			}
+		} elseif ($partitioning === null) {
+			$status .= "\nREMOVE PARTITIONING";
+		}
+
 		if ($table == "") {
-			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)$status$partitioning");
+			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)$status");
 		}
 		if ($table != $name) {
 			$alter[] = "RENAME TO " . table($name);
@@ -723,7 +744,7 @@ if (!defined('Adminer\DRIVER')) {
 		if ($status) {
 			$alter[] = ltrim($status);
 		}
-		return ($alter || $partitioning ? queries("ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter) . $partitioning) : true);
+		return ($alter ? queries("ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter)) : true);
 	}
 
 	/** Run commands to alter indexes

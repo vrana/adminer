@@ -233,7 +233,7 @@ abstract class SqlDriver {
 	}
 
 	/** Get partitions info
-	* @return array{partition_by?:string, partition?:string, partitions?:string, partition_names?:list<string>, partition_values?:list<string>}
+	* @return Partitions
 	*/
 	function partitionsInfo(string $table): array {
 		return array();

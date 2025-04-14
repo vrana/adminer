@@ -78,38 +78,24 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 			}
 		}
 
-		$partitioning = "";
+		$partitioning = array();
 		if (in_array($row["partition_by"], $partition_by)) {
-			$params = array();
 			foreach ($row as $key => $val) {
 				if (preg_match('~^partition~', $key)) {
-					$params[$key] = $val;
+					$partitioning[$key] = $val;
 				}
 			}
-			foreach ($params["partition_names"] as $key => $name) {
+			foreach ($partitioning["partition_names"] as $key => $name) {
 				if ($name == "") {
-					unset($params["partition_names"][$key]);
-					unset($params["partition_values"][$key]);
+					unset($partitioning["partition_names"][$key]);
+					unset($partitioning["partition_values"][$key]);
 				}
 			}
-			if ($params != $partitions_info) {
-				$partitions = array();
-				if ($params["partition_by"] == 'RANGE' || $params["partition_by"] == 'LIST') {
-					foreach ($params["partition_names"] as $key => $name) {
-						$value = $params["partition_values"][$key];
-						$partitions[] = "\n  PARTITION " . idf_escape($name) . " VALUES " . ($params["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . ($value != "" ? " ($value)" : " MAXVALUE"); //! SQL injection
-					}
-				}
-				// $params["partition"] can be expression, not only column
-				$partitioning .= "\nPARTITION BY $params[partition_by]($params[partition])";
-				if ($partitions) {
-					$partitioning .= " (" . implode(",", $partitions) . "\n)";
-				} elseif ($params["partitions"]) {
-					$partitioning .= " PARTITIONS " . (+$params["partitions"]);
-				}
+			if ($partitioning == $partitions_info) {
+				$partitioning = array();
 			}
 		} elseif (preg_match("~partitioned~", $table_status["Create_options"])) {
-			$partitioning .= "\nREMOVE PARTITIONING";
+			$partitioning = null;
 		}
 
 		$message = lang('Table has been altered.');

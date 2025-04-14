@@ -69,4 +69,5 @@ parameters:
 		ForeignKey: "array{db?:string, ns?:string, table:string, source:list<string>, target:list<?string>, on_delete:string, on_update?:string, definition?:string, deferrable?:string}"
 		Trigger: "array{Trigger?:string, Timing?:string, Event?:string, Of?:string, Type?:string, Statement?:string}"
 		Routine: "array{name?:string, fields:list<RoutineField>, comment:string, returns?:FieldType, definition:string, language?:string}"
+		Partitions: "array{partition_by?:string, partition?:string, partitions?:numeric-string, partition_names?:list<string>, partition_values?:list<string>}"
 		BackwardKey: "array{name:string, keys:string[][]}"
