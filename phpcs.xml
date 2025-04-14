@@ -58,6 +58,7 @@
 			<property name="lineLimit" value="250"/>
 		</properties>
 		<exclude-pattern>adminer/lang/</exclude-pattern>
+		<exclude-pattern>plugins/select-email.php</exclude-pattern>
 	</rule>
 
 	<rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
