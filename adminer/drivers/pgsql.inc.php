@@ -206,6 +206,7 @@ if (isset($_GET["pgsql"])) {
 		public $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // no "SQL" to avoid CSRF
 		public $functions = array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper");
 		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
+		public $partitionBy = array("RANGE", "LIST", "HASH");
 
 		public string $nsOid = "(SELECT oid FROM pg_namespace WHERE nspname = current_schema())";
 
@@ -635,7 +636,29 @@ ORDER BY conkey, conname") as $row
 		}
 		$alter = array_merge($alter, $foreign);
 		if ($table == "") {
-			array_unshift($queries, "CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)");
+			$status = "";
+			if ($partitioning) {
+				$status = " PARTITION BY $partitioning[partition_by]($partitioning[partition])";
+				$partition_names = array_values($partitioning["partition_names"]);
+				$partition_values = array_values($partitioning["partition_values"]);
+				if ($partitioning["partition_by"] == 'HASH') {
+					$partitions = +$partitioning["partitions"];
+					for ($i=0; $i < $partitions; $i++) {
+						$queries[] = "CREATE TABLE " . idf_escape($name . "_$i") . " PARTITION OF " . idf_escape($name) . " FOR VALUES WITH (MODULUS $partitions, REMAINDER $i)";
+					}
+				} else {
+					foreach ($partition_names as $i => $val) {
+						$value = $partition_values[$i];
+						$queries[] = "CREATE TABLE " . idf_escape($name . "_$val") . " PARTITION OF " . idf_escape($name) . " FOR VALUES "
+							. ($partitioning["partition_by"] == 'LIST'
+								? "IN ($value)"
+								: "FROM (" . ($i ? $partition_values[$i - 1] : "MINVALUE") . ") TO ($value)"
+							)
+						;
+					}
+				}
+			}
+			array_unshift($queries, "CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)$status");
 		} elseif ($alter) {
 			array_unshift($queries, "ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter));
 		}
