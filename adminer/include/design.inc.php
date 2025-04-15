@@ -35,7 +35,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 		if (strpos($url, "adminer.css") !== false) {
 			$has_light = true;
 			$filename = preg_replace('~\?.*~', '', $url);
-			if (!preg_match('~:~', $url) && is_readable($filename) && preg_match('~prefers-color-scheme:\s*dark~', file_get_contents($filename))) {
+			if (!preg_match('~//~', $url) && is_readable($filename) && preg_match('~prefers-color-scheme:\s*dark~', file_get_contents($filename))) {
 				$has_dark = true;
 			}
 		}
