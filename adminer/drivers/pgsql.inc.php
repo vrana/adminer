@@ -348,13 +348,10 @@ if (isset($_GET["pgsql"])) {
 			if (!$methods) {
 				$amtype_condition = "";
 				if (min_version(9.6)) {
-					$amtype_condition = "WHERE amtype = 'i'";
+					$amtype_condition = " WHERE amtype = 'i'";
 				}
 
-				$methods = array();
-				foreach (get_rows("SELECT amname FROM pg_am " . $amtype_condition . " ORDER BY amname='btree' DESC, amname ASC") as $row) {
-					$methods[] = $row['amname'];
-				}
+				$methods = get_vals("SELECT amname FROM pg_am" . $amtype_condition . " ORDER BY amname = 'btree' DESC, amname");
 			}
 			return $methods;
 		}
@@ -525,7 +522,7 @@ ORDER BY a.attnum") as $row
 		$table_oid = driver()->tableOid($table);
 		$columns = get_key_vals("SELECT attnum, attname FROM pg_attribute WHERE attrelid = $table_oid AND attnum > 0", $connection2);
 		foreach (
-			get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey, indoption, (indpred IS NOT NULL)::int as indispartial, pg_am.amname as method
+			get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey, indoption, (indpred IS NOT NULL)::int as indispartial, pg_am.amname as algorithm
 FROM pg_index
 JOIN pg_class ON indexrelid = oid
 JOIN pg_am ON pg_am.oid = pg_class.relam
@@ -536,7 +533,7 @@ ORDER BY indisprimary DESC, indisunique DESC", $connection2) as $row
 			$return[$relname]["type"] = ($row["indispartial"] ? "INDEX" : ($row["indisprimary"] ? "PRIMARY" : ($row["indisunique"] ? "UNIQUE" : "INDEX")));
 			$return[$relname]["columns"] = array();
 			$return[$relname]["descs"] = array();
-			$return[$relname]["method"] = $row["method"];
+			$return[$relname]["algorithm"] = $row["algorithm"];
 			if ($row["indkey"]) {
 				foreach (explode(" ", $row["indkey"]) as $indkey) {
 					$return[$relname]["columns"][] = $columns[$indkey];

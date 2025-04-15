@@ -367,8 +367,8 @@ class Adminer {
 				;
 			}
 
-			$index_method = ($index_methods && ($default_index_method != $index['method'])) ? " (" . $index['method'] . ")" : "";
-			echo "<tr title='" . h($name) . "'><th>$index[type]" . $index_method;
+			$index_algorithm = ($index_methods && ($default_index_method != $index['algorithm'])) ? " (" . $index['algorithm'] . ")" : "";
+			echo "<tr title='" . h($name) . "'><th>$index[type]" . $index_algorithm;
 			echo "<td>" . implode(", ", $print) . "\n";
 		}
 		echo "</table>\n";

@@ -29,7 +29,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 			$columns = array();
 			$lengths = array();
 			$descs = array();
-			$indexMethod = array_key_exists("method", $index) && in_array($index["method"], driver()->indexMethods()) ? $index["method"] : "";
+			$index_algorithm = in_array($index["algorithm"], driver()->indexMethods()) ? $index["algorithm"] : null;
 			$set = array();
 			ksort($index["columns"]);
 			foreach ($index["columns"] as $key => $column) {
@@ -53,7 +53,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 					&& array_values($existing["columns"]) === $columns
 					&& (!$existing["lengths"] || array_values($existing["lengths"]) === $lengths)
 					&& array_values($existing["descs"]) === $descs
-					&& (array_key_exists("method", $existing) && $existing["method"] === $indexMethod)
+					&& $existing["algorithm"] === $index_algorithm
 				) {
 					// skip existing index
 					unset($indexes[$name]);
@@ -61,7 +61,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 				}
 			}
 			if ($columns) {
-				$alter[] = array($index["type"], $name, $set, $indexMethod);
+				$alter[] = array($index["type"], $name, $set, $index_algorithm);
 			}
 		}
 	}
@@ -109,7 +109,7 @@ $show_options = ($_POST ? $_POST["options"] : get_setting("index_options"));
 <th id="label-type"><?php echo lang('Index Type'); ?>
 <?php
 if (driver()->indexMethods()) {
-	echo "<th id='label-method' class='idxopts " .  ($show_options ? "" : " hidden") . "'>" . lang('Index Method');
+	echo "<th id='label-method' class='idxopts" .  ($show_options ? "" : " hidden") . "'>" . lang('Algorithm');
 }
 ?>
 <th><input type="submit" class="wayoff"><?php
@@ -136,7 +136,7 @@ foreach ($row["indexes"] as $index) {
 		echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow.call(this);" : ""), "label-type");
 
 		if (driver()->indexMethods()) {
-			echo "<td class='idxopts " .  ($show_options ? "" : " hidden") . "'>" . html_select("indexes[$j][method]", array_merge(array(""), driver()->indexMethods()), $index['method'], "label-method");
+			echo "<td class='idxopts" .  ($show_options ? "" : " hidden") . "'>" . html_select("indexes[$j][algorithm]", array_merge(array(""), driver()->indexMethods()), $index['algorithm'], "label-method");
 		}
 
 		echo "<td>";
