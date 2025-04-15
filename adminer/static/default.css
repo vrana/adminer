@@ -4,6 +4,7 @@ html {
 	--bg: #fff;
 	--fg: #000;
 	--dim: #eee;
+	--lit: #ddf;
 }
 
 body { color: var(--fg); background: var(--bg); font: 90%/1.25 Verdana, Arial, Helvetica, sans-serif; margin: 0; min-width: fit-content; }
@@ -13,7 +14,7 @@ a:link:hover, a:visited:hover { color: red; text-decoration: underline; }
 a.text:hover { text-decoration: none; }
 a.jush-help:hover { color: inherit; }
 h1 { font-size: 150%; margin: 0; padding: .8em .667em; border-bottom: 1px solid #999; font-weight: normal; color: #777; background: var(--dim); }
-h2 { font-size: 150%; margin: 0 0 20px -18px; padding: .8em 1em; border-bottom: 1px solid var(--fg); font-weight: normal; background: #ddf; }
+h2 { font-size: 150%; margin: 0 0 20px -18px; padding: .8em 1em; border-bottom: 1px solid var(--fg); font-weight: normal; background: var(--lit); }
 h3 { font-weight: normal; font-size: 130%; margin: 1em 0 0; }
 form { margin: 0; }
 td table { width: 100%; margin: 0; }
@@ -23,7 +24,7 @@ td, th { border-width: 0 1px 1px 0; padding: .2em .3em; margin: 0; }
 th { background: var(--dim); text-align: left; }
 thead { position: sticky; top: 0; }
 thead th { text-align: center; padding: .2em .5em; }
-thead td, thead th { background: #ddf; }
+thead td, thead th { background: var(--lit); }
 fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: .8em .5em 0 0; border: 1px solid #999; border-radius: 5px; }
 p { margin: .8em 20px 0 0; }
 img { vertical-align: middle; border: 0; }
@@ -44,7 +45,7 @@ input.wayoff { left: -1000px; position: absolute; }
 .block { display: block; }
 .version { color: #777; font-size: 62%; }
 .js .hidden, .nojs .jsonly { display: none; }
-.js .column { position: absolute; background: #ddf; padding: .27em 1ex .3em 0; margin-top: -.27em; }
+.js .column { position: absolute; background: var(--lit); padding: .27em 1ex .3em 0; margin-top: -.27em; }
 .nowrap td, .nowrap th, td.nowrap, p.nowrap { white-space: pre; }
 .wrap td { white-space: normal; }
 .error { color: red; background: #fee; }
@@ -57,7 +58,7 @@ input.wayoff { left: -1000px; position: absolute; }
 .enum { color: #007F7F; }
 .binary { color: red; }
 .odds tbody tr:nth-child(2n) { background: #F5F5F5; }
-.js .checkable .checked td, .js .checkable .checked th { background: #ddf; }
+.js .checkable .checked td, .js .checkable .checked th { background: var(--lit); }
 .time { color: silver; font-size: 70%; }
 .function, .number, .datetime { text-align: right; }
 .type { width: 15ex; }
@@ -96,6 +97,7 @@ input.wayoff { left: -1000px; position: absolute; }
 #schema .table { border: 1px solid silver; padding: 0 2px; cursor: move; position: absolute; }
 #schema .references { position: absolute; }
 #help { position: absolute; border: 1px solid #999; background: var(--dim); padding: 5px; font-family: monospace; z-index: 1; }
+:target { background: var(--lit); }
 
 /* inlined here and not in compile.php because otherwise the development version flickers a little bit when loading the images */
 .icon-up { background-image: url(data:image/gif;base64,R0lGODlhEgASAIEAMe7u7gAAgJmZmQAAACH5BAEAAAEALAAAAAASABIAAQIghI+py+0PTQhRTgrvfRP0nmEVOIoReZphxbauAMfyHBcAOw==); }
