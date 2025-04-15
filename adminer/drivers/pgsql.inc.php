@@ -961,6 +961,7 @@ AND typelem = 0"
 			$return .= "\nPARTITION BY $partition[partition_by]($partition[partition])";
 		}
 		//! parse pg_class.relpartbound to create PARTITION OF
+		//! don't insert partitioned data twice
 
 		$return .= "\nWITH (oids = " . ($status['Oid'] ? 'true' : 'false') . ");";
 
