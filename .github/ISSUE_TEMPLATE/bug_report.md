@@ -14,4 +14,5 @@ assignees: ''
 **Plugins used:**
 
 _Please provide reproducible steps including a SQL dump (with no personal information) if applicable.
-Also please include a screenshot._
+Also please include a screenshot.
+Report issues with Adminer Docker image at https://github.com/TimWolla/docker-adminer._
