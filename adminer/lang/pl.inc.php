@@ -196,7 +196,6 @@ Lang::$translations = array(
 	'Partition name' => 'Nazwa partycji',
 	'Values' => 'Wartości',
 	'Inherits from' => 'Dziedziczy po',
-	'Inherited tables' => 'Tabele dziedziczone',
 
 	'View' => 'Perspektywa',
 	'Materialized view' => 'Zmaterializowana perspektywa',

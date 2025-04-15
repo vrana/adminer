@@ -110,6 +110,10 @@ if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
 
 $inherited = driver()->inheritedTables($TABLE);
 if ($inherited) {
-	echo "<h3 id='inherited'>" . lang('Inherited tables') . "</h3>\n";
+	echo "<h3 id='partitions'>" . lang('Partitions') . "</h3>\n";
+	$partition = driver()->partitionsInfo($TABLE);
+	if ($partition) {
+		echo "<p><code class='jush-" . JUSH . "'>BY " . h("$partition[partition_by]($partition[partition])") . "</code>\n";
+	}
 	tables_links($inherited);
 }
