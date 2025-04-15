@@ -206,7 +206,6 @@ if (isset($_GET["pgsql"])) {
 		public $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // no "SQL" to avoid CSRF
 		public $functions = array("char_length", "lower", "round", "to_hex", "to_timestamp", "upper");
 		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
-		public $partitionBy = array("RANGE", "LIST", "HASH");
 
 		public string $nsOid = "(SELECT oid FROM pg_namespace WHERE nspname = current_schema())";
 
@@ -254,6 +253,10 @@ if (isset($_GET["pgsql"])) {
 			);
 			if (min_version(12, 0, $connection)) {
 				$this->generated = array("STORED");
+			}
+			$this->partitionBy = array("RANGE", "LIST");
+			if (!$connection->flavor) {
+				$this->partitionBy[] = "HASH";
 			}
 		}
 
@@ -638,6 +641,7 @@ ORDER BY conkey, conname") as $row
 		if ($table == "") {
 			$status = "";
 			if ($partitioning) {
+				$cockroach = (connection()->flavor == 'cockroach');
 				$status = " PARTITION BY $partitioning[partition_by]($partitioning[partition])";
 				if ($partitioning["partition_by"] == 'HASH') {
 					$partitions = +$partitioning["partitions"];
@@ -648,11 +652,15 @@ ORDER BY conkey, conname") as $row
 					$prev = "MINVALUE";
 					foreach ($partitioning["partition_names"] as $i => $val) {
 						$value = $partitioning["partition_values"][$i];
-						$queries[] = "CREATE TABLE " . idf_escape($name . "_$val") . " PARTITION OF " . idf_escape($name) . " FOR VALUES "
-							. ($partitioning["partition_by"] == 'LIST' ? "IN ($value)" : "FROM ($prev) TO ($value)")
-						;
+						$partition = " VALUES " . ($partitioning["partition_by"] == 'LIST' ? "IN ($value)" : "FROM ($prev) TO ($value)");
+						if ($cockroach) {
+							$status .= ($i ? "," : " (") . "\n  PARTITION " . (preg_match('~^DEFAULT$~i', $val) ? $val : idf_escape($val)) . "$partition";
+						} else {
+							$queries[] = "CREATE TABLE " . idf_escape($name . "_$val") . " PARTITION OF " . idf_escape($name) . " FOR$partition";
+						}
 						$prev = $value;
 					}
+					$status .= ($cockroach ? "\n)" : "");
 				}
 			}
 			array_unshift($queries, "CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)$status");
