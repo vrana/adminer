@@ -385,6 +385,54 @@
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3" data-tags="">Partitioning</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;create=</td><td></td></tr>
+<tr><td>type</td><td>name=name</td><td>range</td></tr>
+<tr><td>click</td><td>//input[@name='auto_increment_col' and @value='1']</td><td></td></tr>
+<tr><td>click</td><td>link=Partition by</td><td></td></tr>
+<tr><td>select</td><td>name=partition_by</td><td>label=RANGE</td></tr>
+<tr><td>type</td><td>name=partition</td><td>id</td></tr>
+<tr><td>type</td><td>name=partition_names[]</td><td>old</td></tr>
+<tr><td>type</td><td>name=partition_values[]</td><td>10</td></tr>
+<tr><td>type</td><td>xpath=//table[@id='partition-table']/tr/td/input</td><td>new</td></tr>
+<tr><td>type</td><td>xpath=//table[@id='partition-table']/tr/td[2]/input</td><td>MAXVALUE</td></tr>
+<tr><td>click</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>PARTITION BY RANGE(id)</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>"range_old" PARTITION OF "range" FOR VALUES FROM (MINVALUE) TO (10)</td><td></td></tr>
+<tr><td>click</td><td>link=Create table</td><td></td></tr>
+<tr><td>type</td><td>name=name</td><td>list</td></tr>
+<tr><td>click</td><td>//input[@name='auto_increment_col' and @value='1']</td><td></td></tr>
+<tr><td>click</td><td>link=Partition by</td><td></td></tr>
+<tr><td>select</td><td>name=partition_by</td><td>label=LIST</td></tr>
+<tr><td>type</td><td>name=partition</td><td>id</td></tr>
+<tr><td>type</td><td>name=partition_names[]</td><td>odd</td></tr>
+<tr><td>type</td><td>name=partition_values[]</td><td>1,3,5</td></tr>
+<tr><td>click</td><td>xpath=//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>PARTITION BY LIST(id)</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>"list_odd" PARTITION OF "list" FOR VALUES IN (1,3,5)</td><td></td></tr>
+<tr><td>click</td><td>link=Create table</td><td></td></tr>
+<tr><td>type</td><td>name=name</td><td>hash</td></tr>
+<tr><td>click</td><td>//input[@name='auto_increment_col' and @value='1']</td><td></td></tr>
+<tr><td>click</td><td>link=Partition by</td><td></td></tr>
+<tr><td>select</td><td>name=partition_by</td><td>label=HASH</td></tr>
+<tr><td>type</td><td>name=partition</td><td>id</td></tr>
+<tr><td>type</td><td>name=partitions</td><td>4</td></tr>
+<tr><td>click</td><td>xpath=//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>PARTITION BY HASH(id)</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>"hash_0" PARTITION OF "hash" FOR VALUES WITH (MODULUS 4, REMAINDER 0)</td><td></td></tr>
+<tr><td>click</td><td>link=hash_0</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Inherits from</td><td></td></tr>
+<tr><td>click</td><td>link=public</td><td></td></tr>
+<tr><td>click</td><td>//input[@name='tables[]' and @value='hash']</td><td></td></tr>
+<tr><td>click</td><td>//input[@name='tables[]' and @value='list']</td><td></td></tr>
+<tr><td>click</td><td>//input[@name='tables[]' and @value='range']</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Are you sure?</td><td></td></tr>
+<tr><td>click</td><td>name=drop</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>No tables.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Variables</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;variables=</td><td></td></tr>
