@@ -8,7 +8,7 @@ $routine = routine($_GET["call"], (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDU
 $in = array();
 $out = array();
 foreach ($routine["fields"] as $i => $field) {
-	if (substr($field["inout"], -3) == "OUT") {
+	if (substr($field["inout"], -3) == "OUT" && JUSH == 'sql') {
 		$out[$i] = "@" . idf_escape($field["field"]) . " AS " . idf_escape($field["field"]);
 	}
 	if (!$field["inout"] || substr($field["inout"], 0, 2) == "IN") {
@@ -29,7 +29,11 @@ if (!$error && $_POST) {
 				connection()->query("SET @" . idf_escape($field["field"]) . " = $val");
 			}
 		}
-		$call[] = (isset($out[$key]) ? "@" . idf_escape($field["field"]) : $val);
+		if (isset($out[$key])) {
+			$call[] = "@" . idf_escape($field["field"]);
+		} elseif (in_array($key, $in)) {
+			$call[] = $val;
+		}
 	}
 
 	$query = (isset($_GET["callf"]) ? "SELECT" : "CALL") . " " . table($PROCEDURE) . "(" . implode(", ", $call) . ")";
