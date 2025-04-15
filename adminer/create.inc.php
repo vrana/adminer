@@ -91,6 +91,8 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 					unset($partitioning["partition_values"][$key]);
 				}
 			}
+			$partitioning["partition_names"] = array_values($partitioning["partition_names"]);
+			$partitioning["partition_values"] = array_values($partitioning["partition_values"]);
 			if ($partitioning == $partitions_info) {
 				$partitioning = array();
 			}
