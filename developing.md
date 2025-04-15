@@ -252,7 +252,8 @@ This extracts them for translation and applies translations if available.
 Translations are updated via [lang.php](/lang.php), which also checks for style consistency, such as matching punctuation.
 Plurals are stored as arrays, with selection logic handled in [lang.inc.php](/adminer/include/lang.inc.php).
 
-Plugins extending [`Adminer\Plugin`](/adminer/include/plugin.inc.php) can use `$this->lang()` and store translations in `static $translations = array('en' => array('' => 'Plugin description'))`.
+Plugins extending [`Adminer\Plugin`](/adminer/include/plugin.inc.php) can use `$this->lang()` and store translations in `$translations = array('en' => array('' => 'Plugin description'))`.
+
 The website translations are managed at https://www.adminer.org/en/translations/.
 
 ## Compilation
