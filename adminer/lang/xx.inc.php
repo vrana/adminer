@@ -358,6 +358,7 @@ Lang::$translations = array(
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Xx</a> %s xx %s.',
 	'screenshot' => 'xx',
 	'Algorithm' => 'Xx',
+	'Condition' => 'Xx',
 );
 
 // run `php ../../lang.php xx` to update this file
