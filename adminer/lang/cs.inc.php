@@ -355,6 +355,7 @@ Lang::$translations = array(
 	'%s must <a%s>return an array</a>.' => '%s musí <a%s>vracet pole</a>.',
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Nakonfigurujte</a> %s v %s.',
 	'screenshot' => 'obrázek',
+	'Algorithm' => 'Algoritmus',
 );
 
 // run `php ../../lang.php cs` to update this file

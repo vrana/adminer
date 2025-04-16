@@ -360,7 +360,11 @@ class Adminer {
 					. ($index["descs"][$key] ? " DESC" : "")
 				;
 			}
-			echo "<tr title='" . h($name) . "'><th>$index[type]<td>" . implode(", ", $print) . "\n";
+
+			echo "<tr title='" . h($name) . "'>";
+			echo "<th>$index[type]" . ($index['algorithm'] != first(driver()->indexMethods()) ? " ($index[algorithm])" : "");
+			echo "<td>" . implode(", ", $print);
+			echo "\n";
 		}
 		echo "</table>\n";
 	}

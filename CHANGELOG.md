@@ -2,6 +2,7 @@
 - MySQL: Avoid warning on selecting tables with fulltext indexes (bug #1036)
 - PostgreSQL, CockroachDB: Creating partitioned tables (bug #1031)
 - PostgreSQL: Move partitioned tables from table list to parent table
+- PostgreSQL: Support index algorithms (bug #1030)
 - PostgreSQL: Support calling functions returning table (bug #1040)
 - Designs: adminer.css with 'prefers-color-scheme: dark' don't disable dark mode
 - Plugins: Method bodyClass() to add &lt;body class>

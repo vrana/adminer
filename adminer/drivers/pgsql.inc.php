@@ -355,6 +355,14 @@ if (isset($_GET["pgsql"])) {
 			return "(SELECT oid FROM pg_class WHERE relnamespace = $this->nsOid AND relname = " . q($table) . " AND relkind IN ('r', 'm', 'v', 'f', 'p'))";
 		}
 
+		function indexMethods(): array {
+			static $methods = array();
+			if (!$methods) {
+				$methods = get_vals("SELECT amname FROM pg_am" . (min_version(9.6) ? " WHERE amtype = 'i'" : "") . " ORDER BY amname = 'btree' DESC, amname");
+			}
+			return $methods;
+		}
+
 		function supportsIndex(array $table_status): bool {
 			// returns true for "materialized view"
 			return $table_status["Engine"] != "view";
@@ -521,9 +529,10 @@ ORDER BY a.attnum") as $row
 		$table_oid = driver()->tableOid($table);
 		$columns = get_key_vals("SELECT attnum, attname FROM pg_attribute WHERE attrelid = $table_oid AND attnum > 0", $connection2);
 		foreach (
-			get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey, indoption, (indpred IS NOT NULL)::int as indispartial
+			get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey, indoption, (indpred IS NOT NULL)::int as indispartial, pg_am.amname as algorithm
 FROM pg_index
 JOIN pg_class ON indexrelid = oid
+JOIN pg_am ON pg_am.oid = pg_class.relam
 WHERE indrelid = $table_oid
 ORDER BY indisprimary DESC, indisunique DESC", $connection2) as $row
 		) {
@@ -531,6 +540,7 @@ ORDER BY indisprimary DESC, indisunique DESC", $connection2) as $row
 			$return[$relname]["type"] = ($row["indispartial"] ? "INDEX" : ($row["indisprimary"] ? "PRIMARY" : ($row["indisunique"] ? "UNIQUE" : "INDEX")));
 			$return[$relname]["columns"] = array();
 			$return[$relname]["descs"] = array();
+			$return[$relname]["algorithm"] = $row["algorithm"];
 			if ($row["indkey"]) {
 				foreach (explode(" ", $row["indkey"]) as $indkey) {
 					$return[$relname]["columns"][] = $columns[$indkey];
@@ -711,7 +721,7 @@ ORDER BY conkey, conname") as $row
 			} elseif ($val[2] == "DROP") {
 				$drop[] = idf_escape($val[1]);
 			} else {
-				$queries[] = "CREATE INDEX " . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table) . " (" . implode(", ", $val[2]) . ")";
+				$queries[] = "CREATE INDEX " . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table) . ($val[3] ? " USING $val[3]" : "") . " (" . implode(", ", $val[2]) . ")";
 			}
 		}
 		if ($create) {
