@@ -53,7 +53,7 @@ function update_translations($lang, $messages, $filename, $pattern, $tabs = "\t"
 		$start = $match[2][1];
 		preg_match_all("~^(\\s*(?:// [^'].*\\s+)?)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => (.*[^,\n])),?~m", $match[2][0], $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
 		$s = "";
-		$fullstop = ($lang == "bn" ? '।' : (preg_match('~^(ja|zh)~', $lang) ? '。' : ($lang == 'he' ? '[^.]' : '\.')));
+		$fullstop = ($lang == 'bn' || $lang == 'hi' ? '।' : (preg_match('~^(ja|zh)~', $lang) ? '。' : ($lang == 'he' ? '[^.]' : '\.')));
 		foreach ($matches as $match) {
 			list(, list($indent), list($line, $offset), list($en), list($translation)) = $match;
 			if (isset($messages[$en])) {

@@ -6,6 +6,7 @@
 - PostgreSQL: Support calling functions returning table (bug #1040)
 - Designs: adminer.css with 'prefers-color-scheme: dark' don't disable dark mode
 - Plugins: Method bodyClass() to add &lt;body class>
+- Hindi translation
 
 ## Adminer 5.2.1 (released 2025-04-11)
 - Fix search anywhere (bug #1004, regression from 5.1.1)
