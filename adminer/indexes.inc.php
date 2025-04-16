@@ -29,6 +29,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 			$columns = array();
 			$lengths = array();
 			$descs = array();
+			$index_condition = support("partial_indexes") ? $index["partial_index_condition"] : "";
 			$index_algorithm = (in_array($index["algorithm"], driver()->indexMethods()) ? $index["algorithm"] : "");
 			$set = array();
 			ksort($index["columns"]);
@@ -54,6 +55,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 					&& (!$existing["lengths"] || array_values($existing["lengths"]) === $lengths)
 					&& array_values($existing["descs"]) === $descs
 					&& $existing["algorithm"] === $index_algorithm
+					&& $existing["partial_index_condition"] === $index_condition
 				) {
 					// skip existing index
 					unset($indexes[$name]);
@@ -61,7 +63,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 				}
 			}
 			if ($columns) {
-				$alter[] = array($index["type"], $name, $set, $index_algorithm);
+				$alter[] = array($index["type"], $name, $set, $index_algorithm, $index_condition);
 			}
 		}
 	}
@@ -119,6 +121,11 @@ if ($lengths || support("descidx")) {
 }
 ?>
 <th id="label-name"><?php echo lang('Name'); ?>
+<?php
+if (support("partial_indexes")) {
+	echo "<th id='label-condition' class='idxopts" .  ($show_options ? "" : " hidden") . "'>" . lang('Condition');
+}
+?>
 <th><noscript><?php echo icon("plus", "add[0]", "+", lang('Add next')); ?></noscript>
 </thead>
 <?php
@@ -157,6 +164,9 @@ foreach ($row["indexes"] as $index) {
 		}
 
 		echo "<td><input name='indexes[$j][name]' value='" . h($index["name"]) . "' autocapitalize='off' aria-labelledby='label-name'>\n";
+		if (support("partial_indexes")) {
+			echo "<td class='idxopts" .  ($show_options ? "" : " hidden") . "'><input name='indexes[$j][partial_index_condition]' value='" . h($index["partial_index_condition"]) . "' autocapitalize='off' aria-labelledby='label-condition'>\n";
+		}
 		echo "<td>" . icon("cross", "drop_col[$j]", "x", lang('Remove')) . script("qsl('button').onclick = partial(editingRemoveRow, 'indexes\$1[type]');");
 	}
 	$j++;

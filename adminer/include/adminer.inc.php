@@ -350,6 +350,12 @@ class Adminer {
 	* @param Index[] $indexes
 	*/
 	function tableIndexesPrint(array $indexes): void {
+
+		$partial_index_condition_exists = false;
+		foreach ($indexes as $name => $index) {
+			$partial_index_condition_exists |= $index["partial_index_condition"];
+		}
+
 		echo "<table>\n";
 		foreach ($indexes as $name => $index) {
 			ksort($index["columns"]); // enforce correct columns order
@@ -364,6 +370,9 @@ class Adminer {
 			echo "<tr title='" . h($name) . "'>";
 			echo "<th>$index[type]" . ($index['algorithm'] != first(driver()->indexMethods()) ? " ($index[algorithm])" : "");
 			echo "<td>" . implode(", ", $print);
+			if ($partial_index_condition_exists) {
+				echo "<td>" . ($index['partial_index_condition'] ? "WHERE ".$index['partial_index_condition'] : "");
+			}
 			echo "\n";
 		}
 		echo "</table>\n";

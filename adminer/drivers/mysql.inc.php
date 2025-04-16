@@ -1050,7 +1050,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @param literal-string $feature "check|comment|copy|database|descidx|drop_col|dump|event|indexes|kill|materializedview|privileges|procedure|processlist|routine|scheme|sequence|status|table|trigger|type|variables|view|view_trigger"
 	*/
 	function support(string $feature): bool {
-		return !preg_match("~scheme|sequence|type|view_trigger|materializedview" . (min_version(8) ? "" : "|descidx" . (min_version(5.1) ? "" : "|event")) . (min_version('8.0.16', '10.2.1') ? "" : "|check") . "~", $feature);
+		return !preg_match("~scheme|partial_indexes|sequence|type|view_trigger|materializedview" . (min_version(8) ? "" : "|descidx" . (min_version(5.1) ? "" : "|event")) . (min_version('8.0.16', '10.2.1') ? "" : "|check") . "~", $feature);
 	}
 
 	/** Kill a process

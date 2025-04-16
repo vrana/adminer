@@ -65,7 +65,7 @@ parameters:
 		Field: "array{field?:string, full_type:string, type:string, length:numeric-string, unsigned:string, default?:string, null:bool, auto_increment:bool, collation:string, privileges:int[], comment:string, primary:bool, generated:string, orig?:string, on_update?:string, on_delete?:string, default_constraint?: string}"
 		FieldType: "array{type:string, length:numeric-string, unsigned:string, collation:string}" # subset of RoutineField and Field
 		RoutineField: "array{field:string, type:string, length:numeric-string, unsigned:string, null:bool, full_type:string, collation:string, inout?:string}"
-		Index: "array{type:string, columns:list<string>, lengths:list<numeric-string>, descs:list<?bool>, algorithm?:string}"
+		Index: "array{type:string, columns:list<string>, lengths:list<numeric-string>, descs:list<?bool>, algorithm?:string, partial_index_condition?:string}"
 		ForeignKey: "array{db?:string, ns?:string, table:string, source:list<string>, target:list<?string>, on_delete:string, on_update?:string, definition?:string, deferrable?:string}"
 		Trigger: "array{Trigger?:string, Timing?:string, Event?:string, Of?:string, Type?:string, Statement?:string}"
 		Routine: "array{name?:string, fields:list<RoutineField>, comment:string, returns?:FieldType, definition:string, language?:string}"
