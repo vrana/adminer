@@ -323,15 +323,6 @@ if (isset($_GET["simpledb"])) {
 		);
 	}
 
-	/**
-	 * return list of supported index methods first one is default
-	 * @return string[]
-	 */
-	function index_methods()
-	{
-		return array();
-	}
-
 	function fields($table) {
 		return fields_from_edit();
 	}

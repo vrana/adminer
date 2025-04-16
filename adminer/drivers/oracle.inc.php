@@ -326,15 +326,6 @@ ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row
 		return $return;
 	}
 
-	/**
-	 * return list of supported index methods first one is default
-	 * @return string[]
-	 */
-	function index_methods() : array
-	{
-		return array();
-	}
-
 	function view($name) {
 		$view = views_table("view_name, text");
 		$rows = get_rows('SELECT text "select" FROM ' . $view . ' WHERE view_name = ' . q($name));
