@@ -52,7 +52,11 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 		echo "<link rel='apple-touch-icon' href='../adminer/static/logo.png'>\n";
 	}
 	foreach ($css as $url => $mode) {
-		echo "<link rel='stylesheet'" . ($mode == 'dark' && !$dark ? $media : "") . " href='" . h($url) . "'>\n";
+		$attrs = ($mode == 'dark' && !$dark
+			? $media
+			: ($mode == 'light' && $has_dark ? " media='(prefers-color-scheme: light)'" : "")
+		);
+		echo "<link rel='stylesheet'$attrs href='" . h($url) . "'>\n";
 	}
 	echo "\n<body class='" . lang('ltr') . " nojs";
 	adminer()->bodyClass();
