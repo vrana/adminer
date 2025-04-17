@@ -389,10 +389,12 @@ if (!$columns && support("table")) {
 				$unique_array = unique_array($rows[$n], $indexes);
 				if (!$unique_array) {
 					$unique_array = array();
+					reset($select);
 					foreach ($rows[$n] as $key => $val) {
-						if (!preg_match('~^(COUNT\((\*|(DISTINCT )?`(?:[^`]|``)+`)\)|(AVG|GROUP_CONCAT|MAX|MIN|SUM)\(`(?:[^`]|``)+`\))$~', $key)) { //! columns looking like functions
+						if (!preg_match('~^(COUNT|AVG|GROUP_CONCAT|MAX|MIN|SUM)\(~', current($select))) {
 							$unique_array[$key] = $val;
 						}
+						next($select);
 					}
 				}
 				$unique_idf = "";
