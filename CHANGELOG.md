@@ -1,4 +1,5 @@
 ## Adminer dev
+- Autocomplete: Support table aliases
 - MySQL: Avoid warning on selecting tables with fulltext indexes (bug #1036)
 - MySQL, PostgreSQL: Support index algorithms (bug #1030)
 - PostgreSQL, CockroachDB: Creating partitioned tables (bug #1031)
