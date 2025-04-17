@@ -713,7 +713,7 @@ ORDER BY conkey, conname") as $row
 		$queries = array();
 		foreach ($alter as $val) {
 			if ($val[0] != "INDEX") {
-				//! descending UNIQUE indexes results in syntax error
+				//! descending UNIQUE indexes result in syntax error
 				$create[] = ($val[2] == "DROP"
 					? "\nDROP CONSTRAINT " . idf_escape($val[1])
 					: "\nADD" . ($val[1] != "" ? " CONSTRAINT " . idf_escape($val[1]) : "") . " $val[0] " . ($val[0] == "PRIMARY" ? "KEY " : "") . "(" . implode(", ", $val[2]) . ")"
