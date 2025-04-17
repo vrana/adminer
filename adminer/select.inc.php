@@ -410,8 +410,10 @@ if (!$columns && support("table")) {
 					. ($is_group || information_schema(DB) ? "" : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . $unique_idf) . "' class='edit'>" . lang('edit') . "</a>")
 				);
 
+				reset($select);
 				foreach ($row as $key => $val) {
 					if (isset($names[$key])) {
+						$column = current($select);
 						$field = (array) $fields[$key];
 						$val = driver()->value($val, $field);
 						if ($val != "" && (!isset($email_fields[$key]) || $email_fields[$key] != "")) {
@@ -439,7 +441,7 @@ if (!$columns && support("table")) {
 								}
 							}
 						}
-						if ($key == "COUNT(*)") { //! columns looking like functions
+						if ($column == "COUNT(*)") {
 							$link = ME . "select=" . urlencode($TABLE);
 							$i = 0;
 							foreach ((array) $_GET["where"] as $v) {
@@ -469,6 +471,7 @@ if (!$columns && support("table")) {
 							;
 						}
 					}
+					next($select);
 				}
 
 				if ($backward_keys) {
