@@ -12,15 +12,7 @@ if (isset($_SESSION["lang"])) {
 }
 
 $messages_all = array();
-foreach (
-	array_merge(
-		glob(__DIR__ . "/adminer/*.php"),
-		glob(__DIR__ . "/adminer/include/*.php"),
-		glob(__DIR__ . "/adminer/drivers/*.php"),
-		glob(__DIR__ . "/editor/*.php"),
-		glob(__DIR__ . "/editor/include/*.php")
-	) as $include
-) {
+foreach (glob(__DIR__ . "/{adminer,adminer/include,adminer/drivers,editor,editor/include}/*.php", GLOB_BRACE) as $include) {
 	$file = file_get_contents($include);
 	if (preg_match_all("~[^>]lang\\(('(?:[^\\\\']+|\\\\.)*')([),])~", $file, $matches)) { // lang() always uses apostrophes
 		$messages_all += array_combine($matches[1], $matches[2]);
