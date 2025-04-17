@@ -1,4 +1,5 @@
 ## Adminer dev
+- Align numeric functions right
 - Autocomplete: Support table aliases
 - MySQL: Avoid warning on selecting tables with fulltext indexes (bug #1036)
 - MySQL, PostgreSQL: Support index algorithms (bug #1030)

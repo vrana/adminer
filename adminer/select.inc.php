@@ -459,7 +459,11 @@ if (!$columns && support("table")) {
 						$posted = idx(idx($_POST["val"], $unique_idf), bracket_escape($key));
 						$editable = !is_array($row[$key]) && is_utf8($html) && $rows[$n][$key] == $row[$key] && !$functions[$key] && !$field["generated"];
 						$text = preg_match('~text|json|lob~', $field["type"]);
-						echo "<td id='$id'" . (preg_match(number_type(), $field["type"]) && ($val === null || is_numeric(strip_tags($html))) ? " class='number'" : "");
+						$is_number = preg_match(number_type(), $field["type"])
+							|| preg_match('~^(CHAR_LENGTH|ROUND|FLOOR|CEIL|TIME_TO_SEC|COUNT|SUM)\(~', $column)
+							|| (preg_match('~^(AVG|MIN|MAX)\((.+)\)~', $column, $match) && preg_match(number_type(), $fields[idf_unescape($match[2])]["type"]))
+						;
+						echo "<td id='$id'" . ($is_number && ($val === null || is_numeric(strip_tags($html))) ? " class='number'" : "");
 						if (($_GET["modify"] && $editable && $val !== null) || $posted !== null) {
 							$h_value = h($posted !== null ? $posted : $row[$key]);
 							echo ">" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>");
