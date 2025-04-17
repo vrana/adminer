@@ -109,12 +109,13 @@ $show_options = ($_POST ? $_POST["options"] : get_setting("index_options"));
 <thead><tr>
 <th id="label-type"><?php echo lang('Index Type'); ?>
 <?php
+$idxopts = " class='idxopts" . ($show_options ? "" : " hidden") . "'";
 if ($index_algorithms) {
-	echo "<th id='label-algorithm' class='idxopts" .  ($show_options ? "" : " hidden") . "'>" . lang('Algorithm');
+	echo "<th id='label-algorithm'$idxopts>" . lang('Algorithm');
 }
 ?>
 <th><input type="submit" class="wayoff"><?php
-echo lang('Columns') . ($lengths ? "<span class='idxopts" . ($show_options ? "" : " hidden") . "'> (" . lang('length') . ")</span>" : "");
+echo lang('Columns') . ($lengths ? "<span$idxopts> (" . lang('length') . ")</span>" : "");
 if ($lengths || support("descidx")) {
 	echo checkbox("options", 1, $show_options, lang('Options'), "indexOptionsShow(this.checked)", "jsonly") . "\n";
 }
@@ -137,7 +138,7 @@ foreach ($row["indexes"] as $index) {
 		echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow.call(this);" : ""), "label-type");
 
 		if ($index_algorithms) {
-			echo "<td class='idxopts" .  ($show_options ? "" : " hidden") . "'>" . html_select("indexes[$j][algorithm]", array_merge(array(""), $index_algorithms), $index['algorithm'], "label-algorithm");
+			echo "<td$idxopts>" . html_select("indexes[$j][algorithm]", array_merge(array(""), $index_algorithms), $index['algorithm'], "label-algorithm");
 		}
 
 		echo "<td>";
@@ -150,7 +151,7 @@ foreach ($row["indexes"] as $index) {
 				$column,
 				"partial(" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . ", '" . js_escape(JUSH == "sql" ? "" : $_GET["indexes"] . "_") . "')"
 			);
-			echo "<span class='idxopts" . ($show_options ? "" : " hidden") . "'>";
+			echo "<span$idxopts>";
 			echo ($lengths ? "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h(idx($index["lengths"], $key)) . "' title='" . lang('Length') . "'>" : "");
 			echo (support("descidx") ? checkbox("indexes[$j][descs][$i]", 1, idx($index["descs"], $key), lang('descending')) : "");
 			echo "</span> </span>";
