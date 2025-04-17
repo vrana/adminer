@@ -85,6 +85,10 @@ class Adminer {
 		return $return;
 	}
 
+	function cssModes() {
+		return array();
+	}
+
 	function loginForm() {
 		echo "<table class='layout'>\n";
 		echo adminer()->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', input_hidden("auth[driver]", "server") . '<input name="auth[username]" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">');

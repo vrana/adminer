@@ -127,6 +127,13 @@ class Adminer {
 		return $return;
 	}
 
+	/** Specify supported color modes (schemes)
+	* @return list<bool> a pair of booleans to specify light & dark mode, respectively
+	*/
+	function cssModes(): array {
+		return array();
+	}
+
 	/** Print login form */
 	function loginForm(): void {
 		echo "<table class='layout'>\n";

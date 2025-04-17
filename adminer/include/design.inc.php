@@ -29,18 +29,22 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 <?php
 
 	$css = adminer()->css();
-	$has_light = false;
-	$has_dark = false;
-	foreach ($css as $url) {
-		if (strpos($url, "adminer.css") !== false) {
-			$has_light = true;
-			$filename = preg_replace('~\?.*~', '', $url);
-			if (!preg_match('~//~', $url) && is_readable($filename) && preg_match('~prefers-color-scheme:\s*dark~', file_get_contents($filename))) {
+	if ($css_modes = adminer()->cssModes()) {
+		list($has_light, $has_dark) = $css_modes;
+	} else {
+		$has_light = false;
+		$has_dark = false;
+		foreach ($css as $url) {
+			if (strpos($url, "adminer.css") !== false) {
+				$has_light = true;
+				$filename = preg_replace('~\?.*~', '', $url);
+				if (!preg_match('~//~', $filename) && is_readable($filename) && preg_match('~prefers-color-scheme:\s*dark~', file_get_contents($filename))) {
+					$has_dark = true;
+				}
+			}
+			if (strpos($url, "adminer-dark.css") !== false) {
 				$has_dark = true;
 			}
-		}
-		if (strpos($url, "adminer-dark.css") !== false) {
-			$has_dark = true;
 		}
 	}
 	$dark = ($has_light
