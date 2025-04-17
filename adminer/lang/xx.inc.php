@@ -212,6 +212,7 @@ Lang::$translations = array(
 	'Add next' => 'Xx',
 	'Index Type' => 'Xx',
 	'length' => 'xx',
+	'Algorithm' => 'Xx',
 
 	'Foreign keys' => 'Xx',
 	'Foreign key' => 'Xx',
@@ -357,7 +358,6 @@ Lang::$translations = array(
 	'%s must <a%s>return an array</a>.' => '%s xx <a%s>xx</a>.',
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Xx</a> %s xx %s.',
 	'screenshot' => 'xx',
-	'Algorithm' => 'Xx',
 );
 
 // run `php ../../lang.php xx` to update this file

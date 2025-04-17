@@ -211,6 +211,7 @@ Lang::$translations = array(
 	'Add next' => 'Dodaj następny',
 	'Index Type' => 'Typ indeksu',
 	'length' => 'długość',
+	'Algorithm' => 'Algorytm',
 
 	'Foreign keys' => 'Klucze obce',
 	'Foreign key' => 'Klucz obcy',
@@ -355,7 +356,6 @@ Lang::$translations = array(
 	'%s must <a%s>return an array</a>.' => '%s musi <a%s>zwrócić tablicę</a>.',
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Skonfiguruj</a> %s w %s.',
 	'screenshot' => 'zrzut ekranu',
-	'Algorithm' => 'Algorytm',
 );
 
 // run `php ../../lang.php pl` to update this file
