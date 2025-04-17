@@ -79,7 +79,11 @@ class Adminer {
 		foreach (array("", "-dark") as $mode) {
 			$filename = "adminer$mode.css";
 			if (file_exists($filename)) {
-				$return[] = "$filename?v=" . crc32(file_get_contents($filename));
+				$file = file_get_contents($filename);
+				$return["$filename?v=" . crc32($file)] = ($mode
+					? "dark"
+					: (preg_match('~prefers-color-scheme:\s*dark~', $file) ? '' : 'light')
+				);
 			}
 		}
 		return $return;

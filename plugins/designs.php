@@ -27,7 +27,7 @@ class AdminerDesigns extends Adminer\Plugin {
 	function css() {
 		$return = array();
 		if (array_key_exists($_SESSION["design"], $this->designs)) {
-			$return[] = $_SESSION["design"];
+			$return[$_SESSION["design"]] = (preg_match('~-dark~', $_SESSION["design"]) ? "dark" : "light");
 		}
 		return $return;
 	}

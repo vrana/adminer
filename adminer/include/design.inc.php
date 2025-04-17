@@ -29,20 +29,11 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 <?php
 
 	$css = adminer()->css();
-	$has_light = false;
-	$has_dark = false;
-	foreach ($css as $url) {
-		if (strpos($url, "adminer.css") !== false) {
-			$has_light = true;
-			$filename = preg_replace('~\?.*~', '', $url);
-			if (!preg_match('~//~', $url) && is_readable($filename) && preg_match('~prefers-color-scheme:\s*dark~', file_get_contents($filename))) {
-				$has_dark = true;
-			}
-		}
-		if (strpos($url, "adminer-dark.css") !== false) {
-			$has_dark = true;
-		}
+	if (is_int(key($css))) { // legacy return value
+		$css = array_fill_keys($css, 'light');
 	}
+	$has_light = in_array('light', $css) || in_array('', $css);
+	$has_dark = in_array('dark', $css) || in_array('', $css);
 	$dark = ($has_light
 		? ($has_dark ? null : false) // both styles - autoswitching, only adminer.css - light
 		: ($has_dark ?: null) // only adminer-dark.css - dark, neither - autoswitching
@@ -60,8 +51,8 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 		echo "<link rel='icon' href='data:image/gif;base64,R0lGODlhEAAQAJEAAAQCBPz+/PwCBAROZCH5BAEAAAAALAAAAAAQABAAAAI2hI+pGO1rmghihiUdvUBnZ3XBQA7f05mOak1RWXrNq5nQWHMKvuoJ37BhVEEfYxQzHjWQ5qIAADs='>\n";
 		echo "<link rel='apple-touch-icon' href='../adminer/static/logo.png'>\n";
 	}
-	foreach ($css as $val) {
-		echo "<link rel='stylesheet'" . (preg_match('~-dark\.~', $val) && !$dark ? $media : "") . " href='" . h($val) . "'>\n";
+	foreach ($css as $url => $mode) {
+		echo "<link rel='stylesheet'" . ($mode == 'dark' && !$dark ? $media : "") . " href='" . h($url) . "'>\n";
 	}
 	echo "\n<body class='" . lang('ltr') . " nojs";
 	adminer()->bodyClass();
