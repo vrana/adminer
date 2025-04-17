@@ -355,12 +355,12 @@ if (isset($_GET["pgsql"])) {
 			return "(SELECT oid FROM pg_class WHERE relnamespace = $this->nsOid AND relname = " . q($table) . " AND relkind IN ('r', 'm', 'v', 'f', 'p'))";
 		}
 
-		function indexMethods(): array {
-			static $methods = array();
-			if (!$methods) {
-				$methods = get_vals("SELECT amname FROM pg_am" . (min_version(9.6) ? " WHERE amtype = 'i'" : "") . " ORDER BY amname = 'btree' DESC, amname");
+		function indexAlgorithms(array $tableStatus): array {
+			static $return = array();
+			if (!$return) {
+				$return = get_vals("SELECT amname FROM pg_am" . (min_version(9.6) ? " WHERE amtype = 'i'" : "") . " ORDER BY amname = 'btree' DESC, amname");
 			}
-			return $methods;
+			return $return;
 		}
 
 		function supportsIndex(array $table_status): bool {

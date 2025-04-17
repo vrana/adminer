@@ -4,6 +4,7 @@ namespace Adminer;
 $TABLE = $_GET["indexes"];
 $index_types = array("PRIMARY", "UNIQUE", "INDEX");
 $table_status = table_status1($TABLE, true);
+$index_algorithms = driver()->indexAlgorithms($table_status);
 if (preg_match('~MyISAM|M?aria' . (min_version(5.6, '10.0.5') ? '|InnoDB' : '') . '~i', $table_status["Engine"])) {
 	$index_types[] = "FULLTEXT";
 }
@@ -29,7 +30,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 			$columns = array();
 			$lengths = array();
 			$descs = array();
-			$index_algorithm = (in_array($index["algorithm"], driver()->indexMethods()) ? $index["algorithm"] : "");
+			$index_algorithm = (in_array($index["algorithm"], $index_algorithms) ? $index["algorithm"] : "");
 			$set = array();
 			ksort($index["columns"]);
 			foreach ($index["columns"] as $key => $column) {
@@ -108,8 +109,8 @@ $show_options = ($_POST ? $_POST["options"] : get_setting("index_options"));
 <thead><tr>
 <th id="label-type"><?php echo lang('Index Type'); ?>
 <?php
-if (driver()->indexMethods()) {
-	echo "<th id='label-method' class='idxopts" .  ($show_options ? "" : " hidden") . "'>" . lang('Algorithm');
+if ($index_algorithms) {
+	echo "<th id='label-algorithm' class='idxopts" .  ($show_options ? "" : " hidden") . "'>" . lang('Algorithm');
 }
 ?>
 <th><input type="submit" class="wayoff"><?php
@@ -135,8 +136,8 @@ foreach ($row["indexes"] as $index) {
 	if (!$_POST["drop_col"] || $j != key($_POST["drop_col"])) {
 		echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow.call(this);" : ""), "label-type");
 
-		if (driver()->indexMethods()) {
-			echo "<td class='idxopts" .  ($show_options ? "" : " hidden") . "'>" . html_select("indexes[$j][algorithm]", array_merge(array(""), driver()->indexMethods()), $index['algorithm'], "label-method");
+		if ($index_algorithms) {
+			echo "<td class='idxopts" .  ($show_options ? "" : " hidden") . "'>" . html_select("indexes[$j][algorithm]", array_merge(array(""), $index_algorithms), $index['algorithm'], "label-algorithm");
 		}
 
 		echo "<td>";

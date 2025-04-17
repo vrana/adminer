@@ -8,10 +8,7 @@
 */
 class AdminerTableIndexesStructure extends Adminer\Plugin {
 
-	/** Print table structure in tabular format
-	* @param Index[] $indexes data about all indexes on a table
-	*/
-	function tableIndexesPrint($indexes): bool {
+	function tableIndexesPrint($indexes, $tableStatus): bool {
 		echo "<table>\n";
 		echo "<thead><tr><th>" . Adminer\lang('Name') . "<th>" . Adminer\lang('Type') . "<th>" . Adminer\lang('Columns') . "</thead>\n";
 		foreach ($indexes as $name => $index) {

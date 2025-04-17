@@ -348,9 +348,11 @@ class Adminer {
 
 	/** Print list of indexes on table in tabular format
 	* @param Index[] $indexes
+	* @param TableStatus $tableStatus
 	*/
-	function tableIndexesPrint(array $indexes): void {
+	function tableIndexesPrint(array $indexes, array $tableStatus): void {
 		echo "<table>\n";
+		$default_algorithm = first(driver()->indexAlgorithms($tableStatus));
 		foreach ($indexes as $name => $index) {
 			ksort($index["columns"]); // enforce correct columns order
 			$print = array();
@@ -362,7 +364,7 @@ class Adminer {
 			}
 
 			echo "<tr title='" . h($name) . "'>";
-			echo "<th>$index[type]" . ($index['algorithm'] != first(driver()->indexMethods()) ? " ($index[algorithm])" : "");
+			echo "<th>$index[type]" . ($index['algorithm'] != $default_algorithm ? " ($index[algorithm])" : "");
 			echo "<td>" . implode(", ", $print);
 			echo "\n";
 		}
