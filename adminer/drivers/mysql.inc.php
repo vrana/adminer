@@ -367,6 +367,10 @@ if (!defined('Adminer\DRIVER')) {
 			}
 			return $return;
 		}
+
+		function indexAlgorithms(array $tableStatus): array {
+			return (preg_match('~^(MEMORY|NDB)$~', $tableStatus["Engine"]) ? array("HASH", "BTREE") : array());
+		}
 	}
 
 
@@ -558,6 +562,7 @@ if (!defined('Adminer\DRIVER')) {
 			$return[$name]["columns"][] = $row["Column_name"];
 			$return[$name]["lengths"][] = ($row["Index_type"] == "SPATIAL" ? null : $row["Sub_part"]);
 			$return[$name]["descs"][] = null;
+			$return[$name]["algorithm"] = $row["Index_type"];
 		}
 		return $return;
 	}
