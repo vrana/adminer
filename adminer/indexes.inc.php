@@ -54,7 +54,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 					&& array_values($existing["columns"]) === $columns
 					&& (!$existing["lengths"] || array_values($existing["lengths"]) === $lengths)
 					&& array_values($existing["descs"]) === $descs
-					&& $existing["algorithm"] === $index_algorithm
+					&& (!$index_algorithms || $existing["algorithm"] == $index_algorithm)
 				) {
 					// skip existing index
 					unset($indexes[$name]);

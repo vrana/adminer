@@ -368,7 +368,7 @@ class Adminer {
 			}
 
 			echo "<tr title='" . h($name) . "'>";
-			echo "<th>$index[type]" . ($index['algorithm'] != $default_algorithm ? " ($index[algorithm])" : "");
+			echo "<th>$index[type]" . ($default_algorithm && $index['algorithm'] != $default_algorithm ? " ($index[algorithm])" : "");
 			echo "<td>" . implode(", ", $print);
 			echo "\n";
 		}
