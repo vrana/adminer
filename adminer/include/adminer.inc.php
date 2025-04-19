@@ -353,7 +353,7 @@ class Adminer {
 
 		$partial_index_condition_exists = false;
 		foreach ($indexes as $name => $index) {
-			$partial_index_condition_exists |= $index["partial_index_condition"];
+			$partial_index_condition_exists |= (bool) $index["partial_index_condition"];
 		}
 
 		echo "<table>\n";
@@ -371,7 +371,7 @@ class Adminer {
 			echo "<th>$index[type]" . ($index['algorithm'] != first(driver()->indexMethods()) ? " ($index[algorithm])" : "");
 			echo "<td>" . implode(", ", $print);
 			if ($partial_index_condition_exists) {
-				echo "<td>" . ($index['partial_index_condition'] ? "WHERE ".$index['partial_index_condition'] : "");
+				echo "<td>" . ($index['partial_index_condition'] ? "<code class='jush-" . JUSH . "'>WHERE " . h($index['partial_index_condition']) : "");
 			}
 			echo "\n";
 		}
