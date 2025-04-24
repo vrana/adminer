@@ -367,6 +367,10 @@ if (!defined('Adminer\DRIVER')) {
 			}
 			return $return;
 		}
+
+		function indexAlgorithms(array $tableStatus): array {
+			return (preg_match('~^(MEMORY|NDB)$~', $tableStatus["Engine"]) ? array("HASH", "BTREE") : array());
+		}
 	}
 
 
@@ -558,6 +562,7 @@ if (!defined('Adminer\DRIVER')) {
 			$return[$name]["columns"][] = $row["Column_name"];
 			$return[$name]["lengths"][] = ($row["Index_type"] == "SPATIAL" ? null : $row["Sub_part"]);
 			$return[$name]["descs"][] = null;
+			$return[$name]["algorithm"] = $row["Index_type"];
 		}
 		return $return;
 	}
@@ -1047,10 +1052,18 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Check whether a feature is supported
-	* @param literal-string $feature "check|comment|copy|database|descidx|drop_col|dump|event|indexes|kill|materializedview|privileges|procedure|processlist|routine|scheme|sequence|status|table|trigger|type|variables|view|view_trigger"
+	* @param literal-string $feature check|comment|columns|copy|database|descidx|drop_col|dump|event|indexes|kill|materializedview
+	* |move_col|privileges|procedure|processlist|routine|scheme|sequence|sql|status|table|trigger|type|variables|view|view_trigger
 	*/
 	function support(string $feature): bool {
-		return !preg_match("~scheme|partial_indexes|sequence|type|view_trigger|materializedview" . (min_version(8) ? "" : "|descidx" . (min_version(5.1) ? "" : "|event")) . (min_version('8.0.16', '10.2.1') ? "" : "|check") . "~", $feature);
+		return preg_match(
+			'~^(comment|columns|copy|database|drop_col|dump|indexes|kill|privileges|move_col|procedure|processlist|routine|sql|status|table|trigger|variables|view'
+				. (min_version(5.1) ? '|event' : '')
+				. (min_version(8) ? '|descidx' : '')
+				. (min_version('8.0.16', '10.2.1') ? '|check' : '')
+				. ')$~',
+			$feature
+		);
 	}
 
 	/** Kill a process

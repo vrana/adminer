@@ -259,10 +259,11 @@ abstract class SqlDriver {
 	}
 
 	/**
-	 * Return list of supported index methods, first one is default
+	 * Return list of supported index algorithms, first one is default
+	 * @param TableStatus $tableStatus
 	 * @return list<string>
 	 */
-	function indexMethods(): array {
+	function indexAlgorithms(array $tableStatus): array {
 		return array();
 	}
 

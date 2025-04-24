@@ -114,14 +114,18 @@ class Adminer {
 	}
 
 	/** Get URLs of the CSS files
-	* @return list<string>
+	* @return string[] key is URL, value is either 'light' (supports only light color scheme), 'dark' or '' (both)
 	*/
 	function css(): array {
 		$return = array();
 		foreach (array("", "-dark") as $mode) {
 			$filename = "adminer$mode.css";
 			if (file_exists($filename)) {
-				$return[] = "$filename?v=" . crc32(file_get_contents($filename));
+				$file = file_get_contents($filename);
+				$return["$filename?v=" . crc32($file)] = ($mode
+					? "dark"
+					: (preg_match('~prefers-color-scheme:\s*dark~', $file) ? '' : 'light')
+				);
 			}
 		}
 		return $return;
@@ -348,15 +352,15 @@ class Adminer {
 
 	/** Print list of indexes on table in tabular format
 	* @param Index[] $indexes
+	* @param TableStatus $tableStatus
 	*/
-	function tableIndexesPrint(array $indexes): void {
-
+	function tableIndexesPrint(array $indexes, array $tableStatus): void {
 		$partial_index_condition_exists = false;
 		foreach ($indexes as $name => $index) {
 			$partial_index_condition_exists |= (bool) $index["partial_index_condition"];
 		}
-
 		echo "<table>\n";
+		$default_algorithm = first(driver()->indexAlgorithms($tableStatus));
 		foreach ($indexes as $name => $index) {
 			ksort($index["columns"]); // enforce correct columns order
 			$print = array();
@@ -368,7 +372,7 @@ class Adminer {
 			}
 
 			echo "<tr title='" . h($name) . "'>";
-			echo "<th>$index[type]" . ($index['algorithm'] != first(driver()->indexMethods()) ? " ($index[algorithm])" : "");
+			echo "<th>$index[type]" . ($default_algorithm && $index['algorithm'] != $default_algorithm ? " ($index[algorithm])" : "");
 			echo "<td>" . implode(", ", $print);
 			if ($partial_index_condition_exists) {
 				echo "<td>" . ($index['partial_index_condition'] ? "<code class='jush-" . JUSH . "'>WHERE " . h($index['partial_index_condition']) : "");

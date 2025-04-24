@@ -42,7 +42,7 @@ if (support("indexes") && driver()->supportsIndex($table_status)) {
 	echo "<h3 id='indexes'>" . lang('Indexes') . "</h3>\n";
 	$indexes = indexes($TABLE);
 	if ($indexes) {
-		adminer()->tableIndexesPrint($indexes);
+		adminer()->tableIndexesPrint($indexes, $table_status);
 	}
 	echo '<p class="links"><a href="' . h(ME) . 'indexes=' . urlencode($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
 }

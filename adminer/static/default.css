@@ -68,7 +68,7 @@ input.wayoff { left: -1000px; position: absolute; }
 .sqlarea { width: 98%; }
 .sql-footer { margin-bottom: 2.5em; }
 .explain table { white-space: pre; }
-.icon { width: 18px; height: 18px; background: navy center no-repeat; border: 0; vertical-align: middle; }
+.icon { width: 18px; height: 18px; background: navy center no-repeat; border: 0; padding: 0; vertical-align: middle; }
 .icon span { display: none; }
 .icon:hover { background-color: red; }
 .size { width: 7ex; }

@@ -4,6 +4,7 @@ namespace Adminer;
 $TABLE = $_GET["indexes"];
 $index_types = array("PRIMARY", "UNIQUE", "INDEX");
 $table_status = table_status1($TABLE, true);
+$index_algorithms = driver()->indexAlgorithms($table_status);
 if (preg_match('~MyISAM|M?aria' . (min_version(5.6, '10.0.5') ? '|InnoDB' : '') . '~i', $table_status["Engine"])) {
 	$index_types[] = "FULLTEXT";
 }
@@ -30,7 +31,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 			$lengths = array();
 			$descs = array();
 			$index_condition = support("partial_indexes") ? $index["partial_index_condition"] : "";
-			$index_algorithm = (in_array($index["algorithm"], driver()->indexMethods()) ? $index["algorithm"] : "");
+			$index_algorithm = (in_array($index["algorithm"], $index_algorithms) ? $index["algorithm"] : "");
 			$set = array();
 			ksort($index["columns"]);
 			foreach ($index["columns"] as $key => $column) {
@@ -56,6 +57,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 					&& array_values($existing["descs"]) === $descs
 					&& $existing["algorithm"] === $index_algorithm
 					&& $existing["partial_index_condition"] === $index_condition
+					&& (!$index_algorithms || $existing["algorithm"] == $index_algorithm)
 				) {
 					// skip existing index
 					unset($indexes[$name]);
@@ -110,12 +112,13 @@ $show_options = ($_POST ? $_POST["options"] : get_setting("index_options"));
 <thead><tr>
 <th id="label-type"><?php echo lang('Index Type'); ?>
 <?php
-if (driver()->indexMethods()) {
-	echo "<th id='label-method' class='idxopts" .  ($show_options ? "" : " hidden") . "'>" . lang('Algorithm');
+$idxopts = " class='idxopts" . ($show_options ? "" : " hidden") . "'";
+if ($index_algorithms) {
+	echo "<th id='label-algorithm'$idxopts>" . lang('Algorithm');
 }
 ?>
 <th><input type="submit" class="wayoff"><?php
-echo lang('Columns') . ($lengths ? "<span class='idxopts" . ($show_options ? "" : " hidden") . "'> (" . lang('length') . ")</span>" : "");
+echo lang('Columns') . ($lengths ? "<span$idxopts> (" . lang('length') . ")</span>" : "");
 if ($lengths || support("descidx")) {
 	echo checkbox("options", 1, $show_options, lang('Options'), "indexOptionsShow(this.checked)", "jsonly") . "\n";
 }
@@ -142,8 +145,8 @@ foreach ($row["indexes"] as $index) {
 	if (!$_POST["drop_col"] || $j != key($_POST["drop_col"])) {
 		echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? "indexesAddRow.call(this);" : ""), "label-type");
 
-		if (driver()->indexMethods()) {
-			echo "<td class='idxopts" .  ($show_options ? "" : " hidden") . "'>" . html_select("indexes[$j][algorithm]", array_merge(array(""), driver()->indexMethods()), $index['algorithm'], "label-method");
+		if ($index_algorithms) {
+			echo "<td$idxopts>" . html_select("indexes[$j][algorithm]", array_merge(array(""), $index_algorithms), $index['algorithm'], "label-algorithm");
 		}
 
 		echo "<td>";
@@ -156,7 +159,7 @@ foreach ($row["indexes"] as $index) {
 				$column,
 				"partial(" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . ", '" . js_escape(JUSH == "sql" ? "" : $_GET["indexes"] . "_") . "')"
 			);
-			echo "<span class='idxopts" . ($show_options ? "" : " hidden") . "'>";
+			echo "<span$idxopts>";
 			echo ($lengths ? "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h(idx($index["lengths"], $key)) . "' title='" . lang('Length') . "'>" : "");
 			echo (support("descidx") ? checkbox("indexes[$j][descs][$i]", 1, idx($index["descs"], $key), lang('descending')) : "");
 			echo "</span> </span>";

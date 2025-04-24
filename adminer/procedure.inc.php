@@ -56,7 +56,7 @@ echo ($collations ? "<datalist id='collations'>" . optionlist($collations) . "</
 edit_fields($row["fields"], $collations, $routine);
 if (isset($_GET["function"])) {
 	echo "<tr><td>" . lang('Return type');
-	edit_type("returns", $row["returns"], $collations, array(), (JUSH == "pgsql" ? array("void", "trigger") : array()));
+	edit_type("returns", (array) $row["returns"], $collations, array(), (JUSH == "pgsql" ? array("void", "trigger") : array()));
 }
 ?>
 </table>

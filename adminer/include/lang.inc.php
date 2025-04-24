@@ -66,6 +66,7 @@ function langs(): array {
 		'fr' => 'Français', // Francis Gagné, Aurélien Royer
 		'gl' => 'Galego', // Eduardo Penabad Ramos
 		'he' => 'עברית', // Binyamin Yawitz - https://stuff-group.com/
+		'hi' => 'हिन्दी', // Joshi yogesh
 		'hu' => 'Magyar', // Borsos Szilárd (Borsosfi) - http://www.borsosfi.hu, info@borsosfi.hu
 		'id' => 'Bahasa Indonesia', // Ivan Lanin - http://ivan.lanin.org
 		'it' => 'Italiano', // Alessandro Fiorotto, Paolo Asperti

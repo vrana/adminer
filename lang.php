@@ -12,15 +12,7 @@ if (isset($_SESSION["lang"])) {
 }
 
 $messages_all = array();
-foreach (
-	array_merge(
-		glob(__DIR__ . "/adminer/*.php"),
-		glob(__DIR__ . "/adminer/include/*.php"),
-		glob(__DIR__ . "/adminer/drivers/*.php"),
-		glob(__DIR__ . "/editor/*.php"),
-		glob(__DIR__ . "/editor/include/*.php")
-	) as $include
-) {
+foreach (glob(__DIR__ . "/{adminer,adminer/include,adminer/drivers,editor,editor/include}/*.php", GLOB_BRACE) as $include) {
 	$file = file_get_contents($include);
 	if (preg_match_all("~[^>]lang\\(('(?:[^\\\\']+|\\\\.)*')([),])~", $file, $matches)) { // lang() always uses apostrophes
 		$messages_all += array_combine($matches[1], $matches[2]);
@@ -53,7 +45,7 @@ function update_translations($lang, $messages, $filename, $pattern, $tabs = "\t"
 		$start = $match[2][1];
 		preg_match_all("~^(\\s*(?:// [^'].*\\s+)?)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => (.*[^,\n])),?~m", $match[2][0], $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
 		$s = "";
-		$fullstop = ($lang == "bn" ? '।' : (preg_match('~^(ja|zh)~', $lang) ? '。' : ($lang == 'he' ? '[^.]' : '\.')));
+		$fullstop = ($lang == 'bn' || $lang == 'hi' ? '।' : (preg_match('~^(ja|zh)~', $lang) ? '。' : ($lang == 'he' ? '[^.]' : '\.')));
 		foreach ($matches as $match) {
 			list(, list($indent), list($line, $offset), list($en), list($translation)) = $match;
 			if (isset($messages[$en])) {

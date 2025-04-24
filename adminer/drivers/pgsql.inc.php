@@ -355,12 +355,12 @@ if (isset($_GET["pgsql"])) {
 			return "(SELECT oid FROM pg_class WHERE relnamespace = $this->nsOid AND relname = " . q($table) . " AND relkind IN ('r', 'm', 'v', 'f', 'p'))";
 		}
 
-		function indexMethods(): array {
-			static $methods = array();
-			if (!$methods) {
-				$methods = get_vals("SELECT amname FROM pg_am" . (min_version(9.6) ? " WHERE amtype = 'i'" : "") . " ORDER BY amname = 'btree' DESC, amname");
+		function indexAlgorithms(array $tableStatus): array {
+			static $return = array();
+			if (!$return) {
+				$return = get_vals("SELECT amname FROM pg_am" . (min_version(9.6) ? " WHERE amtype = 'i'" : "") . " ORDER BY amname = 'btree' DESC, amname");
 			}
-			return $methods;
+			return $return;
 		}
 
 		function supportsIndex(array $table_status): bool {
@@ -714,7 +714,7 @@ ORDER BY conkey, conname") as $row
 		$queries = array();
 		foreach ($alter as $val) {
 			if ($val[0] != "INDEX") {
-				//! descending UNIQUE indexes results in syntax error
+				//! descending UNIQUE indexes result in syntax error
 				$create[] = ($val[2] == "DROP"
 					? "\nDROP CONSTRAINT " . idf_escape($val[1])
 					: "\nADD" . ($val[1] != "" ? " CONSTRAINT " . idf_escape($val[1]) : "") . " $val[0] " . ($val[0] == "PRIMARY" ? "KEY " : "") . "(" . implode(", ", $val[2]) . ")"
