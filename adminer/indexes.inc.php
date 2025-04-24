@@ -30,6 +30,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 			$columns = array();
 			$lengths = array();
 			$descs = array();
+			$index_condition = (support("partial_indexes") ? $index["partial"] : "");
 			$index_algorithm = (in_array($index["algorithm"], $index_algorithms) ? $index["algorithm"] : "");
 			$set = array();
 			ksort($index["columns"]);
@@ -54,6 +55,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 					&& array_values($existing["columns"]) === $columns
 					&& (!$existing["lengths"] || array_values($existing["lengths"]) === $lengths)
 					&& array_values($existing["descs"]) === $descs
+					&& $existing["partial"] == $index_condition
 					&& (!$index_algorithms || $existing["algorithm"] == $index_algorithm)
 				) {
 					// skip existing index
@@ -62,7 +64,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 				}
 			}
 			if ($columns) {
-				$alter[] = array($index["type"], $name, $set, $index_algorithm);
+				$alter[] = array($index["type"], $name, $set, $index_algorithm, $index_condition);
 			}
 		}
 	}
@@ -121,6 +123,11 @@ if ($lengths || support("descidx")) {
 }
 ?>
 <th id="label-name"><?php echo lang('Name'); ?>
+<?php
+if (support("partial_indexes")) {
+	echo "<th id='label-condition' class='idxopts" .  ($show_options ? "" : " hidden") . "'>" . lang('Condition');
+}
+?>
 <th><noscript><?php echo icon("plus", "add[0]", "+", lang('Add next')); ?></noscript>
 </thead>
 <?php
@@ -159,6 +166,9 @@ foreach ($row["indexes"] as $index) {
 		}
 
 		echo "<td><input name='indexes[$j][name]' value='" . h($index["name"]) . "' autocapitalize='off' aria-labelledby='label-name'>\n";
+		if (support("partial_indexes")) {
+			echo "<td class='idxopts" .  ($show_options ? "" : " hidden") . "'><input name='indexes[$j][partial]' value='" . h($index["partial"]) . "' autocapitalize='off' aria-labelledby='label-condition'>\n";
+		}
 		echo "<td>" . icon("cross", "drop_col[$j]", "x", lang('Remove')) . script("qsl('button').onclick = partial(editingRemoveRow, 'indexes\$1[type]');");
 	}
 	$j++;

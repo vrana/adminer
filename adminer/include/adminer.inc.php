@@ -355,6 +355,10 @@ class Adminer {
 	* @param TableStatus $tableStatus
 	*/
 	function tableIndexesPrint(array $indexes, array $tableStatus): void {
+		$partial = false;
+		foreach ($indexes as $name => $index) {
+			$partial |= !!$index["partial"];
+		}
 		echo "<table>\n";
 		$default_algorithm = first(driver()->indexAlgorithms($tableStatus));
 		foreach ($indexes as $name => $index) {
@@ -370,6 +374,9 @@ class Adminer {
 			echo "<tr title='" . h($name) . "'>";
 			echo "<th>$index[type]" . ($default_algorithm && $index['algorithm'] != $default_algorithm ? " ($index[algorithm])" : "");
 			echo "<td>" . implode(", ", $print);
+			if ($partial) {
+				echo "<td>" . ($index['partial'] ? "<code class='jush-" . JUSH . "'>WHERE " . h($index['partial']) : "");
+			}
 			echo "\n";
 		}
 		echo "</table>\n";

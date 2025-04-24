@@ -211,6 +211,7 @@ Lang::$translations = array(
 	'Index Type' => 'Typ indexu',
 	'length' => 'délka',
 	'Algorithm' => 'Algoritmus',
+	'Condition' => 'Podmínka',
 
 	'Foreign keys' => 'Cizí klíče',
 	'Foreign key' => 'Cizí klíč',

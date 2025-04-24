@@ -529,7 +529,7 @@ ORDER BY a.attnum") as $row
 		$table_oid = driver()->tableOid($table);
 		$columns = get_key_vals("SELECT attnum, attname FROM pg_attribute WHERE attrelid = $table_oid AND attnum > 0", $connection2);
 		foreach (
-			get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey, indoption, (indpred IS NOT NULL)::int as indispartial, pg_am.amname as algorithm
+			get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey, indoption, (indpred IS NOT NULL)::int as indispartial, pg_am.amname as algorithm, pg_get_expr(pg_index.indpred, pg_index.indrelid, true) AS partial
 FROM pg_index
 JOIN pg_class ON indexrelid = oid
 JOIN pg_am ON pg_am.oid = pg_class.relam
@@ -541,6 +541,7 @@ ORDER BY indisprimary DESC, indisunique DESC", $connection2) as $row
 			$return[$relname]["columns"] = array();
 			$return[$relname]["descs"] = array();
 			$return[$relname]["algorithm"] = $row["algorithm"];
+			$return[$relname]["partial"] = $row["partial"];
 			if ($row["indkey"]) {
 				foreach (explode(" ", $row["indkey"]) as $indkey) {
 					$return[$relname]["columns"][] = $columns[$indkey];
@@ -721,7 +722,12 @@ ORDER BY conkey, conname") as $row
 			} elseif ($val[2] == "DROP") {
 				$drop[] = idf_escape($val[1]);
 			} else {
-				$queries[] = "CREATE INDEX " . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table) . ($val[3] ? " USING $val[3]" : "") . " (" . implode(", ", $val[2]) . ")";
+				$queries[] = "CREATE INDEX " . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_"))
+					. " ON " . table($table)
+					. ($val[3] ? " USING $val[3]" : "")
+					. " (" . implode(", ", $val[2]) . ")"
+					. ($val[4] ? " WHERE $val[4]" : "")
+				;
 			}
 		}
 		if ($create) {
@@ -1028,9 +1034,11 @@ AND typelem = 0"
 	}
 
 	function support($feature) {
-		return preg_match('~^(check|database|table|columns|sql|indexes|descidx|comment|view|' . (min_version(9.3) ? 'materializedview|' : '') . 'scheme|' . (min_version(11) ? 'procedure|' : '') . 'routine|sequence|trigger|type|variables|drop_col'
+		return preg_match('~^(check|columns|comment|database|drop_col|dump|descidx|indexes|kill|partial_indexes|routine|scheme|sequence|sql|table|trigger|type|variables|view'
+			. (min_version(9.3) ? '|materializedview' : '')
+			. (min_version(11) ? '|procedure' : '')
 			. (connection()->flavor == 'cockroach' ? '' : '|processlist') // https://github.com/cockroachdb/cockroach/issues/24745
-			. '|kill|dump)$~', $feature)
+			. ')$~', $feature)
 		;
 	}
 

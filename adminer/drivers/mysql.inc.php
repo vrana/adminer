@@ -754,7 +754,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Run commands to alter indexes
 	* @param string $table escaped table name
-	* @param list<array{string, string, 'DROP'|list<string>, 3?: string}> $alter of ["index type", "name", ["column definition", ...], "algorithm"] or ["index type", "name", "DROP"]
+	* @param list<array{string, string, 'DROP'|list<string>, 3?: string, 4?: string}> $alter of ["index type", "name", ["column definition", ...], "algorithm", "condition"] or ["index type", "name", "DROP"]
 	* @return Result|bool
 	*/
 	function alter_indexes(string $table, $alter) {

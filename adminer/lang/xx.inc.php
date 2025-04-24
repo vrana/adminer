@@ -213,6 +213,7 @@ Lang::$translations = array(
 	'Index Type' => 'Xx',
 	'length' => 'xx',
 	'Algorithm' => 'Xx',
+	'Condition' => 'Xx',
 
 	'Foreign keys' => 'Xx',
 	'Foreign key' => 'Xx',
