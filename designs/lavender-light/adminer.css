@@ -1,0 +1,283 @@
+/**
+ * lavender-light theme for Adminer
+ * by Alex Yu
+ *
+ * Color palette from:
+ * https://color.adobe.com/Lavender-v2-color-theme-294b8aa6-1935-401f-a763-13b98ec68b90/
+ *
+ * - white
+ * - ghostwhite     (f8f8ff)
+ * - lavender       (f0f0ff)
+ * - darkslateblue  (483d8b)
+ * - aliceblue      (f0f8ff)
+ * - gray           (313b43), (21282e)
+ * - blue           (001dff), (002799)
+ */
+
+body {
+    display: grid;
+    column-gap: 1rem;
+    row-gap: 20px;
+
+    width: 100%;
+    height: auto;
+
+    grid-template-areas:
+        "menu content";
+
+    grid-template-rows: 1fr;
+    grid-template-columns: 21rem 1fr;
+
+    align-items: stretch;
+    justify-items: start;
+
+    font: 0.96rem/1.2rem sans-serif !important;
+}
+
+a {
+    color: #001dff;
+    text-underline-offset: 1px;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(.4,0,.2,1);
+    transition-duration: .15s;
+}
+
+/*
+ * Basic tags
+ */
+
+a:visited {
+    color: #002799;
+}
+
+a:link:hover, a:visited:hover {
+    color: #7388c9;
+    text-underline-offset: 4px;
+}
+
+h1 {
+    border: 0;
+}
+
+h2 {
+    margin: 0 0 20px 0px;
+    line-height: 1.68rem;
+    border-bottom: 1px solid #20165a; /* darkslateblue; */
+    background: #3c3085;
+    color: white;
+}
+
+#h1 {
+    font-size: 1.2rem;
+    font-style: normal;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: #333;
+}
+
+#h1 img {
+    display: none;
+}
+
+/*
+ * Tables
+ */
+
+table {
+    border-left: 1px solid silver;
+}
+
+#table .column {
+    display: none;
+}
+
+td, th {
+    font-size: 1.05em;
+    border-right: 1px solid silver;
+    border-bottom: 1px solid silver;
+    padding: .3em .6em;
+    background: none;
+}
+
+thead th, thead td {
+    background: #313b43;
+    color: white;
+    border-right: 1px solid #21282e;
+    border-bottom: 1px solid #21282e;
+    padding: .5em .5em;
+}
+
+thead th a, thead td a,
+thead th a:visited, thead td a:visited,
+thead th a:hover, thead td a:hover {
+    color: #eee;
+}
+
+th span.column a.text {
+    color: #2980b9;
+}
+
+.js span.column {
+    background: white;
+}
+
+
+table#table thead .checked td,
+table#table thead .checked th {
+    background: #313b43;
+}
+
+.pages {
+    border: none;
+    box-shadow: -1px -1px 4px silver;
+}
+
+/*
+ * Common sections
+ */
+
+#breadcrumb {
+    position: static;
+    top: initial;
+    left: initial;
+    margin: 0;
+    padding: 0.6rem 0 0.4rem 0;
+    color: #596167;
+    background: none;
+}
+
+#breadcrumb a {
+    color: #002799;
+}
+
+#content {
+    grid-area: content;
+    margin: 0;
+    padding: 0 20px 0 0;
+    width: calc(100% - 20px);
+}
+
+#logout {
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 0.3rem 0.7rem;
+}
+
+#menu {
+    grid-area: menu;
+    position: initial;
+
+    margin: 0;
+    padding: 1rem 1.5rem;
+    width: 18rem;
+
+    background: ghostwhite;
+
+    overflow-y: auto;
+}
+
+#menu h1 {
+    padding: 0 0 1rem 0;
+    background: none;
+}
+
+#menu #dbs {
+    padding: 3rem 0 1.5rem;
+}
+
+#menu p, #logins, #tables {
+    padding: .8em 0em 1.2rem;
+}
+
+#menu #tables a[href*="&select="] {
+    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHISURBVDjLpVPNK0RRFP+9D98syMwUspHkm9I0YkFZWBFKkZ0s7a3Ewh+ilChK7FgoZCJFKYlYKB8zk2+Z5t0P577He29kQU7dd+6575zf+d1zztWklPiPmOozt/U4SThjXIoyIQS4AJjSXO0lGGlvcXAm6Vzsz4xUhm0AIeX4QLig+C+ZpxbOG1wGhGYHr1zMUmZGWRgs0ha3PE1nX/8mWmdgWTzLB+DUYbhm9FfZ35IEyrhXA3VXJfPbsV8B9LQUIeUHYJ8ASobag1jcucNgW8g9W4reYSDi2YnnZDoDiwCokDANct6NwTB0LEdj0HRA/wxa2SN25JNBEdWluUhZ366gqmAaGvrCAXKOozccTGPgt8+vn8GYSGcgyTYp3dpBnBg42nbQPRBTo5bTvqYkmxL6AQhNTWQGBXY3B7BxlEBXozcW64dxRKoKUZBju+P06gl5WaaviMJBM3TNDlbypemIZgHYOnlwASsCmW7nHADGnBoQ3c76YmweJ9BR5zFYjsbRHwm4tmJg6PhWA7pCXXk+bu7fURHKweXtq/sWaksz7SC/CCGFrwtyZ3r+rCnFRZ7qr1qc6mLZj4f9OEyPL8lVpbX/PucPv5QPKHB1TdEAAAAASUVORK5CYII=) no-repeat scroll right bottom;
+    display: inline-block;
+    height: 16px;
+    margin-right: 4px;
+    vertical-align: middle;
+    overflow: hidden;
+    padding-left: 18px;
+    border-left: 1px solid transparent;
+    width: 0;
+}
+
+#menu #tables a.active {
+    border-left: 1px solid #20165a;
+}
+
+#menu .links {
+    display: inline-flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    padding: 1rem 0 0 1.6rem;
+    border: 0;
+}
+
+#menu #tables li {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    flex-direction: row;
+}
+
+#menu #tables li a+a {
+    padding-left: 0.3rem;
+}
+
+#lang {
+    position: absolute;
+    top: 4rem;
+    z-index: 100;
+    padding: 0 0 0 1.5rem;
+}
+
+#logins a, #tables a, #tables span {
+    background: initial;
+}
+
+/*
+ * Elements
+ */
+
+sup {
+    padding: 3px 7px;
+    background: #3498db;
+    color: white;
+    border-radius: 2em;
+}
+
+code.jush-sql {
+    display: block;
+    padding: .4em .7em;
+    line-height: 1.5em;
+}
+
+.jush-bac, .jush-php_bac, .jush-bra, .jush-mssql_bra, .jush-sqlite_quo {
+    color: #dc33f9;
+}
+
+pre, textarea {
+    padding: 1.5rem;
+    font: 100% / 1.25 monospace;
+}
+
+pre, code {
+    background: #f2f2ff;
+}
+
+pre.sqlarea {
+    padding: 1rem !important;
+    border: 2px solid #a9a9a9 !important;
+    border-radius: 4px;
+    background: #fff;
+}
+
+a.jush-custom:link, a.jush-custom:visited {
+    color: midnightblue;
+}
+
+select, input {
+    padding: 2px;
+}
