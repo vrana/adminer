@@ -113,7 +113,11 @@ $show_options = ($_POST ? $_POST["options"] : get_setting("index_options"));
 <?php
 $idxopts = " class='idxopts" . ($show_options ? "" : " hidden") . "'";
 if ($index_algorithms) {
-	echo "<th id='label-algorithm'$idxopts>" . lang('Algorithm');
+	echo "<th id='label-algorithm'$idxopts>" . lang('Algorithm') . doc_link(array(
+		'sql' => 'create-index.html#create-index-storage-engine-index-types',
+		'mariadb' => 'storage-engine-index-types/',
+		'pgsql' => 'indexes-types.html',
+	));
 }
 ?>
 <th><input type="submit" class="wayoff"><?php
