@@ -18,7 +18,7 @@ class AdminerSelectEmail extends Adminer\Plugin {
 			echo $this->lang('Subject') . ": <input name='email_subject' value='" . Adminer\h($_POST["email_subject"]) . "'>\n";
 			echo "<p><textarea name='email_message' rows='15' cols='75'>" . Adminer\h($_POST["email_message"] . ($_POST["email_append"] ? '{$' . "$_POST[email_addition]}" : "")) . "</textarea>\n";
 			echo "<p>" . Adminer\script("qsl('p').onkeydown = partialArg(bodyKeydown, 'email_append');", "") . Adminer\html_select("email_addition", $columns, $_POST["email_addition"])
-				. " <input type='submit' name='email_append' value='" . $this->lang('Insert') . "'>\n"; //! JavaScript
+				. " <input type='submit' name='email_append' value='" . Adminer\lang('Insert') . "'>\n"; //! JavaScript
 			echo "<p>" . $this->lang('Attachments') . ": <input type='file' name='email_files[]'>" . Adminer\script("qsl('input').onchange = emailFileChange;");
 			echo "<p>" . (count($emailFields) == 1 ? Adminer\input_hidden("email_field", key($emailFields)) : Adminer\html_select("email_field", $emailFields));
 			echo "<input type='submit' name='email' value='" . $this->lang('Send') . "'>" . Adminer\confirm();
