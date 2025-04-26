@@ -14,11 +14,23 @@
  * - blue           (001dff), (002799)
  */
 
-/*
- * Basic tags
- */
-
 body {
+    display: grid;
+    column-gap: 1rem;
+    row-gap: 20px;
+
+    width: 100%;
+    height: auto;
+
+    grid-template-areas:
+        "menu content";
+
+    grid-template-rows: 1fr;
+    grid-template-columns: 21rem 1fr;
+
+    align-items: stretch;
+    justify-items: start;
+
     font: 0.96rem/1.2rem sans-serif !important;
 }
 
@@ -29,6 +41,10 @@ a {
     transition-timing-function: cubic-bezier(.4,0,.2,1);
     transition-duration: .15s;
 }
+
+/*
+ * Basic tags
+ */
 
 a:visited {
     color: #002799;
@@ -60,7 +76,6 @@ h2 {
 }
 
 #h1 img {
-    margin-right: 0.3rem;
     display: none;
 }
 
@@ -136,8 +151,10 @@ table#table thead .checked th {
 }
 
 #content {
-    margin: 0 0 0 350px;
+    grid-area: content;
+    margin: 0;
     padding: 0 20px 0 0;
+    width: calc(100% - 20px);
 }
 
 #logout {
@@ -147,26 +164,25 @@ table#table thead .checked th {
 }
 
 #menu {
-    background: ghostwhite;
-    position: fixed;
-    top: 30px;
-    bottom: 0;
-    left: 0;
-    width: 300px;
-    padding: 0.4rem 1rem 1rem;
+    grid-area: menu;
+    position: initial;
 
-    top: 0px;
     margin: 0;
+    padding: 1rem 1.5rem;
+    width: 18rem;
+
+    background: ghostwhite;
+
     overflow-y: auto;
 }
 
 #menu h1 {
-    padding: 1rem 0;
+    padding: 0 0 1rem 0;
     background: none;
 }
 
 #menu #dbs {
-    padding-top: 3em;
+    padding: 3rem 0 1.5rem;
 }
 
 #menu p, #logins, #tables {
@@ -211,8 +227,10 @@ table#table thead .checked th {
 }
 
 #lang {
+    position: absolute;
     top: 4rem;
     z-index: 100;
+    padding: 0 0 0 1.5rem;
 }
 
 #logins a, #tables a, #tables span {
