@@ -234,6 +234,10 @@ code.jush-sql {
     line-height: 1.5em;
 }
 
+.jush-bac, .jush-php_bac, .jush-bra, .jush-mssql_bra, .jush-sqlite_quo {
+    color: #dc33f9;
+}
+
 pre, textarea {
     font: 100% / 1.25 monospace;
 }
