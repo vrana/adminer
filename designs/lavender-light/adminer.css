@@ -136,7 +136,7 @@ table#table thead .checked th {
 }
 
 #content {
-    margin: 0 0 0 20rem;
+    margin: 0 0 0 350px;
     padding: 0 20px 0 0;
 }
 
@@ -152,11 +152,12 @@ table#table thead .checked th {
     top: 30px;
     bottom: 0;
     left: 0;
-    width: 240px;
-    padding: 0.4rem 2rem 1rem;
+    width: 300px;
+    padding: 0.4rem 1rem 1rem;
 
     top: 0px;
     margin: 0;
+    overflow-y: auto;
 }
 
 #menu h1 {
