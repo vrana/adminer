@@ -165,6 +165,10 @@ table#table thead .checked th {
     background: none;
 }
 
+#menu #dbs {
+    padding-top: 3em;
+}
+
 #menu p, #logins, #tables {
     padding: .8em 0em 1.2rem;
 }
@@ -207,10 +211,8 @@ table#table thead .checked th {
 }
 
 #lang {
-    position: static;
-    top: initial;
-    left: initial;
-    padding: 1rem 0 0;
+    top: 4rem;
+    z-index: 100;
 }
 
 #logins a, #tables a, #tables span {
