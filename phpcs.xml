@@ -59,7 +59,6 @@
 		</properties>
 		<exclude-pattern>adminer/lang/</exclude-pattern>
 		<exclude-pattern>plugins/foreign-system.php</exclude-pattern>
-		<exclude-pattern>plugins/select-email.php</exclude-pattern>
 	</rule>
 
 	<rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
