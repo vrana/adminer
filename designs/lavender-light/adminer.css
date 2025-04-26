@@ -239,11 +239,11 @@ code.jush-sql {
 }
 
 pre, textarea {
+    padding: 1.5rem;
     font: 100% / 1.25 monospace;
 }
 
-pre code {
-    padding: 1.5rem;
+pre, code {
     background: #f2f2ff;
 }
 
@@ -251,6 +251,7 @@ pre.sqlarea {
     padding: 1rem !important;
     border: 2px solid #a9a9a9 !important;
     border-radius: 4px;
+    background: #fff;
 }
 
 a.jush-custom:link, a.jush-custom:visited {
