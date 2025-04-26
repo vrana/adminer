@@ -1,10 +1,10 @@
 ## Adminer dev
 - Align numeric functions right
 - Autocomplete: Support table aliases
-- Fix type error in Create function (bug #1053)
+- Fix type error in Create function (bug #1053, regression from 5.1.1)
 - MySQL: Avoid warning on selecting tables with fulltext indexes (bug #1036)
 - MySQL, PostgreSQL: Support index algorithms (bug #1030)
-- MySQL: Fix connecting with port (bug #1057, regression from 5.1.1)
+- MySQL: Fix connecting to localhost:3306 (bug #1057, regression from 5.1.1)
 - PostgreSQL, CockroachDB: Creating partitioned tables (bug #1031)
 - PostgreSQL: Move partitioned tables from table list to parent table
 - PostgreSQL: Support partial indices (bug #1048)
