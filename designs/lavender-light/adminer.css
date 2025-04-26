@@ -176,8 +176,13 @@ table#table thead .checked th {
     margin-right: 4px;
     vertical-align: middle;
     overflow: hidden;
-    padding-left: 16px;
+    padding-left: 18px;
+    border-left: 1px solid transparent;
     width: 0;
+}
+
+#menu #tables a.active {
+    border-left: 1px solid #20165a;
 }
 
 #menu .links {
