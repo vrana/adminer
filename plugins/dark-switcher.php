@@ -13,6 +13,14 @@ class AdminerDarkSwitcher extends Adminer\Plugin {
 <script <?php echo Adminer\nonce(); ?>>
 let adminerDark;
 
+const saved = document.cookie.match(/adminer_dark=(\d)/);
+if (saved) {
+	adminerDark = +saved[1];
+	adminerDarkSet();
+}else{
+	adminerDark = +window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
 function adminerDarkSwitch() {
 	adminerDark = !adminerDark;
 	adminerDarkSet();
@@ -23,19 +31,13 @@ function adminerDarkSet() {
 	qs('meta[name="color-scheme"]').content = (adminerDark ? 'dark' : 'light');
 	cookie('adminer_dark=' + (adminerDark ? 1 : 0), 30);
 }
-
-const saved = document.cookie.match(/adminer_dark=(\d)/);
-if (saved) {
-	adminerDark = +saved[1];
-	adminerDarkSet();
-}
 </script>
 <?php
 	}
 
 	function navigation($missing) {
 		echo "<big style='position: fixed; bottom: .5em; right: .5em; cursor: pointer;'>☀</big>"
-			. Adminer\script("if (adminerDark != null) adminerDarkSet(); qsl('big').onclick = adminerDarkSwitch;") . "\n"
+			. Adminer\script("qsl('big').onclick = adminerDarkSwitch;") . "\n"
 		;
 	}
 
