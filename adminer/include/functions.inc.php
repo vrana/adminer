@@ -685,7 +685,7 @@ function file_open_lock(string $filename) {
 	if (!$fp) {
 		return;
 	}
-	chmod($filename, 0660);
+	@chmod($filename, 0660); // @ - may not be permitted
 	if (!flock($fp, LOCK_EX)) {
 		fclose($fp);
 		return;
