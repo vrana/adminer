@@ -11,6 +11,7 @@
 - PostgreSQL: Move partitioned tables from table list to parent table
 - PostgreSQL: Support partial indices (bug #1048)
 - PostgreSQL: Support calling functions returning table (bug #1040)
+- PostgreSQL: Add NOT ILIKE operator (bug #1066)
 - Designs: adminer.css with 'prefers-color-scheme: dark' doesn't disable dark mode
 - Plugins: Method bodyClass() to add &lt;body class>
 - Plugins: Allow setting dark mode in css()
