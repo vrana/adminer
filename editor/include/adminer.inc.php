@@ -264,10 +264,11 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			if (preg_match("~enum~", $field["type"]) || like_bool($field)) { //! set - uses 1 << $i and FIND_IN_SET()
 				$key = $keys[$name];
 				$i--;
-				echo "<div>" . h($desc) . input_hidden("where[$i][col]", $name) . ":";
+				echo "<div>" . h($desc) . ":" . input_hidden("where[$i][col]", $name);
+				$val = idx($where[$key], "val");
 				echo (like_bool($field)
-					? " <select name='where[$i][val]'>" . optionlist(array("" => "", lang('no'), lang('yes')), $where[$key]["val"], true) . "</select>"
-					: enum_input("checkbox", " name='where[$i][val][]'", $field, (array) $where[$key]["val"], ($field["null"] ? 0 : null))
+					? "<select name='where[$i][val]'>" . optionlist(array("" => "", lang('no'), lang('yes')), $val, true) . "</select>"
+					: enum_input("checkbox", " name='where[$i][val][]'", $field, (array) $val, ($field["null"] ? 0 : null))
 				);
 				echo "</div>\n";
 				unset($columns[$name]);
@@ -365,14 +366,14 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 					if ($col != "" || is_numeric($val) || !preg_match(number_type(), $field["type"])) {
 						$name = idf_escape($name);
 						if ($col != "" && $field["type"] == "enum") {
-							$conds[] = (in_array(0, $val) ? "$name IS NULL OR " : "") . "$name IN (" . implode(", ", array_map('intval', $val)) . ")";
+							$conds[] = (in_array(0, $val) ? "$name IS NULL OR " : "") . "$name IN (" . implode(", ", array_map('Adminer\q', $val)) . ")";
 						} else {
 							$text_type = preg_match('~char|text|enum|set~', $field["type"]);
 							$value = adminer()->processInput($field, (!$op && $text_type && preg_match('~^[^%]+$~', $val) ? "%$val%" : $val));
 							$conds[] = driver()->convertSearch($name, $where, $field) . ($value == "NULL" ? " IS" . ($op == ">=" ? " NOT" : "") . " $value"
 								: (in_array($op, adminer()->operators()) || $op == "=" ? " $op $value"
 								: ($text_type ? " LIKE $value"
-								: " IN (" . str_replace(",", "', '", $value) . ")"
+								: " IN (" . ($value[0] == "'" ? str_replace(",", "', '", $value) : $value) . ")"
 							)));
 							if ($key < 0 && $val == "0") {
 								$conds[] = "$name IS NULL";
@@ -500,7 +501,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		if (preg_match('~date|timestamp~', $field["type"]) && preg_match('(^' . str_replace('\$1', '(?P<p1>\d*)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\2>\d{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)) {
 			$return = ($match["p1"] != "" ? $match["p1"] : ($match["p2"] != "" ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y"))) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match);
 		}
-		$return = ($field["type"] == "bit" && preg_match('~^[0-9]+$~', $value) ? $return : q($return));
+		$return = q($return);
 		if ($value == "" && like_bool($field)) {
 			$return = "'0'";
 		} elseif ($value == "" && ($field["null"] || !preg_match('~char|text~', $field["type"]))) {
