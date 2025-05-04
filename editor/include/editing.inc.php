@@ -1,6 +1,10 @@
 <?php
 namespace Adminer;
 
+function doc_link(array $paths, string $text = ""): string {
+	return "";
+}
+
 /** Encode e-mail header in UTF-8 */
 function email_header(string $header): string {
 	// iconv_mime_encode requires iconv, imap_8bit requires IMAP extension
