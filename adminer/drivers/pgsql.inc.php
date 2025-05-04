@@ -127,8 +127,9 @@ if (isset($_GET["pgsql"])) {
 				$return = new \stdClass;
 				$return->orgtable = pg_field_table($this->result, $column);
 				$return->name = pg_field_name($this->result, $column);
-				$return->type = pg_field_type($this->result, $column); //! map to MySQL numbers
-				$return->charsetnr = ($return->type == "bytea" ? 63 : 0); // 63 - binary
+				$type = pg_field_type($this->result, $column);
+				$return->type = (preg_match(number_type(), $type) ? 0 : 15);
+				$return->charsetnr = ($type == "bytea" ? 63 : 0); // 63 - binary
 				return $return;
 			}
 
