@@ -1,4 +1,4 @@
-## Adminer dev
+## Adminer 5.3.0 (released 2025-05-04)
 - Align numeric functions right
 - Autocomplete: Support table aliases
 - Fix type error in Create function (bug #1053, regression from 5.1.1)
