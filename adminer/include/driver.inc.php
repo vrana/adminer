@@ -189,11 +189,6 @@ abstract class SqlDriver {
 		return $idf;
 	}
 
-	/** Convert operator so it can be used in search */
-	function convertOperator(string $operator): string {
-		return $operator;
-	}
-
 	/** Convert value returned by database to actual value
 	* @param Field $field
 	*/

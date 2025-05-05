@@ -287,10 +287,6 @@ if (isset($_GET["elastic"])) {
 
 			return !!$this->conn->affected_rows;
 		}
-
-		function convertOperator($operator): string {
-			return $operator == "LIKE %%" ? "should" : $operator;
-		}
 	}
 
 	function support($feature) {

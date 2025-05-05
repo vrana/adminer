@@ -64,12 +64,13 @@ if (adminer()->homepage()) {
 			echo "<form action='' method='post'>\n";
 			if (support("table")) {
 				echo "<fieldset><legend>" . lang('Search data in tables') . " <span id='selected2'></span></legend><div>";
-				echo "<input type='search' name='query' value='" . h($_POST["query"]) . "'>";
+				echo html_select("op", adminer()->operators(), idx($_POST, "op", JUSH == "elastic" ? "should" : "LIKE %%"));
+				echo " <input type='search' name='query' value='" . h($_POST["query"]) . "'>";
 				echo script("qsl('input').onkeydown = partialArg(bodyKeydown, 'search');", "");
 				echo " <input type='submit' name='search' value='" . lang('Search') . "'>\n";
 				echo "</div></fieldset>\n";
 				if ($_POST["search"] && $_POST["query"] != "") {
-					$_GET["where"][0]["op"] = driver()->convertOperator("LIKE %%");
+					$_GET["where"][0]["op"] = $_POST["op"];
 					search_tables();
 				}
 			}
