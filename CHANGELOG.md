@@ -1,5 +1,6 @@
 ## Adminer dev
 - Allow specifying operator in search anywhere
+- Plugins: Methods processList() and killProcess()
 
 ## Adminer 5.3.0 (released 2025-05-04)
 - Align numeric functions right

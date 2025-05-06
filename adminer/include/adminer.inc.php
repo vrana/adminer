@@ -1115,4 +1115,19 @@ class Adminer {
 		}
 		echo "</ul>\n";
 	}
+
+	/** Get process list
+	* @return list<string[]> [$row]
+	*/
+	function processList(): array {
+		return process_list();
+	}
+
+	/** Kill a process
+	* @param numeric-string $id
+	* @return Result|bool
+	*/
+	function killProcess(string $id) {
+		return kill_process($id);
+	}
 }

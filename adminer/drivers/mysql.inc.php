@@ -1067,11 +1067,11 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Kill a process
-	* @param numeric-string $val
+	* @param numeric-string $id
 	* @return Result|bool
 	*/
-	function kill_process(string $val) {
-		return queries("KILL " . number($val));
+	function kill_process(string $id) {
+		return queries("KILL " . number($id));
 	}
 
 	/** Return query to get connection ID */
