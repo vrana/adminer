@@ -1115,4 +1115,21 @@ class Adminer {
 		}
 		echo "</ul>\n";
 	}
+
+	/**
+	 * Proxy to DB driver method process_list to made it extendable
+	 * @return list<string[]>
+	 */
+	function process_list() : array {
+		return \Adminer\process_list();
+	}
+
+	/**
+	 * Proxy to DB driver method kill_process to made it extendable
+	 * @param string $val - id of query to be killed
+	 * @return Result|bool
+	 */
+	function kill_process(string $val) {
+		return \Adminer\kill_process($val);
+	}
 }

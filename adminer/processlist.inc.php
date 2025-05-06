@@ -5,7 +5,7 @@ if (support("kill")) {
 	if ($_POST && !$error) {
 		$killed = 0;
 		foreach ((array) $_POST["kill"] as $val) {
-			if (kill_process($val)) {
+			if (adminer()->kill_process($val)) {
 				$killed++;
 			}
 		}
@@ -23,7 +23,7 @@ page_header(lang('Process list'), $error);
 echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
 // HTML valid because there is always at least one process
 $i = -1;
-foreach (process_list() as $i => $row) {
+foreach (adminer()->process_list() as $i => $row) {
 	if (!$i) {
 		echo "<thead><tr lang='en'>" . (support("kill") ? "<th>" : "");
 		foreach ($row as $key => $val) {
