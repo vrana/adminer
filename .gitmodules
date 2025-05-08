@@ -7,3 +7,9 @@
 [submodule "PhpShrink"]
 	path = externals/PhpShrink
 	url = https://github.com/vrana/PhpShrink
+[submodule "designs/hydra"]
+	path = designs/hydra
+	url = https://github.com/Niyko/Hydra-Dark-Theme-for-Adminer
+[submodule "designs/pepa-linha-dark"]
+	path = designs/pepa-linha-dark
+	url = https://github.com/pepa-linha/Adminer-Design-Dark/
