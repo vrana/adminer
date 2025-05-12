@@ -166,9 +166,9 @@ function put_file_lang($match) {
 	}
 	$translations_version = crc32($return);
 	return 'Lang::$translations = (array) $_SESSION["translations"];
-if ($_SESSION["translations_version"] != LANG . ' . $translations_version . ') {
+if ($_SESSION["translations_version"] != LANG . "' . $translations_version . '") {
 	Lang::$translations = array();
-	$_SESSION["translations_version"] = LANG . ' . $translations_version . ';
+	$_SESSION["translations_version"] = LANG . "' . $translations_version . '";
 }
 if (!Lang::$translations) {
 	Lang::$translations = get_translations(LANG);
