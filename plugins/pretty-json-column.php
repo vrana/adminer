@@ -26,7 +26,7 @@ class AdminerPrettyJsonColumn extends Adminer\Plugin {
 		if ($function === '') {
 			$json = $this->testJson($value);
 			if ($json !== $value) {
-				$value = json_encode($json);
+				return Adminer\q(json_encode($json));
 			}
 		}
 	}
