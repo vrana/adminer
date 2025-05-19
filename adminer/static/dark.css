@@ -39,7 +39,7 @@ input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
 #h1 { color: #ffddbf; }
 #version { color: #d2b397; }
 #schema .table { border-color: #093459; }
-#help { border-color: #666; background: #c7e4fe; }
+#help { border-color: #666; }
 #schema div.table a { color: #3c7bb3; }
 #menu .active { color: #398c8d; }
 #edit-fields tbody tr:hover td, #edit-fields tbody tr:hover th { background: #3b6f9d; }
