@@ -10,6 +10,13 @@ if (!$error && $_POST["export"]) {
 	exit;
 }
 
+if (!$error && $_POST["save_query"]) {
+	header("Content-Type: text/plain; charset=utf-8");
+	header("Content-Disposition: attachment; filename=query-" . date("YmdHis") . ".sql");
+	echo $_POST["query"];
+	exit;
+}
+
 restart_session();
 $history_all = &get_session("queries");
 $history = &$history_all[DB];
@@ -267,6 +274,7 @@ if (!isset($_GET["import"])) {
 
 echo checkbox("error_stops", 1, ($_POST ? $_POST["error_stops"] : isset($_GET["import"]) || $_GET["error_stops"]), lang('Stop on error')) . "\n";
 echo checkbox("only_errors", 1, ($_POST ? $_POST["only_errors"] : isset($_GET["import"]) || $_GET["only_errors"]), lang('Show only errors')) . "\n";
+echo " <input type='submit' name='save_query' value='" . lang('Save query') . "'>\n";
 echo input_token();
 
 if (!isset($_GET["import"]) && $history) {
