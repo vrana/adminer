@@ -82,7 +82,7 @@ include "../adminer/include/plugins.inc.php";
 include "../adminer/include/plugin.inc.php";
 
 Adminer::$instance =
-	(function_exists('adminer_object') ? adminer_object() :
+	(function_exists('Adminer\adminer_object') ? adminer_object() :
 	(is_dir("adminer-plugins") || file_exists("adminer-plugins.php") ? new Plugins(null) :
 	new Adminer
 ));
