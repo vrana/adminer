@@ -7,6 +7,16 @@ html {
 	--lit: #ddf;
 }
 
+.rtl h2 { margin-left: 0; margin-right: -18px; }
+.rtl p, .rtl table, .rtl .error, .rtl .message { margin-right: 0; margin-left: 20px; }
+.rtl .logout { left: 0; right: auto; }
+.rtl #content { margin-left: 0; margin-right: 21em; padding-right: 0; padding-left: 20px; }
+.rtl #breadcrumb { left: auto; right: 21em; margin-left: 0; margin-right: -18px; }
+.rtl .pages { left: auto; right: 21em; }
+.rtl input.wayoff { left: auto; right: -1000px; }
+.rtl #lang, .rtl #menu { left: auto; right: 0; }
+.rtl pre, .rtl code { direction: ltr; }
+
 body { color: var(--fg); background: var(--bg); font: 90%/1.25 Verdana, Arial, Helvetica, sans-serif; margin: 0; min-width: fit-content; }
 a { color: blue; text-decoration: none; }
 a:visited { color: navy; }
@@ -107,35 +117,31 @@ input.wayoff { left: -1000px; position: absolute; }
 .icon-move { background-image: url(data:image/gif;base64,R0lGODlhEgASAJEAAO7u7gAAAJmZmQAAACH5BAEAAAEALAAAAAASABIAAAIfhI+py+3vgpyU0Rug3gnX5U3cqIWSZZLqigjuC8dvAQA7); }
 #schema .arrow { height: 1.25em; background: url(data:image/gif;base64,R0lGODlhCAAKAIAAAICAgP///yH5BAEAAAEALAAAAAAIAAoAAAIPBIJplrGLnpQRqtOy3rsAADs=) no-repeat right center; }
 
-.rtl h2 { margin: 0 -18px 20px 0; }
-.rtl p, .rtl table, .rtl .error, .rtl .message { margin: 1em 0 0 20px; }
-.rtl .logout { left: 0; right: auto; }
-.rtl #content { margin: 2em 21em 0 0; padding: 10px 0 20px 20px; }
-.rtl #breadcrumb { left: auto; right: 21em; margin: 0 -18px 0 0; }
-.rtl .pages { left: auto; right: 21em; }
-.rtl input.wayoff { left: auto; right: -1000px; }
-.rtl #lang, .rtl #menu { left: auto; right: 0; }
-.rtl pre, .rtl code { direction: ltr; }
-
 @media all and (max-width: 800px) {
 	.pages { left: auto; }
 	.js .logout { top: 1.667em; background-color: var(--dim); box-shadow: 0 0 5px 5px var(--dim); }
-	#menu { position: static; width: auto; min-width: 23em; background: var(--bg); border: 1px solid var(--fg); margin-top: 9px; box-shadow: 0 0 20px -3px var(--fg); }
+	#menu { position: static; width: auto; }
 	#content { margin-left: 10px !important; }
 	#lang { position: static; }
-	#breadcrumb { left: 48px !important; }
-	.js #foot { position: absolute; top: 2em; left: 0; }
+	#breadcrumb { left: 18px; }
+	.js #breadcrumb { left: 48px; }
+	.js #foot { position: absolute; top: 2em; left: 0; width: 100%; }
 	.js .foot { display: none; }
+	.js #menu { min-width: 23em; width: auto; max-width: 100%; background: var(--bg); border: 1px solid var(--fg); margin-top: 9px; box-shadow: 0 0 20px -3px var(--fg); }
 	.js #menuopen { display: block; position: absolute; top: 3px; left: 6px; }
 	.nojs #menu { position: static; }
+	.rtl.js #foot { left: auto; right: 0; }
 	.rtl .pages { right: auto; }
+	.rtl #menuopen { left: auto; right: 6px; }
 	.rtl #content { margin-right: 10px; }
-	.rtl #breadcrumb { right: auto; }
+	.rtl #breadcrumb { left: auto; right: 18px; }
+	.rtl.js #breadcrumb { right: 48px; }
 }
 
 @media print {
-	#lang, #menu { display: none; }
+	#lang, #menu, .logout { display: none; }
 	#content { margin-left: 1em; }
 	#breadcrumb { left: 1em; }
+	.rtl #breadcrumb { right: 1em; }
 	.nowrap td, .nowrap th, td.nowrap { white-space: normal; }
 }
