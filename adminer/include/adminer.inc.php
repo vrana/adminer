@@ -783,6 +783,13 @@ class Adminer {
 	function dumpDatabase(string $db): void {
 	}
 
+	/** Export SQL statement
+	 * @param string $query SQL statement
+	 */
+	function dumpQuery(string $query): void {
+		echo $query . ";\n\n";
+	}
+
 	/** Export table structure
 	* @param int $is_view 0 table, 1 view, 2 temporary view table
 	* @return void prints data

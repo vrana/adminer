@@ -3,9 +3,14 @@ namespace Adminer;
 
 if (!$error && $_POST["export"]) {
 	save_settings(array("output" => $_POST["output"], "format" => $_POST["format"]), "adminer_import");
-	dump_headers("sql");
-	adminer()->dumpTable("", "");
-	adminer()->dumpData("", "table", $_POST["query"]);
+	dump_headers("sql-cmd_" . date("YmdHis"));
+	if ($_POST["format"] == "sql") {
+		adminer()->dumpQuery($_POST["query"]);
+	}
+	else {
+		adminer()->dumpTable("", "");
+		adminer()->dumpData("", "table", $_POST["query"]);
+	}
 	adminer()->dumpFooter();
 	exit;
 }
@@ -69,7 +74,7 @@ if (!$error && $_POST) {
 		$total_start = microtime(true);
 		$adminer_export = get_settings("adminer_import"); // this doesn't offer SQL export so we match the import/export style at select
 		$dump_format = adminer()->dumpFormat();
-		unset($dump_format["sql"]);
+		
 
 		while ($query != "") {
 			if (!$offset && preg_match("~^$space*+DELIMITER\\s+(\\S+)~i", $query, $match)) {
