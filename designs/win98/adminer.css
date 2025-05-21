@@ -1,0 +1,298 @@
+/* inspired by https://github.com/jdan/98.css */
+
+:root {
+    --text-color: #222222;
+    --button-face: #dfdfdf;
+    --window-frame: #0a0a0a;
+    --dialog-blue-light: #1084d0;
+    --link-blue: #0000ff;
+}
+
+body {
+    background: teal;
+    color: var(--text-color);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+button, input[type=reset], input[type=submit] {
+    background: silver;
+    border: none;
+    border-radius: 0;
+    box-shadow: inset -1px -1px var(--window-frame), inset 1px 1px white, inset -2px -2px grey, inset 2px 2px var(--button-face);
+    box-sizing: border-box;
+    color: transparent;
+    font-size: 12px;
+    min-height: 23px;
+    min-width: 75px;
+    padding: 0 12px;
+    text-shadow: 0 0 var(--text-color);
+}
+
+button.default, input[type=reset].default, input[type=submit].default {
+    box-shadow: inset -2px -2px var(--window-frame), inset 1px 1px var(--window-frame), inset 2px 2px white, inset -3px -3px grey, inset 3px 3px var(--button-face);
+}
+
+button:not(:disabled):active, input[type=reset]:not(:disabled):active, input[type=submit]:not(:disabled):active {
+    box-shadow: inset -1px -1px white, inset 1px 1px var(--window-frame), inset -2px -2px var(--button-face), inset 2px 2px grey;
+    text-shadow: 1px 1px var(--text-color);
+}
+
+button.default:not(:disabled):active, input[type=reset].default:not(:disabled):active, input[type=submit].default:not(:disabled):active {
+    box-shadow: inset 2px 2px var(--window-frame), inset -1px -1px var(--window-frame), inset -2px -2px white, inset 3px 3px grey, inset -3px -3px var(--button-face);
+}
+
+button:focus, input[type=reset]:focus, input[type=submit]:focus {
+    outline: 1px dotted black;
+    outline-offset: -4px;
+}
+
+button::-moz-focus-inner, input[type=reset]::-moz-focus-inner, input[type=submit]::-moz-focus-inner {
+    border: 0;
+}
+
+:disabled, :disabled + label, input[readonly], input[readonly] + label, input[type=submit]:disabled, input[type=reset]:disabled, input[type=submit]:disabled {
+    color: grey;
+}
+
+:disabled + label, button:disabled, input[type=reset]:disabled, input[type=submit]:disabled {
+    text-shadow: 1px 1px 0 white;
+}
+
+#content, #menu, .footer, #breadcrumb {
+    background: silver;
+    box-shadow: inset -1px -1px var(--window-frame), inset 1px 1px var(--button-face), inset -2px -2px grey, inset 2px 2px white;
+    padding: 16px;
+}
+
+#content h2 {
+    align-items: center;
+    background: linear-gradient(90deg, navy, var(--dialog-blue-light));
+    color: white;
+    display: flex;
+    font-size: 120%;
+    font-weight: normal;
+    justify-content: space-between;
+    letter-spacing: 0;
+    margin: -13px -13px 16px -13px;
+    padding: 3px 2px 3px 3px;
+}
+
+fieldset {
+    border-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='5' height='5' fill='gray' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0h5v5H0V2h2v1h1V2H0' fill='%23fff'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0h4v4H0V1h1v2h2V1H0'/%3E%3C/svg%3E") 2;
+    margin: 0;
+    padding: 10px;
+    padding-block-start: 8px;
+}
+
+legend {
+    background: silver;
+}
+
+input[type=email], input[type=number], input[type=password], input[type=search], input[type=tel], input[type=text], input:not([type]) {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: none;
+    border-radius: 0;
+}
+
+input[type=email], input[type=number], input[type=password], input[type=search], input[type=tel], input[type=text], select, input:not([type]) {
+    background-color: white;
+    box-shadow: inset -1px -1px white, inset 1px 1px grey, inset -2px -2px var(--button-face), inset 2px 2px var(--window-frame);
+    box-sizing: border-box;
+    padding: 3px 4px;
+}
+
+select, textarea {
+    border: none;
+}
+
+textarea {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: white;
+    border-radius: 0;
+    box-shadow: inset -1px -1px white, inset 1px 1px grey, inset -2px -2px var(--button-face), inset 2px 2px var(--window-frame);
+    box-sizing: border-box;
+    padding: 3px 4px;
+}
+
+input[type=email], input[type=password], input[type=search], input[type=tel], input[type=text], input[type=number], select {
+    min-height: 21px;
+}
+
+input[type=search]::-ms-clear, input[type=search]::-ms-reveal {
+    display: none;
+    height: 0;
+    width: 0;
+}
+
+input[type=search]::-webkit-search-cancel-button, input[type=search]::-webkit-search-decoration, input[type=search]::-webkit-search-results-button, input[type=search]::-webkit-search-results-decoration {
+    display: none;
+}
+
+input[type=email]:disabled, input[type=email]:read-only, input[type=number]:disabled, input[type=number]:read-only, input[type=password]:disabled, input[type=password]:read-only, input[type=search]:disabled, input[type=search]:read-only, input[type=tel]:disabled, input[type=tel]:read-only, input[type=text]:disabled, input[type=text]:read-only, textarea:disabled {
+    background-color: silver;
+}
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 0H0v16h1V1h14V0z' fill='%23DFDFDF'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M2 1H1v14h1V2h12V1H2z' fill='%23fff'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M16 17H0v-1h15V0h1v17z' fill='%23000'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M15 1h-1v14H1v1h14V1z' fill='gray'/%3E%3Cpath fill='silver' d='M2 2h12v13H2z'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M11 6H4v1h1v1h1v1h1v1h1V9h1V8h1V7h1V6z' fill='%23000'/%3E%3C/svg%3E");
+    background-position: top 2px right 2px;
+    background-repeat: no-repeat;
+    border-radius: 0;
+    padding-right: 32px;
+    position: relative;
+}
+
+input[type=email]:focus, input[type=number]:focus, input[type=password]:focus, input[type=search]:focus, input[type=tel]:focus, input[type=text]:focus, select:focus, textarea:focus {
+    outline: none;
+}
+
+select:focus {
+    background-color: navy;
+    color: white;
+}
+
+select:focus option {
+    background-color: white;
+    color: black;
+}
+
+select:active {
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='16' height='17' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0h16v17H0V0zm1 16h14V1H1v15z' fill='gray'/%3E%3Cpath fill='silver' d='M1 1h14v15H1z'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M12 7H5v1h1v1h1v1h1v1h1v-1h1V9h1V8h1V7z' fill='%23000'/%3E%3C/svg%3E")
+}
+
+a {
+    color: var(--link-blue);
+}
+
+a:focus {
+    outline: 1px dotted var(--link-blue);
+}
+
+pre {
+    border-image: url("data:image/svg+xml;charset=utf-8,%3Csvg width='5' height='5' fill='gray' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0h5v5H0V2h2v1h1V2H0' fill='%23fff'/%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0 0h4v4H0V1h1v2h2V1H0'/%3E%3C/svg%3E") 2;
+    border-style: solid;
+    border-width: 1px;
+    margin: 0;
+    padding: 12px 8px;
+}
+
+table {
+    background-color: white;
+}
+
+table > thead > tr > * {
+    background: silver;
+    box-shadow: inset -1px -1px var(--window-frame), inset 1px 1px white, inset -2px -2px grey, inset 2px 2px var(--button-face);
+}
+
+table.interactive > tbody > tr {
+    cursor: pointer;
+}
+
+#fieldset-sort > div:not(:last-of-type), #fieldset-search > div:not(:last-of-type), #fieldset-select > div:not(:last-of-type) {
+    margin-bottom: .5em;
+}
+
+#fieldset-partition p {
+    margin: 0;
+}
+
+.icon {
+    min-height: 0;
+    min-width: 0;
+}
+
+.links {
+    margin: 1em 0;
+}
+
+#logins a, #tables a, #tables span {
+    background: none;
+}
+
+.jush-autocomplete, .jush-autocomplete:active {
+    background: none;
+    height: auto;
+}
+
+.logout {
+    box-shadow: none;
+    margin-top: .8em;
+}
+
+#breadcrumb {
+    height: auto;
+    margin: 0;
+    padding: 2px 16px;
+    top: calc(1.5em - 14px);
+}
+
+code {
+    background: none;
+}
+
+#menu {
+    margin: 0;
+    top: 3em;
+    width: 18em;
+}
+
+#menu h1 {
+    background: none;
+    margin: 0;
+    padding: 0;
+}
+
+#menu h1 a {
+    color: var(--text-color);
+}
+
+#menu .links a {
+    display: block;
+}
+
+#lang {
+    top: -2.8em;
+}
+
+#lang label {
+    color: white;
+}
+
+#content {
+    margin-top: 3em;
+}
+
+.footer {
+    margin: 1em 0;
+}
+
+.footer > div {
+    background: none;
+}
+
+.js .column {
+    background: silver;
+    border: none;
+    border-radius: 0;
+    box-shadow: inset -1px -1px var(--window-frame), inset 1px 1px var(--button-face), inset -2px -2px grey, inset 2px 2px white;
+    margin-top: -.4em;
+    padding: 4px;
+}
+
+@media all and (max-width: 800px) {
+    .js .logout {
+        box-shadow: none;
+        top: 0;
+    }
+
+    #lang label {
+        color: initial;
+    }
+}
