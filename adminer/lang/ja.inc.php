@@ -310,6 +310,9 @@ Lang::$translations = array(
 	'Check has been dropped.' => 'チェックを削除しました。',
 
 	'screenshot' => 'スクリーンショット',
+	'Algorithm' => 'アルゴリズム',
+	'Condition' => '条件',
+	'Inherits from' => '継承元',
 );
 
 // run `php ../../lang.php ja` to update this file
