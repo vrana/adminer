@@ -302,12 +302,12 @@ Lang::$translations = array(
 	'Default value' => '既定値',
 
 	// Table check constraints
-	'Checks' => 'チェック',
-	'Create check' => 'チェックを作成',
-	'Alter check' => 'チェックを変更',
-	'Check has been created.' => 'チェックを作成しました。',
-	'Check has been altered.' => 'チェックを変更しました。',
-	'Check has been dropped.' => 'チェックを削除しました。',
+	'Checks' => 'CHECK制約',
+	'Create check' => 'CHECK制約を作成',
+	'Alter check' => 'CHECK制約を変更',
+	'Check has been created.' => 'CHECK制約を作成しました。',
+	'Check has been altered.' => 'CHECK制約を変更しました。',
+	'Check has been dropped.' => 'CHECK制約を削除しました。',
 
 	'screenshot' => 'スクリーンショット',
 	'Algorithm' => 'アルゴリズム',
