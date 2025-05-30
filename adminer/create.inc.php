@@ -3,7 +3,7 @@ namespace Adminer;
 
 $TABLE = $_GET["create"];
 $partition_by = driver()->partitionBy;
-$partitions_info = driver()->partitionsInfo($TABLE);
+$partitions_info = ($partition_by ? driver()->partitionsInfo($TABLE) : array());
 
 $referencable_primary = referencable_primary($TABLE);
 $foreign_keys = array();
