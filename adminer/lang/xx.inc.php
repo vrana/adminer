@@ -197,6 +197,7 @@ Lang::$translations = array(
 	'Partition name' => 'Xx',
 	'Values' => 'Xx',
 	'Inherits from' => 'Xx',
+	'Inherited by' => 'Xx',
 
 	'View' => 'Xx',
 	'Materialized view' => 'Xx',

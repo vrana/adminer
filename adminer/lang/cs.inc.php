@@ -195,6 +195,7 @@ Lang::$translations = array(
 	'Partition name' => 'Název oddílu',
 	'Values' => 'Hodnoty',
 	'Inherits from' => 'Zděděná z',
+	'Inherited by' => 'Zděděné',
 
 	'View' => 'Pohled',
 	'Materialized view' => 'Materializovaný pohled',
