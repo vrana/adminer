@@ -22,6 +22,10 @@ if ($comment != "") {
 	echo "<p class='nowrap'>" . lang('Comment') . ": " . h($comment) . "\n";
 }
 
+if ($fields) {
+	adminer()->tableStructurePrint($fields, $table_status);
+}
+
 function tables_links($tables) {
 	echo "<ul>\n";
 	foreach ($tables as $table) {
@@ -34,8 +38,6 @@ $inherits = driver()->inheritsFrom($TABLE);
 if ($inherits) {
 	echo "<h3>" . lang('Inherits from') . "</h3>\n";
 	tables_links($inherits);
-} elseif ($fields) {
-	adminer()->tableStructurePrint($fields, $table_status);
 }
 
 if (support("indexes") && driver()->supportsIndex($table_status)) {
