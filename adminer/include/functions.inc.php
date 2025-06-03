@@ -291,7 +291,7 @@ function where_check(string $val, array $fields = array()): string {
 * @param int $i condition order
 * @param string $column column identifier
 */
-function where_link(int $i, string $column, string $value, string $operator = "="): string {
+function where_link(int $i, string $column, ?string $value, string $operator = "="): string {
 	return "&where%5B$i%5D%5Bcol%5D=" . urlencode($column) . "&where%5B$i%5D%5Bop%5D=" . urlencode(($value !== null ? $operator : "IS NULL")) . "&where%5B$i%5D%5Bval%5D=" . urlencode($value);
 }
 
