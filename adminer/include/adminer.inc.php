@@ -1100,7 +1100,7 @@ class Adminer {
 		foreach ($tables as $table => $status) {
 			$table = "$table"; // do not highlight "0" as active everywhere
 			$name = adminer()->tableName($status);
-			if ($name != "" && !$status["inherited"]) {
+			if ($name != "" && !$status["partition"]) {
 				echo '<li><a href="' . h(ME) . 'select=' . urlencode($table) . '"'
 					. bold($_GET["select"] == $table || $_GET["edit"] == $table, "select")
 					. " title='" . lang('Select data') . "'>" . lang('select') . "</a> "

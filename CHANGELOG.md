@@ -2,6 +2,7 @@
 - Allow specifying operator in search anywhere
 - MySQL 5.0-: Do not load partitioning info in alter table (bug #1099)
 - PostgreSQL: Show structure of inherited tables
+- PostgreSQL: Hide only partitions, not all inherited tables from menu
 - PostgreSQL 11-: Avoid duplicate oid in table status (bug #1089)
 - Plugins: Methods processList() and killProcess()
 

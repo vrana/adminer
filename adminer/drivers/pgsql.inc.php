@@ -340,7 +340,7 @@ if (isset($_GET["pgsql"])) {
 		}
 
 		function partitionsInfo(string $table): array {
-			$row = connection()->query("SELECT * FROM pg_partitioned_table WHERE partrelid = " . driver()->tableOid($table))->fetch_assoc();
+			$row = connection()->query("SELECT * FROM pg_partitioned_table WHERE partrelid = " . $this->tableOid($table))->fetch_assoc();
 			if ($row) {
 				$attrs = get_vals("SELECT attname FROM pg_attribute WHERE attrelid = $row[partrelid] AND attnum IN (" . str_replace(" ", ", ", $row["partattrs"]) . ")"); //! ordering
 				$by = array('h' => 'HASH', 'l' => 'LIST', 'r' => 'RANGE');
@@ -453,7 +453,7 @@ ORDER BY 1";
 	obj_description(oid, 'pg_class') AS \"Comment\",
 	" . (min_version(12) ? "''" : "CASE WHEN relhasoids THEN 'oid' ELSE '' END") . " AS \"Oid\",
 	reltuples AS \"Rows\",
-	(SELECT inhparent FROM pg_inherits WHERE inhrelid = oid) AS inherited,
+	" . (min_version(10) ? "relispartition::int AS partition," : "") . "
 	current_schema() AS nspname
 FROM pg_class
 WHERE relkind IN ('r', 'm', 'v', 'f', 'p')
