@@ -76,6 +76,7 @@ Lang::$translations = array(
 	'Webserver file %s' => 'Soubor %s na webovém serveru',
 	'Run file' => 'Spustit soubor',
 	'File does not exist.' => 'Soubor neexistuje.',
+	'Increase %s.' => 'Zvyšte %s.',
 	'File uploads are disabled.' => 'Nahrávání souborů není povoleno.',
 	'Unable to upload a file.' => 'Nepodařilo se nahrát soubor.',
 	'Maximum allowed file size is %sB.' => 'Maximální povolená velikost souboru je %sB.',

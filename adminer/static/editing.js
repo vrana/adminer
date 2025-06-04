@@ -665,6 +665,17 @@ function sqlSubmit(form, root) {
 	}
 }
 
+/** Check if PHP can handle the uploaded files
+* @param number
+* @param string
+* @param Event
+*/
+function fileChange(event, maxFileUploads, message) {
+	if (event.target.files.length > maxFileUploads) {
+		alert(message);
+	}
+}
+
 
 
 /** Handle changing trigger time or event

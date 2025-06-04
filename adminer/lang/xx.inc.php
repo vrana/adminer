@@ -77,6 +77,7 @@ Lang::$translations = array(
 	'Webserver file %s' => 'Xx %s',
 	'Run file' => 'Xx',
 	'File does not exist.' => 'Xx.',
+	'Increase %s.' => 'Xx %s.',
 	'File uploads are disabled.' => 'Xx.',
 	'Unable to upload a file.' => 'Xx.',
 	'Maximum allowed file size is %sB.' => 'Xx %sB.',

@@ -250,8 +250,11 @@ if (!isset($_GET["import"])) {
 } else {
 	echo "<fieldset><legend>" . lang('File upload') . "</legend><div>";
 	$gz = (extension_loaded("zlib") ? "[.gz]" : "");
+	$max_file_uploads = "max_file_uploads";
+	$max_file_uploads_value = ini_get($max_file_uploads);
 	echo (ini_bool("file_uploads")
-		? "SQL$gz (&lt; " . ini_get("upload_max_filesize") . "B): <input type='file' name='sql_file[]' multiple>\n$execute" // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
+		? "SQL$gz (&lt; " . ini_get("upload_max_filesize") . "B): <input type='file' name='sql_file[]' multiple>\n" // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
+			. script("qsl('input').onchange = partialArg(fileChange, $max_file_uploads_value, '" . lang('Increase %s.', "$max_file_uploads = $max_file_uploads_value") . "')") . $execute
 		: lang('File uploads are disabled.')
 	);
 	echo "</div></fieldset>\n";
