@@ -1,5 +1,6 @@
 ## Adminer dev
 - Allow specifying operator in search anywhere
+- Do not order descending in GROUP BY select
 - Warn about exceeded max_file_uploads in import
 - MySQL 5.0-: Do not load partitioning info in alter table (bug #1099)
 - PostgreSQL: Show structure of inherited tables
