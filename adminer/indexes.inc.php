@@ -12,6 +12,7 @@ if (preg_match('~MyISAM|M?aria' . (min_version(5.7, '10.2.2') ? '|InnoDB' : '') 
 	$index_types[] = "SPATIAL";
 }
 $indexes = indexes($TABLE);
+$fields = fields($TABLE);
 $primary = array();
 if (JUSH == "mongo") { // doesn't support primary key
 	$primary = $indexes["_id_"];
@@ -38,7 +39,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 				if ($column != "") {
 					$length = idx($index["lengths"], $key);
 					$desc = idx($index["descs"], $key);
-					$set[] = idf_escape($column) . ($length ? "(" . (+$length) . ")" : "") . ($desc ? " DESC" : "");
+					$set[] = ($fields[$column] ? idf_escape($column) : $column) . ($length ? "(" . (+$length) . ")" : "") . ($desc ? " DESC" : "");
 					$columns[] = $column;
 					$lengths[] = ($length ?: null);
 					$descs[] = $desc;
@@ -81,7 +82,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 
 page_header(lang('Indexes'), $error, array("table" => $TABLE), h($TABLE));
 
-$fields = array_keys(fields($TABLE));
+$fields_keys = array_keys($fields);
 if ($_POST["add"]) {
 	foreach ($row["indexes"] as $key => $index) {
 		if ($index["columns"][count($index["columns"])] != "") {
@@ -138,7 +139,7 @@ if (support("partial_indexes")) {
 if ($primary) {
 	echo "<tr><td>PRIMARY<td>";
 	foreach ($primary["columns"] as $key => $column) {
-		echo select_input(" disabled", $fields, $column);
+		echo select_input(" disabled", $fields_keys, $column);
 		echo "<label><input disabled type='checkbox'>" . lang('descending') . "</label> ";
 	}
 	echo "<td><td>\n";
@@ -158,7 +159,7 @@ foreach ($row["indexes"] as $index) {
 		foreach ($index["columns"] as $key => $column) {
 			echo "<span>" . select_input(
 				" name='indexes[$j][columns][$i]' title='" . lang('Column') . "'",
-				($fields ? array_combine($fields, $fields) : $fields),
+				($fields && ($column == "" || $fields[$column]) ? array_combine($fields_keys, $fields_keys) : array()),
 				$column,
 				"partial(" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . ", '" . js_escape(JUSH == "sql" ? "" : $_GET["indexes"] . "_") . "')"
 			);

@@ -529,7 +529,7 @@ ORDER BY a.attnum") as $row
 		$table_oid = driver()->tableOid($table);
 		$columns = get_key_vals("SELECT attnum, attname FROM pg_attribute WHERE attrelid = $table_oid AND attnum > 0", $connection2);
 		foreach (
-			get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey, indoption, (indpred IS NOT NULL)::int as indispartial, pg_am.amname as algorithm, pg_get_expr(pg_index.indpred, pg_index.indrelid, true) AS partial
+			get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey, indoption, amname, pg_get_expr(indpred, indrelid, true) AS partial, pg_get_expr(indexprs, indrelid) AS indexpr
 FROM pg_index
 JOIN pg_class ON indexrelid = oid
 JOIN pg_am ON pg_am.oid = pg_class.relam
@@ -537,18 +537,17 @@ WHERE indrelid = $table_oid
 ORDER BY indisprimary DESC, indisunique DESC", $connection2) as $row
 		) {
 			$relname = $row["relname"];
-			$return[$relname]["type"] = ($row["indispartial"] ? "INDEX" : ($row["indisprimary"] ? "PRIMARY" : ($row["indisunique"] ? "UNIQUE" : "INDEX")));
+			$return[$relname]["type"] = ($row["partial"] ? "INDEX" : ($row["indisprimary"] ? "PRIMARY" : ($row["indisunique"] ? "UNIQUE" : "INDEX")));
 			$return[$relname]["columns"] = array();
 			$return[$relname]["descs"] = array();
-			$return[$relname]["algorithm"] = $row["algorithm"];
+			$return[$relname]["algorithm"] = $row["amname"];
 			$return[$relname]["partial"] = $row["partial"];
-			if ($row["indkey"]) {
-				foreach (explode(" ", $row["indkey"]) as $indkey) {
-					$return[$relname]["columns"][] = $columns[$indkey];
-				}
-				foreach (explode(" ", $row["indoption"]) as $indoption) {
-					$return[$relname]["descs"][] = (intval($indoption) & 1 ? '1' : null); // 1 - INDOPTION_DESC
-				}
+			$indexpr = preg_split('~(?<=\)), (?=\()~', $row["indexpr"]); //! '), (' used in expression
+			foreach (explode(" ", $row["indkey"]) as $indkey) {
+				$return[$relname]["columns"][] = ($indkey ? $columns[$indkey] : array_shift($indexpr));
+			}
+			foreach (explode(" ", $row["indoption"]) as $indoption) {
+				$return[$relname]["descs"][] = (intval($indoption) & 1 ? '1' : null); // 1 - INDOPTION_DESC
 			}
 			$return[$relname]["lengths"] = array();
 		}

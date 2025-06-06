@@ -4,6 +4,7 @@
 - Warn about exceeded max_file_uploads in import
 - MySQL 5.0-: Do not load partitioning info in alter table (bug #1099)
 - PostgreSQL: Show structure of inherited tables
+- PostgreSQL: Display index expressions
 - PostgreSQL: Add SQL operator to select
 - PostgreSQL: Hide only partitions, not all inherited tables from menu
 - PostgreSQL 11-: Avoid duplicate oid in table status (bug #1089)
