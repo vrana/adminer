@@ -8,6 +8,7 @@
 - PostgreSQL: Add SQL operator to select
 - PostgreSQL: Hide only partitions, not all inherited tables from menu
 - PostgreSQL 11-: Avoid duplicate oid in table status (bug #1089)
+- Elasticsearch: Support dropping aliases
 - Plugins: Methods processList() and killProcess()
 
 ## Adminer 5.3.0 (released 2025-05-04)

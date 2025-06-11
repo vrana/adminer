@@ -529,15 +529,18 @@ if (isset($_GET["elastic"])) {
 		}
 	}
 
-	/** Drop types
-	 * @param list<string> $tables
-	 */
+	function drop_views(array $tables): bool {
+		$return = connection()->rootQuery('_aliases', array('actions' => array_map(function ($table) {
+			return array('remove' => array('index' => '*', 'alias' => $table));
+		}, $tables)), 'POST');
+		return $return && !$return['errors'];
+	}
+
 	function drop_tables(array $tables): bool {
 		$return = true;
 		foreach ($tables as $table) { //! convert to bulk api
 			$return = $return && connection()->rootQuery(urlencode($table), null, 'DELETE');
 		}
-
 		return $return;
 	}
 
