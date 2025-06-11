@@ -962,6 +962,12 @@ class Adminer {
 		echo (support("scheme") ? "<a href='" . h(ME) . "scheme='>" . ($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema')) . "</a>\n" : "");
 		echo ($_GET["ns"] !== "" ? '<a href="' . h(ME) . 'schema=">' . lang('Database schema') . "</a>\n" : "");
 		echo (support("privileges") ? "<a href='" . h(ME) . "privileges='>" . lang('Privileges') . "</a>\n" : "");
+		if ($_GET["ns"] !== "") {
+			echo (support("routine") ? "<a href='#routines'>" . lang('Routines') . "</a>\n" : "");
+			echo (support("sequence") ? "<a href='#sequences'>" . lang('Sequences') . "</a>\n" : "");
+			echo (support("type") ? "<a href='#user-types'>" . lang('User types') . "</a>\n" : "");
+			echo (support("event") ? "<a href='#events'>" . lang('Events') . "</a>\n" : "");
+		}
 		return true;
 	}
 
