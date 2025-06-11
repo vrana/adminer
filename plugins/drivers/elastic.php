@@ -408,6 +408,11 @@ if (isset($_GET["elastic"])) {
 		return $table_status["Engine"] == "view";
 	}
 
+	function view(string $name): array {
+		$return = connection()->rootQuery("_alias/" . urlencode($name) . "");
+		return array("select" => implode("\n", array_keys($return)));
+	}
+
 	function error() {
 		return h(connection()->error);
 	}
