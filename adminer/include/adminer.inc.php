@@ -197,10 +197,10 @@ class Adminer {
 		$is_view = false;
 		if (support("table")) {
 			$is_view = is_view($tableStatus);
-			if ($is_view) {
-				$links["view"] = lang('Alter view');
-			} else {
+			if (!$is_view) {
 				$links["create"] = lang('Alter table');
+			} elseif (support("view")) {
+				$links["view"] = lang('Alter view');
 			}
 		}
 		if ($set !== null) {
