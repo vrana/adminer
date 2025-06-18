@@ -264,9 +264,10 @@ function where(array $where, array $fields = array()): string {
 		$field_type = $field["type"];
 		$return[] = $column
 			. (JUSH == "sql" && $field_type == "json" ? " = CAST(" . q($val) . " AS JSON)"
+				: (JUSH == "pgsql" && preg_match('~^json~', $field_type) ? "::jsonb = " . q($val) . "::jsonb"
 				: (JUSH == "sql" && is_numeric($val) && preg_match('~\.~', $val) ? " LIKE " . q($val) // LIKE because of floats but slow with ints
 				: (JUSH == "mssql" && strpos($field_type, "datetime") === false ? " LIKE " . q(preg_replace('~[_%[]~', '[\0]', $val)) // LIKE because of text but it does not work with datetime
-				: " = " . unconvert_field($field, q($val)))))
+				: " = " . unconvert_field($field, q($val))))))
 		; //! enum and set
 		if (JUSH == "sql" && preg_match('~char|text~', $field_type) && preg_match("~[^ -@]~", $val)) { // not just [a-z] to catch non-ASCII characters
 			$return[] = "$column = " . q($val) . " COLLATE " . charset(connection()) . "_bin";
