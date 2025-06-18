@@ -41,8 +41,8 @@ class AdminerSqlGemini extends Adminer\Plugin {
 				echo "-- " . $response->error->message;
 			} else {
 				$text = $response->candidates[0]->content->parts[0]->text;
-				$text = preg_replace('~(\n|^)```sql\n(.+)\n```(\n|$)~sU', "*/\n\n\\2\n\n/*", "/*\n$text*/\n");
-				echo preg_replace('~/\*\s*\*/\n*~', '', $text);
+				$text2 = preg_replace('~(\n|^)```sql\n(.+)\n```(\n|$)~sU', "*/\n\n\\2\n\n/*", "/*\n$text\n*/", -1, $count);
+				echo ($count ? preg_replace('~/\*\s*\*/\n*~', '', $text2) : $text);
 			}
 			exit;
 		}
