@@ -11,15 +11,23 @@ class AdminerBackwardKeys extends Adminer\Plugin {
 
 	function backwardKeys($table, $tableName) {
 		$return = array();
+		// we couldn't use the same query in MySQL and PostgreSQL because unique_constraint_name is not table-specific in MySQL and referenced_table_name is not available in PostgreSQL
 		foreach (
-			Adminer\get_rows($q = "SELECT TABLE_NAME, CONSTRAINT_NAME, COLUMN_NAME, REFERENCED_COLUMN_NAME
-FROM information_schema.KEY_COLUMN_USAGE
-WHERE TABLE_SCHEMA = " . Adminer\q(Adminer\DB) . "
-AND REFERENCED_TABLE_SCHEMA = " . Adminer\q(Adminer\DB) . "
-AND REFERENCED_TABLE_NAME = " . Adminer\q($table) . "
-ORDER BY ORDINAL_POSITION", null, "") as $row
+			Adminer\get_rows("SELECT s.table_name table_name, s.constraint_name constraint_name, s.column_name column_name, " . (Adminer\JUSH == "sql" ? "referenced_column_name" : "t.column_name") . " referenced_column_name
+FROM information_schema.key_column_usage s" . (Adminer\JUSH == "sql" ? "
+WHERE table_schema = " . Adminer\q(Adminer\DB) . "
+AND referenced_table_schema = " . Adminer\q(Adminer\DB) . "
+AND referenced_table_name" : "
+JOIN information_schema.referential_constraints r USING (constraint_catalog, constraint_schema, constraint_name)
+JOIN information_schema.key_column_usage t ON r.unique_constraint_catalog = t.constraint_catalog
+	AND r.unique_constraint_schema = t.constraint_schema
+	AND r.unique_constraint_name = t.constraint_name
+	AND s.position_in_unique_constraint = t.ordinal_position
+WHERE t.table_catalog = " . Adminer\q(Adminer\DB) . " AND t.table_schema = " . Adminer\q($_GET["ns"]) . "
+AND t.table_name") . " = " . Adminer\q($table) . "
+ORDER BY s.ordinal_position", null, "") as $row
 		) {
-			$return[$row["TABLE_NAME"]]["keys"][$row["CONSTRAINT_NAME"]][$row["COLUMN_NAME"]] = $row["REFERENCED_COLUMN_NAME"];
+			$return[$row["table_name"]]["keys"][$row["constraint_name"]][$row["column_name"]] = $row["referenced_column_name"];
 		}
 		foreach ($return as $key => $val) {
 			$name = Adminer\adminer()->tableName(Adminer\table_status1($key, true));
