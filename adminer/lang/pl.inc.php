@@ -76,6 +76,7 @@ Lang::$translations = array(
 	'Webserver file %s' => 'Plik %s na serwerze',
 	'Run file' => 'Uruchom z pliku',
 	'File does not exist.' => 'Plik nie istnieje.',
+	'Increase %s.' => 'Zwiększ %s.',
 	'File uploads are disabled.' => 'Wgrywanie plików jest wyłączone.',
 	'Unable to upload a file.' => 'Wgranie pliku było niemożliwe.',
 	'Maximum allowed file size is %sB.' => 'Maksymalna wielkość pliku to %sB.',
@@ -196,6 +197,7 @@ Lang::$translations = array(
 	'Partition name' => 'Nazwa partycji',
 	'Values' => 'Wartości',
 	'Inherits from' => 'Dziedziczy po',
+	'Inherited by' => 'Odziedziczone przez',
 
 	'View' => 'Perspektywa',
 	'Materialized view' => 'Zmaterializowana perspektywa',
