@@ -92,7 +92,7 @@ include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
 
 define('Adminer\JUSH', Driver::$jush);
 define('Adminer\SERVER', $_GET[DRIVER]); // read from pgsql=localhost, '' means default server, null means no server
-define('Adminer\DB', $_GET["db"]); // for the sake of speed and size
+define('Adminer\DB', "$_GET[db]"); // for the sake of speed and size
 define(
 	'Adminer\ME',
 	preg_replace('~\?.*~', '', relative_uri()) . '?'
