@@ -4,9 +4,13 @@ namespace Adminer;
 if (!$error && $_POST["export"]) {
 	save_settings(array("output" => $_POST["output"], "format" => $_POST["format"]), "adminer_import");
 	dump_headers("sql");
-	adminer()->dumpTable("", "");
-	adminer()->dumpData("", "table", $_POST["query"]);
-	adminer()->dumpFooter();
+	if ($_POST["format"] == "sql") {
+		echo "$_POST[query]\n";
+	} else {
+		adminer()->dumpTable("", "");
+		adminer()->dumpData("", "table", $_POST["query"]);
+		adminer()->dumpFooter();
+	}
 	exit;
 }
 
@@ -68,8 +72,6 @@ if (!$error && $_POST) {
 		$parse = '[\'"' . (JUSH == "sql" ? '`#' : (JUSH == "sqlite" ? '`[' : (JUSH == "mssql" ? '[' : ''))) . ']|/\*|' . $line_comment . '|$' . (JUSH == "pgsql" ? '|\$[^$]*\$' : '');
 		$total_start = microtime(true);
 		$adminer_export = get_settings("adminer_import"); // this doesn't offer SQL export so we match the import/export style at select
-		$dump_format = adminer()->dumpFormat();
-		unset($dump_format["sql"]);
 
 		while ($query != "") {
 			if (!$offset && preg_match("~^$space*+DELIMITER\\s+(\\S+)~i", $query, $match)) {
@@ -174,7 +176,7 @@ if (!$error && $_POST) {
 											$id = "export-$commands";
 											echo ", <a href='#$id'>" . lang('Export') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "") . "<span id='$id' class='hidden'>: "
 												. html_select("output", adminer()->dumpOutput(), $adminer_export["output"]) . " "
-												. html_select("format", $dump_format, $adminer_export["format"])
+												. html_select("format", adminer()->dumpFormat(), $adminer_export["format"])
 												. input_hidden("query", $q)
 												. "<input type='submit' name='export' value='" . lang('Export') . "'>" . input_token() . "</span>\n"
 												. "</form>\n"

@@ -1,6 +1,7 @@
 ## Adminer dev
 - Allow specifying operator in search anywhere
 - Do not order descending in GROUP BY select
+- Allow exporting SQL in SQL command (bug #1092)
 - Add section links in database overview
 - Warn about exceeded max_file_uploads in import
 - MySQL 5.0-: Do not load partitioning info in alter table (bug #1099)
