@@ -50,7 +50,7 @@ ORDER BY s.ordinal_position", null, "") as $row
 				foreach ($cols as $column => $val) {
 					$link .= Adminer\where_link($i++, $column, $row[$val]);
 				}
-				echo "<a href='" . Adminer\h($link) . "'>" . Adminer\h($backwardKey["name"]) . "</a>";
+				echo "<a href='" . Adminer\h($link) . "'>" . Adminer\h(preg_replace('(^' . preg_quote($_GET["select"]) . (substr($_GET["select"], -1) == 's' ? '?' : '') . '_)', '_', $backwardKey["name"])) . "</a>";
 				$link = Adminer\ME . 'edit=' . urlencode($table);
 				foreach ($cols as $column => $val) {
 					$link .= "&set" . urlencode("[" . Adminer\bracket_escape($column) . "]") . "=" . urlencode($row[$val]);
