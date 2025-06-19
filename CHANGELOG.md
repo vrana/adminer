@@ -5,6 +5,7 @@
 - Add section links in database overview
 - Warn about exceeded max_file_uploads in import
 - MySQL 5.0-: Do not load partitioning info in alter table (bug #1099)
+- MariaDB: Parse COLLATE in routine definition (bug #1104)
 - PostgreSQL: Show structure of inherited tables
 - PostgreSQL: Display index expressions
 - PostgreSQL: Add SQL operator to select
