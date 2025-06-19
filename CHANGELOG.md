@@ -13,6 +13,7 @@
 - PostgreSQL 11-: Avoid duplicate oid in table status (bug #1089)
 - Elasticsearch: Support dropping aliases
 - Plugins: Methods processList() and killProcess()
+- New plugin: Display row numbers in select (bug #1106)
 
 ## Adminer 5.3.0 (released 2025-05-04)
 - Align numeric functions right
