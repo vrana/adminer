@@ -15,14 +15,15 @@ class Plugins {
 		if ($plugins === null) {
 			$plugins = array();
 			$basename = "adminer-plugins";
-			if (is_dir($basename)) {
-				foreach (glob("$basename/*.php") as $filename) {
-					$include = include_once "./$filename";
+			$cwd = __DIR__ . DIRECTORY_SEPARATOR;
+			if (is_dir("$cwd$basename")) {
+				foreach (glob("$cwd$basename/*.php") as $filename) {
+					$include = include_once $filename;
 				}
 			}
 			$help = " href='https://www.adminer.org/plugins/#use'" . target_blank();
-			if (file_exists("$basename.php")) {
-				$include = include_once "./$basename.php"; // example: return array(new AdminerLoginOtp($secret))
+			if (file_exists("$cwd$basename.php")) {
+				$include = include_once "$cwd$basename.php"; // example: return array(new AdminerLoginOtp($secret))
 				if (is_array($include)) {
 					foreach ($include as $plugin) {
 						$plugins[get_class($plugin)] = $plugin;
