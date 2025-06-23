@@ -990,7 +990,7 @@ class Adminer {
 						if ($password !== null) {
 							$dbs = $_SESSION["db"][$vendor][$server][$username];
 							foreach (($dbs ? array_keys($dbs) : array("")) as $db) {
-								$output .= "<li><a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($name) " . h($username . ($server != "" ? "@" . adminer()->serverName($server) : "") . ($db != "" ? " - $db" : "")) . "</a>\n";
+								$output .= "<li><a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($name) " . h("$username@" . ($server != "" ? adminer()->serverName($server) : "") . ($db != "" ? " - $db" : "")) . "</a>\n";
 							}
 						}
 					}

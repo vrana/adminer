@@ -4,6 +4,7 @@
 - Allow exporting SQL in SQL command (bug #1092)
 - Add section links in database overview
 - Warn about exceeded max_file_uploads in import
+- Display @ after username without server in existing logins
 - MySQL 5.0-: Do not load partitioning info in alter table (bug #1099)
 - MariaDB: Parse COLLATE in routine definition (bug #1104)
 - PostgreSQL: Show structure of inherited tables
