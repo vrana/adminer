@@ -51,6 +51,9 @@ ORDER BY s.ordinal_position", null, "") as $row
 				$link = Adminer\ME . 'select=' . urlencode($table);
 				$i = 0;
 				foreach ($cols as $column => $val) {
+					if (!isset($row[$val])) {
+						continue 2;
+					}
 					$link .= Adminer\where_link($i++, $column, $row[$val]);
 				}
 				echo "<a href='" . Adminer\h($link) . "'>" . Adminer\h(preg_replace('(^' . preg_quote($_GET["select"]) . (substr($_GET["select"], -1) == 's' ? '?' : '') . '_)', '_', $backwardKey["name"])) . "</a>";
