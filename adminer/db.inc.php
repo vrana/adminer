@@ -96,8 +96,8 @@ if (adminer()->homepage()) {
 				$id = h("Table-" . $name);
 				echo '<tr><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array("$name", $tables_views, true), "", "", "", $id); // "$name" to check numeric table names
 				echo '<th>' . (support("table") || support("indexes") ? "<a href='" . h(ME) . "table=" . urlencode($name) . "' title='" . lang('Show structure') . "' id='$id'>" . h($name) . '</a>' : h($name));
-				if ($view) {
-					$title = (preg_match('~materialized~i', $type) ? lang('Materialized view') : lang('View'));
+				if ($view && !preg_match('~materialized~i', $type)) {
+					$title = lang('View');
 					echo '<td colspan="6">' . (support("view") ? "<a href='" . h(ME) . "view=" . urlencode($name) . "' title='" . lang('Alter view') . "'>$title</a>" : $title);
 					echo '<td align="right"><a href="' . h(ME) . "select=" . urlencode($name) . '" title="' . lang('Select data') . '">?</a>';
 				} else {

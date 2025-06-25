@@ -7,7 +7,7 @@ if ($_GET["script"] == "db") {
 	$sums = array("Data_length" => 0, "Index_length" => 0, "Data_free" => 0);
 	foreach (table_status() as $name => $table_status) {
 		json_row("Comment-$name", h($table_status["Comment"]));
-		if (!is_view($table_status)) {
+		if (!is_view($table_status) || preg_match('~materialized~i', $table_status["Engine"])) {
 			foreach (array("Engine", "Collation") as $key) {
 				json_row("$key-$name", h($table_status[$key]));
 			}
