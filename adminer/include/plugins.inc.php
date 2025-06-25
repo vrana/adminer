@@ -67,7 +67,7 @@ class Plugins {
 	function __call(string $name, array $params) {
 		$args = array();
 		foreach ($params as $key => $val) {
-			// some plugins accept params by reference - we don't need to propage it outside, just to the other plugins
+			// some plugins accept params by reference - we don't need to propagate it outside, just to the other plugins
 			$args[] = &$params[$key];
 		}
 		$return = null;
