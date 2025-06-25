@@ -124,6 +124,8 @@ if (adminer()->homepage()) {
 				echo "\n";
 			}
 
+			echo script("ajaxSetHtml('" . js_escape(ME) . "script=db');");
+
 			echo "<tr><td><th>" . lang('%d in total', count($tables_list));
 			echo "<td>" . h(JUSH == "sql" ? get_val("SELECT @@default_storage_engine") : "");
 			echo "<td>" . h(db_collation(DB, collations()));
@@ -240,10 +242,6 @@ if (adminer()->homepage()) {
 				}
 			}
 			echo '<p class="links"><a href="' . h(ME) . 'event=">' . lang('Create event') . "</a>\n";
-		}
-
-		if ($tables_list) {
-			echo script("ajaxSetHtml('" . js_escape(ME) . "script=db');");
 		}
 	}
 }
