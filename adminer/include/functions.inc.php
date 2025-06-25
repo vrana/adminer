@@ -809,7 +809,7 @@ function is_url(?string $string): bool {
 * @param Field $field
 */
 function is_shortable(array $field): bool {
-	return preg_match('~char|text|json|lob|geometry|point|linestring|polygon|string|bytea~', $field["type"]);
+	return preg_match('~char|text|json|lob|geometry|point|linestring|polygon|string|bytea|hstore~', $field["type"]);
 }
 
 /** Get query to compute number of found rows

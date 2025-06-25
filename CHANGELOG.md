@@ -13,6 +13,7 @@
 - PostgreSQL: Add SQL operator to select
 - PostgreSQL: Hide only partitions, not all inherited tables from menu
 - PostgreSQL: Allow comparing json columns (bug #1107)
+- PostgreSQL: Shorten values in hstore columns
 - PostgreSQL 11-: Avoid duplicate oid in table status (bug #1089)
 - Elasticsearch: Support dropping aliases
 - Plugins: Methods processList() and killProcess()
