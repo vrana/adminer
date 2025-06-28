@@ -21,12 +21,12 @@ class AdminerMenuLinks extends Adminer\Plugin {
 			'' => $this->lang('Both'),
 			'auto' => $this->lang('Auto (select on select page, structure otherwise)'),
 		);
-		$menu = Adminer\get_setting("menu", "adminer_config") ?: $this->menu;
+		$menu = Adminer\get_setting("menu", "adminer_config", $this->menu);
 		return array($this->lang('Menu table links') => Adminer\html_radios('config[menu]', $options, $menu, "<br>"));
 	}
 
 	function tablesPrint(array $tables) {
-		$menu = Adminer\get_setting("menu", "adminer_config") ?: $this->menu;
+		$menu = Adminer\get_setting("menu", "adminer_config", $this->menu);
 		$titles = array(
 			'select' => $this->lang('Select data'),
 			'table' => $this->lang('Show structure'),

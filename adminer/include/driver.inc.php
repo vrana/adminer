@@ -253,8 +253,7 @@ abstract class SqlDriver {
 		return !is_view($table_status);
 	}
 
-	/**
-	 * Return list of supported index algorithms, first one is default
+	/** Return list of supported index algorithms, first one is default
 	 * @param TableStatus $tableStatus
 	 * @return list<string>
 	 */

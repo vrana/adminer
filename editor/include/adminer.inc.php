@@ -59,6 +59,9 @@ class Adminer {
 		return 5;
 	}
 
+	function afterConnect() {
+	}
+
 	function headers() {
 	}
 

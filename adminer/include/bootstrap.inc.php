@@ -108,3 +108,5 @@ include "../adminer/include/xxtea.inc.php";
 include "../adminer/include/auth.inc.php";
 include "./include/editing.inc.php";
 include "./include/connect.inc.php";
+
+adminer()->afterConnect();

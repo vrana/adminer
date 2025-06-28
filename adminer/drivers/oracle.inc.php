@@ -60,6 +60,10 @@ if (isset($_GET["oracle"])) {
 				}
 				return $return;
 			}
+
+			function timeout(int $ms): bool {
+				return oci_set_call_timeout($this->link, $ms);
+			}
 		}
 
 		class Result {

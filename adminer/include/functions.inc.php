@@ -338,11 +338,11 @@ function get_settings(string $cookie): array {
 }
 
 /** Get setting stored in a cookie
+* @param mixed $default
 * @return mixed
 */
-function get_setting(string $key, string $cookie = "adminer_settings") {
-	$settings = get_settings($cookie);
-	return $settings[$key];
+function get_setting(string $key, string $cookie = "adminer_settings", $default = null) {
+	return idx(get_settings($cookie), $key, $default);
 }
 
 /** Store settings to a cookie

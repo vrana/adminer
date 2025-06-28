@@ -85,6 +85,10 @@ class Adminer {
 		return 2;
 	}
 
+	/** Called after connecting and selecting a database */
+	function afterConnect(): void {
+	}
+
 	/** Headers to send before HTML output */
 	function headers(): void {
 	}
