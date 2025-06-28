@@ -26,7 +26,7 @@ JOIN information_schema.key_column_usage t ON r.unique_constraint_catalog = t.co
 	AND r.constraint_schema = t.constraint_schema
 	AND r.unique_constraint_name = t.constraint_name
 	AND s.position_in_unique_constraint = t.ordinal_position
-WHERE t.table_catalog = " . Adminer\q(Adminer\DB) . " AND t.table_schema = " . Adminer\q($_GET["ns"]) . "
+WHERE t.table_catalog = " . Adminer\q(Adminer\DB) . " AND t.table_schema = " . Adminer\q("$_GET[ns]") . "
 AND t.table_name") . " = " . Adminer\q($table) . "
 ORDER BY s.ordinal_position", null, "") as $row
 		) {
