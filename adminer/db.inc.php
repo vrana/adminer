@@ -151,18 +151,23 @@ if (adminer()->homepage()) {
 				. "<input type='submit' name='truncate' value='" . lang('Truncate') . "'> " . on_help(JUSH == "sqlite" ? "'DELETE'" : "'TRUNCATE" . (JUSH == "pgsql" ? "'" : " TABLE'")) . confirm()
 				. "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . on_help("'DROP TABLE'") . confirm() . "\n";
 				$databases = (support("scheme") ? adminer()->schemas() : adminer()->databases());
+				echo "</div></fieldset>\n";
+				$script = "";
 				if (count($databases) != 1 && JUSH != "sqlite") {
+					echo "<fieldset><legend>" . lang('Move to other database') . " <span id='selected3'></span></legend><div>";
 					$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));
-					echo "<p><label>" . lang('Move to other database') . ": ";
 					echo ($databases ? html_select("target", $databases, $db) : '<input name="target" value="' . h($db) . '" autocapitalize="off">');
 					echo "</label> <input type='submit' name='move' value='" . lang('Move') . "'>";
 					echo (support("copy") ? " <input type='submit' name='copy' value='" . lang('Copy') . "'> " . checkbox("overwrite", 1, $_POST["overwrite"], lang('overwrite')) : "");
-					echo "\n";
+					echo "</div></fieldset>\n";
+					$script = " selectCount('selected3', formChecked(this, /^(tables|views)\[/));";
 				}
 				echo "<input type='hidden' name='all' value=''>"; // used by trCheck()
-				echo script("qsl('input').onclick = function () { selectCount('selected', formChecked(this, /^(tables|views)\[/));" . (support("table") ? " selectCount('selected2', formChecked(this, /^tables\[/) || $tables);" : "") . " }");
+				echo script("qsl('input').onclick = function () { selectCount('selected', formChecked(this, /^(tables|views)\[/));"
+					. (support("table") ? " selectCount('selected2', formChecked(this, /^tables\[/) || $tables);" : "")
+					. "$script }"
+				);
 				echo input_token();
-				echo "</div></fieldset>\n";
 				echo "</div></div>\n";
 			}
 			echo "</form>\n";
