@@ -124,8 +124,6 @@ if (adminer()->homepage()) {
 				echo "\n";
 			}
 
-			echo script("ajaxSetHtml('" . js_escape(ME) . "script=db');");
-
 			echo "<tr><td><th>" . lang('%d in total', count($tables_list));
 			echo "<td>" . h(JUSH == "sql" ? get_val("SELECT @@default_storage_engine") : "");
 			echo "<td>" . h(db_collation(DB, collations()));
@@ -135,6 +133,7 @@ if (adminer()->homepage()) {
 			echo "\n";
 
 			echo "</table>\n";
+			echo script("ajaxSetHtml('" . js_escape(ME) . "script=db');");
 			echo "</div>\n";
 			if (!information_schema(DB)) {
 				echo "<div class='footer'><div>\n";
