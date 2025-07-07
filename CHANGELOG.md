@@ -6,6 +6,7 @@
 - Warn about exceeded max_file_uploads in import
 - Display @ after username without server in existing logins
 - Display data length and index length for materialized views
+- Link routines from syntax highlighting
 - MySQL 5.0-: Do not load partitioning info in alter table (bug #1099)
 - MariaDB: Parse COLLATE in routine definition (bug #1104)
 - PostgreSQL: Show structure of inherited tables

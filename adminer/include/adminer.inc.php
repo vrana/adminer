@@ -1048,7 +1048,15 @@ class Adminer {
 				foreach ($tables as $table => $type) {
 					$links[] = preg_quote($table, '/');
 				}
-				echo "var jushLinks = { " . JUSH . ": [ '" . js_escape(ME) . (support("table") ? "table=" : "select=") . "\$&', /\\b(" . implode("|", $links) . ")\\b/g ] };\n";
+				echo "var jushLinks = { " . JUSH . ":";
+				json_row(js_escape(ME) . (support("table") ? "table" : "select") . '=$&', '/\b(' . implode('|', $links) . ')\b/g', false);
+				if (support('routine')) {
+					foreach (routines() as $row) {
+						json_row(js_escape(ME) . 'function=' . urlencode($row["SPECIFIC_NAME"]) . '&name=$&', '/\b' . preg_quote($row["ROUTINE_NAME"], '/') . '(?=["`]?\()/g', false);
+					}
+				}
+				json_row('');
+				echo "};\n";
 				foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
 					echo "jushLinks.$val = jushLinks." . JUSH . ";\n";
 				}

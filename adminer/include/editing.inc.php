@@ -150,13 +150,13 @@ function select_input(string $attrs, array $options, ?string $value = "", string
 * @param string $key or "" to close the object
 * @param string|int $val
 */
-function json_row(string $key, $val = null): void {
+function json_row(string $key, $val = null, bool $escape = true): void {
 	static $first = true;
 	if ($first) {
 		echo "{";
 	}
 	if ($key != "") {
-		echo ($first ? "" : ",") . "\n\t\"" . addcslashes($key, "\r\n\t\"\\/") . '": ' . ($val !== null ? '"' . addcslashes($val, "\r\n\"\\/") . '"' : 'null');
+		echo ($first ? "" : ",") . "\n\t\"" . addcslashes($key, "\r\n\t\"\\/") . '": ' . ($val !== null ? ($escape ? '"' . addcslashes($val, "\r\n\"\\/") . '"' : $val) : 'null');
 		$first = false;
 	} else {
 		echo "\n}\n";
