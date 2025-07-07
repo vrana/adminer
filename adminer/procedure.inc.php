@@ -62,7 +62,7 @@ if (isset($_GET["function"])) {
 </table>
 <?php echo script("editFields();"); ?>
 </div>
-<p><?php textarea("definition", $row["definition"]); ?>
+<p><?php textarea("definition", $row["definition"], 20); ?>
 <p>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <?php if ($PROCEDURE != "") { ?>
