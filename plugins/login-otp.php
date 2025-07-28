@@ -12,7 +12,7 @@ class AdminerLoginOtp extends Adminer\Plugin {
 	/**
 	* @param string $secret decoded secret, e.g. base64_decode("SECRET")
 	*/
-	function __construct(string $secret) {
+	function __construct($secret) {
 		$this->secret = $secret;
 		if ($_POST["auth"]) {
 			$_SESSION["otp"] = (string) $_POST["auth"]["otp"];

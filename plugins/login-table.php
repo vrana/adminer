@@ -19,7 +19,7 @@ class AdminerLoginTable extends Adminer\Plugin {
 	protected $database;
 
 	/** Set database of login table */
-	function __construct(string $database) {
+	function __construct($database) {
 		$this->database = $database;
 	}
 
