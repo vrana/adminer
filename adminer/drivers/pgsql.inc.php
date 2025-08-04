@@ -448,14 +448,14 @@ ORDER BY 1";
 			get_rows("SELECT
 	relname AS \"Name\",
 	CASE relkind WHEN 'v' THEN 'view' WHEN 'm' THEN 'materialized view' ELSE 'table' END AS \"Engine\"" . ($has_size ? ",
-	pg_table_size(oid) AS \"Data_length\",
-	pg_indexes_size(oid) AS \"Index_length\"" : "") . ",
-	obj_description(oid, 'pg_class') AS \"Comment\",
+	pg_table_size(c.oid) AS \"Data_length\",
+	pg_indexes_size(c.oid) AS \"Index_length\"" : "") . ",
+	obj_description(c.oid, 'pg_class') AS \"Comment\",
 	" . (min_version(12) ? "''" : "CASE WHEN relhasoids THEN 'oid' ELSE '' END") . " AS \"Oid\",
 	reltuples AS \"Rows\",
 	" . (min_version(10) ? "relispartition::int AS partition," : "") . "
 	current_schema() AS nspname
-FROM pg_class
+FROM pg_class c
 WHERE relkind IN ('r', 'm', 'v', 'f', 'p')
 AND relnamespace = " . driver()->nsOid . "
 " . ($name != "" ? "AND relname = " . q($name) : "ORDER BY relname")) as $row //! Auto_increment
