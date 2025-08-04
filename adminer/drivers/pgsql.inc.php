@@ -340,7 +340,7 @@ if (isset($_GET["pgsql"])) {
 		}
 
 		function partitionsInfo(string $table): array {
-			$row = connection()->query("SELECT * FROM pg_partitioned_table WHERE partrelid = " . $this->tableOid($table))->fetch_assoc();
+			$row = (min_version(10) ? connection()->query("SELECT * FROM pg_partitioned_table WHERE partrelid = " . $this->tableOid($table))->fetch_assoc() : null);
 			if ($row) {
 				$attrs = get_vals("SELECT attname FROM pg_attribute WHERE attrelid = $row[partrelid] AND attnum IN (" . str_replace(" ", ", ", $row["partattrs"]) . ")"); //! ordering
 				$by = array('h' => 'HASH', 'l' => 'LIST', 'r' => 'RANGE');
