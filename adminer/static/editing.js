@@ -93,6 +93,13 @@ function messagesPrint(parent) {
 	for (const el of qsa('.toggle', parent)) {
 		el.onclick = partial(toggle, el.getAttribute('href').substr(1));
 	}
+	for (const el of qsa('.copy', parent)) {
+		el.onclick = () => {
+			navigator.clipboard.writeText(qs('code', el.parentElement).innerText).then(el.textContent = '✓');
+			setTimeout(() => el.textContent = '🗐', 1000);
+			return false;
+		};
+	}
 }
 
 

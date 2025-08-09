@@ -668,7 +668,7 @@ class Adminer {
 		}
 		$history[$_GET["db"]][] = array($query, time(), $time); // not DB - $_GET["db"] is changed in database.inc.php //! respect $_GET["ns"]
 		$sql_id = "sql-" . count($history[$_GET["db"]]);
-		$return = "<a href='#$sql_id' class='toggle'>" . lang('SQL command') . "</a>\n";
+		$return = "<a href='#$sql_id' class='toggle'>" . lang('SQL command') . "</a> <a href='' class='jsonly copy'>🗐</a>\n";
 		if (!$failed && ($warnings = driver()->warnings())) {
 			$id = "warnings-" . count($history[$_GET["db"]]);
 			$return = "<a href='#$id' class='toggle'>" . lang('Warnings') . "</a>, $return<div id='$id' class='hidden'>\n$warnings</div>\n";
