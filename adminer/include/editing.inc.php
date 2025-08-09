@@ -314,7 +314,7 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 		echo "<tr" . ($display ? "" : " style='display: none;'") . ">\n";
 		echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", driver()->inout), $field["inout"]) : "") . "<th>";
 		if ($display) {
-			echo "<input name='fields[$i][field]' value='" . h($field["field"]) . "' data-maxlength='64' autocapitalize='off' aria-labelledby='label-name'>";
+			echo "<input name='fields[$i][field]' value='" . h($field["field"]) . "' data-maxlength='64' autocapitalize='off' aria-labelledby='label-name'" . (isset($_POST["add"][$i-1]) ? " autofocus" : "") . ">";
 		}
 		echo input_hidden("fields[$i][orig]", $orig);
 		edit_type("fields[$i]", $field, $collations, $foreign_keys);
