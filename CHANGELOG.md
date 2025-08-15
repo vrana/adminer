@@ -18,6 +18,7 @@
 - PostgreSQL: Allow comparing json columns (bug #1107)
 - PostgreSQL: Shorten values in hstore columns
 - PostgreSQL: Quote edit value with interval operator
+- PostgreSQL: Fix calling functions with name-less parameters
 - PostgreSQL 11-: Avoid duplicate oid in table status (bug #1089)
 - Elasticsearch: Support dropping aliases
 - Plugins: Methods afterConnect(), processList() and killProcess()
