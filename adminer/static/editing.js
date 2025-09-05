@@ -391,7 +391,7 @@ function editingAddRow(focus) {
 */
 function editingRemoveRow(name) {
 	const field = formField(this.form, this.name.replace(/[^[]+(.+)/, name));
-	field.parentNode.removeChild(field);
+	field.remove();
 	parentTag(this, 'tr').style.display = 'none';
 	return false;
 }

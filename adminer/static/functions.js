@@ -739,7 +739,7 @@ function selectLoadMore(limit, loading) {
 			adminerHighlighter(qsa('code', tbody));
 			qs('#table').appendChild(tbody);
 			if (tbody.children.length < limit) {
-				a.parentNode.removeChild(a);
+				a.remove();
 			} else {
 				a.href = href.replace(/\d+$/, page => +page + 1);
 				a.innerHTML = title;
