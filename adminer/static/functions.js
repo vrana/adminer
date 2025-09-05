@@ -736,6 +736,7 @@ function selectLoadMore(limit, loading) {
 		return !ajax(href, request => {
 			const tbody = document.createElement('tbody');
 			tbody.innerHTML = request.responseText;
+			adminerHighlighter(qsa('code', tbody));
 			qs('#table').appendChild(tbody);
 			if (tbody.children.length < limit) {
 				a.parentNode.removeChild(a);
