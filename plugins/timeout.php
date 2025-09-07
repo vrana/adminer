@@ -32,7 +32,7 @@ class AdminerTimeout extends Adminer\Plugin {
 					$conn->query("SET LOCK_TIMEOUT $ms");
 					break;
 				default:
-					if (method_exists(connection(), 'timeout')) {
+					if (method_exists($conn, 'timeout')) {
 						$conn->timeout($ms);
 					}
 			}
