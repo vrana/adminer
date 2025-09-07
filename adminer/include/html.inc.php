@@ -240,7 +240,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 				$checked = in_array($val, explode(",", $value), true);
 				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . h($val) . "'" . ($checked ? ' checked' : '') . ">" . h(adminer()->editVal($val, $field)) . '</label>';
 			}
-		} elseif (preg_match('~blob|bytea|raw|file~', $field["type"]) && ini_bool("file_uploads")) {
+		} elseif (is_blob($field) && ini_bool("file_uploads")) {
 			echo "<input type='file' name='fields-$name'>";
 		} elseif ($function == "json" || preg_match('~^jsonb?$~', $field["type"])) {
 			echo "<textarea$attrs cols='50' rows='12' class='jush-js'>" . h($value) . '</textarea>';
@@ -324,7 +324,7 @@ function process_input(array $field) {
 		}
 		return $value;
 	}
-	if (preg_match('~blob|bytea|raw|file~', $field["type"]) && ini_bool("file_uploads")) {
+	if (is_blob($field) && ini_bool("file_uploads")) {
 		$file = get_file("fields-$idf");
 		if (!is_string($file)) {
 			return false; //! report errors

@@ -21,6 +21,7 @@
 - PostgreSQL: Quote edit value with interval operator
 - PostgreSQL: Fix calling functions with name-less parameters
 - PostgreSQL: Fix calling functions returing table
+- PostgreSQL: Don't treat user types containing 'file' as blobs (bug #1118)
 - PostgreSQL 11-: Avoid duplicate oid in table status (bug #1089)
 - Elasticsearch: Support dropping aliases
 - Plugins: Methods afterConnect(), processList() and killProcess()

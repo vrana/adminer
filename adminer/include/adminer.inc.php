@@ -304,7 +304,7 @@ class Adminer {
 			: (preg_match('~json~', $field["type"]) ? "<code class='jush-js'>$val</code>"
 			: $val)
 		));
-		if (preg_match('~blob|bytea|raw|file~', $field["type"]) && !is_utf8($val)) {
+		if (is_blob($field) && !is_utf8($val)) {
 			$return = "<i>" . lang('%d byte(s)', strlen($original)) . "</i>";
 		}
 		return ($link ? "<a href='" . h($link) . "'" . (is_url($link) ? target_blank() : "") . ">$return</a>" : $return);
@@ -703,7 +703,7 @@ class Adminer {
 					}
 				}
 			}
-			if ($key && $functions && !preg_match('~set|blob|bytea|raw|file|bool~', $field["type"])) {
+			if ($key && $functions && !preg_match('~set|bool~', $field["type"]) && !is_blob($field)) {
 				$return .= "/SQL";
 			}
 		}
@@ -843,7 +843,7 @@ class Adminer {
 					}
 				}
 			}
-			$result = connection()->query($query, 1); // 1 - MYSQLI_USE_RESULT //! enum and set as numbers
+			$result = connection()->query($query, 1); // 1 - MYSQLI_USE_RESULT
 			if ($result) {
 				$insert = "";
 				$buffer = "";

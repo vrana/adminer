@@ -423,7 +423,7 @@ if (!$columns && support("table")) {
 						}
 
 						$link = "";
-						if (preg_match('~blob|bytea|raw|file~', $field["type"]) && $val != "") {
+						if (is_blob($field) && $val != "") {
 							$link = ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf;
 						}
 						if (!$link && $val !== null) { // link related items

@@ -791,6 +791,13 @@ function select_value($val, string $link, array $field, ?string $text_length): s
 	return adminer()->selectVal($return, $link, $field, $val);
 }
 
+/** Check whether the field type is blob or equivalent
+* @param Field $field
+*/
+function is_blob(array $field): bool {
+	return preg_match('~blob|bytea|raw|file~', $field["type"]) && !in_array($field["type"], idx(driver()->structuredTypes(), lang('User types'), array()));
+}
+
 /** Check whether the string is e-mail address */
 function is_mail(?string $email): bool {
 	$atom = '[-a-z0-9!#$%&\'*+/=?^_`{|}~]'; // characters of local-name
