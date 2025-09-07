@@ -41,16 +41,9 @@ SET foreign_key_checks = 0;
 	foreach ((array) $databases as $db) {
 		adminer()->dumpDatabase($db);
 		if (connection()->select_db($db)) {
-			if ($is_sql && preg_match('~CREATE~', $style) && ($create = get_val("SHOW CREATE DATABASE " . idf_escape($db), 1))) {
-				set_utf8mb4($create);
-				if ($style == "DROP+CREATE") {
-					echo "DROP DATABASE IF EXISTS " . idf_escape($db) . ";\n";
-				}
-				echo "$create;\n";
-			}
 			if ($is_sql) {
 				if ($style) {
-					echo use_sql($db) . ";\n\n";
+					echo use_sql($db, $style) . ";\n\n";
 				}
 				$out = "";
 

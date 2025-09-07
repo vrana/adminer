@@ -983,8 +983,17 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get SQL command to change database */
-	function use_sql(string $database): string {
-		return "USE " . idf_escape($database);
+	function use_sql(string $database, string $style = ""): string {
+		$name = idf_escape($database);
+		$return = "";
+		if (preg_match('~CREATE~', $style) && ($create = get_val("SHOW CREATE DATABASE $name", 1))) {
+			set_utf8mb4($create);
+			if ($style == "DROP+CREATE") {
+				$return = "DROP DATABASE IF EXISTS $name;\n";
+			}
+			$return .= "$create;\n";
+		}
+		return $return . "USE $name";
 	}
 
 	/** Get SQL commands to create triggers */

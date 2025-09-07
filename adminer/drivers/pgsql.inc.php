@@ -1013,8 +1013,16 @@ AND typelem = 0"
 	}
 
 
-	function use_sql($database) {
-		return "\connect " . idf_escape($database);
+	function use_sql($database, $style = "") {
+		$name = idf_escape($database);
+		$return = "";
+		if (preg_match('~CREATE~', $style)) {
+			if ($style == "DROP+CREATE") {
+				$return = "DROP DATABASE IF EXISTS $name;\n";
+			}
+			$return .= "CREATE DATABASE $name;\n"; //! get info from pg_database
+		}
+		return "$return\\connect $name";
 	}
 
 	function show_variables() {
