@@ -275,7 +275,7 @@ AND CHECK_CLAUSE NOT LIKE '% IS NOT NULL'", $this->conn); // ignore default IS N
 	}
 
 	/** Get all fields in the current schema
-	* @return array<list<array{field:string, null:bool, type:string, length:?numeric-string, primary?:numeric-string}>>
+	* @return array<list<array{field:string, null:bool, type:string, length:?numeric-string}>> optionally also 'primary'
 	*/
 	function allFields(): array {
 		$return = array();

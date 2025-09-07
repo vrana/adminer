@@ -22,9 +22,15 @@ class AdminerTimeout extends Adminer\Plugin {
 			$ms = $seconds * 1000;
 			$conn = Adminer\connection();
 			switch (Adminer\JUSH) {
-				case 'sql': $conn->query("SET max_execution_time = $ms"); break;
-				case 'pgsql': $conn->query("SET statement_timeout = $ms"); break;
-				case 'mssql': $conn->query("SET LOCK_TIMEOUT $ms"); break;
+				case 'sql':
+					$conn->query("SET max_execution_time = $ms");
+					break;
+				case 'pgsql':
+					$conn->query("SET statement_timeout = $ms");
+					break;
+				case 'mssql':
+					$conn->query("SET LOCK_TIMEOUT $ms");
+					break;
 				default:
 					if (method_exists(connection(), 'timeout')) {
 						$conn->timeout($ms);

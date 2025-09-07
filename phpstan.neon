@@ -17,7 +17,8 @@ parameters:
 		- "~^Constant LANG not found~" # defined in lang.inc.php
 		- "~ an undefined \\w+ Adminer\\\\Db::~" # defined in that versions of Db
 		- "~^Call to an undefined method Adminer\\\\Result::seek~" # defined in MS SQL
-		- "~^Call to an undefined method Adminer\\\\Driver::setUserTypes~" # defined in PostgreSQL
+		- "~^Call to an undefined method Adminer\\\\Driver::(setUserTypes|tableOid)~" # defined in PostgreSQL
+		- "~^Access to an undefined property Adminer\\\\Driver::\\$nsOid~" # defined in PostgreSQL
 		- "~expects int, float given~" # this will work
 		- "~expects bool~" # truthy values
 		- "~fread expects int<1, max>, 100000~" # 1e6
@@ -39,11 +40,13 @@ parameters:
 		- identifier: booleanAnd.leftAlwaysTrue
 		- identifier: booleanAnd.rightAlwaysTrue
 		- identifier: booleanAnd.rightAlwaysFalse
+		- identifier: booleanOr.rightAlwaysTrue
 		- identifier: ternary.alwaysTrue
 		- identifier: if.alwaysTrue
-		- identifier: while.alwaysTrue
 		- identifier: isset.offset
 		- identifier: deadCode.unreachable
+		- "~Function Adminer\\\\get_driver\\(\\) never returns null~"
+		- "~on array\\{}~"
 
 	paths:
 		- adminer/drivers/mysql.inc.php # other drivers inherit the annotations so we take them from here
@@ -62,7 +65,7 @@ parameters:
 
 	typeAliases:
 		TableStatus: "array{Name:string, Engine?:?string, Comment?:string, Oid?:numeric-string, Rows?:?numeric-string, Collation?:string, Auto_increment?:?numeric-string, Data_length?:numeric-string, Index_length?:numeric-string, Data_free?:numeric-string, Create_options?:string, partition?:numeric-string, nspname?:string}"
-		Field: "array{field?:string, full_type:string, type:string, length:numeric-string, unsigned:string, default?:string, null:bool, auto_increment:bool, collation:string, privileges:int[], comment:string, primary:bool, generated:string, orig?:string, on_update?:string, on_delete?:string, default_constraint?: string}"
+		Field: "array{field?:string, full_type:string, type:string, length:?numeric-string, unsigned:string, default?:string, null:bool, auto_increment:bool, collation:string, privileges:int[], comment:string, primary:bool, generated:string, orig?:string, on_update?:string, on_delete?:string, default_constraint?: string}"
 		FieldType: "array{type:string, length:numeric-string, unsigned:string, collation:string}" # subset of RoutineField and Field
 		RoutineField: "array{field:string, type:string, length:numeric-string, unsigned:string, null:bool, full_type:string, collation:string, inout?:string}"
 		Index: "array{type:string, columns:list<string>, lengths:list<numeric-string>, descs:list<?bool>, algorithm?:string, partial?:string}"

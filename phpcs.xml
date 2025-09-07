@@ -116,7 +116,6 @@
 	<rule ref="Squiz.PHP.NonExecutableCode"/>
 	<rule ref="Squiz.Scope.StaticThisUsage"/>
 	<rule ref="Squiz.WhiteSpace.FunctionOpeningBraceSpace"/>
-	<rule ref="Squiz.WhiteSpace.LanguageConstructSpacing"/>
 	<rule ref="Squiz.WhiteSpace.LogicalOperatorSpacing"/>
 	<rule ref="Squiz.WhiteSpace.ObjectOperatorSpacing"/>
 

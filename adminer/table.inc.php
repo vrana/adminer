@@ -26,7 +26,10 @@ if ($fields) {
 	adminer()->tableStructurePrint($fields, $table_status);
 }
 
-function tables_links($tables) {
+/** Print links to tables
+* @param list<string> $tables
+*/
+function tables_links(array $tables): void {
 	echo "<ul>\n";
 	foreach ($tables as $table) {
 		echo "<li><a href='" . h(ME . "table=" . urlencode($table)) . "'>" . h($table) . "</a>";

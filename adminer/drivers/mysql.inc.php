@@ -32,7 +32,7 @@ if (!defined('Adminer\DRIVER')) {
 					(is_numeric($port) ? null : $port),
 					($ssl ? ($ssl['verify'] !== false ? 2048 : 64) : 0) // 2048 - MYSQLI_CLIENT_SSL, 64 - MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT (not available before PHP 5.6.16)
 				);
-				$this->options(MYSQLI_OPT_LOCAL_INFILE, false);
+				$this->options(MYSQLI_OPT_LOCAL_INFILE, 0);
 				return ($return ? '' : $this->error);
 			}
 
@@ -457,7 +457,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get table status
 	* @param bool $fast return only "Name", "Engine" and "Comment" fields
-	* @return TableStatus[]
+	* @return array<string, TableStatus>
 	*/
 	function table_status(string $name = "", bool $fast = false): array {
 		$return = array();
@@ -695,7 +695,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @param string $name new name
 	* @param list<array{string, list<string>, string}> $fields of [$orig, $process_field, $after]
 	* @param string[] $foreign
-	* @param numeric-string $auto_increment
+	* @param numeric-string|'' $auto_increment
 	* @param ?Partitions $partitioning null means remove partitioning
 	* @return Result|bool
 	*/

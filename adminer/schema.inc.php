@@ -18,7 +18,8 @@ $base_left = -1;
 /** @var array{fields:Field[], pos:array{float, float}, references:string[][][]}[] */
 $schema = array(); // table => array("fields" => array(name => field), "pos" => array(top, left), "references" => array(table => array(left => array(source, target))))
 $referenced = array(); // target_table => array(table => array(left => target_column))
-$lefts = array(); // float => bool
+/** @var array<numeric-string, bool> */
+$lefts = array();
 $all_fields = driver()->allFields();
 foreach (table_status('', true) as $table => $table_status) {
 	if (is_view($table_status)) {

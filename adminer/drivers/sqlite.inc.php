@@ -452,7 +452,7 @@ if (isset($_GET["sqlite"])) {
 	* @param list<list<string>> $fields [process_field()], empty to preserve
 	* @param string[] $originals [$original => idf_escape($new_column)], empty to preserve
 	* @param string[] $foreign [format_foreign_key()], empty to preserve
-	* @param numeric-string $auto_increment set auto_increment to this value, "" to preserve
+	* @param numeric-string|'' $auto_increment set auto_increment to this value, "" to preserve
 	* @param list<array{string, string, list<string>|'DROP'}> $indexes [[$type, $name, $columns]], empty to preserve
 	* @param string $drop_check CHECK constraint to drop
 	* @param string $add_check CHECK constraint to add
