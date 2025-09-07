@@ -1,5 +1,5 @@
 <?php
-//! delete
+//! handle delete
 
 /** Edit fields ending with "_path" by <input type="file"> and link to the uploaded files from select
 * @link https://www.adminer.org/plugins/#use
@@ -30,13 +30,13 @@ class AdminerFileUpload extends Adminer\Plugin {
 	function processInput($field, $value, $function = "") {
 		if (preg_match('~(.*)_path$~', $field["field"], $regs)) {
 			$table = ($_GET["edit"] != "" ? $_GET["edit"] : $_GET["select"]);
-			$name = "fields-$field[field]";
-			if ($_FILES[$name]["error"] || !preg_match("~(\\.($this->extensions))?\$~", $_FILES[$name]["name"], $regs2)) {
+			$name = $field["field"];
+			if ($_FILES["fields"]["error"][$name] || !preg_match("~(\\.($this->extensions))?\$~", $_FILES["fields"]["name"][$name], $regs2)) {
 				return false;
 			}
 			//! unlink old
 			$filename = (function_exists('random_bytes') ? bin2hex(random_bytes(8)) : uniqid("", true)) . $regs2[0];
-			if (!move_uploaded_file($_FILES[$name]["tmp_name"], "$this->uploadPath$table/$regs[1]-$filename")) {
+			if (!move_uploaded_file($_FILES["fields"]["tmp_name"][$name], $this->uploadPath . Adminer\friendly_url($table) . "/$regs[1]-$filename")) {
 				return false;
 			}
 			return Adminer\q($filename);
@@ -45,7 +45,7 @@ class AdminerFileUpload extends Adminer\Plugin {
 
 	function selectVal($val, &$link, $field, $original) {
 		if ($val != "" && preg_match('~(.*)_path$~', $field["field"], $regs)) {
-			$link = "$this->displayPath$_GET[select]/$regs[1]-$val";
+			$link = $this->displayPath . Adminer\friendly_url($_GET["select"]) . "/$regs[1]-$val";
 		}
 	}
 

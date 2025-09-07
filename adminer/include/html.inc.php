@@ -295,7 +295,7 @@ function process_input(array $field) {
 	}
 	$idf = bracket_escape($field["field"]);
 	$function = idx($_POST["function"], $idf);
-	$value = $_POST["fields"][$idf];
+	$value = idx($_POST["fields"], $idf);
 	if ($field["type"] == "enum" || driver()->enumLength($field)) {
 		if ($value == -1) {
 			return false;
