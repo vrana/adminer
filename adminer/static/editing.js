@@ -463,7 +463,7 @@ function editingLengthChange() {
 */
 function editingLengthFocus() {
 	const td = this.parentNode;
-	if (/(enum|set)$/.test(selectValue(td.previousSibling.firstChild))) {
+	if (/^(enum|set)$/.test(selectValue(td.previousSibling.firstChild))) {
 		const edit = qs('#enum-edit');
 		edit.value = enumValues(this.value);
 		td.appendChild(edit);
