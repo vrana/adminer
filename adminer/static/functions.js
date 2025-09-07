@@ -235,8 +235,8 @@ function formChecked(input, name) {
 function tableClick(event, click) {
 	const td = parentTag(event.target, 'td');
 	let text;
-	if (td && (text = td.getAttribute('data-text'))) {
-		if (selectClick.call(td, event, +text, td.getAttribute('data-warning'))) {
+	if (td && (text = td.dataset.text)) {
+		if (selectClick.call(td, event, +text, td.dataset.warning)) {
 			return;
 		}
 	}
@@ -525,14 +525,14 @@ function functionChange() {
 		if (selectValue(this)) {
 			if (input.origType === undefined) {
 				input.origType = input.type;
-				input.origMaxLength = input.getAttribute('data-maxlength');
+				input.origMaxLength = input.dataset.maxlength;
 			}
-			input.removeAttribute('data-maxlength');
+			delete input.dataset.maxlength;
 			input.type = 'text';
 		} else if (input.origType) {
 			input.type = input.origType;
 			if (input.origMaxLength >= 0) {
-				input.setAttribute('data-maxlength', input.origMaxLength);
+				input.dataset.maxlength = input.origMaxLength;
 			}
 		}
 		oninput({target: input});
@@ -844,7 +844,7 @@ function cloneNode(el) {
 
 oninput = event => {
 	const target = event.target;
-	const maxLength = target.getAttribute('data-maxlength');
+	const maxLength = target.dataset.maxlength;
 	alterClass(target, 'maxlength', target.value && maxLength != null && target.value.length > maxLength); // maxLength could be 0
 };
 
