@@ -179,15 +179,17 @@ function hidden_fields_get(): void {
 /** Print enum or set input field
 * @param 'radio'|'checkbox' $type
 * @param Field $field
-* @param mixed $value string|array
+* @param string|string[]|false|null $value false means original value
 */
-function enum_input(string $type, string $attrs, array $field, $value, ?string $empty = null): string {
+function enum_input(string $type, string $attrs, array $field, $value, string $empty = ""): string {
 	preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
-	$return = ($empty !== null ? "<label><input type='$type'$attrs value='$empty'" . ((is_array($value) ? in_array($empty, $value) : $value === $empty) ? " checked" : "") . "><i>" . lang('empty') . "</i></label>" : "");
-	foreach ($matches[1] as $i => $val) {
+	$prefix = ($field["type"] == "enum" ? "val-" : "");
+	$checked = (is_array($value) ? in_array("null", $value) : $value === null);
+	$return = ($field["null"] && $prefix ? "<label><input type='$type'$attrs value='null'" . ($checked ? " checked" : "") . "><i>$empty</i></label>" : "");
+	foreach ($matches[1] as $val) {
 		$val = stripcslashes(str_replace("''", "'", $val));
-		$checked = (is_array($value) ? in_array($val, $value) : $value === $val);
-		$return .= " <label><input type='$type'$attrs value='" . h($val) . "'" . ($checked ? ' checked' : '') . '>' . h(adminer()->editVal($val, $field)) . '</label>';
+		$checked = (is_array($value) ? in_array($prefix . $val, $value) : $value === $val);
+		$return .= " <label><input type='$type'$attrs value='" . h($prefix . $val) . "'" . ($checked ? ' checked' : '') . '>' . h(adminer()->editVal($val, $field)) . '</label>';
 	}
 	return $return;
 }
@@ -208,13 +210,13 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 		$function = null;
 	}
 	$functions = (isset($_GET["select"]) || $reset ? array("orig" => lang('original')) : array()) + adminer()->editFunctions($field);
-	$disabled = stripos($field["default"], "GENERATED ALWAYS AS ") === 0 ? " disabled=''" : "";
-	$attrs = " name='fields[$name]'$disabled" . ($autofocus ? " autofocus" : "");
 	$enums = driver()->enumLength($field);
 	if ($enums) {
 		$field["type"] = "enum";
 		$field["length"] = $enums;
 	}
+	$disabled = stripos($field["default"], "GENERATED ALWAYS AS ") === 0 ? " disabled=''" : "";
+	$attrs = " name='fields[$name]" . ($field["type"] == "enum" || $field["type"] == "set" ? "[]" : "") . "'$disabled" . ($autofocus ? " autofocus" : "");
 	echo driver()->unconvertFunction($field) . " ";
 	$table = $_GET["edit"] ?: $_GET["select"];
 	if ($field["type"] == "enum") {
@@ -234,12 +236,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 			echo "<input type='hidden'$attrs value='0'>"
 				. "<input type='checkbox'" . (preg_match('~^(1|t|true|y|yes|on)$~i', $value) ? " checked='checked'" : "") . "$attrs value='1'>";
 		} elseif ($field["type"] == "set") {
-			preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
-			foreach ($matches[1] as $i => $val) {
-				$val = stripcslashes(str_replace("''", "'", $val));
-				$checked = in_array($val, explode(",", $value), true);
-				echo " <label><input type='checkbox' name='fields[$name][$i]' value='" . h($val) . "'" . ($checked ? ' checked' : '') . ">" . h(adminer()->editVal($val, $field)) . '</label>';
-			}
+			echo enum_input("checkbox", $attrs, $field, (is_string($value) ? explode(",", $value) : $value));
 		} elseif (is_blob($field) && ini_bool("file_uploads")) {
 			echo "<input type='file' name='fields-$name'>";
 		} elseif ($function == "json" || preg_match('~^jsonb?$~', $field["type"])) {
@@ -297,12 +294,14 @@ function process_input(array $field) {
 	$function = idx($_POST["function"], $idf);
 	$value = idx($_POST["fields"], $idf);
 	if ($field["type"] == "enum" || driver()->enumLength($field)) {
-		if ($value == -1) {
+		$value = $value[0];
+		if ($value == "orig") {
 			return false;
 		}
-		if ($value == "") {
+		if ($value == "null") {
 			return "NULL";
 		}
+		$value = substr($value, 4); // 4 - strlen("val-")
 	}
 	if ($field["auto_increment"] && $value == "") {
 		return null;

@@ -717,13 +717,13 @@ class Adminer {
 	* @param ?string $table null in call.inc.php
 	* @param Field $field
 	* @param string $attrs attributes to use inside the tag
+	* @param string|string[]|false|null $value false means original value
 	* @return string custom input field or empty string for default
 	*/
-	function editInput(?string $table, array $field, string $attrs, ?string $value): string {
+	function editInput(?string $table, array $field, string $attrs, $value): string {
 		if ($field["type"] == "enum") {
-			return (isset($_GET["select"]) ? "<label><input type='radio'$attrs value='-1' checked><i>" . lang('original') . "</i></label> " : "")
-				. ($field["null"] ? "<label><input type='radio'$attrs value=''" . ($value !== null || isset($_GET["select"]) ? "" : " checked") . "><i>NULL</i></label> " : "")
-				. enum_input("radio", $attrs, $field, $value, $value === 0 ? 0 : null) // 0 - empty value
+			return (isset($_GET["select"]) ? "<label><input type='radio'$attrs value='orig' checked><i>" . lang('original') . "</i></label> " : "")
+				. enum_input("radio", $attrs, $field, $value, "NULL")
 			;
 		}
 		return "";

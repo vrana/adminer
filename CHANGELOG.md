@@ -10,6 +10,7 @@
 - Autofocus added field in alter table
 - Executed SQL commands: Add button for copy to clipboard
 - Load more: run syntax highlighter
+- MySQL: Fix saving empty enum (bug #1152)
 - MySQL 5.0-: Do not load partitioning info in alter table (bug #1099)
 - MariaDB: Parse COLLATE in routine definition (bug #1104)
 - PostgreSQL: Show structure of inherited tables
