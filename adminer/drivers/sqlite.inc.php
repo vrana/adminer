@@ -76,10 +76,7 @@ if (isset($_GET["sqlite"])) {
 			public $extension = "PDO_SQLite";
 
 			function attach(string $filename, string $username, string $password): string {
-				$this->dsn(DRIVER . ":$filename", "", "");
-				$this->query("PRAGMA foreign_keys = 1");
-				$this->query("PRAGMA busy_timeout = 500");
-				return '';
+				return $this->dsn(DRIVER . ":$filename", "", "");
 			}
 		}
 
