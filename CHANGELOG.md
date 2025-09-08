@@ -1,3 +1,5 @@
+## Adminer dev
+
 ## Adminer 5.4.0 (released 2025-09-08)
 - Allow specifying operator in search anywhere
 - Do not order descending in GROUP BY select
