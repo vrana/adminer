@@ -662,13 +662,14 @@ function indexesAddColumn(prefix) {
 * @param string
 */
 function sqlSubmit(form, root) {
-	if (encodeURIComponent(form['query'].value).length < 500) {
-		form.action = root
-			+ '&sql=' + encodeURIComponent(form['query'].value)
-			+ (form['limit'].value ? '&limit=' + +form['limit'].value : '')
-			+ (form['error_stops'].checked ? '&error_stops=1' : '')
-			+ (form['only_errors'].checked ? '&only_errors=1' : '')
-		;
+	const action = root
+		+ '&sql=' + encodeURIComponent(form['query'].value)
+		+ (form['limit'].value ? '&limit=' + +form['limit'].value : '')
+		+ (form['error_stops'].checked ? '&error_stops=1' : '')
+		+ (form['only_errors'].checked ? '&only_errors=1' : '')
+	;
+	if ((document.location.origin + document.location.pathname + action).length < 2000) { // reasonable minimum is 2048
+		form.action = action;
 	}
 }
 
