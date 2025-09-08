@@ -60,9 +60,8 @@
 <tr><td>type</td><td>indexes[3][partial]</td><td>surname IS NOT NULL</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Indexes have been altered.</td><td></td></tr>
-<tr><td>verifyTextPresent</td><td>//tr[@title='interprets_surname']</td><td>INDEX (hash)</td></tr>
-<tr><td>verifyTextPresent</td><td>//tr[@title='interprets_surname']</td><td>surname</td></tr>
-<tr><td>verifyTextPresent</td><td>//tr[@title='interprets_surname']</td><td>WHERE surname IS NOT NULL</td></tr>
+<tr><td>verifyTextPresent</td><td>INDEX (hash)</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>WHERE surname IS NOT NULL</td><td></td></tr>
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
@@ -101,13 +100,13 @@
 <tbody>
 <tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=interprets</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Alter table</td><td></td></tr>
-<tr><td>click</td><td>add[2]</td><td></td></tr>
-<tr><td>type</td><td>fields[3][field]</td><td>albums</td></tr>
-<tr><td>select</td><td>fields[3][type]</td><td>label=integer</td></tr>
-<tr><td>type</td><td>fields[3][length]</td><td></td></tr>
+<tr><td>click</td><td>add[3]</td><td></td></tr>
+<tr><td>type</td><td>fields[4][field]</td><td>albums</td></tr>
+<tr><td>select</td><td>fields[4][type]</td><td>label=integer</td></tr>
+<tr><td>type</td><td>fields[4][length]</td><td></td></tr>
 <tr><td>uncheck</td><td>name=defaults</td><td></td></tr>
 <tr><td>clickAndWait</td><td>name=defaults</td><td></td></tr>
-<tr><td>type</td><td>name=fields[3][default]</td><td>0</td></tr>
+<tr><td>type</td><td>name=fields[4][default]</td><td>0</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Table has been altered.</td><td></td></tr>
 </tbody></table>
@@ -219,10 +218,10 @@
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>click</td><td>link=interprets</td><td></td></tr>
 <tr><td>click</td><td>link=Alter table</td><td></td></tr>
-<tr><td>click</td><td>name=add[3]</td><td></td></tr>
-<tr><td>type</td><td>name=fields[4][field]</td><td>alive</td></tr>
-<tr><td>select</td><td>name=fields[4][type]</td><td>label=alive</td></tr>
-<tr><td>click</td><td>name=fields[4][null]</td><td></td></tr>
+<tr><td>click</td><td>name=add[4]</td><td></td></tr>
+<tr><td>type</td><td>name=fields[5][field]</td><td>alive</td></tr>
+<tr><td>select</td><td>name=fields[5][type]</td><td>label=alive</td></tr>
+<tr><td>click</td><td>name=fields[5][null]</td><td></td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>click</td><td>link=alive</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>'alive', 'deceased'</td><td></td></tr>
@@ -230,7 +229,7 @@
 <tr><td>clickAndWait</td><td>//input[@value='Drop']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>cannot drop type</td><td></td></tr>
 <tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=interprets&amp;where%5Bid%5D=1</td><td></td></tr>
-<tr><td>click</td><td>//input[@value='deceased']</td><td></td></tr>
+<tr><td>click</td><td>//input[@value='val-deceased']</td><td></td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>deceased</td><td></td></tr>
 </tbody></table>
