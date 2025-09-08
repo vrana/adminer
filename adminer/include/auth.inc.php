@@ -172,7 +172,7 @@ if (isset($_GET["username"]) && !class_exists('Adminer\Db')) {
 
 $connection = '';
 if (isset($_GET["username"]) && is_string(get_password())) {
-	list($host, $port) = host_port(SERVER);
+	list(, $port) = host_port(SERVER);
 	if (preg_match('~^\s*([-+]?\d+)~', $port, $match) && ($match[1] < 1024 || $match[1] > 65535)) { // is_numeric('80#') would still connect to port 80
 		auth_error(lang('Connecting to privileged ports is not allowed.'), $permanent);
 	}
