@@ -919,7 +919,7 @@ class Adminer {
 	* @return string filename without extension
 	*/
 	function dumpFilename(string $identifier): string {
-		return friendly_url($identifier != "" ? $identifier : (SERVER != "" ? SERVER : "localhost"));
+		return friendly_url($identifier != "" ? $identifier : (SERVER ?: "localhost"));
 	}
 
 	/** Send headers for export

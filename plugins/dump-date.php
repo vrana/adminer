@@ -9,7 +9,7 @@
 class AdminerDumpDate extends Adminer\Plugin {
 
 	function dumpFilename($identifier) {
-		return Adminer\friendly_url(($identifier != "" ? $identifier : (Adminer\SERVER != "" ? Adminer\SERVER : "localhost")) . "-" . Adminer\get_val("SELECT NOW()"));
+		return Adminer\friendly_url(($identifier != "" ? $identifier : (Adminer\SERVER ?: "localhost")) . "-" . Adminer\get_val("SELECT NOW()"));
 	}
 
 	protected $translations = array(
