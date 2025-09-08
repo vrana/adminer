@@ -39,7 +39,8 @@ if (isset($_GET["mssql"])) {
 				if ($db != "") {
 					$connection_info["Database"] = $db;
 				}
-				$this->link = @sqlsrv_connect(preg_replace('~:~', ',', $server), $connection_info);
+				list($host, $port) = host_port($server);
+				$this->link = @sqlsrv_connect($host . ($port ? ",$port" : ""), $connection_info);
 				if ($this->link) {
 					$info = sqlsrv_server_info($this->link);
 					$this->server_info = $info['SQLServerVersion'];
@@ -182,7 +183,8 @@ if (isset($_GET["mssql"])) {
 				public $extension = "PDO_SQLSRV";
 
 				function attach(?string $server, string $username, string $password): string {
-					return $this->dsn("sqlsrv:Server=" . str_replace(":", ",", $server), $username, $password);
+					list($host, $port) = host_port($server);
+					return $this->dsn("sqlsrv:Server=$host" . ($port ? ",$port" : ""), $username, $password);
 				}
 			}
 
@@ -191,7 +193,8 @@ if (isset($_GET["mssql"])) {
 				public $extension = "PDO_DBLIB";
 
 				function attach(?string $server, string $username, string $password): string {
-					return $this->dsn("dblib:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\d)~', ';port=\1', $server)), $username, $password);
+					list($host, $port) = host_port($server);
+					return $this->dsn("dblib:charset=utf8;host=$host" . ($port ? (is_numeric($port) ? ";port=" : ";unix_socket=") . $port : ""), $username, $password);
 				}
 			}
 		}

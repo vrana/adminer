@@ -819,6 +819,16 @@ function is_shortable(array $field): bool {
 	return preg_match('~char|text|json|lob|geometry|point|linestring|polygon|string|bytea|hstore~', $field["type"]);
 }
 
+/** Split server into host and (port or socket)
+* @return array{0: string, 1: string}
+*/
+function host_port(string $server) {
+	return (preg_match('~^(\[(.+)]|([^:]+)):([^:]+)$~', $server, $match) // [a:b] - IPv6
+		? array($match[2] . $match[3], $match[4])
+		: array($server, '')
+	);
+}
+
 /** Get query to compute number of found rows
 * @param list<string> $where
 * @param list<string> $group

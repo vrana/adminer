@@ -18,7 +18,7 @@ if (!defined('Adminer\DRIVER')) {
 
 			function attach(?string $server, string $username, string $password): string {
 				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
-				list($host, $port) = explode(":", $server, 2); // part after : is used for port or socket
+				list($host, $port) = host_port($server);
 				$ssl = adminer()->connectSsl();
 				if ($ssl) {
 					$this->ssl_set($ssl['key'], $ssl['cert'], $ssl['ca'], '', '');
@@ -175,8 +175,9 @@ if (!defined('Adminer\DRIVER')) {
 						$options[\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = $ssl['verify'];
 					}
 				}
+				list($host, $port) = host_port($server);
 				return $this->dsn(
-					"mysql:charset=utf8;host=" . str_replace(":", ";unix_socket=", preg_replace('~:(\d)~', ';port=\1', $server)),
+					"mysql:charset=utf8;host=$host" . ($port ? (is_numeric($port) ? ";port=" : ";unix_socket=") . $port : ""),
 					$username,
 					$password,
 					$options
