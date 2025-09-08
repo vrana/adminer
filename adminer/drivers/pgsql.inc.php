@@ -361,7 +361,7 @@ if (isset($_GET["pgsql"])) {
 		function indexAlgorithms(array $tableStatus): array {
 			static $return = array();
 			if (!$return) {
-				$return = get_vals("SELECT amname FROM pg_am" . (min_version(9.6) ? " WHERE amtype = 'i'" : "") . " ORDER BY amname = 'btree' DESC, amname");
+				$return = get_vals("SELECT amname FROM pg_am" . (min_version(9.6) ? " WHERE amtype = 'i'" : "") . " ORDER BY amname = '" . ($this->conn->flavor == 'cockroach' ? "prefix" : "btree") . "' DESC, amname");
 			}
 			return $return;
 		}
