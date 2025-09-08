@@ -290,7 +290,7 @@ if (isset($_GET["pgsql"])) {
 					}
 				}
 				if (
-					!(($where && queries("UPDATE " . table($table) . " SET " . implode(", ", $update) . " WHERE " . implode(" AND ", $where)) && connection()->affected_rows)
+					!(($where && queries("UPDATE " . table($table) . " SET " . implode(", ", $update) . " WHERE " . implode(" AND ", $where)) && $this->conn->affected_rows)
 					|| queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")"))
 				) {
 					return false;
@@ -342,7 +342,7 @@ if (isset($_GET["pgsql"])) {
 		}
 
 		function partitionsInfo(string $table): array {
-			$row = (min_version(10) ? connection()->query("SELECT * FROM pg_partitioned_table WHERE partrelid = " . $this->tableOid($table))->fetch_assoc() : null);
+			$row = (min_version(10) ? $this->conn->query("SELECT * FROM pg_partitioned_table WHERE partrelid = " . $this->tableOid($table))->fetch_assoc() : null);
 			if ($row) {
 				$attrs = get_vals("SELECT attname FROM pg_attribute WHERE attrelid = $row[partrelid] AND attnum IN (" . str_replace(" ", ", ", $row["partattrs"]) . ")"); //! ordering
 				$by = array('h' => 'HASH', 'l' => 'LIST', 'r' => 'RANGE');
