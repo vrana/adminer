@@ -20,7 +20,7 @@ if (isset($_GET["oracle"])) {
 				$this->error = $error;
 			}
 
-			function attach(?string $server, string $username, string $password): string {
+			function attach(string $server, string $username, string $password): string {
 				$this->link = @oci_new_connect($username, $password, $server, "AL32UTF8");
 				if ($this->link) {
 					$this->server_info = oci_server_version($this->link);
@@ -110,7 +110,7 @@ if (isset($_GET["oracle"])) {
 			public $extension = "PDO_OCI";
 			public $_current_db;
 
-			function attach(?string $server, string $username, string $password): string {
+			function attach(string $server, string $username, string $password): string {
 				return $this->dsn("oci:dbname=//$server;charset=AL32UTF8", $username, $password);
 			}
 

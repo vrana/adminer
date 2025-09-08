@@ -16,7 +16,7 @@ if (!defined('Adminer\DRIVER')) {
 				parent::init();
 			}
 
-			function attach(?string $server, string $username, string $password): string {
+			function attach(string $server, string $username, string $password): string {
 				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
 				list($host, $port) = host_port($server);
 				$ssl = adminer()->connectSsl();
@@ -58,14 +58,14 @@ if (!defined('Adminer\DRIVER')) {
 		class Db extends SqlDb {
 			/** @var resource */ private $link;
 
-			function attach(?string $server, string $username, string $password): string {
+			function attach(string $server, string $username, string $password): string {
 				if (ini_bool("mysql.allow_local_infile")) {
 					return lang('Disable %s or enable %s or %s extensions.', "'mysql.allow_local_infile'", "MySQLi", "PDO_MySQL");
 				}
 				$this->link = @mysql_connect(
 					($server != "" ? $server : ini_get("mysql.default_host")),
-					("$server$username" != "" ? $username : ini_get("mysql.default_user")),
-					("$server$username$password" != "" ? $password : ini_get("mysql.default_password")),
+					($server . $username != "" ? $username : ini_get("mysql.default_user")),
+					($server . $username . $password != "" ? $password : ini_get("mysql.default_password")),
 					true,
 					131072 // CLIENT_MULTI_RESULTS for CALL
 				);
@@ -158,7 +158,7 @@ if (!defined('Adminer\DRIVER')) {
 		class Db extends PdoDb {
 			public $extension = "PDO_MySQL";
 
-			function attach(?string $server, string $username, string $password): string {
+			function attach(string $server, string $username, string $password): string {
 				$options = array(\PDO::MYSQL_ATTR_LOCAL_INFILE => false);
 				$ssl = adminer()->connectSsl();
 				if ($ssl) {
@@ -212,7 +212,7 @@ if (!defined('Adminer\DRIVER')) {
 		public $functions = array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper");
 		public $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 
-		static function connect(?string $server, string $username, string $password) {
+		static function connect(string $server, string $username, string $password) {
 			$connection = parent::connect($server, $username, $password);
 			if (is_string($connection)) {
 				if (function_exists('iconv') && !is_utf8($connection) && strlen($s = iconv("windows-1250", "utf-8", $connection)) > strlen($connection)) { // windows-1250 - most common Windows encoding

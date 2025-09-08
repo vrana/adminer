@@ -20,7 +20,7 @@ if (isset($_GET["pgsql"])) {
 				$this->error = $error;
 			}
 
-			function attach(?string $server, string $username, string $password): string {
+			function attach(string $server, string $username, string $password): string {
 				$db = adminer()->database();
 				set_error_handler(array($this, '_error'));
 				list($host, $port) = host_port(addcslashes($server, "'\\"));
@@ -144,7 +144,7 @@ if (isset($_GET["pgsql"])) {
 			public $extension = "PDO_PgSQL";
 			public $timeout = 0;
 
-			function attach(?string $server, string $username, string $password): string {
+			function attach(string $server, string $username, string $password): string {
 				$db = adminer()->database();
 				list($host, $port) = host_port(addcslashes($server, "'\\"));
 				//! client_encoding is supported since 9.1, but we can't yet use min_version here
@@ -212,7 +212,7 @@ if (isset($_GET["pgsql"])) {
 
 		public string $nsOid = "(SELECT oid FROM pg_namespace WHERE nspname = current_schema())";
 
-		static function connect(?string $server, string $username, string $password) {
+		static function connect(string $server, string $username, string $password) {
 			$connection = parent::connect($server, $username, $password);
 			if (is_string($connection)) {
 				return $connection;

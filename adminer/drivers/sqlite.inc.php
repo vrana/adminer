@@ -11,7 +11,7 @@ if (isset($_GET["sqlite"])) {
 			public $extension = "SQLite3";
 			private $link;
 
-			function attach(?string $filename, string $username, string $password): string {
+			function attach(string $filename, string $username, string $password): string {
 				$this->link = new \SQLite3($filename);
 				$version = $this->link->version();
 				$this->server_info = $version["versionString"];
@@ -75,7 +75,7 @@ if (isset($_GET["sqlite"])) {
 		abstract class SqliteDb extends PdoDb {
 			public $extension = "PDO_SQLite";
 
-			function attach(?string $filename, string $username, string $password): string {
+			function attach(string $filename, string $username, string $password): string {
 				$this->dsn(DRIVER . ":$filename", "", "");
 				$this->query("PRAGMA foreign_keys = 1");
 				$this->query("PRAGMA busy_timeout = 500");
@@ -87,7 +87,7 @@ if (isset($_GET["sqlite"])) {
 
 	if (class_exists('Adminer\SqliteDb')) {
 		class Db extends SqliteDb {
-			function attach(?string $filename, string $username, string $password): string {
+			function attach(string $filename, string $username, string $password): string {
 				parent::attach($filename, $username, $password);
 				$this->query("PRAGMA foreign_keys = 1");
 				$this->query("PRAGMA busy_timeout = 500");
@@ -122,7 +122,7 @@ if (isset($_GET["sqlite"])) {
 		public $functions = array("hex", "length", "lower", "round", "unixepoch", "upper");
 		public $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 
-		static function connect(?string $server, string $username, string $password) {
+		static function connect(string $server, string $username, string $password) {
 			if ($password != "") {
 				return lang('Database does not support password.');
 			}

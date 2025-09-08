@@ -34,7 +34,7 @@ abstract class SqlDriver {
 	/** Connect to the database
 	* @return Db|string string for error
 	*/
-	static function connect(?string $server, string $username, string $password) {
+	static function connect(string $server, string $username, string $password) {
 		$connection = new Db;
 		return ($connection->attach($server, $username, $password) ?: $connection);
 	}

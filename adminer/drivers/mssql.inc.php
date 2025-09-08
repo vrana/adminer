@@ -26,7 +26,7 @@ if (isset($_GET["mssql"])) {
 				$this->error = rtrim($this->error);
 			}
 
-			function attach(?string $server, string $username, string $password): string {
+			function attach(string $server, string $username, string $password): string {
 				$connection_info = array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8");
 				$ssl = adminer()->connectSsl();
 				if (isset($ssl["Encrypt"])) {
@@ -182,7 +182,7 @@ if (isset($_GET["mssql"])) {
 			class Db extends MssqlDb {
 				public $extension = "PDO_SQLSRV";
 
-				function attach(?string $server, string $username, string $password): string {
+				function attach(string $server, string $username, string $password): string {
 					list($host, $port) = host_port($server);
 					return $this->dsn("sqlsrv:Server=$host" . ($port ? ",$port" : ""), $username, $password);
 				}
@@ -192,7 +192,7 @@ if (isset($_GET["mssql"])) {
 			class Db extends MssqlDb {
 				public $extension = "PDO_DBLIB";
 
-				function attach(?string $server, string $username, string $password): string {
+				function attach(string $server, string $username, string $password): string {
 					list($host, $port) = host_port($server);
 					return $this->dsn("dblib:charset=utf8;host=$host" . ($port ? (is_numeric($port) ? ";port=" : ";unix_socket=") . $port : ""), $username, $password);
 				}
@@ -217,7 +217,7 @@ if (isset($_GET["mssql"])) {
 		public $generated = array("PERSISTED", "VIRTUAL");
 		public $onActions = "NO ACTION|CASCADE|SET NULL|SET DEFAULT";
 
-		static function connect(?string $server, string $username, string $password) {
+		static function connect(string $server, string $username, string $password) {
 			if ($server == "") {
 				$server = "localhost:1433";
 			}

@@ -18,7 +18,7 @@ abstract class SqlDb {
 	/** Connect to server
 	* @return string error message
 	*/
-	abstract function attach(?string $server, string $username, string $password): string;
+	abstract function attach(string $server, string $username, string $password): string;
 
 	/** Quote string to use in SQL
 	* @return string escaped string enclosed in '
