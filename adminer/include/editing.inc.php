@@ -72,6 +72,10 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 				} else {
 					$link = ME . "edit=" . urlencode($links[$key]);
 					foreach ($indexes[$links[$key]] as $col => $j) {
+						if ($row[$j] === null) {
+							$link = "";
+							break;
+						}
 						$link .= "&where" . urlencode("[" . bracket_escape($col) . "]") . "=" . urlencode($row[$j]);
 					}
 				}

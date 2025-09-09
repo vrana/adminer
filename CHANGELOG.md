@@ -1,4 +1,5 @@
 ## Adminer dev
+- SQL command: Unlink NULL primary keys
 
 ## Adminer 5.4.0 (released 2025-09-08)
 - Allow specifying operator in search anywhere
