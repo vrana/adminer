@@ -33,7 +33,11 @@
         "php": ">=7.4"
     },
     "scripts": {
-        "clean": "rm -f adminer*.php editor*.php",
-        "compile": "@php compile.php"
+        "check": [
+            "phpcs",
+            "phpstan analyse -c phpstan.neon"
+        ],
+        "compile": "@php compile.php",
+        "clean": "rm -f adminer*.php editor*.php"
     }
 }
