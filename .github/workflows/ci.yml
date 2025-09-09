@@ -13,5 +13,6 @@ jobs:
       - uses: php-actions/composer@v6
       - uses: php-actions/phpcs@v1
         with:
-          path: adminer/
+          path: .
           standard: phpcs.xml
+      - uses: php-actions/phpstan@v3
