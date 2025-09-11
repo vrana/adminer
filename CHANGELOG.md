@@ -1,5 +1,6 @@
 ## Adminer dev
 - SQL command: Unlink NULL primary keys
+- MySQL: Fix displaying routine definition (bug #1156, regression from 5.4.0)
 
 ## Adminer 5.4.0 (released 2025-09-08)
 - Allow specifying operator in search anywhere
@@ -28,7 +29,7 @@
 - PostgreSQL: Fix calling functions returing table
 - PostgreSQL: Don't treat user types containing 'file' as blobs (bug #1118)
 - PostgreSQL: Export DROP and CREATE DATABASE (bug #1140)
-- PostgreSQL 11-: Avoid duplicate oid in table status (bug #1089)
+- PostgreSQL 11-: Avoid duplicate oid in table status (bug #1089, regression from 5.3.0)
 - Elasticsearch: Support dropping aliases
 - Plugins: Methods afterConnect(), processList() and killProcess()
 - New plugin: Display row numbers in select (bug #1106)
