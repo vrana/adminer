@@ -511,20 +511,6 @@ function tar_file(string $filename, $tmp_file): void {
 	echo str_repeat("\0", 511 - ($tmp_file->size + 511) % 512);
 }
 
-/** Get INI bytes value */
-function ini_bytes(string $ini): int {
-	$val = ini_get($ini);
-	switch (strtolower(substr($val, -1))) {
-		case 'g':
-			$val = (int) $val * 1024; // no break
-		case 'm':
-			$val = (int) $val * 1024; // no break
-		case 'k':
-			$val = (int) $val * 1024;
-	}
-	return $val;
-}
-
 /** Create link to database documentation
 * @param string[] $paths JUSH => $path
 * @param string $text HTML code

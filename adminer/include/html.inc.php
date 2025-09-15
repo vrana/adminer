@@ -176,6 +176,20 @@ function hidden_fields_get(): void {
 	echo input_hidden("username", $_GET["username"]);
 }
 
+/** Get <input type='file'> */
+function file_input(string $input): string {
+	$max_file_uploads = "max_file_uploads";
+	$max_file_uploads_value = ini_get($max_file_uploads);
+	$upload_max_filesize = "upload_max_filesize";
+	$upload_max_filesize_value = ini_get($upload_max_filesize);
+	return (ini_bool("file_uploads")
+		? $input . script("qsl('input[type=\"file\"]').onchange = partialArg(fileChange, "
+				. "$max_file_uploads_value, '" . lang('Increase %s.', "$max_file_uploads = $max_file_uploads_value") . "', " // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
+				. ini_bytes("upload_max_filesize") . ", '" . lang('Increase %s.', "$upload_max_filesize = $upload_max_filesize_value") . "')")
+		: lang('File uploads are disabled.')
+	);
+}
+
 /** Print enum or set input field
 * @param 'radio'|'checkbox' $type
 * @param Field $field

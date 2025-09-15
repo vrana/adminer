@@ -1,5 +1,6 @@
 ## Adminer dev
 - SQL command: Unlink NULL primary keys
+- Warn about exceeded upload_max_filesize in imports
 - MySQL: Fix displaying routine definition (bug #1156, regression from 5.4.0)
 
 ## Adminer 5.4.0 (released 2025-09-08)

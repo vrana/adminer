@@ -128,6 +128,20 @@ function ini_bool(string $ini): bool {
 	return (preg_match('~^(on|true|yes)$~i', $val) || (int) $val); // boolean values set by php_value are strings
 }
 
+/** Get INI bytes value */
+function ini_bytes(string $ini): int {
+	$val = ini_get($ini);
+	switch (strtolower(substr($val, -1))) {
+		case 'g':
+			$val = (int) $val * 1024; // no break
+		case 'm':
+			$val = (int) $val * 1024; // no break
+		case 'k':
+			$val = (int) $val * 1024;
+	}
+	return $val;
+}
+
 /** Check if SID is necessary */
 function sid(): bool {
 	static $return;

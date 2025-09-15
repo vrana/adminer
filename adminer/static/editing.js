@@ -674,13 +674,17 @@ function sqlSubmit(form, root) {
 }
 
 /** Check if PHP can handle the uploaded files
+* @param Event
 * @param number
 * @param string
-* @param Event
+* @param number
+* @param string
 */
-function fileChange(event, maxFileUploads, message) {
-	if (event.target.files.length > maxFileUploads) {
-		alert(message);
+function fileChange(event, count, countMessage, size, sizeMessage) {
+	if (event.target.files.length > count) {
+		alert(countMessage);
+	} else if (Array.from(event.target.files).reduce((sum, file) => sum + file.size, 0) > size) {
+		alert(sizeMessage);
 	}
 }
 
