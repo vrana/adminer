@@ -657,7 +657,7 @@ function dump_headers(string $identifier, bool $multi_table = false): string {
 */
 function dump_csv(array $row): void {
 	foreach ($row as $key => $val) {
-		if (preg_match('~["\n,;\t]|^0|\.\d*0$~', $val) || $val === "") {
+		if (preg_match('~["\n,;\t]|^0.|\.\d*0$~', $val) || $val === "") {
 			$row[$key] = '"' . str_replace('"', '""', $val) . '"';
 		}
 	}

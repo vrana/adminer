@@ -1,5 +1,6 @@
 ## Adminer dev
 - SQL command: Unlink NULL primary keys
+- Do not quote 0 in CSV export
 - Warn about exceeded upload_max_filesize in imports
 - MySQL: Fix displaying routine definition (bug #1156, regression from 5.4.0)
 
