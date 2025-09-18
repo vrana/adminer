@@ -10,3 +10,5 @@
 /vendor/
 adminer-plugins/
 adminer-plugins.php
+
+.env

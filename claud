@@ -1,0 +1,7 @@
+#ANTHROPIC_MODEL=us.anthropic.claude-opus-4-1-20250805-v1:0 \
+CLAUDE_CODE_USE_BEDROCK=1 \
+AWS_REGION=us-west-2 \
+ANTHROPIC_MODEL=us.anthropic.claude-sonnet-4-20250514-v1:0 \
+ANTHROPIC_SMALL_FAST_MODEL=us.anthropic.claude-3-5-haiku-20241022-v1:0 \
+claude --mcp-config .mcp.json --dangerously-skip-permissions
+
