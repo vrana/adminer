@@ -1,0 +1,83 @@
+{
+  "name": "AWS CDK Project MCP Configuration",
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {},
+      "disabled": false
+    },
+    "mcp-server-git": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-git@latest"
+      ],
+      "env": {},
+      "disabled": false
+    },
+    "serena": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/oraios/serena",
+        "serena",
+        "start-mcp-server",
+        "--context",
+        "ide-assistant",
+        "--enable-web-dashboard",
+        "False"
+      ]
+    },
+    "awslabs.cdk-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.cdk-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "AWS_REGION": "ap-northeast-1",
+        "CDK_DEFAULT_REGION": "ap-northeast-1"
+      },
+      "disabled": false
+    },
+    "awslabs.aws-documentation-mcp-server": {
+      "command": "uvx",
+      "args": [
+        "awslabs.aws-documentation-mcp-server@latest"
+      ],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "AWS_DOCUMENTATION_PARTITION": "aws"
+      },
+      "disabled": false
+    },
+    "mcp-server-bigquery": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-bigquery@latest"
+      ],
+      "env": {},
+      "disabled": false
+    },
+    "pdf-tools": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/hanweg/mcp-pdf-tools.git",
+        "pdf-tools"
+      ],
+      "env": {},
+      "disabled": false
+    },
+    "mysql": {
+      "command": "uvx",
+      "args": [
+        "mysql_mcp_server"
+      ],
+      "env": {}
+    }
+  }
+}

@@ -1,0 +1,24 @@
+services:
+
+  dev:
+    image: dev-${COMPOSE_PROJECT_NAME}:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ~/.claude.json:/home/ubuntu/.claude.json
+      - ~/.serena:/home/ubuntu/.serena
+      - ~/.aws:/home/ubuntu/.aws
+      - ~/.gitconfig:/home/ubuntu/.gitconfig
+      - ~/.git-credentials:/home/ubuntu/.git-credentials
+      - ~/google_credential.json:/etc/google_credentials.json
+      - ~/.clasprc.json:/home/ubuntu/.clasprc.json
+    env_file: ../.env
+    user: "${U_ID}:${G_ID}"
+    group_add: ["${DOCKER_GID}"]
+    command: ["${GIT_USER}", "${GIT_REPO}", "tail", "-f", "/dev/null"]
+    networks:
+      - net
+networks:
+  net:
