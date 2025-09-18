@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "awslabs.cdk-mcp-server": {
+      "command": "/home/docker/.local/bin/uvx",
+      "args": ["awslabs.cdk-mcp-server@latest"],
+      "env": {
+        "FASTMCP_LOG_LEVEL": "ERROR",
+        "AWS_REGION": "ap-northeast-1",
+        "CDK_DEFAULT_REGION": "ap-northeast-1"
+      },
+      "disabled": false
+    }
+  },
+  "allowedTools": ["*"],
+  "ignorePatterns": [
+    "node_modules/**",
+    "cdk.out/**",
+    ".git/**",
+    "*.log"
+  ]
+}
