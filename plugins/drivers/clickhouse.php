@@ -274,7 +274,7 @@ if (isset($_GET["clickhouse"])) {
 
 	function table_status($name = "", $fast = false) {
 		$return = array();
-		$tables = get_rows("SELECT name, engine FROM system.tables WHERE database = " . q(connection()->_db));
+		$tables = get_rows("SELECT name, engine FROM system.tables WHERE database = " . q(connection()->_db) . ($name != "" ? " AND name = " . q($name) : ""));
 		foreach ($tables as $table) {
 			$return[$table['name']] = array(
 				'Name' => $table['name'],

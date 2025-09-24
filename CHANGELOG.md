@@ -1,9 +1,7 @@
 ## Adminer dev
-- Autocomplete: fix in empty textarea (bug #1173)
-- Prolong printed SQL query to 10000 characters (bug #1186)
-- MySQL: Use information_schema to get routine definition (bug #1179)
 - PostgreSQL: Mark unique partial indexes as unique (bug #1172)
 - ClickHouse: Fix offset (bug #1188)
+- ClickHouse: Fix list of tables (bug #1176)
 - Plugins: Methods showVariables() and showStatus() (bug #1157)
 
 ## Adminer 5.4.1 (released 2025-09-26)
