@@ -272,17 +272,20 @@ if (isset($_GET["clickhouse"])) {
 		return array();
 	}
 
-	function table_status($name = "", $fast = false) {
-		$return = array();
-		$tables = get_rows("SELECT name, engine FROM system.tables WHERE database = " . q(connection()->_db));
-		foreach ($tables as $table) {
-			$return[$table['name']] = array(
-				'Name' => $table['name'],
-				'Engine' => $table['engine'],
-			);
-		}
-		return $return;
-	}
+    function table_status($name = "", $fast = false) {
+        $return = array();
+        $query = "SELECT name, engine FROM system.tables WHERE database = " . q(connection()->_db);
+        if ($name !== "") {
+            $query .= " AND name = " . q($name);
+        }
+        foreach (get_rows($query) as $table) {
+            $return[$table['name']] = array(
+                'Name' => $table['name'],
+                'Engine' => $table['engine'],
+            );
+        }
+        return $return;
+    }
 
 	function is_view($table_status) {
 		return false;
