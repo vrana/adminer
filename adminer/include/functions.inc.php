@@ -839,7 +839,7 @@ function is_shortable(array $field): bool {
 function host_port(string $server) {
 	return (preg_match('~^(\[(.+)]|([^:]+)):([^:]+)$~', $server, $match) // [a:b] - IPv6
 		? array($match[2] . $match[3], $match[4])
-		: array($server, '')
+		: (preg_match('~^(\[(.+)]|([^:]+))$~', $server, $match) ? array($match[2] . $match[3], '') : explode(':', $server, 2)) // Match IPv6 or hostname without port, else split by first colon
 	);
 }
 
