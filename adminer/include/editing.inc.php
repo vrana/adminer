@@ -343,7 +343,7 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 }
 
 /** Move fields up and down or add field
-* @param Field[] $fields
+ * @param array<array{field?: string, full_type: string, type: string, length: numeric-string|null, unsigned: string, default?: string, null: bool, auto_increment: bool, ...}> $fields
 */
 function process_fields(array &$fields): bool {
 	$offset = 0;
