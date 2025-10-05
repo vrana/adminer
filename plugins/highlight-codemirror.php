@@ -30,15 +30,15 @@ class AdminerHighlightCodemirror extends Adminer\Plugin {
 		echo Adminer\script_src("$this->root/mode/javascript/javascript$this->minified.js", true);
 		$tables = array_fill_keys(array_keys($tableStatuses), array());
 		if (Adminer\support("sql")) {
-			echo Adminer\script_src("$this->root/mode/sql/sql$this->minified.js", true);
-			echo Adminer\script_src("$this->root/addon/hint/sql-hint$this->minified.js", true);
-			if (isset($_GET["sql"]) || isset($_GET["trigger"]) || isset($_GET["check"])) {
-				foreach (Adminer\driver()->allFields() as $table => $fields) {
-					foreach ($fields as $field) {
-						$tables[$table][] = $field["field"];
-					}
-				}
+	echo Adminer\script_src("$this->root/mode/sql/sql$this->minified.js", true);
+	echo Adminer\script_src("$this->root/addon/hint/sql-hint$this->minified.js", true);
+	if (isset($_GET["sql"]) || isset($_GET["trigger"]) || isset($_GET["check"])) {
+		foreach (Adminer\driver()->allFields() as $table => $fields) {
+			foreach ($fields as $field) {
+				$tables[$table][] = $field["field"];
 			}
+		}
+	}
 		}
 		?>
 <script <?php echo Adminer\nonce(); ?>>
