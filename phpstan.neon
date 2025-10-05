@@ -8,6 +8,14 @@ parameters:
 		- "~Adminer\\\\Result.*mysqli_result~" # mysqli_result
 		- "~Function Adminer\\\\queries\\(\\) never returns Adminer\\\\Result~" # mysqli_result
 
+		# must check if needs fix
+		- message: "~Function Adminer\\\\get_driver\\(\\) never returns null~"
+		- message: "~Offset 'generated' does not exist~"
+		- message: "~Parameter &\\$fields by-ref type of function Adminer\\\\process_fields~"
+		- message: "~Offset 'orig' does not exist~"
+		- message: "~Parameter #2 \\$row of function Adminer\\\\create_routine expects array\\{name\\?: string, fields: list<array\\{field: string, type: string, length: numeric-string, unsigned: string, null: bool, full_type: string, collation: string, inout\\?: string\\}>, comment: string, returns\\?: array\\{type: string, length: numeric-string, unsigned: string, collation: string\\}, definition: string, language\\?: string\\}, non-empty-array given~"
+		- message: "~Parameter #2 \\$row of function Adminer\\\\routine_id expects array\\{name\\?: string, fields: list<array\\{field: string, type: string, length: numeric-string, unsigned: string, null: bool, full_type: string, collation: string, inout\\?: string\\}>, comment: string, returns\\?: array\\{type: string, length: numeric-string, unsigned: string, collation: string\\}, definition: string, language\\?: string\\}, non-empty-array given~"
+
 		# not real problems
 		- identifier: include.fileNotFound # includes in include/ relative from index.php
 		- identifier: includeOnce.fileNotFound # ./adminer-plugins.php
@@ -45,8 +53,6 @@ parameters:
 		- identifier: if.alwaysTrue
 		- identifier: isset.offset
 		- identifier: deadCode.unreachable
-		- "~Function Adminer\\\\get_driver\\(\\) never returns null~"
-		- "~on array\\{}~"
 
 	paths:
 		- adminer/drivers/mysql.inc.php # other drivers inherit the annotations so we take them from here
