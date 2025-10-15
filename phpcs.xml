@@ -52,6 +52,7 @@
 		<exclude-pattern>adminer/include/pdo.inc.php</exclude-pattern>
 		<exclude-pattern>adminer/plugins/foreign-system.php</exclude-pattern>
 		<exclude-pattern>adminer/plugins/drivers/</exclude-pattern>
+		<exclude-pattern>plugins/*</exclude-pattern>
 	</rule>
 
 	<rule ref="Generic.Files.LineLength">

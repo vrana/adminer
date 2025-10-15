@@ -48,7 +48,7 @@ get-phpcs:
 
 .PHONY: phpcs
 phpcs:
-	$(PHPCS_BIN) $(ROOT_DIRECTORY) --standard=$(ROOT_DIRECTORY)/phpcs.xml
+	$(PHPCS_BIN) $(ROOT_DIRECTORY) --standard=$(ROOT_DIRECTORY)/phpcs.xml --report=full
 
 .PHONY: phpcbf
 phpcbf:
