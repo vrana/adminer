@@ -1,5 +1,6 @@
 ## Adminer dev
 - PostgreSQL: Mark unique partial indexes as unique (bug #1172)
+- ClickHouse: Fix offset (bug #1188)
 - Plugins: Methods showVariables() and showStatus() (bug #1157)
 
 ## Adminer 5.4.1 (released 2025-09-26)
