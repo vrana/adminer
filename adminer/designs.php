@@ -1,4 +1,5 @@
 <?php
+
 function adminer_object() {
 	include_once "../plugins/designs.php";
 	$designs = array();

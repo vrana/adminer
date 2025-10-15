@@ -1,4 +1,5 @@
 <?php
+
 /**
 * @author Jakub Cernohuby
 * @author Vladimir Stastka

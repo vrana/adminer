@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 $USER = $_GET["user"];

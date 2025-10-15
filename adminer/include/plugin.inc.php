@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 // the overridable methods don't use return type declarations so that plugins can be compatible with PHP 5

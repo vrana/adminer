@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 SqlDriver::$drivers = array("server" => "MySQL / MariaDB") + SqlDriver::$drivers;

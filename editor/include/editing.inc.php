@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 function doc_link(array $paths, string $text = ""): string {

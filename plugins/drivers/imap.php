@@ -1,4 +1,5 @@
 <?php
+
 /** Experimental driver for IMAP created just for fun. Features:
 * - list mailboxes with number of messages (Rows) and unread messages (Data Free)
 * - creating and dropping mailboxes work, truncate does expunge on all mailboxes

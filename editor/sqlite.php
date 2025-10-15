@@ -1,4 +1,5 @@
 <?php
+
 // see ../plugins/editor-setup.php for an easier solution
 
 function adminer_object() {

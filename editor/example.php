@@ -1,4 +1,5 @@
 <?php
+
 function adminer_object() {
 	class AdminerCds extends Adminer\Adminer {
 

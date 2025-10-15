@@ -1,4 +1,5 @@
 <?php
+
 /* Requires this table:
 CREATE TABLE login (
 	id int NOT NULL AUTO_INCREMENT, -- optional

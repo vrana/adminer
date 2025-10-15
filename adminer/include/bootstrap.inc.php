@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 include "../adminer/include/version.inc.php";

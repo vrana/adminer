@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 if (isset($_GET["status"])) {

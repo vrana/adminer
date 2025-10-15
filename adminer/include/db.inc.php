@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 // this could be interface when "Db extends \mysqli" can have compatible type declarations (PHP 7)

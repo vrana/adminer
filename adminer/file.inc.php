@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 if (substr(VERSION, -4) != '-dev') {

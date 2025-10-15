@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 if ($_GET["script"] == "kill") {

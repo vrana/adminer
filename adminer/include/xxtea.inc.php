@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 /** PHP implementation of XXTEA encryption algorithm

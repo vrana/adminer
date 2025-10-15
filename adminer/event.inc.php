@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 $EVENT = $_GET["event"];

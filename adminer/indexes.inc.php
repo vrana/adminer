@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 $TABLE = $_GET["indexes"];

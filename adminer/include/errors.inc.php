@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 error_reporting(24575); // all but E_DEPRECATED (overriding mysqli methods without types is deprecated)

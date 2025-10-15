@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 // coverage is used in tests and removed in compilation

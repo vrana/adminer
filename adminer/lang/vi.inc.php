@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 Lang::$translations = array(

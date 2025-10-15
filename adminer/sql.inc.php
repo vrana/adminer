@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 if (!$error && $_POST["export"]) {

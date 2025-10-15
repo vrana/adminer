@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 $row = $_POST;

@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 $PROCEDURE = ($_GET["name"] ?: $_GET["call"]);

@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 if (support("kill")) {

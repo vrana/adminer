@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 // This file is used both in Adminer and Adminer Editor.

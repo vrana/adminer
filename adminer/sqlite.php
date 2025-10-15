@@ -1,4 +1,5 @@
 <?php
+
 function adminer_object() {
 	include_once "../plugins/login-password-less.php";
 	return new Adminer\Plugins(array(

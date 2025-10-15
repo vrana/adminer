@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 class Plugins {

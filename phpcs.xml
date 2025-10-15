@@ -8,6 +8,7 @@
 	<exclude-pattern>/externals/</exclude-pattern>
 	<exclude-pattern>/designs/</exclude-pattern>
 	<exclude-pattern>/(adminer|editor)[-.]</exclude-pattern>
+	<exclude-pattern>/vendor</exclude-pattern>
 
 	<rule ref="PSR12">
 		<exclude name="Generic.WhiteSpace.DisallowTabIndent"/><!-- Replaced by: Generic.WhiteSpace.DisallowSpaceIndent -->
@@ -79,7 +80,6 @@
 	<rule ref="Generic.Files.EndFileNewline"/>
 	<rule ref="Generic.Files.LowercasedFilename"/>
 	<rule ref="Generic.Formatting.SpaceAfterCast"/>
-	<rule ref="Generic.Functions.CallTimePassByReference"/>
 	<rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
 	<rule ref="Generic.NamingConventions.ConstructorName"/>
 	<rule ref="Generic.PHP.BacktickOperator"/>
@@ -93,19 +93,7 @@
 	<rule ref="Squiz.Arrays.ArrayBracketSpacing"/>
 	<rule ref="Squiz.Classes.LowercaseClassKeywords"/>
 	<rule ref="Squiz.Classes.SelfMemberReference"/>
-	<rule ref="Squiz.CSS.ClassDefinitionNameSpacing"/>
-	<rule ref="Squiz.CSS.ColonSpacing"/>
-	<rule ref="Squiz.CSS.DuplicateClassDefinition"/>
-	<rule ref="Squiz.CSS.DuplicateStyleDefinition"/>
-	<rule ref="Squiz.CSS.EmptyClassDefinition"/>
-	<rule ref="Squiz.CSS.EmptyStyleDefinition"/>
-	<rule ref="Squiz.CSS.ForbiddenStyles"/>
-	<rule ref="Squiz.CSS.Indentation"/>
-	<rule ref="Squiz.CSS.MissingColon"/>
-	<rule ref="Squiz.CSS.Opacity"/>
-	<rule ref="Squiz.CSS.SemicolonSpacing"/>
 	<rule ref="Squiz.Functions.FunctionDuplicateArgument"/>
-	<rule ref="Squiz.Objects.ObjectMemberComma"/>
 	<rule ref="Squiz.Operators.IncrementDecrementUsage"/>
 	<rule ref="Squiz.Operators.ValidLogicalOperators"/>
 	<rule ref="Squiz.PHP.DiscouragedFunctions"/>

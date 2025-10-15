@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 add_driver("elastic", "Elasticsearch 7 (beta)");

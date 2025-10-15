@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 add_driver("oracle", "Oracle (beta)");

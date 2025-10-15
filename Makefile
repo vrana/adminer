@@ -1,3 +1,6 @@
+PHPCS_BIN := $(HOME)/.composer/vendor/bin/phpcs
+PHPCBF_BIN := $(HOME)/.composer/vendor/bin/phpcbf
+
 ROOT_DIRECTORY = $(shell dirname "$(realpath $(lastword $(MAKEFILE_LIST)))")
 PHP := $(shell which php)
 PORT := 8000
@@ -37,3 +40,16 @@ clean:
 
 .PHONY: clean.all
 clean.all: clean
+
+.PHONY: get-phpcs
+get-phpcs:
+	@echo "Global PHPCS path: $(PHPCS_BIN)"
+	@$(PHPCS_BIN) --version || echo "PHPCS not installed globally"
+
+.PHONY: phpcs
+phpcs:
+	$(PHPCS_BIN) $(ROOT_DIRECTORY) --standard=$(ROOT_DIRECTORY)/phpcs.xml
+
+.PHONY: phpcbf
+phpcbf:
+	$(PHPCBF_BIN) $(ROOT_DIRECTORY) --standard=$(ROOT_DIRECTORY)/phpcs.xml

@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 $tables_views = array_merge((array) $_POST["tables"], (array) $_POST["views"]);

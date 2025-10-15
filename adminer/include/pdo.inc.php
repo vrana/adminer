@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 // PDO can be used in several database drivers

@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 /** Add or overwrite a driver */

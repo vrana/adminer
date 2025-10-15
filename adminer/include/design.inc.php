@@ -1,4 +1,5 @@
 <?php
+
 namespace Adminer;
 
 /** Print HTML header
@@ -30,7 +31,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 
 	$css = adminer()->css();
 	if (is_int(key($css))) { // legacy return value
-		$css = array_fill_keys($css, 'light');
+	$css = array_fill_keys($css, 'light');
 	}
 	$has_light = in_array('light', $css) || in_array('', $css);
 	$has_dark = in_array('dark', $css) || in_array('', $css);
@@ -40,7 +41,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	);
 	$media = " media='(prefers-color-scheme: dark)'";
 	if ($dark !== false) {
-		echo "<link rel='stylesheet'" . ($dark ? "" : $media) . " href='../adminer/static/dark.css'>\n";
+	echo "<link rel='stylesheet'" . ($dark ? "" : $media) . " href='../adminer/static/dark.css'>\n";
 	}
 	echo "<meta name='color-scheme' content='" . ($dark === null ? "light dark" : ($dark ? "dark" : "light")) . "'>\n";
 
@@ -48,23 +49,23 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	echo script_src("../adminer/static/functions.js");
 	echo script_src("static/editing.js");
 	if (adminer()->head($dark)) {
-		echo "<link rel='icon' href='data:image/gif;base64,R0lGODlhEAAQAJEAAAQCBPz+/PwCBAROZCH5BAEAAAAALAAAAAAQABAAAAI2hI+pGO1rmghihiUdvUBnZ3XBQA7f05mOak1RWXrNq5nQWHMKvuoJ37BhVEEfYxQzHjWQ5qIAADs='>\n";
-		echo "<link rel='apple-touch-icon' href='../adminer/static/logo.png'>\n";
+	echo "<link rel='icon' href='data:image/gif;base64,R0lGODlhEAAQAJEAAAQCBPz+/PwCBAROZCH5BAEAAAAALAAAAAAQABAAAAI2hI+pGO1rmghihiUdvUBnZ3XBQA7f05mOak1RWXrNq5nQWHMKvuoJ37BhVEEfYxQzHjWQ5qIAADs='>\n";
+	echo "<link rel='apple-touch-icon' href='../adminer/static/logo.png'>\n";
 	}
 	foreach ($css as $url => $mode) {
-		$attrs = ($mode == 'dark' && !$dark
-			? $media
-			: ($mode == 'light' && $has_dark ? " media='(prefers-color-scheme: light)'" : "")
-		);
-		echo "<link rel='stylesheet'$attrs href='" . h($url) . "'>\n";
+	$attrs = ($mode == 'dark' && !$dark
+	? $media
+	: ($mode == 'light' && $has_dark ? " media='(prefers-color-scheme: light)'" : "")
+);
+echo "<link rel='stylesheet'$attrs href='" . h($url) . "'>\n";
 	}
 	echo "\n<body class='" . lang('ltr') . " nojs";
 	adminer()->bodyClass();
 	echo "'>\n";
 	$filename = get_temp_dir() . "/adminer.version";
 	if (!$_COOKIE["adminer_version"] && function_exists('openssl_verify') && file_exists($filename) && filemtime($filename) + 86400 > time()) { // 86400 - 1 day in seconds
-		$version = unserialize(file_get_contents($filename));
-		$public = "-----BEGIN PUBLIC KEY-----
+	$version = unserialize(file_get_contents($filename));
+	$public = "-----BEGIN PUBLIC KEY-----
 MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwqWOVuF5uw7/+Z70djoK
 RlHIZFZPO0uYRezq90+7Amk+FDNd7KkL5eDve+vHRJBLAszF/7XKXe11xwliIsFs
 DFWQlsABVZB3oisKCBEuI71J4kPH8dKGEWR9jDHFw3cWmoH3PmqImX6FISWbG3B8
@@ -74,9 +75,9 @@ nCpz9Y++cipkVEiKRGih4ZEvjoFysEOdRLj6WiD/uUNky4xGeA6LaJqh5XpkFkcQ
 fQIDAQAB
 -----END PUBLIC KEY-----
 ";
-		if (openssl_verify($version["version"], base64_decode($version["signature"]), $public) == 1) {
-			$_COOKIE["adminer_version"] = $version["version"]; // doesn't need to send to the browser
-		}
+	if (openssl_verify($version["version"], base64_decode($version["signature"]), $public) == 1) {
+		$_COOKIE["adminer_version"] = $version["version"]; // doesn't need to send to the browser
+	}
 	}
 	echo script("mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick"
 		. (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '" . VERSION . "', '" . js_escape(ME) . "', '" . get_token() . "')")
@@ -90,31 +91,31 @@ const thousandsSeparator = '" . js_escape(lang(',')) . "';")
 	echo "<div id='content'>\n";
 	echo "<span id='menuopen' class='jsonly'>" . icon("move", "", "menu", "") . "</span>" . script("qs('#menuopen').onclick = event => { qs('#foot').classList.toggle('foot'); event.stopPropagation(); }");
 	if ($breadcrumb !== null) {
-		$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
-		echo '<p id="breadcrumb"><a href="' . h($link ?: ".") . '">' . get_driver(DRIVER) . '</a> » ';
-		$link = substr(preg_replace('~\b(db|ns)=[^&]*&~', '', ME), 0, -1);
-		$server = adminer()->serverName(SERVER);
-		$server = ($server != "" ? $server : lang('Server'));
-		if ($breadcrumb === false) {
-			echo "$server\n";
-		} else {
-			echo "<a href='" . h($link) . "' accesskey='1' title='Alt+Shift+1'>$server</a> » ";
-			if ($_GET["ns"] != "" || (DB != "" && is_array($breadcrumb))) {
-				echo '<a href="' . h($link . "&db=" . urlencode(DB) . (support("scheme") ? "&ns=" : "")) . '">' . h(DB) . '</a> » ';
-			}
-			if (is_array($breadcrumb)) {
-				if ($_GET["ns"] != "") {
-					echo '<a href="' . h(substr(ME, 0, -1)) . '">' . h($_GET["ns"]) . '</a> » ';
-				}
-				foreach ($breadcrumb as $key => $val) {
-					$desc = (is_array($val) ? $val[1] : h($val));
-					if ($desc != "") {
-						echo "<a href='" . h(ME . "$key=") . urlencode(is_array($val) ? $val[0] : $val) . "'>$desc</a> » ";
-					}
-				}
-			}
-			echo "$title\n";
+	$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
+	echo '<p id="breadcrumb"><a href="' . h($link ?: ".") . '">' . get_driver(DRIVER) . '</a> » ';
+	$link = substr(preg_replace('~\b(db|ns)=[^&]*&~', '', ME), 0, -1);
+	$server = adminer()->serverName(SERVER);
+	$server = ($server != "" ? $server : lang('Server'));
+	if ($breadcrumb === false) {
+		echo "$server\n";
+	} else {
+		echo "<a href='" . h($link) . "' accesskey='1' title='Alt+Shift+1'>$server</a> » ";
+		if ($_GET["ns"] != "" || (DB != "" && is_array($breadcrumb))) {
+			echo '<a href="' . h($link . "&db=" . urlencode(DB) . (support("scheme") ? "&ns=" : "")) . '">' . h(DB) . '</a> » ';
 		}
+		if (is_array($breadcrumb)) {
+			if ($_GET["ns"] != "") {
+				echo '<a href="' . h(substr(ME, 0, -1)) . '">' . h($_GET["ns"]) . '</a> » ';
+			}
+			foreach ($breadcrumb as $key => $val) {
+				$desc = (is_array($val) ? $val[1] : h($val));
+				if ($desc != "") {
+					echo "<a href='" . h(ME . "$key=") . urlencode(is_array($val) ? $val[0] : $val) . "'>$desc</a> » ";
+				}
+			}
+		}
+		echo "$title\n";
+	}
 	}
 	echo "<h2>$title_all</h2>\n";
 	echo "<div id='ajaxstatus' class='jsonly hidden'></div>\n";
@@ -122,7 +123,7 @@ const thousandsSeparator = '" . js_escape(lang(',')) . "';")
 	page_messages($error);
 	$databases = &get_session("dbs");
 	if (DB != "" && $databases && !in_array(DB, $databases, true)) {
-		$databases = null;
+	$databases = null;
 	}
 	stop_session();
 	define('Adminer\PAGE_HEADER', 1);
