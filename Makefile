@@ -43,6 +43,7 @@ clean.all: clean
 
 .PHONY: get-phpcs
 get-phpcs:
+	composer global require "squizlabs/php_codesniffer=*"
 	@echo "Global PHPCS path: $(PHPCS_BIN)"
 	@$(PHPCS_BIN) --version || echo "PHPCS not installed globally"
 
