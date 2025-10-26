@@ -1,4 +1,5 @@
 ## Adminer dev
+- Plugins: Methods showVariables() and showStatus() (bug #1157)
 
 ## Adminer 5.4.1 (released 2025-09-26)
 - SQL command: Unlink NULL primary keys

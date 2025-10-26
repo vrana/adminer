@@ -1134,6 +1134,20 @@ class Adminer {
 		echo "</ul>\n";
 	}
 
+	/** Get server variables
+	* @return list<string[]> [[$name, $value]]
+	*/
+	function showVariables(): array {
+		return show_variables();
+	}
+
+	/** Get status variables
+	* @return list<string[]> [[$name, $value]]
+	*/
+	function showStatus(): array {
+		return show_status();
+	}
+
 	/** Get process list
 	* @return list<string[]> [$row]
 	*/
