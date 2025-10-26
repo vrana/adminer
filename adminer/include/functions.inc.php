@@ -244,7 +244,7 @@ function get_rows(string $query, ?Db $connection2 = null, string $error = "<p cl
 */
 function unique_array(?array $row, array $indexes) {
 	foreach ($indexes as $index) {
-		if (preg_match("~PRIMARY|UNIQUE~", $index["type"])) {
+		if (preg_match("~PRIMARY|UNIQUE~", $index["type"]) && !$index["partial"]) {
 			$return = array();
 			foreach ($index["columns"] as $key) {
 				if (!isset($row[$key])) { // NULL is ambiguous

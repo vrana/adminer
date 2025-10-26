@@ -539,7 +539,7 @@ WHERE indrelid = $table_oid
 ORDER BY indisprimary DESC, indisunique DESC", $connection2) as $row
 		) {
 			$relname = $row["relname"];
-			$return[$relname]["type"] = ($row["partial"] ? "INDEX" : ($row["indisprimary"] ? "PRIMARY" : ($row["indisunique"] ? "UNIQUE" : "INDEX")));
+			$return[$relname]["type"] = ($row["indisprimary"] ? "PRIMARY" : ($row["indisunique"] ? "UNIQUE" : "INDEX"));
 			$return[$relname]["columns"] = array();
 			$return[$relname]["descs"] = array();
 			$return[$relname]["algorithm"] = $row["amname"];
