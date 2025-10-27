@@ -11,23 +11,23 @@ class AdminerEnumOption extends Adminer\Plugin {
 	function editInput($table, $field, $attrs, $value) {
 		if ($field["type"] == "enum") {
 			$options = array();
-			$selected = $value;
+			$selected = "val-$value";
 			if (isset($_GET["select"])) {
-				$options[-1] = Adminer\lang('original');
-				if ($selected === null) {
-					$selected = -1;
+				$options["orig"] = Adminer\lang('original');
+				if ($value === null) {
+					$selected = "orig";
 				}
 			}
 			if ($field["null"]) {
-				$options[""] = "NULL";
-				if ($selected === null) {
-					$selected = "";
+				$options["null"] = "NULL";
+				if ($value === null) {
+					$selected = "null";
 				}
 			}
 			preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 			foreach ($matches[1] as $val) {
 				$val = stripcslashes(str_replace("''", "'", $val));
-				$options[$val] = $val;
+				$options["val-$val"] = $val;
 			}
 			return "<select$attrs>" . Adminer\optionlist($options, $selected, 1) . "</select>"; // 1 - use keys
 		}
