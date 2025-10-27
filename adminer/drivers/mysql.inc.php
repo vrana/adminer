@@ -893,36 +893,27 @@ if (!defined('Adminer\DRIVER')) {
 	* @return Routine
 	*/
 	function routine(string $name, string $type): array {
-		$aliases = array("bool", "boolean", "integer", "double precision", "real", "dec", "numeric", "fixed", "national char", "national varchar");
-		$space = "(?:\\s|/\\*[\s\S]*?\\*/|(?:#|-- )[^\n]*\n?|--\r?\n)";
-		$enum = driver()->enumLength;
-		$type_pattern = "((" . implode("|", array_merge(array_keys(driver()->types()), $aliases)) . ")\\b(?:\\s*\\(((?:[^'\")]|$enum)++)\\))?"
-			. "\\s*(zerofill\\s*)?(unsigned(?:\\s+zerofill)?)?)(?:\\s*(?:CHARSET|CHARACTER\\s+SET)\\s*['\"]?([^'\"\\s,]+)['\"]?)?(?:\\s*COLLATE\\s*['\"]?[^'\"\\s,]+['\"]?)?"; //! store COLLATE
-		$pattern = "$space*(" . ($type == "FUNCTION" ? "" : driver()->inout) . ")?\\s*(?:`((?:[^`]|``)*)`\\s*|\\b(\\S+)\\s+)$type_pattern";
-		$create = get_val("SHOW CREATE $type " . idf_escape($name), 2);
-		preg_match("~\\(((?:$pattern\\s*,?)*)\\)\\s*" . ($type == "FUNCTION" ? "RETURNS\\s+$type_pattern\\s+" : "") . "(.*)~is", $create, $match);
-		$fields = array();
-		preg_match_all("~$pattern\\s*,?~is", $match[1], $matches, PREG_SET_ORDER);
-		foreach ($matches as $param) {
-			$fields[] = array(
-				"field" => str_replace("``", "`", $param[2]) . $param[3],
-				"type" => strtolower($param[5]),
-				"length" => preg_replace_callback("~$enum~s", 'Adminer\normalize_enum', $param[6]),
-				"unsigned" => strtolower(preg_replace('~\s+~', ' ', trim("$param[8] $param[7]"))),
-				"null" => true,
-				"full_type" => $param[4],
-				"inout" => strtoupper($param[1]),
-				"collation" => strtolower($param[9]),
-			);
+		$fields = get_rows("SELECT
+	PARAMETER_NAME field,
+	DATA_TYPE type,
+	CHARACTER_MAXIMUM_LENGTH length,
+	REGEXP_REPLACE(DTD_IDENTIFIER, '^[^ ]+ ', '') `unsigned`,
+	1 `null`,
+	DTD_IDENTIFIER full_type,
+	PARAMETER_MODE `inout`,
+	CHARACTER_SET_NAME collation
+FROM information_schema.PARAMETERS
+WHERE SPECIFIC_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND SPECIFIC_NAME = " . q($name) . "
+ORDER BY ORDINAL_POSITION");
+		$return = connection()->query("SELECT ROUTINE_COMMENT comment, ROUTINE_DEFINITION definition, 'SQL' language
+FROM information_schema.ROUTINES
+WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = " . q($name))->fetch_assoc();
+		if ($fields && $fields[0]['field'] == '') {
+			$return['returns'] = array_shift($fields);
 		}
-		return array(
-			"fields" => $fields,
-			"comment" => get_val("SELECT ROUTINE_COMMENT FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_NAME = " . q($name)),
-		) + ($type != "FUNCTION" ? array("definition" => $match[11]) : array(
-			"returns" => array("type" => $match[12], "length" => $match[13], "unsigned" => $match[15], "collation" => $match[16]),
-			"definition" => $match[17],
-			"language" => "SQL", // available in information_schema.ROUTINES.BODY_STYLE
-		));
+		$return['fields'] = $fields;
+		/** @phpstan-var Routine */
+		return $return;
 	}
 
 	/** Get list of routines

@@ -36,7 +36,7 @@ if (!$error && $_POST) {
 		}
 	}
 
-	$query = (isset($_GET["callf"]) ? "SELECT " : "CALL ") . ($routine["returns"]["type"] == "record" ? "* FROM " : "") . table($PROCEDURE) . "(" . implode(", ", $call) . ")";
+	$query = (isset($_GET["callf"]) ? "SELECT " : "CALL ") . (idx($routine["returns"], "type") == "record" ? "* FROM " : "") . table($PROCEDURE) . "(" . implode(", ", $call) . ")";
 	$start = microtime(true);
 	$result = connection()->multi_query($query);
 	$affected = connection()->affected_rows; // getting warnings overwrites this
