@@ -1,4 +1,5 @@
 ## Adminer dev
+- Autocomplete: fix in empty textarea (bug #1173)
 - PostgreSQL: Mark unique partial indexes as unique (bug #1172)
 - ClickHouse: Fix offset (bug #1188)
 - Plugins: Methods showVariables() and showStatus() (bug #1157)
