@@ -238,7 +238,7 @@ if (!defined('Adminer\DRIVER')) {
 				lang('Geometry') => array("geometry" => 0, "point" => 0, "linestring" => 0, "polygon" => 0, "multipoint" => 0, "multilinestring" => 0, "multipolygon" => 0, "geometrycollection" => 0),
 			);
 			$this->insertFunctions = array(
-				"char" => "md5/sha1/password/encrypt/uuid",
+				"char" => "md5/sha1/password/encrypt/uuid/password_hash",
 				"binary" => "md5/sha1",
 				"date|time" => "now",
 			);
