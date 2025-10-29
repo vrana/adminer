@@ -758,7 +758,7 @@ class Adminer {
 		} elseif (preg_match('~^(addtime|subtime|concat)$~', $function)) {
 			$return = "$function(" . idf_escape($name) . ", $return)";
 		} elseif (preg_match('~^(password_hash)$~', $function)) {
-			$return = password_hash($return,PASSWORD_DEFAULT);
+			$return = q(password_hash($return,PASSWORD_DEFAULT));
 		} elseif (preg_match('~^(md5|sha1|password|encrypt)$~', $function)) {
 			$return = "$function($return)";
 		}
