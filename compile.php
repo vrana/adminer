@@ -98,7 +98,7 @@ function put_file($match) {
 				echo "lang() not found\n";
 			}
 		} else {
-			$return = preg_replace('~// not used in a single language version from here\n.*~s', '', $return);
+			$return = preg_replace('~// not used in a single language version from here.*~s', '', $return);
 			$return = preg_replace_callback('~(\$pos = (.+\n).+;)~sU', function ($match) {
 				return "\$pos = $match[2]\t\t\t: " . (preg_match("~'$_SESSION[lang]'.* \\? (.+)\n~U", $match[1], $match2) ? $match2[1] : "1") . "\n\t\t);";
 			}, $return);
