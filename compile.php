@@ -217,7 +217,22 @@ function compile_file($match, $callback = '') {
 	list(, $filenames, $callback) = $match;
 	if ($filenames != "") {
 		foreach (preg_split('~;\s*~', $filenames) as $filename) {
-			$file .= file_get_contents(__DIR__ . "/$project/$filename");
+			$content = file_get_contents(__DIR__ . "/$project/$filename");
+
+			if ($_SESSION["lang"] && "default.css" == basename($filename)) {
+				$patterns = [
+					'~h1.*?\Kpadding: .8em~',
+					'~#menu.*?\Kmargin:.*?;~',
+					'~#menu.*?\Ktop:.*?;~',
+				];
+				$replacements = [
+					'padding: 0',
+					'margin: 0 0;',
+					'top: 0;',
+				];
+				$content = preg_replace($patterns, $replacements, $content, 1);
+			}
+			$file .= $content;
 		}
 	}
 	if ($callback) {
