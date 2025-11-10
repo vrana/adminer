@@ -106,7 +106,7 @@ foreach ($row["source"] as $key => $val) {
 <?php echo doc_link(array(
 	'sql' => "innodb-foreign-key-constraints.html",
 	'mariadb' => "foreign-keys/",
-	'pgsql' => "sql-createtable.html#SQL-CREATETABLE-REFERENCES",
+	'pgsql' => "sql-createtable.html#SQL-CREATETABLE-PARMS-REFERENCES",
 	'mssql' => "t-sql/statements/create-table-transact-sql",
 	'oracle' => "SQLRF01111",
 )); ?>
