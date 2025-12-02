@@ -254,7 +254,10 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 		} elseif (is_blob($field) && ini_bool("file_uploads")) {
 			echo "<input type='file' name='fields-$name'>";
 		} elseif ($function == "json" || preg_match('~^jsonb?$~', $field["type"])) {
-			echo "<textarea$attrs cols='50' rows='12' class='jush-js'>" . h($value) . '</textarea>';
+			echo "<textarea$attrs cols='50' rows='12' class='jush-js'>" . h($value == '' || (JUSH == "pgsql" && $field["type"] == "json")
+				? $value
+				: json_encode(json_decode($value), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE))
+				. '</textarea>';
 		} elseif (($text = preg_match('~text|lob|memo~i', $field["type"])) || preg_match("~\n~", $value)) {
 			if ($text && JUSH != "sqlite") {
 				$attrs .= " cols='50' rows='12'";
