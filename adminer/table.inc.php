@@ -27,12 +27,13 @@ if ($fields) {
 }
 
 /** Print links to tables
-* @param list<string> $tables
+* @param list<array{table: string, ns: string}> $tables
 */
 function tables_links(array $tables): void {
 	echo "<ul>\n";
-	foreach ($tables as $table) {
-		echo "<li><a href='" . h(ME . "table=" . urlencode($table)) . "'>" . h($table) . "</a>";
+	foreach ($tables as $row) {
+		$link = preg_replace('~ns=[^&]*~', "ns=" . urlencode($row["ns"]), ME);
+		echo "<li><a href='" . h($link . "table=" . urlencode($row["table"])) . "'>" . h($row["table"]) . "</a>";
 	}
 	echo "</ul>\n";
 }
