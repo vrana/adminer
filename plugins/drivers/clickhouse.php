@@ -22,7 +22,7 @@ if (isset($_GET["clickhouse"])) {
 					'max_redirects' => 0,
 				))));
 
-				if ($file === false || !preg_match('~^HTTP/[0-9.]+ 2~i', $http_response_header[0])) {
+				if ($file === false || preg_match('~^HTTP/[0-9.]+ 403~i', $http_response_header[0])) {
 					$this->error = lang('Invalid credentials.');
 					return false;
 				}
@@ -44,6 +44,13 @@ if (isset($_GET["clickhouse"])) {
 							}
 						}
 					}
+				}
+				// 400 == Syntax error
+				// 404 == Unknown expression identifier
+				// 500 == Column 'x' is not under aggregate function and not in GROUP BY keys
+				if (preg_match('~^HTTP/[0-9.]+ [45]~i', $http_response_header[0])) {
+					$this->error = $return['exception'];
+					return false;
 				}
 				return new Result($return);
 			}
