@@ -75,7 +75,7 @@ if (isset($_GET["clickhouse"])) {
 
 		class Result {
 			public $num_rows, $columns, $meta;
-			private $rows, $offset = 0;
+			private $rows = [], $offset = 0;
 
 			function __construct($result) {
 				foreach ($result['data'] as $item) {
