@@ -56,7 +56,7 @@ if (isset($_GET["clickhouse"])) {
 			}
 
 			function isQuerySelectLike($query) {
-				return (bool) preg_match('~^(select|show)~i', $query);
+				return (bool) preg_match('~^\s*(select|show|with)~i', $query);
 			}
 
 			function query($query, $unbuffered = false) {
