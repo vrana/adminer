@@ -15,8 +15,11 @@ if (isset($_GET["clickhouse"])) {
 			function rootQuery($db, $query) {
 				$file = @file_get_contents("$this->url/?database=$db", false, stream_context_create(array('http' => array(
 					'method' => 'POST',
-					'content' => $this->isQuerySelectLike($query) ? "$query FORMAT JSONCompact" : $query,
-					'header' => 'Content-type: application/x-www-form-urlencoded',
+					'content' => $query,
+					'header' => [
+						'Content-type: application/x-www-form-urlencoded',
+						'X-ClickHouse-Format: JSONCompact'
+					],
 					'ignore_errors' => 1,
 					'follow_location' => 0,
 					'max_redirects' => 0,
