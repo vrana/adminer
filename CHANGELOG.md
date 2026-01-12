@@ -2,6 +2,7 @@
 - Pretty print JSON in edit
 - PostgreSQL: Offer foreign keys in create table
 - PostgreSQL: Add missing parentheses to CHECK export
+- PostgreSQL: Remove duplicate DEFERRABLE in foreign key export
 - PostgreSQL: Mark unique partial indexes as unique (bug #1172)
 - ClickHouse: Fix offset (bug #1188)
 - ClickHouse: Fix list of tables (bug #1176)

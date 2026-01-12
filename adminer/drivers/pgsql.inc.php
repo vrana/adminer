@@ -912,7 +912,7 @@ AND typelem = 0"
 		ksort($fkeys);
 
 		foreach ($fkeys as $fkey_name => $fkey) {
-			$return .= "ALTER TABLE ONLY " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . " ADD CONSTRAINT " . idf_escape($fkey_name) . " $fkey[definition] " . ($fkey['deferrable'] ? 'DEFERRABLE' : 'NOT DEFERRABLE') . ";\n";
+			$return .= "ALTER TABLE ONLY " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . " ADD CONSTRAINT " . idf_escape($fkey_name) . " $fkey[definition];\n";
 		}
 
 		return ($return ? "$return\n" : $return);
