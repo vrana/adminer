@@ -103,6 +103,7 @@ foreach ($row["source"] as $key => $val) {
 <p>
 <label><?php echo lang('ON DELETE'); ?>: <?php echo html_select("on_delete", array(-1 => "") + explode("|", driver()->onActions), $row["on_delete"]); ?></label>
 <label><?php echo lang('ON UPDATE'); ?>: <?php echo html_select("on_update", array(-1 => "") + explode("|", driver()->onActions), $row["on_update"]); ?></label>
+<?php echo (DRIVER === 'pgsql' ? html_select("deferrable", array('NOT DEFERRABLE', 'DEFERRABLE', 'DEFERRABLE INITIALLY DEFERRED'), $row["deferrable"]) . ' ' : ''); ?>
 <?php echo doc_link(array(
 	'sql' => "innodb-foreign-key-constraints.html",
 	'mariadb' => "foreign-keys/",

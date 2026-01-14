@@ -2,6 +2,7 @@
 - Pretty print JSON in edit
 - PostgreSQL: Offer foreign keys in create table
 - PostgreSQL: Add missing parentheses to CHECK export
+- PostgreSQL: Allow creating NOT DEFERRABLE foreign keys
 - PostgreSQL: Remove duplicate DEFERRABLE in foreign key export
 - PostgreSQL: Add schema to sequence and and view export
 - PostgreSQL: Mark unique partial indexes as unique (bug #1172)

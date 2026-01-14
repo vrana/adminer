@@ -491,6 +491,7 @@ function format_foreign_key(array $foreign_key): string {
 		. " (" . implode(", ", array_map('Adminer\idf_escape', $foreign_key["target"])) . ")" //! reuse $name - check in older MySQL versions
 		. (preg_match("~^(" . driver()->onActions . ")\$~", $foreign_key["on_delete"]) ? " ON DELETE $foreign_key[on_delete]" : "")
 		. (preg_match("~^(" . driver()->onActions . ")\$~", $foreign_key["on_update"]) ? " ON UPDATE $foreign_key[on_update]" : "")
+		. ($foreign_key["deferrable"] ? " $foreign_key[deferrable]" : "")
 	;
 }
 
