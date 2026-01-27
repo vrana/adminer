@@ -256,7 +256,7 @@ function default_value(array $field): string {
 	$default = str_replace("\r", "", $field["default"]);
 	$generated = $field["generated"];
 	return (in_array($generated, driver()->generated)
-		? (JUSH == "mssql" ? " AS ($default)" . ($generated == "VIRTUAL" ? "" : " $generated") . "" : " GENERATED ALWAYS AS ($default) $generated")
+		? (JUSH == "mssql" ? " AS ($default)" . ($generated == "VIRTUAL" ? "" : " $generated") : " GENERATED ALWAYS AS ($default) $generated")
 		: " DEFAULT " . (!preg_match('~^GENERATED ~i', $default) && (preg_match('~char|binary|text|json|enum|set~', $field["type"]) || preg_match('~^(?![a-z])~i', $default))
 			? (JUSH == "sql" && preg_match('~text|json~', $field["type"]) ? "(" . q($default) . ")" : q($default)) // MySQL requires () around default value of text column
 			: str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", (JUSH == "sqlite" ? "($default)" : $default))
