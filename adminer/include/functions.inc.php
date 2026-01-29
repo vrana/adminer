@@ -823,7 +823,7 @@ function is_mail(?string $email): bool {
 /** Check whether the string is URL address */
 function is_url(?string $string): bool {
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component //! IDN
-	return preg_match("~^(https?)://($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string); //! restrict path, query and fragment characters
+	return preg_match("~^((https?):)?//($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string); //! restrict path, query and fragment characters
 }
 
 /** Check if field should be shortened
