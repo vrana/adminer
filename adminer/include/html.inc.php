@@ -229,7 +229,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 		$field["type"] = "enum";
 		$field["length"] = $enums;
 	}
-	$disabled = stripos($field["default"], "GENERATED ALWAYS AS ") === 0 ? " disabled=''" : "";
+	$disabled = stripos($field["default"], "GENERATED ALWAYS AS ") === 0 ? " disabled" : "";
 	$attrs = " name='fields[$name]" . ($field["type"] == "enum" || $field["type"] == "set" ? "[]" : "") . "'$disabled" . ($autofocus ? " autofocus" : "");
 	echo driver()->unconvertFunction($field) . " ";
 	$table = $_GET["edit"] ?: $_GET["select"];
