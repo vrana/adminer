@@ -79,22 +79,11 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 						$link .= "&where" . urlencode("[" . bracket_escape($col) . "]") . "=" . urlencode($row[$j]);
 					}
 				}
-			} elseif (is_url($val)) {
-				$link = $val;
 			}
-			if ($val === null) {
-				$val = "<i>NULL</i>";
-			} elseif ($blobs[$key] && !is_utf8($val)) {
-				$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
-			} else {
-				$val = h($val);
-				if ($types[$key] == 254) { // 254 - char
-					$val = "<code>$val</code>";
-				}
-			}
-			if ($link) {
-				$val = "<a href='" . h($link) . "'" . (is_url($link) ? target_blank() : '') . ">$val</a>";
-			}
+			$field = array(
+				'type' => ($blobs[$key] ? 'blob' : ($types[$key] == 254 ? 'char' : '')),
+			);
+			$val = select_value($val, $link, $field, null);
 			// https://dev.mysql.com/doc/dev/mysql-server/latest/field__types_8h.html
 			echo "<td" . ($types[$key] <= 9 || $types[$key] == 246 ? " class='number'" : "") . ">$val";
 		}

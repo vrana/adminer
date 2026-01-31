@@ -766,7 +766,7 @@ function rand_string(): string {
 
 /** Format value to use in select
 * @param string|string[]|list<string[]> $val
-* @param Field $field
+* @param array{type: string} $field
 * @param ?numeric-string $text_length
 * @return string HTML
 */
@@ -822,7 +822,7 @@ function select_value($val, string $link, array $field, ?string $text_length): s
 }
 
 /** Check whether the field type is blob or equivalent
-* @param Field $field
+* @param array{type: string} $field
 */
 function is_blob(array $field): bool {
 	return preg_match('~blob|bytea|raw|file~', $field["type"]) && !in_array($field["type"], idx(driver()->structuredTypes(), lang('User types'), array()));
@@ -843,7 +843,7 @@ function is_url(?string $string): bool {
 }
 
 /** Check if field should be shortened
-* @param Field $field
+* @param array{type: string} $field
 */
 function is_shortable(array $field): bool {
 	return preg_match('~char|text|json|lob|geometry|point|linestring|polygon|string|bytea|hstore~', $field["type"]);

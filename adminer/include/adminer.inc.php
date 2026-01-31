@@ -286,7 +286,7 @@ class Adminer {
 
 	/** Get a link to use in select table
 	* @param string $val raw value of the field
-	* @param Field $field
+	* @param array{type: string} $field
 	* @return string|void null to create the default link
 	*/
 	function selectLink(?string $val, array $field) {
@@ -295,7 +295,7 @@ class Adminer {
 	/** Value printed in select table
 	* @param ?string $val HTML-escaped value to print
 	* @param ?string $link link to foreign key
-	* @param Field $field
+	* @param array{type: string} $field
 	* @param string $original original value before applying editVal() and escaping
 	*/
 	function selectVal(?string $val, ?string $link, array $field, ?string $original): string {
@@ -311,7 +311,7 @@ class Adminer {
 	}
 
 	/** Value conversion used in select and edit
-	* @param Field $field
+	* @param array{type: string} $field
 	*/
 	function editVal(?string $val, array $field): ?string {
 		return $val;

@@ -43,8 +43,8 @@ function send_mail(string $email, string $subject, string $message, string $from
 }
 
 /** Check whether the column looks like boolean
-* @param Field $field single field returned from fields()
+* @param array{type: string} $field single field returned from fields()
 */
 function like_bool(array $field): bool {
-	return preg_match("~bool|(tinyint|bit)\\(1\\)~", $field["full_type"]);
+	return preg_match("~bool|bit~", $field["type"]);
 }
