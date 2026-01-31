@@ -765,7 +765,7 @@ function rand_string(): string {
 }
 
 /** Format value to use in select
-* @param string|string[] $val
+* @param string|string[]|list<string[]> $val
 * @param Field $field
 * @param ?numeric-string $text_length
 * @return string HTML
@@ -773,11 +773,27 @@ function rand_string(): string {
 function select_value($val, string $link, array $field, ?string $text_length): string {
 	if (is_array($val)) {
 		$return = "";
-		foreach ($val as $k => $v) {
-			$return .= "<tr>"
-				. ($val != array_values($val) ? "<th>" . h($k) : "")
-				. "<td>" . select_value($v, $link, $field, $text_length)
-			;
+		if (array_filter($val, 'is_array') == array_values($val)) { // list of arrays
+			$keys = array();
+			foreach ($val as $v) {
+				$keys += array_fill_keys(array_keys($v), null);
+			}
+			foreach (array_keys($keys) as $k) {
+				$return .= "<th>" . h($k);
+			}
+			foreach ($val as $v) {
+				$return .= "<tr>";
+				foreach (array_merge($keys, $v) as $v2) {
+					$return .= "<td>" . select_value($v2, $link, $field, $text_length);
+				}
+			}
+		} else {
+			foreach ($val as $k => $v) {
+				$return .= "<tr>"
+					. ($val != array_values($val) ? "<th>" . h($k) : "")
+					. "<td>" . select_value($v, $link, $field, $text_length)
+				;
+			}
 		}
 		return "<table>$return</table>";
 	}
