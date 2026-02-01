@@ -57,6 +57,7 @@ input.wayoff { left: -1000px; position: absolute; }
 .date { color: #7F007F; }
 .enum { color: #007F7F; }
 .binary { color: red; }
+.odds tbody tr { background: var(--bg); }
 .odds tbody tr:nth-child(2n) { background: #F5F5F5; }
 .js .checkable .checked td, .js .checkable .checked th { background: var(--lit); }
 .time { color: silver; font-size: 70%; }
