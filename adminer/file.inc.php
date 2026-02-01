@@ -34,7 +34,8 @@ if ($_GET["file"] == "default.css") {
 ../externals/jush/modules/jush-sqlite.js;
 ../externals/jush/modules/jush-mssql.js;
 ../externals/jush/modules/jush-oracle.js;
-../externals/jush/modules/jush-simpledb.js', 'minify_js'));
+../externals/jush/modules/jush-simpledb.js;
+../externals/jush/modules/jush-igdb.js', 'minify_js'));
 } elseif ($_GET["file"] == "logo.png") {
 	header("Content-Type: image/png");
 	echo compile_file('../adminer/static/logo.png');
