@@ -80,14 +80,27 @@ if (adminer()->homepage()) {
 			echo '<thead><tr class="wrap">';
 			echo '<td><input id="check-all" type="checkbox" class="jsonly">' . script("qs('#check-all').onclick = partial(formCheck, /^(tables|views)\[/);", "");
 			echo '<th>' . lang('Table');
-			echo '<td>' . lang('Engine') . doc_link(array('sql' => 'storage-engines.html'));
-			echo '<td>' . lang('Collation') . doc_link(array('sql' => 'charset-charsets.html', 'mariadb' => 'supported-character-sets-and-collations/'));
-			echo '<td>' . lang('Data Length') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT', 'oracle' => 'REFRN20286'));
-			echo '<td>' . lang('Index Length') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT'));
-			echo '<td>' . lang('Data Free') . doc_link(array('sql' => 'show-table-status.html'));
-			echo '<td>' . lang('Auto Increment') . doc_link(array('sql' => 'example-auto-increment.html', 'mariadb' => 'auto_increment/'));
-			echo '<td>' . lang('Rows') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'catalog-pg-class.html#CATALOG-PG-CLASS', 'oracle' => 'REFRN20286'));
-			echo (support("comment") ? '<td>' . lang('Comment') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-info.html#FUNCTIONS-INFO-COMMENT-TABLE')) : '');
+			$columns = array("Engine" => array(lang('Engine') . doc_link(array('sql' => 'storage-engines.html'))));
+			if (collations()) {
+				$columns["Collation"] = array(lang('Collation') . doc_link(array('sql' => 'charset-charsets.html', 'mariadb' => 'supported-character-sets-and-collations/')));
+			}
+			if (function_exists('Adminer\alter_table')) {
+				$columns["Data_length"] = array(lang('Data Length') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT', 'oracle' => 'REFRN20286')), "create", lang('Alter table'));
+			}
+			if (support('indexes')) {
+				$columns["Index_length"] = array(lang('Index Length') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT')), "indexes", lang('Alter indexes'));
+			}
+			$columns["Data_free"] = array(lang('Data Free') . doc_link(array('sql' => 'show-table-status.html')), "edit", lang('New item'));
+			if (function_exists('Adminer\alter_table')) {
+				$columns["Auto_increment"] = array(lang('Auto Increment') . doc_link(array('sql' => 'example-auto-increment.html', 'mariadb' => 'auto_increment/')), "auto_increment=1&create", lang('Alter table'));
+			}
+			$columns["Rows"] = array(lang('Rows') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'catalog-pg-class.html#CATALOG-PG-CLASS', 'oracle' => 'REFRN20286')), "select", lang('Select data'));
+			if (support("comment")) {
+				$columns["Comment"] = array(lang('Comment') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-info.html#FUNCTIONS-INFO-COMMENT-TABLE')));
+			}
+			foreach ($columns as $column) {
+				echo "<td>$column[0]";
+			}
 			echo "</thead>\n";
 
 			$tables = 0;
@@ -101,26 +114,15 @@ if (adminer()->homepage()) {
 					echo '<td colspan="6">' . (support("view") ? "<a href='" . h(ME) . "view=" . urlencode($name) . "' title='" . lang('Alter view') . "'>$title</a>" : $title);
 					echo '<td align="right"><a href="' . h(ME) . "select=" . urlencode($name) . '" title="' . lang('Select data') . '">?</a>';
 				} else {
-					foreach (
-						array(
-							"Engine" => array(),
-							"Collation" => array(),
-							"Data_length" => array("create", lang('Alter table')),
-							"Index_length" => array("indexes", lang('Alter indexes')),
-							"Data_free" => array("edit", lang('New item')),
-							"Auto_increment" => array("auto_increment=1&create", lang('Alter table')),
-							"Rows" => array("select", lang('Select data')),
-						) as $key => $link
-					) {
+					foreach ($columns as $key => $column) {
 						$id = " id='$key-" . h($name) . "'";
-						echo ($link ? "<td align='right'>" . (support("table") || $key == "Rows" || (support("indexes") && $key != "Data_length")
-							? "<a href='" . h(ME . "$link[0]=") . urlencode($name) . "'$id title='$link[1]'>?</a>"
-							: "<span$id>?</span>"
-						) : "<td id='$key-" . h($name) . "'>");
+						echo ($column[1]
+							? "<td align='right'><a href='" . h(ME . "$column[1]=") . urlencode($name) . "'$id title='$column[2]'>?</a>"
+							: "<td id='$key-" . h($name) . "'>"
+						);
 					}
 					$tables++;
 				}
-				echo (support("comment") ? "<td id='Comment-" . h($name) . "'>" : "");
 				echo "\n";
 			}
 
@@ -128,7 +130,7 @@ if (adminer()->homepage()) {
 			echo "<td>" . h(JUSH == "sql" ? get_val("SELECT @@default_storage_engine") : "");
 			echo "<td>" . h(db_collation(DB, collations()));
 			foreach (array("Data_length", "Index_length", "Data_free") as $key) {
-				echo "<td align='right' id='sum-$key'>";
+				echo ($columns[$key] ? "<td align='right' id='sum-$key'>" : "");
 			}
 			echo "\n";
 
@@ -173,7 +175,7 @@ if (adminer()->homepage()) {
 			echo script("tableCheck();");
 		}
 
-		echo "<p class='links'><a href='" . h(ME) . "create='>" . lang('Create table') . "</a>\n";
+		echo (function_exists('Adminer\alter_table') ? "<p class='links'><a href='" . h(ME) . "create='>" . lang('Create table') . "</a>\n" : '');
 		echo (support("view") ? "<a href='" . h(ME) . "view='>" . lang('Create view') . "</a>\n" : "");
 
 		if (support("routine")) {

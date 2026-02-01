@@ -201,10 +201,12 @@ class Adminer {
 		$is_view = false;
 		if (support("table")) {
 			$is_view = is_view($tableStatus);
-			if (!$is_view) {
+			if ($is_view) {
+				if (support("view")) {
+					$links["view"] = lang('Alter view');
+				}
+			} elseif (function_exists('Adminer\alter_table')) {
 				$links["create"] = lang('Alter table');
-			} elseif (support("view")) {
-				$links["view"] = lang('Alter view');
 			}
 		}
 		if ($set !== null) {
@@ -423,7 +425,7 @@ class Adminer {
 				echo "<div>(<i>" . implode("</i>, <i>", array_map('Adminer\h', $index["columns"])) . "</i>) AGAINST";
 				echo " <input type='search' name='fulltext[$i]' value='" . h(idx($_GET["fulltext"], $i)) . "'>";
 				echo script("qsl('input').oninput = selectFieldChange;", "");
-				echo checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL");
+				echo (JUSH == 'sql' ? checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL") : '');
 				echo "</div>\n";
 			}
 		}
@@ -1020,7 +1022,7 @@ class Adminer {
 				$actions[] = "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>";
 			}
 			$in_db = $_GET["ns"] !== "" && !$missing && DB != "";
-			if ($in_db) {
+			if ($in_db && function_exists('Adminer\alter_table')) {
 				$actions[] = '<a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create table') . "</a>";
 			}
 			echo ($actions ? "<p class='links'>\n" . implode("\n", $actions) . "\n" : "");
