@@ -175,17 +175,21 @@ if (isset($_GET["igdb"])) {
 				}
 				if ($el->nodeValue == 'Request Path') {
 					$table = preg_replace('~^https://api.igdb.com/v4/~', '', $els[$i+1]->firstElementChild->nodeValue);
+					$comment = $els[$i-1]->tagName == 'p' ? $els[$i-1]->nodeValue : '';
+					if (preg_match('~^DEPRECATED!~', $comment)) {
+						continue;
+					}
 					$this->fields[$table]['id'] = array('full_type' => 'bigserial', 'comment' => '');
 					$this->links[$link] = $table;
 					$this->tables[$table] = array(
 						'Name' => $table,
-						'Comment' => $els[$i-1]->tagName == 'p' ? $els[$i-1]->nodeValue : '',
+						'Comment' => $comment,
 					);
 					foreach ($xpath->query('tbody/tr', $els[$i+2]) as $tr) {
 						$tds = $xpath->query('td', $tr);
+						$field = $tds[0]->nodeValue;
 						$comment = $tds[2]->nodeValue;
-						if (!preg_match('~^DEPRECATED!~', $comment)) {
-							$field = $tds[0]->nodeValue;
+						if ($field != 'checksum' && $field != 'content_descriptions' && !preg_match('~^DEPRECATED!~', $comment)) {
 							$this->fields[$table][$field] = array(
 								'full_type' => str_replace('  ', ' ', $tds[1]->nodeValue),
 								'comment' => str_replace('  ', ' ', $comment),
@@ -193,9 +197,20 @@ if (isset($_GET["igdb"])) {
 							$ref = $xpath->query('a/@href', $tds[1]);
 							if (count($ref) && !in_array($ref[0]->value, array('#game-version-feature-enums', '#tag-numbers'))) {
 								$this->foreignKeys[$table][$field] = substr($ref[0]->value, 1);
+							} elseif ($field === 'game_id') { // game_time_to_beats, popularity_primitives
+								$this->foreignKeys[$table][$field] = 'game';
 							}
 						}
 					}
+					uksort($this->fields[$table], function ($a, $b) use ($table) {
+						return (($b == 'id') - ($a == 'id'))
+							?: (($b == 'name') - ($a == 'name'))
+							?: (($a == 'updated_at') - ($b == 'updated_at'))
+							?: (($a == 'created_at') - ($b == 'created_at'))
+							?: (!idx($this->foreignKeys[$table], $b) - !idx($this->foreignKeys[$table], $a))
+							?: ($a < $b ? -1 : 1)
+						;
+					});
 				}
 			}
 		}
@@ -210,9 +225,9 @@ if (isset($_GET["igdb"])) {
 			foreach ($where as $i => $val) {
 				$where[$i] = str_replace(' OR ', ' | ', $val);
 			}
+			$fields = array_keys($this->fields[$table]);
 			$common = ($where ? "where " . implode(" & ", $where) . ";" : "");
-			$query .= "fields " . implode(",", $select) . ";"
-				. ($select == array('*') ? "\nexclude checksum;" : "")
+			$query .= "fields " . implode(",", $select == array('*') ? $fields : $select) . ";"
 				. ($where ? "\n$common" : "")
 				. ($order ? "\nsort " . strtolower(implode(",", $order)) . ";" : "")
 				. "\nlimit $limit;"
@@ -232,7 +247,7 @@ if (isset($_GET["igdb"])) {
 			$this->foundRows = ($search ? null : $return[1]['count']);
 			$return = ($search ? $return : $return[0]['result']);
 			if ($return) {
-				$keys = ($select != array('*') ? $select : array_diff(array_keys($this->fields[$table]), array('checksum')));
+				$keys = ($select != array('*') ? $select : $fields);
 				$return[0] = array_merge(array_fill_keys($keys, null), $return[0]);
 			}
 			return new Result($return);
