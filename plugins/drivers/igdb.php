@@ -211,12 +211,12 @@ if (isset($_GET["igdb"])) {
 					});
 				}
 			}
-			$this->tables['webhooks'] = array('Name' => 'webhooks', 'Comment' => 'Webhooks allow us to push data to you when it is added, updated, or deleted.');
+			$this->tables['webhooks'] = array('Name' => 'webhooks', 'Comment' => 'Webhooks allow us to push data to you when it is added, updated, or deleted');
 			$this->links['webhooks'] = 'webhooks';
 			$this->fields['webhooks'] = array(
 				'endpoint' => array(
 					'full_type' => 'String',
-					'comment' => 'Specify what type of data you want from your webhook.',
+					'comment' => 'Specify what type of data you want from your webhook',
 					'privileges' => array('insert' => 1),
 				),
 				'id' => array('comment' => 'A unique ID for the webhook'),
@@ -256,11 +256,12 @@ if (isset($_GET["igdb"])) {
 			foreach ($where as $i => $val) {
 				$where[$i] = str_replace(' OR ', ' | ', $val);
 			}
-			$fields = array_keys($this->fields[$table]);
-			$common = ($where ? "where " . implode(" & ", $where) . ";" : "");
+			$columns = ($select != array('*') ? $select : array_keys($this->fields[$table]));
+			$common = ($where ? "\nwhere " . implode(" & ", $where) . ";" : "");
 			if ($table != 'webhooks') {
-				$query .= "fields " . implode(",", $select == array('*') ? $fields : $select) . ";"
-					. ($where ? "\n$common" : "")
+				$query .= "fields " . implode(",", $select) . ";"
+					. ($select == array('*') ? "\nexclude checksum;" : "")
+					. $common
 					. ($order ? "\nsort " . strtolower(implode(",", $order)) . ";" : "")
 					. "\nlimit $limit;"
 					. ($page ? "\noffset " . ($page * $limit) . ";" : "")
@@ -269,9 +270,10 @@ if (isset($_GET["igdb"])) {
 			$start = microtime(true);
 			$multi = (!$search && $table != 'webhooks' && array_key_exists($table, driver()->tables));
 			$method = ($table == 'webhooks' ? 'GET' : 'POST');
+			$realQuery = str_replace("*;\nexclude checksum", implode(',', $columns), $query); // exclude deprecated columns
 			$return = ($multi
-				? $this->conn->request('multiquery', "query $table \"result\" { $query };\nquery $table/count \"count\" { $common };")
-				: $this->conn->request($table, $query, $method)
+				? $this->conn->request('multiquery', "query $table \"result\" { $realQuery };\nquery $table/count \"count\" { $common };")
+				: $this->conn->request($table, $realQuery, $method)
 			);
 			if ($print) {
 				echo adminer()->selectQuery("$method $table;\n$query", $start);
@@ -282,8 +284,7 @@ if (isset($_GET["igdb"])) {
 			$this->foundRows = ($multi ? $return[1]['count'] : null);
 			$return = ($multi ? $return[0]['result'] : $return);
 			if ($return && $table != 'webhooks') {
-				$keys = ($select != array('*') ? $select : $fields);
-				$return[0] = array_merge(array_fill_keys($keys, null), $return[0]);
+				$return[0] = array_merge(array_fill_keys($columns, null), $return[0]);
 			}
 			return new Result($return);
 		}
