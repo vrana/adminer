@@ -57,7 +57,7 @@ if (!$error && $_POST) {
 		}
 
 		$space = "(?:\\s|/\\*[\s\S]*?\\*/|(?:#|$line_comment)[^\n]*\n?|--\r?\n)";
-		$delimiter = ";";
+		$delimiter = driver()->delimiter;
 		$offset = 0;
 		$empty = true;
 		$connection2 = connect(); // connection for exploring indexes and EXPLAIN (to not replace FOUND_ROWS()) //! PDO - silent error
