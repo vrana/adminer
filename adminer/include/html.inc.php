@@ -216,8 +216,11 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
 	if (is_array($value) && !$function) {
-		$value = json_encode($value, 128 | 64 | 256); // 128 - JSON_PRETTY_PRINT, 64 - JSON_UNESCAPED_SLASHES, 256 - JSON_UNESCAPED_UNICODE available since PHP 5.4
 		$function = "json";
+	}
+	$json = ($function == "json" || preg_match('~^jsonb?$~', $field["type"]));
+	if ($json && $value != '' && (JUSH != "pgsql" || $field["type"] != "json")) {
+		$value = json_encode(is_array($value) ? $value : json_decode($value), 128 | 64 | 256); // 128 - JSON_PRETTY_PRINT, 64 - JSON_UNESCAPED_SLASHES, 256 - JSON_UNESCAPED_UNICODE available since PHP 5.4
 	}
 	$reset = (JUSH == "mssql" && $field["auto_increment"]);
 	if ($reset && !$_POST["save"]) {
@@ -253,11 +256,8 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 			echo enum_input("checkbox", $attrs, $field, (is_string($value) ? explode(",", $value) : $value));
 		} elseif (is_blob($field) && ini_bool("file_uploads")) {
 			echo "<input type='file' name='fields-$name'>";
-		} elseif ($function == "json" || preg_match('~^jsonb?$~', $field["type"])) {
-			echo "<textarea$attrs cols='50' rows='12' class='jush-js'>" . h($value == '' || (JUSH == "pgsql" && $field["type"] == "json")
-				? $value
-				: json_encode(json_decode($value), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE))
-				. '</textarea>';
+		} elseif ($json) {
+			echo "<textarea$attrs cols='50' rows='12' class='jush-js'>" . h($value) . '</textarea>';
 		} elseif (($text = preg_match('~text|lob|memo~i', $field["type"])) || preg_match("~\n~", $value)) {
 			if ($text && JUSH != "sqlite") {
 				$attrs .= " cols='50' rows='12'";
