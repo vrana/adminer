@@ -475,7 +475,7 @@ function queries(string $query) {
 	if (!Queries::$start) {
 		Queries::$start = microtime(true);
 	}
-	Queries::$queries[] = (preg_match('~;$~', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query) . ";";
+	Queries::$queries[] = (driver()->delimiter != ';' ? $query : (preg_match('~;$~', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query) . ";");
 	return connection()->query($query);
 }
 

@@ -31,7 +31,7 @@ if (isset($_GET["igdb"])) {
 
 		function request($endpoint, $query, $method = 'POST') {
 			$context = stream_context_create(array('http' => array(
-				'method' => (preg_match('~^webhooks~', $endpoint) && $method == 'POST' ? 'GET' : $method), // check for 'webhooks' is here to support it in SQL query
+				'method' => $method,
 				'header' => array(
 					"Content-Type: text/plain",
 					"Client-ID: $this->username",
@@ -64,9 +64,9 @@ if (isset($_GET["igdb"])) {
 					: ''
 				)))));
 			}
-			if (preg_match('~^\s*endpoint\s+([\w/?=]+)\s*;\s*(.*)$~s', $query, $match)) {
-				$endpoint = $match[1];
-				$response = $this->request($endpoint, $match[2]);
+			if (preg_match('~^\s*(GET|POST|DELETE)\s+([\w/?=]+)\s*;\s*(.*)$~s', $query, $match)) {
+				$endpoint = $match[2];
+				$response = $this->request($endpoint, $match[3], $match[1]);
 				if ($response === false) {
 					return $response;
 				}
@@ -77,7 +77,7 @@ if (isset($_GET["igdb"])) {
 				}
 				return $return;
 			}
-			$this->error = "Syntax:<br>endpoint &lt;endpoint>; fields ...;";
+			$this->error = "Syntax:<br>POST &lt;endpoint>; fields ...;";
 			return false;
 		}
 
@@ -268,12 +268,13 @@ if (isset($_GET["igdb"])) {
 			}
 			$start = microtime(true);
 			$multi = (!$search && $table != 'webhooks' && array_key_exists($table, driver()->tables));
+			$method = ($table == 'webhooks' ? 'GET' : 'POST');
 			$return = ($multi
 				? $this->conn->request('multiquery', "query $table \"result\" { $query };\nquery $table/count \"count\" { $common };")
-				: $this->conn->request($table, $query)
+				: $this->conn->request($table, $query, $method)
 			);
 			if ($print) {
-				echo adminer()->selectQuery("endpoint $table;\n$query", $start);
+				echo adminer()->selectQuery("$method $table;\n$query", $start);
 			}
 			if ($return === false) {
 				return $return;
@@ -294,19 +295,19 @@ if (isset($_GET["igdb"])) {
 					$content[] = urlencode($key) . '=' . urlencode($val);
 				}
 			}
-			$return = $this->conn->request("$set[endpoint]/$table", implode('&', $content));
-			return !$return ? $return : new Result($return);
+			return queries("POST $set[endpoint]/$table; " . implode('&', $content));
 		}
 
 		function delete($table, $queryWhere, $limit = 0) {
 			preg_match_all('~\bid = (\d+)~', $queryWhere, $matches);
 			$this->conn->affected_rows = 0;
 			foreach ($matches[1] as $id) {
-				$response = $this->conn->request("$table/$id", '', 'DELETE');
-				if (!$response) {
+				$result = queries("DELETE $table/$id;");
+				if (!$result) {
 					return false;
 				}
-				if (!$response[0]) {
+				$row = $result->fetch_row();
+				if (!$row[0]) {
 					$this->conn->error = "ID $id not found.";
 					return false;
 				}
