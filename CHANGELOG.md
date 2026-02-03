@@ -3,6 +3,7 @@
 - Support multiline generated values in alter table
 - Link //domain.tld values
 - Improve print of nested tables
+- Hide sort links on unsortable columns
 - PostgreSQL: Offer foreign keys in create table
 - PostgreSQL: Add missing parentheses to CHECK export
 - PostgreSQL: Allow creating NOT DEFERRABLE foreign keys
