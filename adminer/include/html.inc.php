@@ -311,8 +311,8 @@ function process_input(array $field) {
 	$function = idx($_POST["function"], $idf);
 	$value = idx($_POST["fields"], $idf);
 	if ($field["type"] == "enum" || driver()->enumLength($field)) {
-		$value = $value[0];
-		if ($value == "orig") {
+		$value = idx($value, 0);
+		if ($value == "orig" || !$value) {
 			return false;
 		}
 		if ($value == "null") {
