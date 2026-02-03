@@ -32,7 +32,7 @@ class Plugins {
 				}
 			}
 			foreach (get_declared_classes() as $class) {
-				if (!$plugins[$class] && preg_match('~^Adminer\w~i', $class)) {
+				if (!$plugins[$class] && (preg_match('~^Adminer\w~i', $class) || is_subclass_of($class, 'Adminer\Plugin'))) {
 					// we need to use reflection because PHP 7.1 throws ArgumentCountError for missing arguments but older versions issue a warning
 					$reflection = new \ReflectionClass($class);
 					$constructor = $reflection->getConstructor();

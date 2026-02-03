@@ -15,6 +15,7 @@
 - ClickHouse: Fix offset (bug #1188)
 - ClickHouse: Fix list of tables (bug #1176)
 - Plugins: Methods showVariables() and showStatus() (bug #1157)
+- Plugins: Allow to be in any namespace
 - New plugin: IGDB driver
 
 ## Adminer 5.4.1 (released 2025-09-26)
