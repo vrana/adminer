@@ -29,9 +29,9 @@ if (isset($_GET["igdb"])) {
 			return ($database == "api");
 		}
 
-		function request($endpoint, $query) {
+		function request($endpoint, $query, $method = 'POST') {
 			$context = stream_context_create(array('http' => array(
-				'method' => 'POST',
+				'method' => (preg_match('~^webhooks~', $endpoint) && $method == 'POST' ? 'GET' : $method), // check for 'webhooks' is here to support it in SQL query
 				'header' => array(
 					"Content-Type: text/plain",
 					"Client-ID: $this->username",
@@ -50,7 +50,7 @@ if (isset($_GET["igdb"])) {
 						}
 					}
 				} else {
-					$this->error = h($response);
+					$this->error = htmlspecialchars(strip_tags($response), 0, null, false);
 				}
 				return false;
 			}
@@ -64,20 +64,20 @@ if (isset($_GET["igdb"])) {
 					: ''
 				)))));
 			}
-			if (preg_match('~^\s*endpoint\s+(\w+(/count)?)\s*;\s*(.*)$~s', $query, $match)) {
+			if (preg_match('~^\s*endpoint\s+([\w/?=]+)\s*;\s*(.*)$~s', $query, $match)) {
 				$endpoint = $match[1];
-				$response = $this->request($endpoint, $match[3]);
+				$response = $this->request($endpoint, $match[2]);
 				if ($response === false) {
 					return $response;
 				}
-				$return = new Result($match[2] ? array($response) : $response);
+				$return = new Result(is_array($response[0]) ? $response : array($response));
 				$return->table = $endpoint;
 				if ($endpoint == 'multiquery') {
 					$return->results = $response;
 				}
 				return $return;
 			}
-			$this->error = "Syntax:<br>DELIMITER ;;<br>endpoint &lt;endpoint>; fields ...;";
+			$this->error = "Syntax:<br>endpoint &lt;endpoint>; fields ...;";
 			return false;
 		}
 
@@ -146,6 +146,7 @@ if (isset($_GET["igdb"])) {
 		static $jush = "igdb";
 		private static $docsFilename = __DIR__ . DIRECTORY_SEPARATOR . 'igdb-api.html';
 
+		public $delimiter = ";;";
 		public $operators = array("=", "<", ">", "<=", ">=", "!=", "~");
 
 		public $tables = array();
@@ -181,10 +182,7 @@ if (isset($_GET["igdb"])) {
 					}
 					$this->fields[$table]['id'] = array('full_type' => 'bigserial', 'comment' => '');
 					$this->links[$link] = $table;
-					$this->tables[$table] = array(
-						'Name' => $table,
-						'Comment' => $comment,
-					);
+					$this->tables[$table] = array('Name' => $table, 'Comment' => $comment);
 					foreach ($xpath->query('tbody/tr', $els[$i+2]) as $tr) {
 						$tds = $xpath->query('td', $tr);
 						$field = $tds[0]->nodeValue;
@@ -213,6 +211,39 @@ if (isset($_GET["igdb"])) {
 					});
 				}
 			}
+			$this->tables['webhooks'] = array('Name' => 'webhooks', 'Comment' => 'Webhooks allow us to push data to you when it is added, updated, or deleted.');
+			$this->links['webhooks'] = 'webhooks';
+			$this->fields['webhooks'] = array(
+				'endpoint' => array(
+					'full_type' => 'String',
+					'comment' => 'Specify what type of data you want from your webhook.',
+					'privileges' => array('insert' => 1),
+				),
+				'id' => array('comment' => 'A unique ID for the webhook'),
+				'url' => array(
+					'full_type' => 'String',
+					'length' => '100',
+					'comment' => 'Your prepared url that is ready to accept data from us',
+					'privileges' => array('select' => 1, 'insert' => 1),
+				),
+				'method' => array(
+					'full_type' => 'enum',
+					'length' => "('create','delete','update')",
+					'comment' => 'The type of data you are expecting to your url, there are three types of methods',
+					'privileges' => array('insert' => 1),
+				),
+				'category' => array('comment' => 'Based on the endpoint you chose'),
+				'sub_category' => array('comment' => 'Based on your method (can be 0, 1, 2)'),
+				'active' => array('comment' => 'Is the webhook currently active'),
+				'api_key' => array('comment' => 'Displays the api key the webhook is connected to'),
+				'secret' => array(
+					'full_type' => 'String',
+					'comment' => 'Your “secret” password for your webhook',
+					'privileges' => array('select' => 1, 'insert' => 1),
+				),
+				'created_at' => array('comment' => 'Created at date'),
+				'updated_at' => array('comment' => 'Updated at date'),
+			);
 		}
 
 		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
@@ -227,30 +258,61 @@ if (isset($_GET["igdb"])) {
 			}
 			$fields = array_keys($this->fields[$table]);
 			$common = ($where ? "where " . implode(" & ", $where) . ";" : "");
-			$query .= "fields " . implode(",", $select == array('*') ? $fields : $select) . ";"
-				. ($where ? "\n$common" : "")
-				. ($order ? "\nsort " . strtolower(implode(",", $order)) . ";" : "")
-				. "\nlimit $limit;"
-				. ($page ? "\noffset " . ($page * $limit) . ";" : "")
-			;
+			if ($table != 'webhooks') {
+				$query .= "fields " . implode(",", $select == array('*') ? $fields : $select) . ";"
+					. ($where ? "\n$common" : "")
+					. ($order ? "\nsort " . strtolower(implode(",", $order)) . ";" : "")
+					. "\nlimit $limit;"
+					. ($page ? "\noffset " . ($page * $limit) . ";" : "")
+				;
+			}
 			$start = microtime(true);
-			$return = ($search || !array_key_exists($table, driver()->tables)
-				? $this->conn->request($table, $query)
-				: $this->conn->request('multiquery', "query $table \"result\" { $query };\nquery $table/count \"count\" { $common };")
+			$multi = (!$search && $table != 'webhooks' && array_key_exists($table, driver()->tables));
+			$return = ($multi
+				? $this->conn->request('multiquery', "query $table \"result\" { $query };\nquery $table/count \"count\" { $common };")
+				: $this->conn->request($table, $query)
 			);
 			if ($print) {
-				echo adminer()->selectQuery("DELIMITER ;;\nendpoint $table;\n$query", $start);
+				echo adminer()->selectQuery("endpoint $table;\n$query", $start);
 			}
 			if ($return === false) {
 				return $return;
 			}
-			$this->foundRows = ($search ? null : $return[1]['count']);
-			$return = ($search ? $return : $return[0]['result']);
-			if ($return) {
+			$this->foundRows = ($multi ? $return[1]['count'] : null);
+			$return = ($multi ? $return[0]['result'] : $return);
+			if ($return && $table != 'webhooks') {
 				$keys = ($select != array('*') ? $select : $fields);
 				$return[0] = array_merge(array_fill_keys($keys, null), $return[0]);
 			}
 			return new Result($return);
+		}
+
+		function insert($table, $set) {
+			$content = array();
+			foreach ($set as $key => $val) {
+				if ($key != 'endpoint') {
+					$content[] = urlencode($key) . '=' . urlencode($val);
+				}
+			}
+			$return = $this->conn->request("$set[endpoint]/$table", implode('&', $content));
+			return !$return ? $return : new Result($return);
+		}
+
+		function delete($table, $queryWhere, $limit = 0) {
+			preg_match_all('~\bid = (\d+)~', $queryWhere, $matches);
+			$this->conn->affected_rows = 0;
+			foreach ($matches[1] as $id) {
+				$response = $this->conn->request("$table/$id", '', 'DELETE');
+				if (!$response) {
+					return false;
+				}
+				if (!$response[0]) {
+					$this->conn->error = "ID $id not found.";
+					return false;
+				}
+				$this->conn->affected_rows++;
+			}
+			return true;
 		}
 
 		function value($val, $field): ?string {
@@ -293,8 +355,8 @@ if (isset($_GET["igdb"])) {
 		foreach (driver()->fields[$table] ?: array() as $key => $val) {
 			$return[$key] = $val + array(
 				"field" => $key,
-				"type" => (preg_match('~^int|bool~i', $val['full_type']) ? $val['full_type'] : 'varchar'), // shorten reference columns
-				"privileges" => array("select" => 1, "update" => 1, "where" => 1, "order" => 1),
+				"type" => (preg_match('~^int|bool|enum~i', $val['full_type']) ? $val['full_type'] : 'varchar'), // shorten reference columns
+				"privileges" => array("select" => 1) + ($table == 'webhooks' ? array() : array("where" => 1, "order" => 1)),
 			);
 		}
 		return $return;
@@ -358,6 +420,11 @@ if (isset($_GET["igdb"])) {
 
 	function fk_support($table_status) {
 		return true;
+	}
+
+	function last_id($result): string {
+		$row = $result->fetch_assoc();
+		return (string) $row['id'];
 	}
 
 	function support($feature) {
