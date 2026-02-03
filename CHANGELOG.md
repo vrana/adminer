@@ -4,6 +4,7 @@
 - Link //domain.tld values
 - Improve print of nested tables
 - Hide sort links on unsortable columns
+- Display uneditable fields in edit form
 - PostgreSQL: Offer foreign keys in create table
 - PostgreSQL: Add missing parentheses to CHECK export
 - PostgreSQL: Allow creating NOT DEFERRABLE foreign keys

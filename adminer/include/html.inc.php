@@ -232,8 +232,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 		$field["type"] = "enum";
 		$field["length"] = $enums;
 	}
-	$disabled = stripos($field["default"], "GENERATED ALWAYS AS ") === 0 ? " disabled" : "";
-	$attrs = " name='fields[$name]" . ($field["type"] == "enum" || $field["type"] == "set" ? "[]" : "") . "'$disabled" . ($autofocus ? " autofocus" : "");
+	$attrs = " name='fields[$name]" . ($field["type"] == "enum" || $field["type"] == "set" ? "[]" : "") . "'" . ($autofocus ? " autofocus" : "");
 	echo driver()->unconvertFunction($field) . " ";
 	$table = $_GET["edit"] ?: $_GET["select"];
 	if ($field["type"] == "enum") {
@@ -241,7 +240,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 	} else {
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
-			? "<select name='function[$name]'$disabled>" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
+			? "<select name='function[$name]'>" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
 				. on_help("event.target.value.replace(/^SQL\$/, '')", 1)
 				. script("qsl('select').onchange = functionChange;", "")
 			: h(reset($functions))
@@ -304,12 +303,12 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 * @return mixed false to leave the original value
 */
 function process_input(array $field) {
-	if (stripos($field["default"], "GENERATED ALWAYS AS ") === 0) {
-		return;
-	}
 	$idf = bracket_escape($field["field"]);
 	$function = idx($_POST["function"], $idf);
 	$value = idx($_POST["fields"], $idf);
+	if ($value === null) {
+		return false;
+	}
 	if ($field["type"] == "enum" || driver()->enumLength($field)) {
 		$value = idx($value, 0);
 		if ($value == "orig" || !$value) {
@@ -427,30 +426,34 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 			if (!$_POST["save"] && is_string($value)) {
 				$value = adminer()->editVal($value, $field);
 			}
-			$function = ($_POST["save"]
-				? idx($_POST["function"], $name, "")
-				: ($update && preg_match('~^CURRENT_TIMESTAMP~i', $field["on_update"])
-					? "now"
-					: ($value === false ? null : ($value !== null ? '' : 'NULL'))
-				)
-			);
-			if (!$_POST && !$update && $value == $field["default"] && preg_match('~^[\w.]+\(~', $value)) {
-				$function = "SQL";
-			}
-			if (preg_match("~time~", $field["type"]) && preg_match('~^CURRENT_TIMESTAMP~i', $value)) {
-				$value = "";
-				$function = "now";
-			}
-			if ($field["type"] == "uuid" && $value == "uuid()") {
-				$value = "";
-				$function = "uuid";
-			}
-			if ($autofocus !== false) {
-				$autofocus = ($field["auto_increment"] || $function == "now" || $function == "uuid" ? null : true); // null - don't autofocus this input but check the next one
-			}
-			input($field, $value, $function, $autofocus);
-			if ($autofocus) {
-				$autofocus = false;
+			if (($update && !isset($field["privileges"]["update"])) || $field["generated"]) {
+				echo "<td class='function'><td>" . select_value($value, '', $field, null);
+			} else {
+				$function = ($_POST["save"]
+					? idx($_POST["function"], $name, "")
+					: ($update && preg_match('~^CURRENT_TIMESTAMP~i', $field["on_update"])
+						? "now"
+						: ($value === false ? null : ($value !== null ? '' : 'NULL'))
+					)
+				);
+				if (!$_POST && !$update && $value == $field["default"] && preg_match('~^[\w.]+\(~', $value)) {
+					$function = "SQL";
+				}
+				if (preg_match("~time~", $field["type"]) && preg_match('~^CURRENT_TIMESTAMP~i', $value)) {
+					$value = "";
+					$function = "now";
+				}
+				if ($field["type"] == "uuid" && $value == "uuid()") {
+					$value = "";
+					$function = "uuid";
+				}
+				if ($autofocus !== false) {
+					$autofocus = ($field["auto_increment"] || $function == "now" || $function == "uuid" ? null : true); // null - don't autofocus this input but check the next one
+				}
+				input($field, $value, $function, $autofocus);
+				if ($autofocus) {
+					$autofocus = false;
+				}
 			}
 			echo "\n";
 		}
