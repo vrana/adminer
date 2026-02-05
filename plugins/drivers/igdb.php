@@ -180,7 +180,7 @@ if (isset($_GET["igdb"])) {
 					if (preg_match('~^DEPRECATED!~', $comment)) {
 						continue;
 					}
-					$this->fields[$table]['id'] = array('full_type' => 'bigserial', 'comment' => '');
+					$this->fields[$table]['id'] = array('full_type' => 'bigint', 'comment' => '');
 					$this->links[$link] = $table;
 					$this->tables[$table] = array('Name' => $table, 'Comment' => $comment);
 					foreach ($xpath->query('tbody/tr', $els[$i+2]) as $tr) {
@@ -355,9 +355,10 @@ if (isset($_GET["igdb"])) {
 	function fields($table) {
 		$return = array();
 		foreach (driver()->fields[$table] ?: array() as $key => $val) {
+			$type = strtolower(preg_replace('~ .*~', '', $val['full_type']));
 			$return[$key] = $val + array(
 				"field" => $key,
-				"type" => (preg_match('~^int|bool|enum~i', $val['full_type']) ? $val['full_type'] : 'varchar'), // shorten reference columns
+				"type" => ($type == 'reference' ? 'int' : $type), // align right reference columns
 				"privileges" => array("select" => 1) + ($table == 'webhooks' ? array() : array("where" => 1, "order" => 1)),
 			);
 		}

@@ -846,7 +846,7 @@ function is_url(?string $string): bool {
 * @param array{type: string} $field
 */
 function is_shortable(array $field): bool {
-	return preg_match('~char|text|json|lob|geometry|point|linestring|polygon|string|bytea|hstore~', $field["type"]);
+	return !preg_match('~' . number_type() . '|date|time|year~', $field["type"]);
 }
 
 /** Split server into host and (port or socket)
