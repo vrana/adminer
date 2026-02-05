@@ -191,7 +191,7 @@ abstract class SqlDriver {
 	}
 
 	/** Convert value returned by database to actual value
-	* @param Field $field
+	* @param array{type: string} $field
 	*/
 	function value(?string $val, array $field): ?string {
 		return (method_exists($this->conn, 'value') ? $this->conn->value($val, $field) : $val);
