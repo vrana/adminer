@@ -177,7 +177,7 @@ if (!defined('Adminer\DRIVER')) {
 				}
 				list($host, $port) = host_port($server);
 				return $this->dsn(
-					"mysql:charset=utf8;host=$host" . ($port ? (is_numeric($port) ? ";port=" : ";unix_socket=") . $port : ""),
+					"mysql:charset=utf8".(!empty($host) ? ";host=$host" : '') . ($port ? (is_numeric($port) ? ";port=" : ";unix_socket=") . $port : ""),
 					$username,
 					$password,
 					$options
