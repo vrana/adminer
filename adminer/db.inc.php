@@ -138,21 +138,20 @@ if (adminer()->homepage()) {
 			echo script("ajaxSetHtml('" . js_escape(ME) . "script=db');");
 			echo "</div>\n";
 			if (!information_schema(DB)) {
-				echo "<div class='footer'><div>\n";
 				$vacuum = "<input type='submit' value='" . lang('Vacuum') . "'> " . on_help("'VACUUM'");
 				$optimize = "<input type='submit' name='optimize' value='" . lang('Optimize') . "'> " . on_help(JUSH == "sql" ? "'OPTIMIZE TABLE'" : "'VACUUM OPTIMIZE'");
-				echo "<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>"
-				. (JUSH == "sqlite" ? $vacuum . "<input type='submit' name='check' value='" . lang('Check') . "'> " . on_help("'PRAGMA integrity_check'")
+				$print = (JUSH == "sqlite" ? $vacuum . "<input type='submit' name='check' value='" . lang('Check') . "'> " . on_help("'PRAGMA integrity_check'")
 				: (JUSH == "pgsql" ? $vacuum . $optimize
 				: (JUSH == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'> " . on_help("'ANALYZE TABLE'")
 					. $optimize
 					. "<input type='submit' name='check' value='" . lang('Check') . "'> " . on_help("'CHECK TABLE'")
 					. "<input type='submit' name='repair' value='" . lang('Repair') . "'> " . on_help("'REPAIR TABLE'")
 				: "")))
-				. "<input type='submit' name='truncate' value='" . lang('Truncate') . "'> " . on_help(JUSH == "sqlite" ? "'DELETE'" : "'TRUNCATE" . (JUSH == "pgsql" ? "'" : " TABLE'")) . confirm()
-				. "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . on_help("'DROP TABLE'") . confirm() . "\n";
+				. (function_exists('Adminer\truncate_tables') ? "<input type='submit' name='truncate' value='" . lang('Truncate') . "'> " . on_help(JUSH == "sqlite" ? "'DELETE'" : "'TRUNCATE" . (JUSH == "pgsql" ? "'" : " TABLE'")) . confirm() : "")
+				. (function_exists('Adminer\drop_tables') ? "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . on_help("'DROP TABLE'") . confirm() : "");
+				echo ($print ? "<div class='footer'><div>\n<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>$print\n</div></fieldset>\n" : "");
+
 				$databases = (support("scheme") ? adminer()->schemas() : adminer()->databases());
-				echo "</div></fieldset>\n";
 				$script = "";
 				if (count($databases) != 1 && JUSH != "sqlite") {
 					echo "<fieldset><legend>" . lang('Move to other database') . " <span id='selected3'></span></legend><div>";
