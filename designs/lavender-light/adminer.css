@@ -185,7 +185,7 @@ table#table thead .checked th {
     padding: 3rem 0 1.5rem;
 }
 
-#menu p, #logins, #tables {
+#menu p, #tables {
     padding: .8em 0em 1.2rem;
 }
 
@@ -235,6 +235,14 @@ table#table thead .checked th {
 
 #logins a, #tables a, #tables span {
     background: initial;
+}
+
+#logins ul {
+	padding: 3rem 0 1rem;	
+}
+
+#logins ul li {
+  	margin-bottom: .5rem;
 }
 
 /*
