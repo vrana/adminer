@@ -6,6 +6,7 @@
 - Hide sort links on unsortable columns
 - Display uneditable fields in edit form
 - Shorten all but numeric and date types in select
+- Fix escaping spaces in cookie value (bug #1208)
 - PostgreSQL: Offer foreign keys in create table
 - PostgreSQL: Add missing parentheses to CHECK export
 - PostgreSQL: Allow creating NOT DEFERRABLE foreign keys
