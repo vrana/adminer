@@ -215,14 +215,14 @@ abstract class SqlDriver {
 	}
 
 	/** Get tables this table inherits from
-	* @return list<string>
+	* @return list<array{table: string, ns: string}>
 	*/
 	function inheritsFrom(string $table): array {
 		return array();
 	}
 
 	/** Get inherited tables
-	* @return list<string>
+	* @return list<array{table: string, ns: string}>
 	*/
 	function inheritedTables(string $table): array {
 		return array();
