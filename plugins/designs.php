@@ -16,7 +16,7 @@ class AdminerDesigns extends Adminer\Plugin {
 		$this->designs = $designs;
 	}
 
-	function headers() {
+	function afterConnect() {
 		if (isset($_POST["design"]) && Adminer\verify_token()) {
 			Adminer\restart_session();
 			$_SESSION["design"] = $_POST["design"];
