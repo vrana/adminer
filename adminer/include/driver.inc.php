@@ -271,8 +271,8 @@ abstract class SqlDriver {
 FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS c
 JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS t ON c.CONSTRAINT_SCHEMA = t.CONSTRAINT_SCHEMA AND c.CONSTRAINT_NAME = t.CONSTRAINT_NAME" . ($this->conn->flavor == 'maria' ? " AND c.TABLE_NAME = t.TABLE_NAME" : "") . "
 WHERE c.CONSTRAINT_SCHEMA = " . q($_GET["ns"] != "" ? $_GET["ns"] : DB) . "
-AND t.TABLE_NAME = " . q($table) . "
-AND CHECK_CLAUSE NOT LIKE '% IS NOT NULL'", $this->conn); // ignore default IS NOT NULL checks in PostrgreSQL
+AND t.TABLE_NAME = " . q($table) . (JUSH == "pgsql" ? "
+AND CHECK_CLAUSE NOT LIKE '% IS NOT NULL'" : ""), $this->conn); // ignore default IS NOT NULL checks in PostrgreSQL
 	}
 
 	/** Get all fields in the current schema
