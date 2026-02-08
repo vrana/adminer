@@ -29,16 +29,6 @@ if (isset($_GET["file"])) {
 	include "../adminer/file.inc.php";
 }
 
-if ($_GET["script"] == "version") {
-	$filename = get_temp_dir() . "/adminer.version";
-	@unlink($filename); // it may not be writable by us, @ - it may not exist
-	$fp = file_open_lock($filename);
-	if ($fp) {
-		file_write_unlock($fp, serialize(array("signature" => $_POST["signature"], "version" => $_POST["version"])));
-	}
-	exit;
-}
-
 // Adminer doesn't use any global variables; they used to be declared here
 
 if (!$_SERVER["REQUEST_URI"]) { // IIS 5 compatibility

@@ -11,13 +11,12 @@ class AdminerVersionGithub extends Adminer\Plugin {
 	function head($dark = null) {
 		?>
 <script <?php echo Adminer\nonce(); ?>>
-verifyVersion = (current, url, token) => {
+verifyVersion = current => {
 	// dummy value to prevent repeated verifications after AJAX failure
 	cookie('adminer_version=0', 1);
 	ajax('https://api.github.com/repos/vrana/adminer/releases/latest', request => {
 		const response = JSON.parse(request.responseText);
 		const version = response.tag_name.replace(/^v/, '');
-		// we don't save to adminer.version because the response is not signed; also GitHub can handle our volume of requests
 		// we don't display the version here because we don't have version_compare(); design.inc.php will display it on the next load
 		cookie('adminer_version=' + version, 1);
 	}, null, null);

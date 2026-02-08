@@ -1,4 +1,5 @@
 ## Adminer dev
+- Avoid denial-of-service via version check (GHSA-q4f2-39gr-45jh, regression from 4.6.2)
 - Pretty print JSON in edit
 - Support multiline generated values in alter table
 - Link //domain.tld values
