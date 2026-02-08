@@ -15,14 +15,17 @@ if (isset($_GET["clickhouse"])) {
 			function rootQuery($db, $query) {
 				$file = @file_get_contents("$this->url/?database=$db", false, stream_context_create(array('http' => array(
 					'method' => 'POST',
-					'content' => $this->isQuerySelectLike($query) ? "$query FORMAT JSONCompact" : $query,
-					'header' => 'Content-type: application/x-www-form-urlencoded',
+					'content' => $query,
+					'header' => array(
+						'Content-Type: application/x-www-form-urlencoded',
+						'X-ClickHouse-Format: JSONCompact',
+					),
 					'ignore_errors' => 1,
 					'follow_location' => 0,
 					'max_redirects' => 0,
 				))));
 
-				if ($file === false || !preg_match('~^HTTP/[0-9.]+ 2~i', $http_response_header[0])) {
+				if ($file === false || preg_match('~^HTTP/[0-9.]+ 403~i', $http_response_header[0])) {
 					$this->error = lang('Invalid credentials.');
 					return false;
 				}
@@ -45,11 +48,18 @@ if (isset($_GET["clickhouse"])) {
 						}
 					}
 				}
+				// 400 == Syntax error
+				// 404 == Unknown expression identifier
+				// 500 == Column 'x' is not under aggregate function and not in GROUP BY keys
+				if (preg_match('~^HTTP/[0-9.]+ [45]~i', $http_response_header[0])) {
+					$this->error = $return['exception'];
+					return false;
+				}
 				return new Result($return);
 			}
 
 			function isQuerySelectLike($query) {
-				return (bool) preg_match('~^(select|show)~i', $query);
+				return (bool) preg_match('~^\s*(select|show|with)~i', $query);
 			}
 
 			function query($query, $unbuffered = false) {
@@ -75,7 +85,7 @@ if (isset($_GET["clickhouse"])) {
 
 		class Result {
 			public $num_rows, $columns, $meta;
-			private $rows, $offset = 0;
+			private $rows = array(), $offset = 0;
 
 			function __construct($result) {
 				foreach ($result['data'] as $item) {
