@@ -76,24 +76,19 @@ function number_type(): string {
 }
 
 /** Disable magic_quotes_gpc
-* @param list<array> $process e.g. [&$_GET, &$_POST, &$_COOKIE]
+* @param mixed[] $values
 * @param bool $filter whether to leave values as is
-* @return void modified in place
+* @return mixed[]
 */
-function remove_slashes(array $process, bool $filter = false): void {
-	if (function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc()) {
-		while (list($key, $val) = each($process)) {
-			foreach ($val as $k => $v) {
-				unset($process[$key][$k]);
-				if (is_array($v)) {
-					$process[$key][stripslashes($k)] = $v;
-					$process[] = &$process[$key][stripslashes($k)];
-				} else {
-					$process[$key][stripslashes($k)] = ($filter ? $v : stripslashes($v));
-				}
-			}
-		}
+function remove_slashes(array $values, bool $filter = false): array {
+	$return = array();
+	foreach ($values as $key => $val) {
+		$return[stripslashes($key)] = (is_array($val)
+			? remove_slashes($val, $filter)
+			: ($filter ? $val : stripslashes($val))
+		);
 	}
+	return $return;
 }
 
 /** Escape or unescape string to use inside form [] */

@@ -61,7 +61,11 @@ if (!defined("SID")) {
 }
 
 // disable magic quotes to be able to use database escaping function
-remove_slashes(array(&$_GET, &$_POST, &$_COOKIE), $filter);
+if (function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc()) {
+	$_GET = remove_slashes($_GET, $filter);
+	$_POST = remove_slashes($_POST, $filter);
+	$_COOKIE = remove_slashes($_COOKIE, $filter);
+}
 if (function_exists("get_magic_quotes_runtime") && get_magic_quotes_runtime()) {
 	set_magic_quotes_runtime(false);
 }
