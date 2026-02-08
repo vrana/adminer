@@ -17,12 +17,12 @@ class Plugins {
 			$basename = "adminer-plugins";
 			if (is_dir($basename)) {
 				foreach (glob("$basename/*.php") as $filename) {
-					$include = include_once "./$filename";
+					$include = $this->includeOnce($filename);
 				}
 			}
 			$help = " href='https://www.adminer.org/plugins/#use'" . target_blank();
 			if (file_exists("$basename.php")) {
-				$include = include_once "./$basename.php"; // example: return array(new AdminerLoginOtp($secret))
+				$include = $this->includeOnce("$basename.php"); // example: return array(new AdminerLoginOtp($secret));
 				if (is_array($include)) {
 					foreach ($include as $plugin) {
 						$plugins[get_class($plugin)] = $plugin;
@@ -57,6 +57,11 @@ class Plugins {
 				}
 			}
 		}
+	}
+
+	// separate function to not overwrite local variables
+	function includeOnce($filename) {
+		return include_once "./$filename";
 	}
 
 	/**
