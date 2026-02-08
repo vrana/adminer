@@ -9,16 +9,16 @@
 - Shorten all but numeric and date types in select
 - Fix escaping spaces in cookie value (bug #1208)
 - Don't quote comma in TSV export (bug #1238)
-- MariaDB: don't display checks with the same name from another table (bug #1135)
+- MariaDB: Don't display checks with the same name from another table (bug #1135)
 - PostgreSQL: Offer foreign keys in create table
 - PostgreSQL: Add missing parentheses to CHECK export
 - PostgreSQL: Allow creating NOT DEFERRABLE foreign keys
 - PostgreSQL: Remove duplicate DEFERRABLE in foreign key export
-- PostgreSQL: Add schema to sequence and and view export
+- PostgreSQL: Add schema to sequence and view export
 - PostgreSQL: Fix definition of complex generated columns
 - PostgreSQL: Mark unique partial indexes as unique (bug #1172)
-- PostgreSQL: fix namespace in inheritance links (bug #1221)
-- non-PostgreSQL: display NOT NULL checks (bug #1237)
+- PostgreSQL: Fix namespace in inheritance links (bug #1221)
+- non-PostgreSQL: Display NOT NULL checks (bug #1237)
 - ClickHouse: Fix offset (bug #1188)
 - ClickHouse: Fix list of tables (bug #1176)
 - Plugins: Methods showVariables() and showStatus() (bug #1157)

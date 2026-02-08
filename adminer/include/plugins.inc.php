@@ -17,7 +17,7 @@ class Plugins {
 			$basename = "adminer-plugins";
 			if (is_dir($basename)) {
 				foreach (glob("$basename/*.php") as $filename) {
-					$include = $this->includeOnce($filename);
+					$this->includeOnce($filename);
 				}
 			}
 			$help = " href='https://www.adminer.org/plugins/#use'" . target_blank();
@@ -59,8 +59,10 @@ class Plugins {
 		}
 	}
 
-	// separate function to not overwrite local variables
-	function includeOnce($filename) {
+	/** Separate function to not overwrite local variables
+	* @return array<object>|true
+	*/
+	function includeOnce(string $filename) {
 		return include_once "./$filename";
 	}
 
