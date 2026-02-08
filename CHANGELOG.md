@@ -7,6 +7,7 @@
 - Display uneditable fields in edit form
 - Shorten all but numeric and date types in select
 - Fix escaping spaces in cookie value (bug #1208)
+- Don't quote comma in TSV export (bug #1238)
 - MariaDB: don't display checks with the same name from another table (bug #1135)
 - PostgreSQL: Offer foreign keys in create table
 - PostgreSQL: Add missing parentheses to CHECK export
