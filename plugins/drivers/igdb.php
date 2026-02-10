@@ -182,7 +182,7 @@ if (isset($_GET["igdb"])) {
 					}
 					$this->fields[$table]['id'] = array('full_type' => 'bigint', 'comment' => '');
 					$this->links[$link] = $table;
-					$this->tables[$table] = array('Name' => $table, 'Comment' => $comment);
+					$this->tables[$table] = array('Name' => $table, 'Engine' => 'endpoint', 'Comment' => $comment);
 					foreach ($xpath->query('tbody/tr', $els[$i+2]) as $tr) {
 						$tds = $xpath->query('td', $tr);
 						$field = $tds[0]->nodeValue;
@@ -211,7 +211,11 @@ if (isset($_GET["igdb"])) {
 					});
 				}
 			}
-			$this->tables['webhooks'] = array('Name' => 'webhooks', 'Comment' => 'Webhooks allow us to push data to you when it is added, updated, or deleted');
+			$this->tables['webhooks'] = array(
+				'Name' => 'webhooks',
+				'Engine' => 'webhooks',
+				'Comment' => 'Webhooks allow us to push data to you when it is added, updated, or deleted',
+			);
 			$this->links['webhooks'] = 'webhooks';
 			$this->fields['webhooks'] = array(
 				'endpoint' => array(
