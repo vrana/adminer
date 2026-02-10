@@ -1,4 +1,5 @@
 ## Adminer dev
+- Export: Remember unchecked objects (regression from 5.0.6)
 - PostgreSQL: Order NULL last
 
 ## Adminer 5.4.2 (released 2026-02-08)

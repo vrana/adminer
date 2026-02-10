@@ -4,8 +4,14 @@ namespace Adminer;
 $TABLE = $_GET["dump"];
 
 if ($_POST && !$error) {
+	$default = array("auto_increment" => '');
+	foreach (array("type", "routine", "event", "trigger") as $support) {
+		if (support($support)) {
+			$default[$support . "s"] = '';
+		}
+	}
 	save_settings(
-		array_intersect_key($_POST, array_flip(array("output", "format", "db_style", "types", "routines", "events", "table_style", "auto_increment", "triggers", "data_style"))),
+		array_intersect_key($_POST + $default, array_flip(array("output", "format", "db_style", "table_style", "data_style")) + $default),
 		"adminer_export"
 	);
 	$tables = array_flip((array) $_POST["tables"]) + array_flip((array) $_POST["data"]);
@@ -152,10 +158,6 @@ if (JUSH == "sql") { //! use insertUpdate() in all drivers
 $row = get_settings("adminer_export");
 if (!$row) {
 	$row = array("output" => "text", "format" => "sql", "db_style" => (DB != "" ? "" : "CREATE"), "table_style" => "DROP+CREATE", "data_style" => "INSERT");
-}
-if (!isset($row["events"])) { // backwards compatibility
-	$row["routines"] = $row["events"] = ($_GET["dump"] == "");
-	$row["triggers"] = $row["table_style"];
 }
 
 echo "<tr><th>" . lang('Output') . "<td>" . html_radios("output", adminer()->dumpOutput(), $row["output"]) . "\n";
