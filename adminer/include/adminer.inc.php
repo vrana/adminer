@@ -182,7 +182,7 @@ class Adminer {
 	* @return string HTML code, "" to ignore field
 	*/
 	function fieldName(array $field, int $order = 0): string {
-		$type = $field["full_type"];
+		$type = $field["full_type"] . ($field["null"] ? " NULL" : "");
 		$comment = $field["comment"];
 		return '<span title="' . h($type . ($comment != "" ? ($type ? ": " : "") . $comment : '')) . '">' . h($field["field"]) . '</span>';
 	}
