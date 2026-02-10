@@ -614,7 +614,7 @@ class Adminer {
 		foreach ((array) $_GET["order"] as $key => $val) {
 			if ($val != "") {
 				$return[] = (preg_match('~^((COUNT\(DISTINCT |[A-Z0-9_]+\()(`(?:[^`]|``)+`|"(?:[^"]|"")+")\)|COUNT\(\*\))$~', $val) ? $val : idf_escape($val)) //! MS SQL uses []
-					. (isset($_GET["desc"][$key]) ? " DESC" : "")
+					. (isset($_GET["desc"][$key]) ? " DESC" . (JUSH == 'pgsql' && idx($fields[$val], "null") ? " NULLS LAST" : "") : "")
 				;
 			}
 		}

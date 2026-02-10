@@ -1,4 +1,5 @@
 ## Adminer dev
+- PostgreSQL: Order NULL last
 
 ## Adminer 5.4.2 (released 2026-02-08)
 - Avoid denial-of-service via version check (GHSA-q4f2-39gr-45jh, regression from 4.6.2)
