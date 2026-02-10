@@ -88,7 +88,13 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function warnings() {
-				return h(pg_last_notice($this->link)); // second parameter is available since PHP 7.1.0
+				if (PHP_VERSION_ID >= 70100) {
+					$return = implode("\n", pg_last_notice($this->link, 2)); // 2 - PGSQL_NOTICE_ALL
+					pg_last_notice($this->link, 3); // 3 - PGSQL_NOTICE_CLEAR
+				} else {
+					$return = pg_last_notice($this->link);
+				}
+				return nl_br(h($return));
 			}
 
 			/** Copy from array into a table

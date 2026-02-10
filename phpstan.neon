@@ -22,6 +22,7 @@ parameters:
 		- "~expects bool~" # truthy values
 		- "~fread expects int<1, max>, 100000~" # 1e6
 		- "~'strlen' given~" # used as a bool callback
+		- "~between int<70100~" # PHP_VERSION_ID check
 
 		-
 			message: "~ type specified~" # duplicate functions and methods
