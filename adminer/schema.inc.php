@@ -103,16 +103,18 @@ foreach ($schema as $name => $table) {
 
 foreach ($schema as $name => $table) {
 	foreach ((array) $table["references"] as $target_name => $refs) {
-		foreach ($refs as $left => $ref) {
-			$min_pos = $top;
-			$max_pos = -10;
-			foreach ($ref[0] as $key => $source) {
-				$pos1 = $table["pos"][0] + $table["fields"][$source]["pos"];
-				$pos2 = $schema[$target_name]["pos"][0] + $schema[$target_name]["fields"][$ref[1][$key]]["pos"];
-				$min_pos = min($min_pos, $pos1, $pos2);
-				$max_pos = max($max_pos, $pos1, $pos2);
+		if ($schema[$target_name]) { // otherwise table in another schema
+			foreach ($refs as $left => $ref) {
+				$min_pos = $top;
+				$max_pos = -10;
+				foreach ($ref[0] as $key => $source) {
+					$pos1 = $table["pos"][0] + $table["fields"][$source]["pos"];
+					$pos2 = $schema[$target_name]["pos"][0] + $schema[$target_name]["fields"][$ref[1][$key]]["pos"];
+					$min_pos = min($min_pos, $pos1, $pos2);
+					$max_pos = max($max_pos, $pos1, $pos2);
+				}
+				echo "<div class='references' id='refl$left' style='left: $left" . "em; top: $min_pos" . "em; padding: .5em 0;'><div style='border-right: 1px solid gray; margin-top: 1px; height: " . ($max_pos - $min_pos) . "em;'></div></div>\n";
 			}
-			echo "<div class='references' id='refl$left' style='left: $left" . "em; top: $min_pos" . "em; padding: .5em 0;'><div style='border-right: 1px solid gray; margin-top: 1px; height: " . ($max_pos - $min_pos) . "em;'></div></div>\n";
 		}
 	}
 }
