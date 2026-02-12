@@ -56,8 +56,9 @@ page_header(($_GET["ns"] == "" ? lang('Database') . ": " . h(DB) : lang('Schema'
 
 if (adminer()->homepage()) {
 	if ($_GET["ns"] !== "") {
+		$order = $_GET["order"];
 		echo "<h3 id='tables-views'>" . lang('Tables and views') . "</h3>\n";
-		$tables_list = tables_list();
+		$tables_list = ($order ? table_status() : tables_list());
 		if (!$tables_list) {
 			echo "<p class='message'>" . lang('No tables.') . "\n";
 		} else {
@@ -79,7 +80,7 @@ if (adminer()->homepage()) {
 			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
 			echo '<thead><tr class="wrap">';
 			echo '<td><input id="check-all" type="checkbox" class="jsonly">' . script("qs('#check-all').onclick = partial(formCheck, /^(tables|views)\[/);", "");
-			echo '<th>' . lang('Table');
+			echo '<th><a href="' . h(substr(ME, 0, -1)) . '">' . lang('Table') . '</a>';
 			$columns = array("Engine" => array(lang('Engine') . doc_link(array('sql' => 'storage-engines.html'))));
 			if (collations()) {
 				$columns["Collation"] = array(lang('Collation') . doc_link(array('sql' => 'charset-charsets.html', 'mariadb' => 'supported-character-sets-and-collations/')));
@@ -98,27 +99,40 @@ if (adminer()->homepage()) {
 			if (support("comment")) {
 				$columns["Comment"] = array(lang('Comment') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-info.html#FUNCTIONS-INFO-COMMENT-TABLE')));
 			}
-			foreach ($columns as $column) {
-				echo "<td>$column[0]";
+			foreach ($columns as $key => $column) {
+				echo "<th><a href='" . h(ME) . "order=$key'>$column[0]</a>";
 			}
 			echo "</thead>\n";
 
+			if ($order) {
+				uasort($tables_list, function ($a, $b) use ($order) {
+					$return = ($a[$order] < $b[$order] ? -1 : ($a[$order] > $b[$order] ? 1 : 0)); // <=> available since PHP 7.1
+					return (in_array($order, array('Engine', 'Collation', 'Comment')) ? $return : -$return);
+				});
+			}
+
 			$tables = 0;
-			foreach ($tables_list as $name => $type) {
-				$view = ($type !== null && !preg_match('~table|sequence~i', $type));
+			foreach ($tables_list as $name => $status) {
+				$view = ($order ? is_view($status) : $status !== null && !preg_match('~table|sequence~i', $status));
+				$status = ($order ? $status : array('Engine' => $status));
 				$id = h("Table-" . $name);
 				echo '<tr><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array("$name", $tables_views, true), "", "", "", $id); // "$name" to check numeric table names
 				echo '<th>' . (support("table") || support("indexes") ? "<a href='" . h(ME) . "table=" . urlencode($name) . "' title='" . lang('Show structure') . "' id='$id'>" . h($name) . '</a>' : h($name));
-				if ($view && !preg_match('~materialized~i', $type)) {
+				if ($view && !preg_match('~materialized~i', $status['Engine'])) {
 					$title = lang('View');
-					echo '<td colspan="6">' . (support("view") ? "<a href='" . h(ME) . "view=" . urlencode($name) . "' title='" . lang('Alter view') . "'>$title</a>" : $title);
+					echo '<td colspan="' . (count($columns) - 2) . '">' . (support("view") ? "<a href='" . h(ME) . "view=" . urlencode($name) . "' title='" . lang('Alter view') . "'>$title</a>" : $title);
 					echo '<td align="right"><a href="' . h(ME) . "select=" . urlencode($name) . '" title="' . lang('Select data') . '">?</a>';
+					echo '<td>' . h($status['Comment']);
 				} else {
 					foreach ($columns as $key => $column) {
 						$id = " id='$key-" . h($name) . "'";
+						$val = idx($status, $key, '?');
 						echo ($column[1]
-							? "<td align='right'><a href='" . h(ME . "$column[1]=") . urlencode($name) . "'$id title='$column[2]'>?</a>"
-							: "<td id='$key-" . h($name) . "'>"
+							? "<td align='right'><a href='" . h(ME . "$column[1]=") . urlencode($name) . "'$id title='$column[2]'>" . (is_numeric($val)
+								? ($val < 0 ? '?' : ($key == "Rows" && $val && $status["Engine"] == (JUSH == "pgsql" ? "table" : "InnoDB") ? '~ ' : '') . format_number($val))
+								: $val
+							) . "</a>"
+							: "<td id='$key-" . h($name) . "'>" . h($val)
 						);
 					}
 					$tables++;
@@ -128,14 +142,14 @@ if (adminer()->homepage()) {
 
 			echo "<tr><td><th>" . lang('%d in total', count($tables_list));
 			echo "<td>" . h(JUSH == "sql" ? get_val("SELECT @@default_storage_engine") : "");
-			echo "<td>" . h(db_collation(DB, collations()));
+			echo (collations() ? "<td>" . h(db_collation(DB, collations())) : '');
 			foreach (array("Data_length", "Index_length", "Data_free") as $key) {
 				echo ($columns[$key] ? "<td align='right' id='sum-$key'>" : "");
 			}
 			echo "\n";
 
 			echo "</table>\n";
-			echo script("ajaxSetHtml('" . js_escape(ME) . "script=db');");
+			echo ($order ? '' : script("ajaxSetHtml('" . js_escape(ME) . "script=db');"));
 			echo "</div>\n";
 			if (!information_schema(DB)) {
 				$vacuum = "<input type='submit' value='" . lang('Vacuum') . "'> " . on_help("'VACUUM'");

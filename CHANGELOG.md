@@ -1,4 +1,5 @@
 ## Adminer dev
+- Tables overview: allow sorting (bug #1231)
 - Select: Disable Ctrl+click inline edit without UPDATE privilege
 - Select: Display NULL in column title
 - Export: Remember unchecked objects (regression from 5.0.6)
