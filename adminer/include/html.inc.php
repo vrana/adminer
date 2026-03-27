@@ -317,7 +317,9 @@ function process_input(array $field) {
 		if ($value == "null") {
 			return "NULL";
 		}
-		$value = substr($value, 4); // 4 - strlen("val-")
+		if (preg_match('~val-~', $value)) {
+			$value = substr($value, 4); // 4 - strlen("val-")
+		}
 	}
 	if ($field["auto_increment"] && $value == "") {
 		return null;
