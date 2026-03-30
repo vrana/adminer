@@ -305,6 +305,19 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 function process_input(array $field) {
 	$idf = bracket_escape($field["field"]);
 	$function = idx($_POST["function"], $idf);
+	if ($function == "orig") {
+		return (preg_match('~^CURRENT_TIMESTAMP~i', $field["on_update"]) ? idf_escape($field["field"]) : false);
+	}
+	if ($function == "NULL") {
+		return "NULL";
+	}
+	if (is_blob($field) && ini_bool("file_uploads")) {
+		$file = get_file("fields-$idf");
+		if (!is_string($file)) {
+			return false; //! report errors
+		}
+		return driver()->quoteBinary($file);
+	}
 	$value = idx($_POST["fields"], $idf);
 	if ($value === null) {
 		return false;
@@ -322,12 +335,6 @@ function process_input(array $field) {
 	if ($field["auto_increment"] && $value == "") {
 		return null;
 	}
-	if ($function == "orig") {
-		return (preg_match('~^CURRENT_TIMESTAMP~i', $field["on_update"]) ? idf_escape($field["field"]) : false);
-	}
-	if ($function == "NULL") {
-		return "NULL";
-	}
 	if ($field["type"] == "set") {
 		$value = implode(",", (array) $value);
 	}
@@ -338,13 +345,6 @@ function process_input(array $field) {
 			return false; //! report errors
 		}
 		return $value;
-	}
-	if (is_blob($field) && ini_bool("file_uploads")) {
-		$file = get_file("fields-$idf");
-		if (!is_string($file)) {
-			return false; //! report errors
-		}
-		return driver()->quoteBinary($file);
 	}
 	return adminer()->processInput($field, $value, $function);
 }
