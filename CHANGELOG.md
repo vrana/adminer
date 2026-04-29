@@ -7,6 +7,7 @@
 - PostgreSQL: Order NULL last
 - PostgreSQL: Display all SQL command warnings and only once
 - PostgreSQL: Export serial as serial, not nextval()
+- PostgreSQL: Fix GENERATED AS IDENTITY export (bug #1260)
 - PostgreSQL: Export schema in nextval()
 - PostgreSQL: Export schema in REFERENCES
 - Editor: Display tinyint(1) as checkbox (bug #1246, regression from 5.4.2)
