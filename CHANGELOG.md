@@ -10,6 +10,7 @@
 - PostgreSQL: Fix GENERATED AS IDENTITY export (bug #1260)
 - PostgreSQL: Export schema in nextval()
 - PostgreSQL: Export schema in REFERENCES
+- PostgreSQL: Add ~* operator (bug #1271)
 - Editor: Display tinyint(1) as checkbox (bug #1246, regression from 5.4.2)
 - Croatian translation
 
