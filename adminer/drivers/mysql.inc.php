@@ -17,7 +17,7 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			function attach(string $server, string $username, string $password): string {
-				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
+				mysqli_report(MYSQLI_REPORT_OFF);
 				list($host, $port) = host_port($server);
 				$ssl = adminer()->connectSsl();
 				if ($ssl) {
@@ -36,7 +36,7 @@ if (!defined('Adminer\DRIVER')) {
 				return ($return ? '' : $this->error);
 			}
 
-			function set_charset($charset) {
+			function set_charset($charset): bool {
 				if (parent::set_charset($charset)) {
 					return true;
 				}
@@ -45,112 +45,12 @@ if (!defined('Adminer\DRIVER')) {
 				return $this->query("SET NAMES $charset");
 			}
 
-			function next_result() {
-				return self::more_results() && parent::next_result(); // triggers E_STRICT on PHP < 7.4 otherwise
+			function next_result(): bool {
+				return self::more_results() && parent::next_result();
 			}
 
 			function quote(string $string): string {
 				return "'" . $this->escape_string($string) . "'";
-			}
-		}
-
-	} elseif (extension_loaded("mysql") && !((ini_bool("sql.safe_mode") || ini_bool("mysql.allow_local_infile")) && extension_loaded("pdo_mysql"))) {
-		class Db extends SqlDb {
-			/** @var resource */ private $link;
-
-			function attach(string $server, string $username, string $password): string {
-				if (ini_bool("mysql.allow_local_infile")) {
-					return lang('Disable %s or enable %s or %s extensions.', "'mysql.allow_local_infile'", "MySQLi", "PDO_MySQL");
-				}
-				$this->link = @mysql_connect(
-					($server != "" ? $server : ini_get("mysql.default_host")),
-					($server . $username != "" ? $username : ini_get("mysql.default_user")),
-					($server . $username . $password != "" ? $password : ini_get("mysql.default_password")),
-					true,
-					131072 // CLIENT_MULTI_RESULTS for CALL
-				);
-				if (!$this->link) {
-					return mysql_error();
-				}
-				$this->server_info = mysql_get_server_info($this->link);
-				return '';
-			}
-
-			/** Set the client character set */
-			function set_charset(string $charset): bool {
-				if (function_exists('mysql_set_charset')) {
-					if (mysql_set_charset($charset, $this->link)) {
-						return true;
-					}
-					// the client library may not support utf8mb4
-					mysql_set_charset('utf8', $this->link);
-				}
-				return $this->query("SET NAMES $charset");
-			}
-
-			function quote(string $string): string {
-				return "'" . mysql_real_escape_string($string, $this->link) . "'";
-			}
-
-			function select_db(string $database) {
-				return mysql_select_db($database, $this->link);
-			}
-
-			function query(string $query, bool $unbuffered = false) {
-				$result = @($unbuffered ? mysql_unbuffered_query($query, $this->link) : mysql_query($query, $this->link)); // @ - mute mysql.trace_mode
-				$this->error = "";
-				if (!$result) {
-					$this->errno = mysql_errno($this->link);
-					$this->error = mysql_error($this->link);
-					return false;
-				}
-				if ($result === true) {
-					$this->affected_rows = mysql_affected_rows($this->link);
-					$this->info = mysql_info($this->link);
-					return true;
-				}
-				return new Result($result);
-			}
-		}
-
-		class Result {
-			public $num_rows; // number of rows in the result
-			/** @var resource */ private $result;
-			private int $offset = 0;
-
-			/** @param resource $result */
-			function __construct($result) {
-				$this->result = $result;
-				$this->num_rows = mysql_num_rows($result);
-			}
-
-			/** Fetch next row as associative array
-			* @return array<?string>|false
-			*/
-			function fetch_assoc() {
-				return mysql_fetch_assoc($this->result);
-			}
-
-			/** Fetch next row as numbered array
-			* @return list<?string>|false
-			*/
-			function fetch_row() {
-				return mysql_fetch_row($this->result);
-			}
-
-			/** Fetch next field
-			* @return \stdClass properties: name, type (0 number, 15 varchar, 254 char), charsetnr (63 binary); optionally: table, orgtable, orgname
-			*/
-			function fetch_field(): \stdClass {
-				$return = mysql_fetch_field($this->result, $this->offset++); // offset required under certain conditions
-				$return->orgtable = $return->table;
-				$return->charsetnr = ($return->blob ? 63 : 0);
-				return $return;
-			}
-
-			/** Free result set */
-			function __destruct() {
-				mysql_free_result($this->result);
 			}
 		}
 

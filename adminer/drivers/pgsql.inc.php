@@ -88,12 +88,8 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function warnings() {
-				if (PHP_VERSION_ID >= 70100) {
-					$return = implode("\n", pg_last_notice($this->link, 2)); // 2 - PGSQL_NOTICE_ALL
-					pg_last_notice($this->link, 3); // 3 - PGSQL_NOTICE_CLEAR
-				} else {
-					$return = pg_last_notice($this->link);
-				}
+				$return = implode("\n", pg_last_notice($this->link, PGSQL_NOTICE_ALL));
+				pg_last_notice($this->link, PGSQL_NOTICE_CLEAR);
 				return nl_br(h($return));
 			}
 

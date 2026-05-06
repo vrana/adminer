@@ -562,7 +562,7 @@ function upload_error(int $error): string {
 /** Create repeat pattern for preg */
 function repeat_pattern(string $pattern, int $length): string {
 	// fix for Compilation failed: number too big in {} quantifier
-	return str_repeat("$pattern{0,65535}", $length / 65535) . "$pattern{0," . ($length % 65535) . "}"; // can create {0,0} which is OK
+	return str_repeat($pattern . "{0,65535}", $length / 65535) . $pattern . "{0," . ($length % 65535) . "}"; // can create {0,0} which is OK
 }
 
 /** Check whether the string is in UTF-8 */

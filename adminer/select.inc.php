@@ -371,7 +371,7 @@ if (!$columns && support("table")) {
 			if ($_GET["modify"]) {
 				foreach ($rows as $row) {
 					foreach ($row as $key => $val) {
-						$lengths[$key] = max($lengths[$key], min(40, strlen(utf8_decode($val))));
+						$lengths[$key] = max($lengths[$key], min(40, (int) mb_strlen((string) $val)));
 					}
 				}
 			}

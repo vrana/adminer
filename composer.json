@@ -30,7 +30,7 @@
         "GPL-2.0-only"
     ],
     "require": {
-        "php": ">=7.4"
+        "php": ">=8.0"
     },
     "scripts": {
         "check": [

@@ -9,8 +9,6 @@ parameters:
 		- "~Function Adminer\\\\queries\\(\\) never returns Adminer\\\\Result~" # mysqli_result
 
 		# not real problems
-		- identifier: include.fileNotFound # includes in include/ relative from index.php
-		- "~^Function (set_magic_quotes_runtime|mysql_)~" # PHP < 7 functions
 		- "~an unknown class OCI-?Lob~" # this looks like PHPStan bug
 		- "~^Variable \\$error might not be defined~" # declared in bootstrap.inc.php
 		- "~^Constant LANG not found~" # defined in lang.inc.php
@@ -22,7 +20,6 @@ parameters:
 		- "~expects bool~" # truthy values
 		- "~fread expects int<1, max>, 100000~" # 1e6
 		- "~'strlen' given~" # used as a bool callback
-		- "~between int<70100~" # PHP_VERSION_ID check
 
 		-
 			message: "~ type specified~" # duplicate functions and methods
@@ -32,21 +29,17 @@ parameters:
 
 		# it probably doesn't like $ar[$key] instead of isset($ar[$key]) and thinks that $ar[$key] is always set
 		- identifier: identical.alwaysFalse
-		- identifier: notEqual.alwaysFalse
-		- identifier: notIdentical.alwaysTrue
 		- identifier: booleanNot.alwaysTrue
 		- identifier: booleanNot.alwaysFalse
 		- identifier: booleanAnd.alwaysFalse
 		- identifier: booleanAnd.leftAlwaysTrue
 		- identifier: booleanAnd.rightAlwaysTrue
-		- identifier: booleanAnd.rightAlwaysFalse
 		- identifier: booleanOr.rightAlwaysTrue
 		- identifier: ternary.alwaysTrue
 		- identifier: if.alwaysTrue
 		- identifier: isset.offset
 		- identifier: deadCode.unreachable
 		- "~Function Adminer\\\\get_driver\\(\\) never returns null~"
-		- "~on array\\{}~"
 
 	paths:
 		- adminer/drivers/mysql.inc.php # other drivers inherit the annotations so we take them from here
@@ -59,9 +52,7 @@ parameters:
 		- adminer/elastic.php
 		- adminer/sqlite.php
 
-	phpVersion:
-		min: 70100
-		max: 80499
+	phpVersion: 80100
 
 	typeAliases:
 		TableStatus: "array{Name:string, Engine?:?string, Comment?:string, Oid?:numeric-string, Rows?:?numeric-string, Collation?:string, Auto_increment?:?numeric-string, Data_length?:numeric-string, Index_length?:numeric-string, Data_free?:numeric-string, Create_options?:string, partition?:numeric-string, nspname?:string}"
