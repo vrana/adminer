@@ -24,7 +24,7 @@ function add_invalid_login(): void {
 	if (!$fp) {
 		return;
 	}
-	$invalids = unserialize(stream_get_contents($fp));
+	$invalids = unserialize(stream_get_contents($fp), ['allowed_classes' => false]);
 	$time = time();
 	if ($invalids) {
 		foreach ($invalids as $ip => $val) {
@@ -47,7 +47,7 @@ function check_invalid_login(array &$permanent): void {
 	foreach (glob(get_temp_dir() . "/adminer.invalid*") as $filename) {
 		$fp = file_open_lock($filename);
 		if ($fp) {
-			$invalids = unserialize(stream_get_contents($fp));
+			$invalids = unserialize(stream_get_contents($fp), ['allowed_classes' => false]);
 			file_unlock($fp);
 			break;
 		}
