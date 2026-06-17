@@ -16,6 +16,7 @@
 
 ```
 sudo dnf install -y php-mysqlnd # https://askubuntu.com/questions/599921/adminer-none-of-the-supported-php-extensions-mysqli-mysql-pdo-mysql-are-ava
+make default
 make
 make server # by default the browser opens in `http://127.0.0.1:8000/`, so you'll want to navigate to `http://127.0.0.1:8000/adminer` instead
 ```
