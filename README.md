@@ -13,6 +13,14 @@
 ![Table structure](https://www.adminer.org/static/screenshots/table.png)
 
 ## Installation
+
+```
+make
+make server # by default the browser opens in `http://127.0.0.1:8000/`, so you'll want to navigate to `http://127.0.0.1:8000/adminer` instead
+```
+
+### Details
+
 If downloaded from Git then run: `git submodule update --init`
 
 - `adminer/index.php` - Run development version of Adminer
