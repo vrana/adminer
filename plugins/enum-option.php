@@ -11,23 +11,23 @@ class AdminerEnumOption extends Adminer\Plugin {
 	function editInput($table, $field, $attrs, $value) {
 		if ($field["type"] == "enum") {
 			$options = array();
-			$selected = $value;
+			$selected = "val-$value";
 			if (isset($_GET["select"])) {
-				$options[-1] = Adminer\lang('original');
-				if ($selected === null) {
-					$selected = -1;
+				$options["orig"] = Adminer\lang('original');
+				if ($value === null) {
+					$selected = "orig";
 				}
 			}
 			if ($field["null"]) {
-				$options[""] = "NULL";
-				if ($selected === null) {
-					$selected = "";
+				$options["null"] = "NULL";
+				if ($value === null) {
+					$selected = "null";
 				}
 			}
 			preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 			foreach ($matches[1] as $val) {
 				$val = stripcslashes(str_replace("''", "'", $val));
-				$options[$val] = $val;
+				$options["val-$val"] = $val;
 			}
 			return "<select$attrs>" . Adminer\optionlist($options, $selected, 1) . "</select>"; // 1 - use keys
 		}
@@ -39,5 +39,6 @@ class AdminerEnumOption extends Adminer\Plugin {
 		'pl' => array('' => 'Użyj <select><option> do edycji enum zamiast <input type="radio">'),
 		'ro' => array('' => 'Utilizați <select><option> pentru editarea enum în loc de <input type="radio">'),
 		'ja' => array('' => '列挙型の編集に <input type="radio"> ではなく <select><option> を使用'),
+		'hr' => array('' => 'Koristi <select><option> za uređivanje enum polja umjesto <input type="radio">'),
 	);
 }

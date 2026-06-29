@@ -140,7 +140,7 @@ class Adminer {
 		echo "<table class='layout'>\n";
 		// this is matched by compile.php
 		echo adminer()->loginFormField('driver', '<tr><th>' . lang('System') . '<td>', html_select("auth[driver]", SqlDriver::$drivers, DRIVER, "loginDriver(this);"));
-		echo adminer()->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', '<input name="auth[server]" value="' . h(SERVER) . '" title="hostname[:port]" placeholder="localhost" autocapitalize="off">');
+		echo adminer()->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', '<input name="auth[server]" value="' . h(SERVER) . '" title="' . lang('hostname[:port] or :socket') . '" placeholder="localhost" autocapitalize="off">');
 		// this is matched by compile.php
 		echo adminer()->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input name="auth[username]" id="username" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">' . script("const authDriver = qs('#username').form['auth[driver]']; authDriver && authDriver.onchange();"));
 		echo adminer()->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">');
@@ -182,7 +182,7 @@ class Adminer {
 	* @return string HTML code, "" to ignore field
 	*/
 	function fieldName(array $field, int $order = 0): string {
-		$type = $field["full_type"];
+		$type = $field["full_type"] . ($field["null"] ? " NULL" : "");
 		$comment = $field["comment"];
 		return '<span title="' . h($type . ($comment != "" ? ($type ? ": " : "") . $comment : '')) . '">' . h($field["field"]) . '</span>';
 	}
@@ -201,10 +201,12 @@ class Adminer {
 		$is_view = false;
 		if (support("table")) {
 			$is_view = is_view($tableStatus);
-			if (!$is_view) {
+			if ($is_view) {
+				if (support("view")) {
+					$links["view"] = lang('Alter view');
+				}
+			} elseif (function_exists('Adminer\alter_table')) {
 				$links["create"] = lang('Alter table');
-			} elseif (support("view")) {
-				$links["view"] = lang('Alter view');
 			}
 		}
 		if ($set !== null) {
@@ -286,7 +288,7 @@ class Adminer {
 
 	/** Get a link to use in select table
 	* @param string $val raw value of the field
-	* @param Field $field
+	* @param array{type: string} $field
 	* @return string|void null to create the default link
 	*/
 	function selectLink(?string $val, array $field) {
@@ -295,7 +297,7 @@ class Adminer {
 	/** Value printed in select table
 	* @param ?string $val HTML-escaped value to print
 	* @param ?string $link link to foreign key
-	* @param Field $field
+	* @param array{type: string} $field
 	* @param string $original original value before applying editVal() and escaping
 	*/
 	function selectVal(?string $val, ?string $link, array $field, ?string $original): string {
@@ -311,7 +313,7 @@ class Adminer {
 	}
 
 	/** Value conversion used in select and edit
-	* @param Field $field
+	* @param array{type: string} $field
 	*/
 	function editVal(?string $val, array $field): ?string {
 		return $val;
@@ -423,7 +425,7 @@ class Adminer {
 				echo "<div>(<i>" . implode("</i>, <i>", array_map('Adminer\h', $index["columns"])) . "</i>) AGAINST";
 				echo " <input type='search' name='fulltext[$i]' value='" . h(idx($_GET["fulltext"], $i)) . "'>";
 				echo script("qsl('input').oninput = selectFieldChange;", "");
-				echo checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL");
+				echo (JUSH == 'sql' ? checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL") : '');
 				echo "</div>\n";
 			}
 		}
@@ -612,7 +614,7 @@ class Adminer {
 		foreach ((array) $_GET["order"] as $key => $val) {
 			if ($val != "") {
 				$return[] = (preg_match('~^((COUNT\(DISTINCT |[A-Z0-9_]+\()(`(?:[^`]|``)+`|"(?:[^"]|"")+")\)|COUNT\(\*\))$~', $val) ? $val : idf_escape($val)) //! MS SQL uses []
-					. (isset($_GET["desc"][$key]) ? " DESC" : "")
+					. (isset($_GET["desc"][$key]) ? " DESC" . (JUSH == 'pgsql' && idx($fields[$val], "null") ? " NULLS LAST" : "") : "")
 				;
 			}
 		}
@@ -674,7 +676,7 @@ class Adminer {
 			$return = "<a href='#$id' class='toggle'>" . lang('Warnings') . "</a>, $return<div id='$id' class='hidden'>\n$warnings</div>\n";
 		}
 		return " <span class='time'>" . @date("H:i:s") . "</span>" // @ - time zone may be not set
-			. " $return<div id='$sql_id' class='hidden'><pre><code class='jush-" . JUSH . "'>" . shorten_utf8($query, 1000) . "</code></pre>"
+			. " $return<div id='$sql_id' class='hidden'><pre><code class='jush-" . JUSH . "'>" . shorten_utf8($query, 1e4) . "</code></pre>"
 			. ($time ? " <span class='time'>($time)</span>" : '')
 			. (support("sql") ? '<p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a>' : '')
 			. '</div>'
@@ -1020,7 +1022,7 @@ class Adminer {
 				$actions[] = "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>";
 			}
 			$in_db = $_GET["ns"] !== "" && !$missing && DB != "";
-			if ($in_db) {
+			if ($in_db && function_exists('Adminer\alter_table')) {
 				$actions[] = '<a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create table') . "</a>";
 			}
 			echo ($actions ? "<p class='links'>\n" . implode("\n", $actions) . "\n" : "");
@@ -1132,6 +1134,20 @@ class Adminer {
 			}
 		}
 		echo "</ul>\n";
+	}
+
+	/** Get server variables
+	* @return list<string[]> [[$name, $value]]
+	*/
+	function showVariables(): array {
+		return show_variables();
+	}
+
+	/** Get status variables
+	* @return list<string[]> [[$name, $value]]
+	*/
+	function showStatus(): array {
+		return show_status();
 	}
 
 	/** Get process list

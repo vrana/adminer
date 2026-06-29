@@ -18,12 +18,12 @@ class Plugins {
 			$basename = "adminer-plugins";
 			if (is_dir($basename)) {
 				foreach (glob("$basename/*.php") as $filename) {
-					$include = include_once "./$filename";
+					$this->includeOnce($filename);
 				}
 			}
 			$help = " href='https://www.adminer.org/plugins/#use'" . target_blank();
 			if (file_exists("$basename.php")) {
-				$include = include_once "./$basename.php"; // example: return array(new AdminerLoginOtp($secret))
+				$include = $this->includeOnce("$basename.php"); // example: return array(new AdminerLoginOtp($secret));
 				if (is_array($include)) {
 					foreach ($include as $plugin) {
 						$plugins[get_class($plugin)] = $plugin;
@@ -33,7 +33,7 @@ class Plugins {
 				}
 			}
 			foreach (get_declared_classes() as $class) {
-				if (!$plugins[$class] && preg_match('~^Adminer\w~i', $class)) {
+				if (!$plugins[$class] && (preg_match('~^Adminer\w~i', $class) || is_subclass_of($class, 'Adminer\Plugin'))) {
 					// we need to use reflection because PHP 7.1 throws ArgumentCountError for missing arguments but older versions issue a warning
 					$reflection = new \ReflectionClass($class);
 					$constructor = $reflection->getConstructor();
@@ -58,6 +58,13 @@ class Plugins {
 				}
 			}
 		}
+	}
+
+	/** Separate function to not overwrite local variables
+	* @return array<object>|true
+	*/
+	function includeOnce(string $filename) {
+		return include_once "./$filename";
 	}
 
 	/**

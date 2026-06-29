@@ -53,5 +53,6 @@ class AdminerSlugify extends Adminer\Plugin {
 		'pl' => array('' => 'Wstępnie wypełnij pole zawierające "_slug" osłabioną wartością poprzedniego pola (JavaScript)'),
 		'ro' => array('' => 'Precompletați câmpul care conține "_slug" cu valoarea slugificată a unui câmp anterior (JavaScript)'),
 		'ja' => array('' => '列名に "_slug" を含む列を、前列の URL 化された値でプレフィル (JavaScript)'),
+		'hr' => array('' => 'Popunjava polje koje sadrži "_slug" slugificiranom vrijednošću prethodnog polja (JavaScript)'),
 	);
 }

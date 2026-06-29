@@ -457,5 +457,14 @@ class AdminerSelectEmail extends Adminer\Plugin {
 			'Attachments' => '附件',
 			'Send' => '发送',
 			'%d e-mail(s) have been sent.' => '%d 封邮件已发送。'),
+		'hr' => array(
+			'' => 'Slanje e-pošte odabranim recima',
+			'E-mail' => 'E-pošta',
+			'From' => 'Od',
+			'Subject' => 'Predmet',
+			'Attachments' => 'Privici',
+			'Send' => 'Pošalji',
+			'%d e-mail(s) have been sent.' => array('%d e-mail je poslan.', '%d e-maila su poslana.', '%d e-mailova je poslano.'),
+		),
 	);
 }

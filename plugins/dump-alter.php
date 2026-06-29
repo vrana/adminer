@@ -174,5 +174,6 @@ DROP PROCEDURE adminer_alter;
 		'pl' => array('' => 'Eksportuje jedną bazę danych (np. programistyczną), aby można ją było zsynchronizować z inną bazą danych (np. produkcyjną)'),
 		'ro' => array('' => 'Exportați o bază de date (de exemplu, development) astfel încât să poată fi sincronizată cu o altă bază de date (de exemplu, de producție)'),
 		'ja' => array('' => 'データベース (開発用など) をエクスポートし、別のデータベース (本番用など) と同期'),
+		'hr' => array('' => 'Izvozi bazu podataka (npr. razvojnu) tako da se može sinkronizirati s drugom bazom (npr. produkcijskom)'),
 	);
 }

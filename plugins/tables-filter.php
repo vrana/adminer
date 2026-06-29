@@ -85,5 +85,9 @@ sessionStorage && document.addEventListener('DOMContentLoaded', () => {
 		'ja' => array(
 			'' => 'テーブル一覧をテーブル名でフィルタリング',
 		),
+		'hr' => array(
+			'' => 'Filtriranje tablice prema imenu',
+			'Filter' => 'Filtar',
+		),
 	);
 }

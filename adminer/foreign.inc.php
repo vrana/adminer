@@ -40,10 +40,10 @@ page_header(lang('Foreign key'), $error, array("table" => $TABLE), h($TABLE));
 
 if ($_POST) {
 	ksort($row["source"]);
-	if ($_POST["add"]) {
-		$row["source"][] = "";
-	} elseif ($_POST["change"] || $_POST["change-js"]) {
+	if ($_POST["change"] || $_POST["change-js"]) {
 		$row["target"] = array();
+	} else {
+		$row["source"][] = "";
 	}
 } elseif ($name != "") {
 	$foreign_keys = foreign_keys($TABLE);
@@ -104,10 +104,11 @@ foreach ($row["source"] as $key => $val) {
 <p>
 <label><?php echo lang('ON DELETE'); ?>: <?php echo html_select("on_delete", array(-1 => "") + explode("|", driver()->onActions), $row["on_delete"]); ?></label>
 <label><?php echo lang('ON UPDATE'); ?>: <?php echo html_select("on_update", array(-1 => "") + explode("|", driver()->onActions), $row["on_update"]); ?></label>
+<?php echo (DRIVER === 'pgsql' ? html_select("deferrable", array('NOT DEFERRABLE', 'DEFERRABLE', 'DEFERRABLE INITIALLY DEFERRED'), $row["deferrable"]) . ' ' : ''); ?>
 <?php echo doc_link(array(
 	'sql' => "innodb-foreign-key-constraints.html",
 	'mariadb' => "foreign-keys/",
-	'pgsql' => "sql-createtable.html#SQL-CREATETABLE-REFERENCES",
+	'pgsql' => "sql-createtable.html#SQL-CREATETABLE-PARMS-REFERENCES",
 	'mssql' => "t-sql/statements/create-table-transact-sql",
 	'oracle' => "SQLRF01111",
 )); ?>

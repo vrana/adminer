@@ -16,7 +16,7 @@ class AdminerDesigns extends Adminer\Plugin {
 		$this->designs = $designs;
 	}
 
-	function headers() {
+	function afterConnect() {
 		if (isset($_POST["design"]) && Adminer\verify_token()) {
 			Adminer\restart_session();
 			$_SESSION["design"] = $_POST["design"];
@@ -49,5 +49,6 @@ class AdminerDesigns extends Adminer\Plugin {
 		'pl' => array('' => 'Zezwalaj na przełączanie motywów'),
 		'ro' => array('' => 'Permiteți comutarea designurilor'),
 		'ja' => array('' => 'テーマ設定を有効化'),
+		'hr' => array('' => 'Omogućuje promjenu dizajna'),
 	);
 }

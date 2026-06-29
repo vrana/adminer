@@ -96,5 +96,14 @@ class AdminerConfig extends Adminer\Plugin {
 			'Use %s if exists' => 'あれば %s を使う',
 			'Use builtin design' => '組込みのデザインを使う',
 		),
+		'hr' => array(
+			'' => 'Nikola Radovanović - cobisimo@gmail.com',
+			'Configuration saved.' => 'Konfiguracija je spremljena.',
+			'Configuration' => 'Konfiguracija',
+			'Only some plugins support configuration, e.g. %s.' => 'Samo neki dodaci podržavaju konfiguraciju, npr. %s.',
+			'Use %s if exists' => 'Koristi %s ako postoji',
+			'Use builtin design' => 'Koristi ugrađeni dizajn',
+			'Design' => 'Dizajn',
+		),
 	);
 }

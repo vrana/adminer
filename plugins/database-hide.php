@@ -32,5 +32,6 @@ class AdminerDatabaseHide extends Adminer\Plugin {
 		'pl' => array('' => 'Ukryj niektóre bazy danych w interfejsie – tylko po to, aby ulepszyć motyw, a nie wtyczkę zabezpieczającą'),
 		'ro' => array('' => 'Ascundeți unele baze de date din interfață - doar pentru a îmbunătăți designul, nu un plugin de securitate'),
 		'ja' => array('' => '一部データベースを UI 上で表示禁止 (デザイン的な効果のみでセキュリティ的には効果なし)'),
+		'hr' => array('' => 'Sakriva neke baze podataka iz sučelja – samo radi poboljšanja izgleda, nije sigurnosni dodatak'),
 	);
 }

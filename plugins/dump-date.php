@@ -18,5 +18,6 @@ class AdminerDumpDate extends Adminer\Plugin {
 		'pl' => array('' => 'Dołącz bieżącą datę i godzinę do nazwy pliku eksportu'),
 		'ro' => array('' => 'Includeți data și ora curentă în numele fișierului de export'),
 		'ja' => array('' => 'エクスポートファイル名に現在日時を含める'),
+		'hr' => array('' => 'Dodaje trenutni datum i vrijeme u naziv datoteke izvoza'),
 	);
 }

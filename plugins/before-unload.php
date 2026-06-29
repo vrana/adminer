@@ -36,5 +36,6 @@ onbeforeunload = () => editChanged;
 		'de' => array('' => 'Zeigt eine Bestätigung an bevor die Seite neu geladen wird, wenn ein Formularfeld geändert wurde'),
 		'ja' => array('' => 'フォームの列が変更された時、ページを再読込みする前に確認を表示'),
 		'pl' => array('' => 'Wyświetlaj potwierdzenie przed rozładowaniem strony, jeśli pole formularza zostało zmienione'),
+		'hr' => array('' => 'Prikazuje potvrdu prije napuštanja stranice ako je polje obrasca promijenjeno'),
 	);
 }

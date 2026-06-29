@@ -47,7 +47,7 @@ function put_file($match) {
 		// check function definition in drivers
 		if ($vendor != "mysql") {
 			preg_match_all(
-				'~\bfunction ([^(]+)~',
+				'~\bfunction (?!alter_table|drop_tables|truncate_tables)([^(]+)~', // used for feature detection
 				preg_replace('~class Driver.*\n\t}~sU', '', file_get_contents(__DIR__ . "/adminer/drivers/mysql.inc.php")),
 				$matches
 			); //! respect context (extension, class)
@@ -98,7 +98,7 @@ function put_file($match) {
 				echo "lang() not found\n";
 			}
 		} else {
-			$return = preg_replace('~// not used in a single language version from here\n.*~s', '', $return);
+			$return = preg_replace('~// not used in a single language version from here.*~s', '', $return);
 			$return = preg_replace_callback('~(\$pos = (.+\n).+;)~sU', function ($match) {
 				return "\$pos = $match[2]\t\t\t: " . (preg_match("~'$_SESSION[lang]'.* \\? (.+)\n~U", $match[1], $match2) ? $match2[1] : "1") . "\n\t\t);";
 			}, $return);

@@ -44,5 +44,6 @@ class AdminerTableStructure extends Adminer\Plugin {
 		'pl' => array('' => 'Rozszerzone wyjście struktury tabeli'),
 		'ro' => array('' => 'Ieșirea expandată a structurii tabelei'),
 		'ja' => array('' => 'テーブル構造を拡張表示'),
+		'hr' => array('' => 'Prošireni prikaz strukture tablice'),
 	);
 }

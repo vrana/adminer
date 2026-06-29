@@ -44,5 +44,6 @@ class AdminerMasterSlave extends Adminer\Plugin {
 		'pl' => array('' => 'Wykonuje zapisy na komputerze głównym i odczyty na komputerze podrzędnym'),
 		'ro' => array('' => 'Executarea scrierilor pe master și a citirilor pe slave'),
 		'ja' => array('' => 'マスタ書込みとスレーブ読込みの有効化'),
+		'hr' => array('' => 'Izvodi pisanje na masteru i čitanje na slaveu'),
 	);
 }

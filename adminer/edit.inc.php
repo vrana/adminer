@@ -10,7 +10,7 @@ $where = (isset($_GET["select"])
 );
 $update = (isset($_GET["select"]) ? $_POST["edit"] : $where);
 foreach ($fields as $name => $field) {
-	if (!isset($field["privileges"][$update ? "update" : "insert"]) || adminer()->fieldName($field) == "" || $field["generated"]) {
+	if ((!$update && !isset($field["privileges"]["insert"])) || adminer()->fieldName($field) == "") {
 		unset($fields[$name]);
 	}
 }
@@ -66,9 +66,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 }
 
 $row = null;
-if ($_POST["save"]) {
-	$row = (array) $_POST["fields"];
-} elseif ($where) {
+if ($where) {
 	$select = array();
 	foreach ($fields as $name => $field) {
 		if (isset($field["privileges"]["select"])) {
@@ -112,6 +110,10 @@ if (!support("table") && !$fields) { // used by Mongo and SimpleDB
 			$fields[$key] = array("field" => $key, "null" => ($key != driver()->primary), "auto_increment" => ($key == driver()->primary));
 		}
 	}
+}
+
+if ($_POST["save"]) {
+	$row = (array) $_POST["fields"] + ($row ? $row : array());
 }
 
 edit_form($TABLE, $fields, $row, $update, $error);

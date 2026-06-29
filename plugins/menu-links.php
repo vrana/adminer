@@ -112,5 +112,14 @@ class AdminerMenuLinks extends Adminer\Plugin {
 			'Select data' => 'データ',
 			'Show structure' => '構造',
 		),
+		'hr' => array(
+			'' => 'Prikazuje veze na odabir podataka ili strukturu tablice u izborniku',
+			'Select data' => 'Odaberi podatke',
+			'Show structure' => 'Prikaži strukturu',
+			'Both' => 'Oboje',
+			'Auto (select on select page, structure otherwise)' => 'Automatski (odabir na stranici odabira, inače struktura)',
+			'Menu table links' => 'Veze tablice u izborniku',
+			'select' => 'odaberi',
+		),
 	);
 }

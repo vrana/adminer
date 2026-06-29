@@ -89,7 +89,13 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function warnings() {
-				return h(pg_last_notice($this->link)); // second parameter is available since PHP 7.1.0
+				if (PHP_VERSION_ID >= 70100) {
+					$return = implode("\n", pg_last_notice($this->link, 2)); // 2 - PGSQL_NOTICE_ALL
+					pg_last_notice($this->link, 3); // 3 - PGSQL_NOTICE_CLEAR
+				} else {
+					$return = pg_last_notice($this->link);
+				}
+				return nl_br(h($return));
 			}
 
 			/** Copy from array into a table
@@ -335,11 +341,11 @@ if (isset($_GET["pgsql"])) {
 		}
 
 		function inheritsFrom(string $table): array {
-			return get_vals("SELECT relname FROM pg_class JOIN pg_inherits ON inhparent = oid WHERE inhrelid = " . $this->tableOid($table) . " ORDER BY 1");
+			return get_rows("SELECT relname AS table, nspname AS ns FROM pg_class JOIN pg_inherits ON inhparent = oid JOIN pg_namespace ON relnamespace = pg_namespace.oid WHERE inhrelid = " . $this->tableOid($table) . " ORDER BY 2, 1");
 		}
 
 		function inheritedTables(string $table): array {
-			return get_vals("SELECT relname FROM pg_inherits JOIN pg_class ON inhrelid = oid WHERE inhparent = " . $this->tableOid($table) . " ORDER BY 1");
+			return get_rows("SELECT relname AS table, nspname AS ns FROM pg_inherits JOIN pg_class ON inhrelid = oid JOIN pg_namespace ON relnamespace = pg_namespace.oid WHERE inhparent = " . $this->tableOid($table) . " ORDER BY 2, 1");
 		}
 
 		function partitionsInfo(string $table): array {
@@ -488,17 +494,19 @@ AND relnamespace = " . driver()->nsOid . "
 	format_type(a.atttypid, a.atttypmod) AS full_type,
 	pg_get_expr(d.adbin, d.adrelid) AS default,
 	a.attnotnull::int,
+	i.indrelid AS primary,
 	col_description(a.attrelid, a.attnum) AS comment" . (min_version(10) ? ",
 	a.attidentity" . (min_version(12) ? ",
 	a.attgenerated" : "") : "") . "
 FROM pg_attribute a
 LEFT JOIN pg_attrdef d ON a.attrelid = d.adrelid AND a.attnum = d.adnum
+LEFT JOIN pg_index i ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) AND i.indisprimary
 WHERE a.attrelid = " . driver()->tableOid($table) . "
 AND NOT a.attisdropped
 AND a.attnum > 0
 ORDER BY a.attnum") as $row
 		) {
-			//! collation, primary
+			//! collation
 			preg_match('~([^([]+)(\((.*)\))?([a-z ]+)?((\[[0-9]*])*)$~', $row["full_type"], $match);
 			list(, $type, $length, $row["length"], $addon, $array) = $match;
 			$row["length"] .= $array;
@@ -518,7 +526,7 @@ ORDER BY a.attnum") as $row
 			$row["auto_increment"] = $row['attidentity'] || preg_match('~^nextval\(~i', $row["default"])
 				|| preg_match('~^unique_rowid\(~', $row["default"]); // CockroachDB
 			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1, "where" => 1, "order" => 1);
-			if (preg_match('~(.+)::[^,)]+(.*)~', $row["default"], $match)) {
+			if (!$row['generated'] && preg_match('~(.+)::[^,)]+(.*)~', $row["default"], $match)) {
 				$row["default"] = ($match[1] == "NULL" ? null : idf_unescape($match[1]) . $match[2]);
 			}
 			$return[$row["field"]] = $row;
@@ -540,7 +548,7 @@ WHERE indrelid = $table_oid
 ORDER BY indisprimary DESC, indisunique DESC", $connection2) as $row
 		) {
 			$relname = $row["relname"];
-			$return[$relname]["type"] = ($row["partial"] ? "INDEX" : ($row["indisprimary"] ? "PRIMARY" : ($row["indisunique"] ? "UNIQUE" : "INDEX")));
+			$return[$relname]["type"] = ($row["indisprimary"] ? "PRIMARY" : ($row["indisunique"] ? "UNIQUE" : "INDEX"));
 			$return[$relname]["columns"] = array();
 			$return[$relname]["descs"] = array();
 			$return[$relname]["algorithm"] = $row["amname"];
@@ -560,12 +568,13 @@ ORDER BY indisprimary DESC, indisunique DESC", $connection2) as $row
 	function foreign_keys($table) {
 		$return = array();
 		foreach (
-			get_rows("SELECT conname, condeferrable::int AS deferrable, pg_get_constraintdef(oid) AS definition
+			get_rows("SELECT conname, condeferrable::int AS deferrable, condeferred::int AS deferred, pg_get_constraintdef(oid) AS definition
 FROM pg_constraint
 WHERE conrelid = " . driver()->tableOid($table) . "
 AND contype = 'f'::char
 ORDER BY conkey, conname") as $row
 		) {
+			$row['deferrable'] = ($row['deferrable'] ? '' : 'NOT ') . 'DEFERRABLE' . ($row['deferred'] ? ' INITIALLY DEFERRED' : '');
 			if (preg_match('~FOREIGN KEY\s*\((.+)\)\s*REFERENCES (.+)\((.+)\)(.*)$~iA', $row['definition'], $match)) {
 				$row['source'] = array_map('Adminer\idf_unescape', array_map('trim', explode(',', $match[1])));
 				if (preg_match('~^(("([^"]|"")+"|[^"]+)\.)?"?("([^"]|"")+"|[^"]+)$~', $match[2], $match2)) {
@@ -907,11 +916,12 @@ AND typelem = 0"
 		$return = "";
 
 		$status = table_status1($table);
+		$ns = idf_escape($status['nspname']);
 		$fkeys = foreign_keys($table);
 		ksort($fkeys);
 
 		foreach ($fkeys as $fkey_name => $fkey) {
-			$return .= "ALTER TABLE ONLY " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . " ADD CONSTRAINT " . idf_escape($fkey_name) . " $fkey[definition] " . ($fkey['deferrable'] ? 'DEFERRABLE' : 'NOT DEFERRABLE') . ";\n";
+			$return .= "ALTER TABLE ONLY $ns." . idf_escape($status['Name']) . " ADD CONSTRAINT " . idf_escape($fkey_name) . " " . preg_replace('~( REFERENCES )([^(.]+\()~', "\\1$ns.\\2", $fkey["definition"]) . ";\n";
 		}
 
 		return ($return ? "$return\n" : $return);
@@ -922,9 +932,10 @@ AND typelem = 0"
 		$sequences = array();
 
 		$status = table_status1($table);
+		$ns = idf_escape($status['nspname']);
 		if (is_view($status)) {
 			$view = view($table);
-			return rtrim("CREATE VIEW " . idf_escape($table) . " AS $view[select]", ";");
+			return rtrim("CREATE VIEW $ns." . idf_escape($table) . " AS $view[select]", ";");
 		}
 		$fields = fields($table);
 
@@ -932,12 +943,17 @@ AND typelem = 0"
 			return false;
 		}
 
-		$return = "CREATE TABLE " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . " (\n    ";
+		$return = "CREATE TABLE $ns." . idf_escape($status['Name']) . " (\n    ";
 
 		// fields' definitions
 		foreach ($fields as $field) {
+			if ($field['default'] == "nextval('$status[Name]_$field[field]_seq')") {
+				$field['default'] = null;
+				$field['full_type'] = preg_replace('~int(eger)?~', 'serial', $field['full_type']);
+			}
+
 			$part = idf_escape($field['field']) . ' ' . $field['full_type']
-				. default_value($field)
+				. preg_replace('~(nextval\(\')([^.\']+\')~', '\1' . str_replace("'", "''", $status['nspname']) . '.\2', default_value($field))
 				. ($field['null'] ? "" : " NOT NULL");
 			$return_parts[] = $part;
 
@@ -948,8 +964,8 @@ AND typelem = 0"
 					? "SELECT *, cache_size AS cache_value FROM pg_sequences WHERE schemaname = current_schema() AND sequencename = " . q(idf_unescape($sequence_name))
 					: "SELECT * FROM $sequence_name"
 				), null, "-- "));
-				$sequences[] = ($style == "DROP+CREATE" ? "DROP SEQUENCE IF EXISTS $sequence_name;\n" : "")
-					. "CREATE SEQUENCE $sequence_name INCREMENT $sq[increment_by] MINVALUE $sq[min_value] MAXVALUE $sq[max_value]"
+				$sequences[] = ($style == "DROP+CREATE" ? "DROP SEQUENCE IF EXISTS $ns.$sequence_name;\n" : "")
+					. "CREATE SEQUENCE $ns.$sequence_name INCREMENT $sq[increment_by] MINVALUE $sq[min_value] MAXVALUE $sq[max_value]"
 					. ($auto_increment && $sq['last_value'] ? " START " . ($sq["last_value"] + 1) : "")
 					. " CACHE $sq[cache_value];"
 				;
@@ -970,7 +986,7 @@ AND typelem = 0"
 		}
 
 		foreach (driver()->checkConstraints($table) as $conname => $consrc) {
-			$return_parts[] = "CONSTRAINT " . idf_escape($conname) . " CHECK $consrc";
+			$return_parts[] = "CONSTRAINT " . idf_escape($conname) . " CHECK ($consrc)";
 		}
 		$return .= implode(",\n    ", $return_parts) . "\n)";
 
@@ -985,12 +1001,12 @@ AND typelem = 0"
 
 		// comments for table & fields
 		if ($status['Comment']) {
-			$return .= "\n\nCOMMENT ON TABLE " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . " IS " . q($status['Comment']) . ";";
+			$return .= "\n\nCOMMENT ON TABLE $ns." . idf_escape($status['Name']) . " IS " . q($status['Comment']) . ";";
 		}
 
 		foreach ($fields as $field_name => $field) {
 			if ($field['comment']) {
-				$return .= "\n\nCOMMENT ON COLUMN " . idf_escape($status['nspname']) . "." . idf_escape($status['Name']) . "." . idf_escape($field_name) . " IS " . q($field['comment']) . ";";
+				$return .= "\n\nCOMMENT ON COLUMN $ns." . idf_escape($status['Name']) . "." . idf_escape($field_name) . " IS " . q($field['comment']) . ";";
 			}
 		}
 

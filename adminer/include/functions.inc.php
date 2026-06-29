@@ -77,24 +77,19 @@ function number_type(): string {
 }
 
 /** Disable magic_quotes_gpc
-* @param list<array> $process e.g. [&$_GET, &$_POST, &$_COOKIE]
+* @param mixed[] $values
 * @param bool $filter whether to leave values as is
-* @return void modified in place
+* @return mixed[]
 */
-function remove_slashes(array $process, bool $filter = false): void {
-	if (function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc()) {
-		while (list($key, $val) = each($process)) {
-			foreach ($val as $k => $v) {
-				unset($process[$key][$k]);
-				if (is_array($v)) {
-					$process[$key][stripslashes($k)] = $v;
-					$process[] = &$process[$key][stripslashes($k)];
-				} else {
-					$process[$key][stripslashes($k)] = ($filter ? $v : stripslashes($v));
-				}
-			}
-		}
+function remove_slashes(array $values, bool $filter = false): array {
+	$return = array();
+	foreach ($values as $key => $val) {
+		$return[stripslashes($key)] = (is_array($val)
+			? remove_slashes($val, $filter)
+			: ($filter ? $val : stripslashes($val))
+		);
 	}
+	return $return;
 }
 
 /** Escape or unescape string to use inside form [] */
@@ -245,7 +240,7 @@ function get_rows(string $query, ?Db $connection2 = null, string $error = "<p cl
 */
 function unique_array(?array $row, array $indexes) {
 	foreach ($indexes as $index) {
-		if (preg_match("~PRIMARY|UNIQUE~", $index["type"])) {
+		if (preg_match("~PRIMARY|UNIQUE~", $index["type"]) && !$index["partial"]) {
 			$return = array();
 			foreach ($index["columns"] as $key) {
 				if (!isset($row[$key])) { // NULL is ambiguous
@@ -335,7 +330,7 @@ function convert_fields(array $columns, array $fields, array $select = array()):
 */
 function cookie(string $name, ?string $value, int $lifetime = 2592000): void {
 	header(
-		"Set-Cookie: $name=" . urlencode($value)
+		"Set-Cookie: $name=" . rawurlencode($value)
 			. ($lifetime ? "; expires=" . gmdate("D, d M Y H:i:s", time() + $lifetime) . " GMT" : "")
 			. "; path=" . preg_replace('~\?.*~', '', $_SERVER["REQUEST_URI"])
 			. (HTTPS ? "; secure" : "")
@@ -476,7 +471,7 @@ function queries(string $query) {
 	if (!Queries::$start) {
 		Queries::$start = microtime(true);
 	}
-	Queries::$queries[] = (preg_match('~;$~', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query) . ";";
+	Queries::$queries[] = (driver()->delimiter != ';' ? $query : (preg_match('~;$~', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query) . ";");
 	return connection()->query($query);
 }
 
@@ -657,12 +652,13 @@ function dump_headers(string $identifier, bool $multi_table = false): string {
 * @param string[] $row
 */
 function dump_csv(array $row): void {
+	$tsv = $_POST["format"] == "tsv";
 	foreach ($row as $key => $val) {
-		if (preg_match('~["\n,;\t]|^0.|\.\d*0$~', $val) || $val === "") {
+		if (preg_match('~["\n]|^0[^.]|\.\d*0$|' . ($tsv ? '\t' : '[,;]|^$') . '~', $val)) {
 			$row[$key] = '"' . str_replace('"', '""', $val) . '"';
 		}
 	}
-	echo implode(($_POST["format"] == "csv" ? "," : ($_POST["format"] == "tsv" ? "\t" : ";")), $row) . "\r\n";
+	echo implode(($_POST["format"] == "csv" ? "," : ($tsv ? "\t" : ";")), $row) . "\r\n";
 }
 
 /** Apply SQL function
@@ -766,19 +762,35 @@ function rand_string(): string {
 }
 
 /** Format value to use in select
-* @param string|string[] $val
-* @param Field $field
+* @param string|string[]|list<string[]> $val
+* @param array{type: string} $field
 * @param ?numeric-string $text_length
 * @return string HTML
 */
 function select_value($val, string $link, array $field, ?string $text_length): string {
 	if (is_array($val)) {
 		$return = "";
-		foreach ($val as $k => $v) {
-			$return .= "<tr>"
-				. ($val != array_values($val) ? "<th>" . h($k) : "")
-				. "<td>" . select_value($v, $link, $field, $text_length)
-			;
+		if (array_filter($val, 'is_array') == array_values($val)) { // list of arrays
+			$keys = array();
+			foreach ($val as $v) {
+				$keys += array_fill_keys(array_keys($v), null);
+			}
+			foreach (array_keys($keys) as $k) {
+				$return .= "<th>" . h($k);
+			}
+			foreach ($val as $v) {
+				$return .= "<tr>";
+				foreach (array_merge($keys, $v) as $v2) {
+					$return .= "<td>" . select_value($v2, $link, $field, $text_length);
+				}
+			}
+		} else {
+			foreach ($val as $k => $v) {
+				$return .= "<tr>"
+					. ($val != array_values($val) ? "<th>" . h($k) : "")
+					. "<td>" . select_value($v, $link, $field, $text_length)
+				;
+			}
 		}
 		return "<table>$return</table>";
 	}
@@ -793,7 +805,7 @@ function select_value($val, string $link, array $field, ?string $text_length): s
 			$link = $val; // IE 11 and all modern browsers hide referrer
 		}
 	}
-	$return = adminer()->editVal($val, $field);
+	$return = adminer()->editVal(driver()->value($val, $field), $field);
 	if ($return !== null) {
 		if (!is_utf8($return)) {
 			$return = "\0"; // htmlspecialchars of binary data returns an empty string
@@ -807,7 +819,7 @@ function select_value($val, string $link, array $field, ?string $text_length): s
 }
 
 /** Check whether the field type is blob or equivalent
-* @param Field $field
+* @param array{type: string} $field
 */
 function is_blob(array $field): bool {
 	return preg_match('~blob|bytea|raw|file~', $field["type"]) && !in_array($field["type"], idx(driver()->structuredTypes(), lang('User types'), array()));
@@ -824,14 +836,14 @@ function is_mail(?string $email): bool {
 /** Check whether the string is URL address */
 function is_url(?string $string): bool {
 	$domain = '[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])'; // one domain component //! IDN
-	return preg_match("~^(https?)://($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string); //! restrict path, query and fragment characters
+	return preg_match("~^((https?):)?//($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string); //! restrict path, query and fragment characters
 }
 
 /** Check if field should be shortened
-* @param Field $field
+* @param array{type: string} $field
 */
 function is_shortable(array $field): bool {
-	return preg_match('~char|text|json|lob|geometry|point|linestring|polygon|string|bytea|hstore~', $field["type"]);
+	return !preg_match('~' . number_type() . '|date|time|year~', $field["type"]);
 }
 
 /** Split server into host and (port or socket)

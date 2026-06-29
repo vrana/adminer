@@ -354,17 +354,14 @@ if (!$columns && support("table")) {
 						$desc = "&desc%5B0%5D=1";
 						echo "<th id='th[" . h(bracket_escape($key)) . "]'>" . script("mixin(qsl('th'), {onmouseover: partial(columnMouse), onmouseout: partial(columnMouse, ' hidden')});", "");
 						$fun = apply_sql_function($val["fun"], $name); //! columns looking like functions
-						$sortable = isset($field["privileges"]["order"]) || $fun;
+						$sortable = isset($field["privileges"]["order"]) || $fun != $name;
 						echo ($sortable ? "<a href='" . h($href . ($order[0] == $column || $order[0] == $key ? $desc : '')) . "'>$fun</a>" : $fun); // $order[0] == $key - COUNT(*)
-						echo "<span class='column hidden'>";
-						if ($sortable) {
-							echo "<a href='" . h($href . $desc) . "' title='" . lang('descending') . "' class='text'> ↓</a>";
-						}
+						$menu = ($sortable ? "<a href='" . h($href . $desc) . "' title='" . lang('descending') . "' class='text'> ↓</a>" : '');
 						if (!$val["fun"] && isset($field["privileges"]["where"])) {
-							echo '<a href="#fieldset-search" title="' . lang('Search') . '" class="text jsonly"> =</a>';
-							echo script("qsl('a').onclick = partial(selectSearch, '" . js_escape($key) . "');");
+							$menu .= '<a href="#fieldset-search" title="' . lang('Search') . '" class="text jsonly"> =</a>';
+							$menu .= script("qsl('a').onclick = partial(selectSearch, '" . js_escape($key) . "');");
 						}
-						echo "</span>";
+						echo ($menu ? "<span class='column hidden'>$menu</span>" : "");
 					}
 					$functions[$key] = $val["fun"];
 					next($select);
@@ -418,7 +415,6 @@ if (!$columns && support("table")) {
 					if (isset($names[$key])) {
 						$column = current($select);
 						$field = (array) $fields[$key];
-						$val = driver()->value($val, $field);
 						if ($val != "" && (!isset($email_fields[$key]) || $email_fields[$key] != "")) {
 							$email_fields[$key] = (is_mail($val) ? $names[$key] : ""); //! filled e-mails can be contained on other pages
 						}
@@ -460,7 +456,8 @@ if (!$columns && support("table")) {
 						$html = select_value($val, $link, $field, $text_length);
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
 						$posted = idx(idx($_POST["val"], $unique_idf), bracket_escape($key));
-						$editable = !is_array($row[$key]) && is_utf8($html) && $rows[$n][$key] == $row[$key] && !$functions[$key] && !$field["generated"];
+						$update = idx($field["privileges"], "update");
+						$editable = !is_array($row[$key]) && is_utf8($html) && $rows[$n][$key] == $row[$key] && !$functions[$key] && !$field["generated"] && $update;
 						$type = (preg_match('~^(AVG|MIN|MAX)\((.+)\)~', $column, $match) ? $fields[idf_unescape($match[2])]["type"] : $field["type"]);
 						$text = preg_match('~text|json|lob~', $type);
 						$is_number = preg_match(number_type(), $type) || preg_match('~^(CHAR_LENGTH|ROUND|FLOOR|CEIL|TIME_TO_SEC|COUNT|SUM)\(~', $column);
@@ -470,10 +467,11 @@ if (!$columns && support("table")) {
 							echo ">" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>");
 						} else {
 							$long = strpos($html, "<i>…</i>");
-							echo " data-text='" . ($long ? 2 : ($text ? 1 : 0)) . "'"
-								. ($editable ? "" : " data-warning='" . h(lang('Use edit link to modify this value.')) . "'")
-								. ">$html"
-							;
+							echo ($update
+								? " data-text='" . ($long ? 2 : ($text ? 1 : 0)) . "'"
+									. ($editable ? "" : " data-warning='" . h(lang('Use edit link to modify this value.')) . "'")
+								: ""
+							) . ">$html";
 						}
 					}
 					next($select);
@@ -504,7 +502,7 @@ if (!$columns && support("table")) {
 						if (intval($found_rows) < max(1e4, 2 * ($page + 1) * $limit)) {
 							// slow with big tables
 							$found_rows = first(slow_query(count_rows($TABLE, $where, $is_group, $group)));
-						} else {
+						} elseif (JUSH == 'sql' || JUSH == 'pgsql') {
 							$exact_count = false;
 						}
 					}

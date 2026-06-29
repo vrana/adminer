@@ -73,5 +73,6 @@ qs('#form').onsubmit = () => {
 		'pl' => array('' => 'Edytuj wszystkie pola zawierające "_html" za pomocą edytora HTML TinyMCE i wyświetl kod HTML w wybranych'),
 		'ro' => array('' => 'Editați toate câmpurile care conțin "_html" cu ajutorul editorului HTML TinyMCE și afișați HTML-ul în select'),
 		'ja' => array('' => '列名が "_html" を含む列を TinyMCE の HTML エディタで編集し、編集結果の HTML コードを "選択" 画面に表示'),
+		'hr' => array('' => 'Uređuje sva polja koja sadrže "_html" pomoću HTML editora TinyMCE i prikazuje HTML u ispisu'),
 	);
 }

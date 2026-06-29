@@ -107,5 +107,6 @@ addEventListener('DOMContentLoaded', () => {
 		'de' => array('' => 'CodeMirror 5 verwenden für die Syntaxhervorhebung und <textarea> einschließlich der Überschrift von Schlüsselwörtern und Tabellen'),
 		'ja' => array('' => 'CodeMirror 5 を用い、キーワードやテーブルを含む構文や <textarea> を強調表示'),
 		'pl' => array('' => 'Użyj CodeMirror 5 do podświetlania składni i <textarea>, uwzględniając wcześniejsze wpisywanie słów kluczowych i tabel'),
+		'hr' => array('' => 'Koristi CodeMirror 5 za isticanje sintakse i <textarea>, uključujući dovršavanje ključnih riječi i tablica'),
 	);
 }

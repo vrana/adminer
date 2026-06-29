@@ -80,22 +80,11 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 						$link .= "&where" . urlencode("[" . bracket_escape($col) . "]") . "=" . urlencode($row[$j]);
 					}
 				}
-			} elseif (is_url($val)) {
-				$link = $val;
 			}
-			if ($val === null) {
-				$val = "<i>NULL</i>";
-			} elseif ($blobs[$key] && !is_utf8($val)) {
-				$val = "<i>" . lang('%d byte(s)', strlen($val)) . "</i>"; //! link to download
-			} else {
-				$val = h($val);
-				if ($types[$key] == 254) { // 254 - char
-					$val = "<code>$val</code>";
-				}
-			}
-			if ($link) {
-				$val = "<a href='" . h($link) . "'" . (is_url($link) ? target_blank() : '') . ">$val</a>";
-			}
+			$field = array(
+				'type' => ($blobs[$key] ? 'blob' : ($types[$key] == 254 ? 'char' : '')),
+			);
+			$val = select_value($val, $link, $field, null);
 			// https://dev.mysql.com/doc/dev/mysql-server/latest/field__types_8h.html
 			echo "<td" . ($types[$key] <= 9 || $types[$key] == 246 ? " class='number'" : "") . ">$val";
 		}
@@ -251,15 +240,18 @@ function process_field(array $field, array $type_field): array {
 * @param Field $field
 */
 function default_value(array $field): string {
-	$default = $field["default"];
+	if ($field["default"] === null) {
+		return "";
+	}
+	$default = str_replace("\r", "", $field["default"]);
 	$generated = $field["generated"];
-	return ($default === null ? "" : (in_array($generated, driver()->generated)
-		? (JUSH == "mssql" ? " AS ($default)" . ($generated == "VIRTUAL" ? "" : " $generated") . "" : " GENERATED ALWAYS AS ($default) $generated")
+	return (in_array($generated, driver()->generated)
+		? (JUSH == "mssql" ? " AS ($default)" . ($generated == "VIRTUAL" ? "" : " $generated") : " GENERATED ALWAYS AS ($default) $generated")
 		: " DEFAULT " . (!preg_match('~^GENERATED ~i', $default) && (preg_match('~char|binary|text|json|enum|set~', $field["type"]) || preg_match('~^(?![a-z])~i', $default))
 			? (JUSH == "sql" && preg_match('~text|json~', $field["type"]) ? "(" . q($default) . ")" : q($default)) // MySQL requires () around default value of text column
 			: str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", (JUSH == "sqlite" ? "($default)" : $default))
 		)
-	));
+	);
 }
 
 /** Get type class to use in CSS
@@ -330,7 +322,9 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 				? html_select("fields[$i][generated]", array_merge(array("", "DEFAULT"), driver()->generated), $field["generated"]) . " "
 				: checkbox("fields[$i][generated]", 1, $field["generated"], "", "", "", "label-default")
 			);
-			echo "<input name='fields[$i][default]' value='" . h($field["default"]) . "' aria-labelledby='label-default'>";
+			$attrs = " name='fields[$i][default]' aria-labelledby='label-default'";
+			$value = h($field["default"]);
+			echo (preg_match('~\n~', $field["default"]) ? "<textarea$attrs rows='2' cols='30' style='vertical-align: bottom;'>\n$value</textarea>" : "<input$attrs value='$value'>"); // \n to preserve the leading newline
 			echo (support("comment") ? "<td$comment_class><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' data-maxlength='" . (min_version(5.5) ? 1024 : 255) . "' aria-labelledby='label-comment'>" : "");
 		}
 		echo "<td>";
@@ -492,6 +486,7 @@ function format_foreign_key(array $foreign_key): string {
 		. " (" . implode(", ", array_map('Adminer\idf_escape', $foreign_key["target"])) . ")" //! reuse $name - check in older MySQL versions
 		. (preg_match("~^(" . driver()->onActions . ")\$~", $foreign_key["on_delete"]) ? " ON DELETE $foreign_key[on_delete]" : "")
 		. (preg_match("~^(" . driver()->onActions . ")\$~", $foreign_key["on_update"]) ? " ON UPDATE $foreign_key[on_update]" : "")
+		. ($foreign_key["deferrable"] ? " $foreign_key[deferrable]" : "")
 	;
 }
 

@@ -20,6 +20,7 @@ abstract class SqlDriver {
 
 	/** @var Db */ protected $conn;
 	/** @var int[][] */ protected $types = array(); // [$group => [$type => $maximum_unsigned_length, ...], ...]
+	/** @var string */ public $delimiter = ";";
 	/** @var string[] */ public $insertFunctions = array(); // ["$type|$type2" => "$function/$function2"] functions used in edit and insert
 	/** @var string[] */ public $editFunctions = array(); // ["$type|$type2" => "$function/$function2"] functions used in edit only
 	/** @var list<string> */ public $unsigned = array(); // number variants
@@ -191,7 +192,7 @@ abstract class SqlDriver {
 	}
 
 	/** Convert value returned by database to actual value
-	* @param Field $field
+	* @param array{type: string} $field
 	*/
 	function value(?string $val, array $field): ?string {
 		return (method_exists($this->conn, 'value') ? $this->conn->value($val, $field) : $val);
@@ -215,14 +216,14 @@ abstract class SqlDriver {
 	}
 
 	/** Get tables this table inherits from
-	* @return list<string>
+	* @return list<array{table: string, ns: string}>
 	*/
 	function inheritsFrom(string $table): array {
 		return array();
 	}
 
 	/** Get inherited tables
-	* @return list<string>
+	* @return list<array{table: string, ns: string}>
 	*/
 	function inheritedTables(string $table): array {
 		return array();
@@ -269,10 +270,10 @@ abstract class SqlDriver {
 		// MariaDB contains CHECK_CONSTRAINTS.TABLE_NAME, MySQL and PostrgreSQL not
 		return get_key_vals("SELECT c.CONSTRAINT_NAME, CHECK_CLAUSE
 FROM INFORMATION_SCHEMA.CHECK_CONSTRAINTS c
-JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS t ON c.CONSTRAINT_SCHEMA = t.CONSTRAINT_SCHEMA AND c.CONSTRAINT_NAME = t.CONSTRAINT_NAME
+JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS t ON c.CONSTRAINT_SCHEMA = t.CONSTRAINT_SCHEMA AND c.CONSTRAINT_NAME = t.CONSTRAINT_NAME" . ($this->conn->flavor == 'maria' ? " AND c.TABLE_NAME = t.TABLE_NAME" : "") . "
 WHERE c.CONSTRAINT_SCHEMA = " . q($_GET["ns"] != "" ? $_GET["ns"] : DB) . "
-AND t.TABLE_NAME = " . q($table) . "
-AND CHECK_CLAUSE NOT LIKE '% IS NOT NULL'", $this->conn); // ignore default IS NOT NULL checks in PostrgreSQL
+AND t.TABLE_NAME = " . q($table) . (JUSH == "pgsql" ? "
+AND CHECK_CLAUSE NOT LIKE '% IS NOT NULL'" : ""), $this->conn); // ignore default IS NOT NULL checks in PostrgreSQL
 	}
 
 	/** Get all fields in the current schema

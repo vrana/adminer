@@ -75,5 +75,6 @@ ORDER BY s.ordinal_position", null, "") as $row
 		'de' => array('' => 'Links zu Tabellen anzeigen die auf die aktuelle Zeile verweisen, wie im Adminer Editor'),
 		'ja' => array('' => 'Adminer Editor と同様に、カレント行を参照しているテーブルへのリンクを表示'),
 		'pl' => array('' => 'Wyświetlaj linki do tabel odnoszących się do bieżącego wiersza, tak samo jak w Edytorze administratora'),
+		'hr' => array('' => 'Prikazuje veze na tablice koje referenciraju trenutni redak, kao u Adminer Editoru'),
 	);
 }

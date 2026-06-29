@@ -75,5 +75,10 @@ class AdminerLoginOtp extends Adminer\Plugin {
 		'ja' => array(
 			'' => 'ログイン時にワンタイムパスワード (二要素認証) が必要',
 		),
+		'hr' => array(
+			'' => 'Jednokratna lozinka (dvofaktorska autentifikacija) potrebna pri prijavi',
+			'One Time Password' => 'Jednokratna lozinka',
+			'Invalid OTP.' => 'Nevažeća jednokratna lozinka.',
+		),
 	);
 }

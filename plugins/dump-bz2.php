@@ -43,5 +43,6 @@ class AdminerDumpBz2 extends Adminer\Plugin {
 		'pl' => array('' => 'Zrzuć do formatu Bzip2'),
 		'ro' => array('' => 'Dump în format Bzip2'),
 		'ja' => array('' => 'Bzip2 形式でエクスポート'),
+		'hr' => array('' => 'Izvoz u Bzip2 format'),
 	);
 }

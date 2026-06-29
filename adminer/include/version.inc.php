@@ -2,4 +2,4 @@
 
 namespace Adminer;
 
-const VERSION = "5.4.2-dev";
+const VERSION = "5.4.3-dev";

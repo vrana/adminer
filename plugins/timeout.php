@@ -50,5 +50,10 @@ class AdminerTimeout extends Adminer\Plugin {
 			'Queries timeout' => 'Timeout dotazů',
 			'seconds' => 'sekund',
 		),
+		'hr' => array(
+			'' => 'Postavljanje vremenskog ograničenja upita',
+			'Queries timeout' => 'Vremensko ograničenje upita',
+			'seconds' => 'sekundi',
+		),
 	);
 }

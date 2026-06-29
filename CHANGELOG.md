@@ -1,4 +1,43 @@
 ## Adminer dev
+- Tables overview: allow sorting (bug #1231)
+- Select: Disable Ctrl+click inline edit without UPDATE privilege
+- Select: Display NULL in column title
+- Export: Remember unchecked objects (regression from 5.0.6)
+- Foreign key: Display new field in case of an error
+- PostgreSQL: Order NULL last
+- PostgreSQL: Display all SQL command warnings and only once
+- PostgreSQL: Export serial as serial, not nextval()
+- PostgreSQL: Export schema in nextval()
+- PostgreSQL: Export schema in REFERENCES
+- Editor: Display tinyint(1) as checkbox (bug #1246, regression from 5.4.2)
+- Croatian translation
+
+## Adminer 5.4.2 (released 2026-02-08)
+- Avoid denial-of-service via version check (GHSA-q4f2-39gr-45jh, regression from 4.6.2)
+- Pretty print JSON in edit
+- Support multiline generated values in alter table
+- Link //domain.tld values
+- Improve print of nested tables
+- Hide sort links on unsortable columns
+- Display uneditable fields in edit form
+- Shorten all but numeric and date types in select
+- Fix escaping spaces in cookie value (bug #1208)
+- Don't quote comma in TSV export (bug #1238)
+- MariaDB: Don't display checks with the same name from another table (bug #1135)
+- PostgreSQL: Offer foreign keys in create table
+- PostgreSQL: Add missing parentheses to CHECK export
+- PostgreSQL: Allow creating NOT DEFERRABLE foreign keys
+- PostgreSQL: Remove duplicate DEFERRABLE in foreign key export
+- PostgreSQL: Add schema to sequence and view export
+- PostgreSQL: Fix definition of complex generated columns
+- PostgreSQL: Mark unique partial indexes as unique (bug #1172)
+- PostgreSQL: Fix namespace in inheritance links (bug #1221)
+- non-PostgreSQL: Display NOT NULL checks (bug #1237)
+- ClickHouse: Fix offset (bug #1188)
+- ClickHouse: Fix list of tables (bug #1176)
+- Plugins: Methods showVariables() and showStatus() (bug #1157)
+- Plugins: Allow to be in any namespace
+- New plugin: IGDB driver
 
 ## Adminer 5.4.1 (released 2025-09-26)
 - SQL command: Unlink NULL primary keys

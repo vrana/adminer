@@ -42,5 +42,6 @@ class AdminerLoginIp extends Adminer\Plugin {
 		'pl' => array('' => 'Sprawdzaj adres IP i zezwakaj na puste hasło'),
 		'ro' => array('' => 'Verificați adresa IP și permiteți parola goală'),
 		'ja' => array('' => 'IP アドレスの確認、及び空パスワードの許可'),
+		'hr' => array('' => 'Provjerava IP adresu i dopušta praznu lozinku'),
 	);
 }

@@ -64,5 +64,6 @@ class AdminerDumpJson extends Adminer\Plugin {
 		'pl' => array('' => 'Zrzuć do formatu JSON'),
 		'ro' => array('' => 'Dump în format JSON'),
 		'ja' => array('' => 'JSON 形式でエクスポート'),
+		'hr' => array('' => 'Izvoz u JSON format'),
 	);
 }

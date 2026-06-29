@@ -52,5 +52,6 @@ class AdminerDumpPhp extends Adminer\Plugin {
 		'pl' => array('' => 'Zrzucaj do formatu PHP'),
 		'ro' => array('' => 'Dump în format PHP'),
 		'ja' => array('' => 'PHP 形式でエクスポート'),
+		'hr' => array('' => 'Izvoz u PHP format'),
 	);
 }

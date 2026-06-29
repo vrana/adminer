@@ -96,29 +96,15 @@ function cookie(assign, days) {
 
 /** Verify current Adminer version
 * @param string
-* @param string own URL base
-* @param string
 */
-function verifyVersion(current, url, token) {
+function verifyVersion(current) {
 	cookie('adminer_version=0', 1);
-	const iframe = document.createElement('iframe');
-	iframe.src = 'https://www.adminer.org/version/?current=' + current;
-	iframe.frameBorder = 0;
-	iframe.marginHeight = 0;
-	iframe.scrolling = 'no';
-	iframe.style.width = '7ex';
-	iframe.style.height = '1.25em';
-	iframe.style.display = 'none';
-	addEventListener('message', event => {
-		if (event.origin == 'https://www.adminer.org') {
-			const match = /version=(.+)/.exec(event.data);
-			if (match) {
-				cookie('adminer_version=' + match[1], 1);
-				ajax(url + 'script=version', () => { }, event.data + '&token=' + token);
-			}
-		}
-	}, false);
-	qs('#version').appendChild(iframe);
+	// do not send X-Requested-With to avoid preflight
+	fetch('https://www.adminer.org/version/?current=' + current).then(async response => {
+		const json = await response.json();
+		cookie('adminer_version=' + (json.version || current), 7); // empty if there's no newer version
+		qs('#version').textContent = json.version;
+	});
 }
 
 /** Get value of select

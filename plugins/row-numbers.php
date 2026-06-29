@@ -13,12 +13,16 @@ class AdminerRowNumbers extends Adminer\Plugin {
 	}
 
 	function backwardKeysPrint($backwardKeys, $row) {
-		static $n = $_GET["page"] * Adminer\adminer()->selectLimitProcess();
+		static $n;
+		if (!$n) {
+			$n = $_GET["page"] * Adminer\adminer()->selectLimitProcess();
+		}
 		$n++;
 		echo "$n.\n";
 	}
 
 	protected $translations = array(
 		'cs' => array('' => 'Zobrazí čísla řádek ve výpisu'),
+		'hr' => array('' => 'Prikazuje brojeve redaka u ispisu'),
 	);
 }
