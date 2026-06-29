@@ -1,4 +1,5 @@
 <?php
+
 /** Driver for https://api-docs.igdb.com/
 * @link https://demo.adminer.org/igdb/?igdb=IGDB&db=api
 * username: your Client-ID
