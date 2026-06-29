@@ -22,5 +22,13 @@ If downloaded from Git then run: `git submodule update --init`
 - `lang.php` - Update translations
 - `tests/*.html` - Katalon Recorder test suites
 
+## Composer Scripts
+Install the development tools first with `composer install`.
+
+- `composer initialize` - Update Git submodules
+- `composer phpcs` - Run the coding standard check using [phpcs.xml](/phpcs.xml)
+- `composer phpcbf` - Automatically fix coding standard issues where possible using [phpcs.xml](/phpcs.xml)
+- `composer phpstan` - Run PHPStan using `phpstan.neon`
+
 ## Plugins
 There are several plugins distributed with Adminer, as well as many user-contributed plugins listed on the [Adminer Plugins page](https://www.adminer.org/plugins/).

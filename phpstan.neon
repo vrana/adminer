@@ -60,8 +60,7 @@ parameters:
 		- adminer/sqlite.php
 
 	phpVersion:
-		min: 70100
-		max: 80499
+		70400
 
 	typeAliases:
 		TableStatus: "array{Name:string, Engine?:?string, Comment?:string, Oid?:numeric-string, Rows?:?numeric-string, Collation?:string, Auto_increment?:?numeric-string, Data_length?:numeric-string, Index_length?:numeric-string, Data_free?:numeric-string, Create_options?:string, partition?:numeric-string, nspname?:string}"

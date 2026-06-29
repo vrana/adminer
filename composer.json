@@ -32,12 +32,19 @@
     "require": {
         "php": ">=7.4"
     },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.11"
+    },
     "scripts": {
         "check": [
-            "phpcs",
-            "phpstan analyse -c phpstan.neon"
+            "@phpcs",
+            "@phpstan"
         ],
         "compile": "@php compile.php",
-        "clean": "rm -f adminer*.php editor*.php"
+        "clean": "rm -f adminer*.php editor*.php",
+        "initialize": "git submodule update --init --recursive",
+        "phpcbf": "sh -c 'if [ -x vendor/bin/phpcbf ]; then exec vendor/bin/phpcbf --standard=phpcs.xml .; fi; bin=\"$(composer global config bin-dir --absolute 2>/dev/null)/phpcbf\"; if [ -x \"$bin\" ]; then exec \"$bin\" --standard=phpcs.xml .; fi; exec phpcbf --standard=phpcs.xml .'",
+        "phpcs": "sh -c 'if [ -x vendor/bin/phpcs ]; then exec vendor/bin/phpcs --standard=phpcs.xml --report=full .; fi; bin=\"$(composer global config bin-dir --absolute 2>/dev/null)/phpcs\"; if [ -x \"$bin\" ]; then exec \"$bin\" --standard=phpcs.xml --report=full .; fi; exec phpcs --standard=phpcs.xml --report=full .'",
+        "phpstan": "sh -c 'if [ -x vendor/bin/phpstan ]; then exec vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M; fi; bin=\"$(composer global config bin-dir --absolute 2>/dev/null)/phpstan\"; if [ -x \"$bin\" ]; then exec \"$bin\" analyse -c phpstan.neon --memory-limit=512M; fi; exec phpstan analyse -c phpstan.neon --memory-limit=512M'"
     }
 }
