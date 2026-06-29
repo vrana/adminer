@@ -31,7 +31,7 @@ if (!defined('Adminer\DRIVER')) {
 					null,
 					(is_numeric($port) ? intval($port) : ini_get("mysqli.default_port")),
 					(is_numeric($port) ? null : $port),
-					($ssl ? ($ssl['verify'] !== false ? 2048 : 64) : 0) // 2048 - MYSQLI_CLIENT_SSL, 64 - MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT (not available before PHP 5.6.16)
+					($ssl ? (isset($ssl['verify']) && $ssl['verify'] === false ? 64 : 2048) : 0) // 2048 - MYSQLI_CLIENT_SSL, 64 - MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT (not available before PHP 5.6.16)
 				);
 				$this->options(MYSQLI_OPT_LOCAL_INFILE, 0);
 				return ($return ? '' : $this->error);

@@ -2,7 +2,7 @@
 
 namespace Adminer;
 
-if (substr(VERSION, -4) != '-dev') {
+if (defined('Adminer\VERSION') && substr(VERSION, -4) != '-dev') {
 	if ($_SERVER["HTTP_IF_MODIFIED_SINCE"]) {
 		header("HTTP/1.1 304 Not Modified");
 		exit;

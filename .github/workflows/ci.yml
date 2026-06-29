@@ -12,8 +12,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: php-actions/composer@v6
-      - uses: php-actions/phpcs@v1
-        with:
-          path: .
-          standard: phpcs.xml
-      - uses: php-actions/phpstan@v3
+      - run: composer phpcs
+      - run: composer phpstan

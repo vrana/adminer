@@ -9,7 +9,6 @@ parameters:
 		- "~Function Adminer\\\\queries\\(\\) never returns Adminer\\\\Result~" # mysqli_result
 
 		# not real problems
-		- identifier: include.fileNotFound # includes in include/ relative from index.php
 		- "~^Function (set_magic_quotes_runtime|mysql_)~" # PHP < 7 functions
 		- "~an unknown class OCI-?Lob~" # this looks like PHPStan bug
 		- "~^Variable \\$error might not be defined~" # declared in bootstrap.inc.php
@@ -22,7 +21,6 @@ parameters:
 		- "~expects bool~" # truthy values
 		- "~fread expects int<1, max>, 100000~" # 1e6
 		- "~'strlen' given~" # used as a bool callback
-		- "~between int<70100~" # PHP_VERSION_ID check
 
 		-
 			message: "~ type specified~" # duplicate functions and methods
@@ -31,9 +29,6 @@ parameters:
 				- adminer/drivers/*
 
 		# it probably doesn't like $ar[$key] instead of isset($ar[$key]) and thinks that $ar[$key] is always set
-		- identifier: identical.alwaysFalse
-		- identifier: notEqual.alwaysFalse
-		- identifier: notIdentical.alwaysTrue
 		- identifier: booleanNot.alwaysTrue
 		- identifier: booleanNot.alwaysFalse
 		- identifier: booleanAnd.alwaysFalse
@@ -46,7 +41,7 @@ parameters:
 		- identifier: isset.offset
 		- identifier: deadCode.unreachable
 		- "~Function Adminer\\\\get_driver\\(\\) never returns null~"
-		- "~on array\\{}~"
+		- "~Strict comparison using === between .* will always evaluate to false\\.~"
 
 	paths:
 		- adminer/drivers/mysql.inc.php # other drivers inherit the annotations so we take them from here
@@ -58,6 +53,13 @@ parameters:
 		- adminer/designs.php
 		- adminer/elastic.php
 		- adminer/sqlite.php
+
+	parallel:
+		jobSize: 20
+		processTimeout: 600.0
+		maximumNumberOfProcesses: 1
+		minimumNumberOfJobsPerProcess: 2
+		buffer: 134217728
 
 	phpVersion:
 		70400
