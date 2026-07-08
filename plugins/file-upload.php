@@ -31,7 +31,7 @@ class AdminerFileUpload extends Adminer\Plugin {
 		if (preg_match('~(.*)_path$~', $field["field"], $regs)) {
 			$table = ($_GET["edit"] != "" ? $_GET["edit"] : $_GET["select"]);
 			$name = $field["field"];
-			if ($_FILES["fields"]["error"][$name] || !preg_match("~(\\.($this->extensions))?\$~", $_FILES["fields"]["name"][$name], $regs2)) {
+			if ($_FILES["fields"]["error"][$name] || !preg_match("~(\\.($this->extensions))\$~", $_FILES["fields"]["name"][$name], $regs2)) {
 				return false;
 			}
 			//! unlink old
