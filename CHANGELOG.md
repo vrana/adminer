@@ -6,6 +6,7 @@
 - SQLite: Disallow ATTACH commands (GHSA-q4f2-39gr-45jh)
 - SQLite: Disallow VACUUM INTO commands (GHSA-gmx3-g29w-77wf)
 - SQLite: Check filename before deleting (GHSA-6pg3-chwq-wgqc)
+- Avoid unserialize() in brute force protection (bug #1289)
 - Tables overview: allow sorting (bug #1231)
 - Select: Disable Ctrl+click inline edit without UPDATE privilege
 - Select: Display NULL in column title
