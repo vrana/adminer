@@ -1,5 +1,6 @@
 ## Adminer dev
 - Check Sec-Fetch-Site header (GHSA-33j4-hc95-pggg)
+- SQLite: Disallow ATTACH commands (GHSA-q4f2-39gr-45jh)
 - Tables overview: allow sorting (bug #1231)
 - Select: Disable Ctrl+click inline edit without UPDATE privilege
 - Select: Display NULL in column title

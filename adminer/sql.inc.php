@@ -118,7 +118,7 @@ if (!$error && $_POST) {
 						$q = substr($query, 0, $pos + ($delimiter[0] == "\n" ? 3 : 0)); // 3 - pass "\n\\." to PostgreSQL COPY
 						$commands++;
 						$print = "<pre id='sql-$commands'><code class='jush-" . JUSH . "'>" . adminer()->sqlCommandQuery($q) . "</code></pre>\n";
-						if (JUSH == "sqlite" && preg_match("~^$space*+ATTACH\\b~i", $q, $match)) {
+						if (JUSH == "sqlite" && preg_match("~^$space*+ATTACH\\b~i", $q, $match) !== 0) {
 							// PHP doesn't support setting SQLITE_LIMIT_ATTACHED
 							echo $print;
 							echo "<p class='error'>" . lang('ATTACH queries are not supported.') . "\n";
