@@ -1,5 +1,6 @@
 ## Adminer dev
 - Check Sec-Fetch-Site header (GHSA-33j4-hc95-pggg)
+- Escape REQUEST_URI (GHSA-c533-9qwm-8w5h, bug #1298)
 - Validate server (GHSA-r4x9-5m63-3vxw)
 - Validate server version (GHSA-h6jr-7pr6-grgj)
 - SQLite: Disallow ATTACH commands (GHSA-q4f2-39gr-45jh)
