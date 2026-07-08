@@ -381,6 +381,9 @@ if (isset($_GET["sqlite"])) {
 	function drop_databases($databases) {
 		connection()->attach(":memory:", '', ''); // to unlock file, doesn't work in PDO on Windows
 		foreach ($databases as $db) {
+			if (!check_sqlite_name($db)) {
+				return false;
+			}
 			if (!@unlink($db)) {
 				connection()->error = lang('File exists.');
 				return false;
