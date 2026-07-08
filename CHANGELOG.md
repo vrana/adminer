@@ -1,5 +1,6 @@
 ## Adminer dev
 - Check Sec-Fetch-Site header (GHSA-33j4-hc95-pggg)
+- Validate server (GHSA-r4x9-5m63-3vxw)
 - SQLite: Disallow ATTACH commands (GHSA-q4f2-39gr-45jh)
 - Tables overview: allow sorting (bug #1231)
 - Select: Disable Ctrl+click inline edit without UPDATE privilege
