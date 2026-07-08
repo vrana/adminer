@@ -287,7 +287,7 @@ Lang::$translations = array(
 	'Vacuum' => 'Vacuum',
 	'overwrite' => 'überschreiben',
 	'DB' => 'DB',
-	'ATTACH queries are not supported.' => 'ATTACH Abfragen werden nicht unterstützt.',
+	'%s queries are not supported.' => '%s Abfragen werden nicht unterstützt.',
 	'Warnings' => 'Warnungen',
 	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer unterstützt den Zugriff auf eine Datenbank ohne Passwort nicht, <a href="https://www.adminer.org/de/password/"%s>mehr Informationen</a>.',
 	'Full table scan' => 'Vollständige Überprüfung der Tabelle',

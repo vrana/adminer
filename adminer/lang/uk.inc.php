@@ -316,7 +316,7 @@ Lang::$translations = array(
 	'Modify' => 'Змінити',
 	'Load more data' => 'Завантажити ще дані',
 	'Loading' => 'Завантаження',
-	'ATTACH queries are not supported.' => 'ATTACH-запити не підтримуються.',
+	'%s queries are not supported.' => '%s-запити не підтримуються.',
 	'Warnings' => 'Попередження',
 	'Limit rows' => 'Обмеження рядків',
 	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer не підтримує доступ до бази даних без пароля, <a href="https://www.adminer.org/en/password/"%s>більше інформації</a>.',

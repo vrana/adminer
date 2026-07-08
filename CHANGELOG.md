@@ -3,6 +3,7 @@
 - Validate server (GHSA-r4x9-5m63-3vxw)
 - Validate server version (GHSA-h6jr-7pr6-grgj)
 - SQLite: Disallow ATTACH commands (GHSA-q4f2-39gr-45jh)
+- SQLite: Disallow VACUUM INTO commands (GHSA-gmx3-g29w-77wf)
 - Tables overview: allow sorting (bug #1231)
 - Select: Disable Ctrl+click inline edit without UPDATE privilege
 - Select: Display NULL in column title
