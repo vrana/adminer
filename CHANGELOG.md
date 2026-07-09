@@ -1,4 +1,4 @@
-## Adminer dev
+## Adminer 5.4.3 (released 2026-07-09)
 - Check Sec-Fetch-Site header (GHSA-33j4-hc95-pggg)
 - Escape REQUEST_URI (GHSA-c533-9qwm-8w5h, bug #1298)
 - Validate server (GHSA-r4x9-5m63-3vxw)
