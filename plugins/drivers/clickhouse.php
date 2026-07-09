@@ -25,7 +25,7 @@ if (isset($_GET["clickhouse"])) {
 					'max_redirects' => 0,
 				))));
 
-				if ($file === false || !preg_match('~^HTTP/[0-9.]+ 403~i', http_get_last_response_headers()[0]))
+				if ($file === false || preg_match('~^HTTP/[0-9.]+ 403~i', version_compare(PHP_VERSION, '8.4.0', '<') ? $http_response_header[0] : http_get_last_response_headers()[0])) {
 					$this->error = lang('Invalid credentials.');
 					return false;
 				}
