@@ -25,7 +25,12 @@ if (isset($_GET["clickhouse"])) {
 					'max_redirects' => 0,
 				))));
 
-				if ($file === false || preg_match('~^HTTP/[0-9.]+ 403~i', function_exists('http_get_last_response_headers') ? http_get_last_response_headers()[0] : $http_response_header[0])) {
+				if (function_exists('http_get_last_response_headers')) {
+				    $tmp_http_response_header = http_get_last_response_headers();
+				} else {
+				    $tmp_http_response_header = $http_response_header;
+				}
+				if ($file === false || preg_match('~^HTTP/[0-9.]+ 403~i', $tmp_http_response_header[0])) {
 					$this->error = lang('Invalid credentials.');
 					return false;
 				}
