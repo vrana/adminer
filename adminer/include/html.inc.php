@@ -218,7 +218,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 	if (is_array($value) && !$function) {
 		$function = "json";
 	}
-	$json = ($function == "json" || preg_match('~^jsonb?$~', $field["type"]));
+	$json = ($function == "json" || preg_match('~^jsonb?$~', $field["full_type"]));
 	if ($json && $value != '' && (JUSH != "pgsql" || $field["type"] != "json")) {
 		$value = json_encode(is_array($value) ? $value : json_decode($value), 128 | 64 | 256); // 128 - JSON_PRETTY_PRINT, 64 - JSON_UNESCAPED_SLASHES, 256 - JSON_UNESCAPED_UNICODE available since PHP 5.4
 	}

@@ -297,13 +297,13 @@ class Adminer {
 	/** Value printed in select table
 	* @param ?string $val HTML-escaped value to print
 	* @param ?string $link link to foreign key
-	* @param array{type: string} $field
+	* @param array{type: string, full_type?: string} $field
 	* @param string $original original value before applying editVal() and escaping
 	*/
 	function selectVal(?string $val, ?string $link, array $field, ?string $original): string {
 		$return = ($val === null ? "<i>NULL</i>"
 			: (preg_match("~char|binary|boolean~", $field["type"]) && !preg_match("~var~", $field["type"]) ? "<code>$val</code>"
-			: (preg_match('~json~', $field["type"]) ? "<code class='jush-js'>$val</code>"
+			: (preg_match('~^jsonb?$~', $field["full_type"]) ? "<code class='jush-js'>$val</code>"
 			: $val)
 		));
 		if (is_blob($field) && !is_utf8($val)) {

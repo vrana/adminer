@@ -1,4 +1,5 @@
 ## Adminer dev
+- PostgreSQL: Fix editing jsonb[] columns (bug #1300, regression from 5.4.2)
 
 ## Adminer 5.4.3 (released 2026-07-09)
 - Check Sec-Fetch-Site header (GHSA-33j4-hc95-pggg)
