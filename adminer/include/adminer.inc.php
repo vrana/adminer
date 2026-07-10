@@ -1016,15 +1016,16 @@ class Adminer {
 			$actions = array();
 			if (DB == "" || !$missing) {
 				if (support("sql")) {
-					$actions[] = "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"])) . ">" . lang('SQL command') . "</a>";
-					$actions[] = "<a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>";
+					$actions['sql'] = "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"])) . ">" . lang('SQL command') . "</a>";
+					$actions['import'] = "<a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>";
 				}
-				$actions[] = "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>";
+				$actions['dump'] = "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>";
 			}
 			$in_db = $_GET["ns"] !== "" && !$missing && DB != "";
 			if ($in_db && function_exists('Adminer\alter_table')) {
-				$actions[] = '<a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create table') . "</a>";
+				$actions['create'] = '<a href="' . h(ME) . 'create="' . bold($_GET["create"] === "") . ">" . lang('Create table') . "</a>";
 			}
+			$actions = adminer()->menuActions($actions, $missing);
 			echo ($actions ? "<p class='links'>\n" . implode("\n", $actions) . "\n" : "");
 			if ($in_db) {
 				if ($tables) {
@@ -1110,6 +1111,14 @@ class Adminer {
 			}
 		}
 		echo "</p></form>\n";
+	}
+
+	/** Print table list in menu
+	* @param string[] $actions
+	* @return string[]
+	*/
+	function menuActions(array $actions, string $missing): array {
+		return $actions;
 	}
 
 	/** Print table list in menu
