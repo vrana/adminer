@@ -36,6 +36,9 @@
 - Shorten all but numeric and date types in select
 - Fix escaping spaces in cookie value (bug #1208)
 - Don't quote comma in TSV export (bug #1238)
+- Autocomplete: fix in empty textarea (bug #1173)
+- Prolong printed SQL query to 10000 characters (bug #1186)
+- MySQL: Use information_schema to get routine definition (bug #1179)
 - MariaDB: Don't display checks with the same name from another table (bug #1135)
 - PostgreSQL: Offer foreign keys in create table
 - PostgreSQL: Add missing parentheses to CHECK export
