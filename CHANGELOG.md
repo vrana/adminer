@@ -1,4 +1,5 @@
 ## Adminer dev
+- MySQL: Preserve DETERMINISTIC and DATA ACCESS in routine definition (regression from 5.4.2)
 - PostgreSQL: Fix editing jsonb[] columns (bug #1300, regression from 5.4.2)
 
 ## Adminer 5.4.3 (released 2026-07-09)
