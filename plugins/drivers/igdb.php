@@ -40,9 +40,9 @@ if (isset($_GET["igdb"])) {
 				'content' => $query,
 				'ignore_errors' => true,
 			)));
-			$response = file_get_contents("https://api.igdb.com/v4/$endpoint", false, $context);
+			list($response, $status) = get_url("https://api.igdb.com/v4/$endpoint", $context);
 			$return = json_decode($response, true);
-			if ($http_response_header[0] != 'HTTP/1.1 200 OK') {
+			if ($status != 200) {
 				if (is_array($return)) {
 					foreach (is_array($return[0]) ? $return : array($return) as $rows) {
 						foreach ($rows as $key => $val) {

@@ -13,7 +13,7 @@ if (isset($_GET["clickhouse"])) {
 			private $url;
 
 			function rootQuery($db, $query) {
-				$file = @file_get_contents("$this->url/?database=$db", false, stream_context_create(array('http' => array(
+				list($file, $status) = get_url("$this->url/?database=$db", stream_context_create(array('http' => array(
 					'method' => 'POST',
 					'content' => $query,
 					'header' => array(
@@ -25,7 +25,7 @@ if (isset($_GET["clickhouse"])) {
 					'max_redirects' => 0,
 				))));
 
-				if ($file === false || preg_match('~^HTTP/[0-9.]+ 403~i', $http_response_header[0])) {
+				if ($file === false || $status == 403) {
 					$this->error = lang('Invalid credentials.');
 					return false;
 				}
@@ -51,7 +51,7 @@ if (isset($_GET["clickhouse"])) {
 				// 400 == Syntax error
 				// 404 == Unknown expression identifier
 				// 500 == Column 'x' is not under aggregate function and not in GROUP BY keys
-				if (preg_match('~^HTTP/[0-9.]+ [45]~i', $http_response_header[0])) {
+				if (preg_match('~^[45]~', $status)) {
 					$this->error = $return['exception'];
 					return false;
 				}

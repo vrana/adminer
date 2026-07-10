@@ -16,7 +16,7 @@ if (isset($_GET["elastic"])) {
 			 * @return array|false
 			 */
 			function rootQuery($path, $content = null, $method = 'GET') {
-				$file = @file_get_contents("$this->url/" . ltrim($path, '/'), false, stream_context_create(array(
+				list($file, $status) = get_url("$this->url/" . ltrim($path, '/'), stream_context_create(array(
 					//~ 'ssl' => array('verify_peer' => false), // Elasticsearch responses in over 4 s on https://localhost:9200 without this line for me
 					'http' => array(
 						'method' => $method,
@@ -39,7 +39,7 @@ if (isset($_GET["elastic"])) {
 					return false;
 				}
 
-				if (!preg_match('~^HTTP/[0-9.]+ 2~i', $http_response_header[0])) {
+				if ($status[0] != 2) {
 					if (isset($return['error']['root_cause'][0]['type'])) {
 						$this->error = $return['error']['root_cause'][0]['type'] . ": " . $return['error']['root_cause'][0]['reason'];
 					} elseif (isset($return['status']) && isset($return['error']) && is_string($return['error'])) {

@@ -343,6 +343,21 @@ function cookie(string $name, ?string $value, int $lifetime = 2592000): void {
 	);
 }
 
+/** Get contents from URL
+* @param resource $context
+* @return array{0: string, 1: string} [$contents, $status]
+*/
+function get_url(string $url, $context): array {
+	$return = @file_get_contents($url, false, $context);
+	if (function_exists('http_get_last_response_headers')) {
+		$http_response_header = http_get_last_response_headers();
+	}
+	return array(
+		$return,
+		(preg_match('~^HTTP/[\d.]+ (\d+)~', $http_response_header[0], $match) ? $match[1] : ''),
+	);
+}
+
 /** Get settings stored in a cookie
 * @return mixed[]
 */

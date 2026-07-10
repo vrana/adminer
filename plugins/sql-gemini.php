@@ -36,7 +36,7 @@ class AdminerSqlGemini extends Adminer\Plugin {
 				"content" => '{"contents": [{"parts":[{"text": ' . json_encode($prompt) . '}]}]}',
 				"ignore_errors" => true,
 			)));
-			$response = json_decode(file_get_contents("https://generativelanguage.googleapis.com/v1beta/models/$this->model:generateContent?key=$this->apiKey", false, $context));
+			$response = json_decode(Adminer\get_url("https://generativelanguage.googleapis.com/v1beta/models/$this->model:generateContent?key=$this->apiKey", $context)[0]);
 			if (isset($response->error)) {
 				echo "-- " . $response->error->message;
 			} else {
