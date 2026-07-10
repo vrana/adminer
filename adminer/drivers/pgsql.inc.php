@@ -900,10 +900,7 @@ AND typelem = 0"
 	}
 
 	function set_schema($schema, $connection2 = null) {
-		if (!$connection2) {
-			$connection2 = connection();
-		}
-		$return = $connection2->query("SET search_path TO " . idf_escape($schema));
+		$return = connection($connection2)->query("SET search_path TO " . idf_escape($schema));
 		driver()->setUserTypes(types()); //! get types from current_schemas('t')
 		return $return;
 	}
