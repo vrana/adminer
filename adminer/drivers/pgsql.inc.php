@@ -261,7 +261,10 @@ if (isset($_GET["pgsql"])) {
 				"char|text" => "||",
 			);
 			if (min_version(12, 0, $connection)) {
-				$this->generated = array("STORED");
+				$this->generated[] = "STORED";
+				if (min_version(18, 0, $connection)) {
+					$this->generated[] = "VIRTUAL";
+				}
 			}
 			$this->partitionBy = array("RANGE", "LIST");
 			if (!$connection->flavor) {
@@ -520,7 +523,7 @@ ORDER BY a.attnum") as $row
 			if (in_array($row['attidentity'], array('a', 'd'))) {
 				$row['default'] = 'GENERATED ' . ($row['attidentity'] == 'd' ? 'BY DEFAULT' : 'ALWAYS') . ' AS IDENTITY';
 			}
-			$row["generated"] = ($row["attgenerated"] == "s" ? "STORED" : "");
+			$row["generated"] = idx(array("s" => "STORED", "v" => "VIRTUAL"), $row["attgenerated"], "");
 			$row["null"] = !$row["attnotnull"];
 			$row["auto_increment"] = $row['attidentity'] || preg_match('~^nextval\(~i', $row["default"])
 				|| preg_match('~^unique_rowid\(~', $row["default"]); // CockroachDB
@@ -657,7 +660,7 @@ ORDER BY conkey, conname") as $row
 					}
 					$alter[] = "ALTER $column TYPE$val[1]";
 					$sequence_name = $table . "_" . idf_unescape($val[0]) . "_seq";
-					$alter[] = "ALTER $column " . ($val[3] ? "SET" . preg_replace('~GENERATED ALWAYS(.*) STORED~', 'EXPRESSION\1', $val[3])
+					$alter[] = "ALTER $column " . ($val[3] ? "SET" . preg_replace('~GENERATED ALWAYS(.*) (STORED|VIRTUAL)~', 'EXPRESSION\1', $val[3])
 						: (isset($val[6]) ? "SET DEFAULT nextval(" . q($sequence_name) . ")"
 						: "DROP DEFAULT" //! change to DROP EXPRESSION with generated columns
 					));
