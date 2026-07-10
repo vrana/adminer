@@ -110,10 +110,13 @@ if ($_POST && !$error) {
 			$affected = 0;
 			$set = array();
 			if (!$_POST["delete"]) {
-				foreach ($_POST["fields"] as $name => $val) {
-					$val = process_input($fields[$name]);
-					if ($val !== null && ($_POST["clone"] || $val !== false)) {
-						$set[idf_escape($name)] = ($val !== false ? $val : idf_escape($name));
+				foreach ($fields as $name => $val) {
+					$idf = bracket_escape($name);
+					if (isset($_POST["fields"][$idf]) || $_FILES["fields-$idf"]) {
+						$val = process_input($fields[$name]);
+						if ($val !== null && ($_POST["clone"] || $val !== false)) {
+							$set[idf_escape($name)] = ($val !== false ? $val : idf_escape($name));
+						}
 					}
 				}
 			}
