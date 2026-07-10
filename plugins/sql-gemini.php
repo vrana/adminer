@@ -16,7 +16,7 @@ class AdminerSqlGemini extends Adminer\Plugin {
 	* @param string $apiKey The default key is shared with all users and may run out of quota; get your own API key at: https://aistudio.google.com/apikey
 	* @param string $model Available models: https://ai.google.dev/gemini-api/docs/models#available-models
 	*/
-	function __construct($apiKey = 'AIzaSyDWDbPjmvH9_hphsnY_yJGdue42qRMG3do', $model = "gemini-2.0-flash") {
+	function __construct($apiKey = 'AIzaSyDWDbPjmvH9_hphsnY_yJGdue42qRMG3do', $model = "gemini-3.1-flash-lite") {
 		$this->apiKey = $apiKey;
 		$this->model = $model;
 	}
