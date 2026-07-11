@@ -285,8 +285,7 @@ function editingClick(event) {
 		el = el && qs('input', el);
 	}
 	if (el) {
-		const name = el.name;
-		if (name == 'auto_increment_col') {
+		if (el.name == 'auto_increment_col') {
 			const field = el.form['fields[' + el.value + '][field]'];
 			if (!field.value) {
 				field.value = 'id';
