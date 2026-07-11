@@ -1,4 +1,4 @@
-## Adminer dev
+## Adminer 5.4.4 (released 2026-07-11)
 - Fix blob editing (bug #1251, regression from 5.4.2)
 - Speed up HTML escaping (bug #1147)
 - MySQL: Fix routine fields length (bug #1267, regression from 5.4.2)
