@@ -20,7 +20,6 @@ if ($_POST) {
 	}
 }
 $grants = array();
-$old_pass = "";
 
 if (isset($_GET["host"]) && ($result = connection()->query("SHOW GRANTS FOR " . q($USER) . "@" . q($_GET["host"])))) { //! use information_schema for MySQL 5 - column names in column privileges are not escaped
 	while ($row = $result->fetch_row()) {
@@ -33,9 +32,6 @@ if (isset($_GET["host"]) && ($result = connection()->query("SHOW GRANTS FOR " . 
 					$grants["$match[2]$val[2]"]["GRANT OPTION"] = true;
 				}
 			}
-		}
-		if (preg_match("~ IDENTIFIED BY PASSWORD '([^']+)~", $row[0], $match)) {
-			$old_pass = $match[1];
 		}
 	}
 }
@@ -58,7 +54,7 @@ if ($_POST && !$error) {
 			if ($old_user != $new_user) {
 				$created = queries((min_version(5) ? "CREATE USER" : "GRANT USAGE ON *.* TO") . " $new_user IDENTIFIED BY " . (min_version(8, 99) ? "" : "PASSWORD ") . q($pass));
 				$error = !$created;
-			} elseif ($pass != $old_pass) {
+			} elseif ($pass != "") {
 				queries("SET PASSWORD FOR $new_user = " . q($pass));
 			}
 		}
@@ -118,10 +114,6 @@ if ($row) {
 	$grants = $new_grants;
 } else {
 	$row = $_GET + array("host" => get_val("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', -1)")); // create user on the same domain by default
-	$row["pass"] = $old_pass;
-	if ($old_pass != "") {
-		$row["hashed"] = true;
-	}
 	$grants[(DB == "" || $grants ? "" : idf_escape(addcslashes(DB, "%_\\"))) . ".*"] = array();
 }
 
