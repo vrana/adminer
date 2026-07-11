@@ -320,6 +320,10 @@ if (!defined('Adminer\DRIVER')) {
 			);
 		}
 
+		function quoteBinary(string $s): string {
+			return "X" . q(bin2hex($s));
+		}
+
 		function warnings() {
 			$result = $this->conn->query("SHOW WARNINGS");
 			if ($result && $result->num_rows) {

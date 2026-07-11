@@ -3,6 +3,7 @@
 - Speed up HTML escaping (bug #1147)
 - MySQL: Fix routine fields length (bug #1267, regression from 5.4.2)
 - MySQL: Preserve DETERMINISTIC and DATA ACCESS in routine definition (regression from 5.4.2)
+- MySQL: Export binary data as hex (bug #1123)
 - MariaDB: Hash password in privileges (bug #1166, regression from 4.7.2)
 - MariaDB: Speed up getting checks (bug #1245, regression from 5.4.2)
 - MariaDB, PostgreSQL: Use CREATE OR REPLACE FUNCTION if possible

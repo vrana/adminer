@@ -885,10 +885,13 @@ class Adminer {
 								continue;
 							}
 							$field = $fields[$key];
-							$row[$key] = ($val !== null
-								? unconvert_field($field, preg_match(number_type(), $field["type"]) && !preg_match('~\[~', $field["full_type"]) && is_numeric($val) ? $val : q(($val === false ? 0 : $val)))
-								: "NULL"
-							);
+							$row[$key] = ($val === null ? "NULL"
+								: ($val === false ? 0
+								: unconvert_field($field, preg_match(number_type(), $field["type"]) && !preg_match('~\[~', $field["full_type"]) && is_numeric($val)
+									? $val
+									: (!is_blob($field) || is_utf8($val) ? q($val) : driver()->quoteBinary($val))
+								)
+							));
 						}
 						$s = ($max_packet ? "\n" : " ") . "(" . implode(",\t", $row) . ")";
 						if (!$buffer) {
