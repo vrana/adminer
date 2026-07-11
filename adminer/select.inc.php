@@ -12,7 +12,7 @@ $adminer_import = get_settings("adminer_import");
 $rights = array(); // privilege => 0
 $columns = array(); // selectable columns
 $search_columns = array(); // searchable columns
-$order_columns = array(); // searchable columns
+$order_columns = array(); // sortable columns
 $text_length = "";
 foreach ($fields as $key => $field) {
 	$name = adminer()->fieldName($field);
