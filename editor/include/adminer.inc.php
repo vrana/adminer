@@ -472,7 +472,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		$options = $this->foreignKeyOptions($table, $field["field"], $value);
 		if ($options !== null) {
 			return (is_array($options)
-				? "<select$attrs>" . optionlist($options, $value, true) . "</select>"
+				? "<select$attrs>" . optionlist($options, (string) $value, true) . "</select>"
 				: "<input value='" . h($value) . "'$attrs class='hidden'>"
 					. "<input value='" . h($options) . "' class='jsonly'>"
 					. "<div></div>"
