@@ -5,10 +5,9 @@ $USER = $_GET["user"];
 $privileges = array("" => array("All privileges" => ""));
 foreach (get_rows("SHOW PRIVILEGES") as $row) {
 	foreach (explode(",", ($row["Privilege"] == "Grant option" ? "" : $row["Context"])) as $context) {
-		$privileges[$context][$row["Privilege"]] = $row["Comment"];
+		$privileges[$context == "File access on server" ? "Server Admin" : $context][$row["Privilege"]] = $row["Comment"];
 	}
 }
-$privileges["Server Admin"] += $privileges["File access on server"];
 $privileges["Columns"] = array();
 foreach (array("Select", "Insert", "Update", "References") as $val) {
 	$privileges["Columns"][$val] = $privileges["Tables"][$val];
