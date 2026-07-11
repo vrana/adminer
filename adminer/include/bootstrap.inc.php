@@ -60,7 +60,7 @@ if (function_exists("get_magic_quotes_runtime") && get_magic_quotes_runtime()) {
 	set_magic_quotes_runtime(false);
 }
 @set_time_limit(0); // @ - can be disabled
-@ini_set("precision", '15'); // @ - can be disabled, 15 - internal PHP precision
+@ini_set("precision", '16'); // @ - can be disabled, 16 - IEEE 754 has 15.95 decimal digits for double
 
 include "../adminer/include/lang.inc.php";
 include "../adminer/lang/" . LANG . ".inc.php";
