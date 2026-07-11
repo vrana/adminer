@@ -17,7 +17,7 @@ if ($_POST && !$error) {
 	$tables = array_flip((array) $_POST["tables"]) + array_flip((array) $_POST["data"]);
 	$ext = dump_headers(
 		(count($tables) == 1 ? key($tables) : DB),
-		(DB == "" || count($tables) > 1)
+		(DB == "" || $_GET["ns"] === "" || count($tables) > 1)
 	);
 	$is_sql = preg_match('~sql~', $_POST["format"]);
 
@@ -87,53 +87,62 @@ SET foreign_key_checks = 0;
 			}
 
 			if ($_POST["table_style"] || $_POST["data_style"]) {
-				$views = array();
-				foreach (table_status('', true) as $name => $table_status) {
-					$table = (DB == "" || in_array($name, (array) $_POST["tables"]));
-					$data = (DB == "" || in_array($name, (array) $_POST["data"]));
-					if ($table || $data) {
-						$tmp_file = null;
-						if ($ext == "tar") {
-							$tmp_file = new TmpFile;
-							ob_start(array($tmp_file, 'write'), 1e5);
-						}
-
-						adminer()->dumpTable($name, ($table ? $_POST["table_style"] : ""), (is_view($table_status) ? 2 : 0));
-						if (is_view($table_status)) {
-							$views[] = $name;
-						} elseif ($data) {
-							$fields = fields($name);
-							adminer()->dumpData($name, $_POST["data_style"], "SELECT *" . convert_fields($fields, $fields) . " FROM " . table($name));
-						}
-						if ($is_sql && $_POST["triggers"] && $table && ($triggers = trigger_sql($name))) {
-							echo "\nDELIMITER ;;\n$triggers\nDELIMITER ;\n";
-						}
-
-						if ($ext == "tar") {
-							ob_end_flush();
-							tar_file((DB != "" ? "" : "$db/") . "$name.csv", $tmp_file);
-						} elseif ($is_sql) {
-							echo "\n";
+				foreach (($_GET["ns"] === "" ? (array) $_POST["schemas"] : (DB != "" || !support("scheme") ? array("") : adminer()->schemas())) as $schema) {
+					if ($schema != "") {
+						set_schema($schema);
+						if (DB == "" && (information_schema(DB) || $schema == "pg_catalog")) {
+							continue;
 						}
 					}
-				}
 
-				// add FKs after creating tables (except in MySQL which uses SET FOREIGN_KEY_CHECKS=0)
-				if (function_exists('Adminer\foreign_keys_sql')) {
+					$views = array();
 					foreach (table_status('', true) as $name => $table_status) {
-						$table = (DB == "" || in_array($name, (array) $_POST["tables"]));
-						if ($table && !is_view($table_status)) {
-							echo foreign_keys_sql($name);
+						$table = (DB == "" || $_GET["ns"] === "" || in_array($name, (array) $_POST["tables"]));
+						$data = (DB == "" || $_GET["ns"] === "" || in_array($name, (array) $_POST["data"]));
+						if ($table || $data) {
+							$tmp_file = null;
+							if ($ext == "tar") {
+								$tmp_file = new TmpFile;
+								ob_start(array($tmp_file, 'write'), 1e5);
+							}
+
+							adminer()->dumpTable($name, ($table ? $_POST["table_style"] : ""), (is_view($table_status) ? 2 : 0));
+							if (is_view($table_status)) {
+								$views[] = $name;
+							} elseif ($data) {
+								$fields = fields($name);
+								adminer()->dumpData($name, $_POST["data_style"], "SELECT *" . convert_fields($fields, $fields) . " FROM " . table($name));
+							}
+							if ($is_sql && $_POST["triggers"] && $table && ($triggers = trigger_sql($name))) {
+								echo "\nDELIMITER ;;\n$triggers\nDELIMITER ;\n";
+							}
+
+							if ($ext == "tar") {
+								ob_end_flush();
+								tar_file((DB != "" ? "" : "$db/") . "$name.csv", $tmp_file);
+							} elseif ($is_sql) {
+								echo "\n";
+							}
 						}
 					}
-				}
 
-				foreach ($views as $view) {
-					adminer()->dumpTable($view, $_POST["table_style"], 1);
-				}
+					// add FKs after creating tables (except in MySQL which uses SET FOREIGN_KEY_CHECKS=0)
+					if (function_exists('Adminer\foreign_keys_sql')) {
+						foreach (table_status('', true) as $name => $table_status) {
+							$table = (DB == "" || $_GET["ns"] === "" || in_array($name, (array) $_POST["tables"]));
+							if ($table && !is_view($table_status)) {
+								echo foreign_keys_sql($name);
+							}
+						}
+					}
 
-				if ($ext == "tar") {
-					echo pack("x512");
+					foreach ($views as $view) {
+						adminer()->dumpTable($view, $_POST["table_style"], 1);
+					}
+
+					if ($ext == "tar") {
+						echo pack("x512");
+					}
 				}
 			}
 		}
@@ -185,11 +194,19 @@ echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style,
 <?php
 echo script("qsl('table').onclick = dumpClick;");
 $prefixes = array();
-if (DB != "") {
+if ($_GET["ns"] === "") {
+	echo "<thead><tr><th style='text-align: left;'>";
+	echo "<label class='block'><input type='checkbox' id='check-schemas' checked class='jsonly'>" . lang('Schema') . "</label>";
+	echo "</thead>\n";
+	echo script("qs('#check-schemas').onclick = partial(formCheck, /^schemas\\[/);");
+	foreach (adminer()->schemas() as $schema) {
+		echo "<tr><td>" . checkbox("schemas[]", $schema, true, $schema, "", "block") . "\n";
+	}
+} elseif (DB != "") {
 	$checked = ($TABLE != "" ? "" : " checked");
 	echo "<thead><tr>";
-	echo "<th style='text-align: left;'><label class='block'><input type='checkbox' id='check-tables'$checked>" . lang('Tables') . "</label>" . script("qs('#check-tables').onclick = partial(formCheck, /^tables\\[/);", "");
-	echo "<th style='text-align: right;'><label class='block'>" . lang('Data') . "<input type='checkbox' id='check-data'$checked></label>" . script("qs('#check-data').onclick = partial(formCheck, /^data\\[/);", "");
+	echo "<th style='text-align: left;'><label class='block'><input type='checkbox' id='check-tables'$checked class='jsonly'>" . lang('Table') . "</label>" . script("qs('#check-tables').onclick = partial(formCheck, /^tables\\[/);", "");
+	echo "<th style='text-align: right;'><label class='block'>" . lang('Data') . "<input type='checkbox' id='check-data'$checked class='jsonly'></label>" . script("qs('#check-data').onclick = partial(formCheck, /^data\\[/);", "");
 	echo "</thead>\n";
 
 	$views = "";
@@ -212,11 +229,14 @@ if (DB != "") {
 	}
 
 } else {
-	echo "<thead><tr><th style='text-align: left;'>";
-	echo "<label class='block'><input type='checkbox' id='check-databases'" . ($TABLE == "" ? " checked" : "") . ">" . lang('Database') . "</label>";
-	echo script("qs('#check-databases').onclick = partial(formCheck, /^databases\\[/);", "");
-	echo "</thead>\n";
 	$databases = adminer()->databases();
+	echo "<thead><tr><th style='text-align: left;'>";
+	echo "<label class='block'>"
+		. ($databases ? "<input type='checkbox' id='check-databases'" . ($TABLE == "" ? " checked" : "") . " class='jsonly'>" . script("qs('#check-databases').onclick = partial(formCheck, /^databases\\[/);", "") : "")
+		. lang('Database')
+		. "</label>"
+	;
+	echo "</thead>\n";
 	if ($databases) {
 		foreach ($databases as $db) {
 			if (!information_schema($db)) {

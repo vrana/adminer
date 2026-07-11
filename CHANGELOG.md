@@ -5,6 +5,7 @@
 - MariaDB: Hash password in privileges (bug #1166, regression from 4.7.2)
 - MariaDB: Speed up getting checks (bug #1245, regression from 5.4.2)
 - MariaDB, PostgreSQL: Use CREATE OR REPLACE FUNCTION if possible
+- PostgreSQL: Allow exporting more schemas at once (bug #1243)
 - PostgreSQL: Fix editing jsonb[] columns (bug #1300, regression from 5.4.2)
 - PostgreSQL 18: Support VIRTUAL generated columns (bug #1286)
 - PDO: Increase precision of double (bug #1214)
