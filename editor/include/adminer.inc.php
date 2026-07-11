@@ -591,6 +591,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			}
 		} else {
 			adminer()->databasesPrint($missing);
+			$actions = adminer()->menuActions(array(), $missing);
+			echo ($actions ? "<p class='links'>\n" . implode("\n", $actions) . "\n" : "");
 			if ($missing != "db" && $missing != "ns") {
 				$table_status = table_status('', true);
 				if (!$table_status) {
@@ -606,6 +608,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function databasesPrint($missing) {
+	}
+
+	function menuActions($actions, $missing) {
+		return $actions;
 	}
 
 	function tablesPrint($tables) {
