@@ -8,6 +8,7 @@
 - PostgreSQL: Fix editing jsonb[] columns (bug #1300, regression from 5.4.2)
 - PostgreSQL 18: Support VIRTUAL generated columns (bug #1286)
 - Editor PDO: Fix foreign key value in edit (bug #1242)
+- Editor PostgreSQL: Fix enums (bug #1241)
 - Plugins: Method menuActions() (bug #1303)
 
 ## Adminer 5.4.3 (released 2026-07-09)
