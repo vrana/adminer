@@ -8,6 +8,7 @@
 - MariaDB, PostgreSQL: Use CREATE OR REPLACE FUNCTION if possible
 - PostgreSQL: Allow exporting more schemas at once (bug #1243)
 - PostgreSQL: Fix editing jsonb[] columns (bug #1300, regression from 5.4.2)
+- PostgreSQL: Fix displayed size of bytea
 - PostgreSQL 18: Support VIRTUAL generated columns (bug #1286)
 - MS SQL: Fix table status (bug #1146)
 - PDO: Increase precision of double (bug #1214)

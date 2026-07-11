@@ -824,7 +824,8 @@ function select_value($val, string $link, array $field, ?string $text_length): s
 			$link = $val; // IE 11 and all modern browsers hide referrer
 		}
 	}
-	$return = adminer()->editVal(driver()->value($val, $field), $field);
+	$val = driver()->value($val, $field);
+	$return = adminer()->editVal($val, $field);
 	if ($return !== null) {
 		if (!is_utf8($return)) {
 			$return = "\0"; // htmlspecialchars of binary data returns an empty string
