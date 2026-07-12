@@ -155,7 +155,7 @@ if (isset($_GET["igdb"])) {
 		public $foreignKeys = array();
 		public $foundRows = null;
 
-		static function connect(string $server, string $username, string $password) {
+		static function connect($server, $username, $password) {
 			if (!file_exists(self::$docsFilename)) {
 				return "Download https://api-docs.igdb.com/ and save it as " . self::$docsFilename; // copy() doesn't work - bot protection
 			}
