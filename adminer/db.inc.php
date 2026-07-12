@@ -167,7 +167,7 @@ if (adminer()->homepage()) {
 
 				$databases = (support("scheme") ? adminer()->schemas() : adminer()->databases());
 				$script = "";
-				if (count($databases) != 1 && JUSH != "sqlite") {
+				if (count($databases) != 1 && function_exists('Adminer\move_tables')) {
 					echo "<fieldset><legend>" . lang('Move to other database') . " <span id='selected3'></span></legend><div>";
 					$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));
 					echo ($databases ? html_select("target", $databases, $db) : '<input name="target" value="' . h($db) . '" autocapitalize="off">');

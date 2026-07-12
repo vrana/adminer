@@ -727,7 +727,7 @@ function selectLoadMore(limit, loading) {
 			if (tbody.children.length < limit) {
 				a.remove();
 			} else {
-				a.href = href.replace(/\d+$/, page => +page + 1);
+				a.href = href.replace(/\d+$/, page => +page + 1); //! update &next=
 				a.innerHTML = title;
 			}
 		});
