@@ -1,4 +1,5 @@
 ## Adminer dev
+- MySQL: Do not export IN in FUNCTION parameters (regression from 5.4.2)
 - New plugin: Redis driver
 - New plugin: Login behind a reverse proxy
 
