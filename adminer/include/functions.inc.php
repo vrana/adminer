@@ -47,11 +47,6 @@ function q(string $string): string {
 	return connection()->quote($string);
 }
 
-/** Escape string to use inside '' */
-function escape_string(string $val): string {
-	return substr(q($val), 1, -1);
-}
-
 /** Get a possibly missing item from a possibly missing array
 * idx($row, $key) is better than $row[$key] ?? null because PHP will report error for undefined $row
 * @param ?mixed[] $array
