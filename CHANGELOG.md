@@ -1,5 +1,6 @@
 ## Adminer dev
 - New plugin: Redis driver
+- New plugin: Login behind a reverse proxy
 
 ## Adminer 5.4.4 (released 2026-07-11)
 - Fix blob editing (bug #1251, regression from 5.4.2)
