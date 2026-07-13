@@ -41,7 +41,9 @@ foreach (adminer()->processList() as $i => $row) {
 			(JUSH == "sql" && $key == "Info" && preg_match("~Query|Killed~", $row["Command"]) && $val != "") ||
 			(JUSH == "pgsql" && $key == "current_query" && $val != "<IDLE>") ||
 			(JUSH == "oracle" && $key == "sql_text" && $val != "")
-			? "<code class='jush-" . JUSH . "'>" . shorten_utf8($val, 100, "</code>") . ' <a href="' . h(ME . ($row["db"] != "" ? "db=" . urlencode($row["db"]) . "&" : "") . "sql=" . urlencode($val)) . '">' . lang('Clone') . '</a>'
+			? "<code class='jush-" . JUSH . "' data-full='" . h($val) . "'>" . shorten_utf8($val, 100, "</code>")
+				. ' <a href="' . h(ME . ($row["db"] != "" ? "db=" . urlencode($row["db"]) . "&" : "") . "sql=" . urlencode($val)) . '">' . lang('Clone') . '</a>'
+				. ' <a href="" class="jsonly copy">🗐</a>'
 			: h($val)
 		);
 	}
@@ -52,6 +54,7 @@ foreach (adminer()->processList() as $i => $row) {
 </div>
 <p>
 <?php
+echo script("copyCode(qsl('table'));");
 if (support("kill")) {
 	echo ($i + 1) . "/" . lang('%d in total', max_connections());
 	echo "<p><input type='submit' value='" . lang('Kill') . "'>\n";
