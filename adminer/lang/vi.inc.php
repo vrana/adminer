@@ -167,8 +167,6 @@ Lang::$translations = array(
 	'Are you sure?' => 'Bạn có chắc',
 	'Size' => 'Kích thước',
 	'Compute' => 'Tính',
-	'Move up' => 'Chuyển lên trên',
-	'Move down' => 'Chuyển xuống dưới',
 	'Remove' => 'Xoá',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Thiết lập %s cần tăng thêm. (Đã vượt giới hạnố trường tối đa cho phép trong một biểu mẫu).',
 

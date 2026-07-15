@@ -162,8 +162,6 @@ Lang::$translations = array(
 	'Default values' => 'Значення за замовчуванням',
 	'Drop' => 'Видалити',
 	'Are you sure?' => 'Ви впевнені?',
-	'Move up' => 'Пересунути вгору',
-	'Move down' => 'Пересунути вниз',
 	'Remove' => 'Видалити',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Досягнута максимальна кількість доступних полів. Будь ласка, збільшіть %s.',
 

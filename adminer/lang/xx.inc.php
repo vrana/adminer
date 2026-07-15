@@ -190,8 +190,6 @@ Lang::$translations = array(
 	'Are you sure?' => 'Xx?',
 	'Size' => 'Xx',
 	'Compute' => 'Xx',
-	'Move up' => 'Xx',
-	'Move down' => 'Xx',
 	'Remove' => 'Xx',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Xx %s.',
 

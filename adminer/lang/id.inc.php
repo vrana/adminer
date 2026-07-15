@@ -162,8 +162,6 @@ Lang::$translations = array(
 	'Default values' => 'Nilai bawaan',
 	'Drop' => 'Hapus',
 	'Are you sure?' => 'Anda yakin?',
-	'Move up' => 'Naik',
-	'Move down' => 'Turun',
 	'Remove' => 'Hapus',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Sudah lebih dumlah ruas maksimum yang diizinkan. Harap naikkan %s.',
 

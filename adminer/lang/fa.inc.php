@@ -170,8 +170,6 @@ Lang::$translations = array(
 	'Are you sure?' => 'مطمئن هستید؟',
 	'Size' => 'حجم',
 	'Compute' => 'محاسبه',
-	'Move up' => 'انتقال به بالا',
-	'Move down' => 'انتقال به پایین',
 	'Remove' => 'حذف',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'حداکثر تعداد فیلدهای مجاز اشباع شد. لطفا %s را افزایش دهید.',
 

@@ -2,6 +2,7 @@
 - Hide copy to clipboard in insecure contexts
 - Process list: Copy query to clipboard
 - MySQL: Do not export IN in FUNCTION parameters (regression from 5.4.2)
+- MySQL, SQLite: Draggable columns in alter table
 - PostgreSQL 9.2+: Highlight queries in process list
 - New plugin: Redis driver
 - New plugin: Login behind a reverse proxy

@@ -312,6 +312,7 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 		$display = (isset($_POST["add"][$i-1]) || (isset($field["field"]) && !idx($_POST["drop_col"], $i))) && (support("drop_col") || $orig == "");
 		echo "<tr" . ($display ? "" : " style='display: none;'") . ">\n";
 		echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", driver()->inout), $field["inout"]) : "") . "<th>";
+		echo (support("move_col") ? icon("move", "", "↕", lang('Move')) . " " : "");
 		if ($display) {
 			echo "<input name='fields[$i][field]' value='" . h($field["field"]) . "' data-maxlength='64' autocapitalize='off' aria-labelledby='label-name'" . (isset($_POST["add"][$i-1]) ? " autofocus" : "") . ">";
 		}
@@ -330,53 +331,20 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 			echo (support("comment") ? "<td$comment_class><input name='fields[$i][comment]' value='" . h($field["comment"]) . "' data-maxlength='" . (min_version(5.5) ? 1024 : 255) . "' aria-labelledby='label-comment'>" : "");
 		}
 		echo "<td>";
-		echo (support("move_col") ?
-			icon("plus", "add[$i]", "+", lang('Add next')) . " "
-			. icon("up", "up[$i]", "↑", lang('Move up')) . " "
-			. icon("down", "down[$i]", "↓", lang('Move down')) . " "
-		: "");
+		echo (support("move_col") ? icon("plus", "add[$i]", "+", lang('Add next')) . " " : "");
 		echo ($orig == "" || support("drop_col") ? icon("cross", "drop_col[$i]", "x", lang('Remove')) : "");
 	}
 }
 
-/** Move fields up and down or add field
+/** Add or remove field
 * @param Field[] $fields
 */
 function process_fields(array &$fields): bool {
-	$offset = 0;
-	if ($_POST["up"]) {
-		$last = 0;
-		foreach ($fields as $key => $field) {
-			if (key($_POST["up"]) == $key) {
-				unset($fields[$key]);
-				array_splice($fields, $last, 0, array($field));
-				break;
-			}
-			if (isset($field["field"])) {
-				$last = $offset;
-			}
-			$offset++;
-		}
-	} elseif ($_POST["down"]) {
-		$found = false;
-		foreach ($fields as $key => $field) {
-			if (isset($field["field"]) && $found) {
-				unset($fields[key($_POST["down"])]);
-				array_splice($fields, $offset, 0, array($found));
-				break;
-			}
-			if (key($_POST["down"]) == $key) {
-				$found = $field;
-			}
-			$offset++;
-		}
-	} elseif ($_POST["add"]) {
+	if ($_POST["add"]) {
 		$fields = array_values($fields);
 		array_splice($fields, key($_POST["add"]), 0, array(array()));
-	} elseif (!$_POST["drop_col"]) {
-		return false;
 	}
-	return true;
+	return $_POST["add"] || $_POST["drop_col"];
 }
 
 /** Callback used in routine()

@@ -185,8 +185,6 @@ Lang::$translations = array(
 	'Are you sure?' => 'Är du säker?',
 	'Size' => 'Storlek',
 	'Compute' => 'Beräkna',
-	'Move up' => 'Flytta upp',
-	'Move down' => 'Flytta ner',
 	'Remove' => 'Ta bort',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Högsta nummer tillåtna fält är överskridet. Vänligen höj %s.',
 

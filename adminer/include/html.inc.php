@@ -507,5 +507,5 @@ function shorten_utf8(string $string, int $length = 80, string $suffix = ""): st
 
 /** Get button with icon */
 function icon(string $icon, string $name, string $html, string $title): string {
-	return "<button type='submit' name='$name' title='" . h($title) . "' class='icon icon-$icon'><span>$html</span></button>";
+	return "<button type='submit' " . ($name ? "name='$name'" : "draggable='true'") . " title='" . h($title) . "' class='icon icon-$icon" . ($name ? "" : " jsonly") . "'><span>$html</span></button>";
 }

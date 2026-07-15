@@ -266,6 +266,26 @@ function editFields() {
 			onmouseout: helpMouseout
 		});
 	}
+	let dragged;
+	mixin(qs('#edit-fields'), {
+		ondragstart: e => {
+			if (e.target.draggable) {
+				dragged = parentTag(e.target, 'tr');
+				e.dataTransfer.effectAllowed = 'move';
+			}
+		},
+		ondragend: () => dragged = null,
+		ondragover: e => {
+			const row = parentTag(e.target, 'tr');
+			if (dragged && qs('[draggable]', row)) {
+				e.preventDefault();
+				if (row != dragged) {
+					const rows = [...row.parentNode.children];
+					row.parentNode.insertBefore(dragged, (rows.indexOf(row) < rows.indexOf(dragged) ? row : row.nextSibling));
+				}
+			}
+		}
+	});
 }
 
 /** Handle clicks on fields editing

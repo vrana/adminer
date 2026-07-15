@@ -61,7 +61,7 @@ echo ($collations ? "<datalist id='collations'>" . optionlist($collations) . "</
 <?php echo ($routine_languages ? "<label>" . lang('Language') . ": " . html_select("language", $routine_languages, $row["language"]) . "</label>\n" : ""); ?>
 <input type="submit" value="<?php echo lang('Save'); ?>">
 <div class="scrollable">
-<table class="nowrap">
+<table id="edit-fields" class="nowrap">
 <?php
 edit_fields($row["fields"], $collations, $routine);
 if (isset($_GET["function"])) {

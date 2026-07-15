@@ -179,8 +179,6 @@ Lang::$translations = array(
 	'Are you sure?' => 'Emin misiniz?',
 	'Size' => 'Boyut',
 	'Compute' => 'Hesapla',
-	'Move up' => 'Yukarı taşı',
-	'Move down' => 'Aşağı taşı',
 	'Remove' => 'Sil',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'İzin verilen en fazla alan sayısı aşıldı. Lütfen %s değerlerini artırın.',
 

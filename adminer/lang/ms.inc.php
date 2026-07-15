@@ -176,8 +176,6 @@ Lang::$translations = array(
 	'Are you sure?' => 'Anda pasti?',
 	'Size' => 'Saiz',
 	'Compute' => 'Kira',
-	'Move up' => 'Gerak ke atas',
-	'Move down' => 'Gerak ke bawah',
 	'Remove' => 'Buang',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Bilangan medan telah melebihi had yang dibenarkan. Sila tingkatkan %s.',
 

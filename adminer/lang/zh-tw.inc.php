@@ -185,8 +185,6 @@ Lang::$translations = array(
 	'Are you sure?' => '你確定嗎？',
 	'Size' => '大小',
 	'Compute' => '計算',
-	'Move up' => '上移',
-	'Move down' => '下移',
 	'Remove' => '移除',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => '超過允許的字段數量的最大值。請增加 %s。',
 

@@ -172,8 +172,6 @@ Lang::$translations = array(
 	'Are you sure?' => 'Είστε σίγουρος;',
 	'Size' => 'Μέγεθος',
 	'Compute' => 'Υπολογισμός',
-	'Move up' => 'Μετακίνηση προς τα επάνω',
-	'Move down' => 'Μετακίνηση προς τα κάτω',
 	'Remove' => 'Αφαίρεση',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Υπέρβαση μέγιστου επιτρεπόμενου αριθμού πεδίων. Παρακαλώ αυξήστε %s.',
 

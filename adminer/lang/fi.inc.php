@@ -172,8 +172,6 @@ Lang::$translations = array(
 	'Are you sure?' => 'Oletko varma?',
 	'Size' => 'Koko',
 	'Compute' => 'Laske',
-	'Move up' => 'Siirrä ylös',
-	'Move down' => 'Siirrä alas',
 	'Remove' => 'Poista',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Kenttien sallittu enimmäismäärä ylitetty. Kasvata arvoa %s.',
 

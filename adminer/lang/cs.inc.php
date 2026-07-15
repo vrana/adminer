@@ -188,8 +188,6 @@ Lang::$translations = array(
 	'Are you sure?' => 'Opravdu?',
 	'Size' => 'Velikost',
 	'Compute' => 'Spočítat',
-	'Move up' => 'Přesunout nahoru',
-	'Move down' => 'Přesunout dolů',
 	'Remove' => 'Odebrat',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Byl překročen maximální povolený počet polí. Zvyšte prosím %s.',
 

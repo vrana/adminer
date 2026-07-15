@@ -161,8 +161,6 @@ Lang::$translations = array(
 	'Default values' => 'Reikšmės pagal nutylėjimą',
 	'Drop' => 'Pašalinti',
 	'Are you sure?' => 'Tikrai?',
-	'Move up' => 'Perkelti į viršų',
-	'Move down' => 'Perkelti žemyn',
 	'Remove' => 'Pašalinti',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Viršytas maksimalus leidžiamų stulpelių kiekis. Padidinkite %s.',
 

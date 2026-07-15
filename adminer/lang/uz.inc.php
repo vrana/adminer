@@ -189,8 +189,6 @@ Lang::$translations = array(
 	'Are you sure?' => 'Ishonchingiz komilmi?',
 	'Size' => 'Hajm',
 	'Compute' => 'Hisoblash',
-	'Move up' => 'Yuqoriga ko\'chirish',
-	'Move down' => 'Pastga ko\'chirish',
 	'Remove' => 'Olib tashlash',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Ruxsat etilgan maydonlar soni oshib ketdi. Iltimos, %s ni oshiring.',
 

@@ -162,8 +162,6 @@ Lang::$translations = array(
 	'Default values' => 'Zadane vrijednosti',
 	'Drop' => 'Izbriši',
 	'Are you sure?' => 'Jeste li sigurni?',
-	'Move up' => 'Pomakni gore',
-	'Move down' => 'Pomakni dolje',
 	'Remove' => 'Ukloni',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Premašen je maksimalni broj dozvoljenih polja. Molimo povećajte %s.',
 

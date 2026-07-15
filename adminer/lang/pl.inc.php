@@ -189,8 +189,6 @@ Lang::$translations = array(
 	'Are you sure?' => 'Czy na pewno?',
 	'Size' => 'Rozmiar',
 	'Compute' => 'Oblicz',
-	'Move up' => 'Przesuń w górę',
-	'Move down' => 'Przesuń w dół',
 	'Remove' => 'Usuń',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Przekroczono maksymalną liczbę pól. Zwiększ %s.',
 

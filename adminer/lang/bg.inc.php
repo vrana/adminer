@@ -171,8 +171,6 @@ Lang::$translations = array(
 	'Are you sure?' => 'Сигурни ли сте?',
 	'Size' => 'Големина',
 	'Compute' => 'Изчисляване',
-	'Move up' => 'Преместване нагоре',
-	'Move down' => 'Преместване надолу',
 	'Remove' => 'Премахване',
 	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Максималния брой полета е превишен. Моля, увеличете %s.',
 
