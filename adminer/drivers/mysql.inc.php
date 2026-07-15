@@ -243,6 +243,12 @@ if (!defined('Adminer\DRIVER')) {
 				$this->types[lang('Strings')]["uuid"] = 128;
 				$this->insertFunctions['uuid'] = 'uuid';
 			}
+			if (min_version('', 10.5, $connection)) {
+				$this->types[lang('Network')]["inet6"] = 39;
+				if (min_version('', '10.10', $connection)) {
+					$this->types[lang('Network')]["inet4"] = 15;
+				}
+			}
 			if (min_version(9, 11.7, $connection)) {
 				$this->types[lang('Numbers')]["vector"] = 16383;
 			}
