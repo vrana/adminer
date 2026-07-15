@@ -78,14 +78,7 @@ if (!defined('Adminer\DRIVER')) {
 
 			/** Set the client character set */
 			function set_charset(string $charset): bool {
-				if (function_exists('mysql_set_charset')) {
-					if (mysql_set_charset($charset, $this->link)) {
-						return true;
-					}
-					// the client library may not support utf8mb4
-					mysql_set_charset('utf8', $this->link);
-				}
-				return $this->query("SET NAMES $charset");
+				return mysql_set_charset($charset, $this->link) || mysql_set_charset('utf8', $this->link); // the client library may not support utf8mb4
 			}
 
 			function quote(string $string): string {
