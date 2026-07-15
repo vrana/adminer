@@ -1,4 +1,5 @@
 ## Adminer dev
+- Hide copy to clipboard in insecure contexts
 - Process list: Copy query to clipboard
 - MySQL: Do not export IN in FUNCTION parameters (regression from 5.4.2)
 - PostgreSQL 9.2+: Highlight queries in process list

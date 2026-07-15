@@ -44,7 +44,7 @@ input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
 input.wayoff { left: -1000px; position: absolute; }
 .block { display: block; }
 .version { color: #777; font-size: 62%; }
-.js .hidden, .nojs .jsonly { display: none; }
+.js .hidden, .nojs .jsonly, .insecure .copy { display: none; }
 .js .column { position: absolute; background: var(--lit); padding: .27em 1ex .33em 0; margin-top: -.37em; border-width: 1px 1px 1px 0; border-radius: 0 8px 8px 0; }
 .nowrap td, .nowrap th, td.nowrap, p.nowrap { white-space: pre; }
 .wrap td { white-space: normal; }

@@ -66,6 +66,9 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 		. (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '" . VERSION . "')")
 		. "});
 document.body.classList.replace('nojs', 'js');
+if (!window.isSecureContext) {
+	document.body.classList.add('insecure');
+}
 const offlineMessage = '" . js_escape(lang('You are offline.')) . "';
 const thousandsSeparator = '" . js_escape(lang(',')) . "';")
 	;
