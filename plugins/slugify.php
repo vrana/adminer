@@ -42,7 +42,7 @@ class AdminerSlugify extends Adminer\Plugin {
 		.replace(/[^a-z0-9_]+/g, '-')
 		.replace(/^-|-\$/g, '')
 		.substr(0, $field[length]);
-};");
+};", "");
 			}
 		}
 	}

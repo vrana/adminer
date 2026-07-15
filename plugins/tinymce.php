@@ -63,7 +63,7 @@ qs('#form').onsubmit = () => {
 		ed.remove();
 	});
 };
-");
+", "");
 		}
 	}
 

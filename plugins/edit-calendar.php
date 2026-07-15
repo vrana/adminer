@@ -46,7 +46,8 @@ class AdminerEditCalendar extends Adminer\Plugin {
 				. ($field["type"] == "time" ? "timepicker({ $timeFormat })"
 					: (preg_match("~time~", $field["type"]) ? "datetimepicker({ $dateFormat, $timeFormat })"
 						: "datepicker({ $dateFormat })"
-					)) . ";"
+					)) . ";",
+				""
 			);
 		}
 	}

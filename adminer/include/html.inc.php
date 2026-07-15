@@ -404,7 +404,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 	if (!$fields) {
 		echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";
 	} else {
-		echo "<table class='layout'>" . script("qsl('table').onkeydown = editingKeydown;");
+		echo "<table class='layout nowrap'>" . script("qsl('table').onkeydown = editingKeydown;");
 		$autofocus = !$_POST;
 		foreach ($fields as $name => $field) {
 			echo "<tr><th>" . adminer()->fieldName($field);
@@ -461,15 +461,13 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 					$autofocus = false;
 				}
 			}
-			echo "\n";
 		}
 		if (!support("table") && !fields($table)) {
 			echo "<tr>"
 				. "<th><input name='field_keys[]'>"
-				. script("qsl('input').oninput = fieldChange;")
+				. script("qsl('input').oninput = fieldChange;", "")
 				. "<td class='function'>" . html_select("field_funs[]", adminer()->editFunctions(array("null" => isset($_GET["select"]))))
 				. "<td><input name='field_vals[]'>"
-				. "\n"
 			;
 		}
 		echo "</table>\n";
