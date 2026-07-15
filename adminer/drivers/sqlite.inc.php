@@ -145,8 +145,8 @@ if (isset($_GET["sqlite"])) {
 			if ($name == "sqlite_sequence") {
 				return "fileformat2.html#seqtab";
 			}
-			if ($name == "sqlite_master") {
-				return "fileformat2.html#$name";
+			if (preg_match('~^sqlite(_temp)?_(master|schema)$~', $name)) {
+				return "schematab.html";
 			}
 		}
 
