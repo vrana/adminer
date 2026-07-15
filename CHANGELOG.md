@@ -7,6 +7,7 @@
 - MariaDB: Support inet4 and inet6 types
 - MariaDB 11.7+: Support vector columns and indexes
 - PostgreSQL 9.2+: Highlight queries in process list
+- SQLite: Preserve STRICT and WITHOUT ROWID in alter table
 - MS SQL: Fix multiple result sets (bug #1180)
 - New plugin: Redis driver
 - New plugin: Login behind a reverse proxy

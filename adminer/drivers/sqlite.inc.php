@@ -454,6 +454,7 @@ if (isset($_GET["sqlite"])) {
 	* @param string $add_check CHECK constraint to add
 	*/
 	function recreate_table(string $table, string $name, array $fields, array $originals, array $foreign, string $auto_increment = "", $indexes = array(), string $drop_check = "", string $add_check = ""): bool {
+		$suffix = "";
 		if ($table != "") {
 			if (!$fields) {
 				foreach (fields($table) as $key => $field) {
@@ -508,6 +509,19 @@ if (isset($_GET["sqlite"])) {
 					$foreign[] = " " . format_foreign_key($foreign_key);
 				}
 			}
+			$options = array();
+			if (min_version(3.37)) {
+				$row = first(get_rows("PRAGMA table_list(" . table($table) . ")"));
+				if ($row["wr"]) {
+					$options[] = "WITHOUT ROWID";
+				}
+				if ($row["strict"]) {
+					$options[] = "STRICT";
+				}
+			} elseif (preg_match('~\)\s*WITHOUT\s+ROWID\s*$~i', get_val("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table)))) {
+				$options[] = "WITHOUT ROWID";
+			}
+			$suffix = ($options ? " " . implode(", ", $options) : "");
 			queries("BEGIN");
 		}
 		$changes = array();
@@ -527,7 +541,7 @@ if (isset($_GET["sqlite"])) {
 			$changes[] = "  CHECK ($add_check)";
 		}
 		$temp_name = ($table == $name ? "adminer_$name" : $name);
-		if (!queries("CREATE TABLE " . table($temp_name) . " (\n" . implode(",\n", $changes) . "\n)")) {
+		if (!queries("CREATE TABLE " . table($temp_name) . " (\n" . implode(",\n", $changes) . "\n)$suffix")) {
 			// implicit ROLLBACK to not overwrite connection()->error
 			return false;
 		}
