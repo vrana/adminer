@@ -35,7 +35,7 @@ class AdminerFileUpload extends Adminer\Plugin {
 				return false;
 			}
 			//! unlink old
-			$filename = (function_exists('random_bytes') ? bin2hex(random_bytes(8)) : uniqid("", true)) . $regs2[0];
+			$filename = Adminer\rand_string() . $regs2[0];
 			if (!move_uploaded_file($_FILES["fields"]["tmp_name"][$name], $this->uploadPath . Adminer\friendly_url($table) . "/$regs[1]-$filename")) {
 				return false;
 			}

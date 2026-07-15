@@ -772,7 +772,7 @@ function password_file(bool $create): string {
 * @return string 32 hexadecimal characters
 */
 function rand_string(): string {
-	return md5(uniqid(strval(mt_rand()), true));
+	return (function_exists('random_bytes') ? bin2hex(random_bytes(16)) : md5(uniqid(strval(mt_rand()), true)));
 }
 
 /** Format value to use in select
