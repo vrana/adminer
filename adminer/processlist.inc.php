@@ -37,10 +37,10 @@ foreach (adminer()->processList() as $i => $row) {
 	}
 	echo "<tr>" . (support("kill") ? "<td>" . checkbox("kill[]", $row[JUSH == "sql" ? "Id" : "pid"], 0) : "");
 	foreach ($row as $key => $val) {
-		echo "<td>" . (
-			(JUSH == "sql" && $key == "Info" && preg_match("~Query|Killed~", $row["Command"]) && $val != "") ||
-			(JUSH == "pgsql" && $key == "current_query" && $val != "<IDLE>") ||
-			(JUSH == "oracle" && $key == "sql_text" && $val != "")
+		echo "<td>" . ($val != "" && (
+			(JUSH == "sql" && $key == "Info" && preg_match("~Query|Killed~", $row["Command"])) ||
+			(JUSH == "pgsql" && $key == "query") ||
+			(JUSH == "oracle" && $key == "sql_text"))
 			? "<code class='jush-" . JUSH . "' data-full='" . h($val) . "'>" . shorten_utf8($val, 100, "</code>")
 				. ' <a href="' . h(ME . ($row["db"] != "" ? "db=" . urlencode($row["db"]) . "&" : "") . "sql=" . urlencode($val)) . '">' . lang('Clone') . '</a>'
 				. ' <a href="" class="jsonly copy">🗐</a>'
