@@ -8,7 +8,7 @@
 - MariaDB: Support inet4 and inet6 types
 - MariaDB 11.7+: Support vector columns and indexes
 - PostgreSQL 9.2+: Highlight queries in process list
-- SQLite: Preserve STRICT and WITHOUT ROWID in alter table
+- SQLite: Support STRICT and WITHOUT ROWID in create and alter table
 - SQLite: Do not treat INTEGER PRIMARY KEY without AUTOINCREMENT as auto increment
 - SQLite: Disable editing of sqlite_schema
 - MS SQL: Fix multiple result sets (bug #1180)

@@ -698,7 +698,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @param ?Partitions $partitioning null means remove partitioning
 	* @return Result|bool
 	*/
-	function alter_table(string $table, string $name, array $fields, array $foreign, ?string $comment, string $engine, string $collation, string $auto_increment, ?array $partitioning) {
+	function alter_table(string $table, string $name, array $fields, array $foreign, ?string $comment, ?string $engine, string $collation, string $auto_increment, ?array $partitioning) {
 		$alter = array();
 		foreach ($fields as $field) {
 			if ($field[1]) {
