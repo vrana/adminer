@@ -2,6 +2,7 @@
 - Hide copy to clipboard in insecure contexts
 - Process list: Copy query to clipboard
 - MySQL: Do not export IN in FUNCTION parameters (regression from 5.4.2)
+- MySQL: Convert vector columns to text in select and edit
 - MySQL, SQLite: Draggable columns in alter table
 - PostgreSQL 9.2+: Highlight queries in process list
 - MS SQL: Fix multiple result sets (bug #1180)

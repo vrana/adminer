@@ -245,7 +245,6 @@ if (!defined('Adminer\DRIVER')) {
 			}
 			if (min_version(9, '', $connection)) {
 				$this->types[lang('Numbers')]["vector"] = 16383;
-				$this->insertFunctions['vector'] = 'string_to_vector';
 			}
 			if (min_version(5.1, '', $connection)) {
 				$this->partitionBy = array("HASH", "LINEAR HASH", "KEY", "LINEAR KEY", "RANGE", "LIST");
@@ -1024,6 +1023,9 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 		if ($field["type"] == "bit") {
 			return "BIN(" . idf_escape($field["field"]) . " + 0)"; // + 0 is required outside MySQLnd
 		}
+		if ($field["type"] == "vector") {
+			return "VECTOR_TO_STRING(" . idf_escape($field["field"]) . ")";
+		}
 		if (preg_match("~geometry|point|linestring|polygon~", $field["type"])) {
 			return (min_version(8) ? "ST_" : "") . "AsWKT(" . idf_escape($field["field"]) . ")";
 		}
@@ -1039,6 +1041,9 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 		}
 		if ($field["type"] == "bit") {
 			$return = "CONVERT(b$return, UNSIGNED)";
+		}
+		if ($field["type"] == "vector") {
+			$return = "STRING_TO_VECTOR($return)";
 		}
 		if (preg_match("~geometry|point|linestring|polygon~", $field["type"])) {
 			$prefix = (min_version(8) ? "ST_" : "");
