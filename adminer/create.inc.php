@@ -27,7 +27,7 @@ if ($row["auto_increment_col"]) {
 	$row["fields"][$row["auto_increment_col"]]["auto_increment"] = true;
 }
 
-if ($_POST) {
+if ($_POST && !$error) {
 	save_settings(array("comments" => $_POST["comments"], "defaults" => $_POST["defaults"]));
 }
 
