@@ -11,6 +11,9 @@ if (preg_match('~MyISAM|M?aria' . (min_version(5.6, '10.0.5') ? '|InnoDB' : '') 
 if (preg_match('~MyISAM|M?aria' . (min_version(5.7, '10.2.2') ? '|InnoDB' : '') . '~i', $table_status["Engine"])) {
 	$index_types[] = "SPATIAL";
 }
+if (min_version('', 11.7) && preg_match('~MyISAM|InnoDB~i', $table_status["Engine"])) {
+	$index_types[] = "VECTOR";
+}
 $indexes = indexes($TABLE);
 $fields = fields($TABLE);
 $primary = array();

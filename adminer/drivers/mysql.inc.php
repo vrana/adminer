@@ -243,7 +243,7 @@ if (!defined('Adminer\DRIVER')) {
 				$this->types[lang('Strings')]["uuid"] = 128;
 				$this->insertFunctions['uuid'] = 'uuid';
 			}
-			if (min_version(9, '', $connection)) {
+			if (min_version(9, 11.7, $connection)) {
 				$this->types[lang('Numbers')]["vector"] = 16383;
 			}
 			if (min_version(5.1, '', $connection)) {
@@ -257,8 +257,9 @@ if (!defined('Adminer\DRIVER')) {
 		function unconvertFunction(array $field) {
 			return (preg_match("~binary~", $field["type"]) ? "<code class='jush-sql'>UNHEX</code>"
 				: ($field["type"] == "bit" ? doc_link(array('sql' => 'bit-value-literals.html'), "<code>b''</code>")
+				: ($field["type"] == "vector" ? "<code class='jush-sql'>" . ($this->conn->flavor == 'maria' ? "VEC_FromText" : "STRING_TO_VECTOR") . "</code>"
 				: (preg_match("~geometry|point|linestring|polygon~", $field["type"]) ? "<code class='jush-sql'>GeomFromText</code>"
-				: "")));
+				: ""))));
 		}
 
 		function insert(string $table, array $set) {
@@ -550,7 +551,7 @@ if (!defined('Adminer\DRIVER')) {
 		$return = array();
 		foreach (get_rows("SHOW INDEX FROM " . table($table), $connection2) as $row) {
 			$name = $row["Key_name"];
-			$return[$name]["type"] = ($name == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? ($row["Index_type"] == "SPATIAL" ? "SPATIAL" : "INDEX") : "UNIQUE")));
+			$return[$name]["type"] = ($name == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? (preg_match('~^(SPATIAL|VECTOR)$~', $row["Index_type"]) ? $row["Index_type"] : "INDEX") : "UNIQUE")));
 			$return[$name]["columns"][] = $row["Column_name"];
 			$return[$name]["lengths"][] = ($row["Index_type"] == "SPATIAL" ? null : $row["Sub_part"]);
 			$return[$name]["descs"][] = null;
@@ -1024,7 +1025,7 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 			return "BIN(" . idf_escape($field["field"]) . " + 0)"; // + 0 is required outside MySQLnd
 		}
 		if ($field["type"] == "vector") {
-			return "VECTOR_TO_STRING(" . idf_escape($field["field"]) . ")";
+			return (connection()->flavor == 'maria' ? "VEC_ToText" : "VECTOR_TO_STRING") . "(" . idf_escape($field["field"]) . ")";
 		}
 		if (preg_match("~geometry|point|linestring|polygon~", $field["type"])) {
 			return (min_version(8) ? "ST_" : "") . "AsWKT(" . idf_escape($field["field"]) . ")";
@@ -1043,7 +1044,7 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 			$return = "CONVERT(b$return, UNSIGNED)";
 		}
 		if ($field["type"] == "vector") {
-			$return = "STRING_TO_VECTOR($return)";
+			$return = (connection()->flavor == 'maria' ? "VEC_FromText" : "STRING_TO_VECTOR") . "($return)";
 		}
 		if (preg_match("~geometry|point|linestring|polygon~", $field["type"])) {
 			$prefix = (min_version(8) ? "ST_" : "");
