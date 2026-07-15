@@ -9,6 +9,7 @@
 - PostgreSQL 9.2+: Highlight queries in process list
 - SQLite: Preserve STRICT and WITHOUT ROWID in alter table
 - SQLite: Do not treat INTEGER PRIMARY KEY without AUTOINCREMENT as auto increment
+- SQLite: Disable editing of sqlite_schema
 - MS SQL: Fix multiple result sets (bug #1180)
 - New plugin: Redis driver
 - New plugin: Login behind a reverse proxy
