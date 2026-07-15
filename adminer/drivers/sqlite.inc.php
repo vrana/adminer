@@ -65,10 +65,6 @@ if (isset($_GET["sqlite"])) {
 					"charsetnr" => ($type == SQLITE3_BLOB ? 63 : 0), // 63 - binary
 				);
 			}
-
-			function __destruct() {
-				$this->result->finalize();
-			}
 		}
 
 	} elseif (extension_loaded("pdo_sqlite")) {

@@ -142,10 +142,6 @@ if (isset($_GET["mssql"])) {
 					sqlsrv_fetch($this->result); // SQLSRV_SCROLL_ABSOLUTE added in sqlsrv 1.1
 				}
 			}
-
-			function __destruct() {
-				sqlsrv_free_stmt($this->result);
-			}
 		}
 
 		function last_id($result) {

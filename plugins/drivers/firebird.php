@@ -74,10 +74,6 @@ if (isset($_GET["firebird"])) {
 					'charsetnr' => 0,
 				);
 			}
-
-			function __destruct() {
-				ibase_free_result($this->result);
-			}
 		}
 
 	}

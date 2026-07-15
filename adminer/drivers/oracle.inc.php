@@ -99,10 +99,6 @@ if (isset($_GET["oracle"])) {
 				$return->charsetnr = (preg_match("~raw|blob|bfile~", $return->type) ? 63 : 0); // 63 - binary
 				return $return;
 			}
-
-			function __destruct() {
-				oci_free_statement($this->result);
-			}
 		}
 
 	} elseif (extension_loaded("pdo_oci")) {

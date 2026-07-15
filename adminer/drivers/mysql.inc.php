@@ -140,11 +140,6 @@ if (!defined('Adminer\DRIVER')) {
 				$return->charsetnr = ($return->blob ? 63 : 0);
 				return $return;
 			}
-
-			/** Free result set */
-			function __destruct() {
-				mysql_free_result($this->result);
-			}
 		}
 
 	} elseif (extension_loaded("pdo_mysql")) {

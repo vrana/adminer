@@ -4,6 +4,7 @@
 - MySQL: Do not export IN in FUNCTION parameters (regression from 5.4.2)
 - MySQL, SQLite: Draggable columns in alter table
 - PostgreSQL 9.2+: Highlight queries in process list
+- MS SQL: Fix multiple result sets (bug #1180)
 - New plugin: Redis driver
 - New plugin: Login behind a reverse proxy
 

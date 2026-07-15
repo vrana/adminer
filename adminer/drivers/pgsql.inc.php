@@ -139,10 +139,6 @@ if (isset($_GET["pgsql"])) {
 				$return->charsetnr = ($type == "bytea" ? 63 : 0); // 63 - binary
 				return $return;
 			}
-
-			function __destruct() {
-				pg_free_result($this->result);
-			}
 		}
 
 	} elseif (extension_loaded("pdo_pgsql")) {
