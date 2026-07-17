@@ -120,9 +120,11 @@ if (adminer()->homepage()) {
 				echo '<th>' . (support("table") || support("indexes") ? "<a href='" . h(ME) . "table=" . urlencode($name) . "' title='" . lang('Show structure') . "' id='$id'>" . h($name) . '</a>' : h($name));
 				if ($view && !preg_match('~materialized~i', $status['Engine'])) {
 					$title = lang('View');
-					echo '<td colspan="' . (count($columns) - 2) . '">' . (support("view") ? "<a href='" . h(ME) . "view=" . urlencode($name) . "' title='" . lang('Alter view') . "'>$title</a>" : $title);
+					echo '<td colspan="' . (count($columns) - (support("comment") ? 2 : 1)) . '">' . (support("view") ? "<a href='" . h(ME) . "view=" . urlencode($name) . "' title='" . lang('Alter view') . "'>$title</a>" : $title);
 					echo '<td align="right"><a href="' . h(ME) . "select=" . urlencode($name) . '" title="' . lang('Select data') . '">?</a>';
-					echo '<td>' . h($status['Comment']);
+					if (support("comment")) {
+						echo '<td>' . h($status['Comment']);
+					}
 				} else {
 					foreach ($columns as $key => $column) {
 						$id = " id='$key-" . h($name) . "'";
