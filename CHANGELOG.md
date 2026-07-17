@@ -1,5 +1,6 @@
 ## Adminer dev
 - Disallow invalid port or socket (GHSA-58cq-mgw2-38m5)
+- Ignore invalid X-Forwarded-Prefix (GHSA-8478-xrj3-h9c2)
 - Hide copy to clipboard in insecure contexts
 - Process list: Copy query to clipboard
 - Wrap uneditable values in edit form
