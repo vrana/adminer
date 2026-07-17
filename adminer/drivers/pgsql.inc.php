@@ -23,8 +23,8 @@ if (isset($_GET["pgsql"])) {
 			function attach(string $server, string $username, string $password): string {
 				$db = adminer()->database();
 				set_error_handler(array($this, '_error'));
-				list($host, $port) = host_port(addcslashes($server, "'\\"));
-				$this->string = "host='$host'" . ($port ? " port='$port'" : "") . " user='" . addcslashes($username, "'\\") . "' password='" . addcslashes($password, "'\\") . "'";
+				list($host, $port) = host_port($server);
+				$this->string = "host=$host" . ($port ? " port=$port" : "") . " user='" . addcslashes($username, "'\\") . "' password='" . addcslashes($password, "'\\") . "'";
 				$ssl = adminer()->connectSsl();
 				if (isset($ssl["mode"])) {
 					$this->string .= " sslmode='" . $ssl["mode"] . "'";
@@ -148,9 +148,9 @@ if (isset($_GET["pgsql"])) {
 
 			function attach(string $server, string $username, string $password): string {
 				$db = adminer()->database();
-				list($host, $port) = host_port(addcslashes($server, "'\\"));
+				list($host, $port) = host_port($server);
 				//! client_encoding is supported since 9.1, but we can't yet use min_version here
-				$dsn = "pgsql:host='$host'" . ($port ? " port='$port'" : "") . " client_encoding=utf8 dbname='" . ($db != "" ? addcslashes($db, "'\\") : "postgres") . "'";
+				$dsn = "pgsql:host=$host" . ($port ? " port=$port" : "") . " client_encoding=utf8 dbname='" . ($db != "" ? addcslashes($db, "'\\") : "postgres") . "'";
 				$ssl = adminer()->connectSsl();
 				if (isset($ssl["mode"])) {
 					$dsn .= " sslmode='" . $ssl["mode"] . "'";
