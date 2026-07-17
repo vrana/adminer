@@ -25,7 +25,7 @@
 - Speed up HTML escaping (bug #1147)
 - MySQL: Fix routine fields length (bug #1267, regression from 5.4.2)
 - MySQL: Preserve DETERMINISTIC and DATA ACCESS in routine definition (regression from 5.4.2)
-- MySQL: Export binary data as hex (bug #1123)
+- MySQL: Export binary data as hex (bug #1123, SF-741)
 - MariaDB: Hash password in privileges (bug #1166, regression from 4.7.2)
 - MariaDB: Speed up getting checks (bug #1245, regression from 5.4.2)
 - MariaDB, PostgreSQL: Use CREATE OR REPLACE FUNCTION if possible
@@ -76,7 +76,7 @@
 - Don't quote comma in TSV export (bug #1238)
 - Autocomplete: fix in empty textarea (bug #1173)
 - Prolong printed SQL query to 10000 characters (bug #1186)
-- MySQL: Use information_schema to get routine definition (bug #1179)
+- MySQL: Use information_schema to get routine definition (bug #1179, SF-711)
 - MariaDB: Don't display checks with the same name from another table (bug #1135)
 - PostgreSQL: Offer foreign keys in create table
 - PostgreSQL: Add missing parentheses to CHECK export
