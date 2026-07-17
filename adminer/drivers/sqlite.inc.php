@@ -137,10 +137,15 @@ if (isset($_GET["sqlite"])) {
 		}
 
 		function engines(): array {
-			return (min_version(3.37)
-				? array("STRICT", "STRICT, WITHOUT ROWID", "WITHOUT ROWID")
-				: (min_version("3.8.2") ? array("WITHOUT ROWID") : array())
-			);
+			$return = array("table");
+			if (min_version("3.8.2")) {
+				if (min_version(3.37)) {
+					$return[] = "STRICT";
+					$return[] = "STRICT, WITHOUT ROWID";
+				}
+				$return[] = "WITHOUT ROWID";
+			}
+			return $return;
 		}
 
 		function insertUpdate(string $table, array $rows, array $primary) {
@@ -217,7 +222,7 @@ if (isset($_GET["sqlite"])) {
 		return array();
 	}
 
-	function table_status($name = "") {
+	function table_status($name = "", $fast = false) {
 		$return = array();
 		foreach (get_rows("SELECT name AS Name, type AS Engine, sql, 'rowid' AS Oid, '' AS Auto_increment FROM sqlite_master WHERE type IN ('table', 'view') " . ($name != "" ? "AND name = " . q($name) : "ORDER BY name")) as $row) {
 			if ($row["Engine"] == "table") {
@@ -225,14 +230,18 @@ if (isset($_GET["sqlite"])) {
 				$row["Engine"] = implode(", ", array_filter(array(
 					(preg_match('~\bSTRICT\b~i', $suffix) ? "STRICT" : ""),
 					(preg_match('~\bWITHOUT\s+ROWID\b~i', $suffix) ? "WITHOUT ROWID" : ""),
-				)));
+				))) ?: "table";
 			}
 			unset($row["sql"]);
-			$row["Rows"] = get_val("SELECT COUNT(*) FROM " . idf_escape($row["Name"]));
+			if (!$fast) {
+				$row["Rows"] = get_val("SELECT COUNT(*) FROM " . idf_escape($row["Name"]));
+			}
 			$return[$row["Name"]] = $row;
 		}
-		foreach (get_rows("SELECT * FROM sqlite_sequence" . ($name != "" ? " WHERE name = " . q($name) : ""), null, "") as $row) {
-			$return[$row["name"]]["Auto_increment"] = $row["seq"];
+		if (!$fast) {
+			foreach (get_rows("SELECT * FROM sqlite_sequence" . ($name != "" ? " WHERE name = " . q($name) : ""), null, "") as $row) {
+				$return[$row["name"]]["Auto_increment"] = $row["seq"];
+			}
 		}
 		return $return;
 	}
@@ -424,7 +433,7 @@ if (isset($_GET["sqlite"])) {
 	}
 
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
-		$use_all_fields = ($table == "" || $foreign || $engine !== null);
+		$use_all_fields = ($table == "" || $foreign || $engine);
 		foreach ($fields as $field) {
 			if ($field[0] != "" || !$field[1] || $field[2]) {
 				$use_all_fields = true;
@@ -475,7 +484,7 @@ if (isset($_GET["sqlite"])) {
 	* @param string $drop_check CHECK constraint to drop
 	* @param string $add_check CHECK constraint to add
 	*/
-	function recreate_table(string $table, string $name, array $fields, array $originals, array $foreign, string $auto_increment = "", $indexes = array(), string $drop_check = "", string $add_check = "", ?string $engine = null): bool {
+	function recreate_table(string $table, string $name, array $fields, array $originals, array $foreign, string $auto_increment = "", $indexes = array(), string $drop_check = "", string $add_check = "", string $engine = ""): bool {
 		if ($table != "") {
 			if (!$fields) {
 				foreach (fields($table) as $key => $field) {
@@ -549,10 +558,10 @@ if (isset($_GET["sqlite"])) {
 			$changes[] = "  CHECK ($add_check)";
 		}
 		$temp_name = ($table == $name ? "adminer_$name" : $name);
-		if ($engine === null && $table != "") {
+		if (!$engine && $table != "") {
 			$engine = idx(table_status1($table), "Engine");
 		}
-		if (!queries("CREATE TABLE " . table($temp_name) . " (\n" . implode(",\n", $changes) . "\n)" . (in_array($engine, driver()->engines()) ? " $engine" : ""))) {
+		if (!queries("CREATE TABLE " . table($temp_name) . " (\n" . implode(",\n", $changes) . "\n)" . ($engine != "table" && in_array($engine, driver()->engines()) ? " $engine" : ""))) {
 			// implicit ROLLBACK to not overwrite connection()->error
 			return false;
 		}
