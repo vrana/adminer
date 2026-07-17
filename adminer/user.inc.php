@@ -45,16 +45,15 @@ if ($_POST && !$error) {
 		$pass = $_POST["pass"];
 
 		$created = false;
-		if (!$error) {
-			if ($old_user != $new_user) {
-				$created = queries("CREATE USER $new_user IDENTIFIED BY " . ($_POST["hashed"] ? "PASSWORD " : "") . q($pass));
-				$error = !$created;
-			} elseif ($pass != "") {
-				$error = !queries("SET PASSWORD FOR $new_user = " . (min_version(8, 99) || $_POST["hashed"] ? q($pass) : "PASSWORD(" . q($pass) . ")"));
-			}
+		$result = true;
+		if ($old_user != $new_user) {
+			$created = queries("CREATE USER $new_user IDENTIFIED BY " . ($_POST["hashed"] ? "PASSWORD " : "") . q($pass));
+			$result = $created;
+		} elseif ($pass != "") {
+			$result = queries("SET PASSWORD FOR $new_user = " . (min_version(8, 99) || $_POST["hashed"] ? q($pass) : "PASSWORD(" . q($pass) . ")"));
 		}
 
-		if (!$error) {
+		if ($result) {
 			$revoke = array();
 			foreach ($new_grants as $object => $grant) {
 				if (isset($_GET["grant"])) {
@@ -75,13 +74,13 @@ if ($_POST && !$error) {
 					!grant("REVOKE", $revoke, $match[2], " ON $match[1] FROM $new_user") //! SQL injection
 					|| !grant("GRANT", $grant, $match[2], " ON $match[1] TO $new_user"))
 				) {
-					$error = true;
+					$result = false;
 					break;
 				}
 			}
 		}
 
-		if (!$error && isset($_GET["host"])) {
+		if ($result && isset($_GET["host"])) {
 			if ($old_user != $new_user) {
 				queries("DROP USER $old_user");
 			} elseif (!isset($_GET["grant"])) {
@@ -93,7 +92,7 @@ if ($_POST && !$error) {
 			}
 		}
 
-		queries_redirect(ME . "privileges=", (isset($_GET["host"]) ? lang('User has been altered.') : lang('User has been created.')), !$error);
+		queries_redirect(ME . "privileges=", (isset($_GET["host"]) ? lang('User has been altered.') : lang('User has been created.')), $result);
 
 		if ($created) {
 			// delete new user in case of an error
