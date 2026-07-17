@@ -11,6 +11,7 @@
 - MySQL: Unsupport MySQL &lt; 5.1
 - MySQL, SQLite: Draggable columns in alter table
 - MariaDB: Support inet4 and inet6 types
+- MariaDB: Allow setting password with password validation plugin (bug SF-814)
 - MariaDB 11.7+: Support vector columns and indexes
 - PostgreSQL 9.2+: Highlight queries in process list
 - SQLite: Support ANY type

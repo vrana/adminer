@@ -43,19 +43,14 @@ if ($_POST && !$error) {
 	} else {
 		$new_user = q($_POST["user"]) . "@" . q($_POST["host"]); // if $_GET["host"] is not set then $new_user is always different
 		$pass = $_POST["pass"];
-		if ($pass != '' && !$_POST["hashed"] && !min_version(8, 99)) {
-			// compute hash in a separate query so that plain text password is not saved to history
-			$pass = get_val("SELECT PASSWORD(" . q($pass) . ")");
-			$error = !$pass;
-		}
 
 		$created = false;
 		if (!$error) {
 			if ($old_user != $new_user) {
-				$created = queries("CREATE USER $new_user IDENTIFIED BY " . (min_version(8, 99) ? "" : "PASSWORD ") . q($pass));
+				$created = queries("CREATE USER $new_user IDENTIFIED BY " . ($_POST["hashed"] ? "PASSWORD " : "") . q($pass));
 				$error = !$created;
 			} elseif ($pass != "") {
-				queries("SET PASSWORD FOR $new_user = " . q($pass));
+				$error = !queries("SET PASSWORD FOR $new_user = " . (min_version(8, 99) || $_POST["hashed"] ? q($pass) : "PASSWORD(" . q($pass) . ")"));
 			}
 		}
 
