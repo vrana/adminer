@@ -127,6 +127,9 @@ if (isset($_GET["sqlite"])) {
 			if (min_version(3.31, 0, $connection)) {
 				$this->generated = array("STORED", "VIRTUAL");
 			}
+			if (min_version(3.37, 0, $connection)) {
+				$this->types[0]["any"] = 0;
+			}
 		}
 
 		function structuredTypes(): array {
@@ -255,7 +258,13 @@ if (isset($_GET["sqlite"])) {
 			$default = $row["dflt_value"];
 			$return[$name] = array(
 				"field" => $name,
-				"type" => (preg_match('~int~i', $type) ? "integer" : (preg_match('~char|clob|text~i', $type) ? "text" : (preg_match('~blob~i', $type) ? "blob" : (preg_match('~real|floa|doub~i', $type) ? "real" : "numeric")))),
+				"type" => (preg_match('~int~i', $type) ? "integer"
+					: (preg_match('~char|clob|text~i', $type) ? "text"
+					: (preg_match('~blob~i', $type) ? "blob"
+					: (preg_match('~real|floa|doub~i', $type) ? "real"
+					: (preg_match('~any~i', $type) ? "any"
+					: "numeric"
+				))))),
 				"full_type" => $type,
 				"default" => (preg_match("~^'(.*)'$~", $default, $match) ? str_replace("''", "'", $match[1]) : ($default == "NULL" ? null : $default)),
 				"null" => !$row["notnull"],
