@@ -3,6 +3,7 @@
 - Process list: Copy query to clipboard
 - Wrap uneditable values in edit form
 - Syntax highlighting: Speed up
+- Allow connecting to socket without hostname (bug #1199, regression from 5.4.0)
 - MySQL: Do not export IN in FUNCTION parameters (regression from 5.4.2)
 - MySQL: Convert vector columns to text in select and edit
 - MySQL, SQLite: Draggable columns in alter table
