@@ -199,6 +199,7 @@ if (!defined('Adminer\DRIVER')) {
 		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL");
 		public $functions = array("char_length", "date", "from_unixtime", "lower", "round", "floor", "ceil", "sec_to_time", "time_to_sec", "upper");
 		public $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
+		public $partitionBy = array("HASH", "LINEAR HASH", "KEY", "LINEAR KEY", "RANGE", "LIST");
 
 		static function connect(string $server, string $username, string $password) {
 			$connection = parent::connect($server, $username, $password);
@@ -251,9 +252,6 @@ if (!defined('Adminer\DRIVER')) {
 			}
 			if (min_version(9, 11.7, $connection)) {
 				$this->types[lang('Numbers')]["vector"] = 16383;
-			}
-			if (min_version(5.1, '', $connection)) {
-				$this->partitionBy = array("HASH", "LINEAR HASH", "KEY", "LINEAR KEY", "RANGE", "LIST");
 			}
 			if (min_version(5.7, 10.2, $connection)) {
 				$this->generated = array("STORED", "VIRTUAL");
@@ -949,7 +947,7 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 	* @return Result
 	*/
 	function explain(Db $connection, string $query) {
-		return $connection->query("EXPLAIN " . (min_version(5.1) && !min_version(5.7) ? "PARTITIONS " : "") . $query);
+		return $connection->query("EXPLAIN " . (min_version(5.7) ? "" : "PARTITIONS ") . $query);
 	}
 
 	/** Get approximate number of rows
@@ -1065,8 +1063,7 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 	*/
 	function support(string $feature): bool {
 		return preg_match(
-			'~^(comment|columns|copy|database|drop_col|dump|indexes|kill|privileges|move_col|procedure|processlist|routine|sql|status|table|trigger|variables|view'
-				. (min_version(5.1) ? '|event' : '')
+			'~^(comment|columns|copy|database|drop_col|dump|event|indexes|kill|privileges|move_col|procedure|processlist|routine|sql|status|table|trigger|variables|view'
 				. (min_version(8) ? '|descidx' : '')
 				. (min_version('8.0.16', '10.2.1') ? '|check' : '')
 				. ')$~',
