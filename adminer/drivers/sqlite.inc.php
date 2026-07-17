@@ -224,7 +224,12 @@ if (isset($_GET["sqlite"])) {
 
 	function table_status($name = "", $fast = false) {
 		$return = array();
-		foreach (get_rows("SELECT name AS Name, type AS Engine, sql, 'rowid' AS Oid, '' AS Auto_increment FROM sqlite_master WHERE type IN ('table', 'view') " . ($name != "" ? "AND name = " . q($name) : "ORDER BY name")) as $row) {
+		foreach (
+			get_rows(
+				"SELECT name AS Name, type AS Engine, sql, 'rowid' AS Oid, '' AS Auto_increment FROM sqlite_master WHERE type IN ('table', 'view') "
+				. ($name != "" ? "AND name = " . q($name) : "ORDER BY (name = 'sqlite_sequence'), name")
+			) as $row
+		) {
 			if ($row["Engine"] == "table") {
 				$suffix = preg_replace('~.*\)~s', '', $row["sql"]); // table options are after the last parenthesis
 				$row["Engine"] = implode(", ", array_filter(array(
