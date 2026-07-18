@@ -1,4 +1,5 @@
 ## Adminer dev
+- Ignore invalid X-Forwarded-Prefix (GHSA-fr74-9mf9-gf44)
 
 ## Adminer 5.5.0 (released 2026-07-17)
 - Disallow invalid port or socket (GHSA-58cq-mgw2-38m5)
