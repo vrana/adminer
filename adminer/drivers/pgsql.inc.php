@@ -27,7 +27,7 @@ if (isset($_GET["pgsql"])) {
 				$this->string = "host=$host" . ($port ? " port=$port" : "") . " user='" . addcslashes($username, "'\\") . "' password='" . addcslashes($password, "'\\") . "'";
 				$ssl = adminer()->connectSsl();
 				if (isset($ssl["mode"])) {
-					$this->string .= " sslmode='" . $ssl["mode"] . "'";
+					$this->string .= " sslmode=$ssl[mode]";
 				}
 				$this->link = @pg_connect("$this->string dbname='" . ($db != "" ? addcslashes($db, "'\\") : "postgres") . "'", PGSQL_CONNECT_FORCE_NEW);
 				if (!$this->link && $db != "") {
@@ -153,7 +153,7 @@ if (isset($_GET["pgsql"])) {
 				$dsn = "pgsql:host=$host" . ($port ? " port=$port" : "") . " client_encoding=utf8 dbname='" . ($db != "" ? addcslashes($db, "'\\") : "postgres") . "'";
 				$ssl = adminer()->connectSsl();
 				if (isset($ssl["mode"])) {
-					$dsn .= " sslmode='" . $ssl["mode"] . "'";
+					$dsn .= " sslmode=$ssl[mode]";
 				}
 				return $this->dsn($dsn, $username, $password);
 			}
