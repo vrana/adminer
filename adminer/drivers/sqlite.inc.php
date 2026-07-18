@@ -233,8 +233,8 @@ if (isset($_GET["sqlite"])) {
 			if ($row["Engine"] == "table") {
 				$suffix = preg_replace('~.*\)~s', '', $row["sql"]); // table options are after the last parenthesis
 				$row["Engine"] = implode(", ", array_filter(array(
-					(preg_match('~\bSTRICT\b~i', $suffix) ? "STRICT" : ""),
-					(preg_match('~\bWITHOUT\s+ROWID\b~i', $suffix) ? "WITHOUT ROWID" : ""),
+					(preg_match('~\bSTRICT\b~i', $suffix) ? "STRICT" : 0),
+					(preg_match('~\bWITHOUT\s+ROWID\b~i', $suffix) ? "WITHOUT ROWID" : 0),
 				))) ?: "table";
 			}
 			unset($row["sql"]);
