@@ -205,7 +205,7 @@ class Adminer {
 				if (support("view")) {
 					$links["view"] = lang('Alter view');
 				}
-			} elseif (function_exists('Adminer\alter_table')) {
+			} elseif (function_exists('Adminer\alter_table') && $name != "") {
 				$links["create"] = lang('Alter table');
 			}
 		}
