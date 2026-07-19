@@ -921,19 +921,29 @@ function verify_token(): bool {
 	return ($rand ^ $_SESSION["token"]) == $token && in_array($_SERVER["HTTP_SEC_FETCH_SITE"], array("", "same-origin"));
 }
 
+/** Get characters used in LZW compressed string */
+function lzw_alphabet(): string {
+	// this doesn't need escaping in single-quoted PHP string and survives stripping trailing whitespace
+	return strtr(implode(range('"', '~')), "'\\", "!\n");
+}
+
 // used in compiled version
-function lzw_decompress(string $binary): string {
-	// convert binary string to codes
+function lzw_decompress(string $string): string {
+	// convert string to codes; 2 chars from a 93-symbol alphabet hold 13 bits
+	$alphabet = array_flip(str_split(lzw_alphabet()));
+	$length = strlen($string);
+	$valid = ($length ? 13 * ($length - 1) / 2 - $alphabet[$string[0]] : 0); // number of code bits; first char stores the count of padding bits
 	$dictionary_count = 256;
 	$bits = 8; // ceil(log($dictionary_count, 2))
 	$codes = array();
 	$rest = 0;
 	$rest_length = 0;
-	for ($i=0; $i < strlen($binary); $i++) {
-		$rest = ($rest << 8) + ord($binary[$i]);
-		$rest_length += 8;
-		if ($rest_length >= $bits) {
+	for ($i=1; $i < $length; $i += 2) {
+		$rest = ($rest << 13) + $alphabet[$string[$i]] * 93 + $alphabet[$string[$i + 1]];
+		$rest_length += 13;
+		while ($rest_length >= $bits && $valid >= $bits) {
 			$rest_length -= $bits;
+			$valid -= $bits;
 			$codes[] = $rest >> $rest_length;
 			$rest &= (1 << $rest_length) - 1;
 			$dictionary_count++;

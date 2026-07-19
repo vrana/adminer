@@ -1,5 +1,6 @@
 ## Adminer dev
 - Ignore invalid X-Forwarded-Prefix (GHSA-fr74-9mf9-gf44)
+- Compile: Valid UTF-8 (bug #1113, #1213)
 - Syntax highlighting: Update SQLite and PostgreSQL
 
 ## Adminer 5.5.0 (released 2026-07-17)

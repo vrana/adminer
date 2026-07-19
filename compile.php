@@ -2,19 +2,12 @@
 <?php
 include __DIR__ . "/adminer/include/version.inc.php";
 include __DIR__ . "/adminer/include/errors.inc.php";
+include __DIR__ . "/adminer/include/lzw.inc.php";
 include __DIR__ . "/externals/JsShrink/jsShrink.php";
 include __DIR__ . "/externals/PhpShrink/phpShrink.php";
 
 function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");
-}
-
-function add_quo_slashes($s) {
-	$return = $s;
-	$return = addcslashes($return, "\n\r\$\"\\");
-	$return = preg_replace('~\0(?![0-7])~', '\\\\0', $return);
-	$return = addcslashes($return, "\0");
-	return $return;
 }
 
 function remove_lang($match) {
@@ -110,43 +103,6 @@ function put_file($match) {
 	return "?>\n$return" . (in_array($tokens[count($tokens) - 1][0], array(T_CLOSE_TAG, T_INLINE_HTML), true) ? "<?php" : "");
 }
 
-function lzw_compress($string) {
-	// compression
-	$dictionary = array_flip(range("\0", "\xFF"));
-	$word = "";
-	$codes = array();
-	for ($i=0; $i <= strlen($string); $i++) {
-		$x = @$string[$i];
-		if (strlen($x) && isset($dictionary[$word . $x])) {
-			$word .= $x;
-		} elseif ($i) {
-			$codes[] = $dictionary[$word];
-			$dictionary[$word . $x] = count($dictionary);
-			$word = $x;
-		}
-	}
-	// convert codes to binary string
-	$dictionary_count = 256;
-	$bits = 8; // ceil(log($dictionary_count, 2))
-	$return = "";
-	$rest = 0;
-	$rest_length = 0;
-	foreach ($codes as $code) {
-		$rest = ($rest << $bits) + $code;
-		$rest_length += $bits;
-		$dictionary_count++;
-		if ($dictionary_count >> $bits) {
-			$bits++;
-		}
-		while ($rest_length > 7) {
-			$rest_length -= 8;
-			$return .= chr($rest >> $rest_length);
-			$rest &= (1 << $rest_length) - 1;
-		}
-	}
-	return $return . ($rest_length ? chr($rest << (8 - $rest_length)) : "");
-}
-
 function put_file_lang($match) {
 	global $lang_ids, $project;
 	if ($_SESSION["lang"]) {
@@ -162,7 +118,7 @@ function put_file_lang($match) {
 			}
 		}
 		$return .= '
-		case "' . $lang . '": $compressed = "' . add_quo_slashes(lzw_compress(implode("\n", $translation_ids))) . '"; break;';
+		case "' . $lang . '": $compressed = \'' . Adminer\lzw_compress(implode("\n", $translation_ids)) . '\'; break;';
 	}
 	$translations_version = crc32($return);
 	return 'Lang::$translations = (array) $_SESSION["translations"];
@@ -195,7 +151,7 @@ function minify_css($file) {
 	$file = preg_replace_callback('~url\((\w+\.(gif|png|jpg))\)~', function ($match) {
 		return "url(data:image/$match[2];base64," . base64_encode(file_get_contents(__DIR__ . "/adminer/static/$match[1]")) . ")"; // we don't have ME in *.css so we can only inline images
 	}, $file);
-	return lzw_compress(preg_replace('~\s*([:;{},])\s*~', '\1', preg_replace('~/\*.*?\*/\s*~s', '', $file)));
+	return Adminer\lzw_compress(preg_replace('~\s*([:;{},])\s*~', '\1', preg_replace('~/\*.*?\*/\s*~s', '', $file)));
 }
 
 function minify_js($file) {
@@ -207,7 +163,7 @@ function minify_js($file) {
 	if (function_exists('jsShrink')) {
 		$file = jsShrink($file);
 	}
-	return lzw_compress($file);
+	return Adminer\lzw_compress($file);
 }
 
 // $callback only to match signature
@@ -221,9 +177,9 @@ function compile_file($match, $callback = '') {
 		}
 	}
 	if ($callback) {
-		$file = call_user_func($callback, $file);
+		return "'" . call_user_func($callback, $file) . "'"; // LZW compressed string doesn't need escaping
 	}
-	return '"' . add_quo_slashes($file) . '"';
+	return "base64_decode('" . base64_encode($file) . "')";
 }
 
 function number_type() {
