@@ -272,6 +272,46 @@ Lang::$translations = array(
 	'Type has been created.' => 'Type er opprettet.',
 	'Alter type' => 'Endre type',
 	'Saving' => 'Lagrer',
+	'Check has been dropped.' => 'Kontrollen er slettet.', // Claude Fable 5
+	'Check has been altered.' => 'Kontrollen er endret.', // Claude Fable 5
+	'Check has been created.' => 'Kontrollen er opprettet.', // Claude Fable 5
+	'Alter check' => 'Endre kontroll', // Claude Fable 5
+	'Create check' => 'Opprett kontroll', // Claude Fable 5
+	'Drop %s?' => 'Dropp %s?', // Claude Fable 5
+	'overwrite' => 'overskriv', // Claude Fable 5
+	'DB' => 'DB', // Claude Fable 5
+	'Algorithm' => 'Algoritme', // Claude Fable 5
+	'Columns' => 'Kolonner', // Claude Fable 5
+	'Condition' => 'Betingelse', // Claude Fable 5
+	'%s queries are not supported.' => '%s-spørringer støttes ikke.', // Claude Fable 5
+	'Warnings' => 'Advarsler', // Claude Fable 5
+	'%d / ' => '%d / ', // Claude Fable 5
+	'Limit rows' => 'Begrens rader', // Claude Fable 5
+	'Materialized view' => 'Materialisert view', // Claude Fable 5
+	'Inherits from' => 'Arver fra', // Claude Fable 5
+	'Checks' => 'Kontroller', // Claude Fable 5
+	'Inherited by' => 'Arves av', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] eller :socket', // Claude Fable 5
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer støtter ikke tilgang til en database uten passord, <a href="https://www.adminer.org/en/password/"%s>mer informasjon</a>.', // Claude Fable 5
+	'Default value' => 'Standardverdi', // Claude Fable 5
+	'Too many unsuccessful logins, try again in %d minute(s).' => array('For mange mislykkede innloggingsforsøk, prøv igjen om %d minutt.', 'For mange mislykkede innloggingsforsøk, prøv igjen om %d minutter.'), // Claude Fable 5
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Takk for at du bruker Adminer, vurder å <a href="https://www.adminer.org/en/donation/">donere</a>.', // Claude Fable 5
+	'The action will be performed after successful login with the same credentials.' => 'Handlingen utføres etter vellykket innlogging med samme påloggingsinformasjon.', // Claude Fable 5
+	'Invalid server.' => 'Ugyldig server.', // Claude Fable 5
+	'Connecting to privileged ports is not allowed.' => 'Tilkobling til privilegerte porter er ikke tillatt.', // Claude Fable 5
+	'There is a space in the input password which might be the cause.' => 'Det er et mellomrom i det angitte passordet, noe som kan være årsaken.', // Claude Fable 5
+	'If you did not send this request from Adminer then close this page.' => 'Hvis du ikke sendte denne forespørselen fra Adminer, lukk denne siden.', // Claude Fable 5
+	'Size' => 'Størrelse', // Claude Fable 5
+	'Compute' => 'Beregn', // Claude Fable 5
+	'Loaded plugins' => 'Innlastede plugins', // Claude Fable 5
+	'screenshot' => 'skjermbilde', // Claude Fable 5
+	'You are offline.' => 'Du er frakoblet.', // Claude Fable 5
+	'Increase %s.' => 'Øk %s.', // Claude Fable 5
+	'Unknown error.' => 'Ukjent feil.', // Claude Fable 5
+	'%s must <a%s>return an array</a>.' => '%s må <a%s>returnere et array</a>.', // Claude Fable 5
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Konfigurer</a> %s i %s.', // Claude Fable 5
+	'Disable %s or enable %s or %s extensions.' => 'Deaktiver %s eller aktiver utvidelsene %s eller %s.', // Claude Fable 5
+	'Database does not support password.' => 'Databasen støtter ikke passord.', // Claude Fable 5
 );
 
 // run `php ../../lang.php no` to update this file

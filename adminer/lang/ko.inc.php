@@ -270,6 +270,48 @@ Lang::$translations = array(
 	'You are offline.' => '오프라인입니다.',
 	'You can upload a big SQL file via FTP and import it from server.' => '큰 SQL 파일은 FTP를 통하여 업로드하여 서버에서 가져올 수 있습니다.',
 	'You have no privileges to update this table.' => '이 테이블을 업데이트할 권한이 없습니다.',
+	'Check has been dropped.' => '체크 제약 조건을 삭제했습니다.', // Claude Fable 5
+	'Check has been altered.' => '체크 제약 조건을 변경했습니다.', // Claude Fable 5
+	'Check has been created.' => '체크 제약 조건을 만들었습니다.', // Claude Fable 5
+	'Alter check' => '체크 제약 조건 변경', // Claude Fable 5
+	'Create check' => '체크 제약 조건 만들기', // Claude Fable 5
+	'Drop %s?' => '%s을(를) 삭제하시겠습니까?', // Claude Fable 5
+	'Tables have been optimized.' => '테이블을 최적화했습니다.', // Claude Fable 5
+	'User types' => '사용자 유형', // Claude Fable 5
+	'DB' => 'DB', // Claude Fable 5
+	'Algorithm' => '알고리즘', // Claude Fable 5
+	'Columns' => '열', // Claude Fable 5
+	'Condition' => '조건', // Claude Fable 5
+	'Ctrl+click on a value to modify it.' => '값을 수정하려면 Ctrl+클릭하세요.', // Claude Fable 5
+	'File must be in UTF-8 encoding.' => '파일은 UTF-8 인코딩이어야 합니다.', // Claude Fable 5
+	'%s queries are not supported.' => '%s 쿼리는 지원되지 않습니다.', // Claude Fable 5
+	'%d / ' => '%d / ', // Claude Fable 5
+	'Materialized view' => '구체화된 뷰', // Claude Fable 5
+	'Inherits from' => '상속 원본', // Claude Fable 5
+	'Checks' => '체크 제약 조건', // Claude Fable 5
+	'Inherited by' => '상속 대상', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] 또는 :socket', // Claude Fable 5
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer는 비밀번호 없이 데이터베이스에 접근하는 것을 지원하지 않습니다(<a href="https://www.adminer.org/en/password/"%s>자세한 정보</a>).', // Claude Fable 5
+	'Default value' => '기본값', // Claude Fable 5
+	'Full table scan' => '전체 테이블 스캔', // Claude Fable 5
+	'Too many unsuccessful logins, try again in %d minute(s).' => '로그인 실패가 너무 많습니다. %d분 후에 다시 시도하세요.', // Claude Fable 5
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Adminer를 사용해 주셔서 감사합니다. <a href="https://www.adminer.org/en/donation/">기부</a>를 고려해 주세요.', // Claude Fable 5
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => '마스터 비밀번호가 만료되었습니다. 영구적으로 유지하려면 <a href="https://www.adminer.org/en/extension/"%s>안내</a>에 따라 %s 메서드를 구현하세요.', // Claude Fable 5
+	'The action will be performed after successful login with the same credentials.' => '같은 자격 증명으로 로그인에 성공하면 작업이 수행됩니다.', // Claude Fable 5
+	'Invalid server.' => '잘못된 서버입니다.', // Claude Fable 5
+	'Connecting to privileged ports is not allowed.' => '권한이 필요한 포트로의 연결은 허용되지 않습니다.', // Claude Fable 5
+	'There is a space in the input password which might be the cause.' => '입력한 비밀번호에 공백이 있는데, 이것이 원인일 수 있습니다.', // Claude Fable 5
+	'If you did not send this request from Adminer then close this page.' => '이 요청을 Adminer에서 보낸 것이 아니라면 이 페이지를 닫으세요.', // Claude Fable 5
+	'Loaded plugins' => '불러온 플러그인', // Claude Fable 5
+	'screenshot' => '스크린샷', // Claude Fable 5
+	'Increase %s.' => '%s 값을 늘리세요.', // Claude Fable 5
+	'Saving' => '저장 중', // Claude Fable 5
+	'Unknown error.' => '알 수 없는 오류입니다.', // Claude Fable 5
+	'%s must <a%s>return an array</a>.' => '%s은(는) <a%s>배열을 반환해야 합니다</a>.', // Claude Fable 5
+	'<a%s>Configure</a> %s in %s.' => '%3$s에서 %2$s을(를) <a%1$s>설정</a>하세요.', // Claude Fable 5
+	'Disable %s or enable %s or %s extensions.' => '%s 확장을 비활성화하거나 %s 또는 %s 확장을 활성화하세요.', // Claude Fable 5
+	'Database does not support password.' => '데이터베이스가 비밀번호를 지원하지 않습니다.', // Claude Fable 5
+	'no' => '아니요', // Claude Fable 5
 );
 
 // run `php ../../lang.php ko` to update this file

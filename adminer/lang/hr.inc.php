@@ -344,6 +344,7 @@ Lang::$translations = array(
 	'Inherits from' => 'Nasljeđuje od',
 	'Checks' => 'Provjere',
 	'Inherited by' => 'Nasljeđeno od',
+	'Invalid server.' => 'Neispravan poslužitelj.', // Claude Fable 5
 );
 
 // run `php ../../lang.php hr` to update this file

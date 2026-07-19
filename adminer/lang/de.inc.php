@@ -305,6 +305,13 @@ Lang::$translations = array(
 	'%s must <a%s>return an array</a>.' => '%s muss <a%s>ein Array zurückgeben</a>.',
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Konfigure</a> %s mit %s.',
 	'screenshot' => 'Screenshot',
+	'Algorithm' => 'Algorithmus', // Claude Fable 5
+	'Condition' => 'Bedingung', // Claude Fable 5
+	'Inherits from' => 'Erbt von', // Claude Fable 5
+	'Inherited by' => 'Vererbt an', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] oder :socket', // Claude Fable 5
+	'Invalid server.' => 'Ungültiger Server.', // Claude Fable 5
+	'Increase %s.' => 'Erhöhen Sie %s.', // Claude Fable 5
 );
 
 // run `php ../../lang.php de` to update this file

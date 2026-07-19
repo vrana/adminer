@@ -303,6 +303,15 @@ Lang::$translations = array(
 	'Loaded plugins' => 'Загруженные плагины',
 	'%s must <a%s>return an array</a>.' => '%s должна <a%s>вернуть массив</a>.',
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Настроить</a> %s в %s.',
+	'Algorithm' => 'Алгоритм', // Claude Fable 5
+	'Columns' => 'Поля', // Claude Fable 5
+	'Condition' => 'Условие', // Claude Fable 5
+	'Inherits from' => 'Наследует от', // Claude Fable 5
+	'Inherited by' => 'Наследуется таблицами', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] или :socket', // Claude Fable 5
+	'Invalid server.' => 'Неправильный сервер.', // Claude Fable 5
+	'screenshot' => 'скриншот', // Claude Fable 5
+	'Increase %s.' => 'Увеличьте %s.', // Claude Fable 5
 );
 
 // run `php ../../lang.php ru` to update this file

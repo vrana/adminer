@@ -293,6 +293,25 @@ Lang::$translations = array(
 	'Disable %s or enable %s or %s extensions.' => 'Schakel %s uit or schakel extensies %s of %s in.',
 	'yes' => 'ja',
 	'no' => 'neen',
+	'Check has been dropped.' => 'Check verwijderd.', // Claude Fable 5
+	'Check has been altered.' => 'Check aangepast.', // Claude Fable 5
+	'Check has been created.' => 'Check aangemaakt.', // Claude Fable 5
+	'Alter check' => 'Check aanpassen', // Claude Fable 5
+	'Create check' => 'Check aanmaken', // Claude Fable 5
+	'Algorithm' => 'Algoritme', // Claude Fable 5
+	'Columns' => 'Kolommen', // Claude Fable 5
+	'Condition' => 'Voorwaarde', // Claude Fable 5
+	'Inherits from' => 'Erft van', // Claude Fable 5
+	'Checks' => 'Checks', // Claude Fable 5
+	'Inherited by' => 'Geërfd door', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] of :socket', // Claude Fable 5
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Bedankt voor het gebruik van Adminer, overweeg een <a href="https://www.adminer.org/en/donation/">donatie</a>.', // Claude Fable 5
+	'Invalid server.' => 'Ongeldige server.', // Claude Fable 5
+	'Loaded plugins' => 'Geladen plugins', // Claude Fable 5
+	'screenshot' => 'schermafbeelding', // Claude Fable 5
+	'Increase %s.' => 'Verhoog %s.', // Claude Fable 5
+	'%s must <a%s>return an array</a>.' => '%s moet <a%s>een array retourneren</a>.', // Claude Fable 5
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Configureer</a> %s in %s.', // Claude Fable 5
 );
 
 // run `php ../../lang.php nl` to update this file

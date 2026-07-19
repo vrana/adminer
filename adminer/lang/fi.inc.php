@@ -327,6 +327,23 @@ Lang::$translations = array(
 	'Unknown error.' => 'Tuntematon virhe.',
 	'Database does not support password.' => 'Tietokanta ei tue salasanaa.',
 	'Disable %s or enable %s or %s extensions.' => 'Poista käytöstä %s tai ota käyttöön laajennus %s tai %s.',
+	'Check has been dropped.' => 'Tarkistus on poistettu.', // Claude Fable 5
+	'Check has been altered.' => 'Tarkistusta on muutettu.', // Claude Fable 5
+	'Check has been created.' => 'Tarkistus on luotu.', // Claude Fable 5
+	'Alter check' => 'Muuta tarkistusta', // Claude Fable 5
+	'Create check' => 'Luo tarkistus', // Claude Fable 5
+	'Algorithm' => 'Algoritmi', // Claude Fable 5
+	'Columns' => 'Sarakkeet', // Claude Fable 5
+	'Condition' => 'Ehto', // Claude Fable 5
+	'Inherits from' => 'Perii taulusta', // Claude Fable 5
+	'Checks' => 'Tarkistukset', // Claude Fable 5
+	'Inherited by' => 'Periytyy tauluihin', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] tai :socket', // Claude Fable 5
+	'Invalid server.' => 'Virheellinen palvelin.', // Claude Fable 5
+	'Loaded plugins' => 'Ladatut lisäosat', // Claude Fable 5
+	'screenshot' => 'kuvakaappaus', // Claude Fable 5
+	'Increase %s.' => 'Kasvata %s.', // Claude Fable 5
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Määritä</a> %s tiedostossa %s.', // Claude Fable 5
 );
 
 // run `php ../../lang.php fi` to update this file

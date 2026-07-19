@@ -281,6 +281,37 @@ Lang::$translations = array(
 	'Saving' => 'Gardando',
 	'yes' => 'si',
 	'no' => 'non',
+	'Check has been dropped.' => 'Eliminouse a comprobación.', // Claude Fable 5
+	'Check has been altered.' => 'Modificouse a comprobación.', // Claude Fable 5
+	'Check has been created.' => 'Creouse a comprobación.', // Claude Fable 5
+	'Alter check' => 'Modificar comprobación', // Claude Fable 5
+	'Create check' => 'Crear comprobación', // Claude Fable 5
+	'Drop %s?' => 'Eliminar %s?', // Claude Fable 5
+	'overwrite' => 'sobrescribir', // Claude Fable 5
+	'DB' => 'BD', // Claude Fable 5
+	'Algorithm' => 'Algoritmo', // Claude Fable 5
+	'Columns' => 'Columnas', // Claude Fable 5
+	'Condition' => 'Condición', // Claude Fable 5
+	'%s queries are not supported.' => 'As consultas %s non son compatibles.', // Claude Fable 5
+	'Warnings' => 'Avisos', // Claude Fable 5
+	'Inherits from' => 'Herda de', // Claude Fable 5
+	'Checks' => 'Comprobacións', // Claude Fable 5
+	'Inherited by' => 'Herdada por', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] ou :socket', // Claude Fable 5
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer non permite acceder a unha base de datos sen contrasinal, <a href="https://www.adminer.org/en/password/"%s>máis información</a>.', // Claude Fable 5
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Grazas por usar Adminer, considere <a href="https://www.adminer.org/en/donation/">facer unha doazón</a>.', // Claude Fable 5
+	'The action will be performed after successful login with the same credentials.' => 'A acción realizarase despois de iniciar sesión correctamente coas mesmas credenciais.', // Claude Fable 5
+	'Invalid server.' => 'Servidor non válido.', // Claude Fable 5
+	'Connecting to privileged ports is not allowed.' => 'Non se permite conectar a portos privilexiados.', // Claude Fable 5
+	'There is a space in the input password which might be the cause.' => 'Hai un espazo no contrasinal introducido que podería ser a causa.', // Claude Fable 5
+	'Loaded plugins' => 'Plugins cargados', // Claude Fable 5
+	'screenshot' => 'captura de pantalla', // Claude Fable 5
+	'Increase %s.' => 'Aumente %s.', // Claude Fable 5
+	'Unknown error.' => 'Erro descoñecido.', // Claude Fable 5
+	'%s must <a%s>return an array</a>.' => '%s debe <a%s>devolver un array</a>.', // Claude Fable 5
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Configure</a> %s en %s.', // Claude Fable 5
+	'Disable %s or enable %s or %s extensions.' => 'Desactive %s ou active as extensións %s ou %s.', // Claude Fable 5
+	'Database does not support password.' => 'A base de datos non admite contrasinal.', // Claude Fable 5
 );
 
 // run `php ../../lang.php gl` to update this file

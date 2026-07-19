@@ -257,6 +257,61 @@ Lang::$translations = array(
 	'Permanent link' => 'Hivatkozás',
 	'Edit all' => 'Összes szerkesztése',
 	'HH:MM:SS' => 'óó:pp:mm',
+	'Check has been dropped.' => 'Az ellenőrzés eldobva.', // Claude Fable 5
+	'Check has been altered.' => 'Az ellenőrzés módosult.', // Claude Fable 5
+	'Check has been created.' => 'Az ellenőrzés létrehozva.', // Claude Fable 5
+	'Alter check' => 'Ellenőrzés módosítása', // Claude Fable 5
+	'Create check' => 'Ellenőrzés létrehozása', // Claude Fable 5
+	'Drop %s?' => 'Eldobja: %s?', // Claude Fable 5
+	'Tables have been optimized.' => 'A táblák optimalizálva.', // Claude Fable 5
+	'Vacuum' => 'Tisztítás', // Claude Fable 5
+	'Selected' => 'Kijelölve', // Claude Fable 5
+	'overwrite' => 'felülírás', // Claude Fable 5
+	'DB' => 'DB', // Claude Fable 5
+	'Algorithm' => 'Algoritmus', // Claude Fable 5
+	'Columns' => 'Oszlopok', // Claude Fable 5
+	'Condition' => 'Feltétel', // Claude Fable 5
+	'Ctrl+click on a value to modify it.' => 'Ctrl+kattintás egy értékre a módosításához.', // Claude Fable 5
+	'File must be in UTF-8 encoding.' => 'A fájlnak UTF-8 kódolásúnak kell lennie.', // Claude Fable 5
+	'Modify' => 'Módosítás', // Claude Fable 5
+	'Load more data' => 'További adatok betöltése', // Claude Fable 5
+	'Loading' => 'Betöltés', // Claude Fable 5
+	'%s queries are not supported.' => 'A(z) %s lekérdezések nem támogatottak.', // Claude Fable 5
+	'Warnings' => 'Figyelmeztetések', // Claude Fable 5
+	'%d / ' => '%d / ', // Claude Fable 5
+	'Limit rows' => 'Sorok korlátozása', // Claude Fable 5
+	'Materialized view' => 'Materializált nézet', // Claude Fable 5
+	'Inherits from' => 'Ettől örököl', // Claude Fable 5
+	'Checks' => 'Ellenőrzések', // Claude Fable 5
+	'Inherited by' => 'Ezek öröklik', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] vagy :socket', // Claude Fable 5
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Az Adminer nem támogatja a jelszó nélküli adatbázis-hozzáférést, <a href="https://www.adminer.org/en/password/"%s>további információ</a>.', // Claude Fable 5
+	'Default value' => 'Alapértelmezett érték', // Claude Fable 5
+	'Full table scan' => 'Teljes táblaolvasás', // Claude Fable 5
+	'Too many unsuccessful logins, try again in %d minute(s).' => array('Túl sok sikertelen bejelentkezés, próbálja újra %d perc múlva.', 'Túl sok sikertelen bejelentkezés, próbálja újra %d perc múlva.'), // Claude Fable 5
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Köszönjük, hogy az Adminert használja, fontolja meg az <a href="https://www.adminer.org/en/donation/">adományozást</a>.', // Claude Fable 5
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'A mesterjelszó lejárt. <a href="https://www.adminer.org/en/extension/"%s>Implementálja</a> a(z) %s metódust, hogy állandó legyen.', // Claude Fable 5
+	'The action will be performed after successful login with the same credentials.' => 'A művelet az azonos hitelesítő adatokkal történő sikeres bejelentkezés után hajtódik végre.', // Claude Fable 5
+	'Invalid server.' => 'Érvénytelen szerver.', // Claude Fable 5
+	'Connecting to privileged ports is not allowed.' => 'A privilegizált portokhoz való csatlakozás nem engedélyezett.', // Claude Fable 5
+	'There is a space in the input password which might be the cause.' => 'A megadott jelszóban szóköz található, ami az ok lehet.', // Claude Fable 5
+	'If you did not send this request from Adminer then close this page.' => 'Ha nem az Adminerből küldte ezt a kérést, zárja be ezt az oldalt.', // Claude Fable 5
+	'You can upload a big SQL file via FTP and import it from server.' => 'Nagy SQL fájlt FTP-n keresztül is feltölthet, és a szerverről importálhatja.', // Claude Fable 5
+	'Size' => 'Méret', // Claude Fable 5
+	'Compute' => 'Kiszámítás', // Claude Fable 5
+	'Loaded plugins' => 'Betöltött bővítmények', // Claude Fable 5
+	'screenshot' => 'képernyőkép', // Claude Fable 5
+	'You are offline.' => 'Ön offline állapotban van.', // Claude Fable 5
+	'Increase %s.' => 'Növelje a(z) %s értékét.', // Claude Fable 5
+	'You have no privileges to update this table.' => 'Nincs jogosultsága a tábla frissítéséhez.', // Claude Fable 5
+	'Saving' => 'Mentés', // Claude Fable 5
+	'Unknown error.' => 'Ismeretlen hiba.', // Claude Fable 5
+	'%s must <a%s>return an array</a>.' => 'A(z) %s fájlnak <a%s>tömböt kell visszaadnia</a>.', // Claude Fable 5
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Konfigurálja</a> a(z) %s osztályt a(z) %s fájlban.', // Claude Fable 5
+	'Disable %s or enable %s or %s extensions.' => 'Tiltsa le a(z) %s kiterjesztést, vagy engedélyezze a(z) %s vagy %s kiterjesztéseket.', // Claude Fable 5
+	'Database does not support password.' => 'Az adatbázis nem támogat jelszót.', // Claude Fable 5
+	'yes' => 'igen', // Claude Fable 5
+	'no' => 'nem', // Claude Fable 5
 );
 
 // run `php ../../lang.php hu` to update this file

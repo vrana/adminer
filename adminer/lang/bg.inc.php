@@ -313,6 +313,37 @@ Lang::$translations = array(
 	'Type has been dropped.' => 'Вида беше пермахнат.',
 	'Type has been created.' => 'Вида беше създаден.',
 	'Alter type' => 'Промяна на вид',
+	'Check has been dropped.' => 'Проверката беше премахната.', // Claude Fable 5
+	'Check has been altered.' => 'Проверката беше променена.', // Claude Fable 5
+	'Check has been created.' => 'Проверката беше създадена.', // Claude Fable 5
+	'Alter check' => 'Промяна на проверка', // Claude Fable 5
+	'Create check' => 'Създаване на проверка', // Claude Fable 5
+	'Drop %s?' => 'Премахване на %s?', // Claude Fable 5
+	'overwrite' => 'презаписване', // Claude Fable 5
+	'DB' => 'БД', // Claude Fable 5
+	'Algorithm' => 'Алгоритъм', // Claude Fable 5
+	'Columns' => 'Колони', // Claude Fable 5
+	'Condition' => 'Условие', // Claude Fable 5
+	'%s queries are not supported.' => 'Заявките %s не се поддържат.', // Claude Fable 5
+	'Warnings' => 'Предупреждения', // Claude Fable 5
+	'Inherits from' => 'Наследява от', // Claude Fable 5
+	'Checks' => 'Проверки', // Claude Fable 5
+	'Inherited by' => 'Наследява се от', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] или :socket', // Claude Fable 5
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer не поддържа достъп до база данни без парола, <a href="https://www.adminer.org/en/password/"%s>повече информация</a>.', // Claude Fable 5
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Благодарим ви, че използвате Adminer, помислете за <a href="https://www.adminer.org/en/donation/">дарение</a>.', // Claude Fable 5
+	'The action will be performed after successful login with the same credentials.' => 'Действието ще бъде извършено след успешно влизане със същите данни.', // Claude Fable 5
+	'Invalid server.' => 'Невалиден сървър.', // Claude Fable 5
+	'Connecting to privileged ports is not allowed.' => 'Свързването към привилегировани портове не е разрешено.', // Claude Fable 5
+	'There is a space in the input password which might be the cause.' => 'Има интервал във въведената парола, което може да е причината.', // Claude Fable 5
+	'Loaded plugins' => 'Заредени плъгини', // Claude Fable 5
+	'screenshot' => 'екранна снимка', // Claude Fable 5
+	'Increase %s.' => 'Увеличете %s.', // Claude Fable 5
+	'Unknown error.' => 'Неизвестна грешка.', // Claude Fable 5
+	'%s must <a%s>return an array</a>.' => '%s трябва да <a%s>връща масив</a>.', // Claude Fable 5
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Конфигурирайте</a> %s в %s.', // Claude Fable 5
+	'Disable %s or enable %s or %s extensions.' => 'Изключете %s или включете разширенията %s или %s.', // Claude Fable 5
+	'Database does not support password.' => 'Базата данни не поддържа парола.', // Claude Fable 5
 );
 
 // run `php ../../lang.php bg` to update this file

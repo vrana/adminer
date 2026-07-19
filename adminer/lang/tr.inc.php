@@ -320,6 +320,30 @@ Lang::$translations = array(
 	'Type has been dropped.' => 'Tür silindi.',
 	'Type has been created.' => 'Tür oluşturuldu.',
 	'Alter type' => 'Türü değiştir',
+	'Check has been dropped.' => 'Kontrol silindi.', // Claude Fable 5
+	'Check has been altered.' => 'Kontrol değiştirildi.', // Claude Fable 5
+	'Check has been created.' => 'Kontrol oluşturuldu.', // Claude Fable 5
+	'Alter check' => 'Kontrolü değiştir', // Claude Fable 5
+	'Create check' => 'Kontrol oluştur', // Claude Fable 5
+	'overwrite' => 'üzerine yaz', // Claude Fable 5
+	'Algorithm' => 'Algoritma', // Claude Fable 5
+	'Columns' => 'Kolonlar', // Claude Fable 5
+	'Condition' => 'Koşul', // Claude Fable 5
+	'Inherits from' => 'Miras aldığı tablolar', // Claude Fable 5
+	'Checks' => 'Kontroller', // Claude Fable 5
+	'Inherited by' => 'Miras alan tablolar', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] veya :socket', // Claude Fable 5
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer parolasız bir veri tabanına erişimi desteklemez, <a href="https://www.adminer.org/en/password/"%s>daha fazla bilgi</a>.', // Claude Fable 5
+	'Invalid server.' => 'Geçersiz sunucu.', // Claude Fable 5
+	'There is a space in the input password which might be the cause.' => 'Girilen parolada boşluk var, sorunun nedeni bu olabilir.', // Claude Fable 5
+	'Loaded plugins' => 'Yüklenen eklentiler', // Claude Fable 5
+	'screenshot' => 'ekran görüntüsü', // Claude Fable 5
+	'Increase %s.' => '%s değerini artırın.', // Claude Fable 5
+	'Unknown error.' => 'Bilinmeyen hata.', // Claude Fable 5
+	'%s must <a%s>return an array</a>.' => '%s <a%s>bir dizi döndürmelidir</a>.', // Claude Fable 5
+	'<a%s>Configure</a> %s in %s.' => '%2$s ögesini %3$s içinde <a%1$s>yapılandırın</a>.', // Claude Fable 5
+	'Disable %s or enable %s or %s extensions.' => '%s eklentisini devre dışı bırakın veya %s ya da %s eklentilerini etkinleştirin.', // Claude Fable 5
+	'Database does not support password.' => 'Veri tabanı parolayı desteklemez.', // Claude Fable 5
 );
 
 // run `php ../../lang.php tr` to update this file

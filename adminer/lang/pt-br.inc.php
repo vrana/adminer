@@ -253,6 +253,65 @@ Lang::$translations = array(
 	'Please use one of the extensions %s.' => 'Por favor use uma das extensões %s.',
 	'now' => 'agora',
 	'ltr' => 'ltr',
+	'Check has been dropped.' => 'A verificação foi apagada.', // Claude Fable 5
+	'Check has been altered.' => 'A verificação foi alterada.', // Claude Fable 5
+	'Check has been created.' => 'A verificação foi criada.', // Claude Fable 5
+	'Alter check' => 'Alterar verificação', // Claude Fable 5
+	'Create check' => 'Criar verificação', // Claude Fable 5
+	'Drop %s?' => 'Apagar %s?', // Claude Fable 5
+	'Tables have been copied.' => 'As tabelas foram copiadas.', // Claude Fable 5
+	'Tables have been optimized.' => 'As tabelas foram otimizadas.', // Claude Fable 5
+	'Vacuum' => 'Limpar', // Claude Fable 5
+	'Selected' => 'Selecionados', // Claude Fable 5
+	'Copy' => 'Copiar', // Claude Fable 5
+	'overwrite' => 'sobrescrever', // Claude Fable 5
+	'DB' => 'BD', // Claude Fable 5
+	'Algorithm' => 'Algoritmo', // Claude Fable 5
+	'Columns' => 'Colunas', // Claude Fable 5
+	'Condition' => 'Condição', // Claude Fable 5
+	'Permanent link' => 'Link permanente', // Claude Fable 5
+	'File must be in UTF-8 encoding.' => 'O arquivo deve estar codificado em UTF-8.', // Claude Fable 5
+	'Modify' => 'Modificar', // Claude Fable 5
+	'Load more data' => 'Carregar mais dados', // Claude Fable 5
+	'Loading' => 'Carregando', // Claude Fable 5
+	'%s queries are not supported.' => 'Consultas %s não são suportadas.', // Claude Fable 5
+	'Warnings' => 'Avisos', // Claude Fable 5
+	'%d / ' => '%d / ', // Claude Fable 5
+	'Limit rows' => 'Limite de registros', // Claude Fable 5
+	'Edit all' => 'Editar tudo', // Claude Fable 5
+	'Materialized view' => 'Visão materializada', // Claude Fable 5
+	'Inherits from' => 'Herda de', // Claude Fable 5
+	'Checks' => 'Verificações', // Claude Fable 5
+	'Inherited by' => 'Herdada por', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] ou :socket', // Claude Fable 5
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'O Adminer não suporta acessar uma base de dados sem senha, <a href="https://www.adminer.org/en/password/"%s>mais informações</a>.', // Claude Fable 5
+	'Default value' => 'Valor padrão', // Claude Fable 5
+	'Full table scan' => 'Varredura completa da tabela', // Claude Fable 5
+	'Too many unsuccessful logins, try again in %d minute(s).' => array('Muitas tentativas de login sem sucesso, tente novamente em %d minuto.', 'Muitas tentativas de login sem sucesso, tente novamente em %d minutos.'), // Claude Fable 5
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Obrigado por usar o Adminer, considere <a href="https://www.adminer.org/en/donation/">fazer uma doação</a>.', // Claude Fable 5
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'A senha mestra expirou. <a href="https://www.adminer.org/en/extension/"%s>Implemente</a> o método %s para torná-la permanente.', // Claude Fable 5
+	'The action will be performed after successful login with the same credentials.' => 'A ação será realizada após o login bem-sucedido com as mesmas credenciais.', // Claude Fable 5
+	'Invalid server.' => 'Servidor inválido.', // Claude Fable 5
+	'Connecting to privileged ports is not allowed.' => 'Não é permitido conectar a portas privilegiadas.', // Claude Fable 5
+	'There is a space in the input password which might be the cause.' => 'Há um espaço na senha digitada que pode ser a causa.', // Claude Fable 5
+	'If you did not send this request from Adminer then close this page.' => 'Se você não enviou esta requisição pelo Adminer, feche esta página.', // Claude Fable 5
+	'You can upload a big SQL file via FTP and import it from server.' => 'Você pode enviar um arquivo SQL grande via FTP e importá-lo do servidor.', // Claude Fable 5
+	'Size' => 'Tamanho', // Claude Fable 5
+	'Compute' => 'Calcular', // Claude Fable 5
+	'Loaded plugins' => 'Plugins carregados', // Claude Fable 5
+	'screenshot' => 'captura de tela', // Claude Fable 5
+	'You are offline.' => 'Você está offline.', // Claude Fable 5
+	'Increase %s.' => 'Aumente %s.', // Claude Fable 5
+	'You have no privileges to update this table.' => 'Você não tem privilégios para atualizar esta tabela.', // Claude Fable 5
+	'Saving' => 'Salvando', // Claude Fable 5
+	'Unknown error.' => 'Erro desconhecido.', // Claude Fable 5
+	'%s must <a%s>return an array</a>.' => '%s deve <a%s>retornar um array</a>.', // Claude Fable 5
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Configure</a> %s em %s.', // Claude Fable 5
+	'Disable %s or enable %s or %s extensions.' => 'Desabilite %s ou habilite as extensões %s ou %s.', // Claude Fable 5
+	'Database does not support password.' => 'A base de dados não suporta senha.', // Claude Fable 5
+	'yes' => 'sim', // Claude Fable 5
+	'no' => 'não', // Claude Fable 5
+	'HH:MM:SS' => 'HH:MM:SS', // Claude Fable 5
 );
 
 // run `php ../../lang.php pt-br` to update this file

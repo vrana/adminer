@@ -309,6 +309,10 @@ Lang::$translations = array(
 	'yes' => 'はい',
 	'no' => 'いいえ',
 	'Default value' => '既定値',
+	'Inherited by' => '継承先', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] または :socket', // Claude Fable 5
+	'Invalid server.' => '不正なサーバーです。', // Claude Fable 5
+	'Increase %s.' => '%s を増やしてください。', // Claude Fable 5
 );
 
 // run `php ../../lang.php ja` to update this file

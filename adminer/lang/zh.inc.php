@@ -325,6 +325,25 @@ Lang::$translations = array(
 	'Type has been dropped.' => '已删除类型。',
 	'Type has been created.' => '已创建类型。',
 	'Alter type' => '修改类型',
+	'Check has been dropped.' => '已删除检查约束。', // Claude Fable 5
+	'Check has been altered.' => '已修改检查约束。', // Claude Fable 5
+	'Check has been created.' => '已创建检查约束。', // Claude Fable 5
+	'Alter check' => '修改检查约束', // Claude Fable 5
+	'Create check' => '创建检查约束', // Claude Fable 5
+	'Algorithm' => '算法', // Claude Fable 5
+	'Columns' => '列', // Claude Fable 5
+	'length' => '长度', // Claude Fable 5
+	'Condition' => '条件', // Claude Fable 5
+	'Inherits from' => '继承自', // Claude Fable 5
+	'Checks' => '检查约束', // Claude Fable 5
+	'Inherited by' => '被继承', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] 或 :socket', // Claude Fable 5
+	'Invalid server.' => '无效的服务器。', // Claude Fable 5
+	'Loaded plugins' => '已加载的插件', // Claude Fable 5
+	'screenshot' => '截图', // Claude Fable 5
+	'Increase %s.' => '请增大 %s。', // Claude Fable 5
+	'%s must <a%s>return an array</a>.' => '%s 必须<a%s>返回一个数组</a>。', // Claude Fable 5
+	'<a%s>Configure</a> %s in %s.' => '在 %3$s 中<a%1$s>配置</a> %2$s。', // Claude Fable 5
 );
 
 // run `php ../../lang.php zh` to update this file

@@ -288,6 +288,33 @@ Lang::$translations = array(
 	'Check has been created.' => 'Chequeo creado.',
 	'Check has been altered.' => 'Chequeo cambiado.',
 	'Check has been dropped.' => 'Chequeo eliminado.',
+	'Drop %s?' => '¿Eliminar %s?', // Claude Fable 5
+	'Tables have been optimized.' => 'Tablas optimizadas.', // Claude Fable 5
+	'Vacuum' => 'Limpiar', // Claude Fable 5
+	'Selected' => 'Seleccionados', // Claude Fable 5
+	'overwrite' => 'sobrescribir', // Claude Fable 5
+	'Algorithm' => 'Algoritmo', // Claude Fable 5
+	'Columns' => 'Columnas', // Claude Fable 5
+	'Condition' => 'Condición', // Claude Fable 5
+	'Modify' => 'Modificar', // Claude Fable 5
+	'Load more data' => 'Cargar más datos', // Claude Fable 5
+	'Loading' => 'Cargando', // Claude Fable 5
+	'%d / ' => '%d / ', // Claude Fable 5
+	'Limit rows' => 'Límite de registros', // Claude Fable 5
+	'Inherits from' => 'Hereda de', // Claude Fable 5
+	'Inherited by' => 'Heredada por', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] o :socket', // Claude Fable 5
+	'Default value' => 'Valor predeterminado', // Claude Fable 5
+	'Full table scan' => 'Escaneo completo de la tabla', // Claude Fable 5
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Gracias por usar Adminer, considere <a href="https://www.adminer.org/en/donation/">hacer una donación</a>.', // Claude Fable 5
+	'Invalid server.' => 'Servidor no válido.', // Claude Fable 5
+	'Size' => 'Tamaño', // Claude Fable 5
+	'Compute' => 'Calcular', // Claude Fable 5
+	'screenshot' => 'captura de pantalla', // Claude Fable 5
+	'Increase %s.' => 'Aumente %s.', // Claude Fable 5
+	'Saving' => 'Guardando', // Claude Fable 5
+	'yes' => 'sí', // Claude Fable 5
+	'no' => 'no', // Claude Fable 5
 );
 
 // run `php ../../lang.php es` to update this file

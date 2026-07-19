@@ -335,6 +335,15 @@ Lang::$translations = array(
 	'Loaded plugins' => 'Завантажені плагіни',
 	'%s must <a%s>return an array</a>.' => '%s має <a%s>повернути масив</a>.',
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Налаштувати</a> %s у %s.',
+	'Algorithm' => 'Алгоритм', // Claude Fable 5
+	'Columns' => 'Колонки', // Claude Fable 5
+	'Condition' => 'Умова', // Claude Fable 5
+	'Inherits from' => 'Успадковує від', // Claude Fable 5
+	'Inherited by' => 'Успадковується таблицями', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] або :socket', // Claude Fable 5
+	'Invalid server.' => 'Неправильний сервер.', // Claude Fable 5
+	'screenshot' => 'знімок екрана', // Claude Fable 5
+	'Increase %s.' => 'Збільште %s.', // Claude Fable 5
 );
 
 // run `php ../../lang.php uk` to update this file

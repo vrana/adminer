@@ -258,6 +258,60 @@ Lang::$translations = array(
 	'Permanent link' => 'Adresă permanentă',
 	'Edit all' => 'Editează tot',
 	'HH:MM:SS' => 'HH:MM:SS',
+	'Check has been dropped.' => 'Verificarea a fost ștearsă.', // Claude Fable 5
+	'Check has been altered.' => 'Verificarea a fost modificată.', // Claude Fable 5
+	'Check has been created.' => 'Verificarea a fost creată.', // Claude Fable 5
+	'Alter check' => 'Modifică verificarea', // Claude Fable 5
+	'Create check' => 'Crează verificare', // Claude Fable 5
+	'Drop %s?' => 'Ștergeți %s?', // Claude Fable 5
+	'Tables have been optimized.' => 'Tabelele au fost optimizate.', // Claude Fable 5
+	'Vacuum' => 'Curăță', // Claude Fable 5
+	'Selected' => 'Selectate', // Claude Fable 5
+	'overwrite' => 'suprascrie', // Claude Fable 5
+	'DB' => 'BD', // Claude Fable 5
+	'Algorithm' => 'Algoritm', // Claude Fable 5
+	'Columns' => 'Coloane', // Claude Fable 5
+	'Condition' => 'Condiție', // Claude Fable 5
+	'File must be in UTF-8 encoding.' => 'Fișierul trebuie să fie codificat UTF-8.', // Claude Fable 5
+	'Modify' => 'Modifică', // Claude Fable 5
+	'Load more data' => 'Încarcă mai multe date', // Claude Fable 5
+	'Loading' => 'Se încarcă', // Claude Fable 5
+	'%s queries are not supported.' => 'Interogările %s nu sunt acceptate.', // Claude Fable 5
+	'Warnings' => 'Avertismente', // Claude Fable 5
+	'%d / ' => '%d / ', // Claude Fable 5
+	'Limit rows' => 'Limită de rânduri', // Claude Fable 5
+	'Materialized view' => 'Reprezentare materializată', // Claude Fable 5
+	'Inherits from' => 'Moștenește de la', // Claude Fable 5
+	'Checks' => 'Verificări', // Claude Fable 5
+	'Inherited by' => 'Moștenit de', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] sau :socket', // Claude Fable 5
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer nu acceptă accesul la o bază de date fără parolă, <a href="https://www.adminer.org/en/password/"%s>mai multe informații</a>.', // Claude Fable 5
+	'Default value' => 'Valoare implicită', // Claude Fable 5
+	'Full table scan' => 'Scanare completă a tabelului', // Claude Fable 5
+	'Too many unsuccessful logins, try again in %d minute(s).' => array('Prea multe autentificări nereușite, încercați din nou peste %d minut.', 'Prea multe autentificări nereușite, încercați din nou peste %d minute.'), // Claude Fable 5
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Vă mulțumim că folosiți Adminer, luați în considerare o <a href="https://www.adminer.org/en/donation/">donație</a>.', // Claude Fable 5
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Parola principală a expirat. <a href="https://www.adminer.org/en/extension/"%s>Implementați</a> metoda %s pentru a o face permanentă.', // Claude Fable 5
+	'The action will be performed after successful login with the same credentials.' => 'Acțiunea va fi efectuată după autentificarea reușită cu aceleași date de autentificare.', // Claude Fable 5
+	'Invalid server.' => 'Server nevalid.', // Claude Fable 5
+	'Connecting to privileged ports is not allowed.' => 'Conectarea la porturi privilegiate nu este permisă.', // Claude Fable 5
+	'There is a space in the input password which might be the cause.' => 'Există un spațiu în parola introdusă, care ar putea fi cauza.', // Claude Fable 5
+	'If you did not send this request from Adminer then close this page.' => 'Dacă nu ați trimis această cerere din Adminer, închideți această pagină.', // Claude Fable 5
+	'You can upload a big SQL file via FTP and import it from server.' => 'Puteți încărca un fișier SQL mare prin FTP și să îl importați de pe server.', // Claude Fable 5
+	'Size' => 'Mărime', // Claude Fable 5
+	'Compute' => 'Calculează', // Claude Fable 5
+	'Loaded plugins' => 'Pluginuri încărcate', // Claude Fable 5
+	'screenshot' => 'captură de ecran', // Claude Fable 5
+	'You are offline.' => 'Sunteți offline.', // Claude Fable 5
+	'Increase %s.' => 'Măriți %s.', // Claude Fable 5
+	'You have no privileges to update this table.' => 'Nu aveți privilegii pentru a actualiza acest tabel.', // Claude Fable 5
+	'Saving' => 'Se salvează', // Claude Fable 5
+	'Unknown error.' => 'Eroare necunoscută.', // Claude Fable 5
+	'%s must <a%s>return an array</a>.' => '%s trebuie să <a%s>returneze un array</a>.', // Claude Fable 5
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Configurați</a> %s în %s.', // Claude Fable 5
+	'Disable %s or enable %s or %s extensions.' => 'Dezactivați extensia %s sau activați extensiile %s sau %s.', // Claude Fable 5
+	'Database does not support password.' => 'Baza de date nu acceptă parolă.', // Claude Fable 5
+	'yes' => 'da', // Claude Fable 5
+	'no' => 'nu', // Claude Fable 5
 );
 
 // run `php ../../lang.php ro` to update this file

@@ -258,6 +258,60 @@ Lang::$translations = array(
 	'Permanent link' => 'Enllaç permanent',
 	'Edit all' => 'Edita-ho tot',
 	'HH:MM:SS' => 'HH:MM:SS',
+	'Check has been dropped.' => 'S\'ha suprimit la comprovació.', // Claude Fable 5
+	'Check has been altered.' => 'S\'ha modificat la comprovació.', // Claude Fable 5
+	'Check has been created.' => 'S\'ha creat la comprovació.', // Claude Fable 5
+	'Alter check' => 'Modifica la comprovació', // Claude Fable 5
+	'Create check' => 'Crea una comprovació', // Claude Fable 5
+	'Drop %s?' => 'Voleu suprimir %s?', // Claude Fable 5
+	'Tables have been optimized.' => 'S\'han optimitzat les taules.', // Claude Fable 5
+	'Vacuum' => 'Neteja', // Claude Fable 5
+	'Selected' => 'Seleccionats', // Claude Fable 5
+	'overwrite' => 'sobreescriure', // Claude Fable 5
+	'DB' => 'BD', // Claude Fable 5
+	'Algorithm' => 'Algorisme', // Claude Fable 5
+	'Columns' => 'Columnes', // Claude Fable 5
+	'Condition' => 'Condició', // Claude Fable 5
+	'File must be in UTF-8 encoding.' => 'El fitxer ha d\'estar codificat en UTF-8.', // Claude Fable 5
+	'Modify' => 'Modifica', // Claude Fable 5
+	'Load more data' => 'Carrega més dades', // Claude Fable 5
+	'Loading' => 'S\'està carregant', // Claude Fable 5
+	'%s queries are not supported.' => 'Les consultes %s no són compatibles.', // Claude Fable 5
+	'Warnings' => 'Avisos', // Claude Fable 5
+	'%d / ' => '%d / ', // Claude Fable 5
+	'Limit rows' => 'Límit de registres', // Claude Fable 5
+	'Materialized view' => 'Vista materialitzada', // Claude Fable 5
+	'Inherits from' => 'Hereta de', // Claude Fable 5
+	'Checks' => 'Comprovacions', // Claude Fable 5
+	'Inherited by' => 'Heretada per', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] o :socket', // Claude Fable 5
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer no permet accedir a una base de dades sense contrasenya, <a href="https://www.adminer.org/en/password/"%s>més informació</a>.', // Claude Fable 5
+	'Default value' => 'Valor per defecte', // Claude Fable 5
+	'Full table scan' => 'Escaneig complet de la taula', // Claude Fable 5
+	'Too many unsuccessful logins, try again in %d minute(s).' => array('Massa intents d\'inici de sessió fallits, torneu-ho a provar d\'aquí a %d minut.', 'Massa intents d\'inici de sessió fallits, torneu-ho a provar d\'aquí a %d minuts.'), // Claude Fable 5
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Gràcies per utilitzar Adminer, considereu <a href="https://www.adminer.org/en/donation/">fer una donació</a>.', // Claude Fable 5
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'La contrasenya mestra ha caducat. <a href="https://www.adminer.org/en/extension/"%s>Implementeu</a> el mètode %s perquè sigui permanent.', // Claude Fable 5
+	'The action will be performed after successful login with the same credentials.' => 'L\'acció es durà a terme després d\'iniciar la sessió correctament amb les mateixes credencials.', // Claude Fable 5
+	'Invalid server.' => 'Servidor no vàlid.', // Claude Fable 5
+	'Connecting to privileged ports is not allowed.' => 'No es permet connectar-se a ports privilegiats.', // Claude Fable 5
+	'There is a space in the input password which might be the cause.' => 'Hi ha un espai a la contrasenya introduïda que en podria ser la causa.', // Claude Fable 5
+	'If you did not send this request from Adminer then close this page.' => 'Si no heu enviat aquesta sol·licitud des d\'Adminer, tanqueu aquesta pàgina.', // Claude Fable 5
+	'You can upload a big SQL file via FTP and import it from server.' => 'Podeu pujar un fitxer SQL gran per FTP i importar-lo des del servidor.', // Claude Fable 5
+	'Size' => 'Mida', // Claude Fable 5
+	'Compute' => 'Calcula', // Claude Fable 5
+	'Loaded plugins' => 'Connectors carregats', // Claude Fable 5
+	'screenshot' => 'captura de pantalla', // Claude Fable 5
+	'You are offline.' => 'Esteu fora de línia.', // Claude Fable 5
+	'Increase %s.' => 'Augmenteu %s.', // Claude Fable 5
+	'You have no privileges to update this table.' => 'No teniu privilegis per actualitzar aquesta taula.', // Claude Fable 5
+	'Saving' => 'S\'està desant', // Claude Fable 5
+	'Unknown error.' => 'Error desconegut.', // Claude Fable 5
+	'%s must <a%s>return an array</a>.' => '%s ha de <a%s>retornar una matriu</a>.', // Claude Fable 5
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Configureu</a> %s a %s.', // Claude Fable 5
+	'Disable %s or enable %s or %s extensions.' => 'Desactiveu %s o activeu les extensions %s o %s.', // Claude Fable 5
+	'Database does not support password.' => 'La base de dades no admet contrasenya.', // Claude Fable 5
+	'yes' => 'sí', // Claude Fable 5
+	'no' => 'no', // Claude Fable 5
 );
 
 // run `php ../../lang.php ca` to update this file

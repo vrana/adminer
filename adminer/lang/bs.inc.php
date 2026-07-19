@@ -298,6 +298,52 @@ Lang::$translations = array(
 	'Type has been dropped.' => 'Tip je izbrisan.',
 	'Type has been created.' => 'tip je spašen.',
 	'Alter type' => 'Ažuriraj tip',
+	'Check has been dropped.' => 'Provjera je izbrisana.', // Claude Fable 5
+	'Check has been altered.' => 'Provjera je izmijenjena.', // Claude Fable 5
+	'Check has been created.' => 'Provjera je napravljena.', // Claude Fable 5
+	'Alter check' => 'Izmijeni provjeru', // Claude Fable 5
+	'Create check' => 'Napravi provjeru', // Claude Fable 5
+	'Drop %s?' => 'Izbrisati %s?', // Claude Fable 5
+	'Vacuum' => 'Očisti', // Claude Fable 5
+	'overwrite' => 'prepiši', // Claude Fable 5
+	'DB' => 'DB', // Claude Fable 5
+	'Algorithm' => 'Algoritam', // Claude Fable 5
+	'Columns' => 'Kolumne', // Claude Fable 5
+	'Condition' => 'Uslov', // Claude Fable 5
+	'File must be in UTF-8 encoding.' => 'Datoteka mora biti u UTF-8 kodiranju.', // Claude Fable 5
+	'%s queries are not supported.' => '%s upiti nisu podržani.', // Claude Fable 5
+	'Warnings' => 'Upozorenja', // Claude Fable 5
+	'%d / ' => '%d / ', // Claude Fable 5
+	'Limit rows' => 'Ograniči broj redova', // Claude Fable 5
+	'Materialized view' => 'Materijalizirani pogled', // Claude Fable 5
+	'Inherits from' => 'Nasljeđuje od', // Claude Fable 5
+	'Checks' => 'Provjere', // Claude Fable 5
+	'Inherited by' => 'Naslijeđeno od', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] ili :socket', // Claude Fable 5
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer ne podržava pristup bazi podataka bez lozinke, <a href="https://www.adminer.org/en/password/"%s>više informacija</a>.', // Claude Fable 5
+	'Default value' => 'Zadana vrijednost', // Claude Fable 5
+	'Too many unsuccessful logins, try again in %d minute(s).' => array('Previše neuspješnih prijava, pokušajte ponovo za %d minutu.', 'Previše neuspješnih prijava, pokušajte ponovo za %d minute.', 'Previše neuspješnih prijava, pokušajte ponovo za %d minuta.'), // Claude Fable 5
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Hvala što koristite Adminer, razmislite o <a href="https://www.adminer.org/en/donation/">donaciji</a>.', // Claude Fable 5
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Glavna lozinka je istekla. <a href="https://www.adminer.org/en/extension/"%s>Implementirajte</a> metodu %s da biste je učinili trajnom.', // Claude Fable 5
+	'The action will be performed after successful login with the same credentials.' => 'Radnja će biti izvršena nakon uspješne prijave s istim podacima.', // Claude Fable 5
+	'Invalid server.' => 'Nevažeći server.', // Claude Fable 5
+	'Connecting to privileged ports is not allowed.' => 'Povezivanje na privilegirane portove nije dozvoljeno.', // Claude Fable 5
+	'There is a space in the input password which might be the cause.' => 'U unesenoj lozinci postoji razmak, što bi mogao biti uzrok.', // Claude Fable 5
+	'If you did not send this request from Adminer then close this page.' => 'Ako niste poslali ovaj zahtjev iz Adminera, zatvorite ovu stranicu.', // Claude Fable 5
+	'You can upload a big SQL file via FTP and import it from server.' => 'Veliku SQL datoteku možete poslati putem FTP-a i uvesti je sa servera.', // Claude Fable 5
+	'Size' => 'Veličina', // Claude Fable 5
+	'Compute' => 'Izračunaj', // Claude Fable 5
+	'Loaded plugins' => 'Učitani dodaci', // Claude Fable 5
+	'screenshot' => 'snimak ekrana', // Claude Fable 5
+	'You are offline.' => 'Van mreže ste.', // Claude Fable 5
+	'Increase %s.' => 'Povećajte %s.', // Claude Fable 5
+	'You have no privileges to update this table.' => 'Nemate privilegije za ažuriranje ove tabele.', // Claude Fable 5
+	'Saving' => 'Spašavam', // Claude Fable 5
+	'Unknown error.' => 'Nepoznata greška.', // Claude Fable 5
+	'%s must <a%s>return an array</a>.' => '%s mora <a%s>vratiti niz</a>.', // Claude Fable 5
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Konfigurirajte</a> %s u %s.', // Claude Fable 5
+	'Disable %s or enable %s or %s extensions.' => 'Onemogućite ekstenziju %s ili omogućite ekstenzije %s ili %s.', // Claude Fable 5
+	'Database does not support password.' => 'Baza podataka ne podržava lozinku.', // Claude Fable 5
 );
 
 // run `php ../../lang.php bs` to update this file

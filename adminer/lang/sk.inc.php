@@ -300,6 +300,18 @@ Lang::$translations = array(
 	'Check has been created.' => 'Kontrola bola vytvorená.',
 	'Check has been altered.' => 'Kontrola bola zmenená.',
 	'Check has been dropped.' => 'Kontrola bola odstránená.',
+	'Algorithm' => 'Algoritmus', // Claude Fable 5
+	'Columns' => 'Stĺpce', // Claude Fable 5
+	'Condition' => 'Podmienka', // Claude Fable 5
+	'Inherits from' => 'Zdedená z', // Claude Fable 5
+	'Inherited by' => 'Zdedené', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] alebo :socket', // Claude Fable 5
+	'Invalid server.' => 'Neplatný server.', // Claude Fable 5
+	'Loaded plugins' => 'Načítané pluginy', // Claude Fable 5
+	'screenshot' => 'obrázok', // Claude Fable 5
+	'Increase %s.' => 'Zvýšte %s.', // Claude Fable 5
+	'%s must <a%s>return an array</a>.' => '%s musí <a%s>vracať pole</a>.', // Claude Fable 5
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Nakonfigurujte</a> %s v %s.', // Claude Fable 5
 );
 
 // run `php ../../lang.php sk` to update this file

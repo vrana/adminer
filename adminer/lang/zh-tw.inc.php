@@ -326,6 +326,24 @@ Lang::$translations = array(
 	'Type has been dropped.' => '已刪除類型。',
 	'Type has been created.' => '已建立類型。',
 	'Alter type' => '修改類型',
+	'Check has been dropped.' => '已刪除檢查約束。', // Claude Fable 5
+	'Check has been altered.' => '已修改檢查約束。', // Claude Fable 5
+	'Check has been created.' => '已建立檢查約束。', // Claude Fable 5
+	'Alter check' => '修改檢查約束', // Claude Fable 5
+	'Create check' => '建立檢查約束', // Claude Fable 5
+	'Algorithm' => '演算法', // Claude Fable 5
+	'Columns' => '欄位', // Claude Fable 5
+	'Condition' => '條件', // Claude Fable 5
+	'Inherits from' => '繼承自', // Claude Fable 5
+	'Checks' => '檢查約束', // Claude Fable 5
+	'Inherited by' => '被繼承', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] 或 :socket', // Claude Fable 5
+	'Invalid server.' => '無效的伺服器。', // Claude Fable 5
+	'Loaded plugins' => '已載入的外掛', // Claude Fable 5
+	'screenshot' => '螢幕截圖', // Claude Fable 5
+	'Increase %s.' => '請增加 %s。', // Claude Fable 5
+	'%s must <a%s>return an array</a>.' => '%s 必須<a%s>回傳陣列</a>。', // Claude Fable 5
+	'<a%s>Configure</a> %s in %s.' => '在 %3$s 中<a%1$s>設定</a> %2$s。', // Claude Fable 5
 );
 
 // run `php ../../lang.php zh-tw` to update this file

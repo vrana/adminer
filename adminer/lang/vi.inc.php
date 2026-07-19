@@ -305,6 +305,44 @@ Lang::$translations = array(
 	'Type has been dropped.' => 'Đã xoá kiểu.',
 	'Type has been created.' => 'Đã tạo kiểu.',
 	'Alter type' => 'Sửa kiểu dữ liệu',
+	'Check has been dropped.' => 'Kiểm tra đã bị xoá.', // Claude Fable 5
+	'Check has been altered.' => 'Kiểm tra đã được sửa.', // Claude Fable 5
+	'Check has been created.' => 'Kiểm tra đã được tạo.', // Claude Fable 5
+	'Alter check' => 'Sửa kiểm tra', // Claude Fable 5
+	'Create check' => 'Tạo kiểm tra', // Claude Fable 5
+	'Drop %s?' => 'Xoá %s?', // Claude Fable 5
+	'overwrite' => 'ghi đè', // Claude Fable 5
+	'DB' => 'CSDL', // Claude Fable 5
+	'Algorithm' => 'Thuật toán', // Claude Fable 5
+	'Columns' => 'Cột', // Claude Fable 5
+	'Condition' => 'Điều kiện', // Claude Fable 5
+	'%s queries are not supported.' => 'Không hỗ trợ truy vấn %s.', // Claude Fable 5
+	'Warnings' => 'Cảnh báo', // Claude Fable 5
+	'%d / ' => '%d / ', // Claude Fable 5
+	'Limit rows' => 'Giới hạn số dòng', // Claude Fable 5
+	'Materialized view' => 'Khung nhìn vật chất hoá', // Claude Fable 5
+	'Inherits from' => 'Kế thừa từ', // Claude Fable 5
+	'Checks' => 'Kiểm tra', // Claude Fable 5
+	'Inherited by' => 'Được kế thừa bởi', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] hoặc :socket', // Claude Fable 5
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer không hỗ trợ truy cập cơ sở dữ liệu không có mật khẩu, <a href="https://www.adminer.org/en/password/"%s>thêm thông tin</a>.', // Claude Fable 5
+	'Default value' => 'Giá trị mặc định', // Claude Fable 5
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Cảm ơn bạn đã sử dụng Adminer, hãy cân nhắc <a href="https://www.adminer.org/en/donation/">quyên góp</a>.', // Claude Fable 5
+	'The action will be performed after successful login with the same credentials.' => 'Hành động sẽ được thực hiện sau khi đăng nhập thành công với cùng thông tin đăng nhập.', // Claude Fable 5
+	'Invalid server.' => 'Máy chủ không hợp lệ.', // Claude Fable 5
+	'Connecting to privileged ports is not allowed.' => 'Không được phép kết nối đến các cổng đặc quyền.', // Claude Fable 5
+	'There is a space in the input password which might be the cause.' => 'Có một dấu cách trong mật khẩu đã nhập, đó có thể là nguyên nhân.', // Claude Fable 5
+	'If you did not send this request from Adminer then close this page.' => 'Nếu bạn không gửi yêu cầu này từ Adminer thì hãy đóng trang này.', // Claude Fable 5
+	'Loaded plugins' => 'Các plugin đã nạp', // Claude Fable 5
+	'screenshot' => 'ảnh chụp màn hình', // Claude Fable 5
+	'You are offline.' => 'Bạn đang ngoại tuyến.', // Claude Fable 5
+	'Increase %s.' => 'Hãy tăng %s.', // Claude Fable 5
+	'Saving' => 'Đang lưu', // Claude Fable 5
+	'Unknown error.' => 'Lỗi không xác định.', // Claude Fable 5
+	'%s must <a%s>return an array</a>.' => '%s phải <a%s>trả về một mảng</a>.', // Claude Fable 5
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Cấu hình</a> %s trong %s.', // Claude Fable 5
+	'Disable %s or enable %s or %s extensions.' => 'Hãy tắt phần mở rộng %s hoặc bật phần mở rộng %s hoặc %s.', // Claude Fable 5
+	'Database does not support password.' => 'Cơ sở dữ liệu không hỗ trợ mật khẩu.', // Claude Fable 5
 );
 
 // run `php ../../lang.php vi` to update this file

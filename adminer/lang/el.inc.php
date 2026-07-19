@@ -313,6 +313,37 @@ Lang::$translations = array(
 	'Type has been dropped.' => 'Ο τύπος διαγράφηκε.',
 	'Type has been created.' => 'Ο τύπος δημιουργήθηκε.',
 	'Alter type' => 'Τροποποίηση τύπου',
+	'Check has been dropped.' => 'Ο έλεγχος διαγράφηκε.', // Claude Fable 5
+	'Check has been altered.' => 'Ο έλεγχος τροποποιήθηκε.', // Claude Fable 5
+	'Check has been created.' => 'Ο έλεγχος δημιουργήθηκε.', // Claude Fable 5
+	'Alter check' => 'Τροποποίηση ελέγχου', // Claude Fable 5
+	'Create check' => 'Δημιουργία ελέγχου', // Claude Fable 5
+	'Drop %s?' => 'Διαγραφή %s;', // Claude Fable 5
+	'overwrite' => 'αντικατάσταση', // Claude Fable 5
+	'DB' => 'ΒΔ', // Claude Fable 5
+	'Algorithm' => 'Αλγόριθμος', // Claude Fable 5
+	'Columns' => 'Στήλες', // Claude Fable 5
+	'Condition' => 'Συνθήκη', // Claude Fable 5
+	'%s queries are not supported.' => 'Τα ερωτήματα %s δεν υποστηρίζονται.', // Claude Fable 5
+	'Warnings' => 'Προειδοποιήσεις', // Claude Fable 5
+	'Inherits from' => 'Κληρονομεί από', // Claude Fable 5
+	'Checks' => 'Έλεγχοι', // Claude Fable 5
+	'Inherited by' => 'Κληρονομείται από', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] ή :socket', // Claude Fable 5
+	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Το Adminer δεν υποστηρίζει πρόσβαση σε βάση δεδομένων χωρίς κωδικό, <a href="https://www.adminer.org/en/password/"%s>περισσότερες πληροφορίες</a>.', // Claude Fable 5
+	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Ευχαριστούμε που χρησιμοποιείτε το Adminer, σκεφτείτε να κάνετε μια <a href="https://www.adminer.org/en/donation/">δωρεά</a>.', // Claude Fable 5
+	'The action will be performed after successful login with the same credentials.' => 'Η ενέργεια θα εκτελεστεί μετά από επιτυχή σύνδεση με τα ίδια διαπιστευτήρια.', // Claude Fable 5
+	'Invalid server.' => 'Μη έγκυρος διακομιστής.', // Claude Fable 5
+	'Connecting to privileged ports is not allowed.' => 'Η σύνδεση σε προνομιούχες θύρες δεν επιτρέπεται.', // Claude Fable 5
+	'There is a space in the input password which might be the cause.' => 'Υπάρχει ένα κενό στον κωδικό που εισαγάγατε, το οποίο μπορεί να είναι η αιτία.', // Claude Fable 5
+	'Loaded plugins' => 'Φορτωμένα πρόσθετα', // Claude Fable 5
+	'screenshot' => 'στιγμιότυπο οθόνης', // Claude Fable 5
+	'Increase %s.' => 'Αυξήστε το %s.', // Claude Fable 5
+	'Unknown error.' => 'Άγνωστο σφάλμα.', // Claude Fable 5
+	'%s must <a%s>return an array</a>.' => 'Το %s πρέπει να <a%s>επιστρέφει έναν πίνακα</a>.', // Claude Fable 5
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Ρυθμίστε</a> το %s στο %s.', // Claude Fable 5
+	'Disable %s or enable %s or %s extensions.' => 'Απενεργοποιήστε την επέκταση %s ή ενεργοποιήστε τις επεκτάσεις %s ή %s.', // Claude Fable 5
+	'Database does not support password.' => 'Η βάση δεδομένων δεν υποστηρίζει κωδικό.', // Claude Fable 5
 );
 
 // run `php ../../lang.php el` to update this file

@@ -326,6 +326,24 @@ Lang::$translations = array(
 	'Type has been dropped.' => 'Typ har, typ, tagits bort.',
 	'Type has been created.' => 'Typ har skapats.',
 	'Alter type' => 'Ändra typ',
+	'Check has been dropped.' => 'Kontrollvillkoret har tagits bort.', // Claude Fable 5
+	'Check has been altered.' => 'Kontrollvillkoret har ändrats.', // Claude Fable 5
+	'Check has been created.' => 'Kontrollvillkoret har skapats.', // Claude Fable 5
+	'Alter check' => 'Ändra kontrollvillkor', // Claude Fable 5
+	'Create check' => 'Skapa kontrollvillkor', // Claude Fable 5
+	'Algorithm' => 'Algoritm', // Claude Fable 5
+	'Columns' => 'Kolumner', // Claude Fable 5
+	'Condition' => 'Villkor', // Claude Fable 5
+	'Inherits from' => 'Ärver från', // Claude Fable 5
+	'Checks' => 'Kontrollvillkor', // Claude Fable 5
+	'Inherited by' => 'Ärvs av', // Claude Fable 5
+	'hostname[:port] or :socket' => 'hostname[:port] eller :socket', // Claude Fable 5
+	'Invalid server.' => 'Ogiltig server.', // Claude Fable 5
+	'Loaded plugins' => 'Laddade plugins', // Claude Fable 5
+	'screenshot' => 'skärmbild', // Claude Fable 5
+	'Increase %s.' => 'Öka %s.', // Claude Fable 5
+	'%s must <a%s>return an array</a>.' => '%s måste <a%s>returnera en array</a>.', // Claude Fable 5
+	'<a%s>Configure</a> %s in %s.' => '<a%s>Konfigurera</a> %s i %s.', // Claude Fable 5
 );
 
 // run `php ../../lang.php sv` to update this file
