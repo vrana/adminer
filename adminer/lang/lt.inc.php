@@ -2,8 +2,7 @@
 namespace Adminer;
 
 Lang::$translations = array(
-	// label for database system selection (MySQL, SQLite, ...)
-	'System' => 'Sistema',
+	'System' => 'Sistema', // label for database system selection (MySQL, SQLite, ...)
 	'Server' => 'Serveris',
 	'Username' => 'Vartotojas',
 	'Password' => 'Slaptažodis',
@@ -22,8 +21,7 @@ Lang::$translations = array(
 	'%s version: %s through PHP extension %s' => '%s versija: %s per PHP plėtinį %s',
 	'Refresh' => 'Atnaujinti',
 
-	// text direction - 'ltr' or 'rtl'
-	'ltr' => 'ltr',
+	'ltr' => 'ltr', // text direction - 'ltr' or 'rtl'
 
 	'Privileges' => 'Privilegijos',
 	'Create user' => 'Sukurti vartotoją',
@@ -51,8 +49,7 @@ Lang::$translations = array(
 	'Execute' => 'Vykdyti',
 	'Stop on error' => 'Sustabdyti esant klaidai',
 	'Show only errors' => 'Rodyti tik klaidas',
-	// sprintf() format for time of the command
-	'%.3f s' => '%.3f s',
+	'%.3f s' => '%.3f s', // sprintf() format for time of the command
 	'History' => 'Istorija',
 	'Clear' => 'Išvalyti',
 	'Edit all' => 'Redaguoti visus',
@@ -87,11 +84,9 @@ Lang::$translations = array(
 	'Create database' => 'Sukurti duomenų bazę',
 	'Database schema' => 'Duomenų bazės schema',
 
-	// link to current database schema layout
-	'Permanent link' => 'Pastovi nuoroda',
+	'Permanent link' => 'Pastovi nuoroda', // link to current database schema layout
 
-	// thousands separator - must contain single byte
-	',' => ' ',
+	',' => ' ', // thousands separator - must contain single byte
 	'0123456789' => '0123456789',
 	'Engine' => 'Variklis',
 	'Collation' => 'Lyginimas',
@@ -234,18 +229,15 @@ Lang::$translations = array(
 	'Import' => 'Importas',
 	'%d row(s) have been imported.' => array('%d įrašas įkelta.', '%d įrašai įkelti.', '%d įrašų įkelta.'),
 
-	// in-place editing in select
-	'Use edit link to modify this value.' => 'Norėdami redaguoti reikšmę naudokite redagavimo nuorodą.',
+	'Use edit link to modify this value.' => 'Norėdami redaguoti reikšmę naudokite redagavimo nuorodą.', // in-place editing in select
 
-	// %s can contain auto-increment value
-	'Item%s has been inserted.' => 'Įrašas%s sukurtas.',
+	'Item%s has been inserted.' => 'Įrašas%s sukurtas.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Įrašas ištrintas.',
 	'Item has been updated.' => 'Įrašas pakeistas.',
 	'%d item(s) have been affected.' => array('Pakeistas %d įrašas.', 'Pakeisti %d įrašai.', 'Pakeistas %d įrašų.'),
 	'New item' => 'Naujas įrašas',
 	'original' => 'originalas',
-	// label for value '' in enum data type
-	'empty' => 'tuščia',
+	'empty' => 'tuščia', // label for value '' in enum data type
 	'edit' => 'redaguoti',
 	'Edit' => 'Redaguoti',
 	'Insert' => 'Įrašyti',
@@ -266,16 +258,12 @@ Lang::$translations = array(
 	'Relations' => 'Ryšiai',
 
 	'Editor' => 'Redaktorius',
-	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
-	'$1-$3-$5' => '$1-$3-$5',
-	// hint for date format - use language equivalents for day, month and year shortcuts
-	'[yyyy]-mm-dd' => '[yyyy]-mm-dd',
-	// hint for time format - use language equivalents for hour, minute and second shortcuts
-	'HH:MM:SS' => 'HH:MM:SS',
+	'$1-$3-$5' => '$1-$3-$5', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
+	'[yyyy]-mm-dd' => '[yyyy]-mm-dd', // hint for date format - use language equivalents for day, month and year shortcuts
+	'HH:MM:SS' => 'HH:MM:SS', // hint for time format - use language equivalents for hour, minute and second shortcuts
 	'now' => 'dabar',
 
-	// general SQLite error in create, drop or rename database
-	'File exists.' => 'Failas egzistuoja.',
+	'File exists.' => 'Failas egzistuoja.', // general SQLite error in create, drop or rename database
 	'Please use one of the extensions %s.' => 'Naudokite vieną iš plėtinių %s.',
 
 	// PostgreSQL and MS SQL schema support

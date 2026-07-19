@@ -2,8 +2,7 @@
 namespace Adminer;
 
 Lang::$translations = array(
-	// label for database system selection (MySQL, SQLite, ...)
-	'System' => 'Система',
+	'System' => 'Система', // label for database system selection (MySQL, SQLite, ...)
 	'Server' => 'Сървър',
 	'Username' => 'Потребител',
 	'Password' => 'Парола',
@@ -25,8 +24,7 @@ Lang::$translations = array(
 	'%s version: %s through PHP extension %s' => '%s версия: %s през PHP разширение %s',
 	'Refresh' => 'Обновяване',
 
-	// text direction - 'ltr' or 'rtl'
-	'ltr' => 'ltr',
+	'ltr' => 'ltr', // text direction - 'ltr' or 'rtl'
 
 	'Privileges' => 'Права',
 	'Create user' => 'Създаване на потребител',
@@ -54,8 +52,7 @@ Lang::$translations = array(
 	'Execute' => 'Изпълнение',
 	'Stop on error' => 'Спиране при грешка',
 	'Show only errors' => 'Показване само на грешките',
-	// sprintf() format for time of the command
-	'%.3f s' => '%.3f s',
+	'%.3f s' => '%.3f s', // sprintf() format for time of the command
 	'History' => 'Хронология',
 	'Clear' => 'Изчистване',
 	'Edit all' => 'Редактиране на всички',
@@ -92,11 +89,9 @@ Lang::$translations = array(
 	'Create database' => 'Създаване на база данни',
 	'Database schema' => 'Схема на базата данни',
 
-	// link to current database schema layout
-	'Permanent link' => 'Постоянна препратка',
+	'Permanent link' => 'Постоянна препратка', // link to current database schema layout
 
-	// thousands separator - must contain single byte
-	',' => ',',
+	',' => ',', // thousands separator - must contain single byte
 	'0123456789' => '0123456789',
 	'Engine' => 'Система',
 	'Collation' => 'Кодировка',
@@ -251,20 +246,17 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('%d ред беше импортиран.', '%d реда бяха импортирани.'),
 	'File must be in UTF-8 encoding.' => 'Файла трябва да е с UTF-8 кодировка.',
 
-	// in-place editing in select
-	'Modify' => 'Промяна',
+	'Modify' => 'Промяна', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Ctrl+щракване в стойността, за да я промените.',
 	'Use edit link to modify this value.' => 'Използвайте \'редакция\' за промяна на данните.',
 
-	// %s can contain auto-increment value
-	'Item%s has been inserted.' => 'Елементи%s бяха вмъкнати.',
+	'Item%s has been inserted.' => 'Елементи%s бяха вмъкнати.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Елемента беше изтрит.',
 	'Item has been updated.' => 'Елемента беше обновен.',
 	'%d item(s) have been affected.' => array('%d елемент беше засегнат.', '%d елемента бяха засегнати.'),
 	'New item' => 'Нов елемент',
 	'original' => 'оригинал',
-	// label for value '' in enum data type
-	'empty' => 'празно',
+	'empty' => 'празно', // label for value '' in enum data type
 	'edit' => 'редакция',
 	'Edit' => 'Редактиране',
 	'Insert' => 'Вмъкване',
@@ -288,18 +280,14 @@ Lang::$translations = array(
 	'Relations' => 'Зависимости',
 
 	'Editor' => 'Редактор',
-	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
-	'$1-$3-$5' => '$1-$3-$5',
-	// hint for date format - use language equivalents for day, month and year shortcuts
-	'[yyyy]-mm-dd' => '[гггг]-мм-дд',
-	// hint for time format - use language equivalents for hour, minute and second shortcuts
-	'HH:MM:SS' => 'ЧЧ:ММ:СС',
+	'$1-$3-$5' => '$1-$3-$5', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
+	'[yyyy]-mm-dd' => '[гггг]-мм-дд', // hint for date format - use language equivalents for day, month and year shortcuts
+	'HH:MM:SS' => 'ЧЧ:ММ:СС', // hint for time format - use language equivalents for hour, minute and second shortcuts
 	'now' => 'сега',
 	'yes' => 'да',
 	'no' => 'не',
 
-	// general SQLite error in create, drop or rename database
-	'File exists.' => 'Файла вече съществува.',
+	'File exists.' => 'Файла вече съществува.', // general SQLite error in create, drop or rename database
 	'Please use one of the extensions %s.' => 'Моля, използвайте някое от разширенията %s.',
 
 	// PostgreSQL and MS SQL schema support

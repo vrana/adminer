@@ -2,8 +2,7 @@
 namespace Adminer;
 
 Lang::$translations = array(
-	// label for database system selection (MySQL, SQLite, ...)
-	'System' => 'سیستم',
+	'System' => 'سیستم', // label for database system selection (MySQL, SQLite, ...)
 	'Server' => 'سرور',
 	'Username' => 'نام کاربری',
 	'Password' => 'کلمه عبور',
@@ -24,8 +23,7 @@ Lang::$translations = array(
 	'%s version: %s through PHP extension %s' => 'نسخه %s : %s توسعه پی اچ پی %s',
 	'Refresh' => 'بازیابی',
 
-	// text direction - 'ltr' or 'rtl'
-	'ltr' => 'rtl',
+	'ltr' => 'rtl', // text direction - 'ltr' or 'rtl'
 
 	'Privileges' => 'امتیازات',
 	'Create user' => 'ایجاد کاربر',
@@ -53,8 +51,7 @@ Lang::$translations = array(
 	'Execute' => 'اجرا',
 	'Stop on error' => 'توقف بر روی خطا',
 	'Show only errors' => 'فقط نمایش خطاها',
-	// sprintf() format for time of the command
-	'%.3f s' => '%.3f s',
+	'%.3f s' => '%.3f s', // sprintf() format for time of the command
 	'History' => 'تاریخ',
 	'Clear' => 'پاک کردن',
 	'Edit all' => 'ویرایش همه',
@@ -91,11 +88,9 @@ Lang::$translations = array(
 	'Create database' => 'ایجاد پایگاه داده',
 	'Database schema' => 'ساختار پایگاه داده',
 
-	// link to current database schema layout
-	'Permanent link' => 'ارتباط دائم',
+	'Permanent link' => 'ارتباط دائم', // link to current database schema layout
 
-	// thousands separator - must contain single byte
-	',' => ' ',
+	',' => ' ', // thousands separator - must contain single byte
 	'0123456789' => '۰۱۲۳۴۵۶۷۸۹',
 	'Engine' => 'موتور',
 	'Collation' => 'تطبیق',
@@ -250,20 +245,17 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('%d سطر وارد شد.', '%d سطر وارد شد.'),
 	'File must be in UTF-8 encoding.' => 'فرمت فایل باید UTF-8 باشید.',
 
-	// in-place editing in select
-	'Modify' => 'ویرایش',
+	'Modify' => 'ویرایش', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'برای ویرایش بر روی مقدار ctrl+click کنید.',
 	'Use edit link to modify this value.' => 'از لینک ویرایش برای ویرایش این مقدار استفاده کنید.',
 
-	// %s can contain auto-increment value
-	'Item%s has been inserted.' => '%s آیتم درج شد.',
+	'Item%s has been inserted.' => '%s آیتم درج شد.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'آیتم حذف شد.',
 	'Item has been updated.' => 'آیتم بروز رسانی شد.',
 	'%d item(s) have been affected.' => array('%d آیتم متاثر شد.', '%d آیتم متاثر شد.'),
 	'New item' => 'آیتم جدید',
 	'original' => 'اصلی',
-	// label for value '' in enum data type
-	'empty' => 'خالی',
+	'empty' => 'خالی', // label for value '' in enum data type
 	'edit' => 'ویرایش',
 	'Edit' => 'ویرایش',
 	'Insert' => 'درج',
@@ -286,18 +278,14 @@ Lang::$translations = array(
 	'Relations' => 'رابطه ها',
 
 	'Editor' => 'ویرایشگر',
-	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
-	'$1-$3-$5' => '$1-$3-$5',
-	// hint for date format - use language equivalents for day, month and year shortcuts
-	'[yyyy]-mm-dd' => '[yyyy]-mm-dd',
-	// hint for time format - use language equivalents for hour, minute and second shortcuts
-	'HH:MM:SS' => 'HH:MM:SS',
+	'$1-$3-$5' => '$1-$3-$5', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
+	'[yyyy]-mm-dd' => '[yyyy]-mm-dd', // hint for date format - use language equivalents for day, month and year shortcuts
+	'HH:MM:SS' => 'HH:MM:SS', // hint for time format - use language equivalents for hour, minute and second shortcuts
 	'now' => 'اکنون',
 	'yes' => 'بله',
 	'no' => 'خیر',
 
-	// general SQLite error in create, drop or rename database
-	'File exists.' => 'فایل موجود است.',
+	'File exists.' => 'فایل موجود است.', // general SQLite error in create, drop or rename database
 	'Please use one of the extensions %s.' => 'لطفا یکی از پسوندها را انتخاب نمائید %s.',
 
 	// PostgreSQL and MS SQL schema support

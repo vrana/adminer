@@ -2,8 +2,7 @@
 namespace Adminer;
 
 Lang::$translations = array(
-	// label for database system selection (MySQL, SQLite, ...)
-	'System' => 'Tizim',
+	'System' => 'Tizim', // label for database system selection (MySQL, SQLite, ...)
 	'Server' => 'Server',
 	'Username' => 'Foydalanuvchi nomi',
 	'Password' => 'Parol',
@@ -26,8 +25,7 @@ Lang::$translations = array(
 	'Invalid CSRF token. Send the form again.' => 'Noto\'g\'ri CSRF belgisi. Shaklni qayta yuboring.',
 	'If you did not send this request from Adminer then close this page.' => 'Agar bu so\'rovni Adminerdan yuborgan bo\'lmasangiz, ushbu sahifani yoping.',
 	'No extension' => 'Kengaytma yo\'q',
-	// %s contains the list of the extensions, e.g. 'mysqli, PDO_MySQL'
-	'None of the supported PHP extensions (%s) are available.' => 'Qo\'llab-quvvatlanadigan PHP kengaytmalarining (%s) hech biri mavjud emas.',
+	'None of the supported PHP extensions (%s) are available.' => 'Qo\'llab-quvvatlanadigan PHP kengaytmalarining (%s) hech biri mavjud emas.', // %s contains the list of the extensions, e.g. 'mysqli, PDO_MySQL'
 	'Connecting to privileged ports is not allowed.' => 'Imtiyozli portlarga ulanishga ruxsat berilmagan.',
 	'Disable %s or enable %s or %s extensions.' => '%s ni o\'chiring yoki %s yoki %s kengaytmalarini yoqing.',
 	'Session support must be enabled.' => 'Sessiya qo\'llab-quvvatlashi yoqilgan bo\'lishi kerak.',
@@ -36,8 +34,7 @@ Lang::$translations = array(
 	'%s version: %s through PHP extension %s' => '%s versiyasi: %s PHP kengaytmasi %s orqali',
 	'Refresh' => 'Yangilash',
 
-	// text direction - 'ltr' or 'rtl'
-	'ltr' => 'ltr',
+	'ltr' => 'ltr', // text direction - 'ltr' or 'rtl'
 
 	'Privileges' => 'Imtiyozlar',
 	'Create user' => 'Foydalanuvchi yaratish',
@@ -68,8 +65,7 @@ Lang::$translations = array(
 	'Execute' => 'Bajarish',
 	'Stop on error' => 'Xatoda to\'xtash',
 	'Show only errors' => 'Faqat xatolarni ko\'rsatish',
-	// sprintf() format for time of the command
-	'%.3f s' => '%.3f s',
+	'%.3f s' => '%.3f s', // sprintf() format for time of the command
 	'History' => 'Tarix',
 	'Clear' => 'Tozalash',
 	'Edit all' => 'Hammasini tahrirlash',
@@ -108,11 +104,9 @@ Lang::$translations = array(
 	'Create database' => 'Ma\'lumotlar bazasini yaratish',
 	'Database schema' => 'Ma\'lumotlar bazasi sxemasi',
 
-	// link to current database schema layout
-	'Permanent link' => 'Doimiy havola',
+	'Permanent link' => 'Doimiy havola', // link to current database schema layout
 
-	// thousands separator - must contain single byte
-	',' => ' ',
+	',' => ' ', // thousands separator - must contain single byte
 	'0123456789' => '0123456789',
 	'Engine' => 'Dvigatel',
 	'Collation' => 'Kodlash',
@@ -256,8 +250,7 @@ Lang::$translations = array(
 	'Full table scan' => 'To\'liq jadval skanerlash',
 	'Unable to select the table' => 'Jadvalni tanlab bo\'lmadi',
 	'No rows.' => 'Qatorlar yo\'q.',
-	// used in SQL query limit and it is followed by another number, e.g. '10 / 50 rows' meaning 10 of 50 rows
-	'%d / ' => '%d / ',
+	'%d / ' => '%d / ', // used in SQL query limit and it is followed by another number, e.g. '10 / 50 rows' meaning 10 of 50 rows
 	'%d row(s)' => array('%d qator', '%d qatorlar'),
 	'Page' => 'Sahifa',
 	'last' => 'oxirgi',
@@ -270,20 +263,17 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('%d qator import qilindi.', '%d qatorlar import qilindi.'),
 	'File must be in UTF-8 encoding.' => 'Fayl UTF-8 kodlashda bo\'lishi kerak.',
 
-	// in-place editing in select
-	'Modify' => 'O\'zgartirish',
+	'Modify' => 'O\'zgartirish', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Qiymatni o\'zgartirish uchun Ctrl+bosing.',
 	'Use edit link to modify this value.' => 'Bu qiymatni o\'zgartirish uchun tahrir havolasidan foydalaning.',
 
-	// %s can contain auto-increment value, e.g. ' 123'
-	'Item%s has been inserted.' => 'Element%s kiritildi.',
+	'Item%s has been inserted.' => 'Element%s kiritildi.', // %s can contain auto-increment value, e.g. ' 123'
 	'Item has been deleted.' => 'Element o\'chirildi.',
 	'Item has been updated.' => 'Element yangilandi.',
 	'%d item(s) have been affected.' => array('%d element o\'zgartirildi.', '%d elementlar o\'zgartirildi.'),
 	'New item' => 'Yangi element',
 	'original' => 'asl',
-	// label for value '' in enum data type
-	'empty' => 'bo\'sh',
+	'empty' => 'bo\'sh', // label for value '' in enum data type
 	'edit' => 'tahrirlash',
 	'Edit' => 'Tahrirlash',
 	'Insert' => 'Kiritish',
@@ -306,18 +296,14 @@ Lang::$translations = array(
 	'Relations' => 'Munosabatlar',
 
 	'Editor' => 'Muharrir',
-	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
-	'$1-$3-$5' => '$5.$3.$1',
-	// hint for date format - use language equivalents for day, month and year shortcuts
-	'[yyyy]-mm-dd' => 'dd.mm.[yyyy]',
-	// hint for time format - use language equivalents for hour, minute and second shortcuts
-	'HH:MM:SS' => 'SS:MM:SS',
+	'$1-$3-$5' => '$5.$3.$1', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
+	'[yyyy]-mm-dd' => 'dd.mm.[yyyy]', // hint for date format - use language equivalents for day, month and year shortcuts
+	'HH:MM:SS' => 'SS:MM:SS', // hint for time format - use language equivalents for hour, minute and second shortcuts
 	'now' => 'hozir',
 	'yes' => 'ha',
 	'no' => 'yo\'q',
 
-	// general SQLite error in create, drop or rename database
-	'File exists.' => 'Fayl mavjud.',
+	'File exists.' => 'Fayl mavjud.', // general SQLite error in create, drop or rename database
 	'Please use one of the extensions %s.' => 'Iltimos, kengaytmalardan birini %s foydalaning.',
 
 	// PostgreSQL and MS SQL schema support

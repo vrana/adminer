@@ -2,8 +2,7 @@
 namespace Adminer;
 
 Lang::$translations = array(
-	// label for database system selection (MySQL, SQLite, ...)
-	'System' => 'Σύστημα',
+	'System' => 'Σύστημα', // label for database system selection (MySQL, SQLite, ...)
 	'Server' => 'Διακομιστής',
 	'Username' => 'Όνομα Χρήστη',
 	'Password' => 'Κωδικός',
@@ -25,8 +24,7 @@ Lang::$translations = array(
 	'%s version: %s through PHP extension %s' => '%s έκδοση: %s μέσω επέκτασης PHP %s',
 	'Refresh' => 'Ανανέωση',
 
-	// text direction - 'ltr' or 'rtl'
-	'ltr' => 'ltr',
+	'ltr' => 'ltr', // text direction - 'ltr' or 'rtl'
 
 	'Privileges' => 'Δικαιώματα',
 	'Create user' => 'Δημιουργία Χρήστη',
@@ -54,8 +52,7 @@ Lang::$translations = array(
 	'Execute' => 'Εκτέλεση',
 	'Stop on error' => 'Διακοπή όταν υπάρχει σφάλμα',
 	'Show only errors' => 'Να εμφανίζονται μόνο τα σφάλματα',
-	// sprintf() format for time of the command
-	'%.3f s' => '%.3f s',
+	'%.3f s' => '%.3f s', // sprintf() format for time of the command
 	'History' => 'Ιστορικό',
 	'Clear' => 'Καθαρισμός',
 	'Edit all' => 'Επεξεργασία όλων',
@@ -93,11 +90,9 @@ Lang::$translations = array(
 	'Create database' => 'Δημιουργία Β.Δ.',
 	'Database schema' => 'Σχήμα Β.Δ.',
 
-	// link to current database schema layout
-	'Permanent link' => 'Μόνιμος Σύνδεσμος',
+	'Permanent link' => 'Μόνιμος Σύνδεσμος', // link to current database schema layout
 
-	// thousands separator - must contain single byte
-	',' => '.',
+	',' => '.', // thousands separator - must contain single byte
 	'0123456789' => '0123456789',
 	'Engine' => 'Μηχανή',
 	'Collation' => 'Collation',
@@ -252,20 +247,17 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('$d σειρά εισήχθη.', '%d σειρές εισήχθησαν.'),
 	'File must be in UTF-8 encoding.' => 'Το αρχείο πρέπει να έχει κωδικοποίηση UTF-8.',
 
-	// in-place editing in select
-	'Modify' => 'Τροποποίηση',
+	'Modify' => 'Τροποποίηση', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Πιέστε Ctrl+click σε μια τιμή για να την τροποποιήσετε.',
 	'Use edit link to modify this value.' => 'Χρησιμοποιήστε το σύνδεσμο επεξεργασία για να τροποποιήσετε την τιμή.',
 
-	// %s can contain auto-increment value
-	'Item%s has been inserted.' => 'Η εγγραφή%s εισήχθη.',
+	'Item%s has been inserted.' => 'Η εγγραφή%s εισήχθη.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Η εγγραφή διαγράφηκε.',
 	'Item has been updated.' => 'Η εγγραφή ενημερώθηκε.',
 	'%d item(s) have been affected.' => array('Επηρεάστηκε %d εγγραφή.', 'Επηρεάστηκαν %d εγγραφές.'),
 	'New item' => 'Νέα εγγραφή',
 	'original' => 'πρωτότυπο',
-	// label for value '' in enum data type
-	'empty' => 'κενό',
+	'empty' => 'κενό', // label for value '' in enum data type
 	'edit' => 'επεξεργασία',
 	'Edit' => 'Επεξεργασία',
 	'Insert' => 'Εισαγωγή',
@@ -288,18 +280,14 @@ Lang::$translations = array(
 	'Relations' => 'Συσχετήσεις',
 
 	'Editor' => 'Επεξεργαστής',
-	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
-	'$1-$3-$5' => '$5/$3/$1',
-	// hint for date format - use language equivalents for day, month and year shortcuts
-	'[yyyy]-mm-dd' => 'ηη/μμ/[εεεε]',
-	// hint for time format - use language equivalents for hour, minute and second shortcuts
-	'HH:MM:SS' => 'ΩΩ:ΛΛ:ΔΔ',
+	'$1-$3-$5' => '$5/$3/$1', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
+	'[yyyy]-mm-dd' => 'ηη/μμ/[εεεε]', // hint for date format - use language equivalents for day, month and year shortcuts
+	'HH:MM:SS' => 'ΩΩ:ΛΛ:ΔΔ', // hint for time format - use language equivalents for hour, minute and second shortcuts
 	'now' => 'τώρα',
 	'yes' => 'ναι',
 	'no' => 'όχι',
 
-	// general SQLite error in create, drop or rename database
-	'File exists.' => 'Το αρχείο υπάρχει.',
+	'File exists.' => 'Το αρχείο υπάρχει.', // general SQLite error in create, drop or rename database
 	'Please use one of the extensions %s.' => 'Παρακαλώ χρησιμοποιείστε μια από τις επεκτάσεις %s.',
 
 	// PostgreSQL and MS SQL schema support

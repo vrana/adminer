@@ -2,8 +2,7 @@
 namespace Adminer;
 
 Lang::$translations = array(
-	// label for database system selection (MySQL, SQLite, ...)
-	'System' => 'Sustav',
+	'System' => 'Sustav', // label for database system selection (MySQL, SQLite, ...)
 	'Server' => 'Poslužitelj',
 	'Username' => 'Korisničko ime',
 	'Password' => 'Lozinka',
@@ -22,8 +21,7 @@ Lang::$translations = array(
 	'%s version: %s through PHP extension %s' => '%s verzija: %s putem PHP proširenja %s',
 	'Refresh' => 'Osvježi',
 
-	// text direction - 'ltr' or 'rtl'
-	'ltr' => 'ltr',
+	'ltr' => 'ltr', // text direction - 'ltr' or 'rtl'
 
 	'Privileges' => 'Ovlasti',
 	'Create user' => 'Novi korisnik',
@@ -51,8 +49,7 @@ Lang::$translations = array(
 	'Execute' => 'Izvrši',
 	'Stop on error' => 'Zaustavi pri grešci',
 	'Show only errors' => 'Prikaži samo greške',
-	// sprintf() format for time of the command
-	'%.3f s' => '%.3f s',
+	'%.3f s' => '%.3f s', // sprintf() format for time of the command
 	'History' => 'Povijest',
 	'Clear' => 'Očisti',
 	'Edit all' => 'Uredi sve',
@@ -87,11 +84,9 @@ Lang::$translations = array(
 	'Create database' => 'Kreiraj bazu podataka',
 	'Database schema' => 'Shema baze podataka',
 
-	// link to current database schema layout
-	'Permanent link' => 'Trajna veza',
+	'Permanent link' => 'Trajna veza', // link to current database schema layout
 
-	// thousands separator - must contain single byte
-	',' => '.',
+	',' => '.', // thousands separator - must contain single byte
 	'0123456789' => '0123456789',
 	'Engine' => 'Motor',
 	'Collation' => 'Uspoređivanje',
@@ -239,19 +234,16 @@ Lang::$translations = array(
 	'Import' => 'Uvoz',
 	'%d row(s) have been imported.' => array('%d redak je uvezen.', '%d retka su uvezena.', '%d redaka je uvezeno.'),
 
-	// in-place editing in select
-	'Ctrl+click on a value to modify it.' => 'Ctrl+klik na vrijednost za izmjenu.',
+	'Ctrl+click on a value to modify it.' => 'Ctrl+klik na vrijednost za izmjenu.', // in-place editing in select
 	'Use edit link to modify this value.' => 'Koristite vezu za uređivanje ove vrijednosti.',
 
-	// %s can contain auto-increment value
-	'Item%s has been inserted.' => 'Stavka %s je unesena.',
+	'Item%s has been inserted.' => 'Stavka %s je unesena.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Stavka je izbrisana.',
 	'Item has been updated.' => 'Stavka je ažurirana.',
 	'%d item(s) have been affected.' => array('%d stavka je zahvaćena.', '%d stavke su zahvaćene.', '%d stavki je zahvaćeno.'),
 	'New item' => 'Nova stavka',
 	'original' => 'original',
-	// label for value '' in enum data type
-	'empty' => 'prazno',
+	'empty' => 'prazno', // label for value '' in enum data type
 	'edit' => 'uredi',
 	'Edit' => 'Uredi',
 	'Insert' => 'Unesi',
@@ -273,18 +265,14 @@ Lang::$translations = array(
 	'Relations' => 'Odnosi',
 
 	'Editor' => 'Uređivač',
-	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
-	'$1-$3-$5' => '$5.$3.$1',
-	// hint for date format - use language equivalents for day, month and year shortcuts
-	'[yyyy]-mm-dd' => 'dd.mm.[yyyy]',
-	// hint for time format - use language equivalents for hour, minute and second shortcuts
-	'HH:MM:SS' => 'HH:MM:SS',
+	'$1-$3-$5' => '$5.$3.$1', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
+	'[yyyy]-mm-dd' => 'dd.mm.[yyyy]', // hint for date format - use language equivalents for day, month and year shortcuts
+	'HH:MM:SS' => 'HH:MM:SS', // hint for time format - use language equivalents for hour, minute and second shortcuts
 	'now' => 'sada',
 	'yes' => 'da',
 	'no' => 'ne',
 
-	// general SQLite error in create, drop or rename database
-	'File exists.' => 'Datoteka već postoji.',
+	'File exists.' => 'Datoteka već postoji.', // general SQLite error in create, drop or rename database
 	'Please use one of the extensions %s.' => 'Molimo koristite jedan od nastavaka %s.',
 
 	// PostgreSQL and MS SQL schema support
@@ -311,8 +299,7 @@ Lang::$translations = array(
 	'Type has been created.' => 'Tip je kreiran.',
 	'Alter type' => 'Izmijeni tip',
 
-	// MS SQL login
-	'Too many unsuccessful logins, try again in %d minute(s).' => array('Previše neuspješnih pokušaja prijave, pokušajte ponovo za %d minutu.', 'Previše neuspješnih pokušaja prijave, pokušajte ponovo za %d minute.', 'Previše neuspješnih pokušaja prijave, pokušajte ponovo za %d minuta.'),
+	'Too many unsuccessful logins, try again in %d minute(s).' => array('Previše neuspješnih pokušaja prijave, pokušajte ponovo za %d minutu.', 'Previše neuspješnih pokušaja prijave, pokušajte ponovo za %d minute.', 'Previše neuspješnih pokušaja prijave, pokušajte ponovo za %d minuta.'), // MS SQL login
 	'Check has been dropped.' => 'Provjera je izbrisana.',
 	'Check has been altered.' => 'Provjera je izmijenjena.',
 	'Check has been created.' => 'Provjera je kreirana.',

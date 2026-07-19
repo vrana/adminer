@@ -2,8 +2,7 @@
 namespace Adminer;
 
 Lang::$translations = array(
-	// label for database system selection (MySQL, SQLite, ...)
-	'System' => 'Hệ thống',
+	'System' => 'Hệ thống', // label for database system selection (MySQL, SQLite, ...)
 	'Server' => 'Máy chủ',
 	'Username' => 'Tên người dùng',
 	'Password' => 'Mật khẩu',
@@ -24,8 +23,7 @@ Lang::$translations = array(
 	'%s version: %s through PHP extension %s' => 'Phiên bản %s: %s (PHP extension: %s)',
 	'Refresh' => 'Làm mới',
 
-	// text direction - 'ltr' or 'rtl'
-	'ltr' => 'ltr',
+	'ltr' => 'ltr', // text direction - 'ltr' or 'rtl'
 
 	'Privileges' => 'Quyền truy cập',
 	'Create user' => 'Tạo người dùng',
@@ -53,8 +51,7 @@ Lang::$translations = array(
 	'Execute' => 'Thực hiện',
 	'Stop on error' => 'Dừng khi có lỗi',
 	'Show only errors' => 'Chỉ hiện lỗi',
-	// sprintf() format for time of the command
-	'%.3f s' => '%.3f s',
+	'%.3f s' => '%.3f s', // sprintf() format for time of the command
 	'History' => 'Lịch sử',
 	'Clear' => 'Xoá',
 	'Edit all' => 'Sửa tất cả',
@@ -90,11 +87,9 @@ Lang::$translations = array(
 	'Create database' => 'Tạo CSDL',
 	'Database schema' => 'Cấu trúc CSDL',
 
-	// link to current database schema layout
-	'Permanent link' => 'Liên kết cố định',
+	'Permanent link' => 'Liên kết cố định', // link to current database schema layout
 
-	// thousands separator - must contain single byte
-	',' => ',',
+	',' => ',', // thousands separator - must contain single byte
 	'0123456789' => '0123456789',
 	'Engine' => 'Cơ chế lưu trữ',
 	'Collation' => 'Bộ mã',
@@ -244,20 +239,17 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => 'Đã nhập % dòng dữ liệu.',
 	'File must be in UTF-8 encoding.' => 'Tệp phải mã hoá bằng chuẩn UTF-8.',
 
-	// in-place editing in select
-	'Modify' => 'Sửa',
+	'Modify' => 'Sửa', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Nhấn Ctrl và bấm vào giá trị để sửa.',
 	'Use edit link to modify this value.' => 'Dùng nút sửa để thay đổi giá trị này.',
 
-	// %s can contain auto-increment value
-	'Item%s has been inserted.' => 'Đã thêm%s.',
+	'Item%s has been inserted.' => 'Đã thêm%s.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Đã xoá.',
 	'Item has been updated.' => 'Đã cập nhật.',
 	'%d item(s) have been affected.' => '%d phần đã thay đổi.',
 	'New item' => 'Thêm',
 	'original' => 'bản gốc',
-	// label for value '' in enum data type
-	'empty' => 'trống',
+	'empty' => 'trống', // label for value '' in enum data type
 	'edit' => 'sửa',
 	'Edit' => 'Sửa',
 	'Insert' => 'Thêm',
@@ -280,18 +272,14 @@ Lang::$translations = array(
 	'Relations' => 'Quan hệ',
 
 	'Editor' => 'Biên tập',
-	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
-	'$1-$3-$5' => '$1-$3-$5',
-	// hint for date format - use language equivalents for day, month and year shortcuts
-	'[yyyy]-mm-dd' => '[yyyy]-mm-dd',
-	// hint for time format - use language equivalents for hour, minute and second shortcuts
-	'HH:MM:SS' => 'HH:MM:SS',
+	'$1-$3-$5' => '$1-$3-$5', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
+	'[yyyy]-mm-dd' => '[yyyy]-mm-dd', // hint for date format - use language equivalents for day, month and year shortcuts
+	'HH:MM:SS' => 'HH:MM:SS', // hint for time format - use language equivalents for hour, minute and second shortcuts
 	'now' => 'hiện tại',
 	'yes' => 'có',
 	'no' => 'không',
 
-	// general SQLite error in create, drop or rename database
-	'File exists.' => 'Tệp đã có rồi.',
+	'File exists.' => 'Tệp đã có rồi.', // general SQLite error in create, drop or rename database
 	'Please use one of the extensions %s.' => 'Cần phải dùng một trong các phần mở rộng sau: %s.',
 
 	// PostgreSQL and MS SQL schema support

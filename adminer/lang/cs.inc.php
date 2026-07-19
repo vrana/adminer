@@ -2,8 +2,7 @@
 namespace Adminer;
 
 Lang::$translations = array(
-	// label for database system selection (MySQL, SQLite, ...)
-	'System' => 'Systém',
+	'System' => 'Systém', // label for database system selection (MySQL, SQLite, ...)
 	'Server' => 'Server',
 	'Username' => 'Uživatel',
 	'Password' => 'Heslo',
@@ -34,8 +33,7 @@ Lang::$translations = array(
 	'%s version: %s through PHP extension %s' => 'Verze %s: %s přes PHP rozšíření %s',
 	'Refresh' => 'Obnovit',
 
-	// text direction - 'ltr' or 'rtl'
-	'ltr' => 'ltr',
+	'ltr' => 'ltr', // text direction - 'ltr' or 'rtl'
 
 	'Privileges' => 'Oprávnění',
 	'Create user' => 'Vytvořit uživatele',
@@ -67,8 +65,7 @@ Lang::$translations = array(
 	'Execute' => 'Provést',
 	'Stop on error' => 'Zastavit při chybě',
 	'Show only errors' => 'Zobrazit pouze chyby',
-	// sprintf() format for time of the command
-	'%.3f s' => '%.3f s',
+	'%.3f s' => '%.3f s', // sprintf() format for time of the command
 	'History' => 'Historie',
 	'Clear' => 'Vyčistit',
 	'Edit all' => 'Upravit vše',
@@ -107,11 +104,9 @@ Lang::$translations = array(
 	'Create database' => 'Vytvořit databázi',
 	'Database schema' => 'Schéma databáze',
 
-	// link to current database schema layout
-	'Permanent link' => 'Trvalý odkaz',
+	'Permanent link' => 'Trvalý odkaz', // link to current database schema layout
 
-	// thousands separator - must contain single byte
-	',' => ' ',
+	',' => ' ', // thousands separator - must contain single byte
 	'0123456789' => '0123456789',
 	'Engine' => 'Úložiště',
 	'Collation' => 'Porovnávání',
@@ -272,20 +267,17 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('Byl importován %d záznam.', 'Byly importovány %d záznamy.', 'Bylo importováno %d záznamů.'),
 	'File must be in UTF-8 encoding.' => 'Soubor musí být v kódování UTF-8.',
 
-	// in-place editing in select
-	'Modify' => 'Změnit',
+	'Modify' => 'Změnit', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Ctrl+klikněte na políčko, které chcete změnit.',
 	'Use edit link to modify this value.' => 'Ke změně této hodnoty použijte odkaz upravit.',
 
-	// %s can contain auto-increment value
-	'Item%s has been inserted.' => 'Položka%s byla vložena.',
+	'Item%s has been inserted.' => 'Položka%s byla vložena.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Položka byla smazána.',
 	'Item has been updated.' => 'Položka byla aktualizována.',
 	'%d item(s) have been affected.' => array('Byl ovlivněn %d záznam.', 'Byly ovlivněny %d záznamy.', 'Bylo ovlivněno %d záznamů.'),
 	'New item' => 'Nová položka',
 	'original' => 'původní',
-	// label for value '' in enum data type
-	'empty' => 'prázdné',
+	'empty' => 'prázdné', // label for value '' in enum data type
 	'edit' => 'upravit',
 	'Edit' => 'Upravit',
 	'Insert' => 'Vložit',
@@ -309,18 +301,14 @@ Lang::$translations = array(
 	'Relations' => 'Vztahy',
 
 	'Editor' => 'Editor',
-	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
-	'$1-$3-$5' => '$6.$4.$1',
-	// hint for date format - use language equivalents for day, month and year shortcuts
-	'[yyyy]-mm-dd' => 'd.m.[rrrr]',
-	// hint for time format - use language equivalents for hour, minute and second shortcuts
-	'HH:MM:SS' => 'HH:MM:SS',
+	'$1-$3-$5' => '$6.$4.$1', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
+	'[yyyy]-mm-dd' => 'd.m.[rrrr]', // hint for date format - use language equivalents for day, month and year shortcuts
+	'HH:MM:SS' => 'HH:MM:SS', // hint for time format - use language equivalents for hour, minute and second shortcuts
 	'now' => 'teď',
 	'yes' => 'ano',
 	'no' => 'ne',
 
-	// general SQLite error in create, drop or rename database
-	'File exists.' => 'Soubor existuje.',
+	'File exists.' => 'Soubor existuje.', // general SQLite error in create, drop or rename database
 	'Please use one of the extensions %s.' => 'Prosím použijte jednu z koncovek %s.',
 
 	// PostgreSQL and MS SQL schema support

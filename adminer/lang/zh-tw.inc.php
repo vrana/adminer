@@ -2,8 +2,7 @@
 namespace Adminer;
 
 Lang::$translations = array(
-	// label for database system selection (MySQL, SQLite, ...)
-	'System' => '資料庫系統',
+	'System' => '資料庫系統', // label for database system selection (MySQL, SQLite, ...)
 	'Server' => '伺服器',
 	'Username' => '帳號',
 	'Password' => '密碼',
@@ -32,8 +31,7 @@ Lang::$translations = array(
 	'%s version: %s through PHP extension %s' => '%s 版本：%s 透過 PHP 擴充模組 %s',
 	'Refresh' => '重新載入',
 
-	// text direction - 'ltr' or 'rtl'
-	'ltr' => 'ltr',
+	'ltr' => 'ltr', // text direction - 'ltr' or 'rtl'
 
 	'Privileges' => '權限',
 	'Create user' => '建立使用者',
@@ -64,8 +62,7 @@ Lang::$translations = array(
 	'Execute' => '執行',
 	'Stop on error' => '出錯時停止',
 	'Show only errors' => '僅顯示錯誤訊息',
-	// sprintf() format for time of the command
-	'%.3f s' => '%.3f 秒',
+	'%.3f s' => '%.3f 秒', // sprintf() format for time of the command
 	'History' => '紀錄',
 	'Clear' => '清除',
 	'Edit all' => '編輯全部',
@@ -104,11 +101,9 @@ Lang::$translations = array(
 	'Create database' => '建立資料庫',
 	'Database schema' => '資料庫結構',
 
-	// link to current database schema layout
-	'Permanent link' => '永久連結',
+	'Permanent link' => '永久連結', // link to current database schema layout
 
-	// thousands separator - must contain single byte
-	',' => ',',
+	',' => ',', // thousands separator - must contain single byte
 	'0123456789' => '0123456789',
 	'Engine' => '引擎',
 	'Collation' => '校對',
@@ -265,20 +260,17 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => '已匯入 %d 行。',
 	'File must be in UTF-8 encoding.' => '檔必須使用UTF-8編碼。',
 
-	// in-place editing in select
-	'Modify' => '修改',
+	'Modify' => '修改', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => '按住Ctrl並按一下某個值進行修改。',
 	'Use edit link to modify this value.' => '使用編輯連結來修改。',
 
-	// %s can contain auto-increment value
-	'Item%s has been inserted.' => '已新增項目 %s。',
+	'Item%s has been inserted.' => '已新增項目 %s。', // %s can contain auto-increment value
 	'Item has been deleted.' => '該項目已被刪除。',
 	'Item has been updated.' => '已更新項目。',
 	'%d item(s) have been affected.' => '%d 個項目受到影響。',
 	'New item' => '新增項目',
 	'original' => '原始',
-	// label for value '' in enum data type
-	'empty' => '空值',
+	'empty' => '空值', // label for value '' in enum data type
 	'edit' => '編輯',
 	'Edit' => '編輯',
 	'Insert' => '新增',
@@ -301,18 +293,14 @@ Lang::$translations = array(
 	'Relations' => '關聯',
 
 	'Editor' => '編輯器',
-	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
-	'$1-$3-$5' => '$1.$3.$5',
-	// hint for date format - use language equivalents for day, month and year shortcuts
-	'[yyyy]-mm-dd' => '[yyyy].mm.dd',
-	// hint for time format - use language equivalents for hour, minute and second shortcuts
-	'HH:MM:SS' => 'HH:MM:SS',
+	'$1-$3-$5' => '$1.$3.$5', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
+	'[yyyy]-mm-dd' => '[yyyy].mm.dd', // hint for date format - use language equivalents for day, month and year shortcuts
+	'HH:MM:SS' => 'HH:MM:SS', // hint for time format - use language equivalents for hour, minute and second shortcuts
 	'now' => '現在',
 	'yes' => '是',
 	'no' => '否',
 
-	// general SQLite error in create, drop or rename database
-	'File exists.' => '檔案已存在。',
+	'File exists.' => '檔案已存在。', // general SQLite error in create, drop or rename database
 	'Please use one of the extensions %s.' => '請使用下列其中一個擴充模組 %s。',
 
 	// PostgreSQL and MS SQL schema support

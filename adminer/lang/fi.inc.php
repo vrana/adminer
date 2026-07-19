@@ -2,8 +2,7 @@
 namespace Adminer;
 
 Lang::$translations = array(
-	// label for database system selection (MySQL, SQLite, ...)
-	'System' => 'Järjestelmä',
+	'System' => 'Järjestelmä', // label for database system selection (MySQL, SQLite, ...)
 	'Server' => 'Palvelin',
 	'Username' => 'Käyttäjänimi',
 	'Password' => 'Salasana',
@@ -25,8 +24,7 @@ Lang::$translations = array(
 	'%s version: %s through PHP extension %s' => '%s versio: %s PHP-laajennuksella %s',
 	'Refresh' => 'Virkistä',
 
-	// text direction - 'ltr' or 'rtl'
-	'ltr' => 'ltr',
+	'ltr' => 'ltr', // text direction - 'ltr' or 'rtl'
 
 	'Privileges' => 'Oikeudet',
 	'Create user' => 'Luo käyttäjä',
@@ -54,8 +52,7 @@ Lang::$translations = array(
 	'Execute' => 'Suorita',
 	'Stop on error' => 'Pysähdy virheeseen',
 	'Show only errors' => 'Näytä vain virheet',
-	// sprintf() format for time of the command
-	'%.3f s' => '%.3f s',
+	'%.3f s' => '%.3f s', // sprintf() format for time of the command
 	'History' => 'Historia',
 	'Clear' => 'Tyhjennä',
 	'Edit all' => 'Muokkaa kaikkia',
@@ -93,11 +90,9 @@ Lang::$translations = array(
 	'Create database' => 'Luo tietokanta',
 	'Database schema' => 'Tietokantakaava',
 
-	// link to current database schema layout
-	'Permanent link' => 'Pysyvä linkki',
+	'Permanent link' => 'Pysyvä linkki', // link to current database schema layout
 
-	// thousands separator - must contain single byte
-	',' => ',',
+	',' => ',', // thousands separator - must contain single byte
 	'0123456789' => '0123456789',
 	'Engine' => 'Moottori',
 	'Collation' => 'Kollaatio',
@@ -252,20 +247,17 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('%d rivi tuotiin.', '%d riviä tuotiin.'),
 	'File must be in UTF-8 encoding.' => 'Tiedoston täytyy olla UTF-8-muodossa.',
 
-	// in-place editing in select
-	'Modify' => 'Muuta',
+	'Modify' => 'Muuta', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Ctrl+napsauta arvoa muuttaaksesi.',
 	'Use edit link to modify this value.' => 'Käytä muokkaa-linkkiä muuttaaksesi tätä arvoa.',
 
-	// %s can contain auto-increment value
-	'Item%s has been inserted.' => 'Tietue%s lisättiin.',
+	'Item%s has been inserted.' => 'Tietue%s lisättiin.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Tietue poistettiin.',
 	'Item has been updated.' => 'Tietue päivitettiin.',
 	'%d item(s) have been affected.' => array('Kohdistui %d tietueeseen.', 'Kohdistui %d tietueeseen.'),
 	'New item' => 'Uusi tietue',
 	'original' => 'alkuperäinen',
-	// label for value '' in enum data type
-	'empty' => 'tyhjä',
+	'empty' => 'tyhjä', // label for value '' in enum data type
 	'edit' => 'muokkaa',
 	'Edit' => 'Muokkaa',
 	'Insert' => 'Lisää',
@@ -288,18 +280,14 @@ Lang::$translations = array(
 	'Relations' => 'Suhteet',
 
 	'Editor' => 'Editori',
-	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
-	'$1-$3-$5' => '$5.$3.$1',
-	// hint for date format - use language equivalents for day, month and year shortcuts
-	'[yyyy]-mm-dd' => 'pp.kk.[vvvv]',
-	// hint for time format - use language equivalents for hour, minute and second shortcuts
-	'HH:MM:SS' => 'HH:MM:SS',
+	'$1-$3-$5' => '$5.$3.$1', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
+	'[yyyy]-mm-dd' => 'pp.kk.[vvvv]', // hint for date format - use language equivalents for day, month and year shortcuts
+	'HH:MM:SS' => 'HH:MM:SS', // hint for time format - use language equivalents for hour, minute and second shortcuts
 	'now' => 'nyt',
 	'yes' => 'kyllä',
 	'no' => 'ei',
 
-	// general SQLite error in create, drop or rename database
-	'File exists.' => 'Tiedosto on olemassa.',
+	'File exists.' => 'Tiedosto on olemassa.', // general SQLite error in create, drop or rename database
 	'Please use one of the extensions %s.' => 'Käytä jotain %s-laajennuksista.',
 
 	// PostgreSQL and MS SQL schema support

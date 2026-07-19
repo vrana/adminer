@@ -2,8 +2,7 @@
 namespace Adminer;
 
 Lang::$translations = array(
-	// label for database system selection (MySQL, SQLite, ...)
-	'System' => 'Sistem',
+	'System' => 'Sistem', // label for database system selection (MySQL, SQLite, ...)
 	'Server' => 'Server',
 	'Username' => 'Korisničko ime',
 	'Password' => 'Lozinka',
@@ -22,8 +21,7 @@ Lang::$translations = array(
 	'%s version: %s through PHP extension %s' => '%s verzija: %s pomoću PHP dodatka je %s',
 	'Refresh' => 'Osveži',
 
-	// text direction - 'ltr' or 'rtl'
-	'ltr' => 'ltr',
+	'ltr' => 'ltr', // text direction - 'ltr' or 'rtl'
 
 	'Privileges' => 'Dozvole',
 	'Create user' => 'Novi korisnik',
@@ -51,8 +49,7 @@ Lang::$translations = array(
 	'Execute' => 'Izvrši',
 	'Stop on error' => 'Zaustavi prilikom greške',
 	'Show only errors' => 'Prikazuj samo greške',
-	// sprintf() format for time of the command
-	'%.3f s' => '%.3f s',
+	'%.3f s' => '%.3f s', // sprintf() format for time of the command
 	'History' => 'Historijat',
 	'Clear' => 'Očisti',
 	'Edit all' => 'Izmijeni sve',
@@ -87,11 +84,9 @@ Lang::$translations = array(
 	'Create database' => 'Formiraj bazu podataka',
 	'Database schema' => 'Šema baze podataka',
 
-	// link to current database schema layout
-	'Permanent link' => 'Trajna veza',
+	'Permanent link' => 'Trajna veza', // link to current database schema layout
 
-	// thousands separator - must contain single byte
-	',' => ',',
+	',' => ',', // thousands separator - must contain single byte
 	'0123456789' => '0123456789',
 	'Engine' => 'Stroj',
 	'Collation' => 'Sravnjivanje',
@@ -239,19 +234,16 @@ Lang::$translations = array(
 	'Import' => 'Uvoz',
 	'%d row(s) have been imported.' => array('%d red je uvežen.', '%d reda su uvežena.', '%d redova je uveženo.'),
 
-	// in-place editing in select
-	'Ctrl+click on a value to modify it.' => 'Ctrl+klik na vrijednost za izmijenu.',
+	'Ctrl+click on a value to modify it.' => 'Ctrl+klik na vrijednost za izmijenu.', // in-place editing in select
 	'Use edit link to modify this value.' => 'Koristi vezu za izmijenu ove vrijednosti.',
 
-	// %s can contain auto-increment value
-	'Item%s has been inserted.' => 'Stavka %s je spašena.',
+	'Item%s has been inserted.' => 'Stavka %s je spašena.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Stavka je izbrisana.',
 	'Item has been updated.' => 'Stavka je izmijenjena.',
 	'%d item(s) have been affected.' => array('%d stavka je ažurirana.', '%d stavke su ažurirane.', '%d stavki je ažurirano.'),
 	'New item' => 'Nova stavka',
 	'original' => 'original',
-	// label for value '' in enum data type
-	'empty' => 'prazno',
+	'empty' => 'prazno', // label for value '' in enum data type
 	'edit' => 'izmijeni',
 	'Edit' => 'Izmijeni',
 	'Insert' => 'Umetni',
@@ -273,18 +265,14 @@ Lang::$translations = array(
 	'Relations' => 'Odnosi',
 
 	'Editor' => 'Uređivač',
-	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
-	'$1-$3-$5' => '$5.$3.$1.',
-	// hint for date format - use language equivalents for day, month and year shortcuts
-	'[yyyy]-mm-dd' => 'dd.mm.[yyyy].',
-	// hint for time format - use language equivalents for hour, minute and second shortcuts
-	'HH:MM:SS' => 'HH:MM:SS',
+	'$1-$3-$5' => '$5.$3.$1.', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
+	'[yyyy]-mm-dd' => 'dd.mm.[yyyy].', // hint for date format - use language equivalents for day, month and year shortcuts
+	'HH:MM:SS' => 'HH:MM:SS', // hint for time format - use language equivalents for hour, minute and second shortcuts
 	'now' => 'sad',
 	'yes' => 'da',
 	'no' => 'ne',
 
-	// general SQLite error in create, drop or rename database
-	'File exists.' => 'Datoteka već postoji.',
+	'File exists.' => 'Datoteka već postoji.', // general SQLite error in create, drop or rename database
 	'Please use one of the extensions %s.' => 'Molim koristite jedan od nastavaka %s.',
 
 	// PostgreSQL and MS SQL schema support

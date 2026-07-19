@@ -2,8 +2,7 @@
 namespace Adminer;
 
 Lang::$translations = array(
-	// label for database system selection (MySQL, SQLite, ...)
-	'System' => 'Sistem',
+	'System' => 'Sistem', // label for database system selection (MySQL, SQLite, ...)
 	'Server' => 'Pelayan',
 	'Username' => 'Nama pengguna',
 	'Password' => 'Kata laluan',
@@ -27,8 +26,7 @@ Lang::$translations = array(
 	'%s version: %s through PHP extension %s' => 'Versi %s: %s melalui sambungan PHP %s',
 	'Refresh' => 'Segar kembali',
 
-	// text direction - 'ltr' or 'rtl'
-	'ltr' => 'ltr',
+	'ltr' => 'ltr', // text direction - 'ltr' or 'rtl'
 
 	'Privileges' => 'Keistimewaan',
 	'Create user' => 'Bina pengguna',
@@ -57,8 +55,7 @@ Lang::$translations = array(
 	'Execute' => 'Laksana',
 	'Stop on error' => 'Berhenti jika ralat',
 	'Show only errors' => 'Paparkan jika ralat',
-	// sprintf() format for time of the command
-	'%.3f s' => '%.3f s',
+	'%.3f s' => '%.3f s', // sprintf() format for time of the command
 	'History' => 'Sejarah',
 	'Clear' => 'Bersih',
 	'Edit all' => 'Ubah semua',
@@ -96,11 +93,9 @@ Lang::$translations = array(
 	'Create database' => 'Bina pangkalan data',
 	'Database schema' => 'Skema pangkalan data',
 
-	// link to current database schema layout
-	'Permanent link' => 'Pautan kekal',
+	'Permanent link' => 'Pautan kekal', // link to current database schema layout
 
-	// thousands separator - must contain single byte
-	',' => ',',
+	',' => ',', // thousands separator - must contain single byte
 	'0123456789' => '0123456789',
 	'Engine' => 'Enjin',
 	'Collation' => 'Collation',
@@ -256,20 +251,17 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => '%d baris telah diimport.',
 	'File must be in UTF-8 encoding.' => 'Fail mesti dalam pengekodan UTF-8.',
 
-	// in-place editing in select
-	'Modify' => 'Pinda',
+	'Modify' => 'Pinda', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Ctrl+click pada nilai untuk meminda.',
 	'Use edit link to modify this value.' => 'Guna pautan ubah untuk meminda nilai ini.',
 
-	// %s can contain auto-increment value
-	'Item%s has been inserted.' => 'Item%s telah dimasukkan.',
+	'Item%s has been inserted.' => 'Item%s telah dimasukkan.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Item telah dipadamkan.',
 	'Item has been updated.' => 'Item telah dikemaskini.',
 	'%d item(s) have been affected.' => '%d item telah terjejas.',
 	'New item' => 'Item baru',
 	'original' => 'asli',
-	// label for value '' in enum data type
-	'empty' => 'kosong',
+	'empty' => 'kosong', // label for value '' in enum data type
 	'edit' => 'ubah',
 	'Edit' => 'Ubah',
 	'Insert' => 'Masukkan',
@@ -292,18 +284,14 @@ Lang::$translations = array(
 	'Relations' => 'Hubungan',
 
 	'Editor' => 'Editor',
-	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
-	'$1-$3-$5' => '$1-$3-$5',
-	// hint for date format - use language equivalents for day, month and year shortcuts
-	'[yyyy]-mm-dd' => '[yyyy]-mm-dd',
-	// hint for time format - use language equivalents for hour, minute and second shortcuts
-	'HH:MM:SS' => 'HH:MM:SS',
+	'$1-$3-$5' => '$1-$3-$5', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
+	'[yyyy]-mm-dd' => '[yyyy]-mm-dd', // hint for date format - use language equivalents for day, month and year shortcuts
+	'HH:MM:SS' => 'HH:MM:SS', // hint for time format - use language equivalents for hour, minute and second shortcuts
 	'now' => 'sekarang',
 	'yes' => 'ya',
 	'no' => 'tidak',
 
-	// general SQLite error in create, drop or rename database
-	'File exists.' => 'Fail wujud.',
+	'File exists.' => 'Fail wujud.', // general SQLite error in create, drop or rename database
 	'Please use one of the extensions %s.' => 'Sila guna salah satu sambungan %s.',
 
 	// PostgreSQL and MS SQL schema support

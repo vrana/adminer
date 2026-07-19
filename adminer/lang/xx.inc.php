@@ -2,8 +2,7 @@
 namespace Adminer;
 
 Lang::$translations = array(
-	// label for database system selection (MySQL, SQLite, ...)
-	'System' => 'Xx',
+	'System' => 'Xx', // label for database system selection (MySQL, SQLite, ...)
 	'Server' => 'Xx',
 	'Username' => 'Xx',
 	'Password' => 'Xx',
@@ -25,8 +24,7 @@ Lang::$translations = array(
 	'Invalid CSRF token. Send the form again.' => 'Xx.',
 	'If you did not send this request from Adminer then close this page.' => 'Xx.',
 	'No extension' => 'Xx',
-	// %s contains the list of the extensions, e.g. 'mysqli, PDO_MySQL'
-	'None of the supported PHP extensions (%s) are available.' => 'Xx (%s).',
+	'None of the supported PHP extensions (%s) are available.' => 'Xx (%s).', // %s contains the list of the extensions, e.g. 'mysqli, PDO_MySQL'
 	'Connecting to privileged ports is not allowed.' => 'Xx.',
 	'Disable %s or enable %s or %s extensions.' => 'Xx %s xx %s xx %s xx.',
 	'Session support must be enabled.' => 'Xx.',
@@ -35,8 +33,7 @@ Lang::$translations = array(
 	'%s version: %s through PHP extension %s' => '%s xx: %s xx %s',
 	'Refresh' => 'Xx',
 
-	// text direction - 'ltr' or 'rtl'
-	'ltr' => 'ltr',
+	'ltr' => 'ltr', // text direction - 'ltr' or 'rtl'
 
 	'Privileges' => 'Xx',
 	'Create user' => 'Xx',
@@ -68,8 +65,7 @@ Lang::$translations = array(
 	'Execute' => 'Xx',
 	'Stop on error' => 'Xx',
 	'Show only errors' => 'Xx',
-	// sprintf() format for time of the command
-	'%.3f s' => '%.3f xx',
+	'%.3f s' => '%.3f xx', // sprintf() format for time of the command
 	'History' => 'Xx',
 	'Clear' => 'Xx',
 	'Edit all' => 'Xx',
@@ -109,11 +105,9 @@ Lang::$translations = array(
 	'Create database' => 'Xx',
 	'Database schema' => 'Xx',
 
-	// link to current database schema layout
-	'Permanent link' => 'Xx',
+	'Permanent link' => 'Xx', // link to current database schema layout
 
-	// thousands separator - must contain single byte
-	',' => 'x',
+	',' => 'x', // thousands separator - must contain single byte
 	'0123456789' => 'xxxxxxxxxx',
 	'Engine' => 'Xx',
 	'Collation' => 'Xx',
@@ -261,8 +255,7 @@ Lang::$translations = array(
 	'Full table scan' => 'Xx',
 	'Unable to select the table' => 'Xx',
 	'No rows.' => 'Xx.',
-	// used in SQL query limit and it is followed by another number, e.g. '10 / 50 rows' meaning 10 of 50 rows
-	'%d / ' => '%d / ',
+	'%d / ' => '%d / ', // used in SQL query limit and it is followed by another number, e.g. '10 / 50 rows' meaning 10 of 50 rows
 	'%d row(s)' => array('%d xx', '%d xx'),
 	'Page' => 'Xx',
 	'last' => 'xx',
@@ -275,20 +268,17 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('%d xx.', '%d xx.'),
 	'File must be in UTF-8 encoding.' => 'Xx.',
 
-	// in-place editing in select
-	'Modify' => 'Xx',
+	'Modify' => 'Xx', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Xx.',
 	'Use edit link to modify this value.' => 'Xx.',
 
-	// %s can contain auto-increment value, e.g. ' 123'
-	'Item%s has been inserted.' => 'Xx%s.',
+	'Item%s has been inserted.' => 'Xx%s.', // %s can contain auto-increment value, e.g. ' 123'
 	'Item has been deleted.' => 'Xx.',
 	'Item has been updated.' => 'Xx.',
 	'%d item(s) have been affected.' => array('%d xx.', '%d xx.'),
 	'New item' => 'Xx',
 	'original' => 'xx',
-	// label for value '' in enum data type
-	'empty' => 'xx',
+	'empty' => 'xx', // label for value '' in enum data type
 	'edit' => 'xx',
 	'Edit' => 'Xx',
 	'Insert' => 'Xx',
@@ -311,18 +301,14 @@ Lang::$translations = array(
 	'Relations' => 'Xx',
 
 	'Editor' => 'Xx',
-	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
-	'$1-$3-$5' => 'xx',
-	// hint for date format - use language equivalents for day, month and year shortcuts
-	'[yyyy]-mm-dd' => 'xx',
-	// hint for time format - use language equivalents for hour, minute and second shortcuts
-	'HH:MM:SS' => 'Xx',
+	'$1-$3-$5' => 'xx', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
+	'[yyyy]-mm-dd' => 'xx', // hint for date format - use language equivalents for day, month and year shortcuts
+	'HH:MM:SS' => 'Xx', // hint for time format - use language equivalents for hour, minute and second shortcuts
 	'now' => 'xx',
 	'yes' => 'xx',
 	'no' => 'xx',
 
-	// general SQLite error in create, drop or rename database
-	'File exists.' => 'Xx.',
+	'File exists.' => 'Xx.', // general SQLite error in create, drop or rename database
 	'Please use one of the extensions %s.' => 'Xx %s.',
 
 	// PostgreSQL and MS SQL schema support

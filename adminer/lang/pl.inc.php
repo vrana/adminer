@@ -2,8 +2,7 @@
 namespace Adminer;
 
 Lang::$translations = array(
-	// label for database system selection (MySQL, SQLite, ...)
-	'System' => 'Rodzaj bazy',
+	'System' => 'Rodzaj bazy', // label for database system selection (MySQL, SQLite, ...)
 	'Server' => 'Serwer',
 	'Username' => 'Użytkownik',
 	'Password' => 'Hasło',
@@ -34,8 +33,7 @@ Lang::$translations = array(
 	'%s version: %s through PHP extension %s' => 'Wersja %s: %s za pomocą %s',
 	'Refresh' => 'Odśwież',
 
-	// text direction - 'ltr' or 'rtl'
-	'ltr' => 'ltr',
+	'ltr' => 'ltr', // text direction - 'ltr' or 'rtl'
 
 	'Privileges' => 'Uprawnienia użytkowników',
 	'Create user' => 'Dodaj użytkownika',
@@ -67,8 +65,7 @@ Lang::$translations = array(
 	'Execute' => 'Wykonaj',
 	'Stop on error' => 'Zatrzymaj w przypadku błędu',
 	'Show only errors' => 'Pokaż tylko błędy',
-	// sprintf() format for time of the command
-	'%.3f s' => '%.3f s',
+	'%.3f s' => '%.3f s', // sprintf() format for time of the command
 	'History' => 'Historia',
 	'Clear' => 'Wyczyść',
 	'Edit all' => 'Edytuj wszystkie',
@@ -108,11 +105,9 @@ Lang::$translations = array(
 	'Create database' => 'Utwórz bazę danych',
 	'Database schema' => 'Schemat bazy danych',
 
-	// link to current database schema layout
-	'Permanent link' => 'Trwały link',
+	'Permanent link' => 'Trwały link', // link to current database schema layout
 
-	// thousands separator - must contain single byte
-	',' => ' ',
+	',' => ' ', // thousands separator - must contain single byte
 	'0123456789' => '0123456789',
 	'Engine' => 'Składowanie',
 	'Collation' => 'Porównywanie znaków',
@@ -273,20 +268,17 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('%d rekord został zaimportowany.', '%d rekordy zostały zaimportowane.', '%d rekordów zostało zaimportowanych.'),
 	'File must be in UTF-8 encoding.' => 'Kodowanie pliku musi być ustawione na UTF-8.',
 
-	// in-place editing in select
-	'Modify' => 'Zmień',
+	'Modify' => 'Zmień', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Ctrl+kliknij wartość, aby ją edytować.',
 	'Use edit link to modify this value.' => 'Użyj linku edycji, aby zmienić tę wartość.',
 
-	// %s can contain auto-increment value
-	'Item%s has been inserted.' => 'Rekord%s został dodany.',
+	'Item%s has been inserted.' => 'Rekord%s został dodany.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Rekord został usunięty.',
 	'Item has been updated.' => 'Rekord został zaktualizowany.',
 	'%d item(s) have been affected.' => array('Zmieniono %d rekord.', 'Zmieniono %d rekordy.', 'Zmieniono %d rekordów.'),
 	'New item' => 'Nowy rekord',
 	'original' => 'bez zmian',
-	// label for value '' in enum data type
-	'empty' => 'puste',
+	'empty' => 'puste', // label for value '' in enum data type
 	'edit' => 'edytuj',
 	'Edit' => 'Edytuj',
 	'Insert' => 'Dodaj',
@@ -309,18 +301,14 @@ Lang::$translations = array(
 	'Relations' => 'Relacje',
 
 	'Editor' => 'Edytor',
-	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
-	'$1-$3-$5' => '$6.$4.$1',
-	// hint for date format - use language equivalents for day, month and year shortcuts
-	'[yyyy]-mm-dd' => 'd.m.[rrrr]',
-	// hint for time format - use language equivalents for hour, minute and second shortcuts
-	'HH:MM:SS' => 'HH:MM:SS',
+	'$1-$3-$5' => '$6.$4.$1', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
+	'[yyyy]-mm-dd' => 'd.m.[rrrr]', // hint for date format - use language equivalents for day, month and year shortcuts
+	'HH:MM:SS' => 'HH:MM:SS', // hint for time format - use language equivalents for hour, minute and second shortcuts
 	'now' => 'teraz',
 	'yes' => 'tak',
 	'no' => 'nie',
 
-	// general SQLite error in create, drop or rename database
-	'File exists.' => 'Plik już istnieje.',
+	'File exists.' => 'Plik już istnieje.', // general SQLite error in create, drop or rename database
 	'Please use one of the extensions %s.' => 'Proszę użyć jednego z rozszerzeń: %s.',
 
 	// PostgreSQL and MS SQL schema support

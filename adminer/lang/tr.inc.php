@@ -2,8 +2,7 @@
 namespace Adminer;
 
 Lang::$translations = array(
-	// label for database system selection (MySQL, SQLite, ...)
-	'System' => 'Sistem',
+	'System' => 'Sistem', // label for database system selection (MySQL, SQLite, ...)
 	'Server' => 'Sunucu',
 	'Username' => 'Kullanıcı',
 	'Password' => 'Parola',
@@ -28,8 +27,7 @@ Lang::$translations = array(
 	'%s version: %s through PHP extension %s' => '%s sürüm: %s, %s PHP eklentisi ile',
 	'Refresh' => 'Tazele',
 
-	// text direction
-	'ltr' => 'ltr',
+	'ltr' => 'ltr', // text direction
 
 	'Privileges' => 'İzinler',
 	'Create user' => 'Kullanıcı oluştur',
@@ -59,8 +57,7 @@ Lang::$translations = array(
 	'Execute' => 'Çalıştır',
 	'Stop on error' => 'Hata oluşursa dur',
 	'Show only errors' => 'Sadece hataları göster',
-	// sprintf() format for time of the command
-	'%.3f s' => '%.3f s',
+	'%.3f s' => '%.3f s', // sprintf() format for time of the command
 	'History' => 'Geçmiş',
 	'Clear' => 'Temizle',
 	'Edit all' => 'Tümünü düzenle',
@@ -99,11 +96,9 @@ Lang::$translations = array(
 	'Create database' => 'Veri tabanı oluştur',
 	'Database schema' => 'Veri tabanı şeması',
 
-	// link to current database schema layout
-	'Permanent link' => 'Kalıcı bağlantı',
+	'Permanent link' => 'Kalıcı bağlantı', // link to current database schema layout
 
-	// thousands separator - must contain single byte
-	',' => ' ',
+	',' => ' ', // thousands separator - must contain single byte
 	'0123456789' => '0123456789',
 	'Engine' => 'Motor',
 	'Collation' => 'Karşılaştırma',
@@ -259,20 +254,17 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('%d kayıt içeri aktarıldı.', '%d adet kayıt içeri aktarıldı.'),
 	'File must be in UTF-8 encoding.' => 'Dosya UTF-8 kodlamasında olmalıdır.',
 
-	// in-place editing in select
-	'Modify' => 'Düzenle',
+	'Modify' => 'Düzenle', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Bir değeri değiştirmek için üzerine Ctrl+tıklayın.',
 	'Use edit link to modify this value.' => 'Değeri değiştirmek için düzenleme bağlantısını kullanın.',
 
-	// %s can contain auto-increment value
-	'Item%s has been inserted.' => 'Kayıt%s eklendi.',
+	'Item%s has been inserted.' => 'Kayıt%s eklendi.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Kayıt silindi.',
 	'Item has been updated.' => 'Kayıt güncellendi.',
 	'%d item(s) have been affected.' => array('%d kayıt etkilendi.', '%d adet kayıt etkilendi.'),
 	'New item' => 'Yeni kayıt',
 	'original' => 'orijinal',
-	// label for value '' in enum data type
-	'empty' => 'boş',
+	'empty' => 'boş', // label for value '' in enum data type
 	'edit' => 'düzenle',
 	'Edit' => 'Düzenle',
 	'Insert' => 'Ekle',
@@ -295,18 +287,14 @@ Lang::$translations = array(
 	'Relations' => 'İlişkiler',
 
 	'Editor' => 'Düzenleyici',
-	// date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
-	'$1-$3-$5' => '$6.$4.$1',
-	// hint for date format - use language equivalents for day, month and year shortcuts
-	'[yyyy]-mm-dd' => 'g.a.[yyyy]',
-	// hint for time format - use language equivalents for hour, minute and second shortcuts
-	'HH:MM:SS' => 'SS:DD:ss',
+	'$1-$3-$5' => '$6.$4.$1', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
+	'[yyyy]-mm-dd' => 'g.a.[yyyy]', // hint for date format - use language equivalents for day, month and year shortcuts
+	'HH:MM:SS' => 'SS:DD:ss', // hint for time format - use language equivalents for hour, minute and second shortcuts
 	'now' => 'şimdi',
 	'yes' => 'evet',
 	'no' => 'hayır',
 
-	// general SQLite error in create, drop or rename database
-	'File exists.' => 'Dosya zaten mevcut.',
+	'File exists.' => 'Dosya zaten mevcut.', // general SQLite error in create, drop or rename database
 	'Please use one of the extensions %s.' => '%s uzantılarından birini kullanın.',
 
 	// PostgreSQL and MS SQL schema support
