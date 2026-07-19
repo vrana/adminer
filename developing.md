@@ -9,7 +9,7 @@ Adminer loads a database driver based on a URL parameter (e.g., `pgsql=`).
 The drivers live in [adminer/drivers/](/adminer/drivers/) and [plugins/drivers/](/plugins/drivers/).
 The driver consists of the class [`Driver`](/adminer/include/driver.inc.php) and a set of functions that ideally belong in `Driver` but remain separate due to historical reasons.
 
-A driver also creates the [`Db`](https://github.com/vrana/adminer/blob/v5.0.6/adminer/drivers/mysql.inc.php#L62) class based on available PHP extensions.
+A driver also creates the [`Db`](https://github.com/vrana/adminer/blob/v5.5.0/adminer/drivers/mysql.inc.php#L58) class based on available PHP extensions.
 There is no `DriverMysql` or `DbMysqlPdo`; there is always up to one `Driver` and one `Db`.
 
 If the URL contains `username=`, Adminer attempts to authenticate that user.
@@ -18,6 +18,7 @@ If the user authenticates using the same credentials, the action is performed.
 
 All state-changing actions (primarily data modifications, as well as language change or logout) are performed using POST with a CSRF token present.
 Adminer sets cookies as SameSite which adds a second protection but not for vulnerabilities on the same site.
+As a third protection, Adminer rejects POST requests where the browser sends a cross-site `Sec-Fetch-Site` header.
 If a POST action succeeds, Adminer redirects the browser to a GET request to prevent accidental re-submission.
 An unsuccessful POST displays the same page with pre-filled form fields.
 Refreshing the page attempts the action again, which is useful when errors were resolved in another browser tab.
@@ -56,7 +57,7 @@ Adminer is highly conservative regarding PHP version requirements.
 Source codes require PHP 7.4 to take advantage of type declarations.
 These type declarations are stripped during compilation to be compatible with PHP 5.3.
 PHP 5.3 is still supported because some users cannot upgrade their servers.
-Compatibility is periodically [checked](https://github.com/vrana/adminer/blob/v5.0.6/phpcs.xml#L121).
+Compatibility is periodically [checked](https://github.com/vrana/adminer/blob/v5.5.0/phpcs.xml#L125).
 The required PHP version is only increased if it significantly improves the code.
 Older PHP versions had bugs that required workarounds, but modern versions primarily introduce new features.
 
@@ -77,6 +78,8 @@ Developers can extend this class to implement customizations, as I do for my pro
 A more common method for extending Adminer is the [`Plugins`](/adminer/include/plugins.inc.php) class.
 A plugin is simply a class defining any methods from [`Adminer`](/adminer/include/adminer.inc.php).
 The `Plugins::__call` method calls all registered plugins until one of them returns non-null.
+Some hooks (`dumpFormat`, `dumpOutput`, `editRowPrint`, `editFunctions`, `config`) don't short-circuit but append the results of all plugins instead.
+The built-in `Adminer` class is registered as the last plugin, providing the default behavior.
 
 ## Code Style
 
@@ -170,20 +173,20 @@ if (extension_loaded("mysqli") && idx($_GET, "ext") != "pdo")
 
 Treating undefined variables as empty was a significant improvement over the C language, where they contained random data.
 Unfortunately, developers abused this feature, leading PHP to issue first notices and later warnings.
-Adminer [silences](/adminer/include/errors.inc.php) these errors.
-In projects where I am required to check array key existence before usage, I quickly create a function like this:
+Adminer [silences](/adminer/include/errors.inc.php) these errors, but only for undefined array keys - accessing an offset on null or using an undefined variable is still reported.
+For cases where the whole array may be missing, Adminer defines [`idx()`](/adminer/include/functions.inc.php):
 
 ```php
-function idx($array, $key, $default = null) {
+function idx(?array $array, $key, $default = null) {
     // Note: isset() cannot be used here because idx(array(null), 0, '') would return an incorrect value.
-    return array_key_exists($key, $array) ? $array[$key] : $default;
+    return ($array && array_key_exists($key, $array) ? $array[$key] : $default);
 }
 ```
 
-Although it would be possible to use such a function in Adminer, the code would still be less readable than the current approach.
 Using `isset` can introduce bugs, such as in this case: `isset($rw["name"])`.
 Here, I intended to check if `$row` contains `name`, but a typo in the variable name is silently ignored.
 The same is true for `??`.
+`idx()` doesn't have this problem because PHP reports an error for an undefined variable passed to it.
 `empty()` is even worse and should be avoided in most cases.
 
 Adminer uses `@` only where an error is unavoidable, such as when writing to files.
@@ -192,7 +195,7 @@ Even if you check whether a file is writable, a race condition exists between th
 ## Escaping
 
 Adminer does not implement automatic escaping.
-When printing untrusted data (including e.g. table names), you must use `h()`, which is a shortcut for `htmlspecialchars` that also escapes `"` and `'`.
+When printing untrusted data (including e.g. table names), you must use `h()`, which escapes HTML special characters including `"` and `'` (it uses `str_replace` because it is much faster than `htmlspecialchars`).
 While a templating system would be useful, it would need to support streaming.
 Adminer prints data immediately to display partial results when a query is slow.
 
@@ -218,7 +221,8 @@ Adminer commits simply reference the current HEAD of the submodule, avoiding the
 
 ## Tests
 
-Adminer does not include unit tests but has extensive [end-to-end tests](/tests/).
+Adminer includes almost no unit tests ([tests/lzw.php](/tests/lzw.php) is an exception) but has extensive [end-to-end tests](/tests/).
+They are stored in `tests/*.html` and run by [Katalon Recorder](https://katalon.com/katalon-recorder-ide).
 These tests verify correct behavior, including UI functionality, which is otherwise difficult to test.
 The tests take about 10 minutes to run, which is acceptable before a release.
 They help detect even JavaScript errors in real-world use cases.
@@ -252,6 +256,10 @@ This extracts them for translation and applies translations if available.
 Translations are updated via [lang.php](/lang.php), which also checks for style consistency, such as matching punctuation.
 Plurals are stored as arrays, with selection logic handled in [lang.inc.php](/adminer/include/lang.inc.php).
 
+Some translations are machine-translated by an AI model.
+They are marked with a trailing comment naming the model, e.g. `'Condition' => 'Bedingung', // Claude Fable 5`.
+Human translators are supposed to verify such translations and remove the comment.
+
 Plugins extending [`Adminer\Plugin`](/adminer/include/plugin.inc.php) can use `$this->lang()` and store translations in `$translations = array('en' => array('' => 'Plugin description'))`.
 
 The website translations are managed at https://www.adminer.org/en/translations/.
@@ -266,7 +274,8 @@ Includes in Adminer start with `./` to bypass `include_path`, which is unrelated
 
 Compilation also [shrinks](https://github.com/vrana/PhpShrink) PHP code by removing whitespace, comments, and shortening variable names.
 This prevents plugins from overwriting Adminer’s variables.
-The compiled file is binary, which is valid PHP but not valid UTF-8 - a debatable choice.
+Compressed data is encoded to a 93-character alphabet (newline and printable ASCII except space, `'` and `\`), so it doesn't need escaping in single-quoted PHP strings.
+This makes the compiled file valid UTF-8 which also survives stripping trailing whitespace.
 
 Translations used to occupy a large portion of the compiled file.
 In the source code, translations map English strings to localized versions.
@@ -275,11 +284,11 @@ This data is decompressed into a session variable at runtime to improve performa
 A single-language compilation is also possible to create even smaller files.
 
 `compile.php` outputs the compiled file to the current directory, but it does not need to be run from Adminer’s directory.
-I often run it from a separate directory to prepare releases (29 files) or test versions of Adminer.
+I often run it from a separate directory to prepare releases (32 files) or test versions of Adminer.
 
 ## Version Check
 
-Adminer checks for new versions via [adminer.org/version/](https://www.adminer.org/version/), using a signed response to prevent tampering with the version file on the server where an instance of Adminer runs.
+Adminer checks for new versions via [adminer.org/version/](https://www.adminer.org/version/).
 However, this means that adminer.org has access to the IP addresses of Adminer installations.
 I do not review logs with this information, and no one else has access to the server.
 A [plugin](/plugins/version-noverify.php) disables version checks, but users should verify versions by other means to ensure security updates.
