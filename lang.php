@@ -43,14 +43,15 @@ function update_translations($lang, $messages, $filename, $pattern, $tabs = "\t"
 	$s = preg_replace_callback($pattern, function ($match) use ($lang, $messages, $filename, $file, $tabs, &$start) {
 		$prefix = $match[1][0];
 		$start = $match[2][1];
-		preg_match_all("~^(\\s*(?:// [^'].*\\s+)?)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => (.*[^,\n])),?~m", $match[2][0], $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
+		preg_match_all("~^(\\s*(?:// [^'].*\\s+)?)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => (.*?[^,\n])),?( // .*)?$~m", $match[2][0], $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
 		$s = "";
 		$fullstop = ($lang == 'bn' || $lang == 'hi' ? '।' : (preg_match('~^(ja|zh)~', $lang) ? '。' : ($lang == 'he' ? '[^.]' : '\.')));
 		foreach ($matches as $match) {
 			list(, list($indent), list($line, $offset), list($en), list($translation)) = $match;
+			$comment = (isset($match[5]) ? $match[5][0] : "");
 			if (isset($messages[$en])) {
 				// keep current messages
-				$s .= "$indent$line,\n";
+				$s .= "$indent$line,$comment\n";
 				unset($messages[$en]);
 				$en_fullstop = (substr($en, -2, 1) == ".");
 				//! check in array
@@ -64,7 +65,7 @@ function update_translations($lang, $messages, $filename, $pattern, $tabs = "\t"
 				}
 			} else {
 				// comment deprecated messages
-				$s .= "$indent// $line,\n";
+				$s .= "$indent// $line,$comment\n";
 			}
 		}
 		if ($messages) {
