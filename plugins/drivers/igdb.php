@@ -144,7 +144,6 @@ if (isset($_GET["igdb"])) {
 	class Driver extends SqlDriver {
 		static $extensions = array("json");
 		static $jush = "igdb";
-		private static $docsFilename = __DIR__ . DIRECTORY_SEPARATOR . 'igdb-api.html';
 
 		public $delimiter = ";;";
 		public $operators = array("=", "<", ">", "<=", ">=", "!=", "~");
@@ -155,9 +154,17 @@ if (isset($_GET["igdb"])) {
 		public $foreignKeys = array();
 		public $foundRows = null;
 
+		private static function docsFilename(): string {
+			return get_temp_dir() . "/adminer-igdb-api.html";
+		}
+
 		static function connect($server, $username, $password) {
-			if (!file_exists(self::$docsFilename)) {
-				return "Download https://api-docs.igdb.com/ and save it as " . self::$docsFilename; // copy() doesn't work - bot protection
+			$filename = self::docsFilename();
+			if (!file_exists($filename)) {
+				list($contents, $status) = get_url("https://api-docs.igdb.com/", stream_context_create(array('http' => array('ignore_errors' => true))));
+				if ($status != 200 || !file_put_contents($filename, $contents)) {
+					return "Download https://api-docs.igdb.com/ and save it as $filename";
+				}
 			}
 			return parent::connect($server, $username, $password);
 		}
@@ -166,7 +173,7 @@ if (isset($_GET["igdb"])) {
 			parent::__construct($connection);
 			libxml_use_internal_errors(true);
 			$dom = new \DOMDocument();
-			$dom->loadHTMLFile(self::$docsFilename);
+			$dom->loadHTMLFile(self::docsFilename());
 			$xpath = new \DOMXPath($dom);
 			$els = $xpath->query('//div[@class="content"]/*');
 			$link = '';
