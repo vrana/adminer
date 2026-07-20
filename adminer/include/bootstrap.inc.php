@@ -59,7 +59,9 @@ if (function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc()) {
 if (function_exists("get_magic_quotes_runtime") && get_magic_quotes_runtime()) {
 	set_magic_quotes_runtime(false);
 }
-@set_time_limit(0); // @ - can be disabled
+if (function_exists('set_time_limit')) { // can be disabled
+	set_time_limit(0);
+}
 @ini_set("precision", '16'); // @ - can be disabled, 16 - IEEE 754 has 15.95 decimal digits for double
 
 include "../adminer/include/lang.inc.php";
