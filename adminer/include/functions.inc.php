@@ -684,20 +684,7 @@ function apply_sql_function(?string $function, string $column): string {
 
 /** Get path of the temporary directory */
 function get_temp_dir(): string {
-	$return = ini_get("upload_tmp_dir"); // session_save_path() may contain other storage path
-	if (!$return) {
-		if (function_exists('sys_get_temp_dir')) {
-			$return = sys_get_temp_dir();
-		} else {
-			$filename = @tempnam("", ""); // @ - temp directory can be disabled by open_basedir
-			if (!$filename) {
-				return '';
-			}
-			$return = dirname($filename);
-			unlink($filename);
-		}
-	}
-	return $return;
+	return ini_get("upload_tmp_dir") ?: sys_get_temp_dir(); // session_save_path() may contain other storage path
 }
 
 /** Open and exclusively lock a file

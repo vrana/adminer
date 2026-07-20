@@ -19,7 +19,7 @@ class AdminerFrames extends Adminer\Plugin {
 	function headers() {
 		if ($this->sameOrigin) {
 			header("X-Frame-Options: SameOrigin");
-		} elseif (function_exists('header_remove')) {
+		} else {
 			header_remove("X-Frame-Options");
 		}
 	}
