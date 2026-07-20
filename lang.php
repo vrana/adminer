@@ -2,11 +2,16 @@
 <?php
 include __DIR__ . "/adminer/include/errors.inc.php";
 
+$plugins = ($_SERVER["argv"][1] != "no-plugins");
+if (!$plugins) {
+	array_shift($_SERVER["argv"]);
+}
+
 unset($_COOKIE["adminer_lang"]);
 $_SESSION["lang"] = $_SERVER["argv"][1]; // Adminer functions read language from session
 if (isset($_SESSION["lang"])) {
 	if (isset($_SERVER["argv"][2]) || !file_exists(__DIR__ . "/adminer/lang/$_SESSION[lang].inc.php")) {
-		echo "Usage: php lang.php [lang]\nPurpose: Update adminer/lang/*.inc.php from source code messages.\n";
+		echo "Usage: php lang.php [no-plugins] [lang]\nPurpose: Update adminer/lang/*.inc.php from source code messages.\n";
 		exit(1);
 	}
 }
@@ -22,7 +27,7 @@ foreach (glob(__DIR__ . "/{adminer,adminer/include,adminer/drivers,editor,editor
 foreach (glob(__DIR__ . "/adminer/lang/" . ($_SESSION["lang"] ?: "*") . ".inc.php") as $filename) {
 	$lang = basename($filename, ".inc.php");
 	update_translations($lang, $messages_all, $filename, '~(\$translations = array\(\n)(.*\n)(?=\);)~sU');
-	if ($lang != "xx") {
+	if ($plugins && $lang != "xx") {
 		foreach (glob(__DIR__ . "/plugins/*.php") as $filename) {
 			$file = file_get_contents($filename);
 			if (preg_match('~extends Adminer\\\\Plugin~', $file)) {
