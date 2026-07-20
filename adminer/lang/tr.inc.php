@@ -49,7 +49,7 @@ Lang::$translations = array(
 
 	'SQL command' => 'SQL komutu',
 	'%d query(s) executed OK.' => array('%d sorgu başarıyla çalıştırıldı.', '%d adet sorgu başarıyla çalıştırıldı.'),
-	'Query executed OK, %d row(s) affected.' => array('Sorgu başarıyla çalıştırıldı, %d adet kayıt etkilendi.', 'Sorgu başarıyla çalıştırıldı, %d adet kayıt etkilendi.'),
+	'Query executed OK, %d row(s) affected.' => 'Sorgu başarıyla çalıştırıldı, %d adet kayıt etkilendi.',
 	'No commands to execute.' => 'Çalıştırılacak komut yok.',
 	'Error in query' => 'Sorguda hata',
 	'Warnings' => 'Uyarılar',
@@ -248,7 +248,7 @@ Lang::$translations = array(
 	'Load more data' => 'Daha fazla veri yükle',
 	'Loading' => 'Yükleniyor',
 	'Whole result' => 'Tüm sonuç',
-	'%d byte(s)' => array('%d bayt', '%d bayt'),
+	'%d byte(s)' => '%d bayt',
 
 	'Import' => 'İçeri Aktar',
 	'%d row(s) have been imported.' => array('%d kayıt içeri aktarıldı.', '%d adet kayıt içeri aktarıldı.'),

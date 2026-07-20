@@ -60,8 +60,8 @@ function update_translations($lang, $messages, $filename, $pattern, $tabs = "\t"
 						echo "$filename:" . (substr_count($file, "\n", 0, $start + $offset) + 1) . ":Not matching fullstop: $line\n";
 					}
 				}
-				if (preg_match('~%~', $en) xor preg_match('~%~', $translation)) {
-					echo "$filename:" . (substr_count($file, "\n", 0, $start + $offset) + 1) . ":Not matching placeholder.\n";
+				foreach (placeholder_errors($lang, $en, $translation) as $error) {
+					echo "$filename:" . (substr_count($file, "\n", 0, $start + $offset) + 1) . ":Placeholders: $error: $line\n";
 				}
 			} else {
 				// comment deprecated messages
@@ -86,4 +86,58 @@ function update_translations($lang, $messages, $filename, $pattern, $tabs = "\t"
 		file_put_contents($filename, $s);
 		echo "$filename:" . (substr_count($s, "\n", 0, $start) + 1) . ":Updated.\n";
 	}
+}
+
+/** Check that printf placeholders in the translation match the English original
+* @param string $en English original including apostrophes
+* @param string $translation quoted string or array(...) of quoted plural forms
+* @return list<string> found problems
+*/
+function placeholder_errors($lang, $en, $translation) {
+	$errors = array();
+	$spec = '%(\d+\$)?(?:\.\d+)?([dsf])'; // %2$s is positional, %.3f is used for time
+	preg_match_all("~$spec~", $en, $match);
+	$types = $match[2]; // types of arguments passed to lang()
+	preg_match_all("~'(?:[^\\\\']+|\\\\.)*'~", $translation, $match);
+	if (preg_match('~^array\(~', $translation)) {
+		if (count($match[0]) != plural_forms($lang)) {
+			$errors[] = "expected " . plural_forms($lang) . " plural forms";
+		}
+		if ($lang != "xx" && count(array_unique($match[0])) == 1) { // 'xx' is a template for new translations so it keeps the arrays
+			$errors[] = 'identical plural forms'; // could be a plain string
+		}
+	}
+	foreach ($match[0] as $single) {
+		preg_match_all("~$spec~", $single, $specs, PREG_SET_ORDER);
+		$seq = 0;
+		$positional = 0;
+		$missing = $types;
+		foreach ($specs as $sp) {
+			$pos = ($sp[1] != "" ? intval($sp[1]) : ++$seq);
+			$positional += ($sp[1] != "");
+			if ($pos > count($types)) {
+				$errors[] = "extra %$sp[2]"; // would throw ValueError in vsprintf()
+			} elseif ($types[$pos - 1] != $sp[2]) {
+				$errors[] = "%$sp[2] instead of %" . $types[$pos - 1];
+			}
+			unset($missing[$pos - 1]);
+		}
+		if ($positional && $seq) {
+			$errors[] = 'mixed positional and sequential placeholders'; // %s after %2$s would still print the first argument
+		}
+		if (array_diff($missing, array('d'))) {
+			$errors[] = 'missing %s'; // %d may be omitted e.g. in singular forms
+		}
+		if (strpos(preg_replace(array("~$spec~", '~%%~'), '', $single), '%') !== false) {
+			$errors[] = 'invalid %'; // '% d' prints the number with a space flag and eats the following letter
+		}
+	}
+	return array_unique($errors);
+}
+
+/** Get the number of plural forms selected by lang_format()
+* @return int
+*/
+function plural_forms($lang) {
+	return ($lang == 'sl' ? 4 : (preg_match('~^(cs|sk|pl|lt|lv|bs|hr|ru|sr|uk)$~', $lang) ? 3 : 2));
 }

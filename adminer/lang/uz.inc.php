@@ -19,7 +19,7 @@ Lang::$translations = array(
 	'There is a space in the input password which might be the cause.' => 'Kiritilgan parolda bo\'sh joy bor, bu sabab bo\'lishi mumkin.',
 	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer parolsiz ma\'lumotlar bazasiga kirishni qo\'llab-quvvatlamaydi, <a href="https://www.adminer.org/en/password/"%s>ko\'proq ma\'lumot</a>.',
 	'Database does not support password.' => 'Ma\'lumotlar bazasi parolni qo\'llab-quvvatlamaydi.',
-	'Too many unsuccessful logins, try again in %d minute(s).' => array('Juda ko\'p muvaffaqiyatsiz urinishlar, %d daqiqadan so\'ng qayta urining.', 'Juda ko\'p muvaffaqiyatsiz urinishlar, %d daqiqadan so\'ng qayta urining.'),
+	'Too many unsuccessful logins, try again in %d minute(s).' => 'Juda ko\'p muvaffaqiyatsiz urinishlar, %d daqiqadan so\'ng qayta urining.',
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Asosiy parol muddati tugadi. Uni doimiy qilish uchun %s usulini <a href="https://www.adminer.org/en/extension/"%s>amalga oshiring</a>.',
 	'Language' => 'Til',
 	'Invalid CSRF token. Send the form again.' => 'Noto\'g\'ri CSRF belgisi. Shaklni qayta yuboring.',

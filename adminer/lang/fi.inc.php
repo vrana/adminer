@@ -12,7 +12,7 @@ Lang::$translations = array(
 	'Logged as: %s' => 'Olet kirjautunut käyttäjänä: %s',
 	'Logout successful.' => 'Uloskirjautuminen onnistui.',
 	'Invalid credentials.' => 'Virheelliset kirjautumistiedot.',
-	'Too many unsuccessful logins, try again in %d minute(s).' => array('Liian monta epäonnistunutta sisäänkirjautumisyritystä, kokeile uudestaan %d minuutin kuluttua.', 'Liian monta epäonnistunutta sisäänkirjautumisyritystä, kokeile uudestaan %d minuutin kuluttua.'),
+	'Too many unsuccessful logins, try again in %d minute(s).' => 'Liian monta epäonnistunutta sisäänkirjautumisyritystä, kokeile uudestaan %d minuutin kuluttua.',
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Master-salasana ei ole enää voimassa. <a href="https://www.adminer.org/en/extension/"%s>Toteuta</a> %s-metodi sen tekemiseksi pysyväksi.',
 	'Language' => 'Kieli',
 	'Invalid CSRF token. Send the form again.' => 'Virheellinen CSRF-vastamerkki. Lähetä lomake uudelleen.',
@@ -46,7 +46,7 @@ Lang::$translations = array(
 
 	'SQL command' => 'SQL-komento',
 	'%d query(s) executed OK.' => array('%d kysely onnistui.', '%d kyselyä onnistui.'),
-	'Query executed OK, %d row(s) affected.' => array('Kysely onnistui, kohdistui %d riviin.', 'Kysely onnistui, kohdistui %d riviin.'),
+	'Query executed OK, %d row(s) affected.' => 'Kysely onnistui, kohdistui %d riviin.',
 	'No commands to execute.' => 'Ei komentoja suoritettavana.',
 	'Error in query' => 'Virhe kyselyssä',
 	'Execute' => 'Suorita',
@@ -115,7 +115,7 @@ Lang::$translations = array(
 	'Tables have been copied.' => 'Taulut on kopioitu.',
 
 	'Routines' => 'Rutiinit',
-	'Routine has been called, %d row(s) affected.' => array('Rutiini kutsuttu, kohdistui %d riviin.', 'Rutiini kutsuttu, kohdistui %d riviin.'),
+	'Routine has been called, %d row(s) affected.' => 'Rutiini kutsuttu, kohdistui %d riviin.',
 	'Call' => 'Kutsua',
 	'Parameter name' => 'Parametrin nimi',
 	'Create procedure' => 'Luo proseduuri',
@@ -254,7 +254,7 @@ Lang::$translations = array(
 	'Item%s has been inserted.' => 'Tietue%s lisättiin.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Tietue poistettiin.',
 	'Item has been updated.' => 'Tietue päivitettiin.',
-	'%d item(s) have been affected.' => array('Kohdistui %d tietueeseen.', 'Kohdistui %d tietueeseen.'),
+	'%d item(s) have been affected.' => 'Kohdistui %d tietueeseen.',
 	'New item' => 'Uusi tietue',
 	'original' => 'alkuperäinen',
 	'empty' => 'tyhjä', // label for value '' in enum data type
