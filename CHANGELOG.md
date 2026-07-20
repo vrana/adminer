@@ -1,5 +1,6 @@
 ## Adminer dev
 - Ignore invalid X-Forwarded-Prefix (GHSA-fr74-9mf9-gf44)
+- Login: Allow :/_ in server (bug #1305, regression from 5.5.0)
 - Compile: Valid UTF-8 (bug #1113, #1213)
 - Compile: Replace LZW with deflate compression
 - Add missing translations

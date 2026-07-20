@@ -173,7 +173,7 @@ if (isset($_GET["username"]) && !class_exists('Adminer\Db')) {
 $connection = '';
 if (isset($_GET["username"]) && is_string(get_password())) {
 	list($host, $port) = host_port(SERVER);
-	if (!preg_match('~^[-\w.:/]*$~D', $host) || !preg_match('~^[-\w./]*$~D', $port)) {
+	if (preg_match('~[^-\w.:/]~', $host . $port)) {
 		auth_error(lang('Invalid server.'), $permanent);
 	}
 	if (preg_match('~^-?\d+~', $port, $match) && ($match[0] < 1024 || $match[0] > 65535)) { // is_numeric('80.') would still connect to port 80

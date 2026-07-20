@@ -221,7 +221,7 @@ Adminer commits simply reference the current HEAD of the submodule, avoiding the
 
 ## Tests
 
-Adminer includes almost no unit tests ([tests/compress.php](/tests/compress.php) is an exception) but has extensive [end-to-end tests](/tests/).
+Adminer includes almost no unit tests ([tests/compress.php](/tests/compress.php) is one of the exceptions) but has extensive [end-to-end tests](/tests/).
 They are stored in `tests/*.html` and run by [Katalon Recorder](https://katalon.com/katalon-recorder-ide).
 These tests verify correct behavior, including UI functionality, which is otherwise difficult to test.
 The tests take about 10 minutes to run, which is acceptable before a release.
