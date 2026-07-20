@@ -42,7 +42,7 @@ if (preg_match('~^/[-\w.]~', $_SERVER["HTTP_X_FORWARDED_PREFIX"])) {
 }
 define('Adminer\HTTPS', ($_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off")) || ini_bool("session.cookie_secure")); // session.cookie_secure could be set on HTTP if we are behind a reverse proxy
 
-@ini_set("session.use_trans_sid", '0'); // protect links in export, @ - may be disabled
+ini_set("session.use_trans_sid", '0'); // protect links in export
 if (!defined("SID")) {
 	session_cache_limiter(""); // to allow restarting session
 	session_name("adminer_sid"); // use specific session name to get own namespace
@@ -62,7 +62,7 @@ if (function_exists("get_magic_quotes_runtime") && get_magic_quotes_runtime()) {
 if (function_exists('set_time_limit')) { // can be disabled
 	set_time_limit(0);
 }
-@ini_set("precision", '16'); // @ - can be disabled, 16 - IEEE 754 has 15.95 decimal digits for double
+ini_set("precision", '16'); // 16 - IEEE 754 has 15.95 decimal digits for double
 
 include "../adminer/include/lang.inc.php";
 include "../adminer/lang/" . LANG . ".inc.php";
