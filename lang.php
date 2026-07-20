@@ -55,7 +55,7 @@ function update_translations($lang, $messages, $filename, $pattern, $tabs = "\t"
 				unset($messages[$en]);
 				$en_fullstop = (substr($en, -2, 1) == ".");
 				//! check in array
-				if ($en != "','" && ($en_fullstop xor preg_match("~$fullstop'\)?\$~", $line))) {
+				if (!in_array($en, array('\'$1-$3-$5\'', "'[yyyy]-mm-dd'", "','")) && ($en_fullstop xor preg_match("~$fullstop'\)?\$~", $line))) {
 					if ($lang != ($en_fullstop ? "ja" : "he")) { // fullstop is optional in 'ja', forbidden in 'he'
 						echo "$filename:" . (substr_count($file, "\n", 0, $start + $offset) + 1) . ":Not matching fullstop: $line\n";
 					}
