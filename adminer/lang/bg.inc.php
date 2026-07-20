@@ -308,7 +308,7 @@ Lang::$translations = array(
 	'Alter sequence' => 'Промяна на последователност',
 
 	// PostgreSQL user types support
-	'User types' => 'Видове потребители',
+	'User types' => 'Потребителски типове', // Claude Fable 5
 	'Create type' => 'Създаване на вид',
 	'Type has been dropped.' => 'Вида беше пермахнат.',
 	'Type has been created.' => 'Вида беше създаден.',

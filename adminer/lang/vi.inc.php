@@ -13,7 +13,7 @@ Lang::$translations = array(
 	'Logout successful.' => 'Đã thoát xong.',
 	'Invalid credentials.' => 'Tài khoản sai.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'Bạn gõ sai tài khoản quá nhiều lần, hãy thử lại sau %d phút nữa.',
-	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Mật khẩu đã hết hạn. <a href="https://www.adminer.org/en/extension/"%s>Thử cách làm</a> để giữ cố định.',
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Mật khẩu chính đã hết hạn. <a href="https://www.adminer.org/en/extension/"%s>Triển khai</a> phương thức %s để giữ cố định.', // Claude Fable 5
 	'Language' => 'Ngôn ngữ',
 	'Invalid CSRF token. Send the form again.' => 'Mã kiểm tra CSRF sai, hãy nhập lại biểu mẫu.',
 	'No extension' => 'Không có phần mở rộng',
@@ -97,7 +97,7 @@ Lang::$translations = array(
 	'Index Length' => 'Kích thước chỉ mục',
 	'Data Free' => 'Dữ liệu trống',
 	'Rows' => 'Số dòng',
-	'%d in total' => '%s',
+	'%d in total' => 'Tổng cộng %d',
 	'Analyze' => 'Phân tích',
 	'Optimize' => 'Tối ưu',
 	'Vacuum' => 'Dọn dẹp',
@@ -227,7 +227,7 @@ Lang::$translations = array(
 	'Full table scan' => 'Quét toàn bộ bảng',
 	'Unable to select the table' => 'Không thể xem dữ liệu',
 	'No rows.' => 'Không có dòng dữ liệu nào.',
-	'%d row(s)' => '%s dòng',
+	'%d row(s)' => '%d dòng',
 	'Page' => 'trang',
 	'last' => 'cuối',
 	'Load more data' => 'Xem thêm dữ liệu',
@@ -236,7 +236,7 @@ Lang::$translations = array(
 	'%d byte(s)' => '%d byte(s)',
 
 	'Import' => 'Nhập khẩu',
-	'%d row(s) have been imported.' => 'Đã nhập % dòng dữ liệu.',
+	'%d row(s) have been imported.' => 'Đã nhập %d dòng dữ liệu.',
 	'File must be in UTF-8 encoding.' => 'Tệp phải mã hoá bằng chuẩn UTF-8.',
 
 	'Modify' => 'Sửa', // in-place editing in select

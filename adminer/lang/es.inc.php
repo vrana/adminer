@@ -273,9 +273,9 @@ Lang::$translations = array(
 	'There is a space in the input password which might be the cause.' => 'Hay un espacio en el password, lo cual puede ser la causa.',
 	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer no soporta accesar una base de datos sin clave, <a href="https://www.adminer.org/en/password/"%s>Ver detalles</a>.',
 	'Database does not support password.' => 'La base de datos no soporta password.',
-	'Too many unsuccessful logins, try again in %d minute(s).' => array('Muchos intentos de acceso Intente en %d minutos.'),
+	'Too many unsuccessful logins, try again in %d minute(s).' => array('Demasiados intentos de acceso fallidos, intente nuevamente en %d minuto.', 'Demasiados intentos de acceso fallidos, intente nuevamente en %d minutos.'), // Claude Fable 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Password maestro expirado. <a href="https://www.adminer.org/en/extension/"%s>Implemente</a> %s metodo para hacerlo permanente.',
-	'If you did not send this request from Adminer then close this page.' => 'Si no puede enviar la solicitud por Adminer entonces cierre esta pagina.',
+	'If you did not send this request from Adminer then close this page.' => 'Si no envió esta solicitud desde Adminer, cierre esta página.', // Claude Fable 5
 	'Connecting to privileged ports is not allowed.' => 'Conexiones a puertos privilegiados no son permitidas.',
 	'Disable %s or enable %s or %s extensions.' => 'Desactivar %s o activar %s o %s extensiones.',
 	'The action will be performed after successful login with the same credentials.' => 'La operacion sera ejecutada despues de ingresar nuevamente con las mismas credenciales.',

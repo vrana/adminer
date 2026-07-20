@@ -321,7 +321,7 @@ Lang::$translations = array(
 	'Alter sequence' => '修改序列',
 
 	// PostgreSQL user types support
-	'User types' => '使用者類型',
+	'User types' => '使用者定義類型', // Claude Fable 5
 	'Create type' => '建立類型',
 	'Type has been dropped.' => '已刪除類型。',
 	'Type has been created.' => '已建立類型。',

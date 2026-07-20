@@ -3,7 +3,7 @@ namespace Adminer;
 
 Lang::$translations = array(
 	'Login' => 'Aanmelden',
-	'Logout successful.' => 'Successvol afgemeld.',
+	'Logout successful.' => 'Succesvol afgemeld.',
 	'Invalid credentials.' => 'Ongeldige gebruikersgegevens.',
 	'Server' => 'Server',
 	'Username' => 'Gebruikersnaam',
@@ -290,7 +290,7 @@ Lang::$translations = array(
 	'Saving' => 'Opslaan',
 	'Unknown error.' => 'Onbekende fout.',
 	'Database does not support password.' => 'Database ondersteunt het wachtwoord niet.',
-	'Disable %s or enable %s or %s extensions.' => 'Schakel %s uit or schakel extensies %s of %s in.',
+	'Disable %s or enable %s or %s extensions.' => 'Schakel %s uit of schakel extensies %s of %s in.',
 	'yes' => 'ja',
 	'no' => 'neen',
 	'Check has been dropped.' => 'Check verwijderd.', // Claude Fable 5

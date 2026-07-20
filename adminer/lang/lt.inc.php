@@ -284,7 +284,7 @@ Lang::$translations = array(
 	'Alter sequence' => 'Keisti seką',
 
 	// PostgreSQL user types support
-	'User types' => 'Vartotojų tipai',
+	'User types' => 'Vartotojo apibrėžti tipai', // Claude Fable 5
 	'Create type' => 'Sukurti tipą',
 	'Type has been dropped.' => 'Tipas pašalintas.',
 	'Type has been created.' => 'Tipas sukurtas.',

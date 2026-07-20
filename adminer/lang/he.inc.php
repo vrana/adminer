@@ -229,7 +229,7 @@ Lang::$translations = array(
 	'Sequence has been dropped.' => 'הסדרה הושלכה',
 	'Sequence has been created.' => 'הסדרה נוצרה',
 	'Sequence has been altered.' => 'הסדרה שונתה',
-	'User types' => 'סוגי משתמשים',
+	'User types' => 'טיפוסים מוגדרי משתמש', // Claude Fable 5
 	'Create type' => 'צור סוג',
 	'Alter type' => 'שנה סוג',
 	'Type has been dropped.' => 'הסוג הושלך',
@@ -273,7 +273,7 @@ Lang::$translations = array(
 	'Full table scan' => 'סריקה טבלה מלאה',
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'יותר מידי נסיונות כניסה נכשלו, אנא נסה עוד %d דקות',
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'תודה שהשתמש ב-adminer אנא שקול <a href="https://www.adminer.org/en/donation/">לתרום</a>',
-	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'סיסמת המאסטר פגה <a href="https://www.adminer.org/en/extension/"%s>התקן תוסף</a> על מנת להפוך את זה לתמידי',
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'פג תוקף סיסמת המאסטר. <a href="https://www.adminer.org/en/extension/"%s>יש לממש</a> את המתודה %s כדי להפוך אותה לקבועה.', // Claude Fable 5
 	'If you did not send this request from Adminer then close this page.' => 'אם לא אתה שלחת בקשה ל-Adminer הינך יכול לסגור חלון זה',
 	'You can upload a big SQL file via FTP and import it from server.' => 'ניתן לעלות קבצים ב-FTP ואז למשוך אותם מהשרת',
 	'Size' => 'גודל',
