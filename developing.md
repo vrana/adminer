@@ -221,7 +221,7 @@ Adminer commits simply reference the current HEAD of the submodule, avoiding the
 
 ## Tests
 
-Adminer includes almost no unit tests ([tests/lzw.php](/tests/lzw.php) is an exception) but has extensive [end-to-end tests](/tests/).
+Adminer includes almost no unit tests ([tests/compress.php](/tests/compress.php) is an exception) but has extensive [end-to-end tests](/tests/).
 They are stored in `tests/*.html` and run by [Katalon Recorder](https://katalon.com/katalon-recorder-ide).
 These tests verify correct behavior, including UI functionality, which is otherwise difficult to test.
 The tests take about 10 minutes to run, which is acceptable before a release.
@@ -279,7 +279,7 @@ This makes the compiled file valid UTF-8 which also survives stripping trailing 
 
 Translations used to occupy a large portion of the compiled file.
 In the source code, translations map English strings to localized versions.
-During compilation, identifiers are converted to numbers, and translations are LZW-compressed to save space.
+During compilation, identifiers are converted to numbers, and translations are deflate-compressed to save space.
 This data is decompressed into a session variable at runtime to improve performance.
 A single-language compilation is also possible to create even smaller files.
 

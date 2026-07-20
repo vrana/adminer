@@ -2,7 +2,7 @@
 <?php
 include __DIR__ . "/adminer/include/version.inc.php";
 include __DIR__ . "/adminer/include/errors.inc.php";
-include __DIR__ . "/adminer/include/lzw.inc.php";
+include __DIR__ . "/adminer/include/compress.inc.php";
 include __DIR__ . "/externals/JsShrink/jsShrink.php";
 include __DIR__ . "/externals/PhpShrink/phpShrink.php";
 
@@ -118,7 +118,7 @@ function put_file_lang($match) {
 			}
 		}
 		$return .= '
-		case "' . $lang . '": $compressed = \'' . Adminer\lzw_compress(implode("\n", $translation_ids)) . '\'; break;';
+		case "' . $lang . '": $compressed = \'' . Adminer\compress_string(implode("\n", $translation_ids)) . '\'; break;';
 	}
 	$translations_version = crc32($return);
 	return 'Lang::$translations = (array) $_SESSION["translations"];
@@ -135,7 +135,7 @@ function get_translations($lang) {
 	switch ($lang) {' . $return . '
 	}
 	$translations = array();
-	foreach (explode("\n", lzw_decompress($compressed)) as $val) {
+	foreach (explode("\n", decompress_string($compressed)) as $val) {
 		$translations[] = (strpos($val, "\t") ? explode("\t", $val) : $val);
 	}
 	return $translations;
@@ -151,7 +151,7 @@ function minify_css($file) {
 	$file = preg_replace_callback('~url\((\w+\.(gif|png|jpg))\)~', function ($match) {
 		return "url(data:image/$match[2];base64," . base64_encode(file_get_contents(__DIR__ . "/adminer/static/$match[1]")) . ")"; // we don't have ME in *.css so we can only inline images
 	}, $file);
-	return Adminer\lzw_compress(preg_replace('~\s*([:;{},])\s*~', '\1', preg_replace('~/\*.*?\*/\s*~s', '', $file)));
+	return Adminer\compress_string(preg_replace('~\s*([:;{},])\s*~', '\1', preg_replace('~/\*.*?\*/\s*~s', '', $file)));
 }
 
 function minify_js($file) {
@@ -163,7 +163,7 @@ function minify_js($file) {
 	if (function_exists('jsShrink')) {
 		$file = jsShrink($file);
 	}
-	return Adminer\lzw_compress($file);
+	return Adminer\compress_string($file);
 }
 
 // $callback only to match signature
@@ -177,7 +177,7 @@ function compile_file($match, $callback = '') {
 		}
 	}
 	if ($callback) {
-		return "'" . call_user_func($callback, $file) . "'"; // LZW compressed string doesn't need escaping
+		return "'" . call_user_func($callback, $file) . "'"; // compressed string doesn't need escaping
 	}
 	return "base64_decode('" . base64_encode($file) . "')";
 }
@@ -209,6 +209,7 @@ if (file_exists(__DIR__ . $driver_path)) {
 unset($_COOKIE["adminer_lang"]);
 $_SESSION["lang"] = $_SERVER["argv"][1]; // Adminer functions read language from session
 include __DIR__ . "/adminer/include/functions.inc.php";
+include __DIR__ . "/adminer/include/decompress.inc.php";
 include __DIR__ . "/adminer/include/lang.inc.php";
 if (Adminer\idx(Adminer\langs(), $_SESSION["lang"])) {
 	include __DIR__ . "/adminer/lang/$_SESSION[lang].inc.php";
