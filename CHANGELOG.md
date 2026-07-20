@@ -4,6 +4,7 @@
 - Add missing translations
 - Syntax highlighting: Update SQLite and PostgreSQL
 - Support disabled set_time_limit() and ini_set() (bug #1288)
+- PostgreSQL: Log in with empty server (bug #1304, regression from 5.5.0)
 
 ## Adminer 5.5.0 (released 2026-07-17)
 - Disallow invalid port or socket (GHSA-58cq-mgw2-38m5)
