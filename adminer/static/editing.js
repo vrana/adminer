@@ -16,22 +16,8 @@ function syntaxHighlighting(version, vendor) {
 					if (typeof obj[key] != 'string') {
 						obj = obj[key];
 						key = 0;
-						if (vendor == 'maria') {
-							for (let i = 1; i < obj.length; i++) {
-								obj[i] = obj[i]
-									.replace('.html', '/')
-									.replace('-type-syntax', '-data-types')
-									.replace(/numeric-(data-types)/, '$1-$&')
-									.replace(/replication-options-(master|binary-log)\//, 'replication-and-binary-log-system-variables/')
-									.replace('server-options/', 'server-system-variables/')
-									.replace('innodb-parameters/', 'innodb-system-variables/')
-									.replace(/#(statvar|sysvar|option_mysqld)_(.*)/, '#$2')
-									.replace(/#sysvar_(.*)/, '#$1')
-								;
-							}
-						}
 					}
-
+					// MariaDB page keys are resolved by jush itself from the 'mysql-key maria-key' entries
 					obj[key] = (vendor == 'maria' ? obj[key].replace('dev.mysql.com/doc/mysql', 'mariadb.com/kb') : obj[key]) // MariaDB
 						.replace('/doc/mysql', '/doc/refman/' + version) // MySQL
 					;

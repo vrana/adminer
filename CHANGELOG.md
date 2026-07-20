@@ -3,7 +3,7 @@
 - Compile: Valid UTF-8 (bug #1113, #1213)
 - Compile: Replace LZW with deflate compression
 - Add missing translations
-- Syntax highlighting: Update SQLite and PostgreSQL
+- Syntax highlighting: Update MySQL, MariaDB, SQLite, PostgreSQL
 - Support disabled set_time_limit() and ini_set() (bug #1288)
 - PostgreSQL: Log in with empty server (bug #1304, regression from 5.5.0)
 
