@@ -97,7 +97,9 @@ if (isset($_GET["clickhouse"])) {
 				}
 				$this->num_rows = $result['rows'];
 				$this->meta = $result['meta'];
-				$this->columns = array_column($this->meta, 'name');
+				$this->columns = array_map(function ($column) {
+					return $column['name'];
+				}, $this->meta); // array_column() is available since PHP 5.5
 				reset($this->rows);
 			}
 
