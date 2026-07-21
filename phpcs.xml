@@ -6,6 +6,7 @@
 
 	<file>.</file>
 	<exclude-pattern>/externals/</exclude-pattern>
+	<exclude-pattern>/vendor/</exclude-pattern><!-- Created by Composer in CI -->
 	<exclude-pattern>/designs/</exclude-pattern>
 	<exclude-pattern type="relative">^(adminer|editor)[-.]</exclude-pattern>
 	<exclude-pattern>/adminer-plugins/</exclude-pattern><!-- Local plugins used by the dev server -->
@@ -53,8 +54,8 @@
 		<exclude-pattern>adminer/drivers/</exclude-pattern>
 		<exclude-pattern>adminer/include/db.inc.php</exclude-pattern>
 		<exclude-pattern>adminer/include/pdo.inc.php</exclude-pattern>
-		<exclude-pattern>adminer/plugins/foreign-system.php</exclude-pattern>
-		<exclude-pattern>adminer/plugins/drivers/</exclude-pattern>
+		<exclude-pattern>/plugins/foreign-system.php</exclude-pattern>
+		<exclude-pattern>/plugins/drivers/</exclude-pattern>
 	</rule>
 
 	<rule ref="Generic.Files.LineLength">
