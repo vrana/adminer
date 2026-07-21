@@ -1,4 +1,4 @@
-## Adminer dev
+## Adminer 5.5.1 (released 2026-07-21)
 - Ignore invalid X-Forwarded-Prefix (GHSA-fr74-9mf9-gf44)
 - Login: Allow :/_ in server (bug #1305, regression from 5.5.0)
 - Compile: Valid UTF-8 (bug #1113, #1213)
