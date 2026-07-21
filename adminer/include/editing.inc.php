@@ -338,6 +338,7 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 
 /** Add or remove field
 * @param Field[] $fields
+* @param-out (Field|array{})[] $fields
 */
 function process_fields(array &$fields): bool {
 	if ($_POST["add"]) {

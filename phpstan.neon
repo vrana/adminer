@@ -15,6 +15,9 @@ parameters:
 		- "~^Variable \\$error might not be defined~" # declared in bootstrap.inc.php
 		- "~^Constant LANG not found~" # defined in lang.inc.php
 		- "~ an undefined \\w+ Adminer\\\\Db::~" # defined in that versions of Db
+		-
+			identifier: impureFunction.pure # stubs of functions that are impure in other drivers
+			path: adminer/drivers/mysql.inc.php
 		- "~^Call to an undefined method Adminer\\\\Result::seek~" # defined in MS SQL
 		- "~^Call to an undefined method Adminer\\\\Driver::(setUserTypes|tableOid)~" # defined in PostgreSQL
 		- "~^Access to an undefined property Adminer\\\\Driver::\\$nsOid~" # defined in PostgreSQL
@@ -23,7 +26,9 @@ parameters:
 		- "~fread expects int<1, max>, 100000~" # 1e6
 		- "~'strlen' given~" # used as a bool callback
 		- "~between int<70100~" # PHP_VERSION_ID check
-
+		-
+			message: "~implode expects array, string given~" # pg_last_notice() returns array with PGSQL_NOTICE_ALL
+			path: adminer/drivers/pgsql.inc.php
 		-
 			message: "~ type specified~" # duplicate functions and methods
 			paths:
@@ -46,7 +51,6 @@ parameters:
 		- identifier: isset.offset
 		- identifier: deadCode.unreachable
 		- "~Function Adminer\\\\get_driver\\(\\) never returns null~"
-		- "~on array\\{}~"
 
 	paths:
 		- adminer/drivers/mysql.inc.php # other drivers inherit the annotations so we take them from here

@@ -1118,6 +1118,7 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 	}
 
 	/** Set current schema
+	* @phpstan-impure other drivers have side effects
 	*/
 	function set_schema(string $schema, ?Db $connection2 = null): bool {
 		return true;

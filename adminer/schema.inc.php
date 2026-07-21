@@ -6,10 +6,12 @@ page_header(lang('Database schema'), "", array(), h(DB . ($_GET["ns"] ? ".$_GET[
 /** @var array{float, float}[] */
 $table_pos = array();
 $table_pos_js = array();
+/** @var float[][] */
+$field_pos = array(); // table => field => position
 $SCHEMA = ($_GET["schema"] ?: $_COOKIE["adminer_schema-" . str_replace(".", "_", DB)]); // $_COOKIE["adminer_schema"] was used before 3.2.0 //! ':' in table name
 preg_match_all('~([^:]+):([-0-9.]+)x([-0-9.]+)(_|$)~', $SCHEMA, $matches, PREG_SET_ORDER);
 foreach ($matches as $i => $match) {
-	$table_pos[$match[1]] = array($match[2], $match[3]);
+	$table_pos[$match[1]] = array((float) $match[2], (float) $match[3]);
 	$table_pos_js[] = "\n\t'" . js_escape($match[1]) . "': [ $match[2], $match[3] ]";
 }
 
@@ -29,7 +31,7 @@ foreach (table_status('', true) as $table => $table_status) {
 	$schema[$table]["fields"] = array();
 	foreach ($all_fields[$table] as $field) {
 		$pos += 1.25;
-		$field["pos"] = $pos;
+		$field_pos[$table][$field["field"]] = $pos;
 		$schema[$table]["fields"][$field["field"]] = $field;
 	}
 	$schema[$table]["pos"] = ($table_pos[$table] ?: array($top, 0));
@@ -78,7 +80,7 @@ foreach ($schema as $name => $table) {
 			$left1 = $left - idx($table_pos[$name], 1);
 			$i = 0;
 			foreach ($ref[0] as $source) {
-				echo "\n<div class='references' title='" . h($target_name) . "' id='refs$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$source]["pos"] . "em; padding-top: .5em;'>"
+				echo "\n<div class='references' title='" . h($target_name) . "' id='refs$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $field_pos[$name][$source] . "em; padding-top: .5em;'>"
 					. "<div style='border-top: 1px solid gray; width: " . (-$left1) . "em;'></div></div>"
 				;
 			}
@@ -90,7 +92,7 @@ foreach ($schema as $name => $table) {
 			$left1 = $left - idx($table_pos[$name], 1);
 			$i = 0;
 			foreach ($columns as $target) {
-				echo "\n<div class='references arrow' title='" . h($target_name) . "' id='refd$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $table["fields"][$target]["pos"] . "em;'>"
+				echo "\n<div class='references arrow' title='" . h($target_name) . "' id='refd$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $field_pos[$name][$target] . "em;'>"
 					. "<div style='height: .5em; border-bottom: 1px solid gray; width: " . (-$left1) . "em;'></div>"
 					. "</div>"
 				;
@@ -108,8 +110,8 @@ foreach ($schema as $name => $table) {
 				$min_pos = $top;
 				$max_pos = -10;
 				foreach ($ref[0] as $key => $source) {
-					$pos1 = $table["pos"][0] + $table["fields"][$source]["pos"];
-					$pos2 = $schema[$target_name]["pos"][0] + $schema[$target_name]["fields"][$ref[1][$key]]["pos"];
+					$pos1 = $table["pos"][0] + $field_pos[$name][$source];
+					$pos2 = $schema[$target_name]["pos"][0] + $field_pos[$target_name][$ref[1][$key]];
 					$min_pos = min($min_pos, $pos1, $pos2);
 					$max_pos = max($max_pos, $pos1, $pos2);
 				}
