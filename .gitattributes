@@ -2,5 +2,4 @@
 /.github export-ignore
 /.gitignore export-ignore
 /.gitmodules export-ignore
-/.travis.yml export-ignore
 /tests export-ignore
