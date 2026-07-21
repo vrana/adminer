@@ -287,7 +287,7 @@ Lang::$translations = array(
 	'Sequence has been altered.' => 'Послідовність було змінено.',
 	'Alter sequence' => 'Змінити послідовність',
 
-	// PostgreSQL user types support
+	// PostgreSQL user-defined types support
 	'User types' => 'Користувацькі типи', // Claude Fable 5
 	'Create type' => 'Створити тип',
 	'Type has been dropped.' => 'Тип було видалено.',

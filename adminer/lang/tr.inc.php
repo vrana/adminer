@@ -314,7 +314,7 @@ Lang::$translations = array(
 	'Sequence has been altered.' => 'Dizi değiştirildi.',
 	'Alter sequence' => 'Diziyi değiştir',
 
-	// PostgreSQL user types support
+	// PostgreSQL user-defined types support
 	'User types' => 'Kullanıcı türleri',
 	'Create type' => 'Tür oluştur',
 	'Type has been dropped.' => 'Tür silindi.',

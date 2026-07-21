@@ -323,7 +323,7 @@ Lang::$translations = array(
 	'Sequence has been altered.' => 'Ketma-ketlik o\'zgartirildi.',
 	'Alter sequence' => 'Ketma-ketlikni o\'zgartirish',
 
-	// PostgreSQL user types support
+	// PostgreSQL user-defined types support
 	'User types' => 'Foydalanuvchi turlari',
 	'Create type' => 'Tur yaratish',
 	'Type has been dropped.' => 'Tur o\'chirildi.',

@@ -320,7 +320,7 @@ Lang::$translations = array(
 	'Sequence has been altered.' => 'Sekvens har ändrats.',
 	'Alter sequence' => 'Ändra sekvens',
 
-	// PostgreSQL user types support
+	// PostgreSQL user-defined types support
 	'User types' => 'Användartyper',
 	'Create type' => 'Skapa typ',
 	'Type has been dropped.' => 'Typ har, typ, tagits bort.',

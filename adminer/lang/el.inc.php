@@ -307,7 +307,7 @@ Lang::$translations = array(
 	'Sequence has been altered.' => 'Η αλληλουχία τροποποιήθηκε.',
 	'Alter sequence' => 'Τροποποίηση αλληλουχίας',
 
-	// PostgreSQL user types support
+	// PostgreSQL user-defined types support
 	'User types' => 'Τύποι χρήστη',
 	'Create type' => 'Δημιουργία τύπου',
 	'Type has been dropped.' => 'Ο τύπος διαγράφηκε.',

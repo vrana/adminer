@@ -280,7 +280,7 @@ Lang::$translations = array(
 	'Sequence has been altered.' => 'Sekvence je spremenjena.',
 	'Alter sequence' => 'Spremni sekvenco',
 
-	// PostgreSQL user types support
+	// PostgreSQL user-defined types support
 	'User types' => 'Uporabniški tipi',
 	'Create type' => 'Ustvari tip',
 	'Type has been dropped.' => 'Tip je zavržen.',

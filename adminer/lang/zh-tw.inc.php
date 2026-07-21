@@ -320,7 +320,7 @@ Lang::$translations = array(
 	'Sequence has been altered.' => '已修改序列。',
 	'Alter sequence' => '修改序列',
 
-	// PostgreSQL user types support
+	// PostgreSQL user-defined types support
 	'User types' => '使用者定義類型', // Claude Fable 5
 	'Create type' => '建立類型',
 	'Type has been dropped.' => '已刪除類型。',

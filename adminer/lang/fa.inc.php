@@ -305,7 +305,7 @@ Lang::$translations = array(
 	'Sequence has been altered.' => 'صف ویرایش شد.',
 	'Alter sequence' => 'ویرایش صف',
 
-	// PostgreSQL user types support
+	// PostgreSQL user-defined types support
 	'User types' => 'انواع کاربر',
 	'Create type' => 'ایجاد نوع',
 	'Type has been dropped.' => 'نوع حذف شد.',

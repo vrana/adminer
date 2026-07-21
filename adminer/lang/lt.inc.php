@@ -283,7 +283,7 @@ Lang::$translations = array(
 	'Sequence has been altered.' => 'Seka pakeista.',
 	'Alter sequence' => 'Keisti seką',
 
-	// PostgreSQL user types support
+	// PostgreSQL user-defined types support
 	'User types' => 'Vartotojo apibrėžti tipai', // Claude Fable 5
 	'Create type' => 'Sukurti tipą',
 	'Type has been dropped.' => 'Tipas pašalintas.',

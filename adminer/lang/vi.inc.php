@@ -299,7 +299,7 @@ Lang::$translations = array(
 	'Sequence has been altered.' => 'Đã sửa dãy số.',
 	'Alter sequence' => 'Thay đổi dãy số',
 
-	// PostgreSQL user types support
+	// PostgreSQL user-defined types support
 	'User types' => 'Kiểu tự định nghĩa',
 	'Create type' => 'Tạo kiểu',
 	'Type has been dropped.' => 'Đã xoá kiểu.',

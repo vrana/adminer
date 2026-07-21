@@ -307,7 +307,7 @@ Lang::$translations = array(
 	'Sequence has been altered.' => 'Последователността беше променена.',
 	'Alter sequence' => 'Промяна на последователност',
 
-	// PostgreSQL user types support
+	// PostgreSQL user-defined types support
 	'User types' => 'Потребителски типове', // Claude Fable 5
 	'Create type' => 'Създаване на вид',
 	'Type has been dropped.' => 'Вида беше пермахнат.',
