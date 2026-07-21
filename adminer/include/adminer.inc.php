@@ -142,7 +142,8 @@ class Adminer {
 		echo adminer()->loginFormField('driver', '<tr><th>' . lang('System') . '<td>', html_select("auth[driver]", SqlDriver::$drivers, DRIVER, "loginDriver(this);"));
 		echo adminer()->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', '<input name="auth[server]" value="' . h(SERVER) . '" title="' . lang('hostname[:port] or :socket') . '" placeholder="localhost" autocapitalize="off">');
 		// this is matched by compile.php
-		echo adminer()->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input name="auth[username]" id="username" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">' . script("const authDriver = qs('#username').form['auth[driver]']; authDriver && authDriver.onchange();"));
+		echo adminer()->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input name="auth[username]" id="username" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">'
+			. script("const authDriver = qs('#username').form['auth[driver]']; authDriver && authDriver.onchange();"));
 		echo adminer()->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">');
 		echo adminer()->loginFormField('db', '<tr><th>' . lang('Database') . '<td>', '<input name="auth[db]" value="' . h($_GET["db"]) . '" autocapitalize="off">');
 		echo "</table>\n";
@@ -585,12 +586,14 @@ class Adminer {
 					} elseif (!preg_match('~NULL$~', $val["op"])) {
 						$cond .= " " . adminer()->processInput($field, $val["val"]);
 					}
-					if ($col != "" || ( // find anywhere
-						isset($field["privileges"]["where"])
-						&& (preg_match('~^[-\d.' . (preg_match('~IN$~', $val["op"]) ? ',' : '') . ']+$~', $val["val"]) || !preg_match('~' . number_type() . '|bit~', $field["type"]))
-						&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || preg_match('~char|text|enum|set~', $field["type"]))
-						&& (!preg_match('~date|timestamp~', $field["type"]) || preg_match('~^\d+-\d+-\d+~', $val["val"]))
-					)) {
+					if (
+						$col != "" || ( // find anywhere
+							isset($field["privileges"]["where"])
+							&& (preg_match('~^[-\d.' . (preg_match('~IN$~', $val["op"]) ? ',' : '') . ']+$~', $val["val"]) || !preg_match('~' . number_type() . '|bit~', $field["type"]))
+							&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || preg_match('~char|text|enum|set~', $field["type"]))
+							&& (!preg_match('~date|timestamp~', $field["type"]) || preg_match('~^\d+-\d+-\d+~', $val["val"]))
+						)
+					) {
 						$conds[] = $prefix . driver()->convertSearch(idf_escape($name), $val, $field) . $cond;
 					}
 				}
@@ -889,14 +892,14 @@ class Adminer {
 								: ($val === false ? 0
 								: unconvert_field($field, preg_match(number_type(), $field["type"]) && !preg_match('~\[~', $field["full_type"]) && is_numeric($val)
 									? $val
-									: (!is_blob($field) || is_utf8($val) ? q($val) : driver()->quoteBinary($val))
-								)
+									: (!is_blob($field) || is_utf8($val) ? q($val) : driver()->quoteBinary($val)))
 							));
 						}
 						$s = ($max_packet ? "\n" : " ") . "(" . implode(",\t", $row) . ")";
 						if (!$buffer) {
 							$buffer = $insert . $s;
-						} elseif (JUSH == 'mssql'
+						} elseif (
+							JUSH == 'mssql'
 							? $count % 1000 != 0 // https://learn.microsoft.com/en-us/sql/t-sql/queries/table-value-constructor-transact-sql#limitations-and-restrictions
 							: strlen($buffer) + 4 + strlen($s) + strlen($suffix) < $max_packet // 4 - length specification
 						) {

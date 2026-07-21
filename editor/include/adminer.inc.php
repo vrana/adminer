@@ -94,7 +94,8 @@ class Adminer {
 
 	function loginForm() {
 		echo "<table class='layout'>\n";
-		echo adminer()->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', input_hidden("auth[driver]", "server") . '<input name="auth[username]" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">');
+		echo adminer()->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', input_hidden("auth[driver]", "server")
+			. '<input name="auth[username]" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">');
 		echo adminer()->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">');
 		echo "</table>\n";
 		echo "<p><input type='submit' value='" . lang('Login') . "'>\n";
@@ -112,8 +113,7 @@ class Adminer {
 	function tableName($tableStatus) {
 		return h(isset($tableStatus["Engine"])
 			? ($tableStatus["Comment"] != "" ? $tableStatus["Comment"] : $tableStatus["Name"])
-			: "" // ignore views
-		);
+			: ""); // ignore views
 	}
 
 	function fieldName($field, $order = 0) {
