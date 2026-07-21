@@ -61,7 +61,6 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	echo "\n<body class='" . lang('ltr') . " nojs";
 	adminer()->bodyClass();
 	echo "'>\n";
-	$filename = get_temp_dir() . "/adminer.version";
 	echo script("mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick"
 		. (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '" . VERSION . "')")
 		. "});
