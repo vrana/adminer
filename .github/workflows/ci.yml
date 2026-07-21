@@ -17,3 +17,5 @@ jobs:
           path: .
           standard: phpcs.xml
       - uses: php-actions/phpstan@v3
+        with:
+          version: latest
