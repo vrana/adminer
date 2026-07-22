@@ -165,6 +165,7 @@ Lang::$translations = array(
 	'Add next' => 'Legg til neste',
 	'Index Type' => 'Indekstype',
 	'length' => 'lengde',
+	'operator class' => 'operatorklasse', // Claude Fable 5
 	'Foreign keys' => 'Fremmednøkler',
 	'Foreign key' => 'Fremmednøkkel',
 	'Foreign key has been dropped.' => 'Fremmednøkkelen er slettet.',

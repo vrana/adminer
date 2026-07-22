@@ -333,6 +333,7 @@ Lang::$translations = array(
 	'Algorithm' => '算法', // Claude Fable 5
 	'Columns' => '列', // Claude Fable 5
 	'length' => '长度', // Claude Fable 5
+	'operator class' => '运算符类', // Claude Fable 5
 	'Condition' => '条件', // Claude Fable 5
 	'Inherits from' => '继承自', // Claude Fable 5
 	'Checks' => '检查约束', // Claude Fable 5

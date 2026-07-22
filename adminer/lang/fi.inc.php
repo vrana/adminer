@@ -189,6 +189,7 @@ Lang::$translations = array(
 	'Add next' => 'Lisää seuraava',
 	'Index Type' => 'Indeksityyppi',
 	'length' => 'pituus',
+	'operator class' => 'operaattoriluokka', // Claude Fable 5
 
 	'Foreign keys' => 'Vieraat avaimet',
 	'Foreign key' => 'Vieras avain',

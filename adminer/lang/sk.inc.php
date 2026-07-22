@@ -99,6 +99,7 @@ Lang::$translations = array(
 	'ON UPDATE' => 'Pri aktualizácii',
 	'Index Type' => 'Typ indexu',
 	'length' => 'dĺžka',
+	'operator class' => 'trieda operátorov', // Claude Fable 5
 	'View has been dropped.' => 'Pohľad bol odstránený.',
 	'View has been altered.' => 'Pohľad bol zmenený.',
 	'View has been created.' => 'Pohľad bol vytvorený.',

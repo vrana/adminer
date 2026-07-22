@@ -47,6 +47,7 @@ Lang::$translations = array(
 	'collation' => '정렬',
 	'Collation' => '정렬',
 	'length' => '길이',
+	'operator class' => '연산자 클래스', // Claude Fable 5
 	'Column name' => '열 이름',
 	'Column' => '열',
 	'Comment' => '주석',

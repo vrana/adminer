@@ -178,6 +178,7 @@ Lang::$translations = array(
 	'Add next' => 'Tambah setelahnya',
 	'Index Type' => 'Jenis Indeks',
 	'length' => 'panjang',
+	'operator class' => 'kelas operator', // Claude Fable 5
 
 	'Foreign keys' => 'Kunci asing',
 	'Foreign key' => 'Kunci asing',

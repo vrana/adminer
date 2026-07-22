@@ -183,6 +183,7 @@ Lang::$translations = array(
 	'Add next' => 'Thêm tiếp',
 	'Index Type' => 'Loại chỉ mục',
 	'length' => 'độ dài',
+	'operator class' => 'lớp toán tử', // Claude Fable 5
 
 	'Foreign keys' => 'Các khoá ngoại',
 	'Foreign key' => 'Khoá ngoại',

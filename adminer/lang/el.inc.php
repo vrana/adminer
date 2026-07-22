@@ -189,6 +189,7 @@ Lang::$translations = array(
 	'Add next' => 'Προσθήκη επόμενου',
 	'Index Type' => 'Τύπος δείκτη',
 	'length' => 'μήκος',
+	'operator class' => 'κλάση τελεστών', // Claude Fable 5
 
 	'Foreign keys' => 'Εξαρτημένα κλειδιά',
 	'Foreign key' => 'Εξαρτημένο κλειδί',

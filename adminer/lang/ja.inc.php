@@ -119,6 +119,7 @@ Lang::$translations = array(
 	'ON UPDATE' => 'ON UPDATE',
 	'Index Type' => 'インデックスの型',
 	'length' => '長さ',
+	'operator class' => '演算子クラス', // Claude Fable 5
 	'View has been dropped.' => 'ビューを削除しました。',
 	'View has been altered.' => 'ビューを変更しました。',
 	'View has been created.' => 'ビューを作成しました。',

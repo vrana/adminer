@@ -188,6 +188,7 @@ Lang::$translations = array(
 	'Add next' => 'Добавяне на следващ',
 	'Index Type' => 'Вид на индекса',
 	'length' => 'дължина',
+	'operator class' => 'клас оператори', // Claude Fable 5
 
 	'Foreign keys' => 'Препратки',
 	'Foreign key' => 'Препратка',

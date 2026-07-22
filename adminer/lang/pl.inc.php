@@ -208,6 +208,7 @@ Lang::$translations = array(
 	'Add next' => 'Dodaj następny',
 	'Index Type' => 'Typ indeksu',
 	'length' => 'długość',
+	'operator class' => 'klasa operatorów', // Claude Fable 5
 	'Algorithm' => 'Algorytm',
 	'Condition' => 'Warunek',
 

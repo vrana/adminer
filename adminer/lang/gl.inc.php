@@ -98,6 +98,7 @@ Lang::$translations = array(
 	'ON UPDATE' => 'AO ACTUALIZAR (ON UPDATE)',
 	'Index Type' => 'Tipo de índice',
 	'length' => 'lonxitude',
+	'operator class' => 'clase de operadores', // Claude Fable 5
 	'View has been dropped.' => 'Eliminouse a vista.',
 	'View has been altered.' => 'Modificouse a vista.',
 	'View has been created.' => 'Creouse a vista.',

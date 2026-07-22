@@ -98,6 +98,7 @@ Lang::$translations = array(
 	'ON UPDATE' => 'La modificare',
 	'Index Type' => 'Tipul indexului',
 	'length' => 'lungimea',
+	'operator class' => 'clasă de operatori', // Claude Fable 5
 	'View has been dropped.' => 'Reprezentarea a fost ștearsă.',
 	'View has been altered.' => 'Reprezentarea a fost modificată.',
 	'View has been created.' => 'Reprezentarea a fost creată.',

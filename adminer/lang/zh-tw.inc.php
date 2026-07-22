@@ -202,6 +202,7 @@ Lang::$translations = array(
 	'Add next' => '新增下一筆',
 	'Index Type' => '索引類型',
 	'length' => '長度',
+	'operator class' => '運算子類別', // Claude Fable 5
 
 	'Foreign keys' => '外來鍵',
 	'Foreign key' => '外來鍵',

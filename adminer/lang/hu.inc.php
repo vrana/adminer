@@ -98,6 +98,7 @@ Lang::$translations = array(
 	'ON UPDATE' => 'frissítéskor',
 	'Index Type' => 'Index típusa',
 	'length' => 'méret',
+	'operator class' => 'operátorosztály', // Claude Fable 5
 	'View has been dropped.' => 'A nézet eldobva.',
 	'View has been altered.' => 'A nézet módosult.',
 	'View has been created.' => 'A nézet létrejött.',
