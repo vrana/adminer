@@ -38,6 +38,6 @@
             "phpstan analyse -c phpstan.neon"
         ],
         "compile": "@php compile.php",
-        "clean": "rm -f adminer*.php editor*.php"
+        "clean": "@php -r \"array_map('unlink', array_merge(glob('adminer*.php'), glob('editor*.php')));\""
     }
 }
