@@ -12,6 +12,7 @@
 - Elasticsearch, ClickHouse: Use default port
 - SimpleDB: Use default server
 - Plugins: Method verifyVersion()
+- Plugins: Remove edit-calendar, tinymce, json-column, pretty-json-column, translation, email-table, dump-php, master-slave
 
 ## Adminer 5.5.1 (released 2026-07-21)
 - Ignore invalid X-Forwarded-Prefix (GHSA-fr74-9mf9-gf44)
