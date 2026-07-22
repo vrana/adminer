@@ -153,8 +153,11 @@ if (adminer()->homepage()) {
 			echo "<tr><td><th>" . lang('%d in total', count($tables_list));
 			echo "<td>" . h(JUSH == "sql" ? get_val("SELECT @@default_storage_engine") : "");
 			echo (collations() ? "<td>" . h(db_collation(DB, collations())) : '');
-			foreach (array("Data_length", "Index_length", "Data_free") as $key) {
-				echo ($columns[$key] ? "<td align='right' id='sum-$key'>" . ($full ? format_number($sums[$key]) : "") : "");
+			if ($full && function_exists('Adminer\db_status')) {
+				$sums = db_status();
+			}
+			foreach ($sums as $key => $sum) {
+				echo ($columns[$key] ? "<td align='right' id='sum-$key'>" . ($full ? format_number($sum) : "") : "");
 			}
 			echo "\n";
 

@@ -27,6 +27,9 @@ if ($_GET["script"] == "db") {
 			}
 		}
 	}
+	if (function_exists('Adminer\db_status')) {
+		$sums = db_status();
+	}
 	foreach ($sums as $key => $val) {
 		json_row("sum-$key", format_number($val));
 	}

@@ -222,6 +222,20 @@ if (isset($_GET["sqlite"])) {
 		return array();
 	}
 
+	/** Get sizes of the whole database
+	* @return array<string, int> [$key => $bytes] with keys of table_status()
+	*/
+	function db_status() {
+		// sizes of single tables are available only through the dbstat virtual table which reads all pages
+		$page_size = get_val("PRAGMA page_size");
+		$free = get_val("PRAGMA freelist_count") * $page_size;
+		return array(
+			"Data_length" => get_val("PRAGMA page_count") * $page_size - $free,
+			"Index_length" => 0, // pages of tables and indexes are counted together
+			"Data_free" => $free,
+		);
+	}
+
 	function table_status($name = "", $fast = false) {
 		$return = array();
 		$rows = array();
