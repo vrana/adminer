@@ -1,5 +1,6 @@
 ## Adminer dev
 - Tables overview: speed up, show totals in SQLite
+- PostgreSQL, MS SQL: Show two columns in select COUNT(*), COUNT(DISTINCT id)
 
 ## Adminer 5.5.1 (released 2026-07-21)
 - Ignore invalid X-Forwarded-Prefix (GHSA-fr74-9mf9-gf44)
