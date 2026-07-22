@@ -600,6 +600,14 @@ function format_number($val): string {
 	return strtr(number_format($val, 0, ".", lang(',')), preg_split('~~u', lang('0123456789'), -1, PREG_SPLIT_NO_EMPTY));
 }
 
+/** Format the number of rows from table status, prefixed with "~ " if approximate
+* @param TableStatus $table_status
+*/
+function format_rows(array $table_status): string {
+	$val = format_number($table_status["Rows"]);
+	return ($val && $table_status["Engine"] == (JUSH == "pgsql" ? "table" : "InnoDB") ? "~ $val" : $val);
+}
+
 /** Generate friendly URL */
 function friendly_url(string $val): string {
 	// used for blobs and export

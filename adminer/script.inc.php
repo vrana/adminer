@@ -15,10 +15,7 @@ if ($_GET["script"] == "db") {
 				if ($table_status[$key] != "") {
 					$val = format_number($table_status[$key]);
 					if ($val >= 0) {
-						json_row("$key-$name", ($key == "Rows" && $val && $table_status["Engine"] == (JUSH == "pgsql" ? "table" : "InnoDB")
-							? "~ $val"
-							: $val
-						));
+						json_row("$key-$name", ($key == "Rows" ? format_rows($table_status) : $val));
 					}
 					if (isset($sums[$key])) {
 						// ignore innodb_file_per_table because it is not active for tables created before it was enabled

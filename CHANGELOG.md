@@ -1,4 +1,5 @@
 ## Adminer dev
+- Show table statistics without a background request where fast (MySQL 8+, PostgreSQL, Oracle, MS SQL)
 - Show size totals when sorting the tables list
 
 ## Adminer 5.5.1 (released 2026-07-21)

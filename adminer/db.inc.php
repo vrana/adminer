@@ -57,8 +57,9 @@ page_header(($_GET["ns"] == "" ? lang('Database') . ": " . h(DB) : lang('Schema'
 if (adminer()->homepage()) {
 	if ($_GET["ns"] !== "") {
 		$order = $_GET["order"];
+		$full = ($order || support("fast_status")); // whether to print the full table_status() without a background request
 		echo "<h3 id='tables-views'>" . lang('Tables and views') . "</h3>\n";
-		$tables_list = ($order ? table_status() : tables_list());
+		$tables_list = ($full ? table_status() : tables_list());
 		if (!$tables_list) {
 			echo "<p class='message'>" . lang('No tables.') . "\n";
 		} else {
@@ -114,8 +115,8 @@ if (adminer()->homepage()) {
 			$tables = 0;
 			$sums = array("Data_length" => 0, "Index_length" => 0, "Data_free" => 0);
 			foreach ($tables_list as $name => $status) {
-				$view = ($order ? is_view($status) : $status !== null && !preg_match('~table|sequence~i', $status));
-				$status = ($order ? $status : array('Engine' => $status));
+				$view = ($full ? is_view($status) : $status !== null && !preg_match('~table|sequence~i', $status));
+				$status = ($full ? $status : array('Engine' => $status));
 				$id = h("Table-" . $name);
 				echo '<tr><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array("$name", $tables_views, true), "", "", "", $id); // "$name" to check numeric table names
 				echo '<th>' . (support("table") || support("indexes") ? "<a href='" . h(ME) . "table=" . urlencode($name) . "' title='" . lang('Show structure') . "' id='$id'>" . h($name) . '</a>' : h($name));
@@ -127,7 +128,7 @@ if (adminer()->homepage()) {
 						echo '<td>' . h($status['Comment']);
 					}
 				} else {
-					if ($order) {
+					if ($full) {
 						foreach (array_keys($sums) as $key) {
 							// ignore innodb_file_per_table because it is not active for tables created before it was enabled
 							$sums[$key] += ($status["Engine"] != "InnoDB" || $key != "Data_free" ? idx($status, $key) : 0);
@@ -138,7 +139,7 @@ if (adminer()->homepage()) {
 						$val = idx($status, $key, '?');
 						echo ($column[1]
 							? "<td align='right'><a href='" . h(ME . "$column[1]=") . urlencode($name) . "'$id title='$column[2]'>" . (is_numeric($val)
-								? ($val < 0 ? '?' : ($key == "Rows" && $val && $status["Engine"] == (JUSH == "pgsql" ? "table" : "InnoDB") ? '~ ' : '') . format_number($val))
+								? ($val < 0 ? '?' : ($key == "Rows" ? format_rows($status) : format_number($val)))
 								: $val
 							) . "</a>"
 							: "<td id='$key-" . h($name) . "'>" . h($val)
@@ -153,12 +154,12 @@ if (adminer()->homepage()) {
 			echo "<td>" . h(JUSH == "sql" ? get_val("SELECT @@default_storage_engine") : "");
 			echo (collations() ? "<td>" . h(db_collation(DB, collations())) : '');
 			foreach (array("Data_length", "Index_length", "Data_free") as $key) {
-				echo ($columns[$key] ? "<td align='right' id='sum-$key'>" . ($order ? format_number($sums[$key]) : "") : "");
+				echo ($columns[$key] ? "<td align='right' id='sum-$key'>" . ($full ? format_number($sums[$key]) : "") : "");
 			}
 			echo "\n";
 
 			echo "</table>\n";
-			echo ($order ? '' : script("ajaxSetHtml('" . js_escape(ME) . "script=db');"));
+			echo ($full ? '' : script("ajaxSetHtml('" . js_escape(ME) . "script=db');"));
 			echo "</div>\n";
 			if (!information_schema(DB)) {
 				$vacuum = "<input type='submit' value='" . lang('Vacuum') . "'> " . on_help("'VACUUM'");

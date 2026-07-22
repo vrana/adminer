@@ -1066,6 +1066,7 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 			'~^(comment|columns|copy|database|drop_col|dump|event|indexes|kill|privileges|move_col|procedure|processlist|routine|sql|status|table|trigger|variables|view'
 				. (min_version(8) ? '|descidx' : '')
 				. (min_version('8.0.16', '10.2.1') ? '|check' : '')
+				. (min_version(8, 99) ? '|fast_status' : '') // MySQL 8 reads table stats from the data dictionary; MariaDB still opens all tables
 				. ')$~',
 			$feature
 		);

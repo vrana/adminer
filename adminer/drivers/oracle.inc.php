@@ -508,6 +508,6 @@ ORDER BY PROCESS
 	}
 
 	function support($feature) {
-		return preg_match('~^(columns|database|drop_col|indexes|descidx|processlist|scheme|sql|status|table|variables|view)$~', $feature); //!
+		return preg_match('~^(columns|database|drop_col|fast_status|indexes|descidx|processlist|scheme|sql|status|table|variables|view)$~', $feature); //!
 	}
 }

@@ -1055,7 +1055,7 @@ AND typelem = 0"
 	}
 
 	function support($feature) {
-		return preg_match('~^(check|columns|comment|database|drop_col|dump|descidx|indexes|kill|partial_indexes|routine|scheme|sequence|sql|table|trigger|type|variables|view'
+		return preg_match('~^(check|columns|comment|database|drop_col|dump|descidx|fast_status|indexes|kill|partial_indexes|routine|scheme|sequence|sql|table|trigger|type|variables|view'
 			. (min_version(9.3) ? '|materializedview' : '')
 			. (min_version(11) ? '|procedure' : '')
 			. (connection()->flavor == 'cockroach' ? '' : '|processlist') // https://github.com/cockroachdb/cockroach/issues/24745
