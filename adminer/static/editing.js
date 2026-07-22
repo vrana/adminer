@@ -397,6 +397,18 @@ function editingAddRow(focus) {
 	return false;
 }
 
+/** Add table row after the last field; used by drivers where columns can be added only to the end
+* @return boolean false for success
+* @this HTMLElement
+*/
+function editingAddLastRow() {
+	const inputs = qsa('#edit-fields [name$="[field]"]');
+	if (!inputs.length) {
+		return true; // submit the form to add the row by PHP
+	}
+	return editingAddRow.call(inputs[inputs.length - 1], 1);
+}
+
 /** Remove table row for field
 * @param string regular expression replacement
 * @return boolean false

@@ -304,6 +304,7 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 		echo (support("comment") ? "<td id='label-comment'$comment_class>" . lang('Comment') : "");
 	}
 	echo "<td>" . icon("plus", "add[" . (support("move_col") ? 0 : count($fields)) . "]", "+", lang('Add next'));
+	echo (support("move_col") ? "" : script("qsl('button').onclick = editingAddLastRow;"));
 	echo "</thead>\n<tbody>\n";
 	echo script("mixin(qsl('tbody'), {onclick: editingClick, onkeydown: editingKeydown, oninput: editingInput});");
 	foreach ($fields as $i => $field) {
