@@ -33,8 +33,8 @@ phpstan analyse -c phpstan.neon    # Static analysis (level 6)
 
 **Clean:**
 ```bash
-make clean        # Remove adminer.php
-composer clean    # Remove all compiled adminer*.php and editor*.php
+make clean        # Remove all compiled adminer*.php and editor*.php
+composer clean    # Equivalent to make clean
 ```
 
 **Tests:** Browser-based end-to-end tests in `tests/*.html` (Katalon Recorder format). No unit test runner. Standalone unit tests: `tests/compress.php` (string compression round-trip and pure-PHP inflate fallback) and `tests/host_port.php` (host:port parsing) – run directly with `php`, they print errors and exit 0 when OK.
