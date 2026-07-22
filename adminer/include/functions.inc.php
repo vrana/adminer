@@ -605,7 +605,7 @@ function format_number($val): string {
 */
 function format_rows(array $table_status): string {
 	$val = format_number($table_status["Rows"]);
-	return ($val && $table_status["Engine"] == (JUSH == "pgsql" ? "table" : "InnoDB") ? "~ $val" : $val);
+	return ($val && (JUSH == "sqlite" || $table_status["Engine"] == (JUSH == "pgsql" ? "table" : "InnoDB")) ? "~ $val" : $val);
 }
 
 /** Generate friendly URL */

@@ -1,6 +1,5 @@
 ## Adminer dev
-- Show table statistics without a background request where fast (MySQL 8+, PostgreSQL, Oracle, MS SQL)
-- Show size totals when sorting the tables list
+- Tables overview: speed up
 
 ## Adminer 5.5.1 (released 2026-07-21)
 - Ignore invalid X-Forwarded-Prefix (GHSA-fr74-9mf9-gf44)
