@@ -197,6 +197,14 @@ abstract class SqlDriver {
 		return (method_exists($this->conn, 'value') ? $this->conn->value($val, $field) : $val);
 	}
 
+	/** Get type name of a result column
+	* @param \stdClass $field result of Result::fetch_field()
+	* @return string "" if unknown
+	*/
+	function typeName(\stdClass $field): string {
+		return (isset($field->native_type) ? $field->native_type : "");
+	}
+
 	/** Quote binary string */
 	function quoteBinary(string $s): string {
 		return q($s);

@@ -133,6 +133,7 @@ if (isset($_GET["mssql"])) {
 				$return = new \stdClass;
 				$return->name = $field["Name"];
 				$return->type = ($field["Type"] == 1 ? 254 : 15);
+				//! $return->native_type: http://msdn.microsoft.com/en-us/library/cc296197.aspx
 				$return->charsetnr = 0;
 				return $return;
 			}

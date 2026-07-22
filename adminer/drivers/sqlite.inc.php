@@ -57,11 +57,13 @@ if (isset($_GET["sqlite"])) {
 			}
 
 			function fetch_field(): \stdClass {
+				$types = array(1 => "integer", "real", "text", "blob", "null"); // SQLITE3_INTEGER, SQLITE3_FLOAT, SQLITE3_TEXT, SQLITE3_BLOB, SQLITE3_NULL
 				$column = $this->offset++;
 				$type = $this->result->columnType($column);
 				return (object) array(
 					"name" => $this->result->columnName($column),
 					"type" => ($type == SQLITE3_TEXT ? 15 : 0),
+					"native_type" => $types[$type],
 					"charsetnr" => ($type == SQLITE3_BLOB ? 63 : 0), // 63 - binary
 				);
 			}

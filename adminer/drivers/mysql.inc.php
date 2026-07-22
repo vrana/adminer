@@ -312,6 +312,21 @@ if (!defined('Adminer\DRIVER')) {
 			);
 		}
 
+		function typeName(\stdClass $field): string {
+			// https://dev.mysql.com/doc/dev/mysql-server/latest/field__types_8h.html
+			$types = array(
+				"decimal", "tinyint", "smallint", "int", "float", "double", 7 => "timestamp",
+				"bigint", "mediumint", "date", "time", "datetime", "year", 15 => "varchar", "bit",
+				242 => "vector", 245 => "json", "decimal", "enum", "set",
+				"tinytext", "mediumtext", "longtext", "text", "varchar", "char", "geometry",
+			);
+			$return = idx($types, $field->type, "");
+			return parent::typeName($field) ?: ($field->charsetnr == 63 // 63 - binary
+				? str_replace(array("text", "varchar", "char"), array("blob", "varbinary", "binary"), $return)
+				: $return
+			);
+		}
+
 		function quoteBinary(string $s): string {
 			return "X" . q(bin2hex($s));
 		}

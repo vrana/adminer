@@ -95,8 +95,10 @@ if (isset($_GET["oracle"])) {
 				$column = $this->offset++;
 				$return = new \stdClass;
 				$return->name = oci_field_name($this->result, $column);
-				$return->type = oci_field_type($this->result, $column); //! map to MySQL numbers
-				$return->charsetnr = (preg_match("~raw|blob|bfile~", $return->type) ? 63 : 0); // 63 - binary
+				$type = oci_field_type($this->result, $column);
+				$return->native_type = $type;
+				$return->type = $type; //! map to MySQL numbers
+				$return->charsetnr = (preg_match("~raw|blob|bfile~", $type) ? 63 : 0); // 63 - binary
 				return $return;
 			}
 		}
