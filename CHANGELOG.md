@@ -4,6 +4,7 @@
 - Alter table: Add next column without page reload
 - PostgreSQL: Support operator classes in indexes
 - PostgreSQL: Add Truncate Cascade button
+- PostgreSQL: Do not show functions created by extensions
 - PostgreSQL, MS SQL: Show two columns in select COUNT(*), COUNT(DISTINCT id)
 
 ## Adminer 5.5.1 (released 2026-07-21)
