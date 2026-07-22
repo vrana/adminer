@@ -120,7 +120,7 @@ if (isset($_GET["simpledb"])) {
 		public $primary = "itemName()";
 
 		static function connect($server, $username, $password) {
-			if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
+			if ($server != "" && !preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
 				return lang('Invalid server.');
 			}
 			if ($password != "") {
@@ -378,6 +378,9 @@ if (isset($_GET["simpledb"])) {
 
 	function sdb_request($action, $params = array()) {
 		list($host, $params['AWSAccessKeyId'], $secret) = adminer()->credentials();
+		if ($host == "") {
+			$host = "sdb.amazonaws.com";
+		}
 		$params['Action'] = $action;
 		$params['Timestamp'] = gmdate('Y-m-d\TH:i:s+00:00');
 		$params['Version'] = '2009-04-15';

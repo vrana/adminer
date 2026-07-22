@@ -8,6 +8,8 @@
 - PostgreSQL: Do not show functions created by extensions
 - PostgreSQL: Fix altering functions with parameters of array or user-defined types
 - PostgreSQL, MS SQL: Show two columns in select COUNT(*), COUNT(DISTINCT id)
+- Elasticsearch, ClickHouse: Use default port
+- SimpleDB: Use default server
 
 ## Adminer 5.5.1 (released 2026-07-21)
 - Ignore invalid X-Forwarded-Prefix (GHSA-fr74-9mf9-gf44)

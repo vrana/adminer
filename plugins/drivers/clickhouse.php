@@ -68,6 +68,9 @@ if (isset($_GET["clickhouse"])) {
 
 			function attach($server, $username, $password): string {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
+				if (!strpos($match[2], ":")) {
+					$match[2] .= ":8123";
+				}
 				$this->url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
 				$return = $this->query('SELECT 1');
 				return ($return ? '' : $this->error);

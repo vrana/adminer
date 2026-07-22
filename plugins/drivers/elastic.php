@@ -63,6 +63,9 @@ if (isset($_GET["elastic"])) {
 
 			function attach($server, $username, $password): string {
 				preg_match('~^(https?://)?(.*)~', $server, $match);
+				if (!strpos($match[2], ":")) {
+					$match[2] .= ":9200";
+				}
 				$this->url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
 				$return = $this->rootQuery('');
 				if ($return) {
