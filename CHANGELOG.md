@@ -1,4 +1,5 @@
 ## Adminer dev
+- Show size totals when sorting the tables list
 
 ## Adminer 5.5.1 (released 2026-07-21)
 - Ignore invalid X-Forwarded-Prefix (GHSA-fr74-9mf9-gf44)

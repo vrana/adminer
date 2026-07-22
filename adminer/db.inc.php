@@ -112,6 +112,7 @@ if (adminer()->homepage()) {
 			}
 
 			$tables = 0;
+			$sums = array("Data_length" => 0, "Index_length" => 0, "Data_free" => 0);
 			foreach ($tables_list as $name => $status) {
 				$view = ($order ? is_view($status) : $status !== null && !preg_match('~table|sequence~i', $status));
 				$status = ($order ? $status : array('Engine' => $status));
@@ -126,6 +127,12 @@ if (adminer()->homepage()) {
 						echo '<td>' . h($status['Comment']);
 					}
 				} else {
+					if ($order) {
+						foreach (array_keys($sums) as $key) {
+							// ignore innodb_file_per_table because it is not active for tables created before it was enabled
+							$sums[$key] += ($status["Engine"] != "InnoDB" || $key != "Data_free" ? idx($status, $key) : 0);
+						}
+					}
 					foreach ($columns as $key => $column) {
 						$id = " id='$key-" . h($name) . "'";
 						$val = idx($status, $key, '?');
@@ -146,7 +153,7 @@ if (adminer()->homepage()) {
 			echo "<td>" . h(JUSH == "sql" ? get_val("SELECT @@default_storage_engine") : "");
 			echo (collations() ? "<td>" . h(db_collation(DB, collations())) : '');
 			foreach (array("Data_length", "Index_length", "Data_free") as $key) {
-				echo ($columns[$key] ? "<td align='right' id='sum-$key'>" : "");
+				echo ($columns[$key] ? "<td align='right' id='sum-$key'>" . ($order ? format_number($sums[$key]) : "") : "");
 			}
 			echo "\n";
 
