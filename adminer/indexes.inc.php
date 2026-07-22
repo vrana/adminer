@@ -34,6 +34,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 			$columns = array();
 			$lengths = array();
 			$descs = array();
+			$opclasses = array();
 			$index_condition = (support("partial_indexes") ? $index["partial"] : "");
 			$index_algorithm = (in_array($index["algorithm"], $index_algorithms) ? $index["algorithm"] : "");
 			$set = array();
@@ -42,10 +43,12 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 				if ($column != "") {
 					$length = idx($index["lengths"], $key);
 					$desc = idx($index["descs"], $key);
-					$set[] = ($fields[$column] ? idf_escape($column) : $column) . ($length ? "(" . (+$length) . ")" : "") . ($desc ? " DESC" : "");
+					$opclass = idx($index["opclasses"], $key);
+					$set[] = ($fields[$column] ? idf_escape($column) : $column) . ($length ? "(" . (+$length) . ")" : "") . ($opclass != "" ? " " . idf_escape($opclass) : "") . ($desc ? " DESC" : "");
 					$columns[] = $column;
 					$lengths[] = ($length ?: null);
 					$descs[] = $desc;
+					$opclasses[] = "$opclass";
 				}
 			}
 
@@ -59,6 +62,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 					&& array_values($existing["columns"]) === $columns
 					&& (!$existing["lengths"] || array_values($existing["lengths"]) === $lengths)
 					&& array_values($existing["descs"]) === $descs
+					&& (!$existing["opclasses"] || array_values($existing["opclasses"]) === $opclasses)
 					&& $existing["partial"] == $index_condition
 					&& (!$index_algorithms || $existing["algorithm"] == $index_algorithm)
 				) {
@@ -106,6 +110,7 @@ if (!$row) {
 	$row["indexes"] = $indexes;
 }
 $lengths = (JUSH == "sql" || JUSH == "mssql");
+$opclasses = driver()->indexOpclasses();
 $show_options = ($_POST ? $_POST["options"] : get_setting("index_options"));
 ?>
 
@@ -166,10 +171,16 @@ foreach ($row["indexes"] as $index) {
 				$column,
 				"partial(" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . ", '" . js_escape(JUSH == "sql" ? "" : $_GET["indexes"] . "_") . "')"
 			);
-			echo "<span$idxopts>";
+			echo " <span$idxopts>";
 			echo ($lengths ? "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h(idx($index["lengths"], $key)) . "' title='" . lang('Length') . "'>" : "");
+			if ($opclasses) {
+				$opclass = idx($index["opclasses"], $key);
+				echo html_select("indexes[$j][opclasses][$i]", array("" => "(" . lang('operator class') . ")") + array_combine($opclasses, $opclasses) + ($opclass != "" ? array($opclass => $opclass) : array()), $opclass);
+				echo doc_link(array('pgsql' => 'indexes-opclass.html'));
+			}
 			echo (support("descidx") ? checkbox("indexes[$j][descs][$i]", 1, idx($index["descs"], $key), lang('descending')) : "");
-			echo "</span> </span>";
+			echo "<br>";
+			echo "</span></span>";
 			$i++;
 		}
 

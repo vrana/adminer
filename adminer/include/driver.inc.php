@@ -270,6 +270,13 @@ abstract class SqlDriver {
 		return array();
 	}
 
+	/** Get operator classes usable in indexes
+	* @return list<string>
+	*/
+	function indexOpclasses(): array {
+		return array();
+	}
+
 	/** Get defined check constraints
 	* @return string[] [$name => $clause]
 	*/
