@@ -1,4 +1,5 @@
 ## Adminer dev
+- Check for a new version even without JavaScript
 - Tables overview: speed up, show totals in SQLite
 - SQL command: Show column type in result table header
 - Alter table: Add next column without page reload
@@ -10,6 +11,7 @@
 - PostgreSQL, MS SQL: Show two columns in select COUNT(*), COUNT(DISTINCT id)
 - Elasticsearch, ClickHouse: Use default port
 - SimpleDB: Use default server
+- Plugins: Method verifyVersion()
 
 ## Adminer 5.5.1 (released 2026-07-21)
 - Ignore invalid X-Forwarded-Prefix (GHSA-fr74-9mf9-gf44)

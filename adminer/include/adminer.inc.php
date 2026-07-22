@@ -101,6 +101,11 @@ class Adminer {
 		return $csp;
 	}
 
+	/** Decide whether to check for a new Adminer version */
+	function verifyVersion(): bool {
+		return true;
+	}
+
 	/** Print HTML code inside <head>
 	* @param bool $dark dark CSS: false to disable, true to force, null to base on user preferences
 	* @return bool true to link favicon.ico
@@ -989,7 +994,7 @@ class Adminer {
 	function navigation(string $missing): void {
 		echo "<h1>" . adminer()->name() . " <span class='version'>" . VERSION;
 		$new_version = $_COOKIE["adminer_version"];
-		echo " <a href='https://www.adminer.org/#download'" . target_blank() . " id='version'>" . (version_compare(VERSION, $new_version) < 0 ? h($new_version) : "") . "</a>";
+		echo " <a href='https://www.adminer.org/#download'" . target_blank() . " id='version'>" . (version_compare(VERSION, $new_version) < 0 ? h($new_version) : "") . version_iframe() . "</a>";
 		echo "</span></h1>\n";
 		// this is matched by compile.php
 		switch_lang();

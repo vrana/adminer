@@ -8,8 +8,8 @@
 */
 class AdminerVersionNoverify extends Adminer\Plugin {
 
-	function head($dark = null) {
-		echo Adminer\script("verifyVersion = () => { };");
+	function verifyVersion() {
+		return false;
 	}
 
 	protected $translations = array(

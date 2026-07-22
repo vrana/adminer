@@ -62,7 +62,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	adminer()->bodyClass();
 	echo "'>\n";
 	echo script("mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick"
-		. (isset($_COOKIE["adminer_version"]) ? "" : ", onload: partial(verifyVersion, '" . VERSION . "')")
+		. (isset($_COOKIE["adminer_version"]) || !adminer()->verifyVersion() ? "" : ", onload: partial(verifyVersion, '" . VERSION . "')")
 		. "});
 document.body.classList.replace('nojs', 'js');
 if (!window.isSecureContext) {
@@ -140,11 +140,21 @@ function csp(): array {
 		array(
 			"script-src" => "'self' 'unsafe-inline' 'nonce-" . get_nonce() . "' 'strict-dynamic'", // 'self' is a fallback for browsers not supporting 'strict-dynamic', 'unsafe-inline' is a fallback for browsers not supporting 'nonce-'
 			"connect-src" => "'self' https://www.adminer.org",
-			"frame-src" => "'none'",
+			"frame-src" => "https://www.adminer.org", // version check without JS
 			"object-src" => "'none'",
 			"base-uri" => "'none'",
 			"form-action" => "'self'",
 		),
+	);
+}
+
+/** Get HTML displaying a new version even without JavaScript
+* @return string noscript iframe or empty string
+*/
+function version_iframe(): string {
+	return (isset($_COOKIE["adminer_version"]) || !adminer()->verifyVersion()
+		? ""
+		: "<noscript><iframe sandbox src='https://www.adminer.org/version/?current=" . VERSION . "&amp;noscript=1'></iframe></noscript>"
 	);
 }
 
