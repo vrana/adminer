@@ -436,7 +436,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 			} else {
 				$editable = true;
 				$function = ($_POST["save"]
-					? idx($_POST["function"], $name, "")
+					? idx($_POST["function"], bracket_escape($name), "")
 					: ($update && preg_match('~^CURRENT_TIMESTAMP~i', $field["on_update"])
 						? "now"
 						: ($value === false ? null : ($value !== null ? '' : 'NULL'))

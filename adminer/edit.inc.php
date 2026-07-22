@@ -112,7 +112,11 @@ if (!support("table") && !$fields) { // used by Mongo and SimpleDB
 }
 
 if ($_POST["save"]) {
-	$row = (array) $_POST["fields"] + ($row ? $row : array());
+	$post_fields = array();
+	foreach ((array) $_POST["fields"] as $key => $val) {
+		$post_fields[bracket_escape($key, true)] = $val;
+	}
+	$row = $post_fields + ($row ? $row : array());
 }
 
 edit_form($TABLE, $fields, $row, $update, $error);

@@ -2,6 +2,7 @@
 - Tables overview: speed up, show totals in SQLite
 - SQL command: Show column type in result table header
 - Alter table: Add next column without page reload
+- Edit: Keep values of columns with special characters in name after error
 - PostgreSQL: Support operator classes in indexes
 - PostgreSQL: Add Truncate Cascade button
 - PostgreSQL: Do not show functions created by extensions
