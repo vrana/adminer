@@ -122,6 +122,7 @@ Lang::$translations = array(
 	'Check' => 'Xx',
 	'Repair' => 'Xx',
 	'Truncate' => 'Xx',
+	'Truncate Cascade' => 'Xx',
 	'Tables have been truncated.' => 'Xx.',
 	'Move to other database' => 'Xx',
 	'Move' => 'Xx',

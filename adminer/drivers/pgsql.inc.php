@@ -764,8 +764,8 @@ ORDER BY conkey, conname") as $row
 		return true;
 	}
 
-	function truncate_tables($tables) {
-		return queries("TRUNCATE " . implode(", ", array_map('Adminer\table', $tables)));
+	function truncate_tables($tables, $cascade = false) {
+		return queries("TRUNCATE " . implode(", ", array_map('Adminer\table', $tables)) . ($cascade ? " CASCADE" : ""));
 	}
 
 	function drop_views($views) {
