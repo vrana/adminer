@@ -91,7 +91,7 @@ if (isset($_GET["clickhouse"])) {
 				foreach ($result['data'] as $item) {
 					$row = array();
 					foreach ($item as $key => $val) {
-						$row[$key] = is_scalar($val) ? $val : json_encode($val, 256); // 256 - JSON_UNESCAPED_UNICODE
+						$row[$key] = is_scalar($val) ? $val : json_encode($val, 256); // 256 - JSON_UNESCAPED_UNICODE available since PHP 5.4
 					}
 					$this->rows[] = $row;
 				}

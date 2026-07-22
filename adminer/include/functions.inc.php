@@ -387,7 +387,7 @@ function save_settings(array $settings, string $cookie = "adminer_settings"): vo
 
 /** Restart stopped session */
 function restart_session(): void {
-	if (!ini_bool("session.use_cookies") && (!function_exists('session_status') || session_status() == 1)) { // 1 - PHP_SESSION_NONE, session_status() available since PHP 5.4
+	if (!ini_bool("session.use_cookies") && (!function_exists('session_status') || session_status() == PHP_SESSION_NONE)) { // session_status() available since PHP 5.4
 		session_start();
 	}
 }
