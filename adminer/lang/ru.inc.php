@@ -174,6 +174,7 @@ Lang::$translations = array(
 	'Check' => 'Проверить',
 	'Repair' => 'Исправить',
 	'Truncate' => 'Очистить',
+	'Truncate Cascade' => 'Очистить каскадно', // Claude Fable 5
 	'Tables have been truncated.' => 'Таблицы были очищены.',
 	'Rows' => 'Строк',
 	',' => ' ',

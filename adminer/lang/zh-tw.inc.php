@@ -118,6 +118,7 @@ Lang::$translations = array(
 	'Check' => '檢查',
 	'Repair' => '修復',
 	'Truncate' => '清空',
+	'Truncate Cascade' => '級聯清空', // Claude Fable 5
 	'Tables have been truncated.' => '已清空資料表。',
 	'Move to other database' => '轉移到其它資料庫',
 	'Move' => '轉移',

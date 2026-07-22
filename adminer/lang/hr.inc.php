@@ -100,6 +100,7 @@ Lang::$translations = array(
 	'Check' => 'Provjeri',
 	'Repair' => 'Popravi',
 	'Truncate' => 'Isprazni',
+	'Truncate Cascade' => 'Isprazni kaskadno', // Claude Fable 5
 	'Tables have been truncated.' => 'Tablice su ispražnjene.',
 	'Move to other database' => 'Premjesti u drugu bazu podataka',
 	'Move' => 'Premjesti',

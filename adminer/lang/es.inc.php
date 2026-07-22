@@ -181,6 +181,7 @@ Lang::$translations = array(
 	'Check' => 'Comprobar',
 	'Repair' => 'Reparar',
 	'Truncate' => 'Vaciar',
+	'Truncate Cascade' => 'Vaciar en cascada', // Claude Fable 5
 	'Tables have been truncated.' => 'Las tablas han sido vaciadas.',
 	'Rows' => 'Registros',
 	',' => ' ',

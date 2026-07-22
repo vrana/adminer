@@ -183,6 +183,7 @@ Lang::$translations = array(
 	'Check' => 'Controlla',
 	'Repair' => 'Ripara',
 	'Truncate' => 'Svuota',
+	'Truncate Cascade' => 'Svuota in cascata', // Claude Fable 5
 	'Move to other database' => 'Sposta in altro database',
 	'Move' => 'Sposta',
 	'%d item(s) have been affected.' => array('Il risultato consiste in %d elemento.', 'Il risultato consiste in %d elementi.'),

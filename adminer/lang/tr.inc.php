@@ -113,6 +113,7 @@ Lang::$translations = array(
 	'Check' => 'Denetle',
 	'Repair' => 'Tamir Et',
 	'Truncate' => 'Boşalt',
+	'Truncate Cascade' => 'Kademeli boşalt', // Claude Fable 5
 	'Tables have been truncated.' => 'Tablolar boşaltıldı.',
 	'Move to other database' => 'Başka veri tabanına taşı',
 	'Move' => 'Taşı',

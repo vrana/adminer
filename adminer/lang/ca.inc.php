@@ -174,6 +174,7 @@ Lang::$translations = array(
 	'Check' => 'Verifica',
 	'Repair' => 'Repara',
 	'Truncate' => 'Escapça',
+	'Truncate Cascade' => 'Escapça en cascada', // Claude Fable 5
 	'Tables have been truncated.' => 'S\'han escapçat les taules.',
 	'Rows' => 'Files',
 	',' => ',',

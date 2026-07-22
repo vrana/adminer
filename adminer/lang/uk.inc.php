@@ -100,6 +100,7 @@ Lang::$translations = array(
 	'Check' => 'Перевірити',
 	'Repair' => 'Виправити',
 	'Truncate' => 'Очистити',
+	'Truncate Cascade' => 'Очистити каскадно', // Claude Fable 5
 	'Tables have been truncated.' => 'Таблиці було очищено.',
 	'Move to other database' => 'Перенести до іншої бази даних',
 	'Move' => 'Перенести',

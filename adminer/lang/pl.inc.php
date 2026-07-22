@@ -122,6 +122,7 @@ Lang::$translations = array(
 	'Check' => 'Sprawdź',
 	'Repair' => 'Napraw',
 	'Truncate' => 'Opróżnij',
+	'Truncate Cascade' => 'Opróżnij kaskadowo', // Claude Fable 5
 	'Tables have been truncated.' => 'Tabele zostały opróżnione.',
 	'Move to other database' => 'Przenieś do innej bazy danych',
 	'Move' => 'Przenieś',
