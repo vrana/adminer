@@ -261,10 +261,15 @@ ORDER BY 1"
 		$search = q($name);
 		$db = get_current_db();
 		$view = views_table("view_name");
-		$owner = where_owner(" AND ");
+		$owner = where_owner(" AND ", "t.owner");
 		foreach (
-			get_rows('SELECT table_name "Name", \'table\' "Engine", avg_row_len * num_rows "Data_length", num_rows "Rows" FROM all_tables WHERE tablespace_name = ' . q($db) . $owner . ($name != "" ? " AND table_name = $search" : "") . "
-UNION SELECT view_name, 'view', 0, 0 FROM $view" . ($name != "" ? " WHERE view_name = $search" : "") . "
+			// sizes are available only for segments of the current user
+			get_rows('SELECT t.table_name "Name", \'table\' "Engine", s.bytes "Data_length", i.bytes "Index_length", t.num_rows "Rows"
+FROM all_tables t
+LEFT JOIN (SELECT segment_name, SUM(bytes) bytes FROM user_segments WHERE segment_type LIKE \'TABLE%\' GROUP BY segment_name) s ON s.segment_name = t.table_name
+LEFT JOIN (SELECT i.table_name, SUM(s.bytes) bytes FROM user_indexes i JOIN user_segments s ON s.segment_name = i.index_name AND s.segment_type LIKE \'INDEX%\' GROUP BY i.table_name) i ON i.table_name = t.table_name
+WHERE t.tablespace_name = ' . q($db) . $owner . ($name != "" ? " AND t.table_name = $search" : "") . "
+UNION SELECT view_name, 'view', 0, 0, 0 FROM $view" . ($name != "" ? " WHERE view_name = $search" : "") . "
 ORDER BY 1") as $row
 		) {
 			$return[$row["Name"]] = $row;

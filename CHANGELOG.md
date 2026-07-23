@@ -1,6 +1,6 @@
 ## Adminer dev
 - Check for a new version even without JavaScript
-- Tables overview: speed up, show totals in SQLite
+- Tables overview: speed up, show totals in SQLite, real size in Oracle
 - SQL command: Show column type in result table header
 - Alter table: Add next column without page reload
 - Edit: Keep values of columns with special characters in name after error
