@@ -164,10 +164,11 @@ if (!$error && $_POST) {
 									$explain_id = "explain-$commands";
 									if (is_object($result)) {
 										$limit = $_POST["limit"];
-										$orgtables = print_select_result($result, $connection2, array(), $limit);
+										$num_rows = $limit;
+										$orgtables = print_select_result($result, $connection2, array(), $num_rows);
 										if (!$_POST["only_errors"]) {
 											echo "<form action='' method='post'>\n";
-											$num_rows = $result->num_rows;
+											$num_rows = max($result->num_rows, $num_rows); // native num_rows holds the count before LIMIT
 											echo "<p class='sql-footer'>" . ($num_rows ? ($limit && $num_rows > $limit ? lang('%d / ', $limit) : "") . lang('%d row(s)', $num_rows) : "");
 											echo $time;
 											if ($connection2 && preg_match("~^($space|\\()*+SELECT\\b~i", $q) && ($explain = explain($connection2, $q))) {

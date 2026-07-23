@@ -7,9 +7,10 @@ namespace Adminer;
 * @param Result $result
 * @param string[] $orgtables
 * @param int|numeric-string $limit
+* @param-out int $limit the number of printed rows
 * @return string[] $orgtables
 */
-function print_select_result($result, ?Db $connection2 = null, array $orgtables = array(), $limit = 0): array {
+function print_select_result($result, ?Db $connection2 = null, array $orgtables = array(), &$limit = 0): array {
 	$links = array(); // colno => orgtable - create links from these columns
 	$indexes = array(); // orgtable => array(column => colno) - primary keys
 	$columns = array(); // orgtable => array(column => ) - not selected columns in primary key
@@ -88,6 +89,7 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 			echo "<td" . ($types[$key] <= 9 || $types[$key] == 246 ? " class='number'" : "") . ">$val";
 		}
 	}
+	$limit = $i;
 	echo ($i ? "</table>\n</div>" : "<p class='message'>" . lang('No rows.')) . "\n";
 	return $return;
 }

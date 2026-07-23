@@ -2,6 +2,7 @@
 - Check for a new version even without JavaScript
 - Tables overview: speed up, show totals in SQLite, real size in MS SQL, Oracle
 - SQL command: Show column type in result table header
+- SQL command: Show number of rows in all drivers
 - Alter table: Add next column without page reload
 - Edit: Keep values of columns with special characters in name after error
 - PostgreSQL: Support operator classes in indexes
