@@ -332,12 +332,28 @@ if (isset($_GET["mssql"])) {
 
 	function table_status($name = "") {
 		$return = array();
+		$sizes = array();
+		// a page is 8 KB; sys.dm_db_partition_stats requires the VIEW DATABASE STATE permission so sizes are optional
 		foreach (
-			get_rows("SELECT ao.name AS Name, ao.type_desc AS Engine, (SELECT cast(value as varchar(max)) FROM fn_listextendedproperty(default, 'SCHEMA', schema_name(schema_id), 'TABLE', ao.name, null, null)) AS Comment
+			get_rows("SELECT object_id, SUM(CASE WHEN index_id < 2 THEN row_count ELSE 0 END) AS [Rows],
+SUM(CASE WHEN index_id < 2 THEN used_page_count ELSE 0 END) * 8192 AS Data_length,
+SUM(CASE WHEN index_id > 1 THEN used_page_count ELSE 0 END) * 8192 AS Index_length,
+SUM(reserved_page_count - used_page_count) * 8192 AS Data_free
+FROM sys.dm_db_partition_stats
+GROUP BY object_id", null, "") as $row
+		) {
+			$object_id = $row["object_id"];
+			unset($row["object_id"]);
+			$sizes[$object_id] = $row;
+		}
+		foreach (
+			get_rows("SELECT ao.object_id, ao.name AS Name, ao.type_desc AS Engine, (SELECT cast(value as varchar(max)) FROM fn_listextendedproperty(default, 'SCHEMA', schema_name(schema_id), 'TABLE', ao.name, null, null)) AS Comment
 FROM sys.all_objects AS ao
 WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V') " . ($name != "" ? "AND name = " . q($name) : "ORDER BY name")) as $row
 		) {
-			$return[$row["Name"]] = $row;
+			$object_id = $row["object_id"];
+			unset($row["object_id"]);
+			$return[$row["Name"]] = $row + idx($sizes, $object_id, array());
 		}
 		return $return;
 	}
