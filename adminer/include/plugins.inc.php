@@ -5,6 +5,7 @@ class Plugins {
 	/** @var true[] */ private static array $append = array('dumpFormat' => true, 'dumpOutput' => true, 'editRowPrint' => true, 'editFunctions' => true, 'config' => true); // these hooks expect the value to be appended to the result
 
 	/** @var list<object> @visibility protected(set) */ public array $plugins;
+	/** @var string[] @visibility protected(set) */ public array $drivers = array(); // [id => name] of drivers registered by plugins
 	/** @visibility protected(set) */ public string $error = ''; // HTML
 	/** @var list<object>[] */ private array $hooks = array();
 
@@ -12,6 +13,7 @@ class Plugins {
 	* @param ?list<object> $plugins object instances or null to autoload plugins from adminer-plugins/
 	*/
 	function __construct(?array $plugins) {
+		$drivers = SqlDriver::$drivers; // bundled drivers, plugin drivers are registered below
 		if ($plugins === null) {
 			$plugins = array();
 			$basename = "adminer-plugins";
@@ -44,6 +46,7 @@ class Plugins {
 				}
 			}
 		}
+		$this->drivers = array_diff_key(SqlDriver::$drivers, $drivers);
 		$this->plugins = $plugins;
 
 		$adminer = new Adminer;

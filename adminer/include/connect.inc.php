@@ -89,7 +89,7 @@ if (
 			echo script("tableCheck();");
 		}
 
-		if (!empty(adminer()->plugins)) {
+		if (!empty(adminer()->plugins) || !empty(adminer()->drivers)) {
 			echo "<div class='plugins'>\n";
 			echo "<h3>" . lang('Loaded plugins') . "</h3>\n<ul>\n";
 			foreach (adminer()->plugins as $plugin) {
@@ -106,6 +106,9 @@ if (
 					. ($screenshot ? " (<a href='" . h($screenshot) . "'" . target_blank() . ">" . lang('screenshot') . "</a>)" : "")
 					. "\n"
 				;
+			}
+			foreach (adminer()->drivers as $id => $name) {
+				echo "<li><b>" . h($id) . "</b>: " . h($name) . "\n";
 			}
 			echo "</ul>\n";
 			adminer()->pluginsLinks();

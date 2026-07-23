@@ -14,6 +14,7 @@
 - Elasticsearch, ClickHouse: Use default port
 - SimpleDB: Use default server
 - Plugins: Method verifyVersion()
+- Plugins: Show driver plugins in the list of loaded plugins
 - Plugins: Remove edit-calendar, tinymce, json-column, pretty-json-column, translation, email-table, dump-php, master-slave
 
 ## Adminer 5.5.1 (released 2026-07-21)
