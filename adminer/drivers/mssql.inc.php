@@ -134,7 +134,7 @@ if (isset($_GET["mssql"])) {
 				$return->name = $field["Name"];
 				$return->type = ($field["Type"] == 1 ? 254 : 15);
 				//! $return->native_type: http://msdn.microsoft.com/en-us/library/cc296197.aspx
-				$return->charsetnr = 0;
+				$return->charsetnr = (in_array($field["Type"], array(-2, -3, -4)) ? 63 : 0); // SQL_BINARY, SQL_VARBINARY, SQL_LONGVARBINARY
 				return $return;
 			}
 
@@ -273,6 +273,10 @@ if (isset($_GET["mssql"])) {
 
 		function begin() {
 			return queries("BEGIN TRANSACTION");
+		}
+
+		function quoteBinary(string $s): string {
+			return "0x" . bin2hex($s);
 		}
 
 		function tableHelp(string $name, bool $is_view = false) {

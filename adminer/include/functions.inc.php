@@ -839,7 +839,8 @@ function select_value($val, string $link, array $field, ?string $text_length): s
 * @param array{type: string} $field
 */
 function is_blob(array $field): bool {
-	return preg_match('~blob|bytea|raw|file~', $field["type"]) && !in_array($field["type"], idx(driver()->structuredTypes(), lang('User types'), array()));
+	return preg_match('~blob|bytea|raw|file' . (JUSH == "mssql" ? '|binary|image' : '') . '~', $field["type"])
+		&& !in_array($field["type"], idx(driver()->structuredTypes(), lang('User types'), array()));
 }
 
 /** Check whether the string is e-mail address */

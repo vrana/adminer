@@ -10,6 +10,7 @@
 - PostgreSQL: Do not show functions created by extensions
 - PostgreSQL: Fix altering functions with parameters of array or user-defined types
 - PostgreSQL, MS SQL: Show two columns in select COUNT(*), COUNT(DISTINCT id)
+- MS SQL: Treat binary fields as blob (bug SF-369)
 - Elasticsearch, ClickHouse: Use default port
 - SimpleDB: Use default server
 - Plugins: Method verifyVersion()
