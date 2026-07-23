@@ -314,7 +314,7 @@ td.nowrap {
     text-decoration: none;
     color: #f44;
 }
-#version {
+#version, .plugins .update {
     font-size: 67%;
     color: red;
 }

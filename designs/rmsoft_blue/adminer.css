@@ -217,7 +217,7 @@ label.block{margin:0}
 #sum-Data_free{background:#a2c4da;color:#0b3a5a}
 .ltr #fieldset-history a[href*="&sql=&history=all"]{padding:0 0 0 18px}
 .rtl #fieldset-history a[href*="&sql=&history=all"]{padding:0 18px 0 0}
-#version{font-size:85%;color:#ff0}
+#version,.plugins .update{font-size:85%;color:#ff0}
 .ltr #version{margin-left:4px}
 .rtl #version{margin-left:4px}
 div#ajaxstatus+.message a:first-child{color:red}

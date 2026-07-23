@@ -89,13 +89,24 @@ if (
 			echo script("tableCheck();");
 		}
 
-		if (!empty(adminer()->plugins) || !empty(adminer()->drivers)) {
+		$adminer = adminer();
+		if ($adminer instanceof Plugins && ($adminer->plugins || $adminer->drivers)) {
+			$checksums = $adminer->checksums();
+			$official = Plugins::officialChecksums();
+
+			$plugin_version = function (string $file) use ($checksums, $official): string {
+				return ($checksums[$file] && $official[$file] && $checksums[$file] !== $official[$file] // unknown plugins are never reported; !== because e.g. '1e5' == '100000'
+					? " (<a href='https://www.adminer.org/plugins/?version=" . VERSION . "'" . target_blank() . " class='update'>" . VERSION . "</a>)"
+					: ""
+				);
+			};
+
 			echo "<div class='plugins'>\n";
 			echo "<h3>" . lang('Loaded plugins') . "</h3>\n<ul>\n";
-			foreach (adminer()->plugins as $plugin) {
+			foreach ($adminer->plugins as $plugin) {
+				$reflection = new \ReflectionObject($plugin);
 				$description = (method_exists($plugin, 'description') ? $plugin->description() : "");
 				if (!$description) {
-					$reflection = new \ReflectionObject($plugin);
 					if (preg_match('~^/[\s*]+(.+)~', $reflection->getDocComment(), $match)) {
 						$description = $match[1];
 					}
@@ -104,11 +115,12 @@ if (
 				echo "<li><b>" . get_class($plugin) . "</b>"
 					. h($description ? ": $description" : "")
 					. ($screenshot ? " (<a href='" . h($screenshot) . "'" . target_blank() . ">" . lang('screenshot') . "</a>)" : "")
+					. $plugin_version(basename((string) $reflection->getFileName(), '.php'))
 					. "\n"
 				;
 			}
-			foreach (adminer()->drivers as $id => $name) {
-				echo "<li><b>" . h($id) . "</b>: " . h($name) . "\n";
+			foreach ($adminer->drivers as $id => $name) {
+				echo "<li><b>" . h($id) . "</b>: " . h($name) . $plugin_version(basename((string) $adminer->driverFiles[$id], '.php')) . "\n";
 			}
 			echo "</ul>\n";
 			adminer()->pluginsLinks();

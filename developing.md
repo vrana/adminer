@@ -294,6 +294,10 @@ I do not review logs with this information, and no one else has access to the se
 A [plugin](/plugins/version-noverify.php) disables version checks, but users should verify versions by other means to ensure security updates.
 There's also a [plugin](/plugins/version-github.php) checking for new versions [from GitHub](https://github.com/vrana/adminer/releases).
 
+The list of loaded plugins marks official plugins not matching the current Adminer version.
+This check is fully offline: Adminer ships with checksums of its plugins in `Plugins::officialChecksums()` (crc32 computed after removing `\r` and the `$translations` property, so translations don't outdate a plugin), and nothing about the used plugins is ever transmitted.
+Run `php checksums.php` after changing any official plugin; a CI check and the release process guard against forgetting it.
+
 ## Commits
 
 Every commit should do only one thing and be as small as possible.

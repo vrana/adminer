@@ -37,7 +37,7 @@ input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
 #menu { border-color: #a3bdd3; }
 #menu p, #logins, #tables { border-color: #326b9c; }
 #h1 { color: #ffddbf; }
-#version { color: #d2b397; }
+#version, .plugins .update { color: #d2b397; }
 #schema .table { border-color: #093459; }
 #help { border-color: #666; background: #c7e4fe; }
 #schema div.table a { color: #3c7bb3; }
