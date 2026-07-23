@@ -222,7 +222,7 @@ ORDER BY 1"
 
 	function get_current_db() {
 		$db = connection()->_current_db ?: DB;
-		unset(connection()->_current_db);
+		connection()->_current_db = null;
 		return $db;
 	}
 
