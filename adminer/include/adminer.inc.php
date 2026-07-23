@@ -75,7 +75,11 @@ class Adminer {
 	* @return list<string>
 	*/
 	function schemas(): array {
-		return schemas();
+		$return = schemas();
+		if ($_GET["ns"] != "" && !in_array($_GET["ns"], $return)) {
+			array_unshift($return, $_GET["ns"]);
+		}
+		return $return;
 	}
 
 	/** Specify limit for waiting on some slow queries like DB list
