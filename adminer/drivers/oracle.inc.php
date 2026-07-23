@@ -27,7 +27,7 @@ if (isset($_GET["oracle"])) {
 					return '';
 				}
 				$error = oci_error();
-				return $error["message"];
+				return ($error ? $error["message"] : lang('Unknown error.')); // oci_error() returns false if the client library is not set up
 			}
 
 			function quote(string $string): string {
