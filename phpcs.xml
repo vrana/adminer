@@ -3,6 +3,7 @@
 	<description>The coding standard for Adminer.</description>
 	<arg value="s"/>
 	<arg name="parallel" value="8"/>
+	<arg name="cache" value=".phpcs.cache"/>
 
 	<file>.</file>
 	<exclude-pattern>/externals/</exclude-pattern>
