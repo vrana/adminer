@@ -269,7 +269,7 @@ function editFields() {
 		},
 		ondragover: e => {
 			const row = parentTag(e.target, 'tr');
-			if (dragged && qs('[draggable]', row)) {
+			if (dragged && row && qs('[draggable]', row)) {
 				e.preventDefault();
 				if (row != dragged) {
 					const rows = [...row.parentNode.children];
