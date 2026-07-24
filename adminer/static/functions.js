@@ -531,6 +531,7 @@ function functionChange() {
 			input.dataset.maxlength = input.origMaxLength;
 			delete input.origMaxLength;
 		}
+		alterClass(input, 'hidden', /^(now|getdate|current_date|current_timestamp|uuid)$/.test(func)); // these functions take no argument
 		oninput({target: input});
 	}
 	helpClose();

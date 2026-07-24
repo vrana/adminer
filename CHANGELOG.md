@@ -6,6 +6,7 @@
 - Alter table: Add next column without page reload
 - Edit: Keep values of columns with special characters in name after error
 - Edit: Fix switching function to SQL with the edit-foreign plugin (bug #1254)
+- Edit: Hide the value field for functions without arguments (e.g. now, uuid)
 - PostgreSQL: Support operator classes in indexes
 - PostgreSQL: Add Truncate Cascade button
 - PostgreSQL: Do not show functions created by extensions

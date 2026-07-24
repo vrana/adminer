@@ -288,6 +288,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 			;
 		}
 		echo adminer()->editHint($table, $field, $value);
+		echo (count($functions) > 1 ? script("qs('select', qsl('td').previousSibling).onchange();", "") : ""); // apply the initially selected function (e.g. hide the input for now())
 		// skip 'original'
 		$first = 0;
 		foreach ($functions as $key => $val) {
