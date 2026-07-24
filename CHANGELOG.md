@@ -4,6 +4,7 @@
 - SQL command: Show column type in result table header
 - SQL command: Show number of rows in all drivers
 - Alter table: Add next column without page reload
+- Alter table: Do not highlight other move handles while dragging a column
 - Edit: Keep values of columns with special characters in name after error
 - Edit: Fix switching function to SQL with the edit-foreign plugin (bug #1254)
 - Edit: Hide the value field for functions without arguments (e.g. now, uuid)

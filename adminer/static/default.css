@@ -73,6 +73,7 @@ input.wayoff { left: -1000px; position: absolute; }
 .icon { width: 18px; height: 18px; background: navy center no-repeat; border: 0; padding: 0; vertical-align: middle; }
 .icon span { display: none; }
 .icon:hover { background-color: red; }
+.dragging tr:not(.dragged) .icon-move { pointer-events: none; }
 .size { width: 7ex; }
 .help { cursor: help; }
 .footer { position: sticky; bottom: 0; margin: 23px -20px .5em 0; box-shadow: 0 -5px 10px 10px var(--bg); }

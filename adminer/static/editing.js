@@ -258,9 +258,15 @@ function editFields() {
 			if (e.target.draggable) {
 				dragged = parentTag(e.target, 'tr');
 				e.dataTransfer.effectAllowed = 'move';
+				alterClass(e.currentTarget, 'dragging', true);
+				alterClass(dragged, 'dragged', true);
 			}
 		},
-		ondragend: () => dragged = null,
+		ondragend: e => {
+			alterClass(dragged, 'dragged');
+			dragged = null;
+			alterClass(e.currentTarget, 'dragging');
+		},
 		ondragover: e => {
 			const row = parentTag(e.target, 'tr');
 			if (dragged && qs('[draggable]', row)) {
