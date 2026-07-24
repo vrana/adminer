@@ -92,3 +92,5 @@ Each driver registers via `add_driver("key", "Label")` and implements a `Db` cla
 **Comments:** `//!` = TODO, `//~` = debug code. Doc-comments are imperative ("Get" not "Gets"), no trailing period, `@param` only when type is more specific than the declaration.
 
 **Commit style:** `Area: Message` format (e.g., `MySQL: Fix connection timeout`). Bug fixes append `(fix #n)`. Update `CHANGELOG.md` with user-visible changes.
+
+**CSS skins:** Default styles are `adminer/static/{default,dark}.css`, but users apply alternative skins by dropping an `adminer.css` (or `adminer-dark.css`) next to the deployed script. These skins target Adminer's HTML structure, class names, and IDs. Bundled examples live in `designs/`, but many more exist in the wild (gallery: https://www.adminer.org/#extras) and can't be updated in lockstep. Avoid breaking them: don't rename or drop existing selectors, IDs, or class names, or restructure HTML, without good reason – prefer additive changes.
