@@ -5,6 +5,7 @@
 - SQL command: Show number of rows in all drivers
 - Alter table: Add next column without page reload
 - Edit: Keep values of columns with special characters in name after error
+- Edit: Fix switching function to SQL with the edit-foreign plugin (bug #1254)
 - PostgreSQL: Support operator classes in indexes
 - PostgreSQL: Add Truncate Cascade button
 - PostgreSQL: Do not show functions created by extensions

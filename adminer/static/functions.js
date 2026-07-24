@@ -502,24 +502,34 @@ function editingKeydown(event) {
 	return true;
 }
 
-/** Disable maxlength for functions
+/** Change the value field to a plain <input> for the SQL function and disable maxlength for functions
 * @this HTMLSelectElement
 */
 function functionChange() {
-	const input = this.form[this.name.replace(/^function/, 'fields')];
+	let input = this.form[this.name.replace(/^function/, 'fields')];
 	if (input) { // undefined with the set data type
-		if (selectValue(this)) {
-			if (input.origType === undefined) {
-				input.origType = input.type;
+		const func = selectValue(this);
+		if (func == 'SQL') { // raw expression - use a plain <input>, e.g. instead of <select> from the edit-foreign plugin
+			if (!input.origElement) {
+				const text = document.createElement('input');
+				text.name = input.name;
+				text.value = selectValue(input);
+				text.origElement = input;
+				input.replaceWith(text);
+				input = text;
+			}
+		} else if (input.origElement) { // revive the original element (keeps its type, e.g. number for +)
+			input.replaceWith(input.origElement);
+			input = input.origElement;
+		}
+		if (func) { // the length is not limited when a function is applied
+			if (input.origMaxLength === undefined) {
 				input.origMaxLength = input.dataset.maxlength;
 			}
 			delete input.dataset.maxlength;
-			input.type = 'text';
-		} else if (input.origType) {
-			input.type = input.origType;
-			if (input.origMaxLength >= 0) {
-				input.dataset.maxlength = input.origMaxLength;
-			}
+		} else if (input.origMaxLength >= 0) {
+			input.dataset.maxlength = input.origMaxLength;
+			delete input.origMaxLength;
 		}
 		oninput({target: input});
 	}
