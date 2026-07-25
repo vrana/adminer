@@ -340,7 +340,8 @@ function cookie(string $name, ?string $value, int $lifetime = 2592000): void {
 			. ($lifetime ? "; expires=" . gmdate("D, d M Y H:i:s", time() + $lifetime) . " GMT" : "")
 			. "; path=" . cookie_path()
 			. (HTTPS ? "; secure" : "")
-			. "; HttpOnly; SameSite=lax",
+			. ($name == "adminer_import" ? "" : "; HttpOnly")
+			. "; SameSite=lax",
 		false
 	);
 }

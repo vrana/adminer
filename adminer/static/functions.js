@@ -91,7 +91,10 @@ function toggle(id) {
 function cookie(assign, days) {
 	const date = new Date();
 	date.setDate(date.getDate() + days);
-	document.cookie = assign + '; expires=' + date;
+	document.cookie = assign
+		+ '; expires=' + date
+		+ '; path=' + location.pathname.replace(/[;,]/g, encodeURIComponent) // default path is without the trailing slash
+	;
 }
 
 /** Verify current Adminer version

@@ -725,6 +725,11 @@ function sqlExport() {
 			return true;
 		}
 	}
+	// save_settings() - the server-side export stores the settings too
+	cookie(
+		'adminer_import=' + encodeURIComponent('output=' + output + '&format=' + encodeURIComponent(format)),
+		30 // 30 - $lifetime of cookie()
+	);
 	const tsv = (format == 'tsv');
 	const quotable = new RegExp('["\n]|^0[^.]|\\.\\d*0$|' + (tsv ? '\t' : '[,;]|^$')); // dump_csv()
 	let data = String.fromCharCode(0xfeff); // UTF-8 byte order mark

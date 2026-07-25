@@ -23,6 +23,11 @@ if (!$error && $_POST["clear"]) {
 }
 stop_session();
 
+$adminer_export = get_settings("adminer_import"); // match settings in select, not in dump
+if ($_POST && $adminer_export) { //! delete on 2026-09-26
+	save_settings($adminer_export, "adminer_import"); // drop HttpOnly set by older versions so that JS export can write the cookie
+}
+
 page_header((isset($_GET["import"]) ? lang('Import') : lang('SQL command')), $error);
 $line_comment = '--' . (JUSH == 'sql' ? ' ' : '');
 
@@ -71,7 +76,6 @@ if (!$error && $_POST) {
 		$errors = array();
 		$parse = '[\'"' . (JUSH == "sql" ? '`#' : (JUSH == "sqlite" ? '`[' : (JUSH == "mssql" ? '[' : ''))) . ']|/\*|' . $line_comment . '|$' . (JUSH == "pgsql" ? '|\$([a-zA-Z]\w*)?\$' : '');
 		$total_start = microtime(true);
-		$adminer_export = get_settings("adminer_import"); // match settings in select, not in dump
 
 		while ($query != "") {
 			if (!$offset && preg_match("~^$space*+DELIMITER\\s+(\\S+)~i", $query, $match)) {
