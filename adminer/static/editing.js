@@ -272,10 +272,6 @@ function editingClick(event) {
 		const name = el.name;
 		if (/^add\[/.test(name)) {
 			editingAddRow.call(el, 1);
-		} else if (/^up\[/.test(name)) {
-			editingMoveRow.call(el, 1);
-		} else if (/^down\[/.test(name)) {
-			editingMoveRow.call(el);
 		} else if (/^drop_col\[/.test(name)) {
 			editingRemoveRow.call(el, 'fields$1[field]');
 		}
@@ -404,19 +400,6 @@ function editingRemoveRow(name) {
 	const field = this.form[this.name.replace(/[^[]+(.+)/, name)];
 	field.remove();
 	parentTag(this, 'tr').style.display = 'none';
-	return false;
-}
-
-/** Move table row for field
-* @param [boolean]
-* @return boolean false for success
-* @this HTMLInputElement
-*/
-function editingMoveRow(up){
-	const row = parentTag(this, 'tr');
-	row.parentNode.insertBefore(row, up
-		? row.previousElementSibling
-		: row.nextElementSibling ? row.nextElementSibling.nextElementSibling : row.parentNode.firstChild);
 	return false;
 }
 
