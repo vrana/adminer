@@ -1,5 +1,6 @@
 ## Adminer dev
 - Check for a new version even without JavaScript
+- Sort languages by their translated name
 - Tables overview: speed up, show totals in SQLite, real size in MS SQL, Oracle
 - SQL command: Show column type in result table header
 - SQL command: Show number of rows in all drivers
