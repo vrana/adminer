@@ -747,6 +747,9 @@ function setupSubmitHighlightInput(input) {
 	if (!/submit|button|image|file/.test(input.type)) {
 		addEvent(input, 'focus', inputFocus);
 		addEvent(input, 'blur', inputBlur);
+		if (document.activeElement === input) {
+			inputFocus.call(input); // focus event was missed, e.g. jush.textarea() focuses the <pre> before this
+		}
 	}
 }
 
