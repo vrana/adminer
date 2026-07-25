@@ -381,15 +381,11 @@ function selectSearchSearch() {
 
 
 /** Toggle column context menu
-* @param [string] extra class name
+* @param [boolean]
 * @this HTMLElement
 */
-function columnMouse(className = '') {
-	for (const span of qsa('span', this)) {
-		if (span.classList.contains('column')) {
-			span.className = 'column' + className;
-		}
-	}
+function columnMouse(hide) {
+	alterClass(qs('span.column', this), 'hidden', hide);
 }
 
 
