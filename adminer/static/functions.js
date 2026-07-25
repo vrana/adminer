@@ -5,8 +5,8 @@
 * @param [HTMLElement] defaults to document
 * @return HTMLElement
 */
-function qs(selector, context) {
-	return (context || document).querySelector(selector);
+function qs(selector, context = document) {
+	return context.querySelector(selector);
 }
 
 /** Get last element by selector
@@ -24,8 +24,8 @@ function qsl(selector, context) {
 * @param [HTMLElement] defaults to document
 * @return NodeList
 */
-function qsa(selector, context) {
-	return (context || document).querySelectorAll(selector);
+function qsa(selector, context = document) {
+	return context.querySelectorAll(selector);
 }
 
 /** Return a function calling fn with the next arguments
@@ -33,8 +33,7 @@ function qsa(selector, context) {
 * @param ...
 * @return function with preserved this
 */
-function partial(fn) {
-	const args = Array.apply(null, arguments).slice(1);
+function partial(fn, ...args) {
 	return function () {
 		return fn.apply(this, args);
 	};
@@ -45,11 +44,9 @@ function partial(fn) {
 * @param ...
 * @return function with preserved this
 */
-function partialArg(fn) {
-	const args = Array.apply(null, arguments);
+function partialArg(fn, ...args) {
 	return function (arg) {
-		args[0] = arg;
-		return fn.apply(this, args);
+		return fn.apply(this, [arg, ...args]);
 	};
 }
 
@@ -69,9 +66,7 @@ function mixin(target, source) {
 * @param [boolean]
 */
 function alterClass(el, className, enable) {
-	if (el) {
-		el.classList[enable ? 'add' : 'remove'](className);
-	}
+	el?.classList.toggle(className, !!enable); // !! - undefined would toggle
 }
 
 /** Toggle visibility
@@ -80,7 +75,7 @@ function alterClass(el, className, enable) {
 */
 function toggle(id) {
 	const el = qs('#' + id);
-	el && el.classList.toggle('hidden');
+	el?.classList.toggle('hidden');
 	return false;
 }
 
@@ -119,7 +114,7 @@ function selectValue(select) {
 		return select.value;
 	}
 	const selected = select.options[select.selectedIndex];
-	return ((selected.attributes.value || {}).specified ? selected.value : selected.text);
+	return (selected.attributes.value?.specified ? selected.value : selected.text);
 }
 
 /** Verify if element has a specified tag name
@@ -247,7 +242,7 @@ function tableClick(event, click) {
 	el = el.firstChild.firstChild;
 	if (click) {
 		el.checked = !el.checked;
-		el.onclick && el.onclick();
+		el.onclick?.();
 	}
 	if (el.name == 'check[]') {
 		el.form['all'].checked = false;
@@ -371,7 +366,7 @@ function selectAddRow() {
 			input.value = '';
 		}
 	}
-	field.parentNode.parentNode.appendChild(row);
+	field.parentNode.parentNode.append(row);
 }
 
 /** Prevent onsearch handler on Enter
@@ -379,7 +374,7 @@ function selectAddRow() {
 * @this HTMLInputElement
 */
 function selectSearchKeydown(event) {
-	if (event.keyCode == 13 || event.keyCode == 10) {
+	if (event.key == 'Enter') {
 		this.onsearch = () => { };
 	}
 }
@@ -399,10 +394,10 @@ function selectSearchSearch() {
 * @param [string] extra class name
 * @this HTMLElement
 */
-function columnMouse(className) {
+function columnMouse(className = '') {
 	for (const span of qsa('span', this)) {
-		if (/column/.test(span.className)) {
-			span.className = 'column' + (className || '');
+		if (span.classList.contains('column')) {
+			span.className = 'column' + className;
 		}
 	}
 }
@@ -455,7 +450,7 @@ function bodyKeydown(event, button) {
 	if (target.jushTextarea) {
 		target = target.jushTextarea;
 	}
-	if (isCtrl(event) && (event.keyCode == 13 || event.keyCode == 10) && isTag(target, 'select|textarea|input')) { // 13|10 - Enter
+	if (isCtrl(event) && event.key == 'Enter' && isTag(target, 'select|textarea|input')) {
 		target.blur();
 		if (target.form[button]) {
 			target.form[button].click();
@@ -490,9 +485,9 @@ function bodyClick(event) {
 * @return boolean
 */
 function editingKeydown(event) {
-	if ((event.keyCode == 40 || event.keyCode == 38) && isCtrl(event)) { // 40 - Down, 38 - Up
+	if (/^Arrow(Down|Up)$/.test(event.key) && isCtrl(event)) {
 		const target = event.target;
-		const sibling = (event.keyCode == 40 ? 'nextSibling' : 'previousSibling');
+		const sibling = (event.key == 'ArrowDown' ? 'nextSibling' : 'previousSibling');
 		let el = target.parentNode.parentNode[sibling];
 		if (el && (isTag(el, 'tr') || (el = el[sibling])) && isTag(el, 'tr') && (el = el.childNodes[nodePosition(target.parentNode)]) && (el = el.childNodes[nodePosition(target)])) {
 			el.focus();
@@ -560,7 +555,7 @@ function fieldChange() {
 		input.value = '';
 	}
 	// keep value in <select> (function)
-	parentTag(this, 'table').appendChild(row);
+	parentTag(this, 'table').append(row);
 	this.oninput = () => { };
 }
 
@@ -677,14 +672,14 @@ function selectClick(event, text, warning) {
 	text = text || /\n/.test(original);
 	const input = document.createElement(text ? 'textarea' : 'input');
 	input.onkeydown = event => {
-		if (event.keyCode == 27 && !event.shiftKey && !event.altKey && !isCtrl(event)) { // 27 - Esc
-			inputBlur.apply(input);
+		if (event.key == 'Escape' && !event.shiftKey && !event.altKey && !isCtrl(event)) {
+			inputBlur.call(input);
 			td.innerHTML = original;
 		}
 	};
 
 	const pos = getSelection().anchorOffset;
-	let value = (td.firstChild && td.firstChild.alt) || td.textContent;
+	let value = td.firstChild?.alt || td.textContent;
 	const tdStyle = window.getComputedStyle(td, null);
 
 	input.style.width = Math.max(td.clientWidth - parseFloat(tdStyle.paddingLeft) - parseFloat(tdStyle.paddingRight), (text ? 200 : 20)) + 'px';
@@ -700,7 +695,7 @@ function selectClick(event, text, warning) {
 		value = '';
 	}
 	td.innerHTML = '';
-	td.appendChild(input);
+	td.append(input);
 	setupSubmitHighlight(td);
 	input.focus();
 	if (text == 2) { // long text
@@ -737,7 +732,7 @@ function selectLoadMore(limit, loading) {
 			const tbody = document.createElement('tbody');
 			tbody.innerHTML = request.responseText;
 			adminerHighlighter(qsa('code', tbody));
-			qs('#table').appendChild(tbody);
+			qs('#table').append(tbody);
 			if (tbody.children.length < limit) {
 				a.remove();
 			} else {
@@ -818,7 +813,7 @@ function findDefaultSubmit(el) {
 * @param function
 */
 function addEvent(el, action, handler) {
-	el.addEventListener(action, handler, false);
+	el.addEventListener(action, handler);
 }
 
 /** Clone node and setup submit highlighting

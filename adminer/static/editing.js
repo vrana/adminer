@@ -77,7 +77,7 @@ function typePassword(el, disable) {
 */
 function messagesPrint(parent) {
 	for (const el of qsa('.toggle', parent)) {
-		el.onclick = partial(toggle, el.getAttribute('href').substr(1));
+		el.onclick = partial(toggle, el.getAttribute('href').slice(1));
 	}
 	copyCode(parent);
 }
@@ -105,7 +105,7 @@ function loginDriver(driver) {
 	const trs = parentTag(driver, 'table').rows;
 	const disabled = /sqlite/.test(selectValue(driver));
 	alterClass(trs[1], 'hidden', disabled);	// 1 - row with server
-	trs[1].getElementsByTagName('input')[0].disabled = disabled;
+	qs('input', trs[1]).disabled = disabled;
 }
 
 
@@ -126,9 +126,7 @@ function dbMouseDown(event) {
 	}
 
 	dbCtrl = isCtrl(event);
-	if (dbPrevious[this.name] == undefined) {
-		dbPrevious[this.name] = this.value;
-	}
+	dbPrevious[this.name] ??= this.value;
 }
 
 /** Load database after selecting it
@@ -168,7 +166,7 @@ function selectFieldChange() {
 			if (match) {
 				const op = selectValue(form[match[1] + 'op]']);
 				const val = form[match[1] + 'val]'].value;
-				if (col in indexColumns && (!/LIKE|REGEXP/.test(op) || (op == 'LIKE' && val.charAt(0) != '%'))) {
+				if (col in indexColumns && (!/LIKE|REGEXP/.test(op) || (op == 'LIKE' && val[0] != '%'))) {
 					return true;
 				} else if (col || val) {
 					ok = false;
@@ -213,7 +211,7 @@ let added = '.', rowCount;
 * @return boolean
 */
 function delimiterEqual(val, a, b) {
-	return (val == a + '_' + b || val == a + b || val == a + b.charAt(0).toUpperCase() + b.substr(1));
+	return (val == a + '_' + b || val == a + b || val == a + b[0].toUpperCase() + b.slice(1));
 }
 
 /** Escape string to use as identifier
@@ -330,7 +328,7 @@ function editingInput(event) {
 * @this HTMLInputElement
 */
 function editingNameChange() {
-	const name = this.name.substr(0, this.name.length - 7);
+	const name = this.name.slice(0, -7);
 	const type = formField(this.form, name + '[type]');
 	const opts = type.options;
 	let candidate; // don't select anything with ambiguous match (like column `id`)
@@ -368,7 +366,7 @@ function editingNameChange() {
 */
 function editingAddRow(focus) {
 	const match = /(\d+)(\.\d+)?/.exec(this.name);
-	const x = match[0] + (match[2] ? added.substr(match[2].length) : added) + '1';
+	const x = match[0] + (match[2] ? added.slice(match[2].length) : added) + '1';
 	const row = parentTag(this, 'tr');
 	const row2 = cloneNode(row);
 	let tags = qsa('select, input, button', row);
@@ -450,7 +448,7 @@ let lastType = '';
 */
 function editingTypeChange() {
 	const type = this;
-	const name = type.name.substr(0, type.name.length - 6);
+	const name = type.name.slice(0, -6);
 	const text = selectValue(type);
 	for (const el of type.form.elements) {
 		if (el.name == name + '[length]') {
@@ -460,7 +458,7 @@ function editingTypeChange() {
 			)) {
 				el.value = '';
 			}
-			el.oninput.apply(el);
+			el.oninput.call(el);
 		}
 		if (lastType == 'timestamp' && el.name == name + '[generated]' && /timestamp/i.test(formField(type.form, name + '[default]').value)) {
 			el.checked = false;
@@ -497,7 +495,7 @@ function editingLengthFocus() {
 	if (/^(enum|set)$/.test(selectValue(td.previousSibling.firstChild))) {
 		const edit = qs('#enum-edit');
 		edit.value = enumValues(this.value);
-		td.appendChild(edit);
+		td.append(edit);
 		this.style.display = 'none';
 		edit.style.display = 'inline';
 		edit.focus();
@@ -569,7 +567,7 @@ function partitionByChange() {
 function partitionNameChange() {
 	const row = cloneNode(parentTag(this, 'tr'));
 	row.firstChild.firstChild.value = '';
-	parentTag(this, 'table').appendChild(row);
+	parentTag(this, 'table').append(row);
 	this.oninput = () => { };
 }
 
@@ -616,7 +614,7 @@ function foreignAddRow() {
 		select.name = select.name.replace(/\d+]/, '1$&');
 		select.selectedIndex = 0;
 	}
-	parentTag(this, 'table').appendChild(row);
+	parentTag(this, 'table').append(row);
 }
 
 
@@ -635,7 +633,7 @@ function indexesAddRow() {
 		input.name = input.name.replace(/indexes\[\d+/, '$&1');
 		input.value = '';
 	}
-	parentTag(this, 'table').appendChild(row);
+	parentTag(this, 'table').append(row);
 }
 
 /** Change column in index
@@ -682,7 +680,7 @@ function indexesAddColumn(prefix) {
 			input.value = '';
 		}
 	}
-	parentTag(field, 'td').appendChild(column);
+	parentTag(field, 'td').append(column);
 	field.onchange();
 }
 
@@ -699,7 +697,7 @@ function sqlSubmit(form, root) {
 		+ (form['error_stops'].checked ? '&error_stops=1' : '')
 		+ (form['only_errors'].checked ? '&only_errors=1' : '')
 	;
-	if ((document.location.origin + document.location.pathname + action).length < 2000) { // reasonable minimum is 2048
+	if ((location.origin + location.pathname + action).length < 2000) { // reasonable minimum is 2048
 		form.action = action;
 	}
 }
@@ -716,7 +714,7 @@ function sqlExport() {
 		return true;
 	}
 	const div = form.previousElementSibling;
-	const table = (div && /\bscrollable\b/.test(div.className) ? qs('table', div) : null);
+	const table = (div?.classList.contains('scrollable') ? qs('table', div) : null);
 	if (!table) {
 		return true;
 	}
@@ -732,7 +730,7 @@ function sqlExport() {
 	);
 	const tsv = (format == 'tsv');
 	const quotable = new RegExp('["\n]|^0[^.]|\\.\\d*0$|' + (tsv ? '\t' : '[,;]|^$')); // dump_csv()
-	let data = String.fromCharCode(0xfeff); // UTF-8 byte order mark
+	let data = '\ufeff'; // UTF-8 byte order mark
 	for (const row of qsa('tr', table)) {
 		data += Array.from(row.children).map(cell => {
 			const val = (qsa('i', cell).length ? '' : cell.textContent); // <i> - NULL
@@ -744,7 +742,7 @@ function sqlExport() {
 		const a = document.createElement('a');
 		a.href = url;
 		a.download = 'sql.csv';
-		document.body.appendChild(a);
+		document.body.append(a);
 		a.click();
 		a.remove();
 		setTimeout(() => URL.revokeObjectURL(url));
@@ -779,7 +777,7 @@ function fileChange(event, count, countMessage, size, sizeMessage) {
 function triggerChange(tableRe, table, form) {
 	const formEvent = selectValue(form['Event']);
 	if (tableRe.test(form['Trigger'].value)) {
-		form['Trigger'].value = table + '_' + (selectValue(form['Timing']).charAt(0) + formEvent.charAt(0)).toLowerCase();
+		form['Trigger'].value = table + '_' + (selectValue(form['Timing'])[0] + formEvent[0]).toLowerCase();
 	}
 	alterClass(form['Of'], 'hidden', !/ OF/.test(formEvent));
 }
@@ -793,7 +791,7 @@ let that, x, y; // em and tablePos defined in schema.inc.php
 * @this HTMLElement
 */
 function schemaMousedown(event) {
-	if ((event.which || event.button) == 1) {
+	if (event.button == 0) { // 0 - left button
 		that = this;
 		x = event.clientX - this.offsetLeft;
 		y = event.clientY - this.offsetTop;
@@ -810,7 +808,7 @@ function schemaMousemove(event) {
 		const lineSet = { };
 		for (const div of qsa('div', that)) {
 			if (div.classList.contains('references')) {
-				const div2 = qs('[id="' + (/^refs/.test(div.id) ? 'refd' : 'refs') + div.id.substr(4) + '"]');
+				const div2 = qs('[id="' + (/^refs/.test(div.id) ? 'refd' : 'refs') + div.id.slice(4) + '"]');
 				const ref = (tablePos[div.title] || [ div2.parentNode.offsetTop / em, 0 ]);
 				let left1 = -1;
 				const id = div.id.replace(/^ref.(.+)-.+/, '$1');
@@ -853,7 +851,7 @@ function schemaMouseup(event, db) {
 		for (const key in tablePos) {
 			s += '_' + key + ':' + Math.round(tablePos[key][0]) + 'x' + Math.round(tablePos[key][1]);
 		}
-		s = encodeURIComponent(s.substr(1));
+		s = encodeURIComponent(s.slice(1));
 		const link = qs('#schema-link');
 		link.href = link.href.replace(/[^=]+$/, '') + s;
 		cookie('adminer_schema-' + db + '=' + s, 30); //! special chars in db
