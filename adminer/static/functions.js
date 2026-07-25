@@ -145,9 +145,7 @@ function parentTag(el, tag) {
 function trCheck(el) {
 	const tr = parentTag(el, 'tr');
 	alterClass(tr, 'checked', el.checked);
-	if (el.form && el.form['all'] && el.form['all'].onclick) { // Opera treats form.all as document.all
-		el.form['all'].onclick();
-	}
+	el.form?.['all']?.onclick?.();
 }
 
 /** Fill number of selected items
@@ -224,7 +222,7 @@ function tableClick(event, click) {
 			return;
 		}
 	}
-	click = (click || !window.getSelection || getSelection().isCollapsed);
+	click = (click || getSelection().isCollapsed);
 	let el = event.target;
 	while (!isTag(el, 'tr')) {
 		if (isTag(el, 'table|a|input|textarea')) {
@@ -685,11 +683,7 @@ function selectClick(event, text, warning) {
 	input.style.width = Math.max(td.clientWidth - parseFloat(tdStyle.paddingLeft) - parseFloat(tdStyle.paddingRight), (text ? 200 : 20)) + 'px';
 
 	if (text) {
-		let rows = 1;
-		value.replace(/\n/g, () => {
-			rows++;
-		});
-		input.rows = rows;
+		input.rows = value.split('\n').length;
 	}
 	if (qsa('i', td).length) { // <i> - NULL
 		value = '';

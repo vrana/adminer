@@ -47,20 +47,6 @@ function syntaxHighlighting(version, vendor) {
 	});
 }
 
-/** Get value of dynamically created form field
-* @param HTMLFormElement
-* @param string
-* @return HTMLElement
-*/
-function formField(form, name) {
-	// required in IE < 8, form.elements[name] doesn't work
-	for (let i=0; i < form.length; i++) {
-		if (form[i].name == name) {
-			return form[i];
-		}
-	}
-}
-
 /** Try to change input type to password or to text
 * @param HTMLInputElement
 * @param boolean
@@ -329,7 +315,7 @@ function editingInput(event) {
 */
 function editingNameChange() {
 	const name = this.name.slice(0, -7);
-	const type = formField(this.form, name + '[type]');
+	const type = this.form[name + '[type]'];
 	const opts = type.options;
 	let candidate; // don't select anything with ambiguous match (like column `id`)
 	const val = this.value;
@@ -377,7 +363,6 @@ function editingAddRow(focus) {
 	}
 	tags = qsa('input', row);
 	tags2 = qsa('input', row2);
-	const input = tags2[0]; // IE loose tags2 after insertBefore()
 	for (let i=0; i < tags.length; i++) {
 		if (tags[i].name == 'auto_increment_col') {
 			tags2[i].value = x;
@@ -393,8 +378,8 @@ function editingAddRow(focus) {
 	tags[0].oninput = editingNameChange;
 	row.parentNode.insertBefore(row2, row.nextSibling);
 	if (focus) {
-		input.oninput = editingNameChange;
-		input.focus();
+		tags2[0].oninput = editingNameChange;
+		tags2[0].focus();
 	}
 	added += '0';
 	rowCount++;
@@ -419,7 +404,7 @@ function editingAddLastRow() {
 * @this HTMLInputElement
 */
 function editingRemoveRow(name) {
-	const field = formField(this.form, this.name.replace(/[^[]+(.+)/, name));
+	const field = this.form[this.name.replace(/[^[]+(.+)/, name)];
 	field.remove();
 	parentTag(this, 'tr').style.display = 'none';
 	return false;
@@ -432,9 +417,6 @@ function editingRemoveRow(name) {
 */
 function editingMoveRow(up){
 	const row = parentTag(this, 'tr');
-	if (!('nextElementSibling' in row)) {
-		return true;
-	}
 	row.parentNode.insertBefore(row, up
 		? row.previousElementSibling
 		: row.nextElementSibling ? row.nextElementSibling.nextElementSibling : row.parentNode.firstChild);
@@ -460,7 +442,7 @@ function editingTypeChange() {
 			}
 			el.oninput.call(el);
 		}
-		if (lastType == 'timestamp' && el.name == name + '[generated]' && /timestamp/i.test(formField(type.form, name + '[default]').value)) {
+		if (lastType == 'timestamp' && el.name == name + '[generated]' && /timestamp/i.test(type.form[name + '[default]'].value)) {
 			el.checked = false;
 			el.selectedIndex = 0;
 		}
