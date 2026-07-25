@@ -92,6 +92,9 @@ tr:hover .hover, li:hover .hover, p:hover .hover, #fieldset-history div:hover .h
 #dbs { overflow: hidden; }
 #logins, #tables { white-space: nowrap; overflow: hidden; }
 #logins a, #tables a, #tables span { background: var(--bg); }
+/* bold select would be wider than the other ones and shift the table name, so the name is bold instead - not in Editor where the link is the name */
+#tables a.select.active:not(:last-child) { font-weight: normal; }
+#tables a.select.active ~ * { font-weight: bold; }
 #content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
 #lang { position: absolute; top: -2.6em; left: 0; padding: .3em 1em; }
 #menuopen { display: none; }
