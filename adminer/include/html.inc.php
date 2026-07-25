@@ -52,15 +52,17 @@ function nl_br(string $string): string {
 
 /** Generate HTML checkbox
 * @param string|int $value
+* @param string $class class of the label, of the input if there's no label
 */
 function checkbox(string $name, $value, ?bool $checked, string $label = "", string $onclick = "", string $class = "", string $labelled_by = ""): string {
 	$return = "<input type='checkbox' name='$name' value='" . h($value) . "'"
 		. ($checked ? " checked" : "")
+		. ($label == "" && $class ? " class='$class'" : "")
 		. ($labelled_by ? " aria-labelledby='$labelled_by'" : "")
 		. ">"
 		. ($onclick ? script("qsl('input').onclick = function () { $onclick };", "") : "")
 	;
-	return ($label != "" || $class ? "<label" . ($class ? " class='$class'" : "") . ">$return" . h($label) . "</label>" : $return);
+	return ($label != "" ? "<label" . ($class ? " class='$class'" : "") . ">$return" . h($label) . "</label>" : $return);
 }
 
 /** Generate list of HTML options

@@ -65,7 +65,7 @@ if (
 			foreach ($databases as $db => $tables) {
 				$root = h(ME) . "db=" . urlencode($db);
 				$id = h("Db-" . $db);
-				echo "<tr>" . (support("database") ? "<td>" . checkbox("db[]", $db, in_array($db, (array) $_POST["db"]), "", "", "", $id) : "");
+				echo "<tr>" . (support("database") ? "<td>" . checkbox("db[]", $db, in_array($db, (array) $_POST["db"]), "", "", "hover", $id) : "");
 				echo "<th><a href='$root' id='$id'>" . h($db) . "</a>";
 				$collation = h(db_collation($db, $collations));
 				echo "<td>" . (support("database") ? "<a href='$root" . ($scheme ? "&amp;ns=" : "") . "&amp;database=' title='" . lang('Alter database') . "'>$collation</a>" : $collation);

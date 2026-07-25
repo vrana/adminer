@@ -76,7 +76,7 @@ if (!is_view($table_status)) {
 				echo "(<i>" . implode("</i>, <i>", array_map('Adminer\h', $foreign_key["target"])) . "</i>)";
 				echo "<td>" . h($foreign_key["on_delete"]);
 				echo "<td>" . h($foreign_key["on_update"]);
-				echo '<td><a href="' . h(ME . 'foreign=' . urlencode($TABLE) . '&name=' . urlencode($name)) . '">' . lang('Alter') . '</a>';
+				echo '<td><a href="' . h(ME . 'foreign=' . urlencode($TABLE) . '&name=' . urlencode($name)) . '" class="hover">' . lang('Alter') . '</a>';
 				echo "\n";
 			}
 			echo "</table>\n";
@@ -92,7 +92,7 @@ if (!is_view($table_status)) {
 			foreach ($check_constraints as $key => $val) {
 				echo "<tr title='" . h($key) . "'>";
 				echo "<td><code class='jush-" . JUSH . "'>" . h($val);
-				echo "<td><a href='" . h(ME . 'check=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "'>" . lang('Alter') . "</a>";
+				echo "<td><a href='" . h(ME . 'check=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "' class='hover'>" . lang('Alter') . "</a>";
 				echo "\n";
 			}
 			echo "</table>\n";
@@ -107,7 +107,7 @@ if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
 	if ($triggers) {
 		echo "<table>\n";
 		foreach ($triggers as $key => $val) {
-			echo "<tr valign='top'><td>" . h($val[0]) . "<td>" . h($val[1]) . "<th>" . h($key) . "<td><a href='" . h(ME . 'trigger=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "'>" . lang('Alter') . "</a>\n";
+			echo "<tr valign='top'><td>" . h($val[0]) . "<td>" . h($val[1]) . "<th>" . h($key) . "<td><a href='" . h(ME . 'trigger=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "' class='hover'>" . lang('Alter') . "</a>\n";
 		}
 		echo "</table>\n";
 	}

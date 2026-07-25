@@ -46,6 +46,9 @@ input.wayoff { left: -1000px; position: absolute; }
 .block { display: block; }
 .version { color: #777; font-size: 62%; }
 .js .hidden, .nojs .jsonly, .insecure .copy { display: none; }
+/* .hover - shown on hovering the row, item or paragraph; opacity keeps it focusable and the layout stable */
+@media (hover: hover) { .hover { opacity: 0; } }
+tr:hover .hover, li:hover .hover, p:hover .hover, #fieldset-history div:hover .hover, .hover:focus, .hover.active, .hover:checked { opacity: 1; }
 .js .column { position: absolute; background: var(--lit); padding: .27em 1ex .33em 0; margin-top: -.37em; border-width: 1px 1px 1px 0; border-radius: 0 8px 8px 0; }
 .nowrap td, .nowrap th, td.nowrap, p.nowrap { white-space: pre; }
 .wrap td { white-space: normal; }

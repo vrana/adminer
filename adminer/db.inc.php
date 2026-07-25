@@ -118,7 +118,7 @@ if (adminer()->homepage()) {
 				$view = ($full ? is_view($status) : $status !== null && !preg_match('~table|sequence~i', $status));
 				$status = ($full ? $status : array('Engine' => $status));
 				$id = h("Table-" . $name);
-				echo '<tr><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array("$name", $tables_views, true), "", "", "", $id); // "$name" to check numeric table names
+				echo '<tr><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array("$name", $tables_views, true), "", "", "hover", $id); // "$name" to check numeric table names
 				echo '<th>' . (support("table") || support("indexes") ? "<a href='" . h(ME) . "table=" . urlencode($name) . "' title='" . lang('Show structure') . "' id='$id'>" . h($name) . '</a>' : h($name));
 				if ($view && !preg_match('~materialized~i', $status['Engine'])) {
 					$title = lang('View');

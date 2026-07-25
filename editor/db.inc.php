@@ -21,7 +21,7 @@ if (adminer()->homepage()) {
 	foreach (table_status() as $table => $row) {
 		$name = adminer()->tableName($row);
 		if ($name != "") {
-			echo '<tr><td>' . checkbox("tables[]", $table, in_array($table, (array) $_POST["tables"], true));
+			echo '<tr><td>' . checkbox("tables[]", $table, in_array($table, (array) $_POST["tables"], true), "", "", "hover");
 			echo "<th><a href='" . h(ME) . 'select=' . urlencode($table) . "'>$name</a>";
 			echo "<td align='right'><a href='" . h(ME . "edit=") . urlencode($table) . "'>" . format_rows($row) . "</a>";
 		}

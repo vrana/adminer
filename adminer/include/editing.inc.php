@@ -322,7 +322,7 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 		echo input_hidden("fields[$i][orig]", $orig);
 		edit_type("fields[$i]", $field, $collations, $foreign_keys);
 		if ($type == "TABLE") {
-			echo "<td>" . checkbox("fields[$i][null]", 1, $field["null"], "", "", "block", "label-null");
+			echo "<td><label class='block'>" . checkbox("fields[$i][null]", 1, $field["null"], "", "", "", "label-null") . "</label>";
 			echo "<td><label class='block'><input type='radio' name='auto_increment_col' value='$i'" . ($field["auto_increment"] ? " checked" : "") . " aria-labelledby='label-ai'></label>";
 			echo "<td$default_class>" . (driver()->generated
 				? html_select("fields[$i][generated]", array_merge(array("", "DEFAULT"), driver()->generated), $field["generated"]) . " "

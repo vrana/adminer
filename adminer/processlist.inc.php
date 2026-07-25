@@ -35,7 +35,7 @@ foreach (adminer()->processList() as $i => $row) {
 		}
 		echo "</thead>\n";
 	}
-	echo "<tr>" . (support("kill") ? "<td>" . checkbox("kill[]", $row[JUSH == "sql" ? "Id" : "pid"], 0) : "");
+	echo "<tr>" . (support("kill") ? "<td>" . checkbox("kill[]", $row[JUSH == "sql" ? "Id" : "pid"], 0, "", "", "hover") : "");
 	foreach ($row as $key => $val) {
 		echo "<td>" . ($val != "" && (
 			(JUSH == "sql" && $key == "Info" && preg_match("~Query|Killed~", $row["Command"])) ||

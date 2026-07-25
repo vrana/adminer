@@ -263,7 +263,7 @@ class Adminer {
 			;
 		}
 		return "<p><code class='jush-" . JUSH . "'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>(" . format_time($start) . ")</span>"
-			. (support("sql") ? " <a href='" . h(ME) . "sql=" . urlencode($query) . "'>" . lang('Edit') . "</a>" : "")
+			. (support("sql") ? " <a href='" . h(ME) . "sql=" . urlencode($query) . "' class='hover'>" . lang('Edit') . "</a>" : "")
 			. $return
 		;
 	}
@@ -1146,7 +1146,7 @@ class Adminer {
 			$name = adminer()->tableName($status);
 			if ($name != "" && !$status["partition"]) {
 				echo '<li><a href="' . h(ME) . 'select=' . urlencode($table) . '"'
-					. bold($_GET["select"] == $table || $_GET["edit"] == $table, "select")
+					. bold($_GET["select"] == $table || $_GET["edit"] == $table, "select hover")
 					. " title='" . lang('Select data') . "'>" . lang('select') . "</a> "
 				;
 				echo (support("table") || support("indexes")

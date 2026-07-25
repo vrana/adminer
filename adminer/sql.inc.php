@@ -280,11 +280,11 @@ if (!isset($_GET["import"]) && $history) {
 	for ($val = end($history); $val; $val = prev($history)) { // not array_reverse() to save memory
 		$key = key($history);
 		list($q, $time, $elapsed) = $val;
-		echo '<a href="' . h(ME . "sql=&history=$key") . '">' . lang('Edit') . "</a>"
+		echo '<div><a href="' . h(ME . "sql=&history=$key") . '" class="hover">' . lang('Edit') . "</a>"
 			. " <span class='time' title='" . @date('Y-m-d', $time) . "'>" . @date("H:i:s", $time) . "</span>" // @ - time zone may be not set
 			. " <code class='jush-" . JUSH . "'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace("~^(#|$line_comment).*~m", '', $q)))), 80, "</code>")
 			. ($elapsed ? " <span class='time'>($elapsed)</span>" : "")
-			. "<br>\n"
+			. "</div>\n"
 		;
 	}
 	echo "<input type='submit' name='clear' value='" . lang('Clear') . "'>\n";
