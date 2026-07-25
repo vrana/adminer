@@ -157,10 +157,8 @@ function selectCount(id, count) {
 	setHtml(id, (count === '' ? '' : '(' + (count + '').replace(/\B(?=(\d{3})+$)/g, thousandsSeparator) + ')'));
 	const el = qs('#' + id);
 	if (el) {
-		for (const input of qsa('input', el.parentNode.parentNode)) {
-			if (input.type == 'submit') {
-				input.disabled = (count == '0');
-			}
+		for (const input of qsa('input[type=submit]', el.parentNode.parentNode)) {
+			input.disabled = (count == '0');
 		}
 	}
 }
@@ -201,13 +199,7 @@ function formUncheck(id) {
 * @return number
 */
 function formChecked(input, name) {
-	let checked = 0;
-	for (const el of input.form.elements) {
-		if (name.test(el.name) && el.checked) {
-			checked++;
-		}
-	}
-	return checked;
+	return [...input.form.elements].filter(el => name.test(el.name) && el.checked).length;
 }
 
 /** Select clicked row
@@ -407,18 +399,15 @@ function columnMouse(className = '') {
 * @return boolean false
 */
 function selectSearch(name) {
-	let el = qs('#fieldset-search');
-	el.className = '';
-	const divs = qsa('div', el);
-	let i, div;
-	for (i=0; i < divs.length; i++) {
-		div = divs[i];
-		el = qs('[name$="[col]"]', div);
-		if (el && selectValue(el) == name) {
-			break;
-		}
-	}
-	if (i == divs.length) {
+	const fieldset = qs('#fieldset-search');
+	fieldset.className = '';
+	const divs = qsa('div', fieldset);
+	let div = [...divs].find(row => {
+		const col = qs('[name$="[col]"]', row);
+		return col && selectValue(col) == name;
+	});
+	if (!div) { // use the last empty row
+		div = divs[divs.length - 1];
 		div.firstChild.value = name;
 		div.firstChild.onchange();
 	}
@@ -752,9 +741,7 @@ function eventStop(event) {
 * @param HTMLElement
 */
 function setupSubmitHighlight(parent) {
-	for (const input of qsa('input, select, textarea', parent)) {
-		setupSubmitHighlightInput(input);
-	}
+	qsa('input, select, textarea', parent).forEach(setupSubmitHighlightInput);
 }
 
 /** Setup submit highlighting for single element
@@ -792,11 +779,7 @@ function findDefaultSubmit(el) {
 	if (!el.form) {
 		return null;
 	}
-	for (const input of qsa('input', el.form)) {
-		if (input.type == 'submit' && !input.style.zIndex) {
-			return input;
-		}
-	}
+	return [...qsa('input[type=submit]', el.form)].find(input => !input.style.zIndex);
 }
 
 
@@ -819,8 +802,7 @@ function cloneNode(el) {
 	const selector = 'input, select';
 	const origEls = qsa(selector, el);
 	const cloneEls = qsa(selector, el2);
-	for (let i=0; i < origEls.length; i++) {
-		const origEl = origEls[i];
+	for (const [i, origEl] of origEls.entries()) {
 		for (const key in origEl) {
 			if (/^on/.test(key) && origEl[key]) {
 				cloneEls[i][key] = origEl[key];

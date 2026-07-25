@@ -138,10 +138,8 @@ function dbChange() {
 function selectFieldChange() {
 	const form = this.form;
 	const ok = (() => {
-		for (const input of qsa('input', form)) {
-			if (input.value && /^fulltext/.test(input.name)) {
-				return true;
-			}
+		if ([...qsa('input', form)].some(input => input.value && /^fulltext/.test(input.name))) {
+			return true;
 		}
 		let ok = form.limit.value;
 		let group = false;
@@ -327,8 +325,7 @@ function editingNameChange() {
 			}
 			break;
 		}
-		const base = match[1];
-		const column = match[2];
+		const [, base, column] = match;
 		for (const table of [ base, base.replace(/s$/, ''), base.replace(/es$/, '') ]) {
 			if (val == column || val == table || delimiterEqual(val, table, column) || delimiterEqual(val, column, table)) {
 				if (candidate) {
@@ -357,21 +354,21 @@ function editingAddRow(focus) {
 	const row2 = cloneNode(row);
 	let tags = qsa('select, input, button', row);
 	let tags2 = qsa('select, input, button', row2);
-	for (let i=0; i < tags.length; i++) {
-		tags2[i].name = tags[i].name.replace(/[0-9.]+/, x);
-		tags2[i].selectedIndex = (/\[(generated)/.test(tags[i].name) ? 0 : tags[i].selectedIndex);
+	for (const [i, tag] of tags.entries()) {
+		tags2[i].name = tag.name.replace(/[0-9.]+/, x);
+		tags2[i].selectedIndex = (/\[(generated)/.test(tag.name) ? 0 : tag.selectedIndex);
 	}
 	tags = qsa('input', row);
 	tags2 = qsa('input', row2);
-	for (let i=0; i < tags.length; i++) {
-		if (tags[i].name == 'auto_increment_col') {
+	for (const [i, tag] of tags.entries()) {
+		if (tag.name == 'auto_increment_col') {
 			tags2[i].value = x;
 			tags2[i].checked = false;
 		}
-		if (/\[(orig|field|comment|default)/.test(tags[i].name)) {
+		if (/\[(orig|field|comment|default)/.test(tag.name)) {
 			tags2[i].value = '';
 		}
-		if (/\[(generated)/.test(tags[i].name)) {
+		if (/\[(generated)/.test(tag.name)) {
 			tags2[i].checked = false;
 		}
 	}
@@ -624,13 +621,11 @@ function indexesAddRow() {
 */
 function indexesChangeColumn(prefix) {
 	const names = [];
-	for (const tag in { 'select': 1, 'input': 1 }) {
-		for (const column of qsa(tag, parentTag(this, 'td'))) {
-			if (/\[columns]/.test(column.name)) {
-				const value = selectValue(column);
-				if (value) {
-					names.push(value);
-				}
+	for (const column of qsa('select, input', parentTag(this, 'td'))) {
+		if (/\[columns]/.test(column.name)) {
+			const value = selectValue(column);
+			if (value) {
+				names.push(value);
 			}
 		}
 	}
@@ -700,10 +695,9 @@ function sqlExport() {
 	if (!table) {
 		return true;
 	}
-	for (const i of qsa('i', table)) {
-		if (i.textContent != 'NULL') { // <i> other than NULL means the value is not displayed fully
-			return true;
-		}
+	// <i> other than NULL means the value is not displayed fully
+	if ([...qsa('i', table)].some(i => i.textContent != 'NULL')) {
+		return true;
 	}
 	// save_settings() - the server-side export stores the settings too
 	cookie(
@@ -830,8 +824,8 @@ function schemaMouseup(event, db) {
 		tablePos[that.firstChild.firstChild.firstChild.data] = [ (event.clientY - y) / em, (event.clientX - x) / em ];
 		that = undefined;
 		let s = '';
-		for (const key in tablePos) {
-			s += '_' + key + ':' + Math.round(tablePos[key][0]) + 'x' + Math.round(tablePos[key][1]);
+		for (const [key, [top, left]] of Object.entries(tablePos)) {
+			s += '_' + key + ':' + Math.round(top) + 'x' + Math.round(left);
 		}
 		s = encodeURIComponent(s.slice(1));
 		const link = qs('#schema-link');
