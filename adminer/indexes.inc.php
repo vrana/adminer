@@ -116,7 +116,7 @@ $show_options = ($_POST ? $_POST["options"] : get_setting("index_options"));
 
 <form action="" method="post">
 <div class="scrollable">
-<table class="nowrap">
+<table class="nowrap odds">
 <thead><tr>
 <th id="label-type"><?php echo lang('Index Type'); ?>
 <?php
