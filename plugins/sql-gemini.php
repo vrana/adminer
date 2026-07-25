@@ -82,7 +82,7 @@ geminiText.onblur = () => {
 };
 
 geminiText.onkeydown = event => {
-	if (isCtrl(event) && (event.keyCode == 13 || event.keyCode == 10)) {
+	if (isCtrl(event) && event.key == 'Enter') {
 		geminiButton.onclick();
 		event.stopPropagation();
 	}
