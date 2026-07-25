@@ -1068,13 +1068,13 @@ class Adminer {
 			if ($tables) {
 				$links = array();
 				foreach ($tables as $table => $type) {
-					$links[] = preg_quote($table, '/');
+					$links[] = js_escape_re($table);
 				}
 				echo "var jushLinks = { " . JUSH . ":";
 				json_row(js_escape(ME) . (support("table") ? "table" : "select") . '=$&', '/\b(?<!\$)(' . implode('|', $links) . ')(?!\$)\b/g', false); // $ is used in PostgreSQL as part of name
 				if (support('routine')) {
 					foreach (routines() as $row) {
-						json_row(js_escape(ME) . 'function=' . urlencode($row["SPECIFIC_NAME"]) . '&name=$&', '/\b' . preg_quote($row["ROUTINE_NAME"], '/') . '(?=["`\]]?\()/g', false);
+						json_row(js_escape(ME) . 'function=' . urlencode($row["SPECIFIC_NAME"]) . '&name=$&', '/\b' . js_escape_re($row["ROUTINE_NAME"]) . '(?=["`\]]?\()/g', false);
 					}
 				}
 				json_row('');

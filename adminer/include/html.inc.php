@@ -148,6 +148,12 @@ function js_escape(string $string): string {
 	return addcslashes($string, "\r\n'\\/"); // slash for <script>
 }
 
+/** Escape string to use inside a JavaScript regular expression literal
+*/
+function js_escape_re(string $string): string {
+	return addcslashes(preg_quote($string, "/"), "\n");
+}
+
 /** Generate page number for pagination */
 function pagination(int $page, ?int $current): string {
 	return " " . ($page == $current
