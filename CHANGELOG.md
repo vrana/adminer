@@ -1,4 +1,5 @@
 ## Adminer dev
+- Escape index type, algorithm and length in table structure (XSS)
 - Check for a new version even without JavaScript
 - Sort languages by their translated name
 - Show repeated links and checkboxes only when hovering or focusing the row

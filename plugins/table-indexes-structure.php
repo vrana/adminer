@@ -12,12 +12,12 @@ class AdminerTableIndexesStructure extends Adminer\Plugin {
 		echo "<table>\n";
 		echo "<thead><tr><th>" . Adminer\lang('Name') . "<th>" . Adminer\lang('Type') . "<th>" . Adminer\lang('Algorithm') . "<th>" . Adminer\lang('Columns') . "</thead>\n";
 		foreach ($indexes as $name => $index) {
-			echo "<tr><th>" . Adminer\h($name) . "<td>$index[type]<td>$index[algorithm]";
+			echo "<tr><th>" . Adminer\h($name) . "<td>" . Adminer\h($index["type"]) . "<td>" . Adminer\h($index["algorithm"]);
 			ksort($index["columns"]); // enforce correct columns order
 			$print = array();
 			foreach ($index["columns"] as $key => $val) {
 				$print[] = "<i>" . Adminer\h($val) . "</i>"
-					. ($index["lengths"][$key] ? "(" . $index["lengths"][$key] . ")" : "")
+					. ($index["lengths"][$key] ? "(" . Adminer\h($index["lengths"][$key]) . ")" : "")
 					. ($index["descs"][$key] ? " DESC" : "")
 				;
 			}

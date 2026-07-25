@@ -382,13 +382,13 @@ class Adminer {
 			$print = array();
 			foreach ($index["columns"] as $key => $val) {
 				$print[] = "<i>" . h($val) . "</i>"
-					. ($index["lengths"][$key] ? "(" . $index["lengths"][$key] . ")" : "")
+					. ($index["lengths"][$key] ? "(" . h($index["lengths"][$key]) . ")" : "")
 					. ($index["descs"][$key] ? " DESC" : "")
 				;
 			}
 
 			echo "<tr title='" . h($name) . "'>";
-			echo "<th>$index[type]" . ($default_algorithm && $index['algorithm'] != $default_algorithm ? " ($index[algorithm])" : "");
+			echo "<th>" . h($index["type"]) . ($default_algorithm && $index['algorithm'] != $default_algorithm ? " (" . h($index['algorithm']) . ")" : "");
 			echo "<td>" . implode(", ", $print);
 			if ($partial) {
 				echo "<td>" . ($index['partial'] ? "<code class='jush-" . JUSH . "'>WHERE " . h($index['partial']) : "");
