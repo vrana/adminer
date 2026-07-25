@@ -71,7 +71,7 @@ if (!$error && $_POST) {
 		$errors = array();
 		$parse = '[\'"' . (JUSH == "sql" ? '`#' : (JUSH == "sqlite" ? '`[' : (JUSH == "mssql" ? '[' : ''))) . ']|/\*|' . $line_comment . '|$' . (JUSH == "pgsql" ? '|\$([a-zA-Z]\w*)?\$' : '');
 		$total_start = microtime(true);
-		$adminer_export = get_settings("adminer_import"); // this doesn't offer SQL export so we match the import/export style at select
+		$adminer_export = get_settings("adminer_import"); // match settings in select, not in dump
 
 		while ($query != "") {
 			if (!$offset && preg_match("~^$space*+DELIMITER\\s+(\\S+)~i", $query, $match)) {
