@@ -179,7 +179,9 @@ if (!$error && $_POST) {
 												. html_select("output", adminer()->dumpOutput(), $adminer_export["output"]) . " "
 												. html_select("format", adminer()->dumpFormat(), $adminer_export["format"])
 												. input_hidden("query", $q)
-												. "<input type='submit' name='export' value='" . lang('Export') . "'>" . input_token() . "</span>\n"
+												. "<input type='submit' name='export' value='" . lang('Export') . "'>"
+												. ($limit ? "" : script("qsl('input').onclick = sqlExport;", "")) // JS export requires all rows in the table
+												. input_token() . "</span>\n"
 												. "</form>\n"
 											;
 										}

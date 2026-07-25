@@ -704,6 +704,51 @@ function sqlSubmit(form, root) {
 	}
 }
 
+/** Export the result table by JS without re-running the query
+* @return boolean false when handled by JS
+* @this HTMLInputElement
+*/
+function sqlExport() {
+	const form = this.form;
+	const format = form['format'].value;
+	const output = form['output'].value;
+	if (!/^(csv|csv;|tsv)$/.test(format) || !/^(text|file)$/.test(output)) {
+		return true;
+	}
+	const div = form.previousElementSibling;
+	const table = (div && /\bscrollable\b/.test(div.className) ? qs('table', div) : null);
+	if (!table) {
+		return true;
+	}
+	for (const i of qsa('i', table)) {
+		if (i.textContent != 'NULL') { // <i> other than NULL means the value is not displayed fully
+			return true;
+		}
+	}
+	const tsv = (format == 'tsv');
+	const quotable = new RegExp('["\n]|^0[^.]|\\.\\d*0$|' + (tsv ? '\t' : '[,;]|^$')); // dump_csv()
+	let data = String.fromCharCode(0xfeff); // UTF-8 byte order mark
+	for (const row of qsa('tr', table)) {
+		data += Array.from(row.children).map(cell => {
+			const val = (qsa('i', cell).length ? '' : cell.textContent); // <i> - NULL
+			return (quotable.test(val) ? '"' + val.replace(/"/g, '""') + '"' : val);
+		}).join(format == 'csv' ? ',' : (tsv ? '\t' : ';')) + '\r\n';
+	}
+	const url = URL.createObjectURL(new Blob([data], {type: (output == 'file' ? 'text/csv' : 'text/plain') + '; charset=utf-8'}));
+	if (output == 'file') {
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = 'sql.csv';
+		document.body.appendChild(a);
+		a.click();
+		a.remove();
+		setTimeout(() => URL.revokeObjectURL(url));
+	} else {
+		location.href = url;
+	}
+	return false;
+}
+
 /** Check if PHP can handle the uploaded files
 * @param Event
 * @param number

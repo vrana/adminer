@@ -3,6 +3,7 @@
 - Tables overview: speed up, show totals in SQLite, real size in MS SQL, Oracle
 - SQL command: Show column type in result table header
 - SQL command: Show number of rows in all drivers
+- SQL command: Export result to CSV by JavaScript without re-running the query (bug #1108, SF-760)
 - Alter table: Add next column without page reload
 - Alter table: Do not highlight other move handles while dragging a column
 - Edit: Keep values of columns with special characters in name after error
