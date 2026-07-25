@@ -9,7 +9,7 @@
 class AdminerMenuLinks extends Adminer\Plugin {
 	private $menu;
 
-	/** @param ''|'table'|'select'|'auto' $menu see config() for explanation */
+	/** @param ''|'hover'|'table'|'select'|'auto' $menu see config() for explanation */
 	function __construct($menu = '') {
 		$this->menu = $menu;
 	}
@@ -19,6 +19,7 @@ class AdminerMenuLinks extends Adminer\Plugin {
 			'select' => $this->lang('Select data'),
 			'table' => $this->lang('Show structure'),
 			'' => $this->lang('Both'),
+			'hover' => $this->lang('Both, select on hover'),
 			'auto' => $this->lang('Auto (select on select page, structure otherwise)'),
 		);
 		$menu = Adminer\get_setting("menu", "adminer_config", $this->menu);
@@ -31,6 +32,7 @@ class AdminerMenuLinks extends Adminer\Plugin {
 			'select' => $this->lang('Select data'),
 			'table' => $this->lang('Show structure'),
 		);
+		$both = (!$menu || $menu == 'hover'); // 'hover' - like Adminer, the select link is shown on hovering the row
 		// this is copied from Adminer::tablesPrint()
 		echo "<ul id='tables'>" . Adminer\script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
 		foreach ($tables as $table => $status) {
@@ -38,14 +40,14 @@ class AdminerMenuLinks extends Adminer\Plugin {
 			$name = Adminer\adminer()->tableName($status);
 			if ($name != "" && !$status["partition"]) {
 				echo '<li>';
-				if (!$menu) {
+				if ($both) {
 					echo '<a href="' . Adminer\h(Adminer\ME) . 'select=' . urlencode($table) . '"'
-						. Adminer\bold($_GET["select"] == $table || $_GET["edit"] == $table, "select")
+						. Adminer\bold($_GET["select"] == $table || $_GET["edit"] == $table, "select" . ($menu ? " hover" : ""))
 						. " title='$titles[select]'>" . $this->lang('select') . "</a> "
 					;
 				}
 				$actives = array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"], $_GET["check"], $_GET["view"]);
-				if ($menu) {
+				if (!$both) {
 					$actives[] = $_GET["select"];
 					$actives[] = $_GET["edit"];
 				}
@@ -77,6 +79,7 @@ class AdminerMenuLinks extends Adminer\Plugin {
 			'' => 'Konfigurace odkazů na tabulky v menu; kombinovatelné s AdminerConfig',
 			'Menu table links' => 'Odkazy na tabulky v menu',
 			'Both' => 'Oboje',
+			'Both, select on hover' => 'Oboje, vypsat při najetí myší',
 			'Auto (select on select page, structure otherwise)' => 'Auto (vypsat na výpisech, jinak struktura)',
 			// this is copied from adminer/lang/
 			'select' => 'vypsat',
@@ -86,6 +89,7 @@ class AdminerMenuLinks extends Adminer\Plugin {
 		'pl' => array(
 			'Menu table links' => 'Linki do tabel w menu',
 			'Both' => 'Obie',
+			'Both, select on hover' => 'Obie, przeglądaj po najechaniu myszą', // Claude Opus 5
 			'Auto (select on select page, structure otherwise)' => 'Auto (pokaż na stronie przeglądania, w przeciwnym razie struktura)',
 			// this is copied from adminer/lang/
 			'select' => 'przeglądaj',
@@ -95,6 +99,7 @@ class AdminerMenuLinks extends Adminer\Plugin {
 		'de' => array(
 			'' => 'Menü- und Tabellen-Links konfigurieren. Kombinierbar mit AdminerConfig',
 			'Both' => 'Beide',
+			'Both, select on hover' => 'Beide, zeigen beim Überfahren mit der Maus', // Claude Opus 5
 			'Auto (select on select page, structure otherwise)' => 'Auto (Auswahl auf der ausgewählten Seite, sonst Struktur)',
 			'Menu table links' => 'Links verwenden in „Tabelle“',
 			// this is copied from adminer/lang/
@@ -105,6 +110,7 @@ class AdminerMenuLinks extends Adminer\Plugin {
 		'ja' => array(
 			'' => 'メニュー内テーブルへのリンク設定; AdminerConfig との併用可',
 			'Both' => '両方',
+			'Both, select on hover' => '両方 (選択はマウスオーバー時)', // Claude Opus 5
 			'Auto (select on select page, structure otherwise)' => '自動 (選択ページでは選択、それ以外では構造)',
 			'Menu table links' => 'メニューテーブルへのリンク',
 			// this is copied from adminer/lang/
@@ -117,6 +123,7 @@ class AdminerMenuLinks extends Adminer\Plugin {
 			'Select data' => 'Odaberi podatke',
 			'Show structure' => 'Prikaži strukturu',
 			'Both' => 'Oboje',
+			'Both, select on hover' => 'Oboje, odaberi prelaskom miša', // Claude Opus 5
 			'Auto (select on select page, structure otherwise)' => 'Automatski (odabir na stranici odabira, inače struktura)',
 			'Menu table links' => 'Veze tablice u izborniku',
 			'select' => 'odaberi',
