@@ -380,16 +380,6 @@ function selectSearchSearch() {
 
 
 
-/** Toggle column context menu
-* @param [boolean]
-* @this HTMLElement
-*/
-function columnMouse(hide) {
-	alterClass(qs('span.column', this), 'hidden', hide);
-}
-
-
-
 /** Fill column in search field
 * @param string
 * @return boolean false

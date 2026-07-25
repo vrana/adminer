@@ -18,7 +18,7 @@ h2 { font-size: 150%; margin: 0 0 20px -18px; padding: .8em 1em; border-bottom: 
 h3 { font-weight: normal; font-size: 130%; margin: 1em 0 0; }
 form { margin: 0; }
 table { margin: 1em 20px 0 0; font-size: 90%; border-spacing: 0; border-width: 1px 0 0 1px; }
-table, td, th, .js .column { border-color: #999; border-style: solid; }
+table, td, th, .column { border-color: #999; border-style: solid; }
 td, th { border-width: 0 1px 1px 0; padding: .2em .3em; margin: 0; }
 td table { width: 100%; margin: 0; }
 th { background: var(--dim); text-align: left; }
@@ -49,7 +49,8 @@ input.wayoff { left: -1000px; position: absolute; }
 /* .hover - shown on hovering the row, item or paragraph; opacity keeps it focusable and the layout stable */
 @media (hover: hover) { .hover { opacity: 0; } }
 tr:hover .hover, li:hover .hover, p:hover .hover, #fieldset-history div:hover .hover, .hover:focus, .hover.active, .hover:checked { opacity: 1; }
-.js .column { position: absolute; background: var(--lit); padding: .27em 1ex .33em 0; margin-top: -.37em; border-width: 1px 1px 1px 0; border-radius: 0 8px 8px 0; }
+.column { position: absolute; background: var(--lit); padding: .27em 1ex .33em 0; margin-top: -.37em; border-width: 1px 1px 1px 0; border-radius: 0 8px 8px 0; }
+th:not(:hover) .column { display: none; }
 .nowrap td, .nowrap th, td.nowrap, p.nowrap { white-space: pre; }
 .wrap td { white-space: normal; }
 .error { color: red; background: #fee; }

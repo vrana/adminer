@@ -60,7 +60,8 @@ sup{
 /* js tooltip
    ----------------------------------------------------------------------- */
 
-.js .column {
+.column {
+	display: flex;
 	position: absolute;
 	padding: 0;
 	margin-top: 0;
@@ -70,11 +71,7 @@ sup{
 	width: 100%;
 }
 
-.js .column:not(.hidden){
-	display: flex;
-}
-
-.js .column a{
+.column a{
 	text-align: center;
 	color: black;
 	font-weight: bold;
@@ -86,7 +83,7 @@ sup{
 	font-weight: normal;
 }
 
-.js .column a:hover{
+.column a:hover{
 	background-color: gold;
 	color: black;
 }
@@ -113,7 +110,7 @@ sup{
 	background-color: gold;
 }
 
-#help, .js .column{
+#help{
 	display: none;
 }
 
