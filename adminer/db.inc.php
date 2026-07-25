@@ -140,7 +140,7 @@ if (adminer()->homepage()) {
 						echo ($column[1]
 							? "<td align='right'><a href='" . h(ME . "$column[1]=") . urlencode($name) . "'$id title='$column[2]'>" . (is_numeric($val)
 								? ($val < 0 ? '?' : ($key == "Rows" ? format_rows($status) : format_number($val)))
-								: $val
+								: h($val)
 							) . "</a>"
 							: "<td id='$key-" . h($name) . "'>" . h($val)
 						);
@@ -264,8 +264,8 @@ if (adminer()->homepage()) {
 				foreach ($rows as $row) {
 					echo "<tr>";
 					echo "<th>" . h($row["Name"]);
-					echo "<td>" . ($row["Execute at"] ? lang('At given time') . "<td>" . $row["Execute at"] : lang('Every') . " " . $row["Interval value"] . " " . $row["Interval field"] . "<td>$row[Starts]");
-					echo "<td>$row[Ends]";
+					echo "<td>" . ($row["Execute at"] ? lang('At given time') . "<td>" . h($row["Execute at"]) : lang('Every') . " " . h($row["Interval value"]) . " " . h($row["Interval field"]) . "<td>" . h($row["Starts"]));
+					echo "<td>" . h($row["Ends"]);
 					echo '<td><a href="' . h(ME) . 'event=' . urlencode($row["Name"]) . '">' . lang('Alter') . '</a>';
 				}
 				echo "</table>\n";
