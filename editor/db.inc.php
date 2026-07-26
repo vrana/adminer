@@ -16,7 +16,7 @@ if (adminer()->homepage()) {
 	echo '<td><input id="check-all" type="checkbox" class="jsonly">' . script("qs('#check-all').onclick = partial(formCheck, /^tables\[/);", "");
 	echo '<th>' . lang('Table');
 	echo '<td>' . lang('Rows');
-	echo "</thead>\n";
+	echo "<tbody>\n";
 
 	foreach (table_status() as $table => $row) {
 		$name = adminer()->tableName($row);

@@ -58,7 +58,7 @@ if (
 				. "<td>" . lang('Collation')
 				. "<td>" . lang('Tables')
 				. "<td>" . lang('Size') . " - <a href='" . h(ME) . "dbsize=1'>" . lang('Compute') . "</a>" . script("qsl('a').onclick = partial(ajaxSetHtml, '" . js_escape(ME) . "script=connect');", "")
-				. "</thead>\n"
+				. "<tbody>\n"
 			;
 
 			$databases = ($_GET["dbsize"] ? count_tables($databases) : array_flip($databases));

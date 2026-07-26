@@ -387,7 +387,7 @@ if (!$columns && support("table")) {
 				}
 			}
 
-			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "</thead>\n";
+			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "<tbody>\n";
 
 			if (is_ajax()) {
 				ob_end_clean();

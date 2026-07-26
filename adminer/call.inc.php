@@ -108,7 +108,7 @@ echo preg_replace_callback(
 	"~^$table?$row$table?($row*)$table?~m",
 	function ($match) {
 		$first_row = pre_tr($match[2]);
-		return "<table>\n" . ($match[1] ? "<thead>$first_row</thead>\n" : $first_row) . pre_tr($match[4]) . "\n</table>";
+		return "<table>\n" . ($match[1] ? "<thead>$first_row<tbody>\n" : $first_row) . pre_tr($match[4]) . "\n</table>";
 	},
 	preg_replace(
 		'~(\n(    -|mysql)&gt; )(.+)~',

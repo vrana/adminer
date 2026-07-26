@@ -89,7 +89,7 @@ echo input_hidden("change-js");
 ?>
 <noscript><p><input type="submit" name="change" value="<?php echo lang('Change'); ?>"></noscript>
 <table>
-<thead><tr><th id="label-source"><?php echo lang('Source'); ?><th id="label-target"><?php echo lang('Target'); ?></thead>
+<thead><tr><th id="label-source"><?php echo lang('Source'); ?><th id="label-target"><?php echo lang('Target'); ?><tbody>
 <?php
 $j = 0;
 foreach ($row["source"] as $key => $val) {

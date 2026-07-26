@@ -21,7 +21,7 @@ class AdminerTableStructure extends Adminer\Plugin {
 			. "<th>" . Adminer\lang('Nullable')
 			. "<th>" . Adminer\lang('Default')
 			. (Adminer\support("comment") ? "<th>" . Adminer\lang('Comment') : "")
-			. "</thead>\n"
+			. "<tbody>\n"
 		;
 		foreach ($fields as $field) {
 			echo "<tr><th>" . Adminer\h($field["field"]) . ($field["primary"] ? " (PRIMARY)" : "");

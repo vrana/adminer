@@ -142,7 +142,7 @@ if (support("partial_indexes")) {
 }
 ?>
 <th><noscript><?php echo icon("plus", "add[0]", "+", lang('Add next')); ?></noscript>
-</thead>
+<tbody>
 <?php
 if ($primary) {
 	echo "<tr><td>PRIMARY<td>";

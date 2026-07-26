@@ -133,7 +133,7 @@ foreach ($grants as $object => $grant) {
 	); //! separate db, table, columns, PROCEDURE|FUNCTION, routine
 	$i++;
 }
-echo "</thead>\n";
+echo "<tbody>\n";
 
 foreach (
 	array(

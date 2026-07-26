@@ -212,7 +212,7 @@ if ($partition_by && (JUSH == 'sql' || $TABLE == "")) {
 	echo "(<input name='partition' value='" . h($row["partition"]) . "'>)\n";
 	echo lang('Partitions') . ": <input type='number' name='partitions' class='size" . ($partition_table || !$row["partition_by"] ? " hidden" : "") . "' value='" . h($row["partitions"]) . "'>\n";
 	echo "<table id='partition-table'" . ($partition_table ? "" : " class='hidden'") . ">\n";
-	echo "<thead><tr><th>" . lang('Partition name') . "<th>" . lang('Values') . "</thead>\n";
+	echo "<thead><tr><th>" . lang('Partition name') . "<th>" . lang('Values') . "<tbody>\n";
 	foreach ($row["partition_names"] as $key => $val) {
 		echo '<tr>';
 		echo '<td><input name="partition_names[]" value="' . h($val) . '" autocapitalize="off">';

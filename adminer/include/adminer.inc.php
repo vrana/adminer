@@ -343,7 +343,7 @@ class Adminer {
 	function tableStructurePrint(array $fields, ?array $tableStatus = null): void {
 		echo "<div class='scrollable'>\n";
 		echo "<table class='nowrap odds'>\n";
-		echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . (support("comment") ? "<td>" . lang('Comment') : "") . "</thead>\n";
+		echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . (support("comment") ? "<td>" . lang('Comment') : "") . "<tbody>\n";
 		$structured_types = driver()->structuredTypes();
 		foreach ($fields as $field) {
 			echo "<tr><th>" . h($field["field"]);

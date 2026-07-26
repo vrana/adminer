@@ -33,7 +33,7 @@ foreach (adminer()->processList() as $i => $row) {
 				'oracle' => "REFRN30223",
 			));
 		}
-		echo "</thead>\n";
+		echo "<tbody>\n";
 	}
 	echo "<tr>" . (support("kill") ? "<td>" . checkbox("kill[]", $row[JUSH == "sql" ? "Id" : "pid"], 0, "", "", "hover") : "");
 	foreach ($row as $key => $val) {

@@ -17,7 +17,7 @@ hidden_fields_get();
 echo input_hidden("db", DB);
 echo ($grant ? "" : input_hidden("grant"));
 echo "<table class='odds'>\n";
-echo "<thead><tr><th>" . lang('Username') . "<th>" . lang('Server') . "<th></thead>\n";
+echo "<thead><tr><th>" . lang('Username') . "<th>" . lang('Server') . "<th><tbody>\n";
 
 while ($row = $result->fetch_assoc()) {
 	echo '<tr><td>' . h($row["User"]) . "<td>" . h($row["Host"]) . '<td><a href="' . h(ME . 'user=' . urlencode($row["User"]) . '&host=' . urlencode($row["Host"])) . '">' . lang('Edit') . "</a>\n";

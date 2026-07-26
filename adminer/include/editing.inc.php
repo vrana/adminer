@@ -61,7 +61,7 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 					)) : "")
 				;
 			}
-			echo "</thead>\n";
+			echo "<tbody>\n";
 		}
 		echo "<tr>";
 		foreach ($row as $key => $val) {
@@ -307,7 +307,7 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 	}
 	echo "<td>" . icon("plus", "add[" . (support("move_col") ? 0 : count($fields)) . "]", "+", lang('Add next'));
 	echo (support("move_col") ? "" : script("qsl('button').onclick = editingAddLastRow;"));
-	echo "</thead>\n<tbody>\n";
+	echo "<tbody>\n";
 	echo script("mixin(qsl('tbody'), {onclick: editingClick, onkeydown: editingKeydown, oninput: editingInput});");
 	foreach ($fields as $i => $field) {
 		$i++;

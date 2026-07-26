@@ -197,7 +197,7 @@ $prefixes = array();
 if ($_GET["ns"] === "") {
 	echo "<thead><tr><th style='text-align: left;'>";
 	echo "<label class='block'><input type='checkbox' id='check-schemas' checked class='jsonly'>" . lang('Schema') . "</label>";
-	echo "</thead>\n";
+	echo "<tbody>\n";
 	echo script("qs('#check-schemas').onclick = partial(formCheck, /^schemas\\[/);");
 	foreach (adminer()->schemas() as $schema) {
 		echo "<tr><td>" . checkbox("schemas[]", $schema, true, $schema, "", "block") . "\n";
@@ -207,7 +207,7 @@ if ($_GET["ns"] === "") {
 	echo "<thead><tr>";
 	echo "<th style='text-align: left;'><label class='block'><input type='checkbox' id='check-tables'$checked class='jsonly'>" . lang('Table') . "</label>" . script("qs('#check-tables').onclick = partial(formCheck, /^tables\\[/);", "");
 	echo "<th style='text-align: right;'><label class='block'>" . lang('Data') . "<input type='checkbox' id='check-data'$checked class='jsonly'></label>" . script("qs('#check-data').onclick = partial(formCheck, /^data\\[/);", "");
-	echo "</thead>\n";
+	echo "<tbody>\n";
 
 	$views = "";
 	$tables_list = tables_list();
@@ -236,7 +236,7 @@ if ($_GET["ns"] === "") {
 		. lang('Database')
 		. "</label>"
 	;
-	echo "</thead>\n";
+	echo "<tbody>\n";
 	if ($databases) {
 		foreach ($databases as $db) {
 			if (!information_schema($db)) {

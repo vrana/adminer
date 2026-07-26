@@ -10,7 +10,7 @@ class AdminerTableIndexesStructure extends Adminer\Plugin {
 
 	function tableIndexesPrint($indexes, $tableStatus): bool {
 		echo "<table>\n";
-		echo "<thead><tr><th>" . Adminer\lang('Name') . "<th>" . Adminer\lang('Type') . "<th>" . Adminer\lang('Algorithm') . "<th>" . Adminer\lang('Columns') . "</thead>\n";
+		echo "<thead><tr><th>" . Adminer\lang('Name') . "<th>" . Adminer\lang('Type') . "<th>" . Adminer\lang('Algorithm') . "<th>" . Adminer\lang('Columns') . "<tbody>\n";
 		foreach ($indexes as $name => $index) {
 			echo "<tr><th>" . Adminer\h($name) . "<td>" . Adminer\h($index["type"]) . "<td>" . Adminer\h($index["algorithm"]);
 			ksort($index["columns"]); // enforce correct columns order
