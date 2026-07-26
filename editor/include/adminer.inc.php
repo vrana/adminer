@@ -324,7 +324,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			echo "</div></fieldset>\n";
 		}
 		if ($_GET["order"]) {
-			echo "<div style='display: none;'>" . hidden_fields(array(
+			echo "<div hidden>" . hidden_fields(array(
 				"order" => array(1 => reset($_GET["order"])),
 				"desc" => ($_GET["desc"] ? array(1 => 1) : array()),
 			)) . "</div>\n";

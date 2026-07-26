@@ -399,7 +399,7 @@ function editingAddLastRow() {
 function editingRemoveRow(name) {
 	const field = this.form[this.name.replace(/[^[]+(.+)/, name)];
 	field.remove();
-	parentTag(this, 'tr').style.display = 'none';
+	parentTag(this, 'tr').hidden = true;
 	return false;
 }
 
@@ -458,8 +458,8 @@ function editingLengthFocus() {
 		const edit = qs('#enum-edit');
 		edit.value = enumValues(this.value);
 		td.append(edit);
-		this.style.display = 'none';
-		edit.style.display = 'inline';
+		this.hidden = true;
+		edit.hidden = false;
 		edit.focus();
 	}
 }
@@ -490,8 +490,8 @@ function editingLengthBlur() {
 	const field = this.parentNode.firstChild;
 	const val = this.value;
 	field.value = (/^'[^\n]+'$/.test(val) ? val : val && "'" + val.replace(/\n+$/, '').replace(/'/g, "''").replace(/\\/g, '\\\\').replace(/\n/g, "','") + "'");
-	field.style.display = 'inline';
-	this.style.display = 'none';
+	field.hidden = false;
+	this.hidden = true;
 }
 
 /** Show or hide selected table column

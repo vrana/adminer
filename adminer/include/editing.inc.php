@@ -289,7 +289,7 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 	echo "<thead><tr>\n";
 	echo ($type == "PROCEDURE" ? "<td>" : "");
 	echo "<th id='label-name'>" . ($type == "TABLE" ? lang('Column name') : lang('Parameter name'));
-	echo "<td id='label-type'>" . lang('Type') . "<textarea id='enum-edit' rows='4' cols='12' wrap='off' style='display: none;'></textarea>" . script("qs('#enum-edit').onblur = editingLengthBlur;");
+	echo "<td id='label-type'>" . lang('Type') . "<textarea id='enum-edit' rows='4' cols='12' wrap='off' hidden></textarea>" . script("qs('#enum-edit').onblur = editingLengthBlur;");
 	echo "<td id='label-length'>" . lang('Length');
 	echo "<td>" . lang('Options'); // no label required, options have their own label
 	if ($type == "TABLE") {
@@ -313,7 +313,7 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 		$i++;
 		$orig = $field[($_POST ? "orig" : "field")];
 		$display = (isset($_POST["add"][$i-1]) || (isset($field["field"]) && !idx($_POST["drop_col"], $i))) && (support("drop_col") || $orig == "");
-		echo "<tr" . ($display ? "" : " style='display: none;'") . ">\n";
+		echo "<tr" . ($display ? "" : " hidden") . ">\n";
 		echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", driver()->inout), $field["inout"]) : "") . "<th>";
 		echo (support("move_col") ? icon("move", "", "↕", lang('Move')) . " " : "");
 		if ($display) {

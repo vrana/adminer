@@ -260,7 +260,7 @@ if (!$columns && support("table")) {
 	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "." : ": " . error()) . "\n";
 } else {
 	echo "<form action='' id='form'>\n";
-	echo "<div style='display: none;'>";
+	echo "<div hidden>";
 	hidden_fields_get();
 	echo (DB != "" ? input_hidden("db", DB) . (isset($_GET["ns"]) ? input_hidden("ns", $_GET["ns"]) : "") : ""); // not used in Editor
 	echo input_hidden("select", $TABLE);
