@@ -3,7 +3,7 @@
 	<description>The coding standard for Adminer.</description>
 	<arg value="s"/>
 	<arg name="parallel" value="8"/>
-	<arg name="cache" value=".phpcs.cache"/>
+	<arg name="cache"/><!-- PHP_CodeSniffer stores the cache in the system temp directory -->
 
 	<file>.</file>
 	<exclude-pattern>/externals/</exclude-pattern>

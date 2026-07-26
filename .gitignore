@@ -8,6 +8,5 @@
 /tests/screenshots/
 /tests/cropped/
 /vendor/
-/.phpcs.cache
 adminer-plugins/
 adminer-plugins.php
