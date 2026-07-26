@@ -587,13 +587,13 @@ function foreignAddRow() {
 function indexesAddRow() {
 	const row = cloneNode(parentTag(this, 'tr'));
 	this.onchange = () => { };
-	for (const select of qsa('select', row)) {
-		select.name = select.name.replace(/indexes\[\d+/, '$&1');
-		select.selectedIndex = 0;
-	}
-	for (const input of qsa('input', row)) {
-		input.name = input.name.replace(/indexes\[\d+/, '$&1');
-		input.value = '';
+	for (const tag of qsa('select, input, button', row)) {
+		tag.name = tag.name.replace(/\[\d+/, '$&1'); // indexes[$j] and drop_col[$j]
+		if (isTag(tag, 'select')) {
+			tag.selectedIndex = 0;
+		} else if (isTag(tag, 'input')) {
+			tag.value = '';
+		}
 	}
 	parentTag(this, 'table').append(row);
 }
