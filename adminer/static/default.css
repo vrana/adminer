@@ -45,6 +45,8 @@ input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
 .block { display: block; }
 .version { color: #777; font-size: 62%; }
 .js .hidden, .nojs .jsonly, .insecure .copy { display: none; }
+/* the browser hides [hidden] only by a UA rule which any skin setting display would beat */
+[hidden] { display: none !important; }
 /* .hover - shown on hovering the row, item or paragraph; opacity keeps it focusable and the layout stable */
 @media (hover: hover) { .hover { opacity: 0; } }
 tr:hover .hover, li:hover .hover, p:hover .hover, #fieldset-history div:hover .hover, .hover:focus, .hover.active, .hover:checked { opacity: 1; }
