@@ -6,22 +6,21 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **First-time setup:**
 ```bash
-make initialize   # Initialize git submodules (jush, JsShrink, PhpShrink)
+git submodule update --init --recursive   # Initialize submodules (jush, JsShrink, PhpShrink)
 ```
 
 **Development server:**
 ```bash
-make server       # Start PHP server at http://127.0.0.1:8000
+php -S 127.0.0.1:8000 -t .
 ```
 Browse to `http://127.0.0.1:8000/adminer/` for the dev version.
 
 **Build (compile single-file distribution):**
 ```bash
-make compile                       # All drivers, all languages → adminer.php
+composer compile                   # All drivers, all languages → adminer.php
 php compile.php mysql              # MySQL driver only
 php compile.php mysql en           # MySQL + English only
 php compile.php editor mysql       # Adminer Editor with MySQL
-composer compile                   # Equivalent to make compile
 ```
 
 **Code quality:**
@@ -33,8 +32,7 @@ phpstan analyse -c conf/phpstan.neon    # Static analysis (level 6)
 
 **Clean:**
 ```bash
-make clean        # Remove all compiled adminer*.php and editor*.php
-composer clean    # Equivalent to make clean
+composer clean    # Remove all compiled adminer*.php and editor*.php
 ```
 
 **Tests:** Browser-based end-to-end tests in `tests/*.html` (Katalon Recorder format). No unit test runner. Standalone unit tests: `tests/compress.php` (string compression round-trip and pure-PHP inflate fallback) and `tests/host_port.php` (host:port parsing) – run directly with `php`, they print errors and exit 0 when OK.
