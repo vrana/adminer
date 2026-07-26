@@ -20,6 +20,9 @@ form { margin: 0; }
 table { margin: 1em 20px 0 0; font-size: 90%; border-spacing: 0; border-width: 1px 0 0 1px; }
 table, td, th, .column { border-color: #999; border-style: solid; }
 td, th { border-width: 0 1px 1px 0; padding: .2em .3em; margin: 0; }
+/* .actions - the last column holds a row action shown on hover, printed outside the table so that it creates no empty column */
+.actions td:last-child { position: relative; width: 0; padding: 0; border-width: 0; }
+.actions td:last-child a { position: absolute; top: 0; padding: .2em .3em; }
 td table { width: 100%; margin: 0; }
 th { background: var(--dim); text-align: left; }
 thead { position: sticky; top: 0; }

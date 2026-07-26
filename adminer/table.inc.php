@@ -58,7 +58,7 @@ if (!is_view($table_status)) {
 		echo "<h3 id='foreign-keys'>" . lang('Foreign keys') . "</h3>\n";
 		$foreign_keys = foreign_keys($TABLE);
 		if ($foreign_keys) {
-			echo "<table>\n";
+			echo "<table class='actions'>\n";
 			echo "<thead><tr><th>" . lang('Source') . "<td>" . lang('Target') . "<td>" . lang('ON DELETE') . "<td>" . lang('ON UPDATE') . "<td><tbody>\n";
 			foreach ($foreign_keys as $name => $foreign_key) {
 				echo "<tr title='" . h($name) . "'>";
@@ -88,7 +88,7 @@ if (!is_view($table_status)) {
 		echo "<h3 id='checks'>" . lang('Checks') . "</h3>\n";
 		$check_constraints = driver()->checkConstraints($TABLE);
 		if ($check_constraints) {
-			echo "<table>\n";
+			echo "<table class='actions'>\n";
 			foreach ($check_constraints as $key => $val) {
 				echo "<tr title='" . h($key) . "'>";
 				echo "<td><code class='jush-" . JUSH . "'>" . h($val);
@@ -105,7 +105,7 @@ if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
 	echo "<h3 id='triggers'>" . lang('Triggers') . "</h3>\n";
 	$triggers = triggers($TABLE);
 	if ($triggers) {
-		echo "<table>\n";
+		echo "<table class='actions'>\n";
 		foreach ($triggers as $key => $val) {
 			echo "<tr valign='top'><td>" . h($val[0]) . "<td>" . h($val[1]) . "<th>" . h($key) . "<td><a href='" . h(ME . 'trigger=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "' class='hover'>" . lang('Alter') . "</a>\n";
 		}
