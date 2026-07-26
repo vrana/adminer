@@ -17,7 +17,7 @@ parameters:
 		- "~ an undefined \\w+ Adminer\\\\Db::~" # defined in that versions of Db
 		-
 			identifier: impureFunction.pure # stubs of functions that are impure in other drivers
-			path: adminer/drivers/mysql.inc.php
+			path: ../adminer/drivers/mysql.inc.php
 		- "~^Call to an undefined method Adminer\\\\Result::seek~" # defined in MS SQL
 		- "~^Call to an undefined method Adminer\\\\Driver::(setUserTypes|tableOid)~" # defined in PostgreSQL
 		- "~^Access to an undefined property Adminer\\\\Driver::\\$nsOid~" # defined in PostgreSQL
@@ -28,12 +28,12 @@ parameters:
 		- "~between int<70100~" # PHP_VERSION_ID check
 		-
 			message: "~implode expects array, string given~" # pg_last_notice() returns array with PGSQL_NOTICE_ALL
-			path: adminer/drivers/pgsql.inc.php
+			path: ../adminer/drivers/pgsql.inc.php
 		-
 			message: "~ type specified~" # duplicate functions and methods
 			paths:
-				- adminer/include/pdo.inc.php
-				- adminer/drivers/*
+				- ../adminer/include/pdo.inc.php
+				- ../adminer/drivers/*
 
 		# it probably doesn't like $ar[$key] instead of isset($ar[$key]) and thinks that $ar[$key] is always set
 		- identifier: identical.alwaysFalse
@@ -53,15 +53,15 @@ parameters:
 		- "~Function Adminer\\\\get_driver\\(\\) never returns null~"
 
 	paths:
-		- adminer/drivers/mysql.inc.php # other drivers inherit the annotations so we take them from here
-		- adminer/
+		- ../adminer/drivers/mysql.inc.php # other drivers inherit the annotations so we take them from here
+		- ../adminer/
 	scanFiles:
-		- compile.php # compile_file()
+		- ../compile.php # compile_file()
 	excludePaths:
-		- adminer/adminer-plugins*
-		- adminer/designs.php
-		- adminer/elastic.php
-		- adminer/sqlite.php
+		- ../adminer/adminer-plugins*
+		- ../adminer/designs.php
+		- ../adminer/elastic.php
+		- ../adminer/sqlite.php
 
 	phpVersion:
 		min: 70100

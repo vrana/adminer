@@ -15,7 +15,8 @@ jobs:
       - uses: php-actions/phpcs@v1
         with:
           path: .
-          standard: phpcs.xml
+          standard: conf/phpcs.xml
       - uses: php-actions/phpstan@v3
         with:
           version: latest
+          configuration: conf/phpstan.neon

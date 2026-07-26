@@ -83,7 +83,7 @@ The built-in `Adminer` class is registered as the last plugin, providing the def
 
 ## Code Style
 
-Adminer follows a strict [coding style](/phpcs.xml), though some choices may seem unusual.
+Adminer follows a strict [coding style](/conf/phpcs.xml), though some choices may seem unusual.
 For instance, doc-comments are not indented by one space because some editors (e.g., VS Code) insert a space when pressing Enter after `*/`.
 
 There is no enforced rule on `"` vs. `'`.
@@ -141,7 +141,7 @@ Proper line wrapping often requires refactoring, which has caused bugs in the pa
 All functions have doc-comments, but redundancy is avoided.
 For example, `Db` methods are documented only in [`db.inc.php`](/adminer/include/db.inc.php), not in the drivers.
 `@param` tags include only params with type [more specific](https://phpstan.org/writing-php-code/phpdoc-types) than the native type declaration or with a comment.
-The doc-comments use [aliases](/phpstan.neon) for complex arrays.
+The doc-comments use [aliases](/conf/phpstan.neon) for complex arrays.
 Doc-comments are imperative ("Get" instead of "Gets"), start with a capital letter, and do not end with a period.
 
 Inline comments are useful for linking specifications but are generally avoided for explaining self-explanatory code.
@@ -152,7 +152,7 @@ Comments starting with `//~` are meant for debugging.
 
 ## Error Handling
 
-Adminer strictly initializes all variables before use, which is [verified](/phpstan.neon).
+Adminer strictly initializes all variables before use, which is [verified](/conf/phpstan.neon).
 However, Adminer relies on the default value of uninitialized array items.
 This approach leads to more readable code.
 Consider the following examples:
@@ -240,7 +240,7 @@ The only exception is handlers registered in a loop, where bulk registration is 
 JavaScript code is split into [functions.js](/adminer/static/functions.js) (common utilities) and [editing.js](/adminer/static/editing.js) (specific to Adminer or Adminer Editor).
 These files are concatenated during compilation since they depend on each other.
 
-JavaScript code follows the coding style defined in [eslint.config.mjs](/eslint.config.mjs), but because ESLint requires additional dependencies, I run it externally.
+JavaScript code follows the coding style defined in [eslint.config.mjs](/conf/eslint.config.mjs), but because ESLint requires additional dependencies, I run it externally.
 
 ## Styles
 

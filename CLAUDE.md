@@ -26,9 +26,9 @@ composer compile                   # Equivalent to make compile
 
 **Code quality:**
 ```bash
-composer check                     # Runs phpcs + phpstan
-phpcs                              # PHP code style (PSR-12 based, tab-indented)
-phpstan analyse -c phpstan.neon    # Static analysis (level 6)
+composer check                          # Runs phpcs + phpstan
+phpcs --standard=conf/phpcs.xml         # PHP code style (PSR-12 based, tab-indented)
+phpstan analyse -c conf/phpstan.neon    # Static analysis (level 6)
 ```
 
 **Clean:**

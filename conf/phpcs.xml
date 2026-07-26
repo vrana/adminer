@@ -5,7 +5,7 @@
 	<arg name="parallel" value="8"/>
 	<arg name="cache"/><!-- PHP_CodeSniffer stores the cache in the system temp directory -->
 
-	<file>.</file>
+	<file>..</file>
 	<exclude-pattern>/externals/</exclude-pattern>
 	<exclude-pattern>/vendor/</exclude-pattern><!-- Created by Composer in CI -->
 	<exclude-pattern>/designs/</exclude-pattern>

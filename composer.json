@@ -34,8 +34,8 @@
     },
     "scripts": {
         "check": [
-            "phpcs",
-            "phpstan analyse -c phpstan.neon"
+            "phpcs --standard=conf/phpcs.xml",
+            "phpstan analyse -c conf/phpstan.neon"
         ],
         "compile": "@php compile.php",
         "clean": "@php -r \"array_map('unlink', array_merge(glob('adminer*.php'), glob('editor*.php')));\""
