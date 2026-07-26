@@ -348,6 +348,7 @@ Lang::$translations = array(
 	'Loaded plugins' => 'Xx',
 	'%s must <a%s>return an array</a>.' => '%s xx <a%s>xx</a>.',
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Xx</a> %s xx %s.',
+	'Every plugin must <a%s>be an object</a>.' => 'Xx <a%s>xx</a>.',
 	'screenshot' => 'xx',
 );
 

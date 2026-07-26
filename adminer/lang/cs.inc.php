@@ -348,6 +348,7 @@ Lang::$translations = array(
 	'Loaded plugins' => 'Nahrané pluginy',
 	'%s must <a%s>return an array</a>.' => '%s musí <a%s>vracet pole</a>.',
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Nakonfigurujte</a> %s v %s.',
+	'Every plugin must <a%s>be an object</a>.' => 'Každý plugin musí <a%s>být objekt</a>.',
 	'screenshot' => 'obrázek',
 );
 

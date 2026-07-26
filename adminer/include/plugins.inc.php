@@ -11,10 +11,11 @@ class Plugins {
 	/** @var list<object>[] */ private array $hooks = array();
 
 	/** Register plugins
-	* @param ?list<object> $plugins object instances or null to autoload plugins from adminer-plugins/
+	* @param ?mixed[] $plugins object instances or null to autoload plugins from adminer-plugins/, non-objects are reported and skipped
 	*/
 	function __construct(?array $plugins) {
 		$drivers = SqlDriver::$drivers; // bundled drivers, plugin drivers are registered below
+		$help = " href='https://www.adminer.org/plugins/#use'" . target_blank();
 		if ($plugins === null) {
 			$plugins = array();
 			$basename = "adminer-plugins";
@@ -27,12 +28,11 @@ class Plugins {
 					}
 				}
 			}
-			$help = " href='https://www.adminer.org/plugins/#use'" . target_blank();
 			if (file_exists("$basename.php")) {
 				$include = $this->includeOnce("$basename.php"); // example: return array(new AdminerLoginOtp($secret));
 				if (is_array($include)) {
-					foreach ($include as $plugin) {
-						$plugins[get_class($plugin)] = $plugin;
+					foreach ($include as $key => $plugin) {
+						$plugins[is_object($plugin) ? get_class($plugin) : $key] = $plugin;
 					}
 				} else {
 					$this->error .= lang('%s must <a%s>return an array</a>.', "<b>$basename.php</b>", $help) . "<br>";
@@ -51,6 +51,14 @@ class Plugins {
 				}
 			}
 		}
+		$invalid = array_filter($plugins, function ($plugin) {
+			return !is_object($plugin); // e.g. include of a file without return statement evaluates to 1
+		});
+		if ($invalid) {
+			$this->error .= lang('Every plugin must <a%s>be an object</a>.', $help) . "<br>";
+			$plugins = array_diff_key($plugins, $invalid);
+		}
+
 		$this->drivers = array_diff_key(SqlDriver::$drivers, $drivers);
 		$this->plugins = $plugins;
 
@@ -68,7 +76,7 @@ class Plugins {
 	}
 
 	/** Separate function to not overwrite local variables
-	* @return array<object>|true
+	* @return mixed whatever the included file returns, 1 if it doesn't return anything
 	*/
 	function includeOnce(string $filename) {
 		return include_once "./$filename";
