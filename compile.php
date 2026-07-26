@@ -225,6 +225,7 @@ if ($_SERVER["argv"][1]) {
 include __DIR__ . "/adminer/include/db.inc.php";
 include __DIR__ . "/adminer/include/pdo.inc.php";
 include __DIR__ . "/adminer/include/driver.inc.php";
+include __DIR__ . "/adminer/include/plugins.inc.php"; // for Plugins::checksum()
 $features = array("check", "call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine", "scheme", "sequence", "sql", "status", "trigger", "type", "user" => "privileges", "variables", "view");
 $lang_ids = array(); // global variable simplifies usage in a callback function
 $file = file_get_contents(__DIR__ . "/$project/index.php");
@@ -254,6 +255,18 @@ if ($vendor) {
 	$file = preg_replace('(include "../adminer/drivers/(?!' . preg_quote($vendor) . '\.).*\s*)', '', $file);
 }
 $file = preg_replace_callback('~\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
+
+// inline the checksums of official plugins, the plugins/ directory is not available next to the compiled file
+$checksums = "";
+foreach (array("plugins", "plugins/drivers") as $dir) {
+	foreach (glob(__DIR__ . "/$dir/*.php") as $filename) {
+		$checksums .= "\n\t\t\t'" . basename($filename, '.php') . "' => '" . Adminer\Plugins::checksum($filename) . "',";
+	}
+}
+$file = preg_replace('~(function officialChecksums\(\): array \{\n).*?(\n\t\})~s', "\\1\t\treturn array($checksums\n\t\t);\\2", $file, 1, $count);
+if (!$count) {
+	echo "officialChecksums() not found\n";
+}
 if ($vendor) {
 	foreach ($features as $feature) {
 		if (!Adminer\support($feature)) {

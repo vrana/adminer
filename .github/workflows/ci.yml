@@ -19,7 +19,3 @@ jobs:
       - uses: php-actions/phpstan@v3
         with:
           version: latest
-      - name: Check that plugin checksums are up to date
-        run: |
-          php checksums.php
-          git diff --exit-code adminer/include/plugins.inc.php
