@@ -70,7 +70,7 @@ Each driver registers via `add_driver("key", "Label")` and implements a `Db` cla
 ### Compilation
 `compile.php` inlines all `include` files, minifies CSS/JS, deflate-compresses translations, and optionally runs PhpShrink to strip PHP 7.4 type declarations (making the output PHP 5.3 compatible). Source requires PHP 7.4+.
 
-## Code Conventions (see developing.md for full details)
+## Code Conventions (see docs/developing.md for full details)
 
 **Indentation:** Tabs, not spaces – `Generic.WhiteSpace.DisallowSpaceIndent` is enforced despite PSR-12 base.
 
