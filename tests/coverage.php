@@ -7,6 +7,7 @@
 <body>
 
 <?php
+chdir(__DIR__ . "/.."); // the file names are relative to the root directory and realpath() must match the coverage keys
 include "./adminer/include/errors.inc.php";
 
 function xhtml_open_tags($s) {
