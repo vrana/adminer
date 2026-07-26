@@ -702,8 +702,9 @@ function selectLoadMore(limit, loading) {
 			const tbody = document.createElement('tbody');
 			tbody.innerHTML = request.responseText;
 			adminerHighlighter(qsa('code', tbody));
-			qs('#table').append(tbody);
-			if (tbody.children.length < limit) {
+			const rows = tbody.children.length;
+			qs('#table').tBodies[0].append(...tbody.children); // keep the rows in the original TBODY to continue the .odds highlighting
+			if (rows < limit) {
 				a.remove();
 			} else {
 				a.href = href.replace(/\d+$/, page => +page + 1); //! update &next=
