@@ -20,9 +20,6 @@ form { margin: 0; }
 table { margin: 1em 20px 0 0; font-size: 90%; border-spacing: 0; border-width: 1px 0 0 1px; }
 table, td, th, .column { border-color: #999; border-style: solid; }
 td, th { border-width: 0 1px 1px 0; padding: .2em .3em; margin: 0; }
-/* .actions - the last column holds a row action shown on hover, printed outside the table so that it creates no empty column */
-.actions td:last-child { position: relative; width: 0; padding: 0; border-width: 0; }
-.actions td:last-child a { position: absolute; top: 0; padding: .2em .3em; }
 td table { width: 100%; margin: 0; }
 th { background: var(--dim); text-align: left; }
 thead { position: sticky; top: 0; }
@@ -50,9 +47,6 @@ input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
 .js .hidden, .nojs .jsonly, .insecure .copy { display: none; }
 /* the browser hides [hidden] only by a UA rule which any skin setting display would beat */
 [hidden] { display: none !important; }
-/* .hover - shown on hovering the row, item or paragraph; opacity keeps it focusable and the layout stable */
-@media (hover: hover) { .hover { opacity: 0; } }
-tr:hover .hover, li:hover .hover, p:hover .hover, #fieldset-history div:hover .hover, .hover:focus, .hover:checked { opacity: 1; }
 .column { position: absolute; background: var(--lit); padding: .27em 1ex .33em 0; margin-top: -.37em; border-width: 1px 1px 1px 0; border-radius: 0 8px 8px 0; }
 th:not(:hover) .column { display: none; }
 .nowrap td, .nowrap th, td.nowrap, p.nowrap { white-space: pre; }
@@ -97,9 +91,6 @@ th:not(:hover) .column { display: none; }
 #dbs { overflow: hidden; }
 #logins, #tables { white-space: nowrap; overflow: hidden; }
 #logins a, #tables a, #tables span { background: var(--bg); }
-/* bold select would be wider than the other ones and shift the table name, so the name is bold instead - not in Editor where the link is the name */
-#tables a.select.active:not(:last-child) { font-weight: normal; }
-#tables a.select.active ~ * { font-weight: bold; }
 #content { margin: 2em 0 0 21em; padding: 10px 20px 20px 0; }
 #lang { position: absolute; top: -2.6em; left: 0; padding: .3em 1em; }
 #menuopen { display: none; }
