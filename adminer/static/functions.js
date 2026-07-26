@@ -321,7 +321,7 @@ function pageClick(href, page) {
 */
 function menuOver(event) {
 	const a = event.target;
-	if (isTag(a, 'a|span') && a.offsetLeft + a.offsetWidth > a.parentNode.offsetWidth - 15) { // 15 - ellipsis
+	if (isTag(a, 'a|span') && a.offsetLeft + a.offsetWidth > a.parentNode.offsetWidth) {
 		this.style.overflow = 'visible';
 	}
 }
