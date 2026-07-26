@@ -52,7 +52,7 @@ input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
 [hidden] { display: none !important; }
 /* .hover - shown on hovering the row, item or paragraph; opacity keeps it focusable and the layout stable */
 @media (hover: hover) { .hover { opacity: 0; } }
-tr:hover .hover, li:hover .hover, p:hover .hover, #fieldset-history div:hover .hover, .hover:focus, .hover.active, .hover:checked { opacity: 1; }
+tr:hover .hover, li:hover .hover, p:hover .hover, #fieldset-history div:hover .hover, .hover:focus, .hover:checked { opacity: 1; }
 .column { position: absolute; background: var(--lit); padding: .27em 1ex .33em 0; margin-top: -.37em; border-width: 1px 1px 1px 0; border-radius: 0 8px 8px 0; }
 th:not(:hover) .column { display: none; }
 .nowrap td, .nowrap th, td.nowrap, p.nowrap { white-space: pre; }
