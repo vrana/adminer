@@ -342,6 +342,7 @@ Lang::$translations = array(
 	'Unknown error.' => 'Kesalahan tidak dikenal.', // Claude Fable 5
 	'%s must <a%s>return an array</a>.' => '%s harus <a%s>mengembalikan array</a>.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Konfigurasikan</a> %s di %s.', // Claude Fable 5
+	'Every plugin must <a%s>be an object</a>.' => 'Setiap plugin harus <a%s>berupa objek</a>.', // Claude Opus 5
 	'Disable %s or enable %s or %s extensions.' => 'Nonaktifkan ekstensi %s atau aktifkan ekstensi %s atau %s.', // Claude Fable 5
 	'Database does not support password.' => 'Basis data tidak mendukung sandi.', // Claude Fable 5
 );

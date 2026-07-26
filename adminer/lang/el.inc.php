@@ -343,6 +343,7 @@ Lang::$translations = array(
 	'Unknown error.' => 'Άγνωστο σφάλμα.', // Claude Fable 5
 	'%s must <a%s>return an array</a>.' => 'Το %s πρέπει να <a%s>επιστρέφει έναν πίνακα</a>.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Ρυθμίστε</a> το %s στο %s.', // Claude Fable 5
+	'Every plugin must <a%s>be an object</a>.' => 'Κάθε πρόσθετο πρέπει να <a%s>είναι αντικείμενο</a>.', // Claude Opus 5
 	'Disable %s or enable %s or %s extensions.' => 'Απενεργοποιήστε την επέκταση %s ή ενεργοποιήστε τις επεκτάσεις %s ή %s.', // Claude Fable 5
 	'Database does not support password.' => 'Η βάση δεδομένων δεν υποστηρίζει κωδικό.', // Claude Fable 5
 );

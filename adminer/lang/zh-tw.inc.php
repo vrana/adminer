@@ -346,6 +346,7 @@ Lang::$translations = array(
 	'Increase %s.' => '請增加 %s。', // Claude Fable 5
 	'%s must <a%s>return an array</a>.' => '%s 必須<a%s>回傳陣列</a>。', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '在 %3$s 中<a%1$s>設定</a> %2$s。', // Claude Fable 5
+	'Every plugin must <a%s>be an object</a>.' => '每個外掛必須<a%s>是一個物件</a>。', // Claude Opus 5
 );
 
 // run `php ../../lang.php zh-tw` to update this file

@@ -306,6 +306,7 @@ Lang::$translations = array(
 	'Loaded plugins' => 'Geladene Plugins',
 	'%s must <a%s>return an array</a>.' => '%s muss <a%s>ein Array zurückgeben</a>.',
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Konfigurieren</a> Sie %s in %s.',
+	'Every plugin must <a%s>be an object</a>.' => 'Jedes Plugin muss <a%s>ein Objekt sein</a>.', // Claude Opus 5
 	'screenshot' => 'Screenshot',
 	'Algorithm' => 'Algorithmus', // Claude Fable 5
 	'Condition' => 'Bedingung', // Claude Fable 5

@@ -309,6 +309,7 @@ Lang::$translations = array(
 	'Unknown error.' => 'Erro desconhecido.', // Claude Fable 5
 	'%s must <a%s>return an array</a>.' => '%s deve <a%s>retornar um array</a>.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Configure</a> %s em %s.', // Claude Fable 5
+	'Every plugin must <a%s>be an object</a>.' => 'Cada plugin deve <a%s>ser um objeto</a>.', // Claude Opus 5
 	'Disable %s or enable %s or %s extensions.' => 'Desabilite %s ou habilite as extensões %s ou %s.', // Claude Fable 5
 	'Database does not support password.' => 'A base de dados não suporta senha.', // Claude Fable 5
 	'yes' => 'sim', // Claude Fable 5

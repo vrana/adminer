@@ -348,6 +348,7 @@ Lang::$translations = array(
 	'Loaded plugins' => 'Wczytane wtyczki',
 	'%s must <a%s>return an array</a>.' => '%s musi <a%s>zwrócić tablicę</a>.',
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Skonfiguruj</a> %s w %s.',
+	'Every plugin must <a%s>be an object</a>.' => 'Każda wtyczka musi <a%s>być obiektem</a>.', // Claude Opus 5
 	'screenshot' => 'zrzut ekranu',
 );
 

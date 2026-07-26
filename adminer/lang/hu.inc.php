@@ -309,6 +309,7 @@ Lang::$translations = array(
 	'Unknown error.' => 'Ismeretlen hiba.', // Claude Fable 5
 	'%s must <a%s>return an array</a>.' => 'A(z) %s fájlnak <a%s>tömböt kell visszaadnia</a>.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Konfigurálja</a> a(z) %s osztályt a(z) %s fájlban.', // Claude Fable 5
+	'Every plugin must <a%s>be an object</a>.' => 'Minden bővítménynek <a%s>objektumnak kell lennie</a>.', // Claude Opus 5
 	'Disable %s or enable %s or %s extensions.' => 'Tiltsa le a(z) %s kiterjesztést, vagy engedélyezze a(z) %s vagy %s kiterjesztéseket.', // Claude Fable 5
 	'Database does not support password.' => 'Az adatbázis nem támogat jelszót.', // Claude Fable 5
 	'yes' => 'igen', // Claude Fable 5

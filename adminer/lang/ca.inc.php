@@ -310,6 +310,7 @@ Lang::$translations = array(
 	'Unknown error.' => 'Error desconegut.', // Claude Fable 5
 	'%s must <a%s>return an array</a>.' => '%s ha de <a%s>retornar una matriu</a>.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Configureu</a> %s a %s.', // Claude Fable 5
+	'Every plugin must <a%s>be an object</a>.' => 'Cada connector ha de <a%s>ser un objecte</a>.', // Claude Opus 5
 	'Disable %s or enable %s or %s extensions.' => 'Desactiveu %s o activeu les extensions %s o %s.', // Claude Fable 5
 	'Database does not support password.' => 'La base de dades no admet contrasenya.', // Claude Fable 5
 	'yes' => 'sí', // Claude Fable 5

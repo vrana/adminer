@@ -344,6 +344,7 @@ Lang::$translations = array(
 	'Unknown error.' => 'Bilinmeyen hata.', // Claude Fable 5
 	'%s must <a%s>return an array</a>.' => '%s <a%s>bir dizi döndürmelidir</a>.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '%2$s ögesini %3$s içinde <a%1$s>yapılandırın</a>.', // Claude Fable 5
+	'Every plugin must <a%s>be an object</a>.' => 'Her eklenti <a%s>bir nesne olmalıdır</a>.', // Claude Opus 5
 	'Disable %s or enable %s or %s extensions.' => '%s eklentisini devre dışı bırakın veya %s ya da %s eklentilerini etkinleştirin.', // Claude Fable 5
 	'Database does not support password.' => 'Veri tabanı parolayı desteklemez.', // Claude Fable 5
 );

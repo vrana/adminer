@@ -305,6 +305,7 @@ Lang::$translations = array(
 	'Loaded plugins' => 'Загруженные плагины',
 	'%s must <a%s>return an array</a>.' => '%s должна <a%s>вернуть массив</a>.',
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Настроить</a> %s в %s.',
+	'Every plugin must <a%s>be an object</a>.' => 'Каждый плагин должен <a%s>быть объектом</a>.', // Claude Opus 5
 	'Algorithm' => 'Алгоритм', // Claude Fable 5
 	'Columns' => 'Поля', // Claude Fable 5
 	'Condition' => 'Условие', // Claude Fable 5

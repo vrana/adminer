@@ -337,6 +337,7 @@ Lang::$translations = array(
 	'Loaded plugins' => 'Завантажені плагіни',
 	'%s must <a%s>return an array</a>.' => '%s має <a%s>повернути масив</a>.',
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Налаштувати</a> %s у %s.',
+	'Every plugin must <a%s>be an object</a>.' => 'Кожен плагін має <a%s>бути об’єктом</a>.', // Claude Opus 5
 	'Algorithm' => 'Алгоритм', // Claude Fable 5
 	'Columns' => 'Колонки', // Claude Fable 5
 	'Condition' => 'Умова', // Claude Fable 5

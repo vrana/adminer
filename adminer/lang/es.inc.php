@@ -272,6 +272,7 @@ Lang::$translations = array(
 	'Loaded plugins' => 'Plugins cargados',
 	'%s must <a%s>return an array</a>.' => '%s tiene que <a%s>retornar un arreglo</a>.',
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Configurar</a> %s en %s.',
+	'Every plugin must <a%s>be an object</a>.' => 'Cada plugin tiene que <a%s>ser un objeto</a>.', // Claude Opus 5
 	'There is a space in the input password which might be the cause.' => 'Hay un espacio en el password, lo cual puede ser la causa.',
 	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer no soporta accesar una base de datos sin clave, <a href="https://www.adminer.org/en/password/"%s>Ver detalles</a>.',
 	'Database does not support password.' => 'La base de datos no soporta password.',

@@ -344,6 +344,7 @@ Lang::$translations = array(
 	'Unknown error.' => 'Непозната грешка.', // Claude Fable 5
 	'%s must <a%s>return an array</a>.' => '%s мора да <a%s>врати низ</a>.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Конфигуришите</a> %s у %s.', // Claude Fable 5
+	'Every plugin must <a%s>be an object</a>.' => 'Сваки додатак мора да <a%s>буде објекат</a>.', // Claude Opus 5
 	'Disable %s or enable %s or %s extensions.' => 'Онемогућите екстензију %s или омогућите екстензије %s или %s.', // Claude Fable 5
 	'Database does not support password.' => 'База података не подржава лозинку.', // Claude Fable 5
 );

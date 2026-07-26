@@ -345,6 +345,7 @@ Lang::$translations = array(
 	'screenshot' => 'kuvakaappaus', // Claude Fable 5
 	'Increase %s.' => 'Kasvata %s.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Määritä</a> %s tiedostossa %s.', // Claude Fable 5
+	'Every plugin must <a%s>be an object</a>.' => 'Jokaisen lisäosan täytyy <a%s>olla objekti</a>.', // Claude Opus 5
 );
 
 // run `php ../../lang.php fi` to update this file

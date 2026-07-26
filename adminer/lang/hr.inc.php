@@ -335,6 +335,7 @@ Lang::$translations = array(
 	'Unknown error.' => 'Nepoznata greška.',
 	'%s must <a%s>return an array</a>.' => '%s mora <a%s>vratiti niz</a>.',
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Konfigurirajte</a> %s u %s.',
+	'Every plugin must <a%s>be an object</a>.' => 'Svaki dodatak mora <a%s>biti objekt</a>.', // Claude Opus 5
 	'Algorithm' => 'Algoritam',
 	'Columns' => 'Stupci',
 	'Condition' => 'Uvjet',

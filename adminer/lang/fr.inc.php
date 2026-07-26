@@ -314,6 +314,7 @@ Lang::$translations = array(
 	'Increase %s.' => 'Augmentez %s.', // Claude Fable 5
 	'%s must <a%s>return an array</a>.' => '%s doit <a%s>retourner un tableau</a>.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Configurez</a> %s dans %s.', // Claude Fable 5
+	'Every plugin must <a%s>be an object</a>.' => 'Chaque plugin doit <a%s>être un objet</a>.', // Claude Opus 5
 );
 
 // run `php ../../lang.php fr` to update this file

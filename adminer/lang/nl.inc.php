@@ -313,6 +313,7 @@ Lang::$translations = array(
 	'Increase %s.' => 'Verhoog %s.', // Claude Fable 5
 	'%s must <a%s>return an array</a>.' => '%s moet <a%s>een array retourneren</a>.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Configureer</a> %s in %s.', // Claude Fable 5
+	'Every plugin must <a%s>be an object</a>.' => 'Elke plugin moet <a%s>een object zijn</a>.', // Claude Opus 5
 );
 
 // run `php ../../lang.php nl` to update this file

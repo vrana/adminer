@@ -310,6 +310,7 @@ Lang::$translations = array(
 	'Unknown error.' => '알 수 없는 오류입니다.', // Claude Fable 5
 	'%s must <a%s>return an array</a>.' => '%s은(는) <a%s>배열을 반환해야 합니다</a>.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '%3$s에서 %2$s을(를) <a%1$s>설정</a>하세요.', // Claude Fable 5
+	'Every plugin must <a%s>be an object</a>.' => '모든 플러그인은 <a%s>객체여야 합니다</a>.', // Claude Opus 5
 	'Disable %s or enable %s or %s extensions.' => '%s 확장을 비활성화하거나 %s 또는 %s 확장을 활성화하세요.', // Claude Fable 5
 	'Database does not support password.' => '데이터베이스가 비밀번호를 지원하지 않습니다.', // Claude Fable 5
 	'no' => '아니요', // Claude Fable 5

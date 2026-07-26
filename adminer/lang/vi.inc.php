@@ -343,6 +343,7 @@ Lang::$translations = array(
 	'Unknown error.' => 'Lỗi không xác định.', // Claude Fable 5
 	'%s must <a%s>return an array</a>.' => '%s phải <a%s>trả về một mảng</a>.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Cấu hình</a> %s trong %s.', // Claude Fable 5
+	'Every plugin must <a%s>be an object</a>.' => 'Mỗi plugin phải <a%s>là một đối tượng</a>.', // Claude Opus 5
 	'Disable %s or enable %s or %s extensions.' => 'Hãy tắt phần mở rộng %s hoặc bật phần mở rộng %s hoặc %s.', // Claude Fable 5
 	'Database does not support password.' => 'Cơ sở dữ liệu không hỗ trợ mật khẩu.', // Claude Fable 5
 );

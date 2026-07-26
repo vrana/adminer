@@ -345,6 +345,7 @@ Lang::$translations = array(
 	'Increase %s.' => 'Öka %s.', // Claude Fable 5
 	'%s must <a%s>return an array</a>.' => '%s måste <a%s>returnera en array</a>.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Konfigurera</a> %s i %s.', // Claude Fable 5
+	'Every plugin must <a%s>be an object</a>.' => 'Varje plugin måste <a%s>vara ett objekt</a>.', // Claude Opus 5
 );
 
 // run `php ../../lang.php sv` to update this file

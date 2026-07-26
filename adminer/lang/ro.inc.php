@@ -310,6 +310,7 @@ Lang::$translations = array(
 	'Unknown error.' => 'Eroare necunoscută.', // Claude Fable 5
 	'%s must <a%s>return an array</a>.' => '%s trebuie să <a%s>returneze un array</a>.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Configurați</a> %s în %s.', // Claude Fable 5
+	'Every plugin must <a%s>be an object</a>.' => 'Fiecare plugin trebuie să <a%s>fie un obiect</a>.', // Claude Opus 5
 	'Disable %s or enable %s or %s extensions.' => 'Dezactivați extensia %s sau activați extensiile %s sau %s.', // Claude Fable 5
 	'Database does not support password.' => 'Baza de date nu acceptă parolă.', // Claude Fable 5
 	'yes' => 'da', // Claude Fable 5
