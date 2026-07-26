@@ -9,6 +9,7 @@
 - SQL command: Export result to CSV by JavaScript without re-running the query (bug #1108, SF-760)
 - Alter table: Add next column without page reload
 - Alter table: Do not highlight other move handles while dragging a column
+- Select: Fix the number of selected rows after going back in history
 - Edit: Keep values of columns with special characters in name after error
 - Edit: Fix switching function to SQL with the edit-foreign plugin (bug #1254)
 - Edit: Hide the value field for functions without arguments (e.g. now, uuid)
