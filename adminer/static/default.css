@@ -41,7 +41,6 @@ input, select { vertical-align: middle; }
 input[type="radio"] { vertical-align: text-bottom; }
 input.default { box-shadow: 1px 1px 1px #777; }
 input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
-input.wayoff { left: -1000px; position: absolute; }
 [draggable] { cursor: grab; }
 .block { display: block; }
 .version { color: #777; font-size: 62%; }
@@ -122,7 +121,6 @@ th:not(:hover) .column { display: none; }
 .rtl #content { margin: 2em 21em 0 0; padding: 10px 0 20px 20px; }
 .rtl #breadcrumb { left: auto; right: 21em; margin: 0 -18px 0 0; }
 .rtl .pages { left: auto; right: 21em; }
-.rtl input.wayoff { left: auto; right: -1000px; }
 .rtl #lang, .rtl #menu { left: auto; right: 0; }
 .rtl pre, .rtl code { direction: ltr; }
 

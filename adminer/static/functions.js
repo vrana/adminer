@@ -765,10 +765,7 @@ function findDefaultSubmit(el) {
 	if (el.jushTextarea) {
 		el = el.jushTextarea;
 	}
-	if (!el.form) {
-		return null;
-	}
-	return [...qsa('input[type=submit]', el.form)].find(input => !input.style.zIndex);
+	return (el.form ? qs('input[type=submit]:not([hidden])', el.form) : null);
 }
 
 
