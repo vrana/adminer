@@ -218,6 +218,8 @@ For example, [sticky table headers](https://github.com/vrana/adminer/issues/918)
 Adminer uses [Git submodules](https://git-scm.com/docs/git-submodule) for dependencies, predating [Composer](https://getcomposer.org/) and other package managers.
 Submodules simplify development - for example, I can add a feature to the syntax highlighter, commit the change, and immediately use it in Adminer.
 Adminer commits simply reference the current HEAD of the submodule, avoiding the need for frequent version releases, lock file updates, or other package management tasks.
+Because many developers expect Composer to bootstrap a checkout, `composer install` initializes the submodules too - it just runs `git submodule update --init --recursive` (also available as `composer submodules`).
+The dependencies are optional, so the command only prints a warning if it fails.
 
 ## Tests
 

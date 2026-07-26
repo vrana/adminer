@@ -8,5 +8,6 @@
 /tests/screenshots/
 /tests/cropped/
 /vendor/
+/composer.lock
 adminer-plugins/
 adminer-plugins.php

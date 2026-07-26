@@ -33,6 +33,9 @@
         "php": ">=7.4"
     },
     "scripts": {
+        "post-install-cmd": "@submodules",
+        "post-update-cmd": "@submodules",
+        "submodules": "@php -r \"passthru('git submodule update --init --recursive');\"",
         "check": [
             "phpcs --standard=conf/phpcs.xml",
             "phpstan analyse -c conf/phpstan.neon"

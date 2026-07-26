@@ -13,7 +13,7 @@
 ![Table structure](https://www.adminer.org/static/screenshots/table.png)
 
 ## Installation
-If downloaded from Git then run: `git submodule update --init`
+If downloaded from Git then run: `git submodule update --init` (or `composer install`)
 
 - `adminer/index.php` - Run development version of Adminer
 - `editor/index.php` - Run development version of Adminer Editor

@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **First-time setup:**
 ```bash
 git submodule update --init --recursive   # Initialize submodules (jush, JsShrink, PhpShrink)
+composer install                          # Does the same through the `submodules` script
 ```
 
 **Development server:**
