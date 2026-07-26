@@ -523,12 +523,13 @@ function skipOriginal(first) {
 * @this HTMLInputElement
 */
 function fieldChange() {
-	const row = cloneNode(parentTag(this, 'tr'));
+	const tr = parentTag(this, 'tr');
+	const row = cloneNode(tr);
 	for (const input of qsa('input', row)) {
 		input.value = '';
 	}
 	// keep value in <select> (function)
-	parentTag(this, 'table').append(row);
+	tr.parentNode.append(row);
 	this.oninput = () => { };
 }
 
