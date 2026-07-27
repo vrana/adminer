@@ -145,13 +145,14 @@ function bold(bool $bold, string $class = ""): string {
 
 /** Escape string for JavaScript apostrophes */
 function js_escape(string $string): string {
-	return addcslashes($string, "\r\n'\\/"); // slash for <script>
+	// the HTML parser doesn't understand JS escaping so < must not stay in the string at all, otherwise <!-- would start the script data escaped state and the following </script> wouldn't end the element
+	return str_replace("<", "\\x3C", addcslashes($string, "\r\n'\\"));
 }
 
 /** Escape string to use inside a JavaScript regular expression literal
 */
 function js_escape_re(string $string): string {
-	return addcslashes(preg_quote($string, "/"), "\n");
+	return addcslashes(preg_quote($string, "/"), "\n"); // preg_quote() escapes also < ! - so the HTML parser doesn't see <!-- or </script>
 }
 
 /** Generate page number for pagination */
