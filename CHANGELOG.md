@@ -26,6 +26,7 @@
 - PostgreSQL, MS SQL: Show two columns in select COUNT(*), COUNT(DISTINCT id)
 - MS SQL: Treat binary fields as blob (bug SF-369)
 - Elasticsearch, ClickHouse: Use default port
+- ClickHouse: Fix nullable columns, fix default values, show server version
 - MongoDB: Authenticate against the database used in login
 - MongoDB: Do not treat the string NULL as the NULL value
 - SimpleDB: Use default server

@@ -72,8 +72,12 @@ if (isset($_GET["clickhouse"])) {
 					$match[2] .= ":8123";
 				}
 				$this->url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
-				$return = $this->query('SELECT 1');
-				return ($return ? '' : $this->error);
+				$version = get_val('SELECT version()', 0, $this); // also verifies the connection
+				if ($version === false) {
+					return $this->error;
+				}
+				$this->server_info = $version;
+				return '';
 			}
 
 			function select_db($database) {
@@ -195,16 +199,18 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
-		$alter = $order = array();
+		$alter = $order = $remove = array();
 		foreach ($fields as $field) {
 			if ($field[1][2] === " NULL") {
-				$field[1][1] = " Nullable({$field[1][1]})";
+				$field[1][1] = " Nullable(" . ltrim($field[1][1]) . ")"; // NULL is not allowed after the type
+				$field[1][2] = '';
 			} elseif ($field[1][2] === ' NOT NULL') {
 				$field[1][2] = '';
 			}
 
-			if ($field[1][3]) {
-				$field[1][3] = '';
+			if ($field[1] && $field[1][3] == "" && $table != "" && $field[0] != "" && min_version("20.10")) {
+				// MODIFY COLUMN without DEFAULT keeps the original default value
+				$remove[] = "MODIFY COLUMN " . idf_escape($field[0]) . " REMOVE DEFAULT";
 			}
 
 			$alter[] = ($field[1]
@@ -215,7 +221,7 @@ if (isset($_GET["clickhouse"])) {
 			$order[] = $field[1][0];
 		}
 
-		$alter = array_merge($alter, $foreign);
+		$alter = array_merge($alter, $remove, $foreign);
 		$status = ($engine ? " ENGINE " . $engine : "");
 		if ($table == "") {
 			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)$status$partitioning" . ' ORDER BY (' . implode(',', $order) . ')');
@@ -322,12 +328,16 @@ if (isset($_GET["clickhouse"])) {
 		$result = get_rows("SELECT name, type, default_expression FROM system.columns WHERE " . idf_escape('table') . " = " . q($table));
 		foreach ($result as $row) {
 			$type = trim($row['type']);
-			$nullable = strpos($type, 'Nullable(') === 0;
+			$nullable = preg_match('~^Nullable\((.+)\)$~', $type, $match);
+			if ($nullable) {
+				$type = $match[1]; // the NULL checkbox is displayed instead
+			}
+			$default = trim($row['default_expression']);
 			$return[trim($row['name'])] = array(
 				"field" => trim($row['name']),
 				"full_type" => $type,
 				"type" => $type,
-				"default" => trim($row['default_expression']),
+				"default" => ($default != "" ? preg_replace("~^'(.*)'$~", '$1', $default) : null), // null - no default value
 				"null" => $nullable,
 				"auto_increment" => '0',
 				"privileges" => array("insert" => 1, "select" => 1, "update" => 0, "where" => 1, "order" => 1),
