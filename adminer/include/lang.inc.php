@@ -31,6 +31,7 @@ function lang_format($translation, $number = null): string {
 		; // http://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
 		$translation = $translation[$pos];
 	}
+	// this is called also in compile.php
 	$translation = str_replace("'", '’', $translation); // translations can contain HTML or be used in optionlist (we couldn't escape them here) but they can also be used e.g. in title='' //! escape plaintext translations
 	$args = func_get_args();
 	array_shift($args);

@@ -12,7 +12,7 @@ function add_apo_slashes($s) {
 
 function remove_lang($match) {
 	$idf = strtr($match[2], array("\\'" => "'", "\\\\" => "\\"));
-	$s = (Adminer\Lang::$translations[$idf] ?: $idf);
+	$s = str_replace("'", '’', Adminer\Lang::$translations[$idf] ?: $idf); // lang_format() is not called for translations without parameters
 	if ($match[3] == ",") { // lang() has parameters
 		return $match[1] . (is_array($s) ? "lang_format(array('" . implode("', '", array_map('add_apo_slashes', $s)) . "')," : "sprintf('" . add_apo_slashes($s) . "',");
 	}

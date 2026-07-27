@@ -1,6 +1,7 @@
 ## Adminer dev
 - Escape index type, algorithm and length in table structure (XSS)
 - Escape event schedule and non-numeric table status values (XSS)
+- Fix translations containing an apostrophe in single language versions
 - Login: Disallow accessing servers which accept any password (e.g. PostgreSQL with trust authentication)
 - Check for a new version even without JavaScript
 - Sort languages by their translated name

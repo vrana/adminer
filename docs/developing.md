@@ -196,6 +196,9 @@ Even if you check whether a file is writable, a race condition exists between th
 
 Adminer does not implement automatic escaping.
 When printing untrusted data (including e.g. table names), you must use `h()`, which escapes HTML special characters including `"` and `'` (it uses `str_replace` because it is much faster than `htmlspecialchars`).
+Translations are an exception - they are trusted and printed unescaped, so they can contain HTML (a few of them do) and `lang()` must never be wrapped in `h()`.
+To keep them usable elsewhere, `lang_format()` replaces `'` by `’`, which also looks nicer.
+HTML attributes containing a translation should therefore be delimited by `'`, and a translation printed inside a JavaScript string should still use `js_escape()` because the replacement doesn't cover `\` or newlines.
 While a templating system would be useful, it would need to support streaming.
 Adminer prints data immediately to display partial results when a query is slow.
 
@@ -257,6 +260,8 @@ This extracts them for translation and applies translations if available.
 
 Translations are updated via [lang.php](/lang.php), which also checks for style consistency, such as matching punctuation.
 Plurals are stored as arrays, with selection logic handled in [lang.inc.php](/adminer/include/lang.inc.php).
+A translation may contain HTML only if the English string does.
+An apostrophe in a translation is replaced by `’` so that it can't break out of an attribute; [compile.php](/compile.php) does the same replacement for single language versions, where `lang_format()` is not called.
 
 Some translations are machine-translated by an AI model.
 They are marked with a trailing comment naming the model, e.g. `'Condition' => 'Bedingung', // Claude Fable 5`.
