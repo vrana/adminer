@@ -10,6 +10,15 @@ function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");
 }
 
+/** Replace a string, print an error if it is not found */
+function replace($search, $replace, $subject) {
+	$return = str_replace($search, $replace, $subject, $count);
+	if (!$count) {
+		echo "Not found: " . substr(str_replace("\n", "\\n", $search), 0, 70) . "\n";
+	}
+	return $return;
+}
+
 function remove_lang($match) {
 	$idf = strtr($match[2], array("\\'" => "'", "\\\\" => "\\"));
 	$s = str_replace("'", '’', Adminer\Lang::$translations[$idf] ?: $idf); // lang_format() is not called for translations without parameters
@@ -79,23 +88,20 @@ function put_file($match) {
 	}
 	if (basename($match[2]) == "lang.inc.php") {
 		if (!$_SESSION["lang"]) {
-			$return = str_replace('function lang(string $idf, $number = null): string {', 'function lang($idf, $number = null) {
+			$return = replace('function lang(string $idf, $number = null): string {', 'function lang($idf, $number = null) {
 	if (is_string($idf)) { // compiled version uses numbers, string comes from a plugin
 		// English translation is closest to the original identifiers //! pluralized translations are not found
 		$pos = array_search($idf, get_translations("en")); //! this should be cached
 		if ($pos !== false) {
 			$idf = $pos;
 		}
-	}', $return, $count);
-			if (!$count) {
-				echo "lang() not found\n";
-			}
+	}', $return);
 		} else {
 			$return = preg_replace('~// not used in a single language version from here.*~s', '', $return);
 			$return = preg_replace_callback('~(\$pos = (.+\n).+;)~sU', function ($match) {
 				return "\$pos = $match[2]\t\t\t: " . (preg_match("~'$_SESSION[lang]'.* \\? (.+)\n~U", $match[1], $match2) ? $match2[1] : "1") . "\n\t\t);";
 			}, $return);
-			$return = str_replace('Lang::$translations[$idf] ?: $idf', '$idf', $return); // lang() is used only by old plugins
+			$return = replace('Lang::$translations[$idf] ?: $idf', '$idf', $return); // lang() is used only by old plugins
 			$return .= "define('Adminer\\LANG', '$_SESSION[lang]');\n";
 		}
 	}
@@ -239,15 +245,17 @@ if ($vendor) {
 			if (!is_int($key)) {
 				$feature = $key;
 			}
-			$file = str_replace("} elseif (isset(\$_GET[\"$feature\"])) {\n\tinclude \"./$feature.inc.php\";\n", "", $file);
+			if (file_exists(__DIR__ . "/$project/$feature.inc.php")) { // e.g. routine and status have no page of their own, Editor includes the pages from adminer/
+				$file = replace("} elseif (isset(\$_GET[\"$feature\"])) {\n\tinclude \"./$feature.inc.php\";\n", "", $file);
+			}
 		}
 	}
-	if (!Adminer\support("routine")) {
-		$file = str_replace("if (isset(\$_GET[\"callf\"])) {\n\t\$_GET[\"call\"] = \$_GET[\"callf\"];\n}\nif (isset(\$_GET[\"function\"])) {\n\t\$_GET[\"procedure\"] = \$_GET[\"function\"];\n}\n", "", $file);
+	if ($project != "editor" && !Adminer\support("routine")) {
+		$file = replace("if (isset(\$_GET[\"callf\"])) {\n\t\$_GET[\"call\"] = \$_GET[\"callf\"];\n}\nif (isset(\$_GET[\"function\"])) {\n\t\$_GET[\"procedure\"] = \$_GET[\"function\"];\n}\n", "", $file);
 	}
 }
 $file = preg_replace_callback('~\b(include|require) "([^"]*)";~', 'put_file', $file);
-$file = str_replace('include "../adminer/include/coverage.inc.php";', '', $file);
+$file = replace('include "../adminer/include/coverage.inc.php";', '', $file);
 if ($vendor) {
 	if (preg_match('~^/plugins/~', $driver_path)) {
 		$file = preg_replace('((include "..)/adminer/drivers/mysql.inc.php)', "\\1$driver_path", $file);
@@ -274,19 +282,15 @@ if ($vendor) {
 		}
 	}
 	if ($project != "editor" && count(Adminer\SqlDriver::$drivers) == 1) {
-		$file = str_replace(
+		$file = replace(
 			'html_select("auth[driver]", SqlDriver::$drivers, DRIVER, "loginDriver(this);")',
 			'input_hidden("auth[driver]", "' . ($vendor == "mysql" ? "server" : $vendor) . '") . "' . reset(Adminer\SqlDriver::$drivers) . '"',
-			$file,
-			$count
+			$file
 		);
-		if (!$count) {
-			echo "auth[driver] form field not found\n";
-		}
-		$file = str_replace(". script(\"const authDriver = qs('#username').form['auth[driver]']; authDriver && authDriver.onchange();\")", "", $file);
+		$file = replace(". script(\"const authDriver = qs('#username').form['auth[driver]']; authDriver && authDriver.onchange();\")", "", $file);
 		if ($vendor == "sqlite") {
 			// SQLite doesn't use the server but the value must be preserved for the login form
-			$file = str_replace(
+			$file = replace(
 				"\t\techo adminer()->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', "
 					. "\"<input name='auth[server]' value='\" . h(SERVER) . \"' title='\" . lang('hostname[:port] or :socket') . \"' placeholder='localhost' autocapitalize='off'>\");\n",
 				"\t\techo input_hidden(\"auth[server]\", SERVER);\n",
@@ -312,10 +316,10 @@ $file = str_replace("\r", "", $file);
 if ($_SESSION["lang"]) {
 	// single language version
 	$file = preg_replace_callback("~(<\\?php\\s*echo )?(?<!>)lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
-	$file = str_replace("switch_lang();", "", $file);
-	$file = str_replace('<?php echo LANG; ?>', $_SESSION["lang"], $file);
+	$file = replace("switch_lang();", "", $file);
+	$file = replace('<?php echo LANG; ?>', $_SESSION["lang"], $file);
 }
-$file = str_replace('echo script_src("static/editing.js");' . "\n", "", $file); // merged into functions.js
+$file = replace('echo script_src("static/editing.js");' . "\n", "", $file); // merged into functions.js
 $file = preg_replace('~\s+echo script_src\("\.\./externals/jush/modules/jush-(autocomplete-sql|textarea|txt|js|" \. JUSH \. ")\.js", true\);~', '', $file); // merged into jush.js
 $file = preg_replace('~echo .*/jush(-dark)?.css\'>.*~', '', $file); // merged into default.css or dark.css
 if (function_exists('stripTypes')) {
