@@ -196,7 +196,7 @@ function file_input(string $input): string {
 	$upload_max_filesize = "upload_max_filesize";
 	$upload_max_filesize_value = ini_get($upload_max_filesize);
 	return (ini_bool("file_uploads")
-		? $input . script("qsl('input[type=\"file\"]').onchange = partialArg(fileChange, "
+		? $input . script("qsl('input[type=\"file\"]').onchange = event => fileChange(event, "
 				. "$max_file_uploads_value, '" . js_escape(lang('Increase %s.', "$max_file_uploads = $max_file_uploads_value")) . "', " // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
 				. ini_bytes("upload_max_filesize") . ", '" . js_escape(lang('Increase %s.', "$upload_max_filesize = $upload_max_filesize_value")) . "')")
 		: lang('File uploads are disabled.')

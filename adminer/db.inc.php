@@ -68,7 +68,7 @@ if (adminer()->homepage()) {
 				echo "<fieldset><legend>" . lang('Search data in tables') . " <span id='selected2'></span></legend><div>";
 				echo html_select("op", adminer()->operators(), idx($_POST, "op", JUSH == "elastic" ? "should" : "LIKE %%"));
 				echo " <input type='search' name='query' value='" . h($_POST["query"]) . "'>";
-				echo script("qsl('input').onkeydown = partialArg(bodyKeydown, 'search');", "");
+				echo script("qsl('input').onkeydown = event => bodyKeydown(event, 'search');", "");
 				echo " <input type='submit' name='search' value='" . lang('Search') . "'>\n";
 				echo "</div></fieldset>\n";
 				if ($_POST["search"] && $_POST["query"] != "") {
@@ -78,7 +78,7 @@ if (adminer()->homepage()) {
 			}
 			echo "<div class='scrollable'>\n";
 			echo "<table class='nowrap checkable odds'>\n";
-			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
+			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: event => tableClick(event, true)});");
 			echo '<thead><tr class="wrap">';
 			echo '<td><input id="check-all" type="checkbox" class="jsonly">' . script("qs('#check-all').onclick = partial(formCheck, /^(tables|views)\[/);", "");
 			echo '<th><a href="' . h(substr(ME, 0, -1)) . '">' . lang('Table') . '</a>';

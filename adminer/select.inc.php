@@ -341,7 +341,7 @@ if (!$columns && support("table")) {
 
 			echo "<div class='scrollable'>";
 			echo "<table id='table' class='nowrap checkable odds'>";
-			echo script("mixin(qs('#table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true), onkeydown: editingKeydown});");
+			echo script("mixin(qs('#table'), {onclick: tableClick, ondblclick: event => tableClick(event, true), onkeydown: editingKeydown});");
 			echo "<thead><tr>" . (!$group && $select
 				? ""
 				: "<td><input type='checkbox' id='all-page' class='jsonly'>" . script("qs('#all-page').onclick = partial(formCheck, /check/);", "")

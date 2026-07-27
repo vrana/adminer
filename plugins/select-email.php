@@ -12,12 +12,12 @@ class AdminerSelectEmail extends Adminer\Plugin {
 		if ($emailFields) {
 			Adminer\print_fieldset("email", $this->lang('E-mail'), $_POST["email_append"]);
 			echo "<div>";
-			echo Adminer\script("qsl('div').onkeydown = partialArg(bodyKeydown, 'email');");
+			echo Adminer\script("qsl('div').onkeydown = event => bodyKeydown(event, 'email');");
 			echo Adminer\script("function emailFileChange() { const el = this.cloneNode(true); this.onchange = null; el.onchange = emailFileChange; el.value = ''; this.parentNode.appendChild(el); }");
 			echo "<p>" . $this->lang('From') . ": <input name='email_from' value='" . Adminer\h($_POST ? $_POST["email_from"] : $_COOKIE["adminer_email"]) . "'>\n";
 			echo $this->lang('Subject') . ": <input name='email_subject' value='" . Adminer\h($_POST["email_subject"]) . "'>\n";
 			echo "<p><textarea name='email_message' rows='15' cols='75'>" . Adminer\h($_POST["email_message"] . ($_POST["email_append"] ? '{$' . "$_POST[email_addition]}" : "")) . "</textarea>\n";
-			echo "<p>" . Adminer\script("qsl('p').onkeydown = partialArg(bodyKeydown, 'email_append');", "") . Adminer\html_select("email_addition", $columns, $_POST["email_addition"])
+			echo "<p>" . Adminer\script("qsl('p').onkeydown = event => bodyKeydown(event, 'email_append');", "") . Adminer\html_select("email_addition", $columns, $_POST["email_addition"])
 				. " <input type='submit' name='email_append' value='" . $this->lang('Insert') . "'>\n"; //! JavaScript
 			echo "<p>" . $this->lang('Attachments') . ": <input type='file' name='email_files[]'>" . Adminer\script("qsl('input').onchange = emailFileChange;");
 			echo "<p>" . (count($emailFields) == 1 ? Adminer\input_hidden("email_field", key($emailFields)) : Adminer\html_select("email_field", $emailFields));

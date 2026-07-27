@@ -11,7 +11,7 @@ if (adminer()->homepage()) {
 	}
 	echo "<div class='scrollable'>\n";
 	echo "<table class='nowrap checkable odds'>\n";
-	echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
+	echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: event => tableClick(event, true)});");
 	echo '<thead><tr class="wrap">';
 	echo '<td><input id="check-all" type="checkbox" class="jsonly">' . script("qs('#check-all').onclick = partial(formCheck, /^tables\[/);", "");
 	echo '<th>' . lang('Table');

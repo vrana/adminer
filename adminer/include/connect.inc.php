@@ -51,7 +51,7 @@ if (
 			$collations = collations();
 			echo "<form action='' method='post'>\n";
 			echo "<table class='checkable odds'>\n";
-			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
+			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: event => tableClick(event, true)});");
 			echo "<thead><tr>"
 				. (support("database") ? "<td>" : "")
 				. "<th>" . lang('Database') . (get_session("dbs") !== null ? " - <a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>" : "")

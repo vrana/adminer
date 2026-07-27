@@ -20,7 +20,7 @@ page_header(lang('Process list'), $error);
 <div class="scrollable">
 <table class="nowrap checkable odds">
 <?php
-echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: partialArg(tableClick, true)});");
+echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: event => tableClick(event, true)});");
 // HTML valid because there is always at least one process
 $i = -1;
 foreach (adminer()->processList() as $i => $row) {

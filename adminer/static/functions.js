@@ -39,17 +39,6 @@ function partial(fn, ...args) {
 	};
 }
 
-/** Return a function calling fn with the first parameter and then the next arguments
-* @param function
-* @param ...
-* @return function with preserved this
-*/
-function partialArg(fn, ...args) {
-	return function (arg) {
-		return fn.apply(this, [arg, ...args]);
-	};
-}
-
 /** Assign values from source to target
 * @param Object
 * @param Object
