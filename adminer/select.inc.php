@@ -479,7 +479,7 @@ if (!$columns && support("table")) {
 							$long = strpos($html, "<i>…</i>");
 							echo ($update
 								? " data-text='" . ($long ? 2 : ($text ? 1 : 0)) . "'"
-									. ($editable ? "" : " data-warning='" . h(lang('Use edit link to modify this value.')) . "'")
+									. ($editable ? "" : " data-warning='" . lang('Use edit link to modify this value.') . "'")
 								: ""
 							) . ">$html";
 						}
