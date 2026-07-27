@@ -30,7 +30,7 @@ class AdminerTableStructure extends Adminer\Plugin {
 			echo "<td>" . ($field["collation"] ? " <i>" . Adminer\h($field["collation"]) . "</i>" : "");
 			echo "<td>" . ($field["null"] ? $this->lang('Yes') : $this->lang('No'));
 			echo "<td>" . Adminer\h($field["default"]);
-			echo (Adminer\support("comment") ? "<td>" . Adminer\h($field["comment"]) : "");
+			echo (Adminer\support("comment") ? "<td>" . Adminer\adminer()->commentValue('COLUMN', $field["comment"]) : "");
 			echo "\n";
 		}
 		echo "</table>\n";

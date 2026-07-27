@@ -333,8 +333,7 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 			echo (preg_match('~\n~', $field["default"]) ? "<textarea$attrs rows='2' cols='30' style='vertical-align: bottom;'>\n$value</textarea>" : "<input$attrs value='$value'>"); // \n to preserve the leading newline
 			if (support("comment")) {
 				$attrs = " name='fields[$i][comment]' data-maxlength='" . (min_version(5.5) ? 1024 : 255) . "' aria-labelledby='label-comment'";
-				$value = h($field["comment"]);
-				echo "<td$comment_class>" . (preg_match('~\n~', $field["comment"]) ? "<textarea$attrs rows='2' cols='30' style='vertical-align: bottom;'>\n$value</textarea>" : "<input$attrs value='$value'>"); // \n to preserve the leading newline
+				echo "<td$comment_class>" . adminer()->commentInput('COLUMN', $attrs, $field["comment"]);
 			}
 		}
 		echo "<td>";

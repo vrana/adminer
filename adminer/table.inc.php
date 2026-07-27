@@ -19,7 +19,7 @@ adminer()->selectLinks($table_status, (isset($rights["insert"]) || !support("tab
 
 $comment = $table_status["Comment"];
 if ($comment != "") {
-	echo "<p class='nowrap'>" . lang('Comment') . ": " . h($comment) . "\n";
+	echo "<p class='nowrap'>" . lang('Comment') . ": " . adminer()->commentValue('TABLE', $comment) . "\n";
 }
 
 if ($fields) {

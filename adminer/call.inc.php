@@ -4,7 +4,8 @@ namespace Adminer;
 $PROCEDURE = ($_GET["name"] ?: $_GET["call"]);
 page_header(lang('Call') . ": " . h($PROCEDURE), $error);
 
-$routine = routine($_GET["call"], (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE"));
+$routine_type = (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE");
+$routine = routine($_GET["call"], $routine_type);
 $in = array();
 $out = array();
 foreach ($routine["fields"] as $i => $field) {
@@ -93,28 +94,4 @@ if ($in) {
 <?php echo input_token(); ?>
 </form>
 
-<pre>
-<?php
-/** Format string as table row
-* @return string HTML
-*/
-function pre_tr(string $s): string {
-	return preg_replace('~^~m', '<tr>', preg_replace('~\|~', '<td>', preg_replace('~\|$~m', "", rtrim($s))));
-}
-
-$table = '(\+--[-+]+\+\n)';
-$row = '(\| .* \|\n)';
-echo preg_replace_callback(
-	"~^$table?$row$table?($row*)$table?~m",
-	function ($match) {
-		$first_row = pre_tr($match[2]);
-		return "<table>\n" . ($match[1] ? "<thead>$first_row<tbody>\n" : $first_row) . pre_tr($match[4]) . "\n</table>";
-	},
-	preg_replace(
-		'~(\n(    -|mysql)&gt; )(.+)~',
-		"\\1<code class='jush-sql'>\\3</code>",
-		preg_replace('~(.+)\n---+\n~', "<b>\\1</b>\n", h($routine['comment']))
-	)
-);
-?>
-</pre>
+<?php echo adminer()->commentValue($routine_type, $routine['comment']); ?>

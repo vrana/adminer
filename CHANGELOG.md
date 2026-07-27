@@ -27,6 +27,7 @@
 - SimpleDB: Use default server
 - Editor: Display all images recognized by PHP, set their size, load them lazily
 - Plugins: Method verifyVersion()
+- Plugins: Methods commentValue() and commentInput() (bug #1233)
 - Plugins: Show driver plugins in the list of loaded plugins
 - Plugins: Show version of Adminer next to plugins not matching this version
 - Plugins: Remove edit-calendar, tinymce, json-column, pretty-json-column, translation, email-table, dump-php, master-slave

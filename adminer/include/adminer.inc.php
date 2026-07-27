@@ -197,6 +197,50 @@ class Adminer {
 		return '<span title="' . h($type . ($comment != "" ? ($type ? ": " : "") . $comment : '')) . '">' . h($field["field"]) . '</span>';
 	}
 
+	/** Get comment of a table, column or routine
+	* @param 'TABLE'|'COLUMN'|'PROCEDURE'|'FUNCTION' $type
+	* @param ?string $comment null if the driver doesn't return comments
+	* @return string HTML code
+	*/
+	function commentValue(string $type, ?string $comment): string {
+		if ($comment == "" || $type == 'TABLE' || $type == 'COLUMN') {
+			return h($comment);
+		}
+		// routine comments usually hold documentation, e.g. in the MySQL sys schema
+		/** Format string as table row */
+		$pre_tr = function (string $s): string {
+			return preg_replace('~^~m', '<tr>', preg_replace('~\|~', '<td>', preg_replace('~\|$~m', "", rtrim($s))));
+		};
+		$table = '(\+--[-+]+\+\n)';
+		$row = '(\| .* \|\n)';
+		return "<pre>\n" . preg_replace_callback(
+			"~^$table?$row$table?($row*)$table?~m",
+			function ($match) use ($pre_tr) {
+				$first_row = $pre_tr($match[2]);
+				return "<table>\n" . ($match[1] ? "<thead>$first_row<tbody>\n" : $first_row) . $pre_tr($match[4]) . "\n</table>";
+			},
+			preg_replace(
+				'~(\n(    -|mysql)&gt; )(.+)~',
+				"\\1<code class='jush-sql'>\\3</code>",
+				preg_replace('~(.+)\n---+\n~', "<b>\\1</b>\n", h($comment))
+			)
+		) . "</pre>\n";
+	}
+
+	/** Get input for editing a comment
+	* @param 'TABLE'|'COLUMN' $type
+	* @param string $attrs attributes to use inside the tag
+	* @param ?string $comment null if the driver doesn't return comments
+	* @return string HTML code
+	*/
+	function commentInput(string $type, string $attrs, ?string $comment): string {
+		$value = h($comment);
+		return (preg_match('~\n~', $value) // $value is never null unlike $comment
+			? "<textarea$attrs rows='2' cols='" . ($type == 'TABLE' ? 20 : 30) . "' style='vertical-align: bottom;'>\n$value</textarea>" // \n to preserve the leading newline
+			: "<input$attrs value='$value'>"
+		);
+	}
+
 	/** Print links after select heading
 	* @param TableStatus $tableStatus
 	* @param ?string $set new item options, NULL for no new item
@@ -359,7 +403,7 @@ class Adminer {
 			echo ($field["auto_increment"] ? " <i>" . lang('Auto Increment') . "</i>" : "");
 			$default = h($field["default"]);
 			echo (isset($field["default"]) ? " <span title='" . lang('Default value') . "'>[<b>" . ($field["generated"] ? "<code class='jush-" . JUSH . "'>$default</code>" : $default) . "</b>]</span>" : "");
-			echo (support("comment") ? "<td>" . h($field["comment"]) : "");
+			echo (support("comment") ? "<td>" . adminer()->commentValue('COLUMN', $field["comment"]) : "");
 			echo "\n";
 		}
 		echo "</table>\n";

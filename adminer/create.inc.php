@@ -188,14 +188,11 @@ if (support("columns")) {
 	echo lang('Auto Increment') . ": <input type='number' name='Auto_increment' class='size' value='" . h($row["Auto_increment"]) . "'>\n";
 	echo checkbox("defaults", 1, ($_POST ? $_POST["defaults"] : get_setting("defaults")), lang('Default values'), "columnShow(this.checked, 5)", "jsonly");
 	$comments = ($_POST ? $_POST["comments"] : get_setting("comments"));
-	echo (support("comment")
-		? checkbox("comments", 1, $comments, lang('Comment'), "editingCommentsClick(this, true);", "jsonly")
-			. ' ' . (preg_match('~\n~', $row["Comment"])
-				? "<textarea name='Comment' rows='2' cols='20'" . ($comments ? "" : " class='hidden'") . ">" . h($row["Comment"]) . "</textarea>"
-				: '<input name="Comment" value="' . h($row["Comment"]) . '" data-maxlength="' . (min_version(5.5) ? 2048 : 60) . '"' . ($comments ? "" : " class='hidden'") . '>'
-			)
-		: '')
-	;
+	if (support("comment")) {
+		echo checkbox("comments", 1, $comments, lang('Comment'), "editingCommentsClick(this, true);", "jsonly") . ' ';
+		$attrs = " name='Comment' data-maxlength='" . (min_version(5.5) ? 2048 : 60) . "'" . ($comments ? "" : " class='hidden'");
+		echo adminer()->commentInput('TABLE', $attrs, $row["Comment"]);
+	}
 	?>
 <p>
 <input type='submit' value='<?php echo lang('Save'); ?>'>
