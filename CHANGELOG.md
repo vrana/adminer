@@ -17,6 +17,7 @@
 - Edit: Keep values of columns with special characters in name after error
 - Edit: Fix switching function to SQL with the edit-foreign plugin (bug #1254)
 - Edit: Hide the value field for functions without arguments (e.g. now, uuid)
+- MySQL: Do not use SSL if the login-ssl plugin is configured only for other drivers
 - PostgreSQL: Support operator classes in indexes
 - PostgreSQL: Add Truncate Cascade button
 - PostgreSQL: Do not show functions created by extensions

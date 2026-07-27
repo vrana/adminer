@@ -20,7 +20,8 @@ if (!defined('Adminer\DRIVER')) {
 				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
 				list($host, $port) = host_port($server);
 				$ssl = adminer()->connectSsl();
-				if ($ssl) {
+				$use_ssl = ($ssl && ($ssl['key'] || $ssl['cert'] || $ssl['ca'] || isset($ssl['verify']))); // the array can hold options for other drivers only
+				if ($use_ssl) {
 					$this->ssl_set($ssl['key'], $ssl['cert'], $ssl['ca'], '', '');
 				}
 				$return = @$this->real_connect(
@@ -30,7 +31,7 @@ if (!defined('Adminer\DRIVER')) {
 					null,
 					(is_numeric($port) ? intval($port) : ini_get("mysqli.default_port")),
 					(is_numeric($port) ? null : $port),
-					($ssl ? ($ssl['verify'] !== false ? MYSQLI_CLIENT_SSL : 64) : 0) // 64 - MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT available since PHP 5.6.16
+					($use_ssl ? ($ssl['verify'] !== false ? MYSQLI_CLIENT_SSL : 64) : 0) // 64 - MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT available since PHP 5.6.16
 				);
 				$this->options(MYSQLI_OPT_LOCAL_INFILE, 0);
 				return ($return ? '' : $this->error);
