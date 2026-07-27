@@ -17,7 +17,7 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			function attach(string $server, string $username, string $password): string {
-				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, not required since PHP 5.3.4
+				mysqli_report(MYSQLI_REPORT_OFF); // stays between requests, required since PHP 8.1
 				list($host, $port) = host_port($server);
 				$ssl = adminer()->connectSsl();
 				$use_ssl = ($ssl && ($ssl['key'] || $ssl['cert'] || $ssl['ca'] || isset($ssl['verify']))); // the array can hold options for other drivers only
