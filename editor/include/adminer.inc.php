@@ -225,8 +225,9 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		$link = h($link);
 		if (is_blob($field) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($original));
-			if (preg_match("~^(GIF|\xFF\xD8\xFF|\x89PNG\x0D\x0A\x1A\x0A)~", $original)) { // GIF|JPG|PNG, getimagetype() works with filename
-				$return = "<img src='$link' alt='$return'>";
+			$size = (function_exists('getimagesizefromstring') ? @getimagesizefromstring($original) : array()); // @ - the notice for other data contains the data; the function is since PHP 5.4
+			if ($size) { // the same as in the select-image plugin
+				$return = "<img src='$link' alt='$return' $size[3] loading='lazy'>"; // $size[3] is width and height
 			}
 		}
 		if (like_bool($field) && $return != "") { // bool

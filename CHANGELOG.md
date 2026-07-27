@@ -22,6 +22,7 @@
 - MS SQL: Treat binary fields as blob (bug SF-369)
 - Elasticsearch, ClickHouse: Use default port
 - SimpleDB: Use default server
+- Editor: Display all images recognized by PHP, set their size, load them lazily
 - Plugins: Method verifyVersion()
 - Plugins: Show driver plugins in the list of loaded plugins
 - Plugins: Show version of Adminer next to plugins not matching this version
