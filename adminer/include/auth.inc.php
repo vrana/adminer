@@ -60,6 +60,23 @@ function check_invalid_login(array &$permanent): void {
 	}
 }
 
+/** Check if the server requires a password, i.e. it doesn't connect without it */
+function password_required(): bool {
+	// call only when the server is known to be reachable, otherwise it looks like a server requiring a password
+	static $return;
+	if ($return === null) {
+		$return = (bool) get_session("password_required"); // assign before credentials() which can call this function again
+		if (!$return) {
+			$credentials = adminer()->credentials();
+			$return = !is_object(Driver::connect($credentials[0], $credentials[1], ""));
+			if ($return) { // we don't remember the opposite - a server can start requiring a password
+				set_session("password_required", true);
+			}
+		}
+	}
+	return $return;
+}
+
 $auth = $_POST["auth"];
 if ($auth) {
 	session_regenerate_id(); // defense against session fixation

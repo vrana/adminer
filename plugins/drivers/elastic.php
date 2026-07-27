@@ -117,10 +117,7 @@ if (isset($_GET["elastic"])) {
 			if (!preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
 				return lang('Invalid server.');
 			}
-			if ($password != "" && is_object(parent::connect($server, $username, ""))) {
-				return lang('Database does not support password.');
-			}
-			return parent::connect($server, $username, $password);
+			return parent::connect($server, $username, $password); // servers accepting any password are refused by Adminer::login()
 		}
 
 		function __construct(Db $connection) {

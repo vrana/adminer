@@ -1,6 +1,7 @@
 ## Adminer dev
 - Escape index type, algorithm and length in table structure (XSS)
 - Escape event schedule and non-numeric table status values (XSS)
+- Login: Disallow accessing servers which accept any password (e.g. PostgreSQL with trust authentication)
 - Check for a new version even without JavaScript
 - Sort languages by their translated name
 - Tables overview: speed up, show totals in SQLite, real size in MS SQL, Oracle
