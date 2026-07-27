@@ -19,7 +19,7 @@ code { background: #11385a; }
 tbody tr:hover td, tbody tr:hover th { background: #133553; }
 pre.jush { background: #11385a; }
 input.default { box-shadow: 1px 1px 1px #888; }
-input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
+input.required, input.maxlength, textarea.maxlength { box-shadow: 1px 1px 1px red; }
 .version { color: #888; }
 .error { color: red; background: #efdada; border: 1px solid #e76f6f; }
 .error b { background: #efeaea; }

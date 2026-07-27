@@ -40,7 +40,7 @@ input, textarea { box-sizing: border-box; }
 input, select { vertical-align: middle; }
 input[type="radio"] { vertical-align: text-bottom; }
 input.default { box-shadow: 1px 1px 1px #777; }
-input.required, input.maxlength { box-shadow: 1px 1px 1px red; }
+input.required, input.maxlength, textarea.maxlength { box-shadow: 1px 1px 1px red; }
 [draggable] { cursor: grab; }
 .block { display: block; }
 .version { color: #777; font-size: 62%; }
