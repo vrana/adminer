@@ -12,6 +12,7 @@ if (isset($_GET["pgsql"])) {
 			public $timeout = 0;
 			private $link, $string, $database = true;
 
+			// no type declarations, this is passed to set_error_handler()
 			function _error($errno, $error) {
 				if (ini_bool("html_errors")) {
 					$error = html_entity_decode(strip_tags($error));
@@ -64,7 +65,7 @@ if (isset($_GET["pgsql"])) {
 				return $return;
 			}
 
-			function close() {
+			function close(): void {
 				$this->link = @pg_connect("$this->string dbname='postgres'");
 			}
 
@@ -182,7 +183,7 @@ if (isset($_GET["pgsql"])) {
 				return $return;
 			}
 
-			function close() {
+			function close(): void {
 			}
 		}
 
@@ -274,7 +275,7 @@ if (isset($_GET["pgsql"])) {
 			return ($enum ? type_values($enum) : "");
 		}
 
-		function setUserTypes($types) {
+		function setUserTypes(array $types): void {
 			$this->types[lang('User types')] = array_flip($types);
 		}
 
@@ -396,40 +397,40 @@ if (isset($_GET["pgsql"])) {
 
 
 
-	function idf_escape($idf) {
+	function idf_escape(string $idf): string {
 		return '"' . str_replace('"', '""', $idf) . '"';
 	}
 
-	function table($idf) {
+	function table(string $idf): string {
 		return idf_escape($idf);
 	}
 
-	function get_databases($flush) {
+	function get_databases(bool $flush): array {
 		return get_vals("SELECT datname FROM pg_database
 WHERE datallowconn = TRUE AND has_database_privilege(datname, 'CONNECT')
 ORDER BY datname");
 	}
 
-	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
+	function limit(string $query, string $where, int $limit, int $offset = 0, string $separator = " "): string {
 		return " $query$where" . ($limit ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
-	function limit1($table, $query, $where, $separator = "\n") {
+	function limit1(string $table, string $query, string $where, string $separator = "\n"): string {
 		return (preg_match('~^INTO~', $query)
 			? limit($query, $where, 1, 0, $separator)
 			: " $query" . (is_view(table_status1($table)) ? $where : $separator . "WHERE ctid = (SELECT ctid FROM " . table($table) . $where . $separator . "LIMIT 1)")
 		);
 	}
 
-	function db_collation($db, $collations) {
+	function db_collation(string $db, array $collations): string {
 		return get_val("SELECT datcollate FROM pg_database WHERE datname = " . q($db));
 	}
 
-	function logged_user() {
+	function logged_user(): string {
 		return get_val("SELECT user");
 	}
 
-	function tables_list() {
+	function tables_list(): array {
 		$query = "SELECT table_name, table_type FROM information_schema.tables WHERE table_schema = current_schema()";
 		if (support("materializedview")) {
 			$query .= "
@@ -443,7 +444,7 @@ ORDER BY 1";
 		return get_key_vals($query);
 	}
 
-	function count_tables($databases) {
+	function count_tables(array $databases): array {
 		$return = array();
 		foreach ($databases as $db) {
 			if (connection()->select_db($db)) {
@@ -453,7 +454,7 @@ ORDER BY 1";
 		return $return;
 	}
 
-	function table_status($name = "") {
+	function table_status(string $name = "", bool $fast = false): array {
 		static $has_size;
 		if ($has_size === null) {
 			// https://github.com/cockroachdb/cockroach/issues/40391
@@ -481,15 +482,15 @@ AND relnamespace = " . driver()->nsOid . "
 		return $return;
 	}
 
-	function is_view($table_status) {
+	function is_view(array $table_status): bool {
 		return in_array($table_status["Engine"], array("view", "materialized view"));
 	}
 
-	function fk_support($table_status) {
+	function fk_support(array $table_status): bool {
 		return true;
 	}
 
-	function fields($table) {
+	function fields(string $table): array {
 		$return = array();
 		$aliases = array(
 			'timestamp without time zone' => 'timestamp',
@@ -541,7 +542,7 @@ ORDER BY a.attnum") as $row
 		return $return;
 	}
 
-	function indexes($table, $connection2 = null) {
+	function indexes(string $table, ?Db $connection2 = null): array {
 		$connection2 = connection($connection2);
 		$return = array();
 		$table_oid = driver()->tableOid($table);
@@ -574,7 +575,7 @@ ORDER BY indisprimary DESC, indisunique DESC", $connection2) as $row
 		return $return;
 	}
 
-	function foreign_keys($table) {
+	function foreign_keys(string $table): array {
 		$return = array();
 		foreach (
 			get_rows("SELECT conname, condeferrable::int AS deferrable, condeferred::int AS deferred, pg_get_constraintdef(oid) AS definition
@@ -599,20 +600,20 @@ ORDER BY conkey, conname") as $row
 		return $return;
 	}
 
-	function view($name) {
+	function view(string $name): array {
 		return array("select" => trim(get_val("SELECT pg_get_viewdef(" . driver()->tableOid($name) . ")")));
 	}
 
-	function collations() {
+	function collations(): array {
 		//! supported in CREATE DATABASE
 		return array();
 	}
 
-	function information_schema($db) {
+	function information_schema(?string $db): bool {
 		return get_schema() == "information_schema";
 	}
 
-	function error() {
+	function error(): string {
 		$return = h(connection()->error);
 		if (preg_match('~^(.*\n)?([^\n]*)\n( *)\^(\n.*)?$~s', $return, $match)) {
 			$return = $match[1] . preg_replace('~((?:[^&]|&[^;]*;){' . strlen($match[3]) . '})(.*)~', '\1<b>\2</b>', $match[2]) . $match[4];
@@ -620,25 +621,25 @@ ORDER BY conkey, conname") as $row
 		return nl_br($return);
 	}
 
-	function create_database($db, $collation) {
+	function create_database(string $db, string $collation) {
 		return queries("CREATE DATABASE " . idf_escape($db) . ($collation ? " ENCODING " . idf_escape($collation) : ""));
 	}
 
-	function drop_databases($databases) {
+	function drop_databases(array $databases): bool {
 		connection()->close();
 		return apply_queries("DROP DATABASE", $databases, 'Adminer\idf_escape');
 	}
 
-	function rename_database($name, $collation) {
+	function rename_database(string $name, string $collation): bool {
 		connection()->close();
-		return queries("ALTER DATABASE " . idf_escape(DB) . " RENAME TO " . idf_escape($name));
+		return !!queries("ALTER DATABASE " . idf_escape(DB) . " RENAME TO " . idf_escape($name));
 	}
 
-	function auto_increment() {
+	function auto_increment(): string {
 		return "";
 	}
 
-	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+	function alter_table(string $table, string $name, array $fields, array $foreign, ?string $comment, string $engine, string $collation, string $auto_increment, ?array $partitioning) {
 		$alter = array();
 		$queries = array();
 		if ($table != "" && $table != $name) {
@@ -728,7 +729,7 @@ ORDER BY conkey, conname") as $row
 		return true;
 	}
 
-	function alter_indexes($table, $alter) {
+	function alter_indexes(string $table, $alter) {
 		$create = array();
 		$drop = array();
 		$queries = array();
@@ -764,15 +765,15 @@ ORDER BY conkey, conname") as $row
 		return true;
 	}
 
-	function truncate_tables($tables, $cascade = false) {
-		return queries("TRUNCATE " . implode(", ", array_map('Adminer\table', $tables)) . ($cascade ? " CASCADE" : ""));
+	function truncate_tables(array $tables, bool $cascade = false): bool {
+		return !!queries("TRUNCATE " . implode(", ", array_map('Adminer\table', $tables)) . ($cascade ? " CASCADE" : ""));
 	}
 
-	function drop_views($views) {
+	function drop_views(array $views) {
 		return drop_tables($views);
 	}
 
-	function drop_tables($tables) {
+	function drop_tables(array $tables) {
 		foreach ($tables as $table) {
 			$status = table_status1($table);
 			if (!queries("DROP " . strtoupper($status["Engine"]) . " " . table($table))) {
@@ -782,7 +783,7 @@ ORDER BY conkey, conname") as $row
 		return true;
 	}
 
-	function move_tables($tables, $views, $target) {
+	function move_tables(array $tables, array $views, string $target): bool {
 		foreach (array_merge($tables, $views) as $table) {
 			$status = table_status1($table);
 			if (!queries("ALTER " . strtoupper($status["Engine"]) . " " . table($table) . " SET SCHEMA " . idf_escape($target))) {
@@ -792,7 +793,7 @@ ORDER BY conkey, conname") as $row
 		return true;
 	}
 
-	function trigger($name, $table) {
+	function trigger(string $name, string $table): array {
 		if ($name == "") {
 			return array("Statement" => "EXECUTE PROCEDURE ()");
 		}
@@ -820,7 +821,7 @@ ORDER BY event_manipulation DESC") as $row
 		return $return;
 	}
 
-	function triggers($table) {
+	function triggers(string $table): array {
 		$return = array();
 		foreach (get_rows("SELECT * FROM information_schema.triggers WHERE trigger_schema = current_schema() AND event_object_table = " . q($table)) as $row) {
 			$trigger = trigger($row["trigger_name"], $table);
@@ -829,7 +830,7 @@ ORDER BY event_manipulation DESC") as $row
 		return $return;
 	}
 
-	function trigger_options() {
+	function trigger_options(): array {
 		return array(
 			"Timing" => array("BEFORE", "AFTER"),
 			"Event" => array("INSERT", "UPDATE", "UPDATE OF", "DELETE", "INSERT OR UPDATE", "INSERT OR UPDATE OF", "DELETE OR INSERT", "DELETE OR UPDATE", "DELETE OR UPDATE OF", "DELETE OR INSERT OR UPDATE", "DELETE OR INSERT OR UPDATE OF"),
@@ -837,7 +838,7 @@ ORDER BY event_manipulation DESC") as $row
 		);
 	}
 
-	function routine($name, $type) {
+	function routine(string $name, string $type): array {
 		$rows = get_rows('SELECT routine_definition AS definition, LOWER(external_language) AS language, *
 FROM information_schema.routines
 WHERE routine_schema = current_schema() AND specific_name = ' . q($name));
@@ -852,7 +853,7 @@ ORDER BY ordinal_position");
 		return $return;
 	}
 
-	function routines() {
+	function routines(): array {
 		return get_rows('SELECT specific_name AS "SPECIFIC_NAME", routine_type AS "ROUTINE_TYPE", routine_name AS "ROUTINE_NAME", type_udt_name AS "DTD_IDENTIFIER"
 FROM information_schema.routines
 WHERE routine_schema = current_schema()' . (connection()->flavor == 'cockroach' ? '' : "
@@ -860,11 +861,11 @@ AND substring(specific_name, '[0-9]+\$')::oid NOT IN (SELECT objid FROM pg_catal
 ORDER BY SPECIFIC_NAME'); // 'e' - functions created by extensions
 	}
 
-	function routine_languages() {
+	function routine_languages(): array {
 		return get_vals("SELECT LOWER(lanname) FROM pg_catalog.pg_language");
 	}
 
-	function routine_id($name, $row) {
+	function routine_id(string $name, array $row): string {
 		$return = array();
 		foreach ($row["fields"] as $field) {
 			$length = $field["length"];
@@ -873,16 +874,16 @@ ORDER BY SPECIFIC_NAME'); // 'e' - functions created by extensions
 		return idf_escape($name) . "(" . implode(", ", $return) . ")";
 	}
 
-	function last_id($result) {
+	function last_id($result): string {
 		$row = (is_object($result) ? $result->fetch_row() : array());
 		return ($row ? $row[0] : 0);
 	}
 
-	function explain($connection, $query) {
+	function explain(Db $connection, string $query) {
 		return $connection->query("EXPLAIN $query");
 	}
 
-	function found_rows($table_status, $where) {
+	function found_rows(array $table_status, array $where) {
 		if (preg_match("~ rows=([0-9]+)~", get_val("EXPLAIN SELECT * FROM " . idf_escape($table_status["Name"]) . ($where ? " WHERE " . implode(" AND ", $where) : "")), $regs)) {
 			return $regs[1];
 		}
@@ -899,30 +900,30 @@ AND oid NOT IN (SELECT objid FROM pg_catalog.pg_depend WHERE classid = 'pg_type'
 		);
 	}
 
-	function type_values($id) {
+	function type_values(int $id): string {
 		// to get values from type string: unnest(enum_range(NULL::"$type"))
 		$enums = get_vals("SELECT enumlabel FROM pg_enum WHERE enumtypid = $id ORDER BY enumsortorder");
 		return ($enums ? "'" . implode("', '", array_map('addslashes', $enums)) . "'" : "");
 	}
 
-	function schemas() {
+	function schemas(): array {
 		return get_vals("SELECT nspname FROM pg_namespace ORDER BY nspname");
 	}
 
-	function get_schema() {
+	function get_schema(): string {
 		return get_val("SELECT current_schema()");
 	}
 
-	function set_schema($schema, $connection2 = null) {
+	function set_schema(string $schema, ?Db $connection2 = null): bool {
 		$return = connection($connection2)->query("SET search_path TO " . idf_escape($schema));
 		driver()->setUserTypes(types(true)); //! get types from current_schemas('t')
-		return $return;
+		return !!$return;
 	}
 
 	// create_sql() produces CREATE TABLE without FK CONSTRAINTs
 	// foreign_keys_sql() produces all FK CONSTRAINTs as ALTER TABLE ... ADD CONSTRAINT
 	// so that all FKs can be added after all tables have been created, avoiding any need to reorder CREATE TABLE statements in order of their FK dependencies
-	function foreign_keys_sql($table) {
+	function foreign_keys_sql(string $table): string {
 		$return = "";
 
 		$status = table_status1($table);
@@ -937,7 +938,7 @@ AND oid NOT IN (SELECT objid FROM pg_catalog.pg_depend WHERE classid = 'pg_type'
 		return ($return ? "$return\n" : $return);
 	}
 
-	function create_sql($table, $auto_increment, $style) {
+	function create_sql(string $table, ?bool $auto_increment, string $style): string {
 		$return_parts = array();
 		$sequences = array();
 
@@ -950,7 +951,7 @@ AND oid NOT IN (SELECT objid FROM pg_catalog.pg_depend WHERE classid = 'pg_type'
 		$fields = fields($table);
 
 		if (count($status) < 2 || empty($fields)) {
-			return false;
+			return "";
 		}
 
 		$return = "CREATE TABLE $ns." . idf_escape($status['Name']) . " (\n    ";
@@ -1027,11 +1028,11 @@ AND oid NOT IN (SELECT objid FROM pg_catalog.pg_depend WHERE classid = 'pg_type'
 		return rtrim($return, ';');
 	}
 
-	function truncate_sql($table) {
+	function truncate_sql(string $table): string {
 		return "TRUNCATE " . table($table);
 	}
 
-	function trigger_sql($table) {
+	function trigger_sql(string $table): string {
 		$status = table_status1($table);
 		$return = "";
 		foreach (triggers($table) as $trg_id => $trg) {
@@ -1042,7 +1043,7 @@ AND oid NOT IN (SELECT objid FROM pg_catalog.pg_depend WHERE classid = 'pg_type'
 	}
 
 
-	function use_sql($database, $style = "") {
+	function use_sql(string $database, string $style = ""): string {
 		$name = idf_escape($database);
 		$return = "";
 		if (preg_match('~CREATE~', $style)) {
@@ -1054,22 +1055,22 @@ AND oid NOT IN (SELECT objid FROM pg_catalog.pg_depend WHERE classid = 'pg_type'
 		return "$return\\connect $name";
 	}
 
-	function show_variables() {
+	function show_variables(): array {
 		return get_rows("SHOW ALL");
 	}
 
-	function process_list() {
+	function process_list(): array {
 		return get_rows("SELECT * FROM pg_stat_activity ORDER BY " . (min_version(9.2) ? "pid" : "procpid"));
 	}
 
-	function convert_field($field) {
+	function convert_field(array $field) {
 	}
 
-	function unconvert_field($field, $return) {
+	function unconvert_field(array $field, string $return): string {
 		return $return;
 	}
 
-	function support($feature) {
+	function support(string $feature): bool {
 		return preg_match('~^(check|columns|comment|database|drop_col|dump|descidx|fast_status|indexes|kill|partial_indexes|routine|scheme|sequence|sql|table|trigger|type|variables|view'
 			. (min_version(9.3) ? '|materializedview' : '')
 			. (min_version(11) ? '|procedure' : '')
@@ -1078,15 +1079,15 @@ AND oid NOT IN (SELECT objid FROM pg_catalog.pg_depend WHERE classid = 'pg_type'
 		;
 	}
 
-	function kill_process($val) {
-		return queries("SELECT pg_terminate_backend(" . number($val) . ")");
+	function kill_process(string $id) {
+		return queries("SELECT pg_terminate_backend(" . number($id) . ")");
 	}
 
-	function connection_id() {
+	function connection_id(): string {
 		return "SELECT pg_backend_pid()";
 	}
 
-	function max_connections() {
+	function max_connections(): string {
 		return get_val("SHOW max_connections");
 	}
 }
