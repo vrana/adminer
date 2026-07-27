@@ -27,6 +27,7 @@
 - MS SQL: Treat binary fields as blob (bug SF-369)
 - Elasticsearch, ClickHouse: Use default port
 - MongoDB: Authenticate against the database used in login
+- MongoDB: Do not treat the string NULL as the NULL value
 - SimpleDB: Use default server
 - Editor: Display all images recognized by PHP, set their size, load them lazily
 - Plugins: Method verifyVersion()

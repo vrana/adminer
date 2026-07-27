@@ -69,7 +69,7 @@ if (isset($_GET["mongo"])) {
 			}
 
 			function quote($string): string {
-				return $string;
+				return json_encode($string, 256); // 256 - JSON_UNESCAPED_UNICODE available since PHP 5.4
 			}
 		}
 
@@ -238,12 +238,25 @@ if (isset($_GET["mongo"])) {
 			return where_to_query($where, $wheresOr);
 		}
 
+		/** Get value from an expression created by Db::quote()
+		* @param string|mixed[] $expression array from the json function
+		* @return string|mixed[]|null null for expressions which are not values, e.g. NULL
+		*/
+		function unquote($expression) {
+			if (is_array($expression)) {
+				return $expression;
+			}
+			$return = json_decode($expression, true);
+			return (json_last_error() ? null : $return);
+		}
+
 		function where_to_query($whereAnd = array(), $whereOr = array()) {
 			$data = array();
 			foreach (array('and' => $whereAnd, 'or' => $whereOr) as $type => $where) {
 				if (is_array($where)) {
 					foreach ($where as $expression) {
 						list($col, $op, $val) = explode(" ", $expression, 3);
+						$val = unquote($val);
 						if ($col == "_id" && preg_match('~^(MongoDB\\\\BSON\\\\ObjectID)\("(.+)"\)$~', $val, $match)) {
 							list(, $class, $val) = $match;
 							$val = new $class($val);
@@ -368,9 +381,12 @@ if (isset($_GET["mongo"])) {
 			}
 			$removeFields = array();
 			foreach ($set as $key => $value) {
-				if ($value == 'NULL') {
+				$value = unquote($value);
+				if ($value === null) { // NULL and other expressions
 					$removeFields[$key] = 1;
 					unset($set[$key]);
+				} else {
+					$set[$key] = $value;
 				}
 			}
 			$update = array('$set' => $set);
@@ -392,6 +408,14 @@ if (isset($_GET["mongo"])) {
 		function insert($table, array $set) {
 			$db = $this->conn->_db_name;
 			$bulk = new \MongoDB\Driver\BulkWrite(array());
+			foreach ($set as $key => $value) {
+				$value = unquote($value);
+				if ($value === null) { // NULL and other expressions
+					unset($set[$key]); // the field is not created at all
+				} else {
+					$set[$key] = $value;
+				}
+			}
 			if ($set['_id'] == '') {
 				unset($set['_id']);
 			}
