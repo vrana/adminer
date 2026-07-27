@@ -27,6 +27,7 @@
 - Plugins: Show version of Adminer next to plugins not matching this version
 - Plugins: Remove edit-calendar, tinymce, json-column, pretty-json-column, translation, email-table, dump-php, master-slave
 - Plugins: Do not fail with a fatal error when a plugin is not an object (bug TimWolla/docker-adminer#211)
+- Plugin login-password-less: Allow the plugin password to be also the password of some server
 
 ## Adminer 5.5.1 (released 2026-07-21)
 - Ignore invalid X-Forwarded-Prefix (GHSA-fr74-9mf9-gf44)

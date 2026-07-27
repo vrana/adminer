@@ -8,6 +8,7 @@
 */
 class AdminerLoginPasswordLess extends Adminer\Plugin {
 	protected $password_hash;
+	protected $password_matches;
 
 	/** Set allowed password
 	* @param string $password_hash result of password_hash()
@@ -18,13 +19,25 @@ class AdminerLoginPasswordLess extends Adminer\Plugin {
 
 	function credentials() {
 		$password = Adminer\get_password();
-		return array(Adminer\SERVER, $_GET["username"], (password_verify($password, $this->password_hash) ? "" : $password));
+		// the server doesn't know our password so don't send it - unless the server requires a password, it can be even the same one
+		return array(Adminer\SERVER, $_GET["username"], ($this->passwordMatches($password) && !Adminer\password_required() ? "" : $password));
 	}
 
 	function login($login, $password) {
-		if ($password != "") {
-			return true;
+		if ($this->passwordMatches($password)) {
+			return true; // we have verified the password ourselves
 		}
+	}
+
+	/** Check if the password is the one allowed by this plugin
+	* @param string $password
+	* @return bool
+	*/
+	protected function passwordMatches($password) {
+		if ($this->password_matches === null) {
+			$this->password_matches = password_verify($password, $this->password_hash); // password_verify() is slow by design
+		}
+		return $this->password_matches;
 	}
 
 	protected $translations = array(
