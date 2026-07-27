@@ -265,7 +265,7 @@ if (!isset($_GET["import"])) {
 	if ($importServerPath) {
 		echo "<fieldset><legend>" . lang('From server') . "</legend><div>";
 		echo lang('Webserver file %s', "<code>" . h($importServerPath) . "$gz</code>");
-		echo ' <input type="submit" name="webfile" value="' . lang('Run file') . '">';
+		echo " <input type='submit' name='webfile' value='" . lang('Run file') . "'>";
 		echo "</div></fieldset>\n";
 	}
 	echo "<p>";

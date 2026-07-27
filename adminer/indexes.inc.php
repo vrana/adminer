@@ -196,6 +196,6 @@ foreach ($row["indexes"] as $index) {
 </table>
 </div>
 <p>
-<input type="submit" value="<?php echo lang('Save'); ?>">
+<input type='submit' value='<?php echo lang('Save'); ?>'>
 <?php echo input_token(); ?>
 </form>

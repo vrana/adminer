@@ -29,7 +29,7 @@ if (!$row) {
 
 <form action="" method="post">
 <p><input name="name" autofocus value="<?php echo h($row["name"]); ?>" autocapitalize="off">
-<input type="submit" value="<?php echo lang('Save'); ?>">
+<input type='submit' value='<?php echo lang('Save'); ?>'>
 <?php
 if ($_GET["ns"] != "") {
 	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . confirm(lang('Drop %s?', $_GET["ns"])) . "\n";

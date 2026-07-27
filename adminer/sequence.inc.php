@@ -27,7 +27,7 @@ if (!$row) {
 
 <form action="" method="post">
 <p><input name="name" value="<?php echo h($row["name"]); ?>" autocapitalize="off">
-<input type="submit" value="<?php echo lang('Save'); ?>">
+<input type='submit' value='<?php echo lang('Save'); ?>'>
 <?php
 if ($SEQUENCE != "") {
 	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . confirm(lang('Drop %s?', $SEQUENCE)) . "\n";

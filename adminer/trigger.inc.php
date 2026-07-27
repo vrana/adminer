@@ -45,9 +45,9 @@ page_header(($name != "" ? lang('Alter trigger') . ": " . h($name) : lang('Creat
 <?php echo script("qs('#form')['Timing'].onchange();"); ?>
 <p><?php textarea("Statement", $row["Statement"]); ?>
 <p>
-<input type="submit" value="<?php echo lang('Save'); ?>">
+<input type='submit' value='<?php echo lang('Save'); ?>'>
 <?php if ($name != "") { ?>
-<input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $name)); ?>
+<input type='submit' name='drop' value='<?php echo lang('Drop'); ?>'><?php echo confirm(lang('Drop %s?', $name)); ?>
 <?php } ?>
 <?php echo input_token(); ?>
 </form>

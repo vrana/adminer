@@ -89,7 +89,7 @@ if ($in) {
 }
 ?>
 <p>
-<input type="submit" value="<?php echo lang('Call'); ?>">
+<input type='submit' value='<?php echo lang('Call'); ?>'>
 <?php echo input_token(); ?>
 </form>
 

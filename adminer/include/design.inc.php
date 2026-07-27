@@ -20,7 +20,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	// initial-scale=1 is the default but Chrome 134 on iOS is not able to zoom out without it
 	?>
 <!DOCTYPE html>
-<html lang="<?php echo LANG; ?>" dir="<?php echo lang('ltr'); ?>">
+<html lang='<?php echo LANG; ?>' dir='<?php echo lang('ltr'); ?>'>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -197,7 +197,7 @@ function page_footer(string $missing = ""): void {
 <form action="" method="post">
 <p class="logout">
 <span><?php echo h($_GET["username"]) . "\n"; ?></span>
-<input type="submit" name="logout" value="<?php echo lang('Logout'); ?>" id="logout">
+<input type='submit' name='logout' value='<?php echo lang('Logout'); ?>' id='logout'>
 <?php echo input_token(); ?>
 </form>
 <?php

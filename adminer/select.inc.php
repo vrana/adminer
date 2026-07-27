@@ -368,7 +368,7 @@ if (!$columns && support("table")) {
 						echo ($sortable ? "<a href='" . h($href . ($order[0] == $column || $order[0] == $key ? $desc : '')) . "'>$fun</a>" : $fun); // $order[0] == $key - COUNT(*)
 						$menu = ($sortable ? "<a href='" . h($href . $desc) . "' title='" . lang('descending') . "' class='text'> ↓</a>" : '');
 						if (!$val["fun"] && isset($field["privileges"]["where"])) {
-							$menu .= '<a href="#fieldset-search" title="' . lang('Search') . '" class="text jsonly"> =</a>';
+							$menu .= "<a href='#fieldset-search' title='" . lang('Search') . "' class='text jsonly'> =</a>";
 							$menu .= script("qsl('a').onclick = partial(selectSearch, '" . js_escape($key) . "');");
 						}
 						echo ($menu ? "<span class='column'>$menu</span>" : "");
@@ -569,12 +569,12 @@ if (!$columns && support("table")) {
 				if (adminer()->selectCommandPrint()) {
 					?>
 <fieldset<?php echo ($_GET["modify"] ? '' : ' class="jsonly"'); ?>><legend><?php echo lang('Modify'); ?></legend><div>
-<input type="submit" value="<?php echo lang('Save'); ?>"<?php echo ($_GET["modify"] ? '' : ' title="' . lang('Ctrl+click on a value to modify it.') . '"'); ?>>
+<input type='submit' value='<?php echo lang('Save'); ?>'<?php echo ($_GET["modify"] ? '' : " title='" . lang('Ctrl+click on a value to modify it.') . "'"); ?>>
 </div></fieldset>
 <fieldset><legend><?php echo lang('Selected'); ?> <span id="selected"></span></legend><div>
-<input type="submit" name="edit" value="<?php echo lang('Edit'); ?>">
-<input type="submit" name="clone" value="<?php echo lang('Clone'); ?>">
-<input type="submit" name="delete" value="<?php echo lang('Delete'); ?>"><?php echo confirm(); ?>
+<input type='submit' name='edit' value='<?php echo lang('Edit'); ?>'>
+<input type='submit' name='clone' value='<?php echo lang('Clone'); ?>'>
+<input type='submit' name='delete' value='<?php echo lang('Delete'); ?>'><?php echo confirm(); ?>
 </div></fieldset>
 <?php
 				}

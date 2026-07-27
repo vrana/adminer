@@ -87,7 +87,7 @@ if (support("scheme")) {
 }
 echo input_hidden("change-js");
 ?>
-<noscript><p><input type="submit" name="change" value="<?php echo lang('Change'); ?>"></noscript>
+<noscript><p><input type='submit' name='change' value='<?php echo lang('Change'); ?>'></noscript>
 <table>
 <thead><tr><th id="label-source"><?php echo lang('Source'); ?><th id="label-target"><?php echo lang('Target'); ?><tbody>
 <?php
@@ -112,10 +112,10 @@ foreach ($row["source"] as $key => $val) {
 	'oracle' => "SQLRF01111",
 )); ?>
 <p>
-<input type="submit" value="<?php echo lang('Save'); ?>">
-<noscript><p><input type="submit" name="add" value="<?php echo lang('Add column'); ?>"></noscript>
+<input type='submit' value='<?php echo lang('Save'); ?>'>
+<noscript><p><input type='submit' name='add' value='<?php echo lang('Add column'); ?>'></noscript>
 <?php if ($name != "") { ?>
-<input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $name)); ?>
+<input type='submit' name='drop' value='<?php echo lang('Drop'); ?>'><?php echo confirm(lang('Drop %s?', $name)); ?>
 <?php } ?>
 <?php echo input_token(); ?>
 </form>

@@ -198,11 +198,11 @@ if (support("columns")) {
 	;
 	?>
 <p>
-<input type="submit" value="<?php echo lang('Save'); ?>">
+<input type='submit' value='<?php echo lang('Save'); ?>'>
 <?php } ?>
 
 <?php if ($TABLE != "") { ?>
-<input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $TABLE)); ?>
+<input type='submit' name='drop' value='<?php echo lang('Drop'); ?>'><?php echo confirm(lang('Drop %s?', $TABLE)); ?>
 <?php } ?>
 <?php
 if ($partition_by && (JUSH == 'sql' || $TABLE == "")) {

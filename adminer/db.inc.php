@@ -123,7 +123,7 @@ if (adminer()->homepage()) {
 				if ($view && !preg_match('~materialized~i', $status['Engine'])) {
 					$title = lang('View');
 					echo '<td colspan="' . (count($columns) - (support("comment") ? 2 : 1)) . '">' . (support("view") ? "<a href='" . h(ME) . "view=" . urlencode($name) . "' title='" . lang('Alter view') . "'>$title</a>" : $title);
-					echo '<td align="right"><a href="' . h(ME) . "select=" . urlencode($name) . '" title="' . lang('Select data') . '">?</a>';
+					echo "<td align='right'><a href='" . h(ME) . "select=" . urlencode($name) . "' title='" . lang('Select data') . "'>?</a>";
 					if (support("comment")) {
 						echo '<td>' . h($status['Comment']);
 					}

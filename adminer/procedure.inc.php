@@ -59,7 +59,7 @@ echo ($collations ? "<datalist id='collations'>" . optionlist($collations) . "</
 <form action="" method="post" id="form">
 <p><?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" data-maxlength="64" autocapitalize="off">
 <?php echo ($routine_languages ? "<label>" . lang('Language') . ": " . html_select("language", $routine_languages, $row["language"]) . "</label>\n" : ""); ?>
-<input type="submit" value="<?php echo lang('Save'); ?>">
+<input type='submit' value='<?php echo lang('Save'); ?>'>
 <div class="scrollable">
 <table id="edit-fields" class="nowrap">
 <?php
@@ -74,9 +74,9 @@ if (isset($_GET["function"])) {
 </div>
 <p><?php textarea("definition", $row["definition"], 20); ?>
 <p>
-<input type="submit" value="<?php echo lang('Save'); ?>">
+<input type='submit' value='<?php echo lang('Save'); ?>'>
 <?php if ($PROCEDURE != "") { ?>
-<input type="submit" name="drop" value="<?php echo lang('Drop'); ?>"><?php echo confirm(lang('Drop %s?', $PROCEDURE)); ?>
+<input type='submit' name='drop' value='<?php echo lang('Drop'); ?>'><?php echo confirm(lang('Drop %s?', $PROCEDURE)); ?>
 <?php } ?>
 <?php echo input_token(); ?>
 </form>
