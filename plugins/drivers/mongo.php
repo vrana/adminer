@@ -22,7 +22,12 @@ if (isset($_GET["mongo"])) {
 				if ($db != "") {
 					$options["db"] = $db;
 				}
-				if (($auth_source = getenv("MONGO_AUTH_SOURCE"))) {
+				$auth_source = getenv("MONGO_AUTH_SOURCE");
+				if (!$auth_source) {
+					// users are often allowed to authenticate only against the database they can access
+					$auth_source = key((array) $_SESSION["db"][DRIVER][SERVER][$username]);
+				}
+				if ($auth_source != "") {
 					$options["authSource"] = $auth_source;
 				}
 				$this->_link = new \MongoDB\Driver\Manager("mongodb://$server", $options);
