@@ -29,7 +29,7 @@ class AdminerConfig extends Adminer\Plugin {
 					echo "<tr><th>$title<td>$html\n";
 				}
 				echo "</table>\n";
-				echo "<p><input type='submit' value='" . Adminer\lang('Save') . "'>\n";
+				echo "<p><input type='submit' value='" . $this->lang('Save') . "'>\n";
 				echo "</form>\n";
 			}
 			Adminer\page_footer('db');
@@ -69,6 +69,7 @@ class AdminerConfig extends Adminer\Plugin {
 			'Design' => 'Vzhled',
 			'Use %s if exists' => 'Použít %s, pokud existuje',
 			'Use builtin design' => 'Použít vestavěný vzhled',
+			'Save' => 'Uložit',
 		),
 		'pl' => array(
 			'Configuration' => 'Konfiguracja',
@@ -77,6 +78,7 @@ class AdminerConfig extends Adminer\Plugin {
 			'Design' => 'Wygląd',
 			'Use %s if exists' => 'Użyj %s, jeśli istnieje',
 			'Use builtin design' => 'Użyj wbudowanego wyglądu',
+			'Save' => 'Zapisz zmiany',
 		),
 		'de' => array(
 			'' => 'Optionen durch den Endbenutzer konfigurieren und dies in einem Cookie speichern',
@@ -86,6 +88,7 @@ class AdminerConfig extends Adminer\Plugin {
 			'Design' => 'Design',
 			'Use %s if exists' => '%s verwenden, falls vorhanden',
 			'Use builtin design' => 'Standard Design verwenden',
+			'Save' => 'Speichern',
 		),
 		'ja' => array(
 			'' => 'ユーザオプションを設定し cookie に保存',
@@ -95,6 +98,7 @@ class AdminerConfig extends Adminer\Plugin {
 			'Design' => 'デザイン',
 			'Use %s if exists' => 'あれば %s を使う',
 			'Use builtin design' => '組込みのデザインを使う',
+			'Save' => '保存',
 		),
 		'hr' => array(
 			'' => 'Nikola Radovanović - cobisimo@gmail.com',
@@ -104,6 +108,7 @@ class AdminerConfig extends Adminer\Plugin {
 			'Use %s if exists' => 'Koristi %s ako postoji',
 			'Use builtin design' => 'Koristi ugrađeni dizajn',
 			'Design' => 'Dizajn',
+			'Save' => 'Spremi',
 		),
 	);
 }

@@ -10,7 +10,7 @@ class AdminerTableIndexesStructure extends Adminer\Plugin {
 
 	function tableIndexesPrint($indexes, $tableStatus): bool {
 		echo "<table>\n";
-		echo "<thead><tr><th>" . Adminer\lang('Name') . "<th>" . Adminer\lang('Type') . "<th>" . Adminer\lang('Algorithm') . "<th>" . Adminer\lang('Columns') . "<tbody>\n";
+		echo "<thead><tr><th>" . $this->lang('Name') . "<th>" . $this->lang('Type') . "<th>" . $this->lang('Algorithm') . "<th>" . $this->lang('Columns') . "<tbody>\n";
 		foreach ($indexes as $name => $index) {
 			echo "<tr><th>" . Adminer\h($name) . "<td>" . Adminer\h($index["type"]) . "<td>" . Adminer\h($index["algorithm"]);
 			ksort($index["columns"]); // enforce correct columns order
@@ -28,11 +28,47 @@ class AdminerTableIndexesStructure extends Adminer\Plugin {
 	}
 
 	protected $translations = array(
-		'cs' => array('' => 'Rozšířené informace o indexech'),
-		'de' => array('' => 'Erweiterte Ausgabe der Tabellenindize'),
-		'pl' => array('' => 'Rozszerzona tabela wyników struktury indeksów'),
-		'ro' => array('' => 'Ieșirea expandată a structurii indecsilor tabelului'),
-		'ja' => array('' => 'テーブルのインデックス構造を拡張表示'),
-		'hr' => array('' => 'Prošireni prikaz indeksa tablice'),
+		'cs' => array(
+			'' => 'Rozšířené informace o indexech',
+			'Name' => 'Název',
+			'Type' => 'Typ',
+			'Algorithm' => 'Algoritmus',
+			'Columns' => 'Sloupce',
+		),
+		'de' => array(
+			'' => 'Erweiterte Ausgabe der Tabellenindize',
+			'Name' => 'Name',
+			'Type' => 'Typ',
+			'Algorithm' => 'Algorithmus',
+			'Columns' => 'Spalten',
+		),
+		'pl' => array(
+			'' => 'Rozszerzona tabela wyników struktury indeksów',
+			'Name' => 'Nazwa',
+			'Type' => 'Typ',
+			'Algorithm' => 'Algorytm',
+			'Columns' => 'Kolumny',
+		),
+		'ro' => array(
+			'' => 'Ieșirea expandată a structurii indecsilor tabelului',
+			'Name' => 'Titlu',
+			'Type' => 'Tip',
+			'Algorithm' => 'Algoritm',
+			'Columns' => 'Coloane',
+		),
+		'ja' => array(
+			'' => 'テーブルのインデックス構造を拡張表示',
+			'Name' => '名称',
+			'Type' => '型',
+			'Algorithm' => 'アルゴリズム',
+			'Columns' => 'カラム',
+		),
+		'hr' => array(
+			'' => 'Prošireni prikaz indeksa tablice',
+			'Name' => 'Naziv',
+			'Type' => 'Tip',
+			'Algorithm' => 'Algoritam',
+			'Columns' => 'Stupci',
+		),
 	);
 }

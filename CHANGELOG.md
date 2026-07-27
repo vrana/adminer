@@ -28,6 +28,7 @@
 - Plugins: Show version of Adminer next to plugins not matching this version
 - Plugins: Remove edit-calendar, tinymce, json-column, pretty-json-column, translation, email-table, dump-php, master-slave
 - Plugins: Do not fail with a fatal error when a plugin is not an object (bug TimWolla/docker-adminer#211)
+- Plugins: Fix missing translations in the compiled version
 - Plugin login-password-less: Allow the plugin password to be also the password of some server
 - New plugin: Display images in select, same as in Adminer Editor
 

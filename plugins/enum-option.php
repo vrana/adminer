@@ -13,7 +13,7 @@ class AdminerEnumOption extends Adminer\Plugin {
 			$options = array();
 			$selected = "val-$value";
 			if (isset($_GET["select"])) {
-				$options["orig"] = Adminer\lang('original');
+				$options["orig"] = $this->lang('original');
 				if ($value === null) {
 					$selected = "orig";
 				}
@@ -34,11 +34,29 @@ class AdminerEnumOption extends Adminer\Plugin {
 	}
 
 	protected $translations = array(
-		'cs' => array('' => 'Editace políčka enum pomocí <select><option> místo <input type="radio">'),
-		'de' => array('' => 'Verwenden Sie <select><option> für die enum-Bearbeitung anstelle von <input type="radio">'),
-		'pl' => array('' => 'Użyj <select><option> do edycji enum zamiast <input type="radio">'),
-		'ro' => array('' => 'Utilizați <select><option> pentru editarea enum în loc de <input type="radio">'),
-		'ja' => array('' => '列挙型の編集に <input type="radio"> ではなく <select><option> を使用'),
-		'hr' => array('' => 'Koristi <select><option> za uređivanje enum polja umjesto <input type="radio">'),
+		'cs' => array(
+			'' => 'Editace políčka enum pomocí <select><option> místo <input type="radio">',
+			'original' => 'původní',
+		),
+		'de' => array(
+			'' => 'Verwenden Sie <select><option> für die enum-Bearbeitung anstelle von <input type="radio">',
+			'original' => 'Original',
+		),
+		'pl' => array(
+			'' => 'Użyj <select><option> do edycji enum zamiast <input type="radio">',
+			'original' => 'bez zmian',
+		),
+		'ro' => array(
+			'' => 'Utilizați <select><option> pentru editarea enum în loc de <input type="radio">',
+			'original' => 'original',
+		),
+		'ja' => array(
+			'' => '列挙型の編集に <input type="radio"> ではなく <select><option> を使用',
+			'original' => '元',
+		),
+		'hr' => array(
+			'' => 'Koristi <select><option> za uređivanje enum polja umjesto <input type="radio">',
+			'original' => 'original',
+		),
 	);
 }

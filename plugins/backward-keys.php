@@ -61,7 +61,7 @@ ORDER BY s.ordinal_position", null, "") as $row
 				foreach ($cols as $column => $val) {
 					$link .= "&set" . urlencode("[" . Adminer\bracket_escape($column) . "]") . "=" . urlencode($row[$val]);
 				}
-				echo "<a href='" . Adminer\h($link) . "' title='" . Adminer\lang('New item') . "'>+</a> ";
+				echo "<a href='" . Adminer\h($link) . "' title='" . $this->lang('New item') . "'>+</a> ";
 			}
 		}
 	}
@@ -71,10 +71,25 @@ ORDER BY s.ordinal_position", null, "") as $row
 	}
 
 	protected $translations = array(
-		'cs' => array('' => 'Zobrazí odkazy na tabulky odkazující aktuální řádek, stejně jako Adminer Editor'),
-		'de' => array('' => 'Links zu Tabellen anzeigen die auf die aktuelle Zeile verweisen, wie im Adminer Editor'),
-		'ja' => array('' => 'Adminer Editor と同様に、カレント行を参照しているテーブルへのリンクを表示'),
-		'pl' => array('' => 'Wyświetlaj linki do tabel odnoszących się do bieżącego wiersza, tak samo jak w Edytorze administratora'),
-		'hr' => array('' => 'Prikazuje veze na tablice koje referenciraju trenutni redak, kao u Adminer Editoru'),
+		'cs' => array(
+			'' => 'Zobrazí odkazy na tabulky odkazující aktuální řádek, stejně jako Adminer Editor',
+			'New item' => 'Nová položka',
+		),
+		'de' => array(
+			'' => 'Links zu Tabellen anzeigen die auf die aktuelle Zeile verweisen, wie im Adminer Editor',
+			'New item' => 'Neuer Datensatz',
+		),
+		'ja' => array(
+			'' => 'Adminer Editor と同様に、カレント行を参照しているテーブルへのリンクを表示',
+			'New item' => '新規レコードを挿入',
+		),
+		'pl' => array(
+			'' => 'Wyświetlaj linki do tabel odnoszących się do bieżącego wiersza, tak samo jak w Edytorze administratora',
+			'New item' => 'Nowy rekord',
+		),
+		'hr' => array(
+			'' => 'Prikazuje veze na tablice koje referenciraju trenutni redak, kao u Adminer Editoru',
+			'New item' => 'Nova stavka',
+		),
 	);
 }

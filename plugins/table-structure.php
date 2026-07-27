@@ -15,20 +15,20 @@ class AdminerTableStructure extends Adminer\Plugin {
 		echo "<div class='scrollable'>\n";
 		echo "<table class='nowrap odds'>\n";
 		echo "<thead><tr>"
-			. "<th>" . Adminer\lang('Column')
-			. "<th>" . Adminer\lang('Type')
-			. "<th>" . Adminer\lang('Collation')
-			. "<th>" . Adminer\lang('Nullable')
-			. "<th>" . Adminer\lang('Default')
-			. (Adminer\support("comment") ? "<th>" . Adminer\lang('Comment') : "")
+			. "<th>" . $this->lang('Column')
+			. "<th>" . $this->lang('Type')
+			. "<th>" . $this->lang('Collation')
+			. "<th>" . $this->lang('Nullable')
+			. "<th>" . $this->lang('Default')
+			. (Adminer\support("comment") ? "<th>" . $this->lang('Comment') : "")
 			. "<tbody>\n"
 		;
 		foreach ($fields as $field) {
 			echo "<tr><th>" . Adminer\h($field["field"]) . ($field["primary"] ? " (PRIMARY)" : "");
 			echo "<td><span>" . Adminer\h($field["full_type"]) . "</span>";
-			echo ($field["auto_increment"] ? " <i>" . Adminer\lang('Auto Increment') . "</i>" : "");
+			echo ($field["auto_increment"] ? " <i>" . $this->lang('Auto Increment') . "</i>" : "");
 			echo "<td>" . ($field["collation"] ? " <i>" . Adminer\h($field["collation"]) . "</i>" : "");
-			echo "<td>" . ($field["null"] ? Adminer\lang('Yes') : Adminer\lang('No'));
+			echo "<td>" . ($field["null"] ? $this->lang('Yes') : $this->lang('No'));
 			echo "<td>" . Adminer\h($field["default"]);
 			echo (Adminer\support("comment") ? "<td>" . Adminer\h($field["comment"]) : "");
 			echo "\n";
@@ -39,11 +39,53 @@ class AdminerTableStructure extends Adminer\Plugin {
 	}
 
 	protected $translations = array(
-		'cs' => array('' => 'Rozšířené informace o tabulkách'),
-		'de' => array('' => 'Erweiterte Ausgabe der Tabellenstruktur'),
-		'pl' => array('' => 'Rozszerzone wyjście struktury tabeli'),
-		'ro' => array('' => 'Ieșirea expandată a structurii tabelei'),
-		'ja' => array('' => 'テーブル構造を拡張表示'),
-		'hr' => array('' => 'Prošireni prikaz strukture tablice'),
+		'cs' => array(
+			'' => 'Rozšířené informace o tabulkách',
+			'Column' => 'Sloupec',
+			'Type' => 'Typ',
+			'Collation' => 'Porovnávání',
+			'Comment' => 'Komentář',
+			'Auto Increment' => 'Auto Increment',
+		),
+		'de' => array(
+			'' => 'Erweiterte Ausgabe der Tabellenstruktur',
+			'Column' => 'Spalte',
+			'Type' => 'Typ',
+			'Collation' => 'Kollation',
+			'Comment' => 'Kommentar',
+			'Auto Increment' => 'Auto-Inkrement',
+		),
+		'pl' => array(
+			'' => 'Rozszerzone wyjście struktury tabeli',
+			'Column' => 'Kolumna',
+			'Type' => 'Typ',
+			'Collation' => 'Porównywanie znaków',
+			'Comment' => 'Komentarz',
+			'Auto Increment' => 'Automatyczny przyrost',
+		),
+		'ro' => array(
+			'' => 'Ieșirea expandată a structurii tabelei',
+			'Column' => 'Coloană',
+			'Type' => 'Tip',
+			'Collation' => 'Colaționare',
+			'Comment' => 'Comentariu',
+			'Auto Increment' => 'Creșterea automată',
+		),
+		'ja' => array(
+			'' => 'テーブル構造を拡張表示',
+			'Column' => 'カラム',
+			'Type' => '型',
+			'Collation' => 'コレーション',
+			'Comment' => 'コメント',
+			'Auto Increment' => '連番',
+		),
+		'hr' => array(
+			'' => 'Prošireni prikaz strukture tablice',
+			'Column' => 'Stupac',
+			'Type' => 'Tip',
+			'Collation' => 'Uspoređivanje',
+			'Comment' => 'Komentar',
+			'Auto Increment' => 'Auto-inkrement',
+		),
 	);
 }
