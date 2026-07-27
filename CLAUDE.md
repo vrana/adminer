@@ -79,6 +79,8 @@ Each driver registers via `add_driver("key", "Label")` and implements a `Db` cla
 - `idf_escape($val)` – SQL identifiers (column/table names)
 
 **Translations:** Always use `lang('...')` with **single quotes** – the string extractor requires literal single-quoted strings.
+Plugins must ship their own `$translations` array and call `$this->lang('...')`, even for a string that already exists in Adminer's translations.
+Plugins are not compiled but compilation converts core `lang()` identifiers to numbers, so `Adminer\lang('...')` in a plugin silently returns untranslated English.
 
 **Array access:** Use bare `$_GET["key"]` (not `isset()` or `??`). Adminer silences undefined-key warnings intentionally via `adminer/include/errors.inc.php`. Never use `$_REQUEST`.
 

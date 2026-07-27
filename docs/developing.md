@@ -262,7 +262,9 @@ Some translations are machine-translated by an AI model.
 They are marked with a trailing comment naming the model, e.g. `'Condition' => 'Bedingung', // Claude Fable 5`.
 Human translators are supposed to verify such translations and remove the comment.
 
-Plugins extending [`Adminer\Plugin`](/adminer/include/plugin.inc.php) can use `$this->lang()` and store translations in `$translations = array('en' => array('' => 'Plugin description'))`.
+Plugins extending [`Adminer\Plugin`](/adminer/include/plugin.inc.php) must ship their own translations in `$translations = array('en' => array('' => 'Plugin description'))` and use `$this->lang()`.
+They cannot reuse Adminer translations, not even for a string which already exists in Adminer.
+Plugins are not compiled but the identifiers in `lang()` are converted to numbers during compilation, so `Adminer\lang('Some string')` returns the untranslated English string in the compiled version.
 
 The website translations are managed at https://www.adminer.org/en/translations/.
 
