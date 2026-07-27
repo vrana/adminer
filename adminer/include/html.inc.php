@@ -124,7 +124,7 @@ function html_radios(string $name, array $options, ?string $value = "", string $
 
 /** Get onclick confirmation */
 function confirm(string $message = "", string $selector = "qsl('input')"): string {
-	return script("$selector.onclick = () => confirm('" . ($message ? js_escape($message) : lang('Are you sure?')) . "');", "");
+	return script("$selector.onclick = () => confirm('" . js_escape($message ?: lang('Are you sure?')) . "');", "");
 }
 
 /** Print header for hidden fieldset (close by </div></fieldset>)
@@ -196,8 +196,8 @@ function file_input(string $input): string {
 	$upload_max_filesize_value = ini_get($upload_max_filesize);
 	return (ini_bool("file_uploads")
 		? $input . script("qsl('input[type=\"file\"]').onchange = partialArg(fileChange, "
-				. "$max_file_uploads_value, '" . lang('Increase %s.', "$max_file_uploads = $max_file_uploads_value") . "', " // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
-				. ini_bytes("upload_max_filesize") . ", '" . lang('Increase %s.', "$upload_max_filesize = $upload_max_filesize_value") . "')")
+				. "$max_file_uploads_value, '" . js_escape(lang('Increase %s.', "$max_file_uploads = $max_file_uploads_value")) . "', " // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
+				. ini_bytes("upload_max_filesize") . ", '" . js_escape(lang('Increase %s.', "$upload_max_filesize = $upload_max_filesize_value")) . "')")
 		: lang('File uploads are disabled.')
 	);
 }
@@ -489,7 +489,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 				? lang('Save and continue edit')
 				: lang('Save and insert next')
 			) . "' title='Ctrl+Shift+Enter'>\n";
-			echo ($update ? script("qsl('input').onclick = function () { return !ajaxForm(this.form, '" . lang('Saving') . "…', this); };") : "");
+			echo ($update ? script("qsl('input').onclick = function () { return !ajaxForm(this.form, '" . js_escape(lang('Saving')) . "…', this); };") : "");
 		}
 	}
 	echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'>" . confirm() . "\n" : "");

@@ -522,7 +522,7 @@ if (!$columns && support("table")) {
 				if ($pagination) {
 					echo (($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit
 						? '<p><a href="' . h(remove_from_uri("page|next") . ($_GET["next"] ? "&next=" . urlencode($_GET["next"]) : "") . "&page=" . ($page + 1)) . '" class="loadmore">' . lang('Load more data') . '</a>'
-							. script("qsl('a').onclick = partial(selectLoadMore, $limit, '" . lang('Loading') . "…');", "")
+							. script("qsl('a').onclick = partial(selectLoadMore, $limit, '" . js_escape(lang('Loading')) . "…');", "")
 						: ''
 					);
 					echo "\n";
@@ -538,7 +538,7 @@ if (!$columns && support("table")) {
 					echo "<fieldset>";
 					if (JUSH != "simpledb" && JUSH != "redis") {
 						echo "<legend><a href='" . h(remove_from_uri("page")) . "'>" . lang('Page') . "</a></legend>";
-						echo script("qsl('a').onclick = function () { pageClick(this.href, +prompt('" . lang('Page') . "', '" . ($page + 1) . "')); return false; };");
+						echo script("qsl('a').onclick = function () { pageClick(this.href, +prompt('" . js_escape(lang('Page')) . "', '" . ($page + 1) . "')); return false; };");
 						echo pagination(0, $page) . ($page > 5 ? " …" : "");
 						for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
 							echo pagination($i, $page);
