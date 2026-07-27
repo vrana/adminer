@@ -183,15 +183,15 @@ if (isset($_GET["oracle"])) {
 
 
 
-	function idf_escape($idf) {
+	function idf_escape(string $idf): string {
 		return '"' . str_replace('"', '""', $idf) . '"';
 	}
 
-	function table($idf) {
+	function table(string $idf): string {
 		return idf_escape($idf);
 	}
 
-	function get_databases($flush) {
+	function get_databases(bool $flush): array {
 		return get_vals(
 			"SELECT DISTINCT tablespace_name FROM (
 SELECT tablespace_name FROM user_tablespaces
@@ -201,44 +201,44 @@ ORDER BY 1"
 		);
 	}
 
-	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
+	function limit(string $query, string $where, int $limit, int $offset = 0, string $separator = " "): string {
 		return ($offset ? " * FROM (SELECT t.*, rownum AS rnum FROM (SELECT $query$where) t WHERE rownum <= " . ($limit + $offset) . ") WHERE rnum > $offset"
 			: ($limit ? " * FROM (SELECT $query$where) WHERE rownum <= " . ($limit + $offset)
 			: " $query$where"
 		));
 	}
 
-	function limit1($table, $query, $where, $separator = "\n") {
+	function limit1(string $table, string $query, string $where, string $separator = "\n"): string {
 		return " $query$where"; //! limit
 	}
 
-	function db_collation($db, $collations) {
+	function db_collation(string $db, array $collations): string {
 		return get_val("SELECT value FROM nls_database_parameters WHERE parameter = 'NLS_CHARACTERSET'"); //! respect $db
 	}
 
-	function logged_user() {
+	function logged_user(): string {
 		return get_val("SELECT USER FROM DUAL");
 	}
 
-	function get_current_db() {
+	function get_current_db(): string {
 		$db = connection()->_current_db ?: DB;
 		connection()->_current_db = null;
 		return $db;
 	}
 
-	function where_owner($prefix, $owner = "owner") {
+	function where_owner(string $prefix, string $owner = "owner"): string {
 		if (!$_GET["ns"]) {
 			return '';
 		}
 		return "$prefix$owner = sys_context('USERENV', 'CURRENT_SCHEMA')";
 	}
 
-	function views_table($columns) {
+	function views_table(string $columns): string {
 		$owner = where_owner('');
 		return "(SELECT $columns FROM all_views WHERE " . ($owner ?: "rownum < 0") . ")";
 	}
 
-	function tables_list() {
+	function tables_list(): array {
 		$view = views_table("view_name");
 		$owner = where_owner(" AND ");
 		return get_key_vals(
@@ -248,7 +248,7 @@ ORDER BY 1"
 		); //! views don't have schema
 	}
 
-	function count_tables($databases) {
+	function count_tables(array $databases): array {
 		$return = array();
 		foreach ($databases as $db) {
 			$return[$db] = get_val("SELECT COUNT(*) FROM all_tables WHERE tablespace_name = " . q($db));
@@ -256,7 +256,7 @@ ORDER BY 1"
 		return $return;
 	}
 
-	function table_status($name = "") {
+	function table_status(string $name = "", bool $fast = false): array {
 		$return = array();
 		$search = q($name);
 		$db = get_current_db();
@@ -277,15 +277,15 @@ ORDER BY 1") as $row
 		return $return;
 	}
 
-	function is_view($table_status) {
+	function is_view(array $table_status): bool {
 		return $table_status["Engine"] == "view";
 	}
 
-	function fk_support($table_status) {
+	function fk_support(array $table_status): bool {
 		return true;
 	}
 
-	function fields($table) {
+	function fields(string $table): array {
 		$return = array();
 		$owner = where_owner(" AND ");
 		foreach (get_rows("SELECT * FROM all_tab_columns WHERE table_name = " . q($table) . "$owner ORDER BY column_id") as $row) {
@@ -311,7 +311,7 @@ ORDER BY 1") as $row
 		return $return;
 	}
 
-	function indexes($table, $connection2 = null) {
+	function indexes(string $table, ?Db $connection2 = null): array {
 		$return = array();
 		$owner = where_owner(" AND ", "aic.table_owner");
 		foreach (
@@ -333,37 +333,37 @@ ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row
 		return $return;
 	}
 
-	function view($name) {
+	function view(string $name): array {
 		$view = views_table("view_name, text");
 		$rows = get_rows('SELECT text "select" FROM ' . $view . ' WHERE view_name = ' . q($name));
 		return reset($rows);
 	}
 
-	function collations() {
+	function collations(): array {
 		return array(); //!
 	}
 
-	function information_schema($db) {
+	function information_schema(?string $db): bool {
 		return get_schema() == "INFORMATION_SCHEMA";
 	}
 
-	function error() {
+	function error(): string {
 		return h(connection()->error); //! highlight sqltext from offset
 	}
 
-	function explain($connection, $query) {
+	function explain(Db $connection, string $query) {
 		$connection->query("EXPLAIN PLAN FOR $query");
 		return $connection->query("SELECT * FROM plan_table");
 	}
 
-	function found_rows($table_status, $where) {
+	function found_rows(array $table_status, array $where) {
 	}
 
-	function auto_increment() {
+	function auto_increment(): string {
 		return "";
 	}
 
-	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+	function alter_table(string $table, string $name, array $fields, array $foreign, ?string $comment, string $engine, string $collation, string $auto_increment, ?array $partitioning) {
 		$alter = $drop = array();
 		$orig_fields = ($table ? fields($table) : array());
 		foreach ($fields as $field) {
@@ -393,7 +393,7 @@ ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row
 		;
 	}
 
-	function alter_indexes($table, $alter) {
+	function alter_indexes(string $table, $alter) {
 		$drop = array();
 		$queries = array();
 		foreach ($alter as $val) {
@@ -421,7 +421,7 @@ ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row
 		return true;
 	}
 
-	function foreign_keys($table) {
+	function foreign_keys(string $table): array {
 		$return = array();
 		$query = "SELECT c_list.CONSTRAINT_NAME as NAME,
 c_src.COLUMN_NAME as SRC_COLUMN,
@@ -447,40 +447,40 @@ AND c_src.TABLE_NAME = " . q($table);
 		return $return;
 	}
 
-	function truncate_tables($tables) {
+	function truncate_tables(array $tables, bool $cascade = false): bool {
 		return apply_queries("TRUNCATE TABLE", $tables);
 	}
 
-	function drop_views($views) {
+	function drop_views(array $views) {
 		return apply_queries("DROP VIEW", $views);
 	}
 
-	function drop_tables($tables) {
+	function drop_tables(array $tables) {
 		return apply_queries("DROP TABLE", $tables);
 	}
 
-	function last_id($result) {
-		return 0; //!
+	function last_id($result): string {
+		return "0"; //!
 	}
 
-	function schemas() {
+	function schemas(): array {
 		$return = get_vals("SELECT DISTINCT owner FROM dba_segments WHERE owner IN (SELECT username FROM dba_users WHERE default_tablespace NOT IN ('SYSTEM','SYSAUX')) ORDER BY 1");
 		return ($return ?: get_vals("SELECT DISTINCT owner FROM all_tables WHERE tablespace_name = " . q(DB) . " ORDER BY 1"));
 	}
 
-	function get_schema() {
+	function get_schema(): string {
 		return get_val("SELECT sys_context('USERENV', 'SESSION_USER') FROM dual");
 	}
 
-	function set_schema($scheme, $connection2 = null) {
-		return connection($connection2)->query("ALTER SESSION SET CURRENT_SCHEMA = " . idf_escape($scheme));
+	function set_schema(string $schema, ?Db $connection2 = null): bool {
+		return !!connection($connection2)->query("ALTER SESSION SET CURRENT_SCHEMA = " . idf_escape($schema));
 	}
 
-	function show_variables() {
+	function show_variables(): array {
 		return get_rows('SELECT name, display_value FROM v$parameter');
 	}
 
-	function show_status() {
+	function show_status(): array {
 		$return = array();
 		$rows = get_rows('SELECT * FROM v$instance');
 		foreach (reset($rows) as $key => $val) {
@@ -489,7 +489,7 @@ AND c_src.TABLE_NAME = " . q($table);
 		return $return;
 	}
 
-	function process_list() {
+	function process_list(): array {
 		return get_rows('SELECT
 	sess.process AS "process",
 	sess.username AS "user",
@@ -507,14 +507,14 @@ ORDER BY PROCESS
 ');
 	}
 
-	function convert_field($field) {
+	function convert_field(array $field) {
 	}
 
-	function unconvert_field($field, $return) {
+	function unconvert_field(array $field, string $return): string {
 		return $return;
 	}
 
-	function support($feature) {
+	function support(string $feature): bool {
 		return preg_match('~^(columns|database|drop_col|fast_status|indexes|descidx|processlist|scheme|sql|status|table|variables|view)$~', $feature); //!
 	}
 }
