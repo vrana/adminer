@@ -1112,9 +1112,10 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 	// Not used is MySQL but checked in compile.php:
 
 	/** Get user defined types
+	* @param bool $extensions include types created by extensions
 	* @return string[] [$id => $name]
 	*/
-	function types(): array {
+	function types(bool $extensions = false): array {
 		return array();
 	}
 

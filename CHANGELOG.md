@@ -22,7 +22,7 @@
 - MySQL: Do not use SSL if the login-ssl plugin is configured only for other drivers
 - PostgreSQL: Support operator classes in indexes
 - PostgreSQL: Add Truncate Cascade button
-- PostgreSQL: Do not show functions created by extensions
+- PostgreSQL: Do not show functions and types created by extensions
 - PostgreSQL: Fix altering functions with parameters of array or user-defined types
 - PostgreSQL, MS SQL: Show two columns in select COUNT(*), COUNT(DISTINCT id)
 - MS SQL: Treat binary fields as blob (bug SF-369)

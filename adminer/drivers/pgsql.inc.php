@@ -888,13 +888,14 @@ ORDER BY SPECIFIC_NAME'); // 'e' - functions created by extensions
 		}
 	}
 
-	function types(): array {
+	function types(bool $extensions = false): array {
 		return get_key_vals(
 			"SELECT oid, typname
 FROM pg_type
 WHERE typnamespace = " . driver()->nsOid . "
 AND typtype IN ('b','d','e')
-AND typelem = 0"
+AND typelem = 0" . ($extensions || connection()->flavor == 'cockroach' ? '' : "
+AND oid NOT IN (SELECT objid FROM pg_catalog.pg_depend WHERE classid = 'pg_type'::regclass AND deptype = 'e')") // 'e' - types created by extensions
 		);
 	}
 
@@ -914,7 +915,7 @@ AND typelem = 0"
 
 	function set_schema($schema, $connection2 = null) {
 		$return = connection($connection2)->query("SET search_path TO " . idf_escape($schema));
-		driver()->setUserTypes(types()); //! get types from current_schemas('t')
+		driver()->setUserTypes(types(true)); //! get types from current_schemas('t')
 		return $return;
 	}
 
