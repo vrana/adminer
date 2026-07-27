@@ -20,6 +20,7 @@ parameters:
 			path: ../adminer/drivers/mysql.inc.php
 		- "~^Call to an undefined method Adminer\\\\Result::seek~" # defined in MS SQL
 		- "~^Call to an undefined method Adminer\\\\Driver::(setUserTypes|tableOid)~" # defined in PostgreSQL
+		- "~^Call to an undefined method Adminer\\\\Adminer.*::_foreignColumn~" # defined in Editor
 		- "~^Access to an undefined property Adminer\\\\Driver::\\$nsOid~" # defined in PostgreSQL
 		- "~expects int, float given~" # this will work
 		- "~expects bool~" # truthy values
@@ -30,10 +31,11 @@ parameters:
 			message: "~implode expects array, string given~" # pg_last_notice() returns array with PGSQL_NOTICE_ALL
 			path: ../adminer/drivers/pgsql.inc.php
 		-
-			message: "~ type specified~" # duplicate functions and methods
+			message: "~ type specified~" # duplicate functions and methods, the doc-comments with array types are in adminer/
 			paths:
 				- ../adminer/include/pdo.inc.php
 				- ../adminer/drivers/*
+				- ../editor/*
 
 		# it probably doesn't like $ar[$key] instead of isset($ar[$key]) and thinks that $ar[$key] is always set
 		- identifier: identical.alwaysFalse
@@ -55,6 +57,7 @@ parameters:
 	paths:
 		- ../adminer/drivers/mysql.inc.php # other drivers inherit the annotations so we take them from here
 		- ../adminer/
+		- ../editor/
 	scanFiles:
 		- ../compile.php # compile_file()
 	excludePaths:
@@ -62,6 +65,8 @@ parameters:
 		- ../adminer/designs.php
 		- ../adminer/elastic.php
 		- ../adminer/sqlite.php
+		- ../editor/example.php
+		- ../editor/sqlite.php
 
 	phpVersion:
 		min: 70100
