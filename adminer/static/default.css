@@ -76,6 +76,7 @@ th:not(:hover) .column { display: none; }
 .icon span { display: none; }
 .icon:hover { background-color: red; }
 .dragging tr:not(.dragged) .icon-move { pointer-events: none; }
+#edit-fields .icon-move { touch-action: none; } /* to not scroll the page when dragging on a touch screen */
 .size { width: 7ex; }
 .help { cursor: help; }
 .footer { position: sticky; bottom: 0; margin: 23px -20px .5em 0; box-shadow: 0 -5px 10px 10px var(--bg); }

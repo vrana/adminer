@@ -12,6 +12,7 @@
 - SQL command: Export result to CSV by JavaScript without re-running the query (bug #1108, SF-760)
 - Alter table: Add next column without page reload
 - Alter table: Do not highlight other move handles while dragging a column
+- Alter table: Move columns on touch screens
 - Alter table: Edit multiline column comments in a textarea
 - Select: Fix the number of selected rows after going back in history
 - Edit: Keep values of columns with special characters in name after error

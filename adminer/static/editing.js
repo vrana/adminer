@@ -234,32 +234,59 @@ function editFields() {
 			onmouseout: helpMouseout
 		});
 	}
+	const table = qs('#edit-fields');
 	let dragged;
-	mixin(qs('#edit-fields'), {
+	const dragStart = el => {
+		dragged = parentTag(el, 'tr');
+		alterClass(table, 'dragging', true);
+		alterClass(dragged, 'dragged', true);
+	};
+	const dragMove = el => { // returns whether the element is a valid drop target
+		const row = parentTag(el, 'tr');
+		if (!dragged || !row || !qs('[draggable]', row)) {
+			return false;
+		}
+		if (row != dragged) {
+			const rows = [...row.parentNode.children];
+			row.parentNode.insertBefore(dragged, (rows.indexOf(row) < rows.indexOf(dragged) ? row : row.nextSibling));
+		}
+		return true;
+	};
+	const dragEnd = () => {
+		alterClass(dragged, 'dragged');
+		dragged = null;
+		alterClass(table, 'dragging');
+	};
+	mixin(table, {
 		ondragstart: e => {
 			if (e.target.draggable) {
-				dragged = parentTag(e.target, 'tr');
 				e.dataTransfer.effectAllowed = 'move';
-				alterClass(e.currentTarget, 'dragging', true);
-				alterClass(dragged, 'dragged', true);
+				dragStart(e.target);
 			}
 		},
-		ondragend: e => {
-			alterClass(dragged, 'dragged');
-			dragged = null;
-			alterClass(e.currentTarget, 'dragging');
-		},
+		ondragend: dragEnd,
 		ondragover: e => {
-			const row = parentTag(e.target, 'tr');
-			if (dragged && row && qs('[draggable]', row)) {
+			if (dragMove(e.target)) {
 				e.preventDefault();
-				if (row != dragged) {
-					const rows = [...row.parentNode.children];
-					row.parentNode.insertBefore(dragged, (rows.indexOf(row) < rows.indexOf(dragged) ? row : row.nextSibling));
-				}
 			}
 		}
 	});
+	// HTML5 drag and drop doesn't work on touch screens; addEventListener() because the handlers must not be passive
+	table.addEventListener('touchstart', e => {
+		const el = parentTag(e.target, 'button');
+		if (el?.draggable) {
+			e.preventDefault(); // to not scroll the page
+			dragStart(el);
+		}
+	}, {passive: false});
+	table.addEventListener('touchmove', e => {
+		if (dragged) {
+			e.preventDefault();
+			const touch = e.touches[0];
+			dragMove(document.elementFromPoint(touch.clientX, touch.clientY));
+		}
+	}, {passive: false});
+	table.addEventListener('touchend', dragEnd);
 }
 
 /** Handle clicks on fields editing
