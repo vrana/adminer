@@ -6,6 +6,7 @@
 - Login: Disallow accessing servers which accept any password (e.g. PostgreSQL with trust authentication)
 - Check for a new version even without JavaScript
 - Sort languages by their translated name
+- Fix the copy to clipboard icon not displayed on Apple systems
 - Tables overview: speed up, show totals in SQLite, real size in MS SQL, Oracle
 - SQL command: Show column type in result table header
 - SQL command: Show number of rows in all drivers

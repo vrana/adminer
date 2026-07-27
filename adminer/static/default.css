@@ -11,7 +11,7 @@ body { color: var(--fg); background: var(--bg); font: 90%/1.25 Verdana, Arial, H
 a { color: blue; text-decoration: none; }
 a:visited { color: navy; }
 a:link:hover, a:visited:hover { color: red; text-decoration: underline; }
-a.text:hover { text-decoration: none; }
+a.text:hover, a.icon-copy:hover { text-decoration: none; }
 a.jush-help:hover { color: inherit; }
 h1 { font-size: 150%; margin: 0; padding: .8em .667em; border-bottom: 1px solid #999; font-weight: normal; color: #777; background: var(--dim); }
 h2 { font-size: 150%; margin: 0 0 20px -18px; padding: .8em 1em; border-bottom: 1px solid var(--fg); font-weight: normal; background: var(--lit); }
@@ -44,7 +44,7 @@ input.required, input.maxlength, textarea.maxlength { box-shadow: 1px 1px 1px re
 [draggable] { cursor: grab; }
 .block { display: block; }
 .version { color: #777; font-size: 62%; }
-.js .hidden, .nojs .jsonly, .insecure .copy { display: none; }
+.js .hidden, .nojs .jsonly, .insecure .icon-copy { display: none; }
 /* the browser hides [hidden] only by a UA rule which any skin setting display would beat */
 [hidden] { display: none !important; }
 .column { position: absolute; background: var(--lit); padding: .27em 1ex .33em 0; margin-top: -.37em; border-width: 1px 1px 1px 0; border-radius: 0 8px 8px 0; }
@@ -73,7 +73,7 @@ th:not(:hover) .column { display: none; }
 .sql-footer { margin-bottom: 2.5em; }
 .explain table { white-space: pre; }
 .icon { width: 18px; height: 18px; background: navy center no-repeat; border: 0; padding: 0; vertical-align: middle; }
-.icon span { display: none; }
+.icon span, .icon-copy span { display: none; }
 .icon:hover { background-color: red; }
 .dragging tr:not(.dragged) .icon-move { pointer-events: none; }
 #edit-fields .icon-move { touch-action: none; } /* to not scroll the page when dragging on a touch screen */
@@ -110,6 +110,9 @@ th:not(:hover) .column { display: none; }
 .icon-plus { background-image: url(data:image/gif;base64,R0lGODlhEgASAIEAMe7u7gAAgJmZmQAAACH5BAEAAAEALAAAAAASABIAAQIhhI+py+0PTQjxzCopvm/6rykgCHGVGaFliLXuI8TyTMsFADs=); }
 .icon-cross { background-image: url(data:image/gif;base64,R0lGODlhEgASAIEAMe7u7gAAgJmZmQAAACH5BAEAAAEALAAAAAASABIAAQIjhI+py+0PIwph1kZvfnnDLoFfd2GU4THnsUruC0fCTNc2XQAAOw==); }
 .icon-move { background-image: url(data:image/gif;base64,R0lGODlhEgASAJEAAO7u7gAAAJmZmQAAACH5BAEAAAEALAAAAAASABIAAAIfhI+py+3vgpyU0Rug3gnX5U3cqIWSZZLqigjuC8dvAQA7); }
+/* masked so that the icon uses the link color, also on hover */
+.icon-copy { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M1 1h10v1H1zM1 1h1v10H1zM10 1h1v4h-1zM1 10h4v1H1z'/%3E%3Cpath fill-rule='evenodd' d='M5 5h10v10H5zm1 1v8h8V6z'/%3E%3C/svg%3E"); display: inline-block; width: 1em; height: 1em; vertical-align: middle; background: currentColor; -webkit-mask: var(--icon) center/contain no-repeat; mask: var(--icon) center/contain no-repeat; }
+.icon-copy.copied { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8l3.5 3.5L13 5' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E"); }
 #schema .arrow { height: 1.25em; background: url(data:image/gif;base64,R0lGODlhCAAKAIAAAICAgP///yH5BAEAAAEALAAAAAAIAAoAAAIPBIJplrGLnpQRqtOy3rsAADs=) no-repeat right center; }
 
 .rtl h2 { margin: 0 -18px 20px 0; }

@@ -72,11 +72,13 @@ function messagesPrint(parent) {
 * @param [HTMLElement]
 */
 function copyCode(parent) {
-	for (const el of qsa('.copy', parent)) {
+	for (const el of qsa('.icon-copy', parent)) {
 		el.onclick = () => {
 			const code = qs('code', el.parentElement);
-			navigator.clipboard.writeText(code.dataset.full || code.innerText).then(() => el.textContent = '✓');
-			setTimeout(() => el.textContent = '🗐', 1000);
+			navigator.clipboard.writeText(code.dataset.full || code.innerText).then(() => {
+				alterClass(el, 'copied', true);
+				setTimeout(() => alterClass(el, 'copied'), 1000);
+			}, () => {});
 			return false;
 		};
 	}

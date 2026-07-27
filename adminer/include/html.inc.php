@@ -517,3 +517,9 @@ function shorten_utf8(string $string, int $length = 80, string $suffix = ""): st
 function icon(string $icon, string $name, string $html, string $title): string {
 	return "<button type='submit' " . ($name ? "name='$name'" : "draggable='true'") . " title='" . h($title) . "' class='icon icon-$icon" . ($name ? "" : " jsonly") . "'><span>$html</span></button>";
 }
+
+/** Get link copying the adjacent <code> to clipboard */
+function copy_icon(): string {
+	$copy = lang('Copy');
+	return "<a href='' class='jsonly icon-copy' title='$copy'><span>$copy</span></a>"; // not icon() - a submit button would send the surrounding form
+}
