@@ -1,6 +1,7 @@
 <?php
 namespace Adminer;
 
+/** @param string[] $paths JUSH => $path */
 function doc_link(array $paths, string $text = ""): string {
 	return "";
 }
