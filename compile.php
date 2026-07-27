@@ -285,7 +285,13 @@ if ($vendor) {
 		}
 		$file = str_replace(". script(\"const authDriver = qs('#username').form['auth[driver]']; authDriver && authDriver.onchange();\")", "", $file);
 		if ($vendor == "sqlite") {
-			$file = str_replace(");\n\t\techo \$this->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', '<input name=\"auth[server]", ' . \'<input type="hidden" name="auth[server]"', $file);
+			// SQLite doesn't use the server but the value must be preserved for the login form
+			$file = str_replace(
+				"\t\techo adminer()->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', "
+					. "\"<input name='auth[server]' value='\" . h(SERVER) . \"' title='\" . lang('hostname[:port] or :socket') . \"' placeholder='localhost' autocapitalize='off'>\");\n",
+				"\t\techo input_hidden(\"auth[server]\", SERVER);\n",
+				$file
+			);
 		}
 	}
 	$file = preg_replace('(;\s*../externals/jush/modules/jush-(?!autocomplete-sql\.|textarea\.|txt\.|js\.|' . preg_quote($vendor == "mysql" ? "sql" : $vendor) . '\.)[^.]+.js)', '', $file);
