@@ -35,6 +35,7 @@
 - MongoDB: Authenticate against the database used in login
 - MongoDB: Do not treat the string NULL as the NULL value
 - SimpleDB: Use default server
+- CSS: Improve contrast of query time and dark mode
 - Editor: Display all images recognized by PHP, set their size, load them lazily
 - Plugins: Method verifyVersion()
 - Plugins: Methods commentValue() and commentInput() (bug #1233)

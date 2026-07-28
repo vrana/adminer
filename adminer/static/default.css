@@ -63,7 +63,7 @@ th:not(:hover) .column { display: none; }
 .odds tbody tr { background: var(--bg); }
 .odds tbody tr:nth-child(2n) { background: #F5F5F5; }
 .js .checkable .checked td, .js .checkable .checked th { background: var(--lit); }
-.time { color: silver; font-size: 70%; }
+.time { color: #666; font-size: 70%; }
 .function, .number, .datetime { text-align: right; }
 .type { width: 15ex; }
 .options select, .options input { width: 20ex; }
