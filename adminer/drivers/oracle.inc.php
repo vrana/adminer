@@ -343,8 +343,9 @@ ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row
 		return array(); //!
 	}
 
-	function information_schema(?string $db): bool {
-		return get_schema() == "INFORMATION_SCHEMA";
+	function information_schema(?string $db, string $schema = ""): bool {
+		//! SYS and SYSTEM are read-only too but get_schema() returns the session user
+		return ($schema != "" ? $schema : get_schema()) == "INFORMATION_SCHEMA";
 	}
 
 	function error(): string {

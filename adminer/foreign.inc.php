@@ -70,7 +70,7 @@ $onchange = "this.form['change-js'].value = '1'; this.form.submit();";
 echo "<p><label>" . lang('Target table') . ": " . html_select("table", $referencable, $row["table"], $onchange) . "</label>\n";
 if (support("scheme")) {
 	$schemas = array_filter(adminer()->schemas(), function ($schema) {
-		return !preg_match('~^information_schema$~i', $schema);
+		return !information_schema(DB, $schema);
 	});
 	echo "<label>" . lang('Schema') . ": " . html_select("ns", $schemas, $row["ns"] != "" ? $row["ns"] : $_GET["ns"], $onchange) . "</label>";
 	if ($row["ns"] != "") {

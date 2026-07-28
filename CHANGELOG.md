@@ -25,8 +25,10 @@
 - PostgreSQL: Add Truncate Cascade button
 - PostgreSQL: Do not show functions and types created by extensions
 - PostgreSQL: Fix altering functions with parameters of array or user-defined types
+- PostgreSQL: Hide table actions and row editing in pg_catalog and pg_toast
 - PostgreSQL, MS SQL: Show two columns in select COUNT(*), COUNT(DISTINCT id)
 - MS SQL: Treat binary fields as blob (bug SF-369)
+- MS SQL: Hide table actions and row editing in the sys schema
 - Elasticsearch, ClickHouse: Use default port
 - ClickHouse: Fix nullable columns, fix default values, show server version
 - MongoDB: Authenticate against the database used in login

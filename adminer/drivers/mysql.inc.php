@@ -638,8 +638,8 @@ if (!defined('Adminer\DRIVER')) {
 		return $return;
 	}
 
-	/** Find out if database is information_schema */
-	function information_schema(?string $db): bool {
+	/** Find out if the database or schema is a read-only system catalog */
+	function information_schema(?string $db, string $schema = ""): bool {
 		return ($db == "information_schema")
 			|| (min_version(5.5) && $db == "performance_schema");
 	}

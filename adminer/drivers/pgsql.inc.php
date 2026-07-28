@@ -609,8 +609,9 @@ ORDER BY conkey, conname") as $row
 		return array();
 	}
 
-	function information_schema(?string $db): bool {
-		return get_schema() == "information_schema";
+	function information_schema(?string $db, string $schema = ""): bool {
+		// pg_temp_* holds the session's temporary tables so it is writable
+		return in_array($schema != "" ? $schema : get_schema(), array("information_schema", "pg_catalog", "pg_toast"));
 	}
 
 	function error(): string {

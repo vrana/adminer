@@ -89,10 +89,10 @@ SET foreign_key_checks = 0;
 			if ($_POST["table_style"] || $_POST["data_style"]) {
 				foreach (($_GET["ns"] === "" ? (array) $_POST["schemas"] : (DB != "" || !support("scheme") ? array("") : adminer()->schemas())) as $schema) {
 					if ($schema != "") {
-						set_schema($schema);
-						if (DB == "" && (information_schema(DB) || $schema == "pg_catalog")) {
+						if (DB == "" && information_schema(DB, $schema)) {
 							continue;
 						}
+						set_schema($schema);
 					}
 
 					$views = array();
@@ -200,7 +200,9 @@ if ($_GET["ns"] === "") {
 	echo "<tbody>\n";
 	echo script("qs('#check-schemas').onclick = partial(formCheck, /^schemas\\[/);");
 	foreach (adminer()->schemas() as $schema) {
-		echo "<tr><td>" . checkbox("schemas[]", $schema, true, $schema, "", "block") . "\n";
+		if (!information_schema(DB, $schema)) {
+			echo "<tr><td>" . checkbox("schemas[]", $schema, true, $schema, "", "block") . "\n";
+		}
 	}
 } elseif (DB != "") {
 	$checked = ($TABLE != "" ? "" : " checked");
