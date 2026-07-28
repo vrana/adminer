@@ -321,6 +321,33 @@ function menuOut() {
 	this.style.overflow = 'hidden';
 }
 
+/** Toggle the menu on small screens
+* @param MouseEvent
+*/
+function menuToggle(event) {
+	const foot = qs('#foot');
+	const opened = !foot.classList.toggle('foot');
+	qs('#menuopen button').setAttribute('aria-expanded', opened);
+	if (opened) {
+		foot.tabIndex = -1; // to make it focusable
+		foot.focus(); // to continue tabbing in the menu
+	}
+	event.stopPropagation(); // don't close the menu by the document click handler
+}
+
+/** Close the menu on small screens */
+function menuClose() {
+	const foot = qs('#foot');
+	if (foot && !foot.classList.contains('foot')) {
+		foot.classList.add('foot');
+		const button = qs('#menuopen button');
+		button.setAttribute('aria-expanded', false);
+		if (foot.contains(document.activeElement)) { // the focused element is hidden now
+			button.focus();
+		}
+	}
+}
+
 
 
 /** Add row in select fieldset
@@ -408,7 +435,7 @@ function isCtrl(event) {
 function bodyKeydown(event, button) {
 	event.stopPropagation();
 	if (event.key == 'Escape' && !event.shiftKey && !event.altKey && !isCtrl(event)) {
-		alterClass(qs('#foot'), 'foot', true); // close the menu on small screens
+		menuClose();
 	}
 	let target = event.target;
 	if (target.jushTextarea) {
@@ -788,6 +815,6 @@ oninput = event => {
 
 addEvent(document, 'click', event => {
 	if (!qs('#foot').contains(event.target)) {
-		alterClass(qs('#foot'), 'foot', true);
+		menuClose();
 	}
 });
