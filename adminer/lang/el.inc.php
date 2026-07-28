@@ -143,6 +143,7 @@ Lang::$translations = array(
 
 	'Tables' => 'Πίνακες',
 	'Tables and views' => 'Πίνακες και Προβολές',
+	'All' => 'Όλα', // Claude Opus 5
 	'Table' => 'Πίνακας',
 	'No tables.' => 'Χωρίς πίνακες.',
 	'Alter table' => 'Τροποποίηση πίνακα',
@@ -249,6 +250,7 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('%d σειρά εισήχθη.', '%d σειρές εισήχθησαν.'),
 	'File must be in UTF-8 encoding.' => 'Το αρχείο πρέπει να έχει κωδικοποίηση UTF-8.',
 
+	'All rows on this page' => 'Όλες οι γραμμές αυτής της σελίδας', // Claude Opus 5
 	'Modify' => 'Τροποποίηση', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Πιέστε Ctrl+click σε μια τιμή για να την τροποποιήσετε.',
 	'Use edit link to modify this value.' => 'Χρησιμοποιήστε το σύνδεσμο επεξεργασία για να τροποποιήσετε την τιμή.',

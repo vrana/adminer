@@ -156,6 +156,7 @@ Lang::$translations = array(
 
 	'Tables' => '表',
 	'Tables and views' => '表和视图',
+	'All' => '全部', // Claude Opus 5
 	'Table' => '表',
 	'No tables.' => '没有表。',
 	'Alter table' => '修改表',
@@ -261,6 +262,7 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => '%d 行已导入。',
 	'File must be in UTF-8 encoding.' => '文件必须使用UTF-8编码。',
 
+	'All rows on this page' => '本页所有行', // Claude Opus 5
 	'Modify' => '修改', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => '按住Ctrl并单击某个值进行修改。',
 	'Use edit link to modify this value.' => '使用编辑链接修改该值。',

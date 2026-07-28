@@ -160,6 +160,7 @@ Lang::$translations = array(
 
 	'Tables' => 'Tabele',
 	'Tables and views' => 'Tabele i perspektywy',
+	'All' => 'Wszystko', // Claude Opus 5
 	'Table' => 'Tabela',
 	'No tables.' => 'Brak tabel.',
 	'Alter table' => 'Zmień tabelę',
@@ -271,6 +272,7 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('%d rekord został zaimportowany.', '%d rekordy zostały zaimportowane.', '%d rekordów zostało zaimportowanych.'),
 	'File must be in UTF-8 encoding.' => 'Kodowanie pliku musi być ustawione na UTF-8.',
 
+	'All rows on this page' => 'Wszystkie wiersze na tej stronie', // Claude Opus 5
 	'Modify' => 'Zmień', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Ctrl+kliknij wartość, aby ją edytować.',
 	'Use edit link to modify this value.' => 'Użyj linku edycji, aby zmienić tę wartość.',

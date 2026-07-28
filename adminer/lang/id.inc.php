@@ -135,6 +135,7 @@ Lang::$translations = array(
 
 	'Tables' => 'Tabel',
 	'Tables and views' => 'Tabel dan tampilan',
+	'All' => 'Semua', // Claude Opus 5
 	'Table' => 'Tabel',
 	'No tables.' => 'Tidak ada tabel.',
 	'Alter table' => 'Ubah tabel',
@@ -309,6 +310,7 @@ Lang::$translations = array(
 	'Condition' => 'Kondisi', // Claude Fable 5
 	'Ctrl+click on a value to modify it.' => 'Ctrl+klik pada nilai untuk mengubahnya.', // Claude Fable 5
 	'File must be in UTF-8 encoding.' => 'Berkas harus dalam pengodean UTF-8.', // Claude Fable 5
+	'All rows on this page' => 'Semua baris di halaman ini', // Claude Opus 5
 	'Modify' => 'Ubah', // Claude Fable 5
 	'Load more data' => 'Muat lebih banyak data', // Claude Fable 5
 	'Loading' => 'Memuat', // Claude Fable 5

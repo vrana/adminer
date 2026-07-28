@@ -150,6 +150,7 @@ Lang::$translations = array(
 
 	'Tables' => 'Tablolar',
 	'Tables and views' => 'Tablolar ve görünümler',
+	'All' => 'Tümü', // Claude Opus 5
 	'Table' => 'Tablo',
 	'No tables.' => 'Tablo yok.',
 	'Alter table' => 'Tabloyu değiştir',
@@ -257,6 +258,7 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('%d kayıt içeri aktarıldı.', '%d adet kayıt içeri aktarıldı.'),
 	'File must be in UTF-8 encoding.' => 'Dosya UTF-8 kodlamasında olmalıdır.',
 
+	'All rows on this page' => 'Bu sayfadaki tüm satırlar', // Claude Opus 5
 	'Modify' => 'Düzenle', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Bir değeri değiştirmek için üzerine Ctrl+tıklayın.',
 	'Use edit link to modify this value.' => 'Değeri değiştirmek için düzenleme bağlantısını kullanın.',

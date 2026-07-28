@@ -136,6 +136,7 @@ Lang::$translations = array(
 
 	'Tables' => 'Таблиці',
 	'Tables and views' => 'Таблиці і вигляди',
+	'All' => 'Усі', // Claude Opus 5
 	'Table' => 'Таблиця',
 	'No tables.' => 'Нема таблиць.',
 	'Alter table' => 'Змінити таблицю',
@@ -301,6 +302,7 @@ Lang::$translations = array(
 	'overwrite' => 'перезаписати',
 	'DB' => 'DB',
 	'File must be in UTF-8 encoding.' => 'Файл повинен бути в кодуванні UTF-8.',
+	'All rows on this page' => 'Усі рядки на цій сторінці', // Claude Opus 5
 	'Modify' => 'Змінити',
 	'Load more data' => 'Завантажити ще дані',
 	'Loading' => 'Завантаження',

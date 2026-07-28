@@ -143,6 +143,7 @@ Lang::$translations = array(
 
 	'Tables' => 'Таблици',
 	'Tables and views' => 'Таблици и изгледи',
+	'All' => 'Всички', // Claude Opus 5
 	'Table' => 'Таблица',
 	'No tables.' => 'Няма таблици.',
 	'Alter table' => 'Промяна на таблица',
@@ -249,6 +250,7 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('%d ред беше импортиран.', '%d реда бяха импортирани.'),
 	'File must be in UTF-8 encoding.' => 'Файла трябва да е с UTF-8 кодировка.',
 
+	'All rows on this page' => 'Всички редове на тази страница', // Claude Opus 5
 	'Modify' => 'Промяна', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Ctrl+щракване в стойността, за да я промените.',
 	'Use edit link to modify this value.' => 'Използвайте \'редакция\' за промяна на данните.',

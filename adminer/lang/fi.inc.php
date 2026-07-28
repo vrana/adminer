@@ -143,6 +143,7 @@ Lang::$translations = array(
 
 	'Tables' => 'Taulut',
 	'Tables and views' => 'Taulut ja näkymät',
+	'All' => 'Kaikki', // Claude Opus 5
 	'Table' => 'Taulu',
 	'No tables.' => 'Ei tauluja.',
 	'Alter table' => 'Muuta taulua',
@@ -249,6 +250,7 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('%d rivi tuotiin.', '%d riviä tuotiin.'),
 	'File must be in UTF-8 encoding.' => 'Tiedoston täytyy olla UTF-8-muodossa.',
 
+	'All rows on this page' => 'Kaikki rivit tällä sivulla', // Claude Opus 5
 	'Modify' => 'Muuta', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Ctrl+napsauta arvoa muuttaaksesi.',
 	'Use edit link to modify this value.' => 'Käytä muokkaa-linkkiä muuttaaksesi tätä arvoa.',
