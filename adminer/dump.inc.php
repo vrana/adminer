@@ -207,8 +207,10 @@ if ($_GET["ns"] === "") {
 } elseif (DB != "") {
 	$checked = ($TABLE != "" ? "" : " checked");
 	echo "<thead><tr>";
-	echo "<th style='text-align: left;'><label class='block'><input type='checkbox' id='check-tables'$checked class='jsonly'>" . lang('Table') . "</label>" . script("qs('#check-tables').onclick = partial(formCheck, /^tables\\[/);", "");
-	echo "<th style='text-align: right;'><label class='block'>" . lang('Data') . "<input type='checkbox' id='check-data'$checked class='jsonly'></label>" . script("qs('#check-data').onclick = partial(formCheck, /^data\\[/);", "");
+	echo "<th style='text-align: left;'><label class='block'><input type='checkbox' id='check-tables'$checked class='jsonly'>" . lang('Table') . "</label>"
+		. script("qs('#check-tables').onclick = partial(formCheck, /^tables\\[/);", "");
+	echo "<th style='text-align: right;'><label class='block'>" . lang('Data') . "<input type='checkbox' id='check-data'$checked class='jsonly'></label>"
+		. script("qs('#check-data').onclick = partial(formCheck, /^data\\[/);", "");
 	echo "<tbody>\n";
 
 	$views = "";
@@ -234,7 +236,10 @@ if ($_GET["ns"] === "") {
 	$databases = adminer()->databases();
 	echo "<thead><tr><th style='text-align: left;'>";
 	echo "<label class='block'>"
-		. ($databases ? "<input type='checkbox' id='check-databases'" . ($TABLE == "" ? " checked" : "") . " class='jsonly'>" . script("qs('#check-databases').onclick = partial(formCheck, /^databases\\[/);", "") : "")
+		. ($databases
+			? "<input type='checkbox' id='check-databases'" . ($TABLE == "" ? " checked" : "") . " class='jsonly'>"
+				. script("qs('#check-databases').onclick = partial(formCheck, /^databases\\[/);", "")
+			: "")
 		. lang('Database')
 		. "</label>"
 	;

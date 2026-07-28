@@ -131,10 +131,17 @@ if ($update) {
 }
 ```
 
-Adminer has an excessive line length limit of 250 characters.
+Adminer has a generous line length limit of 200 characters.
 While all lines fit my screen, I prefer shorter lines.
 A limit of 150 would be more reasonable, but wrapping lines at arbitrary points is unacceptable.
 Proper line wrapping often requires refactoring, which has caused bugs in the past, so I hesitate to make changes purely for line length.
+
+Lines are wrapped at the boundaries the expression already has, never at an arbitrary column:
+before a `.`, `?` or `:` operator, which starts the continuation line indented by one more tab;
+or by putting each argument or array element on its own line.
+Trailing comments that make the line too long move above the statement.
+Long queries are wrapped inside the string, with the continuation of a clause indented by one tab.
+`lang('...')` must not be split between `lang(` and the closing `'` – `compile.php` matches it as text.
 
 ## Comments
 

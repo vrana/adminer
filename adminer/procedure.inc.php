@@ -39,7 +39,10 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 	}
 }
 
-page_header(($PROCEDURE != "" ? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . h($PROCEDURE) : (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))), $error);
+page_header(($PROCEDURE != ""
+	? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . h($PROCEDURE)
+	: (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))
+), $error);
 
 if (!$_POST) {
 	if ($PROCEDURE == "") {

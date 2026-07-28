@@ -41,7 +41,8 @@ if (!strpos($_SERVER["REQUEST_URI"], '?') && $_SERVER["QUERY_STRING"] != "") { /
 if (preg_match('~^/[-\w.]~', $_SERVER["HTTP_X_FORWARDED_PREFIX"])) {
 	$_SERVER["REQUEST_URI"] = $_SERVER["HTTP_X_FORWARDED_PREFIX"] . $_SERVER["REQUEST_URI"];
 }
-define('Adminer\HTTPS', ($_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off")) || ini_bool("session.cookie_secure")); // session.cookie_secure could be set on HTTP if we are behind a reverse proxy
+// session.cookie_secure could be set on HTTP if we are behind a reverse proxy
+define('Adminer\HTTPS', ($_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off")) || ini_bool("session.cookie_secure"));
 
 ini_set("session.use_trans_sid", '0'); // protect links in export
 if (!defined("SID")) {

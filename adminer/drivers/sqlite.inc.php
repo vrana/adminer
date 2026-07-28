@@ -97,7 +97,8 @@ if (isset($_GET["sqlite"])) {
 			}
 
 			function select_db(string $filename): bool {
-				if (is_readable($filename) && $this->query("ATTACH " . $this->quote(preg_match("~(^[/\\\\]|:)~", $filename) ? $filename : dirname($_SERVER["SCRIPT_FILENAME"]) . "/$filename") . " AS a")) {
+				$query = "ATTACH " . $this->quote(preg_match("~(^[/\\\\]|:)~", $filename) ? $filename : dirname($_SERVER["SCRIPT_FILENAME"]) . "/$filename") . " AS a";
+				if (is_readable($filename) && $this->query($query)) {
 					return !self::attach($filename, '', '');
 				}
 				return false;
@@ -179,7 +180,8 @@ if (isset($_GET["sqlite"])) {
 		}
 
 		function checkConstraints(string $table): array {
-			preg_match_all('~ CHECK *(\( *(((?>[^()]*[^() ])|(?1))*) *\))~', get_val("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table), 0, $this->conn), $matches); //! could be inside a comment
+			//! could be inside a comment
+			preg_match_all('~ CHECK *(\( *(((?>[^()]*[^() ])|(?1))*) *\))~', get_val("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table), 0, $this->conn), $matches);
 			return array_combine($matches[2], $matches[2]);
 		}
 
@@ -394,7 +396,8 @@ if (isset($_GET["sqlite"])) {
 	}
 
 	function view(string $name): array {
-		return array("select" => preg_replace('~^(?:[^`"[]+|`[^`]*`|"[^"]*")* AS\s+~iU', '', get_val("SELECT sql FROM sqlite_master WHERE type = 'view' AND name = " . q($name)))); //! identifiers may be inside []
+		//! identifiers may be inside []
+		return array("select" => preg_replace('~^(?:[^`"[]+|`[^`]*`|"[^"]*")* AS\s+~iU', '', get_val("SELECT sql FROM sqlite_master WHERE type = 'view' AND name = " . q($name))));
 	}
 
 	function collations(): array {
@@ -519,7 +522,18 @@ if (isset($_GET["sqlite"])) {
 	* @param string $drop_check CHECK constraint to drop
 	* @param string $add_check CHECK constraint to add
 	*/
-	function recreate_table(string $table, string $name, array $fields, array $originals, array $foreign, string $auto_increment = "", $indexes = array(), string $drop_check = "", string $add_check = "", string $engine = ""): bool {
+	function recreate_table(
+		string $table,
+		string $name,
+		array $fields,
+		array $originals,
+		array $foreign,
+		string $auto_increment = "",
+		$indexes = array(),
+		string $drop_check = "",
+		string $add_check = "",
+		string $engine = ""
+	): bool {
 		if ($table != "") {
 			if (!$fields) {
 				foreach (fields($table) as $key => $field) {
@@ -601,7 +615,10 @@ if (isset($_GET["sqlite"])) {
 			return false;
 		}
 		if ($table != "") {
-			if ($originals && !queries("INSERT INTO " . table($temp_name) . " (" . implode(", ", $originals) . ") SELECT " . implode(", ", array_map('Adminer\idf_escape', array_keys($originals))) . " FROM " . table($table))) {
+			if (
+				$originals && !queries("INSERT INTO " . table($temp_name) . " (" . implode(", ", $originals) . ") SELECT "
+					. implode(", ", array_map('Adminer\idf_escape', array_keys($originals))) . " FROM " . table($table))
+			) {
 				return false;
 			}
 			$triggers = array();

@@ -443,7 +443,9 @@ if (!$columns && support("table")) {
 									foreach ($foreign_key["source"] as $i => $source) {
 										$link .= where_link($i, $foreign_key["target"][$i], $rows[$n][$source]);
 									}
-									$link = ($foreign_key["db"] != "" ? preg_replace('~([?&]db=)[^&]+~', '\1' . urlencode($foreign_key["db"]), ME) : ME) . 'select=' . urlencode($foreign_key["table"]) . $link; // InnoDB supports non-UNIQUE keys
+									// InnoDB supports non-UNIQUE keys
+									$link = ($foreign_key["db"] != "" ? preg_replace('~([?&]db=)[^&]+~', '\1' . urlencode($foreign_key["db"]), ME) : ME)
+										. 'select=' . urlencode($foreign_key["table"]) . $link;
 									if ($foreign_key["ns"]) {
 										$link = preg_replace('~([?&]ns=)[^&]+~', '\1' . urlencode($foreign_key["ns"]), $link);
 									}
@@ -477,7 +479,10 @@ if (!$columns && support("table")) {
 						echo "<td id='$id'" . ($is_number && ($val === null || is_numeric(strip_tags($html)) || $type == "money") ? " class='number'" : "");
 						if (($_GET["modify"] && $editable && $val !== null) || $posted !== null) {
 							$h_value = h($posted !== null ? $posted : $row[$key]);
-							echo ">" . ($text ? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>" : "<input name='$id' value='$h_value' size='$lengths[$key]'>");
+							echo ">" . ($text
+								? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>"
+								: "<input name='$id' value='$h_value' size='$lengths[$key]'>"
+							);
 						} else {
 							$long = strpos($html, "<i>…</i>");
 							echo ($update
@@ -524,7 +529,8 @@ if (!$columns && support("table")) {
 				$pagination = ($limit && ($found_rows === false || $found_rows > $limit || $page));
 				if ($pagination) {
 					echo (($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit
-						? '<p><a href="' . h(remove_from_uri("page|next") . ($_GET["next"] ? "&next=" . urlencode($_GET["next"]) : "") . "&page=" . ($page + 1)) . '" class="loadmore">' . lang('Load more data') . '</a>'
+						? '<p><a href="' . h(remove_from_uri("page|next") . ($_GET["next"] ? "&next=" . urlencode($_GET["next"]) : "") . "&page=" . ($page + 1)) . '" class="loadmore">'
+							. lang('Load more data') . '</a>'
 							. script("qsl('a').onclick = partial(selectLoadMore, $limit, '" . js_escape(lang('Loading')) . "…');", "")
 						: ''
 					);
@@ -565,7 +571,8 @@ if (!$columns && support("table")) {
 				echo "<fieldset>";
 				echo "<legend>" . lang('Whole result') . "</legend>";
 				$display_rows = ($exact_count ? "" : "~ ") . $found_rows;
-				$onclick = "const checked = formChecked(this, /check/); selectCount('selected', this.checked ? '$display_rows' : checked); selectCount('selected2', this.checked || !checked ? '$display_rows' : checked);";
+				$onclick = "const checked = formChecked(this, /check/); selectCount('selected', this.checked ? '$display_rows' : checked); "
+					. "selectCount('selected2', this.checked || !checked ? '$display_rows' : checked);";
 				echo checkbox("all", 1, 0, ($found_rows !== false ? ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) : ""), $onclick) . "\n";
 				echo "</fieldset>\n";
 

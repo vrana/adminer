@@ -108,7 +108,10 @@ if ($auth) {
 		set_session($key, null);
 	}
 	unset_permanent($permanent);
-	redirect(substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1), lang('Logout successful.') . ' ' . lang('Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.'));
+	redirect(
+		substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1),
+		lang('Logout successful.') . ' ' . lang('Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.')
+	);
 
 } elseif ($permanent && !$_SESSION["pwds"]) {
 	session_regenerate_id();
@@ -151,7 +154,11 @@ function auth_error(string $error, array &$permanent) {
 			$password = get_password();
 			if ($password !== null) {
 				if ($password === false) {
-					$error .= ($error ? '<br>' : '') . lang('Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.', target_blank(), '<code>permanentLogin()</code>');
+					$error .= ($error ? '<br>' : '') . lang(
+						'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.',
+						target_blank(),
+						'<code>permanentLogin()</code>'
+					);
 				}
 				set_password(DRIVER, SERVER, $_GET["username"], null);
 			}

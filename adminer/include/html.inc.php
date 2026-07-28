@@ -145,7 +145,8 @@ function bold(bool $bold, string $class = ""): string {
 
 /** Escape string for JavaScript apostrophes */
 function js_escape(string $string): string {
-	// the HTML parser doesn't understand JS escaping so < must not stay in the string at all, otherwise <!-- would start the script data escaped state and the following </script> wouldn't end the element
+	// the HTML parser doesn't understand JS escaping so < must not stay in the string at all,
+	// otherwise <!-- would start the script data escaped state and the following </script> wouldn't end the element
 	return str_replace("<", "\\x3C", addcslashes($string, "\r\n'\\"));
 }
 
@@ -197,7 +198,8 @@ function file_input(string $input): string {
 	$upload_max_filesize_value = ini_get($upload_max_filesize);
 	return (ini_bool("file_uploads")
 		? $input . script("qsl('input[type=\"file\"]').onchange = event => fileChange(event, "
-				. "$max_file_uploads_value, '" . js_escape(lang('Increase %s.', "$max_file_uploads = $max_file_uploads_value")) . "', " // ignore post_max_size because it is for all form fields together and bytes computing would be necessary
+				// ignore post_max_size because it is for all form fields together and bytes computing would be necessary
+				. "$max_file_uploads_value, '" . js_escape(lang('Increase %s.', "$max_file_uploads = $max_file_uploads_value")) . "', "
 				. ini_bytes("upload_max_filesize") . ", '" . js_escape(lang('Increase %s.', "$upload_max_filesize = $upload_max_filesize_value")) . "')")
 		: lang('File uploads are disabled.')
 	);
@@ -233,7 +235,8 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 	}
 	$json = ($function == "json" || preg_match('~^jsonb?$~', $field["full_type"]));
 	if ($json && $value != '' && (JUSH != "pgsql" || $field["type"] != "json")) {
-		$value = json_encode(is_array($value) ? $value : json_decode($value), 128 | 64 | 256); // 128 - JSON_PRETTY_PRINT, 64 - JSON_UNESCAPED_SLASHES, 256 - JSON_UNESCAPED_UNICODE available since PHP 5.4
+		// 128 - JSON_PRETTY_PRINT, 64 - JSON_UNESCAPED_SLASHES, 256 - JSON_UNESCAPED_UNICODE available since PHP 5.4
+		$value = json_encode(is_array($value) ? $value : json_decode($value), 128 | 64 | 256);
 	}
 	$reset = (JUSH == "mssql" && $field["auto_increment"]);
 	if ($reset && !$_POST["save"]) {
@@ -375,7 +378,9 @@ function search_tables(): void {
 		if (isset($table_status["Engine"]) && $name != "" && (!$_POST["tables"] || in_array($table, $_POST["tables"]))) {
 			$result = connection()->query("SELECT" . limit("1 FROM " . table($table), " WHERE " . implode(" AND ", adminer()->selectSearchProcess(fields($table), array())), 1));
 			if (!$result || $result->fetch_row()) {
-				$print = "<a href='" . h(ME . "select=" . urlencode($table) . "&where[0][op]=" . urlencode($_GET["where"][0]["op"]) . "&where[0][val]=" . urlencode($_GET["where"][0]["val"])) . "'>$name</a>";
+				$print = "<a href='" . h(ME . "select=" . urlencode($table)
+					. "&where[0][op]=" . urlencode($_GET["where"][0]["op"])
+					. "&where[0][val]=" . urlencode($_GET["where"][0]["val"])) . "'>$name</a>";
 				echo "$sep<li>" . ($result ? $print : "<p class='error'>$print: " . error()) . "\n";
 				$sep = "";
 			}

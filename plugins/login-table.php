@@ -24,7 +24,8 @@ class AdminerLoginTable extends Adminer\Plugin {
 	}
 
 	function login($login, $password) {
-		return (bool) Adminer\get_val("SELECT COUNT(*) FROM " . Adminer\idf_escape($this->database) . ".login WHERE login = " . Adminer\q($login) . " AND password_sha1 = " . Adminer\q(sha1($password)));
+		return (bool) Adminer\get_val("SELECT COUNT(*) FROM " . Adminer\idf_escape($this->database) . ".login WHERE login = " . Adminer\q($login)
+			. " AND password_sha1 = " . Adminer\q(sha1($password)));
 	}
 
 	protected $translations = array(

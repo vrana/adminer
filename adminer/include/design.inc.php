@@ -48,7 +48,8 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	echo script_src("../adminer/static/functions.js");
 	echo script_src("static/editing.js");
 	if (adminer()->head($dark)) {
-		echo "<link rel='icon' href='data:image/gif;base64,R0lGODlhEAAQAJEAAAQCBPz+/PwCBAROZCH5BAEAAAAALAAAAAAQABAAAAI2hI+pGO1rmghihiUdvUBnZ3XBQA7f05mOak1RWXrNq5nQWHMKvuoJ37BhVEEfYxQzHjWQ5qIAADs='>\n";
+		echo "<link rel='icon' href='data:image/gif;base64,"
+			. "R0lGODlhEAAQAJEAAAQCBPz+/PwCBAROZCH5BAEAAAAALAAAAAAQABAAAAI2hI+pGO1rmghihiUdvUBnZ3XBQA7f05mOak1RWXrNq5nQWHMKvuoJ37BhVEEfYxQzHjWQ5qIAADs='>\n";
 		echo "<link rel='apple-touch-icon' href='../adminer/static/logo.png'>\n";
 	}
 	foreach ($css as $url => $mode) {
@@ -139,7 +140,8 @@ function page_headers(): void {
 function csp(): array {
 	return array(
 		array(
-			"script-src" => "'self' 'unsafe-inline' 'nonce-" . get_nonce() . "' 'strict-dynamic'", // 'self' is a fallback for browsers not supporting 'strict-dynamic', 'unsafe-inline' is a fallback for browsers not supporting 'nonce-'
+			// 'self' is a fallback for browsers not supporting 'strict-dynamic', 'unsafe-inline' is a fallback for browsers not supporting 'nonce-'
+			"script-src" => "'self' 'unsafe-inline' 'nonce-" . get_nonce() . "' 'strict-dynamic'",
 			"connect-src" => "'self' https://www.adminer.org",
 			"frame-src" => "https://www.adminer.org", // version check without JS
 			"object-src" => "'none'",

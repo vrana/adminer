@@ -13,7 +13,8 @@ class AdminerBackwardKeys extends Adminer\Plugin {
 		$return = array();
 		// we couldn't use the same query in MySQL and PostgreSQL because unique_constraint_name is not table-specific in MySQL and referenced_table_name is not available in PostgreSQL
 		foreach (
-			Adminer\get_rows("SELECT s.table_name table_name, s.constraint_name constraint_name, s.column_name column_name, " . (Adminer\JUSH == "sql" ? "referenced_column_name" : "t.column_name") . " referenced_column_name
+			Adminer\get_rows("SELECT s.table_name table_name, s.constraint_name constraint_name, s.column_name column_name,
+	" . (Adminer\JUSH == "sql" ? "referenced_column_name" : "t.column_name") . " referenced_column_name
 FROM information_schema.key_column_usage s" . (Adminer\JUSH == "sql" ? "
 WHERE table_schema = " . Adminer\q(Adminer\DB) . "
 AND referenced_table_schema = " . Adminer\q(Adminer\DB) . "
@@ -56,7 +57,9 @@ ORDER BY s.ordinal_position", null, "") as $row
 					}
 					$link .= Adminer\where_link($i++, $column, $row[$val]);
 				}
-				echo "<a href='" . Adminer\h($link) . "'>" . Adminer\h(preg_replace('(^' . preg_quote($_GET["select"]) . (substr($_GET["select"], -1) == 's' ? '?' : '') . '_)', '_', $backwardKey["name"])) . "</a>";
+				echo "<a href='" . Adminer\h($link) . "'>"
+					. Adminer\h(preg_replace('(^' . preg_quote($_GET["select"]) . (substr($_GET["select"], -1) == 's' ? '?' : '') . '_)', '_', $backwardKey["name"]))
+					. "</a>";
 				$link = Adminer\ME . 'edit=' . urlencode($table);
 				foreach ($cols as $column => $val) {
 					$link .= "&set" . urlencode("[" . Adminer\bracket_escape($column) . "]") . "=" . urlencode($row[$val]);

@@ -292,7 +292,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 				}
 				$key = $keys[$name];
 				$i--;
-				echo "<div>" . h($desc) . input_hidden("where[$i][col]", $name) . input_hidden("where[$i][op]", "=") . ": <select name='where[$i][val]'>" . optionlist($options, idx($where[$key], "val"), true) . "</select></div>\n";
+				echo "<div>" . h($desc) . input_hidden("where[$i][col]", $name) . input_hidden("where[$i][op]", "=")
+					. ": <select name='where[$i][val]'>" . optionlist($options, idx($where[$key], "val"), true) . "</select></div>\n";
 				unset($columns[$name]);
 			}
 		}
@@ -301,7 +302,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			if (($val["col"] == "" || $columns[$val["col"]]) && "$val[col]$val[val]" != "") {
 				echo "<div><select name='where[$i][col]'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
 				echo html_select("where[$i][op]", array(-1 => "") + adminer()->operators(), $val["op"]);
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'>" . script("mixin(qsl('input'), {onkeydown: selectSearchKeydown, onsearch: selectSearchSearch});", "") . "</div>\n";
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'>"
+					. script("mixin(qsl('input'), {onkeydown: selectSearchKeydown, onsearch: selectSearchSearch});", "") . "</div>\n";
 				$i++;
 			}
 		}
@@ -487,7 +489,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 				: "<input value='" . h($value) . "'$attrs class='hidden'>"
 					. "<input value='" . h($options) . "' class='jsonly'>"
 					. "<div></div>"
-					. script("qsl('input').oninput = partial(whisper, '" . ME . "script=complete&source=" . urlencode($table) . "&field=" . urlencode($field["field"]) . "&value='); qsl('div').onclick = whisperClick;", "")
+					. script("qsl('input').oninput = partial(whisper, '" . ME . "script=complete&source=" . urlencode($table)
+						. "&field=" . urlencode($field["field"]) . "&value='); qsl('div').onclick = whisperClick;", "")
 			);
 		}
 		if (like_bool($field)) {
@@ -518,8 +521,12 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			return "$function()";
 		}
 		$return = $value;
-		if (preg_match('~date|timestamp~', $field["type"]) && preg_match('(^' . str_replace('\$1', '(?P<p1>\d*)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\2>\d{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)) {
-			$return = ($match["p1"] != "" ? $match["p1"] : ($match["p2"] != "" ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y"))) . "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match);
+		if (
+			preg_match('~date|timestamp~', $field["type"])
+			&& preg_match('(^' . str_replace('\$1', '(?P<p1>\d*)', preg_replace('~(\\\\\\$([2-6]))~', '(?P<p\2>\d{1,2})', preg_quote(lang('$1-$3-$5')))) . '(.*))', $value, $match)
+		) {
+			$return = ($match["p1"] != "" ? $match["p1"] : ($match["p2"] != "" ? ($match["p2"] < 70 ? 20 : 19) . $match["p2"] : gmdate("Y")))
+				. "-$match[p3]$match[p4]-$match[p5]$match[p6]" . end($match);
 		}
 		$return = q($return);
 		if ($value == "" && like_bool($field)) {
@@ -584,7 +591,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	function navigation(string $missing): void {
 		echo "<h1>" . adminer()->name() . " <span class='version'>" . VERSION;
 		$new_version = $_COOKIE["adminer_version"];
-		echo " <a href='https://www.adminer.org/editor/#download'" . target_blank() . " id='version'>" . (version_compare(VERSION, $new_version) < 0 ? h($new_version) : "") . version_iframe() . "</a>";
+		echo " <a href='https://www.adminer.org/editor/#download'" . target_blank() . " id='version'>"
+			. (version_compare(VERSION, $new_version) < 0 ? h($new_version) : "") . version_iframe() . "</a>";
 		echo "</span></h1>\n";
 		switch_lang();
 		if ($missing == "auth") {

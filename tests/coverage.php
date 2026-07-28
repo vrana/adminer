@@ -80,7 +80,8 @@ if (!extension_loaded("xdebug")) {
 				$values = array_count_values($cov);
 				$ratio = round(100 - 100 * $values[-1] / (count($cov) - $values[-2]));
 			}
-			echo "<tr><td align='right' style='background-color: " . ($ratio < 50 ? "Red" : ($ratio < 75 ? "#FFEA20" : "#A7FC9D")) . ";'>$ratio%<td><a href='coverage.php?coverage=$filename'>$filename</a>\n";
+			echo "<tr><td align='right' style='background-color: " . ($ratio < 50 ? "Red" : ($ratio < 75 ? "#FFEA20" : "#A7FC9D")) . ";'>$ratio%"
+				. "<td><a href='coverage.php?coverage=$filename'>$filename</a>\n";
 		}
 		echo "</table>\n";
 	}

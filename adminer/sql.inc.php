@@ -155,7 +155,8 @@ if (!$error && $_POST) {
 
 								} else {
 									$time = " <span class='time'>(" . format_time($start) . ")</span>"
-										. (strlen($q) < 1000 ? " <a href='" . h(ME) . "sql=" . urlencode(trim($q)) . "'>" . lang('Edit') . "</a>" : "") // 1000 - maximum length of encoded URL in IE is 2083 characters
+										// 1000 - maximum length of encoded URL in IE is 2083 characters
+										. (strlen($q) < 1000 ? " <a href='" . h(ME) . "sql=" . urlencode(trim($q)) . "'>" . lang('Edit') . "</a>" : "")
 									;
 									$affected = connection()->affected_rows; // getting warnings overwrites this
 									$warnings = ($_POST["only_errors"] ? "" : driver()->warnings());
@@ -250,7 +251,8 @@ if (!isset($_GET["import"])) {
 	}
 	echo "<p>";
 	textarea("query", $q, 20);
-	echo script(($_POST ? "" : "qs('textarea').focus();\n") . "qs('#form').onsubmit = partial(sqlSubmit, qs('#form'), '" . js_escape(remove_from_uri("sql|limit|error_stops|only_errors|history")) . "');");
+	echo script(($_POST ? "" : "qs('textarea').focus();\n")
+		. "qs('#form').onsubmit = partial(sqlSubmit, qs('#form'), '" . js_escape(remove_from_uri("sql|limit|error_stops|only_errors|history")) . "');");
 	echo "<p>";
 	adminer()->sqlPrintAfter();
 	echo "$execute\n";

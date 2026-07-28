@@ -43,7 +43,10 @@ if ($tables_views && !$error && !$_POST["search"]) {
 		$message = lang('Tables have been optimized.');
 	} elseif (!$_POST["tables"]) {
 		$message = lang('No tables.');
-	} elseif ($result = queries(($_POST["optimize"] ? "OPTIMIZE" : ($_POST["check"] ? "CHECK" : ($_POST["repair"] ? "REPAIR" : "ANALYZE"))) . " TABLE " . implode(", ", array_map('Adminer\idf_escape', $_POST["tables"])))) {
+	} elseif (
+		$result = queries(($_POST["optimize"] ? "OPTIMIZE" : ($_POST["check"] ? "CHECK" : ($_POST["repair"] ? "REPAIR" : "ANALYZE")))
+			. " TABLE " . implode(", ", array_map('Adminer\idf_escape', $_POST["tables"])))
+	) {
 		while ($row = $result->fetch_assoc()) {
 			$message .= "<b>" . h($row["Table"]) . "</b>: " . h($row["Msg_text"]) . "<br>";
 		}
@@ -88,16 +91,32 @@ if (adminer()->homepage()) {
 				$columns["Collation"] = array(lang('Collation') . doc_link(array('sql' => 'charset-charsets.html', 'mariadb' => 'supported-character-sets-and-collations/')));
 			}
 			if (function_exists('Adminer\alter_table')) {
-				$columns["Data_length"] = array(lang('Data Length') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT', 'oracle' => 'REFRN20286')), "create", lang('Alter table'));
+				$columns["Data_length"] = array(
+					lang('Data Length') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT', 'oracle' => 'REFRN20286')),
+					"create",
+					lang('Alter table'),
+				);
 			}
 			if (support('indexes')) {
-				$columns["Index_length"] = array(lang('Index Length') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT')), "indexes", lang('Alter indexes'));
+				$columns["Index_length"] = array(
+					lang('Index Length') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT')),
+					"indexes",
+					lang('Alter indexes'),
+				);
 			}
 			$columns["Data_free"] = array(lang('Data Free') . doc_link(array('sql' => 'show-table-status.html')), "edit", lang('New item'));
 			if (function_exists('Adminer\alter_table')) {
-				$columns["Auto_increment"] = array(lang('Auto Increment') . doc_link(array('sql' => 'example-auto-increment.html', 'mariadb' => 'auto_increment/')), "auto_increment=1&create", lang('Alter table'));
+				$columns["Auto_increment"] = array(
+					lang('Auto Increment') . doc_link(array('sql' => 'example-auto-increment.html', 'mariadb' => 'auto_increment/')),
+					"auto_increment=1&create",
+					lang('Alter table'),
+				);
 			}
-			$columns["Rows"] = array(lang('Rows') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'catalog-pg-class.html#CATALOG-PG-CLASS', 'oracle' => 'REFRN20286')), "select", lang('Select data'));
+			$columns["Rows"] = array(
+				lang('Rows') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'catalog-pg-class.html#CATALOG-PG-CLASS', 'oracle' => 'REFRN20286')),
+				"select",
+				lang('Select data'),
+			);
 			if (support("comment")) {
 				$columns["Comment"] = array(lang('Comment') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-info.html#FUNCTIONS-INFO-COMMENT-TABLE')));
 			}
@@ -123,10 +142,14 @@ if (adminer()->homepage()) {
 				$status = ($full ? $status : array('Engine' => $status));
 				$id = h("Table-" . $name);
 				echo '<tr><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array("$name", $tables_views, true), "", "", "hover", $id); // "$name" to check numeric table names
-				echo '<th>' . (support("table") || support("indexes") ? "<a href='" . h(ME) . "table=" . urlencode($name) . "' title='" . lang('Show structure') . "' id='$id'>" . h($name) . '</a>' : h($name));
+				echo '<th>' . (support("table") || support("indexes")
+					? "<a href='" . h(ME) . "table=" . urlencode($name) . "' title='" . lang('Show structure') . "' id='$id'>" . h($name) . '</a>'
+					: h($name)
+				);
 				if ($view && !preg_match('~materialized~i', $status['Engine'])) {
 					$title = lang('View');
-					echo '<td colspan="' . (count($columns) - (support("comment") ? 2 : 1)) . '">' . (support("view") ? "<a href='" . h(ME) . "view=" . urlencode($name) . "' title='" . lang('Alter view') . "'>$title</a>" : $title);
+					echo '<td colspan="' . (count($columns) - (support("comment") ? 2 : 1)) . '">'
+						. (support("view") ? "<a href='" . h(ME) . "view=" . urlencode($name) . "' title='" . lang('Alter view') . "'>$title</a>" : $title);
 					echo "<td align='right'><a href='" . h(ME) . "select=" . urlencode($name) . "' title='" . lang('Select data') . "'>?</a>";
 					if (support("comment")) {
 						echo '<td>' . h($status['Comment']);
@@ -178,7 +201,10 @@ if (adminer()->homepage()) {
 					. "<input type='submit' name='check' value='" . lang('Check') . "'> " . on_help("'CHECK TABLE'")
 					. "<input type='submit' name='repair' value='" . lang('Repair') . "'> " . on_help("'REPAIR TABLE'")
 				: "")))
-				. (function_exists('Adminer\truncate_tables') ? "<input type='submit' name='truncate' value='" . lang('Truncate') . "'> " . on_help(JUSH == "sqlite" ? "'DELETE'" : "'TRUNCATE" . (JUSH == "pgsql" ? "'" : " TABLE'")) . confirm() : "")
+				. (function_exists('Adminer\truncate_tables')
+					? "<input type='submit' name='truncate' value='" . lang('Truncate') . "'> "
+						. on_help(JUSH == "sqlite" ? "'DELETE'" : "'TRUNCATE" . (JUSH == "pgsql" ? "'" : " TABLE'")) . confirm()
+					: "")
 				. (JUSH == "pgsql" ? "<input type='submit' name='truncate_cascade' value='" . lang('Truncate Cascade') . "'> " . on_help("'TRUNCATE CASCADE'") . confirm() : "")
 				. (function_exists('Adminer\drop_tables') ? "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . on_help("'DROP TABLE'") . confirm() : "");
 				echo ($print ? "<div class='footer'><div>\n<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>$print\n</div></fieldset>\n" : "");
@@ -221,7 +247,8 @@ if (adminer()->homepage()) {
 					echo '<th><a href="' . h(ME . ($row["ROUTINE_TYPE"] != "PROCEDURE" ? 'callf=' : 'call=') . urlencode($row["SPECIFIC_NAME"]) . $name) . '">' . h($row["ROUTINE_NAME"]) . '</a>';
 					echo '<td>' . h($row["ROUTINE_TYPE"]);
 					echo '<td>' . h($row["DTD_IDENTIFIER"]);
-					echo '<td><a href="' . h(ME . ($row["ROUTINE_TYPE"] != "PROCEDURE" ? 'function=' : 'procedure=') . urlencode($row["SPECIFIC_NAME"]) . $name) . '" class="hover">' . lang('Alter') . "</a>";
+					echo '<td><a href="' . h(ME . ($row["ROUTINE_TYPE"] != "PROCEDURE" ? 'function=' : 'procedure=') . urlencode($row["SPECIFIC_NAME"]) . $name) . '" class="hover">'
+						. lang('Alter') . "</a>";
 				}
 				echo "</table>\n";
 			}
@@ -268,7 +295,9 @@ if (adminer()->homepage()) {
 				foreach ($rows as $row) {
 					echo "<tr>";
 					echo "<th>" . h($row["Name"]);
-					echo "<td>" . ($row["Execute at"] ? lang('At given time') . "<td>" . h($row["Execute at"]) : lang('Every') . " " . h($row["Interval value"]) . " " . h($row["Interval field"]) . "<td>" . h($row["Starts"]));
+					echo "<td>" . ($row["Execute at"]
+						? lang('At given time') . "<td>" . h($row["Execute at"])
+						: lang('Every') . " " . h($row["Interval value"]) . " " . h($row["Interval field"]) . "<td>" . h($row["Starts"]));
 					echo "<td>" . h($row["Ends"]);
 					echo '<td><a href="' . h(ME) . 'event=' . urlencode($row["Name"]) . '">' . lang('Alter') . '</a>';
 				}

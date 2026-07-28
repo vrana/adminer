@@ -182,16 +182,22 @@ function edit_type(string $key, array $field, array $collations, array $foreign_
 		. " aria-labelledby='label-length'>";
 	echo "<td class='options'>";
 	echo ($collations
-		? "<input list='collations' name='" . h($key) . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'") . " value='" . h($field["collation"]) . "' placeholder='(" . lang('collation') . ")'>"
+		? "<input list='collations' name='" . h($key) . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'")
+			. " value='" . h($field["collation"]) . "' placeholder='(" . lang('collation') . ")'>"
 		: ''
 	);
-	echo (driver()->unsigned ? "<select name='" . h($key) . "[unsigned]'" . (!$type || preg_match(number_type(), $type) ? "" : " class='hidden'") . '><option>' . optionlist(driver()->unsigned, $field["unsigned"]) . '</select>' : '');
+	echo (driver()->unsigned
+		? "<select name='" . h($key) . "[unsigned]'" . (!$type || preg_match(number_type(), $type) ? "" : " class='hidden'") . '><option>'
+			. optionlist(driver()->unsigned, $field["unsigned"]) . '</select>'
+		: ''
+	);
 	echo (isset($field['on_update']) ? "<select name='" . h($key) . "[on_update]'" . (preg_match('~timestamp|datetime~', $type) ? "" : " class='hidden'") . '>'
 		. optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), (preg_match('~^CURRENT_TIMESTAMP~i', $field["on_update"]) ? "CURRENT_TIMESTAMP" : $field["on_update"]))
 		. '</select>' : ''
 	);
 	echo ($foreign_keys
-		? "<select name='" . h($key) . "[on_delete]'" . (preg_match("~`~", $type) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")" . optionlist(explode("|", driver()->onActions), $field["on_delete"]) . "</select> "
+		? "<select name='" . h($key) . "[on_delete]'" . (preg_match("~`~", $type) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")"
+			. optionlist(explode("|", driver()->onActions), $field["on_delete"]) . "</select> "
 		: " " // space for IE
 	);
 }
@@ -317,7 +323,8 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 		echo ($type == "PROCEDURE" ? "<td>" . html_select("fields[$i][inout]", explode("|", driver()->inout), $field["inout"]) : "") . "<th>";
 		echo (support("move_col") ? icon("move", "", "↕", lang('Move')) . " " : "");
 		if ($display) {
-			echo "<input name='fields[$i][field]' value='" . h($field["field"]) . "' data-maxlength='64' autocapitalize='off' aria-labelledby='label-name'" . (isset($_POST["add"][$i-1]) ? " autofocus" : "") . ">";
+			echo "<input name='fields[$i][field]' value='" . h($field["field"]) . "' data-maxlength='64' autocapitalize='off' aria-labelledby='label-name'"
+				. (isset($_POST["add"][$i-1]) ? " autofocus" : "") . ">";
 		}
 		echo input_hidden("fields[$i][orig]", $orig);
 		edit_type("fields[$i]", $field, $collations, $foreign_keys);
@@ -330,7 +337,8 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 			);
 			$attrs = " name='fields[$i][default]' aria-labelledby='label-default'";
 			$value = h($field["default"]);
-			echo (preg_match('~\n~', $field["default"]) ? "<textarea$attrs rows='2' cols='30' style='vertical-align: bottom;'>\n$value</textarea>" : "<input$attrs value='$value'>"); // \n to preserve the leading newline
+			// \n to preserve the leading newline
+			echo (preg_match('~\n~', $field["default"]) ? "<textarea$attrs rows='2' cols='30' style='vertical-align: bottom;'>\n$value</textarea>" : "<input$attrs value='$value'>");
 			if (support("comment")) {
 				$attrs = " name='fields[$i][comment]' data-maxlength='" . (min_version(5.5) ? 1024 : 255) . "' aria-labelledby='label-comment'";
 				echo "<td$comment_class>" . adminer()->commentInput('COLUMN', $attrs, $field["comment"]);
@@ -389,7 +397,19 @@ function grant(string $grant, array $privileges, ?string $columns, string $on) {
 * @param string $drop_test drop test object query
 * @return void redirect on success
 */
-function drop_create(string $drop, string $create, string $drop_created, string $test, string $drop_test, string $location, string $message_drop, string $message_alter, string $message_create, string $old_name, string $new_name): void {
+function drop_create(
+	string $drop,
+	string $create,
+	string $drop_created,
+	string $test,
+	string $drop_test,
+	string $location,
+	string $message_drop,
+	string $message_alter,
+	string $message_create,
+	string $old_name,
+	string $new_name
+): void {
 	if ($_POST["drop"]) {
 		query_redirect($drop, $location, $message_drop);
 	} elseif ($old_name == "") {

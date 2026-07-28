@@ -232,7 +232,10 @@ include __DIR__ . "/adminer/include/db.inc.php";
 include __DIR__ . "/adminer/include/pdo.inc.php";
 include __DIR__ . "/adminer/include/driver.inc.php";
 include __DIR__ . "/adminer/include/plugins.inc.php"; // for Plugins::checksum()
-$features = array("check", "call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine", "scheme", "sequence", "sql", "status", "trigger", "type", "user" => "privileges", "variables", "view");
+$features = array(
+	"check", "call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine",
+	"scheme", "sequence", "sql", "status", "trigger", "type", "user" => "privileges", "variables", "view",
+);
 $lang_ids = array(); // global variable simplifies usage in a callback function
 $file = file_get_contents(__DIR__ . "/$project/index.php");
 $file = preg_replace('~\*/~', "* @version " . Adminer\VERSION . "\n*/", $file, 1);
@@ -251,7 +254,12 @@ if ($vendor) {
 		}
 	}
 	if ($project != "editor" && !Adminer\support("routine")) {
-		$file = replace("if (isset(\$_GET[\"callf\"])) {\n\t\$_GET[\"call\"] = \$_GET[\"callf\"];\n}\nif (isset(\$_GET[\"function\"])) {\n\t\$_GET[\"procedure\"] = \$_GET[\"function\"];\n}\n", "", $file);
+		$file = replace(
+			"if (isset(\$_GET[\"callf\"])) {\n\t\$_GET[\"call\"] = \$_GET[\"callf\"];\n}\n"
+				. "if (isset(\$_GET[\"function\"])) {\n\t\$_GET[\"procedure\"] = \$_GET[\"function\"];\n}\n",
+			"",
+			$file
+		);
 	}
 }
 $file = preg_replace_callback('~\b(include|require) "([^"]*)";~', 'put_file', $file);
@@ -291,8 +299,8 @@ if ($vendor) {
 		if ($vendor == "sqlite") {
 			// SQLite doesn't use the server but the value must be preserved for the login form
 			$file = replace(
-				"\t\techo adminer()->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', "
-					. "\"<input name='auth[server]' value='\" . h(SERVER) . \"' title='\" . lang('hostname[:port] or :socket') . \"' placeholder='localhost' autocapitalize='off'>\");\n",
+				"\t\techo adminer()->loginFormField(\n\t\t\t'server',\n\t\t\t'<tr><th>' . lang('Server') . '<td>',\n"
+					. "\t\t\t\"<input name='auth[server]' value='\" . h(SERVER) . \"' title='\" . lang('hostname[:port] or :socket') . \"' placeholder='localhost' autocapitalize='off'>\"\n\t\t);\n",
 				"\t\techo input_hidden(\"auth[server]\", SERVER);\n",
 				$file
 			);
@@ -310,12 +318,13 @@ if ($project == "editor") {
 	$file = preg_replace('~;.\.\/externals/jush/jush(-dark)?\.css~', '', $file);
 	$file = preg_replace('~compile_file\(\'\.\./(externals/jush/modules/jush\.js)[^)]+\)~', "''", $file);
 }
-$file = preg_replace_callback("~(?<!>)lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
+// \s* after ( allows wrapping long lang() calls
+$file = preg_replace_callback("~(?<!>)lang\\(\\s*'((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
 $file = preg_replace_callback('~\b(include|require) "([^"]*" . LANG . ".inc.php)";~', 'put_file_lang', $file);
 $file = str_replace("\r", "", $file);
 if ($_SESSION["lang"]) {
 	// single language version
-	$file = preg_replace_callback("~(<\\?php\\s*echo )?(?<!>)lang\\('((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
+	$file = preg_replace_callback("~(<\\?php\\s*echo )?(?<!>)lang\\(\\s*'((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
 	$file = replace("switch_lang();", "", $file);
 	$file = replace('<?php echo LANG; ?>', $_SESSION["lang"], $file);
 }

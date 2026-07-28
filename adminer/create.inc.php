@@ -175,7 +175,10 @@ foreach ($engines as $engine) {
 <?php
 if (support("columns") || $TABLE == "") {
 	echo lang('Table name') . ": <input name='name'" . ($TABLE == "" && !$_POST ? " autofocus" : "") . " data-maxlength='64' value='" . h($row["name"]) . "' autocapitalize='off'>\n";
-	echo ($engines ? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . on_help("event.target.value", 1) . script("qsl('select').onchange = helpClose;") . "\n" : "");
+	echo ($engines
+		? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"]) . on_help("event.target.value", 1) . script("qsl('select').onchange = helpClose;") . "\n"
+		: ""
+	);
 	if ($collations) {
 		echo "<datalist id='collations'>" . optionlist($collations) . "</datalist>\n";
 		echo (preg_match("~sqlite|mssql~", JUSH) ? "" : "<input list='collations' name='Collation' value='" . h($row["Collation"]) . "' placeholder='(" . lang('collation') . ")'>\n");
@@ -210,7 +213,9 @@ if (support("columns")) {
 if ($partition_by && (JUSH == 'sql' || $TABLE == "")) {
 	$partition_table = preg_match('~RANGE|LIST~', $row["partition_by"]);
 	print_fieldset("partition", lang('Partition by'), $row["partition_by"]);
-	echo "<p>" . html_select("partition_by", array_merge(array(""), $partition_by), $row["partition_by"]) . on_help("event.target.value.replace(/./, 'PARTITION BY \$&')", 1) . script("qsl('select').onchange = partitionByChange;");
+	echo "<p>" . html_select("partition_by", array_merge(array(""), $partition_by), $row["partition_by"])
+		. on_help("event.target.value.replace(/./, 'PARTITION BY \$&')", 1)
+		. script("qsl('select').onchange = partitionByChange;");
 	echo "(<input name='partition' value='" . h($row["partition"]) . "'>)\n";
 	echo lang('Partitions') . ": <input type='number' name='partitions' class='size" . ($partition_table || !$row["partition_by"] ? " hidden" : "") . "' value='" . h($row["partitions"]) . "'>\n";
 	echo "<table id='partition-table'" . ($partition_table ? "" : " class='hidden'") . ">\n";

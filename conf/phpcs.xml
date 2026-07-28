@@ -8,6 +8,7 @@
 	<file>..</file>
 	<exclude-pattern>/externals/</exclude-pattern>
 	<exclude-pattern>/vendor/</exclude-pattern><!-- Created by Composer in CI -->
+	<exclude-pattern>/\.claude/</exclude-pattern><!-- Git worktrees created by Claude Code -->
 	<exclude-pattern>/designs/</exclude-pattern>
 	<exclude-pattern type="relative">^(adminer|editor)[-.]</exclude-pattern>
 	<exclude-pattern>/adminer-plugins/</exclude-pattern><!-- Local plugins used by the dev server -->
@@ -61,7 +62,7 @@
 
 	<rule ref="Generic.Files.LineLength">
 		<properties>
-			<property name="lineLimit" value="250"/>
+			<property name="lineLimit" value="200"/>
 		</properties>
 		<exclude-pattern>adminer/lang/</exclude-pattern>
 		<exclude-pattern>plugins/foreign-system.php</exclude-pattern>

@@ -205,7 +205,8 @@ if (!defined('Adminer\DRIVER')) {
 		static function connect(string $server, string $username, string $password) {
 			$connection = parent::connect($server, $username, $password);
 			if (is_string($connection)) {
-				if (function_exists('iconv') && !is_utf8($connection) && strlen($s = iconv("windows-1252", "utf-8//IGNORE", $connection)) > strlen($connection)) { // windows-1252 - the same as MySQL latin1
+				// windows-1252 - the same as MySQL latin1
+				if (function_exists('iconv') && !is_utf8($connection) && strlen($s = iconv("windows-1252", "utf-8//IGNORE", $connection)) > strlen($connection)) {
 					$connection = $s;
 				}
 				return $connection;
@@ -483,7 +484,8 @@ if (!defined('Adminer\DRIVER')) {
 		foreach (
 			get_rows(
 				$fast
-				? "SELECT TABLE_NAME AS Name, ENGINE AS Engine, TABLE_COMMENT AS Comment FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() " . ($name != "" ? "AND TABLE_NAME = " . q($name) : "ORDER BY Name")
+				? "SELECT TABLE_NAME AS Name, ENGINE AS Engine, TABLE_COMMENT AS Comment FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() "
+					. ($name != "" ? "AND TABLE_NAME = " . q($name) : "ORDER BY Name")
 				: "SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "")
 			) as $row
 		) {
@@ -577,7 +579,10 @@ if (!defined('Adminer\DRIVER')) {
 		$return = array();
 		foreach (get_rows("SHOW INDEX FROM " . table($table), $connection2) as $row) {
 			$name = $row["Key_name"];
-			$return[$name]["type"] = ($name == "PRIMARY" ? "PRIMARY" : ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT" : ($row["Non_unique"] ? (preg_match('~^(SPATIAL|VECTOR)$~', $row["Index_type"]) ? $row["Index_type"] : "INDEX") : "UNIQUE")));
+			$return[$name]["type"] = ($name == "PRIMARY" ? "PRIMARY"
+				: ($row["Index_type"] == "FULLTEXT" ? "FULLTEXT"
+				: ($row["Non_unique"] ? (preg_match('~^(SPATIAL|VECTOR)$~', $row["Index_type"]) ? $row["Index_type"] : "INDEX")
+				: "UNIQUE")));
 			$return[$name]["columns"][] = $row["Column_name"];
 			$return[$name]["lengths"][] = ($row["Index_type"] == "SPATIAL" ? null : $row["Sub_part"]);
 			$return[$name]["descs"][] = null;
@@ -595,7 +600,8 @@ if (!defined('Adminer\DRIVER')) {
 		$create_table = get_val("SHOW CREATE TABLE " . table($table), 1);
 		if ($create_table) {
 			preg_match_all(
-				"~CONSTRAINT ($pattern) FOREIGN KEY ?\\(((?:$pattern,? ?)+)\\) REFERENCES ($pattern)(?:\\.($pattern))? \\(((?:$pattern,? ?)+)\\)(?: ON DELETE (" . driver()->onActions . "))?(?: ON UPDATE (" . driver()->onActions . "))?~",
+				"~CONSTRAINT ($pattern) FOREIGN KEY ?\\(((?:$pattern,? ?)+)\\) REFERENCES ($pattern)(?:\\.($pattern))? \\(((?:$pattern,? ?)+)\\)(?: ON DELETE ("
+					. driver()->onActions . "))?(?: ON UPDATE (" . driver()->onActions . "))?~",
 				$create_table,
 				$matches,
 				PREG_SET_ORDER
@@ -745,7 +751,8 @@ if (!defined('Adminer\DRIVER')) {
 			if ($partitioning["partition_by"] == 'RANGE' || $partitioning["partition_by"] == 'LIST') {
 				foreach ($partitioning["partition_names"] as $key => $val) {
 					$value = $partitioning["partition_values"][$key];
-					$partitions[] = "\n  PARTITION " . idf_escape($val) . " VALUES " . ($partitioning["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . ($value != "" ? " ($value)" : " MAXVALUE"); //! SQL injection
+					//! SQL injection
+					$partitions[] = "\n  PARTITION " . idf_escape($val) . " VALUES " . ($partitioning["partition_by"] == 'RANGE' ? "LESS THAN" : "IN") . ($value != "" ? " ($value)" : " MAXVALUE");
 				}
 			}
 			// $partitioning["partition"] can be expression, not only column
@@ -773,7 +780,8 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Run commands to alter indexes
 	* @param string $table escaped table name
-	* @param list<array{string, string, 'DROP'|list<string>, 3?: string, 4?: string}> $alter of ["index type", "name", ["column definition", ...], "algorithm", "condition"] or ["index type", "name", "DROP"]
+	* @param list<array{string, string, 'DROP'|list<string>, 3?: string, 4?: string}> $alter
+	*	of ["index type", "name", ["column definition", ...], "algorithm", "condition"] or ["index type", "name", "DROP"]
 	* @return Result|bool
 	*/
 	function alter_indexes(string $table, $alter) {
@@ -855,7 +863,10 @@ if (!defined('Adminer\DRIVER')) {
 			}
 			foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_\\"))) as $row) {
 				$trigger = $row["Trigger"];
-				if (!queries("CREATE TRIGGER " . ($target == DB ? idf_escape("copy_$trigger") : idf_escape($target) . "." . idf_escape($trigger)) . " $row[Timing] $row[Event] ON $name FOR EACH ROW\n$row[Statement];")) {
+				if (
+					!queries("CREATE TRIGGER " . ($target == DB ? idf_escape("copy_$trigger") : idf_escape($target) . "." . idf_escape($trigger))
+						. " $row[Timing] $row[Event] ON $name FOR EACH ROW\n$row[Statement];")
+				) {
 					return false;
 				}
 			}

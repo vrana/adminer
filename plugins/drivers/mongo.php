@@ -365,7 +365,10 @@ if (isset($_GET["mongo"])) {
 			$limit = min(200, max(1, $limit));
 			$skip = $page * $limit;
 			try {
-				return new Result($this->conn->_link->executeQuery($this->conn->_db_name . ".$table", new \MongoDB\Driver\Query($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))));
+				return new Result($this->conn->_link->executeQuery(
+					$this->conn->_db_name . ".$table",
+					new \MongoDB\Driver\Query($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))
+				));
 			} catch (\Exception $e) {
 				$this->conn->error = $e->getMessage();
 				return false;

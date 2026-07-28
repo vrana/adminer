@@ -175,7 +175,11 @@ foreach ($row["indexes"] as $index) {
 			echo ($lengths ? "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h(idx($index["lengths"], $key)) . "' title='" . lang('Length') . "'>" : "");
 			if ($opclasses) {
 				$opclass = idx($index["opclasses"], $key);
-				echo html_select("indexes[$j][opclasses][$i]", array("" => "(" . lang('operator class') . ")") + array_combine($opclasses, $opclasses) + ($opclass != "" ? array($opclass => $opclass) : array()), $opclass);
+				echo html_select(
+					"indexes[$j][opclasses][$i]",
+					array("" => "(" . lang('operator class') . ")") + array_combine($opclasses, $opclasses) + ($opclass != "" ? array($opclass => $opclass) : array()),
+					$opclass
+				);
 				echo doc_link(array('pgsql' => 'indexes-opclass.html'));
 			}
 			echo (support("descidx") ? checkbox("indexes[$j][descs][$i]", 1, idx($index["descs"], $key), lang('descending')) : "");

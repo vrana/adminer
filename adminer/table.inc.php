@@ -9,7 +9,11 @@ if (!$fields) {
 $table_status = table_status1($TABLE);
 $name = adminer()->tableName($table_status);
 
-page_header(($fields && is_view($table_status) ? $table_status['Engine'] == 'materialized view' ? lang('Materialized view') : lang('View') : lang('Table')) . ": " . ($name != "" ? $name : h($TABLE)), $error);
+page_header(
+	($fields && is_view($table_status) ? $table_status['Engine'] == 'materialized view' ? lang('Materialized view') : lang('View') : lang('Table'))
+		. ": " . ($name != "" ? $name : h($TABLE)),
+	$error
+);
 
 $rights = array();
 foreach ($fields as $key => $field) {
@@ -107,7 +111,8 @@ if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
 	if ($triggers) {
 		echo "<table class='actions'>\n";
 		foreach ($triggers as $key => $val) {
-			echo "<tr valign='top'><td>" . h($val[0]) . "<td>" . h($val[1]) . "<th>" . h($key) . "<td><a href='" . h(ME . 'trigger=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "' class='hover'>" . lang('Alter') . "</a>\n";
+			echo "<tr valign='top'><td>" . h($val[0]) . "<td>" . h($val[1]) . "<th>" . h($key)
+				. "<td><a href='" . h(ME . 'trigger=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "' class='hover'>" . lang('Alter') . "</a>\n";
 		}
 		echo "</table>\n";
 	}

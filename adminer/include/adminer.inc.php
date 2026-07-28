@@ -149,10 +149,18 @@ class Adminer {
 		echo "<table class='layout'>\n";
 		// this is matched by compile.php
 		echo adminer()->loginFormField('driver', '<tr><th>' . lang('System') . '<td>', html_select("auth[driver]", SqlDriver::$drivers, DRIVER, "loginDriver(this);"));
-		echo adminer()->loginFormField('server', '<tr><th>' . lang('Server') . '<td>', "<input name='auth[server]' value='" . h(SERVER) . "' title='" . lang('hostname[:port] or :socket') . "' placeholder='localhost' autocapitalize='off'>");
+		echo adminer()->loginFormField(
+			'server',
+			'<tr><th>' . lang('Server') . '<td>',
+			"<input name='auth[server]' value='" . h(SERVER) . "' title='" . lang('hostname[:port] or :socket') . "' placeholder='localhost' autocapitalize='off'>"
+		);
 		// this is matched by compile.php
-		echo adminer()->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', '<input name="auth[username]" id="username" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">'
-			. script("const authDriver = qs('#username').form['auth[driver]']; authDriver && authDriver.onchange();"));
+		echo adminer()->loginFormField(
+			'username',
+			'<tr><th>' . lang('Username') . '<td>',
+			'<input name="auth[username]" id="username" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">'
+				. script("const authDriver = qs('#username').form['auth[driver]']; authDriver && authDriver.onchange();")
+		);
 		echo adminer()->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">');
 		echo adminer()->loginFormField('db', '<tr><th>' . lang('Database') . '<td>', '<input name="auth[db]" value="' . h($_GET["db"]) . '" autocapitalize="off">');
 		echo "</table>\n";
@@ -402,7 +410,10 @@ class Adminer {
 			echo ($field["null"] ? " <i>NULL</i>" : "");
 			echo ($field["auto_increment"] ? " <i>" . lang('Auto Increment') . "</i>" : "");
 			$default = h($field["default"]);
-			echo (isset($field["default"]) ? " <span title='" . lang('Default value') . "'>[<b>" . ($field["generated"] ? "<code class='jush-" . JUSH . "'>$default</code>" : $default) . "</b>]</span>" : "");
+			echo (isset($field["default"])
+				? " <span title='" . lang('Default value') . "'>[<b>" . ($field["generated"] ? "<code class='jush-" . JUSH . "'>$default</code>" : $default) . "</b>]</span>"
+				: ""
+			);
 			echo (support("comment") ? "<td>" . adminer()->commentValue('COLUMN', $field["comment"]) : "");
 			echo "\n";
 		}
@@ -458,10 +469,13 @@ class Adminer {
 				$val["col"],
 				($key !== "" ? "selectFieldChange" : "selectAddRow")
 			);
-			echo "<div>" . (driver()->functions || driver()->grouping ? html_select("columns[$i][fun]", array(-1 => "") + array_filter(array(lang('Functions') => driver()->functions, lang('Aggregation') => driver()->grouping)), $val["fun"])
-				. on_help("event.target.value && event.target.value.replace(/ |\$/, '(') + ')'", 1)
-				. script("qsl('select').onchange = function () { helpClose();" . ($key !== "" ? "" : " qsl('select, input', this.parentNode).onchange();") . " };", "")
-				. "($column)" : $column) . "</div>\n";
+			echo "<div>" . (driver()->functions || driver()->grouping
+				? html_select("columns[$i][fun]", array(-1 => "") + array_filter(array(lang('Functions') => driver()->functions, lang('Aggregation') => driver()->grouping)), $val["fun"])
+					. on_help("event.target.value && event.target.value.replace(/ |\$/, '(') + ')'", 1)
+					. script("qsl('select').onchange = function () { helpClose();" . ($key !== "" ? "" : " qsl('select, input', this.parentNode).onchange();") . " };", "")
+					. "($column)"
+				: $column
+			) . "</div>\n";
 			$i++;
 		}
 		echo "</div></fieldset>\n";
@@ -616,7 +630,8 @@ class Adminer {
 		$return = array();
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT" && idx($_GET["fulltext"], $i) != "") {
-				$return[] = "MATCH (" . implode(", ", array_map('Adminer\idf_escape', $index["columns"])) . ") AGAINST (" . q($_GET["fulltext"][$i]) . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
+				$return[] = "MATCH (" . implode(", ", array_map('Adminer\idf_escape', $index["columns"])) . ") AGAINST ("
+					. q($_GET["fulltext"][$i]) . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
 			}
 		}
 		foreach ((array) $_GET["where"] as $key => $val) {
@@ -734,7 +749,9 @@ class Adminer {
 		return " <span class='time'>" . @date("H:i:s") . "</span>" // @ - time zone may be not set
 			. " $return<div id='$sql_id' class='hidden'><pre><code class='jush-" . JUSH . "'>" . shorten_utf8($query, 1e4) . "</code></pre>"
 			. ($time ? " <span class='time'>($time)</span>" : '')
-			. (support("sql") ? '<p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a>' : '')
+			. (support("sql")
+				? '<p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a>'
+				: '')
 			. '</div>'
 		;
 	}
@@ -1083,7 +1100,8 @@ class Adminer {
 					$actions['sql'] = "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"])) . ">" . lang('SQL command') . "</a>";
 					$actions['import'] = "<a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>";
 				}
-				$actions['dump'] = "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'" . bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>";
+				$actions['dump'] = "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'"
+					. bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>";
 			}
 			$in_db = $_GET["ns"] !== "" && !$missing && DB != "";
 			if ($in_db && function_exists('Adminer\alter_table')) {
@@ -1200,7 +1218,10 @@ class Adminer {
 				;
 				echo (support("table") || support("indexes")
 					? '<a href="' . h(ME) . 'table=' . urlencode($table) . '"'
-						. bold(in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"], $_GET["check"], $_GET["view"])), (is_view($status) ? "view" : "structure"))
+						. bold(
+							in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"], $_GET["check"], $_GET["view"])),
+							(is_view($status) ? "view" : "structure")
+						)
 						. " title='" . lang('Show structure') . "'>$name</a>"
 					: "<span>$name</span>"
 				) . "\n";
