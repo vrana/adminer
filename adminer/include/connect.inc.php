@@ -8,6 +8,10 @@ if (isset($_GET["import"])) {
 	$_GET["sql"] = $_GET["import"];
 }
 
+if (DB == "" && isset($_GET["ns"])) {	// menu form for changing DB preserves ns which leads to this combination
+	redirect(remove_from_uri('ns'));
+}
+
 if (
 	!(DB != ""
 		? connection()->select_db(DB)
@@ -134,8 +138,8 @@ if (
 
 if (support("scheme")) {
 	if (DB != "" && $_GET["ns"] !== "") {
-		if (!isset($_GET["ns"])) {
-			redirect(preg_replace('~ns=[^&]*&~', '', ME) . "ns=" . get_schema());
+		if (!isset($_GET["ns"])) { // when the user goes to a database, take him to the default schema
+			redirect(preg_replace('~&db=[^&]+~', '\0&ns=' . urlencode(get_schema()), relative_uri()));
 		}
 		if (!set_schema($_GET["ns"])) {
 			header("HTTP/1.1 404 Not Found");
