@@ -58,7 +58,8 @@ if (
 			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: event => tableClick(event, true)});");
 			echo "<thead><tr>"
 				. (support("database") ? "<td>" : "")
-				. "<th>" . lang('Database') . (get_session("dbs") !== null ? " - <a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>" : "")
+				// the databases are sorted by name, except in MS SQL which doesn't order them at all
+				. "<th" . (JUSH != 'mssql' ? " aria-sort='ascending'" : "") . ">" . lang('Database') . (get_session("dbs") !== null ? " - <a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>" : "")
 				. "<td>" . lang('Collation')
 				. "<td>" . lang('Tables')
 				. "<td>" . lang('Size') . " - <a href='" . h(ME) . "dbsize=1'>" . lang('Compute') . "</a>" . script("qsl('a').onclick = partial(ajaxSetHtml, '" . js_escape(ME) . "script=connect');", "")

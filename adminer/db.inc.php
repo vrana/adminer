@@ -81,7 +81,8 @@ if (adminer()->homepage()) {
 			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: event => tableClick(event, true)});");
 			echo '<thead><tr class="wrap">';
 			echo '<td><input id="check-all" type="checkbox" class="jsonly">' . script("qs('#check-all').onclick = partial(formCheck, /^(tables|views)\[/);", "");
-			echo '<th><a href="' . h(substr(ME, 0, -1)) . '">' . lang('Table') . '</a>';
+			// without $order, the tables are sorted by name, except in SQLite which puts the sqlite_ tables last
+			echo '<th' . (!$order && JUSH != 'sqlite' ? " aria-sort='ascending'" : '') . '><a href="' . h(substr(ME, 0, -1)) . '">' . lang('Table') . '</a>';
 			$columns = array("Engine" => array(lang('Engine') . doc_link(array('sql' => 'storage-engines.html'))));
 			if (collations()) {
 				$columns["Collation"] = array(lang('Collation') . doc_link(array('sql' => 'charset-charsets.html', 'mariadb' => 'supported-character-sets-and-collations/')));
@@ -100,15 +101,18 @@ if (adminer()->homepage()) {
 			if (support("comment")) {
 				$columns["Comment"] = array(lang('Comment') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-info.html#FUNCTIONS-INFO-COMMENT-TABLE')));
 			}
+			$asc_columns = array('Engine', 'Collation', 'Comment'); // the other columns are sorted descending
 			foreach ($columns as $key => $column) {
-				echo "<th><a href='" . h(ME) . "order=$key'>$column[0]</a>";
+				echo "<th" . ($order == $key ? " aria-sort='" . (in_array($key, $asc_columns) ? "ascending" : "descending") . "'" : "")
+					. "><a href='" . h(ME) . "order=$key'>$column[0]</a>"
+				;
 			}
 			echo "<tbody>\n";
 
 			if ($order) {
-				uasort($tables_list, function ($a, $b) use ($order) {
+				uasort($tables_list, function ($a, $b) use ($order, $asc_columns) {
 					$return = ($a[$order] < $b[$order] ? -1 : ($a[$order] > $b[$order] ? 1 : 0)); // <=> available since PHP 7.1
-					return (in_array($order, array('Engine', 'Collation', 'Comment')) ? $return : -$return);
+					return (in_array($order, $asc_columns) ? $return : -$return);
 				});
 			}
 
