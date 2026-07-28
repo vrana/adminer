@@ -205,7 +205,7 @@ if (!defined('Adminer\DRIVER')) {
 		static function connect(string $server, string $username, string $password) {
 			$connection = parent::connect($server, $username, $password);
 			if (is_string($connection)) {
-				if (function_exists('iconv') && !is_utf8($connection) && strlen($s = iconv("windows-1250", "utf-8", $connection)) > strlen($connection)) { // windows-1250 - most common Windows encoding
+				if (function_exists('iconv') && !is_utf8($connection) && strlen($s = iconv("windows-1252", "utf-8//IGNORE", $connection)) > strlen($connection)) { // windows-1252 - the same as MySQL latin1
 					$connection = $s;
 				}
 				return $connection;
