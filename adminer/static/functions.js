@@ -535,10 +535,8 @@ function ajax(url, callback, data, message) {
 	const request = new XMLHttpRequest();
 	if (request) {
 		const ajaxStatus = qs('#ajaxstatus');
-		if (message) {
-			ajaxStatus.innerHTML = '<div class="message">' + message + '</div>';
-		}
-		alterClass(ajaxStatus, 'hidden', !message);
+		// empty the live region instead of hiding it, display: none would remove it from the accessibility tree
+		ajaxStatus.innerHTML = (message ? '<div class="message">' + message + '</div>' : '');
 		request.open((data ? 'POST' : 'GET'), url);
 		if (data) {
 			request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -550,7 +548,6 @@ function ajax(url, callback, data, message) {
 					callback(request);
 				} else if (message !== null) {
 					ajaxStatus.innerHTML = (request.status ? request.responseText : '<div class="error">' + offlineMessage + '</div>');
-					alterClass(ajaxStatus, 'hidden');
 				}
 			}
 		};

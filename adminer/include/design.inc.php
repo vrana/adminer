@@ -104,7 +104,7 @@ const thousandsSeparator = '" . js_escape(lang(',')) . "';")
 		}
 	}
 	echo "<h2>$title_all</h2>\n";
-	echo "<div id='ajaxstatus' class='jsonly hidden'></div>\n";
+	echo "<div id='ajaxstatus' role='status' class='jsonly'></div>\n";
 	restart_session();
 	page_messages($error);
 	$databases = &get_session("dbs");
