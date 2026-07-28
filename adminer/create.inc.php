@@ -107,7 +107,8 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 		}
 		$name = trim($row["name"]);
 
-		queries_redirect(ME . (support("table") ? "table=" : "select=") . urlencode($name), $message, alter_table(
+		$location = ME . (support("table") ? "table=" : "select=") . urlencode($name);
+		$result = alter_table(
 			$TABLE,
 			$name,
 			(JUSH == "sqlite" && ($use_all_fields || $foreign) ? $all_fields : $fields),
@@ -117,7 +118,11 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 			($row["Collation"] && $row["Collation"] != $table_status["Collation"] ? $row["Collation"] : ""),
 			($row["Auto_increment"] != "" ? number($row["Auto_increment"]) : ""),
 			$partitioning
-		));
+		);
+		if ($result && !Queries::$queries) {
+			redirect($location); // nothing was changed
+		}
+		queries_redirect($location, $message, $result);
 	}
 }
 

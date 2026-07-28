@@ -92,6 +92,9 @@ if ($_POST && !$error) {
 			}
 		}
 
+		if ($result && !Queries::$queries) {
+			redirect(ME . "privileges="); // nothing was changed
+		}
 		queries_redirect(ME . "privileges=", (isset($_GET["host"]) ? lang('User has been altered.') : lang('User has been created.')), $result);
 
 		if ($created) {
