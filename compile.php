@@ -10,11 +10,33 @@ function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");
 }
 
-/** Replace a string, print an error if it is not found */
+/** Print an error and exit
+* @return never
+*/
+function not_found($search) {
+	echo "Not found: " . substr(str_replace("\n", "\\n", $search), 0, 70) . "\n";
+	exit(1);
+}
+
+/** Replace a string, exit if it is not found */
 function replace($search, $replace, $subject) {
 	$return = str_replace($search, $replace, $subject, $count);
 	if (!$count) {
-		echo "Not found: " . substr(str_replace("\n", "\\n", $search), 0, 70) . "\n";
+		not_found($search);
+	}
+	return $return;
+}
+
+/** Replace by a regular expression, exit if it doesn't match
+* @param string|callable $replace callback receives the matches
+*/
+function replace_re($pattern, $replace, $subject, $limit = -1) {
+	$return = (is_callable($replace)
+		? preg_replace_callback($pattern, $replace, $subject, $limit, $count)
+		: preg_replace($pattern, $replace, $subject, $limit, $count)
+	);
+	if (!$count) {
+		not_found($pattern);
 	}
 	return $return;
 }
@@ -43,14 +65,14 @@ function put_file($match) {
 		return $match[0]; // processed later
 	}
 	$return = file_get_contents(__DIR__ . "/$project/$match[2]");
-	$return = preg_replace('~namespace Adminer;\s*~', '', $return);
+	$return = replace_re('~namespace Adminer;\s*~', '', $return);
 	if ($vendor && preg_match('~/drivers/~', $match[2])) {
-		$return = preg_replace('~^if \(isset\(\$_GET\["' . $vendor . '"]\)\) \{(.*)^}~ms', '\1', $return);
-		// check function definition in drivers
-		if ($vendor != "mysql") {
+		if ($vendor != "mysql") { // mysql.inc.php is not wrapped in a condition
+			$return = replace_re('~^if \(isset\(\$_GET\["' . $vendor . '"]\)\) \{(.*)^}~ms', '\1', $return);
+			// check function definition in drivers
 			preg_match_all(
 				'~\bfunction (?!alter_table|drop_tables|truncate_tables)([^(]+)~', // used for feature detection
-				preg_replace('~class Driver.*\n\t}~sU', '', file_get_contents(__DIR__ . "/adminer/drivers/mysql.inc.php")),
+				replace_re('~class Driver.*\n\t}~sU', '', file_get_contents(__DIR__ . "/adminer/drivers/mysql.inc.php")),
 				$matches
 			); //! respect context (extension, class)
 			$functions = array_combine($matches[1], $matches[0]);
@@ -97,8 +119,8 @@ function put_file($match) {
 		}
 	}', $return);
 		} else {
-			$return = preg_replace('~// not used in a single language version from here.*~s', '', $return);
-			$return = preg_replace_callback('~(\$pos = (.+\n).+;)~sU', function ($match) {
+			$return = replace_re('~// not used in a single language version from here.*~s', '', $return);
+			$return = replace_re('~(\$pos = (.+\n).+;)~sU', function ($match) {
 				return "\$pos = $match[2]\t\t\t: " . (preg_match("~'$_SESSION[lang]'.* \\? (.+)\n~U", $match[1], $match2) ? $match2[1] : "1") . "\n\t\t);";
 			}, $return);
 			$return = replace('Lang::$translations[$idf] ?: $idf', '$idf', $return); // lang() is used only by old plugins
@@ -154,9 +176,7 @@ function minify_css($file) {
 	if ($project == "editor") {
 		$file = preg_replace('~\.icon-(plus|cross).*~', '', $file);
 	}
-	$file = preg_replace_callback('~url\((\w+\.(gif|png|jpg))\)~', function ($match) {
-		return "url(data:image/$match[2];base64," . base64_encode(file_get_contents(__DIR__ . "/adminer/static/$match[1]")) . ")"; // we don't have ME in *.css so we can only inline images
-	}, $file);
+	// images are inlined as data: URIs directly in the CSS, see the comment in default.css
 	return Adminer\compress_string(preg_replace('~\s*([:;{},])\s*~', '\1', preg_replace('~/\*.*?\*/\s*~s', '', $file)));
 }
 
@@ -238,7 +258,7 @@ $features = array(
 );
 $lang_ids = array(); // global variable simplifies usage in a callback function
 $file = file_get_contents(__DIR__ . "/$project/index.php");
-$file = preg_replace('~\*/~', "* @version " . Adminer\VERSION . "\n*/", $file, 1);
+$file = replace_re('~\*/~', "* @version " . Adminer\VERSION . "\n*/", $file, 1);
 if ($vendor) {
 	$_GET[$vendor] = true; // to load the driver
 	include_once __DIR__ . $driver_path;
@@ -262,15 +282,15 @@ if ($vendor) {
 		);
 	}
 }
-$file = preg_replace_callback('~\b(include|require) "([^"]*)";~', 'put_file', $file);
+$file = replace_re('~\b(include|require) "([^"]*)";~', 'put_file', $file);
 $file = replace('include "../adminer/include/coverage.inc.php";', '', $file);
 if ($vendor) {
 	if (preg_match('~^/plugins/~', $driver_path)) {
-		$file = preg_replace('((include "..)/adminer/drivers/mysql.inc.php)', "\\1$driver_path", $file);
+		$file = replace_re('((include "..)/adminer/drivers/mysql.inc.php)', "\\1$driver_path", $file);
 	}
-	$file = preg_replace('(include "../adminer/drivers/(?!' . preg_quote($vendor) . '\.).*\s*)', '', $file);
+	$file = replace_re('(include "../adminer/drivers/(?!' . preg_quote($vendor) . '\.).*\s*)', '', $file);
 }
-$file = preg_replace_callback('~\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
+$file = replace_re('~\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
 
 // inline the checksums of official plugins, the plugins/ directory is not available next to the compiled file
 $checksums = "";
@@ -279,10 +299,7 @@ foreach (array("plugins", "plugins/drivers") as $dir) {
 		$checksums .= "\n\t\t\t'" . basename($filename, '.php') . "' => '" . Adminer\Plugins::checksum($filename) . "',";
 	}
 }
-$file = preg_replace('~(function officialChecksums\(\): array \{\n).*?(\n\t\})~s', "\\1\t\treturn array($checksums\n\t\t);\\2", $file, 1, $count);
-if (!$count) {
-	echo "officialChecksums() not found\n";
-}
+$file = replace_re('~(function officialChecksums\(\): array \{\n).*?(\n\t\})~s', "\\1\t\treturn array($checksums\n\t\t);\\2", $file, 1);
 if ($vendor) {
 	foreach ($features as $feature) {
 		if (!Adminer\support($feature)) {
@@ -298,16 +315,11 @@ if ($vendor) {
 		$file = replace(". script(\"const authDriver = qs('#username').form['auth[driver]']; authDriver && authDriver.onchange();\")", "", $file);
 		if ($vendor == "sqlite") {
 			// SQLite doesn't use the server but the value must be preserved for the login form
-			$file = replace(
-				"\t\techo adminer()->loginFormField(\n\t\t\t'server',\n\t\t\t'<tr><th>' . lang('Server') . '<td>',\n"
-					. "\t\t\t\"<input name='auth[server]' value='\" . h(SERVER) . \"' title='\" . lang('hostname[:port] or :socket') . \"' placeholder='localhost' autocapitalize='off'>\"\n\t\t);\n",
-				"\t\techo input_hidden(\"auth[server]\", SERVER);\n",
-				$file
-			);
+			$file = replace_re('~(\t*)echo adminer\(\)->loginFormField\(\s*\'server\',.*?\);\n~s', "\\1echo input_hidden(\"auth[server]\", SERVER);\n", $file);
 		}
 	}
-	$file = preg_replace('(;\s*../externals/jush/modules/jush-(?!autocomplete-sql\.|textarea\.|txt\.|js\.|' . preg_quote($vendor == "mysql" ? "sql" : $vendor) . '\.)[^.]+.js)', '', $file);
-	$file = preg_replace_callback('~doc_link\(array\((.*)\)\)~sU', function ($match) use ($vendor) {
+	$file = replace_re('(;\s*../externals/jush/modules/jush-(?!autocomplete-sql\.|textarea\.|txt\.|js\.|' . preg_quote($vendor == "mysql" ? "sql" : $vendor) . '\.)[^.]+.js)', '', $file);
+	$file = replace_re('~doc_link\(array\((.*)\)\)~sU', function ($match) use ($vendor) {
 		list(, $links) = $match;
 		$links = preg_replace("~'(?!(" . ($vendor == "mysql" ? "sql|mariadb" : $vendor) . ")')[^']*' => [^,]*,?~", '', $links);
 		return (trim($links) ? "doc_link(array($links))" : "''");
@@ -315,31 +327,35 @@ if ($vendor) {
 	//! strip doc_link() definition
 }
 if ($project == "editor") {
-	$file = preg_replace('~;.\.\/externals/jush/jush(-dark)?\.css~', '', $file);
-	$file = preg_replace('~compile_file\(\'\.\./(externals/jush/modules/jush\.js)[^)]+\)~', "''", $file);
+	$file = replace_re('~;.\.\/externals/jush/jush(-dark)?\.css~', '', $file);
+	$file = replace_re('~compile_file\(\'\.\./(externals/jush/modules/jush\.js)[^)]+\)~', "''", $file);
 }
 // \s* after ( allows wrapping long lang() calls
-$file = preg_replace_callback("~(?<!>)lang\\(\\s*'((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
-$file = preg_replace_callback('~\b(include|require) "([^"]*" . LANG . ".inc.php)";~', 'put_file_lang', $file);
+$file = replace_re("~(?<!>)lang\\(\\s*'((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
+$file = replace_re('~\b(include|require) "([^"]*" . LANG . ".inc.php)";~', 'put_file_lang', $file);
 $file = str_replace("\r", "", $file);
 if ($_SESSION["lang"]) {
 	// single language version
-	$file = preg_replace_callback("~(<\\?php\\s*echo )?(?<!>)lang\\(\\s*'((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
+	$file = replace_re("~(<\\?php\\s*echo )?(?<!>)lang\\(\\s*'((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
 	$file = replace("switch_lang();", "", $file);
 	$file = replace('<?php echo LANG; ?>', $_SESSION["lang"], $file);
 }
 $file = replace('echo script_src("static/editing.js");' . "\n", "", $file); // merged into functions.js
-$file = preg_replace('~\s+echo script_src\("\.\./externals/jush/modules/jush-(autocomplete-sql|textarea|txt|js|" \. JUSH \. ")\.js", true\);~', '', $file); // merged into jush.js
-$file = preg_replace('~echo .*/jush(-dark)?.css\'>.*~', '', $file); // merged into default.css or dark.css
+if ($project != "editor") { // the Editor doesn't use jush
+	$file = replace_re('~\s+echo script_src\("\.\./externals/jush/modules/jush-(autocomplete-sql|textarea|txt|js|" \. JUSH \. ")\.js", true\);~', '', $file); // merged into jush.js
+	$file = replace_re('~echo .*/jush(-dark)?.css\'>.*~', '', $file); // merged into default.css or dark.css
+}
 if (function_exists('stripTypes')) {
 	$file = stripTypes($file);
 }
-$file = preg_replace_callback("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", 'compile_file', $file); // integrate static files
+$file = replace_re("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", 'compile_file', $file); // integrate static files
 $replace = 'preg_replace("~\\\\\\\\?.*~", "", ME) . "?file=\1&version=' . Adminer\VERSION . '"';
-$file = preg_replace('~\.\./adminer/static/(default\.css)~', '<?php echo h(' . $replace . '); ?>', $file);
-$file = preg_replace('~"\.\./adminer/static/(functions\.js)"~', $replace, $file);
-$file = preg_replace('~\.\./adminer/static/([^\'"]*)~', '" . h(' . $replace . ') . "', $file);
-$file = preg_replace('~"\.\./externals/jush/modules/(jush\.js)"~', $replace, $file);
+$file = replace_re('~\.\./adminer/static/(default\.css)~', '<?php echo h(' . $replace . '); ?>', $file);
+$file = replace_re('~"\.\./adminer/static/(functions\.js)"~', $replace, $file);
+$file = replace_re('~\.\./adminer/static/([^\'"]*)~', '" . h(' . $replace . ') . "', $file);
+if ($project != "editor") { // the Editor doesn't use jush
+	$file = replace_re('~"\.\./externals/jush/modules/(jush\.js)"~', $replace, $file);
+}
 if (function_exists('phpShrink')) {
 	$file = phpShrink($file);
 }
