@@ -152,7 +152,7 @@ function js_escape(string $string): string {
 /** Escape string to use inside a JavaScript regular expression literal
 */
 function js_escape_re(string $string): string {
-	return addcslashes(preg_quote($string, "/"), "\n"); // preg_quote() escapes also < ! - so the HTML parser doesn't see <!-- or </script>
+	return addcslashes(preg_quote($string, "/"), "\r\n"); // preg_quote() escapes also < ! - so the HTML parser doesn't see <!-- or </script>
 }
 
 /** Generate page number for pagination */
