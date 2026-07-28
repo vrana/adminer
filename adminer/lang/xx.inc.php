@@ -82,6 +82,7 @@ Lang::$translations = array(
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Xx %s.',
 	'You can upload a big SQL file via FTP and import it from server.' => 'Xx.',
 	'You are offline.' => 'Xx.',
+	'Menu' => 'Xx',
 
 	'Export' => 'Xx',
 	'Output' => 'Xx',
