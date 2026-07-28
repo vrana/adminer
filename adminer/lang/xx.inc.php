@@ -160,6 +160,7 @@ Lang::$translations = array(
 
 	'Tables' => 'Xx',
 	'Tables and views' => 'Xx',
+	'All' => 'Xx', // checkbox selecting all tables and views
 	'Table' => 'Xx',
 	'No tables.' => 'Xx.',
 	'Alter table' => 'Xx',
@@ -271,6 +272,7 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('%d xx.', '%d xx.'),
 	'File must be in UTF-8 encoding.' => 'Xx.',
 
+	'All rows on this page' => 'Xx',
 	'Modify' => 'Xx', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Xx.',
 	'Use edit link to modify this value.' => 'Xx.',

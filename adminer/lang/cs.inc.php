@@ -159,6 +159,7 @@ Lang::$translations = array(
 
 	'Tables' => 'Tabulky',
 	'Tables and views' => 'Tabulky a pohledy',
+	'All' => 'Vše', // checkbox selecting all tables and views
 	'Table' => 'Tabulka',
 	'No tables.' => 'Žádné tabulky.',
 	'Alter table' => 'Pozměnit tabulku',
@@ -270,6 +271,7 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('Byl importován %d záznam.', 'Byly importovány %d záznamy.', 'Bylo importováno %d záznamů.'),
 	'File must be in UTF-8 encoding.' => 'Soubor musí být v kódování UTF-8.',
 
+	'All rows on this page' => 'Všechny řádky na této stránce',
 	'Modify' => 'Změnit', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Ctrl+klikněte na políčko, které chcete změnit.',
 	'Use edit link to modify this value.' => 'Ke změně této hodnoty použijte odkaz upravit.',
