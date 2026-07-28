@@ -197,7 +197,7 @@ function page_footer(string $missing = ""): void {
 		?>
 <form action="" method="post">
 <p class="logout">
-<span><?php echo h($_GET["username"]) . "\n"; ?></span>
+<span title="<?php echo lang('Username'); ?>"><?php echo h($_GET["username"]) . "\n"; ?></span>
 <input type='submit' name='logout' value='<?php echo lang('Logout'); ?>' id='logout'>
 <?php echo input_token(); ?>
 </form>
