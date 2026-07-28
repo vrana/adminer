@@ -336,6 +336,7 @@ Lang::$translations = array(
 	'Loaded plugins' => 'Plugin yang dimuat', // Claude Fable 5
 	'screenshot' => 'tangkapan layar', // Claude Fable 5
 	'You are offline.' => 'Anda sedang luring.', // Claude Fable 5
+	'Menu' => 'Menu', // Claude Opus 5
 	'Increase %s.' => 'Naikkan %s.', // Claude Fable 5
 	'You have no privileges to update this table.' => 'Anda tidak memiliki hak istimewa untuk memperbarui tabel ini.', // Claude Fable 5
 	'Saving' => 'Menyimpan', // Claude Fable 5

@@ -303,6 +303,7 @@ Lang::$translations = array(
 	'Loaded plugins' => 'Betöltött bővítmények', // Claude Fable 5
 	'screenshot' => 'képernyőkép', // Claude Fable 5
 	'You are offline.' => 'Ön offline állapotban van.', // Claude Fable 5
+	'Menu' => 'Menü', // Claude Opus 5
 	'Increase %s.' => 'Növelje a(z) %s értékét.', // Claude Fable 5
 	'You have no privileges to update this table.' => 'Nincs jogosultsága a tábla frissítéséhez.', // Claude Fable 5
 	'Saving' => 'Mentés', // Claude Fable 5

@@ -280,6 +280,7 @@ Lang::$translations = array(
 	'Size' => 'Размер',
 	'Compute' => 'Вычислить',
 	'You are offline.' => 'Вы не в сети.', // Claude Fable 5
+	'Menu' => 'Меню', // Claude Opus 5
 	'You have no privileges to update this table.' => 'У вас нет прав на обновление этой таблицы.',
 	'Saving' => 'Сохранение',
 	'yes' => 'Да',

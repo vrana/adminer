@@ -287,6 +287,7 @@ Lang::$translations = array(
 	'Size' => 'Grootte',
 	'Compute' => 'Bereken',
 	'You are offline.' => 'U bent offline.',
+	'Menu' => 'Menu', // Claude Opus 5
 	'You have no privileges to update this table.' => 'U bent niet gemachtigd om deze tabel aan te passen.',
 	'Saving' => 'Opslaan',
 	'Unknown error.' => 'Onbekende fout.',

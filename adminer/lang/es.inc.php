@@ -148,6 +148,7 @@ Lang::$translations = array(
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'POST data demasiado grande. Reduzca el tamaño o aumente la directiva de configuración %s.',
 	'You can upload a big SQL file via FTP and import it from server.' => 'Usted puede cargar un SQL grande mediante FTP e importarlo desde el servidor.',
 	'You are offline.' => 'Usted no esta en linea.',
+	'Menu' => 'Menú', // Claude Opus 5
 	'Logged as: %s' => 'Logueado como: %s',
 	'Functions' => 'Funciones',
 	'Aggregation' => 'Agregados',

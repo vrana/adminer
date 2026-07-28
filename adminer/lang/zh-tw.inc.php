@@ -78,6 +78,7 @@ Lang::$translations = array(
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'POST 資料太大。減少資料或者增加 %s 的設定值。',
 	'You can upload a big SQL file via FTP and import it from server.' => '您可以通過FTP上傳大型SQL檔並從伺服器導入。',
 	'You are offline.' => '您離線了。',
+	'Menu' => '選單', // Claude Opus 5
 
 	'Export' => '匯出',
 	'Output' => '輸出',

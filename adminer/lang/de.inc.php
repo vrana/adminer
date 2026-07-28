@@ -276,6 +276,7 @@ Lang::$translations = array(
 	'If you did not send this request from Adminer then close this page.' => 'Wenn Sie diese Anfrage nicht von Adminer gesendet haben, schließen Sie diese Seite.',
 	'You can upload a big SQL file via FTP and import it from server.' => 'Sie können eine große SQL-Datei per FTP hochladen und dann vom Server importieren.',
 	'You are offline.' => 'Sie sind offline.',
+	'Menu' => 'Menü', // Claude Opus 5
 	'You have no privileges to update this table.' => 'Sie haben keine Rechte, diese Tabelle zu aktualisieren.',
 	'Saving' => 'Speichere',
 	'yes' => 'ja',

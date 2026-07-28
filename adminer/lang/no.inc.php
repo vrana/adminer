@@ -307,6 +307,7 @@ Lang::$translations = array(
 	'Loaded plugins' => 'Innlastede plugins', // Claude Fable 5
 	'screenshot' => 'skjermbilde', // Claude Fable 5
 	'You are offline.' => 'Du er frakoblet.', // Claude Fable 5
+	'Menu' => 'Meny', // Claude Opus 5
 	'Increase %s.' => 'Øk %s.', // Claude Fable 5
 	'Unknown error.' => 'Ukjent feil.', // Claude Fable 5
 	'%s must <a%s>return an array</a>.' => '%s må <a%s>returnere et array</a>.', // Claude Fable 5

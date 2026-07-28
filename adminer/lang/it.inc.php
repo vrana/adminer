@@ -288,6 +288,7 @@ Lang::$translations = array(
 	'Size' => 'Taglia',
 	'Compute' => 'Elabora',
 	'You are offline.' => 'Sei disconnesso.',
+	'Menu' => 'Menu', // Claude Opus 5
 	'You have no privileges to update this table.' => 'Non hai i privilegi per aggiornare questa tabella.',
 	'Saving' => 'Salvataggio',
 	'Unknown error.' => 'Errore sconosciuto.',

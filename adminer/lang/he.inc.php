@@ -279,6 +279,7 @@ Lang::$translations = array(
 	'Size' => 'גודל',
 	'Compute' => 'חישוב',
 	'You are offline.' => 'הינך לא מקוון',
+	'Menu' => 'תפריט', // Claude Opus 5
 	'You have no privileges to update this table.' => 'אין לך ההרשאות המתאימות לעדכן טבלה זו',
 	'Saving' => 'שומר',
 	'yes' => 'כן',

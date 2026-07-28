@@ -304,6 +304,7 @@ Lang::$translations = array(
 	'Loaded plugins' => 'Pluginuri încărcate', // Claude Fable 5
 	'screenshot' => 'captură de ecran', // Claude Fable 5
 	'You are offline.' => 'Sunteți offline.', // Claude Fable 5
+	'Menu' => 'Meniu', // Claude Opus 5
 	'Increase %s.' => 'Măriți %s.', // Claude Fable 5
 	'You have no privileges to update this table.' => 'Nu aveți privilegii pentru a actualiza acest tabel.', // Claude Fable 5
 	'Saving' => 'Se salvează', // Claude Fable 5

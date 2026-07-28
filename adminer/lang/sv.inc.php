@@ -78,6 +78,7 @@ Lang::$translations = array(
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'POST-datan är för stor. Minska det eller höj %s-direktivet.',
 	'You can upload a big SQL file via FTP and import it from server.' => 'Du kan ladda upp en stor SQL-fil via FTP och importera det från servern.',
 	'You are offline.' => 'Du är offline.',
+	'Menu' => 'Meny', // Claude Opus 5
 
 	'Export' => 'Exportera',
 	'Output' => 'Utmatning',

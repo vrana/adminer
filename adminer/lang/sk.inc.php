@@ -289,6 +289,7 @@ Lang::$translations = array(
 	'Size' => 'Veľkosť',
 	'Compute' => 'Spočítať',
 	'You are offline.' => 'Ste offline.',
+	'Menu' => 'Menu', // Claude Opus 5
 	'You have no privileges to update this table.' => 'Nemáte oprávnenie na aktualizáciu tejto tabuľky.',
 	'Saving' => 'Ukladá sa',
 	'Unknown error.' => 'Neznáma chyba.',

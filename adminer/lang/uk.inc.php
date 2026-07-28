@@ -321,6 +321,7 @@ Lang::$translations = array(
 	'Size' => 'Розмір',
 	'Compute' => 'Обчислити',
 	'You are offline.' => 'Ви офлайн.',
+	'Menu' => 'Меню', // Claude Opus 5
 	'You have no privileges to update this table.' => 'Ви не маєте привілеїв для оновлення цієї таблиці.',
 	'Saving' => 'Збереження',
 	'Unknown error.' => 'Невідома помилка.',
