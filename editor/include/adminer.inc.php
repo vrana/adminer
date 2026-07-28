@@ -34,10 +34,15 @@ class Adminer {
 	function database(): ?string {
 		if (connection()) {
 			$databases = adminer()->databases(false);
-			return (!$databases
-				? get_val("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1)") // username without the database list
-				: $databases[(information_schema($databases[0]) ? 1 : 0)] // first available database
-			);
+			if (!$databases) {
+				return get_val("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1)"); // username without the database list
+			}
+			foreach ($databases as $db) {
+				if (!information_schema($db)) {
+					return $db; // first available database
+				}
+			}
+			return $databases[0];
 		}
 	}
 
