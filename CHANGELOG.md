@@ -7,6 +7,7 @@
 - Check for a new version even without JavaScript
 - Sort languages by their translated name
 - Fix the copy to clipboard icon not displayed on Apple systems
+- Close the menu on small screens by Esc
 - Tables overview: speed up, show totals in SQLite, real size in MS SQL, Oracle
 - SQL command: Show column type in result table header
 - SQL command: Show number of rows in all drivers

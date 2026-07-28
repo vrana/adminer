@@ -400,13 +400,16 @@ function isCtrl(event) {
 
 
 
-/** Send form by Ctrl+Enter on <select> and <textarea>
+/** Send form by Ctrl+Enter on <select> and <textarea>, close the menu by Esc
 * @param KeyboardEvent
 * @param [string]
 * @return boolean
 */
 function bodyKeydown(event, button) {
 	eventStop(event);
+	if (event.key == 'Escape' && !event.shiftKey && !event.altKey && !isCtrl(event)) {
+		alterClass(qs('#foot'), 'foot', true); // close the menu on small screens
+	}
 	let target = event.target;
 	if (target.jushTextarea) {
 		target = target.jushTextarea;
