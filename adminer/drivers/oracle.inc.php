@@ -176,6 +176,10 @@ if (isset($_GET["oracle"])) {
 			return true;
 		}
 
+		function quoteBinary(string $s): string {
+			return "HEXTORAW(" . q(bin2hex($s)) . ")"; //! the literal is limited to 4000 characters
+		}
+
 		function hasCStyleEscapes(): bool {
 			return true;
 		}

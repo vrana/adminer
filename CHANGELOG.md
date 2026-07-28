@@ -21,6 +21,7 @@
 - Edit: Keep values of columns with special characters in name after error
 - Edit: Fix switching function to SQL with the edit-foreign plugin (bug #1254)
 - Edit: Hide the value field for functions without arguments (e.g. now, uuid)
+- Edit: Fix editing rows with binary columns in tables without a unique key
 - MySQL: Do not use SSL if the login-ssl plugin is configured only for other drivers
 - MySQL: Cache the list of databases only if getting it is slow
 - MySQL: Link performance_schema and sys tables to their documentation
@@ -30,6 +31,7 @@
 - PostgreSQL: Fix altering functions with parameters of array or user-defined types
 - PostgreSQL: Hide table actions and row editing in pg_catalog and pg_toast
 - PostgreSQL, MS SQL: Show two columns in select COUNT(*), COUNT(DISTINCT id)
+- SQLite: Fix working with binary data through PDO
 - MS SQL: Treat binary fields as blob (bug SF-369)
 - MS SQL: Hide table actions and row editing in the sys schema
 - Elasticsearch, ClickHouse: Use default port
