@@ -1052,7 +1052,7 @@ class Adminer {
 				foreach ($servers as $server => $usernames) {
 					$name = h(get_setting("vendor-$vendor-$server") ?: get_driver($vendor));
 					foreach ($usernames as $username => $password) {
-						if ($password !== null) {
+						if ($name && $password !== null) {
 							$dbs = $_SESSION["db"][$vendor][$server][$username];
 							foreach (($dbs ? array_keys($dbs) : array("")) as $db) {
 								$output .= "<li><a href='" . h(auth_url($vendor, $server, $username, $db)) . "'>($name) "
