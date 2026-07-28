@@ -152,7 +152,7 @@ function get_translations($lang) {
 function minify_css($file) {
 	global $project;
 	if ($project == "editor") {
-		$file = preg_replace('~\.icon-(up|down|plus|cross).*~', '', $file);
+		$file = preg_replace('~\.icon-(plus|cross).*~', '', $file);
 	}
 	$file = preg_replace_callback('~url\((\w+\.(gif|png|jpg))\)~', function ($match) {
 		return "url(data:image/$match[2];base64," . base64_encode(file_get_contents(__DIR__ . "/adminer/static/$match[1]")) . ")"; // we don't have ME in *.css so we can only inline images
