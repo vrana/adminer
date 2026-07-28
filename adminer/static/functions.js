@@ -165,8 +165,7 @@ function formCheck(name) {
 	}
 }
 
-/** Check all rows in <table class="checkable"> once the browser restores the checkboxes
-*/
+/** Check all rows in <table class="checkable"> once the browser restores the checkboxes */
 function tableCheck() {
 	onpageshow = () => {
 		qsa('table.checkable td:first-child input').forEach(trCheck);

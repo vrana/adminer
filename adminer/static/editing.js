@@ -210,8 +210,7 @@ function idfEscape(s) {
 
 
 
-/** Set up event handlers for edit_fields().
-*/
+/** Set up event handlers for edit_fields(). */
 function editFields() {
 	for (const el of qsa('[name$="[field]"]')) {
 		el.oninput = function () {
@@ -890,8 +889,7 @@ function helpMouseout(event) {
 	}, 200);
 }
 
-/** Close help
-*/
+/** Close help */
 function helpClose() {
 	alterClass(qs('#help'), 'hidden', true);
 }
