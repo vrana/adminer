@@ -362,10 +362,12 @@ if (!$columns && support("table")) {
 						$column = idf_escape($key);
 						$href = remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key);
 						$desc = "&desc%5B0%5D=1";
-						echo "<th id='th[" . h(bracket_escape($key)) . "]'>";
+						$sort_column = preg_replace('~ DESC( NULLS LAST)?$~', '', $order[0]);
+						$sorted = ($sort_column == $column || $sort_column == $key); // $sort_column == $key - COUNT(*)
+						echo "<th id='th[" . h(bracket_escape($key)) . "]'" . ($sorted ? " aria-sort='" . ($sort_column == $order[0] ? "ascending" : "descending") . "'" : "") . ">";
 						$fun = apply_sql_function($val["fun"], $name); //! columns looking like functions
 						$sortable = isset($field["privileges"]["order"]) || $fun != $name;
-						echo ($sortable ? "<a href='" . h($href . ($order[0] == $column || $order[0] == $key ? $desc : '')) . "'>$fun</a>" : $fun); // $order[0] == $key - COUNT(*)
+						echo ($sortable ? "<a href='" . h($href . ($sorted && $sort_column == $order[0] ? $desc : '')) . "'>$fun</a>" : $fun);
 						$menu = ($sortable ? "<a href='" . h($href . $desc) . "' title='" . lang('descending') . "' class='text'> ↓</a>" : '');
 						if (!$val["fun"] && isset($field["privileges"]["where"])) {
 							$menu .= "<a href='#fieldset-search' title='" . lang('Search') . "' class='text jsonly'> =</a>";
