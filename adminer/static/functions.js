@@ -406,7 +406,7 @@ function isCtrl(event) {
 * @return boolean
 */
 function bodyKeydown(event, button) {
-	eventStop(event);
+	event.stopPropagation();
 	if (event.key == 'Escape' && !event.shiftKey && !event.altKey && !isCtrl(event)) {
 		alterClass(qs('#foot'), 'foot', true); // close the menu on small screens
 	}
@@ -700,15 +700,6 @@ function selectLoadMore(limit, loading) {
 			}
 		});
 	}
-}
-
-
-
-/** Stop event propagation
-* @param Event
-*/
-function eventStop(event) {
-	event.stopPropagation();
 }
 
 
