@@ -205,6 +205,48 @@ Adminer prints data immediately to display partial results when a query is slow.
 When constructing SQL queries, use `q()` for strings and `idf_escape()` for identifiers.
 Adminer requires full control when constructing queries, making the use of additional helpers challenging.
 
+## Values and Binary Data
+
+A value makes a round trip: the database returns it, Adminer prints it to HTML and to URLs, the browser sends it back, and Adminer builds a condition from it.
+Several helpers take part in this and it is easy to reach for the wrong one, because some of them are driven by the column type and some by the value itself.
+
+`convert_field()` returns an SQL expression converting a column in the select so that the extension returns something PHP can work with, or nothing if the column needs no conversion.
+MySQL wraps `binary` and `varbinary` in `HEX()`, `bit` in `BIN()` and geometry in `AsWKT()`.
+`unconvert_field()` is the inverse and wraps an already quoted SQL expression, so `HEX()` becomes `UNHEX()`.
+Whatever is read through `convert_field()` must be written back through `unconvert_field()`, and the value travelling in `where[]` is hexadecimal in that case, not raw bytes.
+
+`Driver::unconvertFunction()` is the display counterpart of `unconvert_field()`.
+It returns the HTML label printed in front of the edit input so that the user knows which function will be applied to the entered value, e.g. `UNHEX` for `binary` in MySQL.
+It returns HTML and is never used to build a query, so adding a conversion means editing both - `unconvert_field()` performs it and `unconvertFunction()` announces it.
+
+`Driver::value()` converts the fetched value in PHP instead of in SQL and is used where the extension itself returns an encoded form.
+PostgreSQL returns `bytea` as the text `\x...`, so `value()` calls `pg_unescape_bytea()` on it.
+It is applied when displaying a value, so the value carried in `where[]` is still the one the extension returned; call it explicitly where the actual bytes are needed, as [select.inc.php](/adminer/select.inc.php) does before hashing a long binary value by `MD5()`.
+
+`q()` quotes a string for SQL and `Driver::quoteBinary()` quotes a byte string as a binary literal - `X'...'` in MySQL, `'\x...'` in PostgreSQL, `x'...'` in SQLite, `0x...` in MS SQL, `HEXTORAW()` in Oracle.
+
+`is_blob()` asks about the column, `is_utf8()` asks about the value.
+`is_blob()` matches `blob`, `bytea`, `raw` and `file`, plus `binary` and `image` in MS SQL; `binary` and `varbinary` are not matched elsewhere because MySQL converts them to hexadecimal instead.
+`is_utf8()` is stricter than valid UTF-8 - it also rejects control characters, because its result is usually printed.
+It answers "can this be treated as text", not "is this column binary".
+
+Ask both questions before using `quoteBinary()`:
+
+```php
+is_blob($field) && !is_utf8($val) ? driver()->quoteBinary($val) : q($val)
+```
+
+Never decide by the value alone.
+A binary literal is not a drop-in replacement for a string literal: `text = '\x616263'` is false in PostgreSQL because the literal is text there, and `'ABC' = X'616263'` is false in MySQL because a binary literal forces binary collation.
+The type test also keeps the two encoded forms on the `q()` path where they belong - PostgreSQL `bytea` arrives as the ASCII `\x...` which is already a valid literal, and MySQL `binary` arrives hexadecimal and goes back through `unconvert_field()`.
+
+SQLite is the exception.
+It is dynamically typed, `x'...'` is a value and not a type specific literal, so `Db::quote()` returns it for any string failing `is_utf8()`; `PDO::quote()` even throws on a null byte, so both extensions need this.
+`quoteBinary()` is therefore only useful there when the column is binary but the value is text, such as a text file uploaded to a `blob` column, which should be stored as a BLOB and not as TEXT.
+
+`select_value()` shows the display side of the same distinction.
+It calls `value()`, then replaces a value failing `is_utf8()` by `"\0"` so that it can't break the page, and `selectVal()` prints the number of bytes instead.
+
 ## Minimalism
 
 Adminer is minimalist in every aspect - if something is unnecessary, it should not be included.
