@@ -344,7 +344,11 @@ if (!defined('Adminer\DRIVER')) {
 		function tableHelp(string $name, bool $is_view = false) {
 			$maria = ($this->conn->flavor == 'maria');
 			if (information_schema(DB)) {
-				return strtolower("information-schema-" . ($maria ? "$name-table/" : str_replace("_", "-", $name) . "-table.html"));
+				return strtolower(str_replace("_", "-", DB) . "-" . ($maria ? "$name-table/" : str_replace("_", "-", $name) . "-table.html"));
+			}
+			if (DB == "sys") {
+				// x$ views are documented together with the view they are based on
+				return ($maria ? "sys-schema/" : strtolower("sys-" . str_replace("_", "-", preg_replace('~^x\$~', '', $name)) . ".html")); //! MariaDB documents each view but the URL is not derivable
 			}
 			if (DB == "mysql") {
 				return ($maria ? "mysql$name-table/" : "system-schema.html"); //! more precise link

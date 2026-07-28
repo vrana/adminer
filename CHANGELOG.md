@@ -21,6 +21,7 @@
 - Edit: Hide the value field for functions without arguments (e.g. now, uuid)
 - MySQL: Do not use SSL if the login-ssl plugin is configured only for other drivers
 - MySQL: Cache the list of databases only if getting it is slow
+- MySQL: Link performance_schema and sys tables to their documentation
 - PostgreSQL: Support operator classes in indexes
 - PostgreSQL: Add Truncate Cascade button
 - PostgreSQL: Do not show functions and types created by extensions
