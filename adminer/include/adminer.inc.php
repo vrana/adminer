@@ -53,7 +53,7 @@ class Adminer {
 		return DB;
 	}
 
-	/** Get cached list of databases
+	/** Get list of databases
 	* @return list<string>
 	*/
 	function databases(bool $flush = true): array {

@@ -398,18 +398,20 @@ if (!defined('Adminer\DRIVER')) {
 		return idf_escape($idf);
 	}
 
-	/** Get cached list of databases
+	/** Get list of databases, cached if getting it is slow
 	* @return list<string>
 	*/
 	function get_databases(bool $flush): array {
-		// SHOW DATABASES can take a very long time so it is cached
 		$return = get_session("dbs");
 		if ($return === null) {
 			$query = "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA ORDER BY SCHEMA_NAME"; // SHOW DATABASES can be disabled by skip_show_database
+			$start = microtime(true);
 			$return = ($flush ? slow_query($query) : get_vals($query));
-			restart_session();
-			set_session("dbs", $return);
-			stop_session();
+			if (microtime(true) - $start > 0.1) { // cache only a slow list, otherwise it would just get stale
+				restart_session();
+				set_session("dbs", $return);
+				stop_session();
+			}
 		}
 		return $return;
 	}
