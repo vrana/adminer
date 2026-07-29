@@ -165,11 +165,10 @@ function formCheck(name) {
 	}
 }
 
-/** Check all rows in <table class="checkable"> once the browser restores the checkboxes */
+/** Check all rows in <table class="checkable">  */
 function tableCheck() {
-	onpageshow = () => {
-		qsa('table.checkable td:first-child input').forEach(trCheck);
-	};
+	qsa('table.checkable td:first-child input').forEach(trCheck);
+	onpageshow = tableCheck; // once the browser restores the checkboxes while browsing history
 }
 
 /** Uncheck single element
