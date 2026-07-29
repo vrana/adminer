@@ -318,7 +318,7 @@ if ($vendor) {
 			$file = replace_re('~(\t*)echo adminer\(\)->loginFormField\(\s*\'server\',.*?\);\n~s', "\\1echo input_hidden(\"auth[server]\", SERVER);\n", $file);
 		}
 	}
-	$file = replace_re('(;\s*../externals/jush/modules/jush-(?!autocomplete-sql\.|textarea\.|txt\.|js\.|' . preg_quote($vendor == "mysql" ? "sql" : $vendor) . '\.)[^.]+.js)', '', $file);
+	$file = replace_re('(;\s*../externals/jush/modules/jush-(?!autocomplete-sql\.|textarea\.|txt\.|json\.|' . preg_quote($vendor == "mysql" ? "sql" : $vendor) . '\.)[^.]+.js)', '', $file);
 	$file = replace_re('~doc_link\(array\((.*)\)\)~sU', function ($match) use ($vendor) {
 		list(, $links) = $match;
 		$links = preg_replace("~'(?!(" . ($vendor == "mysql" ? "sql|mariadb" : $vendor) . ")')[^']*' => [^,]*,?~", '', $links);
@@ -342,7 +342,7 @@ if ($_SESSION["lang"]) {
 }
 $file = replace('echo script_src("static/editing.js");' . "\n", "", $file); // merged into functions.js
 if ($project != "editor") { // the Editor doesn't use jush
-	$file = replace_re('~\s+echo script_src\("\.\./externals/jush/modules/jush-(autocomplete-sql|textarea|txt|js|" \. JUSH \. ")\.js", true\);~', '', $file); // merged into jush.js
+	$file = replace_re('~\s+echo script_src\("\.\./externals/jush/modules/jush-(autocomplete-sql|textarea|txt|json|" \. JUSH \. ")\.js", true\);~', '', $file); // merged into jush.js
 	$file = replace_re('~echo .*/jush(-dark)?.css\'>.*~', '', $file); // merged into default.css or dark.css
 }
 if (function_exists('stripTypes')) {

@@ -33,7 +33,7 @@ import '<?php echo $this->editorRoot; ?>/prism/languages/sql.js';
 
 adminerHighlighter = els => els.forEach(el => {
 	const mode = (
-		/jush-js/.test(el.className) ? 'json' : (
+		/jush-json/.test(el.className) ? 'json' : (
 		/jush-(\w*sql|oracle|clickhouse|firebird)/.test(el.className) ? 'sql' : (
 		''
 	)));

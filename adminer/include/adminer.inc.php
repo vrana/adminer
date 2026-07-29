@@ -365,7 +365,7 @@ class Adminer {
 	function selectVal(?string $val, ?string $link, array $field, ?string $original): string {
 		$return = ($val === null ? "<i>NULL</i>"
 			: (preg_match("~char|binary|boolean~", $field["type"]) && !preg_match("~var~", $field["type"]) ? "<code>$val</code>"
-			: (preg_match('~^jsonb?$~', $field["full_type"]) ? "<code class='jush-js'>$val</code>"
+			: (preg_match('~^jsonb?$~', $field["full_type"]) ? "<code class='jush-json'>$val</code>"
 			: $val)
 		));
 		if (is_blob($field) && !is_utf8($val)) {
@@ -1128,7 +1128,7 @@ class Adminer {
 		echo script_src("../externals/jush/modules/jush-autocomplete-sql.js", true);
 		echo script_src("../externals/jush/modules/jush-textarea.js", true);
 		echo script_src("../externals/jush/modules/jush-txt.js", true);
-		echo script_src("../externals/jush/modules/jush-js.js", true);
+		echo script_src("../externals/jush/modules/jush-json.js", true);
 		if (support("sql")) {
 			echo script_src("../externals/jush/modules/jush-" . JUSH . ".js", true);
 			echo "<script" . nonce() . ">\n";

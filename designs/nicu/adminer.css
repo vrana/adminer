@@ -493,7 +493,9 @@ td.nowrap {
 }
 .jush-js_key,
 .jush-js_key .jush-quo,
-.jush-js_key .jush-apo {
+.jush-js_key .jush-apo,
+.jush-json_key,
+.jush-json_key .jush-quo {
     color: purple;
 }
 .jush-js_reg {

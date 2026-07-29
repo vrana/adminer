@@ -22,6 +22,7 @@
 - Edit: Fix switching function to SQL with the edit-foreign plugin (bug #1254)
 - Edit: Hide the value field for functions without arguments (e.g. now, uuid)
 - Edit: Fix editing rows with binary columns in tables without a unique key
+- Select, Edit: Highlight JSON by a dedicated highlighter instead of the JavaScript one
 - MySQL: Do not use SSL if the login-ssl plugin is configured only for other drivers
 - MySQL: Cache the list of databases only if getting it is slow
 - MySQL: Link performance_schema and sys tables to their documentation

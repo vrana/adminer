@@ -59,7 +59,7 @@ addEventListener('DOMContentLoaded', () => {
 
 	function getMonacoLang(el) {
 		return (
-			/jush-js/.test(el.className) ? 'javascript' : (
+			/jush-json/.test(el.className) ? 'json' : (
 			/jush-sql/.test(el.className) ? 'mysql' : (
 			/jush-pgsql/.test(el.className) ? 'pgsql' : (
 			/jush-(sqlite|mssql|oracle|clickhouse|firebird)/.test(el.className) ? 'sql' : (

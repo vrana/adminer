@@ -28,7 +28,7 @@ if ($_GET["file"] == "default.css") {
 ../externals/jush/modules/jush-autocomplete-sql.js;
 ../externals/jush/modules/jush-textarea.js;
 ../externals/jush/modules/jush-txt.js;
-../externals/jush/modules/jush-js.js;
+../externals/jush/modules/jush-json.js;
 ../externals/jush/modules/jush-sql.js;
 ../externals/jush/modules/jush-pgsql.js;
 ../externals/jush/modules/jush-sqlite.js;
