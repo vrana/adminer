@@ -76,8 +76,7 @@ const thousandsSeparator = '" . js_escape(lang(',')) . "';")
 	echo "<div id='help' class='jush-" . JUSH . " jsonly hidden'></div>\n";
 	echo script("mixin(qs('#help'), {onmouseover: () => { helpOpen = 1; }, onmouseout: helpMouseout});");
 	echo "<div id='content'>\n";
-	echo "<span id='menuopen' class='jsonly'><button title='" . lang('Menu') . "' class='icon icon-move' aria-expanded='false'></button></span>";
-	echo script("qs('#menuopen').onclick = menuToggle;");
+	echo "<span id='menuopen' class='jsonly'" . on('click', 'menuToggle') . "><button title='" . lang('Menu') . "' class='icon icon-move' aria-expanded='false'></button></span>\n";
 	if ($breadcrumb !== null) {
 		$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
 		echo '<p id="breadcrumb"><a href="' . h($link ?: ".") . '">' . get_driver(DRIVER) . '</a> » ';
