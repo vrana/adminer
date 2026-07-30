@@ -72,11 +72,12 @@
 - Ignore invalid X-Forwarded-Prefix (GHSA-fr74-9mf9-gf44)
 - Login: Allow :/_ in server (bug #1305, regression from 5.5.0)
 - Compile: Valid UTF-8 (bug #1113, #1213)
-- Compile: Replace LZW with deflate compression
 - Add missing translations
 - Syntax highlighting: Update MySQL, MariaDB, SQLite, PostgreSQL
 - Support disabled set_time_limit() and ini_set() (bug #1288)
 - PostgreSQL: Log in with empty server (bug #1304, regression from 5.5.0)
+### Internal
+- Compile: Replace LZW with deflate compression
 
 ## Adminer 5.5.0 (released 2026-07-17)
 - Disallow invalid port or socket (GHSA-58cq-mgw2-38m5)
@@ -972,10 +973,11 @@
 - Store selected database to permanent login
 - Ctrl+click and Shift+click on button opens form to a blank window
 - Switch language by POST
-- Compress translations
 - MySQL: Support geometry data types
 - selectQueryBuild() method (customization)
 - Serbian translation
+### Internal
+- Compress translations
 
 ## Adminer 3.5.1 (released 2012-08-10)
 - Support same name fields in CSV export
@@ -1006,11 +1008,12 @@
 - Simplify work with NULL values (customization)
 - Use namespace in login form (customization)
 - Customizable export filename (customization)
-- Replace JSMin by better JavaScript minifier
 - Don't use AJAX links and forms
 - Indonesian translation
 - Ukrainian translation
 - Bengali translation
+### Internal
+- Replace JSMin by better JavaScript minifier
 
 ## Adminer 3.3.4 (released 2012-03-07)
 - Foreign keys default actions (bug SF-188)
@@ -1260,11 +1263,12 @@
 - Faster multiple update, clone and delete
 - Faster table list in navigation
 - Download version checker and syntax highlighting from HTTPS
-- Use HTML Strict instead of XHTML
-- Remove function minification in favor of performance and customization
 - Fix grant ALL PRIVILEGES with GRANT OPTION
 - Fix CSV import
 - Fix work with default values
+### Internal
+- Use HTML Strict instead of XHTML
+- Remove function minification in favor of performance and customization
 
 ## Adminer 1.11.1 (released 2009-07-03)
 - Fix problem with enabled Filter extension
@@ -1278,7 +1282,6 @@
 - Save queries to history and display it on SQL page
 - Display MySQL variables
 - Ability to select all rows on current page of select
-- Separate JavaScript functions
 - Always use the default style before the external one
 - Always try to use the syntax highlighter
 - All privileges in user rights
@@ -1289,6 +1292,8 @@
 - Hide fieldsets in select
 - Automatically add new fields in table creation
 - Use \n in SQL commands
+### Internal
+- Separate JavaScript functions
 
 ## phpMinAdmin 1.10.1 (released 2009-05-07)
 - Highlight odd and hover rows
@@ -1304,8 +1309,9 @@
 - Suhosin compatibility
 - Remove max_allowed_packet from export
 - Read style from phpMinAdmin.css if exists
-- Size reduction by minification of variables and functions
 - Russian translation
+### Internal
+- Size reduction by minification of variables and functions
 
 ## phpMinAdmin 1.9.1 (released 2008-10-27)
 - Update translations
@@ -1320,11 +1326,12 @@
 - Use type=password for unhashed password
 - Only one button for each action in select
 - Choose language through option-list
-- XHTML syntax errors
 - Don't set global variable in export
 - SHOW DATABASES can be revoked
 - Order by function result working also in older MySQL versions
 - Tested on IIS
+### Internal
+- XHTML syntax errors
 
 ## phpMinAdmin 1.8.0 (released 2008-09-12)
 - Events (MySQL 5.1)
@@ -1345,9 +1352,10 @@
 - Chinese and French translation
 - Preserve default values when altering table
 - Maintain auto_increment when moving columns
-- Smaller multilingual file
 - Cache static files
 - Faster checking of number of results
+### Internal
+- Smaller multilingual file
 
 ## phpMinAdmin 1.6.1 (released 2008-05-22)
 - Set session parameters only if not session.auto_start
@@ -1360,9 +1368,10 @@
 - Protection against big POST data
 - Logout by POST
 - Information about logged user
-- Separate stylesheet
 - Last-Modified header for files
 - Several bug fixes
+### Internal
+- Separate stylesheet
 
 ## phpMinAdmin 1.5.0 (released 2008-01-09)
 - Mass delete
@@ -1370,10 +1379,11 @@
 - Specify connection port by colon in server
 - Ignore length in date and time types
 - Boolean fulltext search for all columns in MyISAM
-- Shrink compiled output
 - Remove maxlength from server and username
 - Uncheck NULL by change
 - Mark shortened fields in select
+### Internal
+- Shrink compiled output
 
 ## phpMinAdmin 1.4.0 (released 2007-08-15)
 - Privileges
@@ -1407,9 +1417,10 @@
 
 ## phpMinAdmin 1.2.0 (released 2007-07-25)
 - Manipulate triggers
-- PDO Abstraction
 - Auto_increment value
 - JavaScript for adding rows
+### Internal
+- PDO Abstraction
 
 ## phpMinAdmin 1.1.0 (released 2007-07-19)
 - Routines manipulation
