@@ -431,9 +431,6 @@ function editingRemoveRow(name) {
 	return false;
 }
 
-// not in the object literal in functions.js - this file is loaded after it so the functions wouldn't be defined yet
-Object.assign(handlers, {editingAddLastRow, editingRemoveRow});
-
 let lastType = '';
 
 /** Clear length and hide collation or unsigned
@@ -897,3 +894,8 @@ function helpMouseout(event) {
 function helpClose() {
 	alterClass(qs('#help'), 'hidden', true);
 }
+
+
+
+// not in the object literal in functions.js - this file is loaded after it so the functions wouldn't be defined yet
+Object.assign(handlers, {editingAddLastRow, editingRemoveRow, sqlExport});
