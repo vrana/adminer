@@ -488,9 +488,9 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 				? "<select$attrs>" . optionlist($options, (string) $value, true) . "</select>"
 				: "<input value='" . h($value) . "'$attrs class='hidden'>"
 					. "<input value='" . h($options) . "' class='jsonly'>"
-					. "<div></div>"
+					. "<div" . on('click', 'whisperClick') . "></div>"
 					. script("qsl('input').oninput = partial(whisper, '" . ME . "script=complete&source=" . urlencode($table)
-						. "&field=" . urlencode($field["field"]) . "&value='); qsl('div').onclick = whisperClick;", "")
+						. "&field=" . urlencode($field["field"]) . "&value=');", "")
 			);
 		}
 		if (like_bool($field)) {
