@@ -17,17 +17,17 @@ function adminer_object() {
 			return 'adminer_test';
 		}
 
-		function login(string $login, string $password) {
+		function login($login, $password) {
 			// username: 'admin', password: anything
 			return ($login == 'admin');
 		}
 
-		function tableName(array $tableStatus): string {
+		function tableName($tableStatus): string {
 			// tables without comments would return empty string and will be ignored by Adminer
 			return Adminer\h($tableStatus["Comment"]);
 		}
 
-		function fieldName(array $field, int $order = 0): string {
+		function fieldName($field, $order = 0): string {
 			if ($order && preg_match('~_(md5|sha1)$~', $field["field"])) {
 				return ""; // hide hashes in select
 			}
