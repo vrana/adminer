@@ -2,7 +2,7 @@
 - Escape index type, algorithm and length in table structure (XSS)
 - Escape event schedule and non-numeric table status values (XSS)
 - Fix translations containing an apostrophe in single language versions
-- Escape < in strings printed to JavaScript, a name containing <!--<script> broke the page
+- Escape &lt; in strings printed to JavaScript, a name containing &lt;!--&lt;script> broke the page
 - Login: Disallow accessing servers which accept any password (e.g. PostgreSQL with trust authentication)
 - Check for a new version even without JavaScript
 - Sort languages by their translated name
