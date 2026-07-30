@@ -50,10 +50,23 @@
 - Plugins: Do not fail with a fatal error when a plugin is not an object (bug TimWolla/docker-adminer#211)
 - Plugins: Fix missing translations in the compiled version
 - Plugin login-password-less: Allow the plugin password to be also the password of some server
+- Plugin menu-links: Add option to show the select link and other repeated links only on hover
 - New plugin: Display images in select, same as in Adminer Editor
 ### Internal
 - Register JavaScript event handlers by a data attribute instead of a script element
+- Composer: Initialize submodules on install
+- Remove the Makefile, Composer scripts cover compiling and cleaning
+- Move documentation to docs/, linter configuration to conf/, coverage.php to tests/
+- Coding style: Wrap lines to 200 characters
+- Cache PHP_CodeSniffer results in the system temp directory
+- PHPStan: Check the Editor
+- Add type declarations to all drivers and the Editor
+- Use named constants instead of their values
+- Compile: Exit if a replacement doesn't match
+- Plugins: Compute official checksums from the plugins directory instead of a generated file
+- Modernize JavaScript, remove old browser workarounds
 - Use standard JSDoc @param and @return syntax
+- Docs: Handling of values and binary data, plugin translations, CSS changes must not break skins
 
 ## Adminer 5.5.1 (released 2026-07-21)
 - Ignore invalid X-Forwarded-Prefix (GHSA-fr74-9mf9-gf44)
