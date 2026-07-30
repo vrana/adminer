@@ -518,8 +518,8 @@ function editingKeydown(event) {
 		}
 		return false;
 	}
-	if (event.shiftKey && !bodyKeydown(event, 'insert')) {
-		return false;
+	if (event.shiftKey) {
+		return bodyKeydown(event, 'insert');
 	}
 	return true;
 }
