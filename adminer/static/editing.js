@@ -3,8 +3,8 @@
 let autocompleter; // set in adminer.inc.php
 
 /** Load syntax highlighting
-* @param string first three characters of database system version
-* @param [string]
+* @param {string} version first three characters of database system version
+* @param {string} [vendor]
 */
 function syntaxHighlighting(version, vendor) {
 	addEventListener('DOMContentLoaded', () => {
@@ -48,8 +48,8 @@ function syntaxHighlighting(version, vendor) {
 }
 
 /** Try to change input type to password or to text
-* @param HTMLInputElement
-* @param boolean
+* @param {HTMLInputElement} el
+* @param {boolean} disable
 */
 function typePassword(el, disable) {
 	try {
@@ -59,14 +59,14 @@ function typePassword(el, disable) {
 }
 
 /** Install handlers in messages
-* @param [HTMLElement]
+* @param {HTMLElement} [parent]
 */
 function messagesPrint(parent) {
 	copyCode(parent);
 }
 
 /** Copy code to clipboard
-* @param [HTMLElement]
+* @param {HTMLElement} [parent]
 */
 function copyCode(parent) {
 	for (const el of qsa('.icon-copy', parent)) {
@@ -84,7 +84,7 @@ function copyCode(parent) {
 
 
 /** Hide or show some login rows for selected driver
-* @param HTMLSelectElement
+* @param {HTMLSelectElement} driver
 */
 function loginDriver(driver) {
 	const trs = parentTag(driver, 'table').rows;
@@ -99,7 +99,7 @@ let dbCtrl;
 const dbPrevious = {};
 
 /** Check if database should be opened to a new window
-* @param MouseEvent
+* @param {MouseEvent} event
 * @this HTMLSelectElement
 */
 function dbMouseDown(event) {
@@ -188,18 +188,18 @@ function selectFieldChange() {
 let added = '.', rowCount;
 
 /** Check if val is equal to a-delimiter-b where delimiter is '_', '' or big letter
-* @param string
-* @param string
-* @param string
-* @return boolean
+* @param {string} val
+* @param {string} a
+* @param {string} b
+* @return {boolean}
 */
 function delimiterEqual(val, a, b) {
 	return (val == a + '_' + b || val == a + b || val == a + b[0].toUpperCase() + b.slice(1));
 }
 
 /** Escape string to use as identifier
-* @param string
-* @return string
+* @param {string} s
+* @return {string}
 */
 function idfEscape(s) {
 	return s.replace(/`/, '``');
@@ -288,8 +288,8 @@ function editFields() {
 }
 
 /** Handle clicks on fields editing
-* @param MouseEvent
-* @return boolean false to cancel action
+* @param {MouseEvent} event
+* @return {boolean} false to cancel action
 */
 function editingClick(event) {
 	let el = parentTag(event.target, 'button');
@@ -319,7 +319,7 @@ function editingClick(event) {
 }
 
 /** Handle input on fields editing
-* @param InputEvent
+* @param {InputEvent} event
 */
 function editingInput(event) {
 	const el = event.target;
@@ -364,8 +364,8 @@ function editingNameChange() {
 }
 
 /** Add table row for next field
-* @param [boolean]
-* @return boolean false
+* @param {boolean} [focus]
+* @return {boolean} false
 * @this HTMLInputElement
 */
 function editingAddRow(focus) {
@@ -405,7 +405,7 @@ function editingAddRow(focus) {
 }
 
 /** Add table row after the last field; used by drivers where columns can be added only to the end
-* @return boolean false for success
+* @return {boolean} false for success
 * @this HTMLElement
 */
 function editingAddLastRow() {
@@ -417,8 +417,8 @@ function editingAddLastRow() {
 }
 
 /** Remove table row for field
-* @param string regular expression replacement
-* @return boolean false
+* @param {string} name regular expression replacement
+* @return {boolean} false
 * @this HTMLInputElement
 */
 function editingRemoveRow(name) {
@@ -490,8 +490,8 @@ function editingLengthFocus() {
 }
 
 /** Get enum values
-* @param string
-* @return string values separated by newlines
+* @param {string} s
+* @return {string} values separated by newlines
 */
 function enumValues(s) {
 	const re = /(^|,)\s*'(([^\\']|\\.|'')*)'\s*/g;
@@ -520,8 +520,8 @@ function editingLengthBlur() {
 }
 
 /** Show or hide selected table column
-* @param boolean
-* @param number
+* @param {boolean} checked
+* @param {number} column
 */
 function columnShow(checked, column) {
 	for (const tr of qsa('tr', qs('#edit-fields'))) {
@@ -530,7 +530,7 @@ function columnShow(checked, column) {
 }
 
 /** Show or hide index column options
-* @param boolean
+* @param {boolean} checked
 */
 function indexOptionsShow(checked) {
 	for (const option of qsa('.idxopts')) {
@@ -560,8 +560,8 @@ function partitionNameChange() {
 }
 
 /** Show or hide comment fields
-* @param HTMLInputElement
-* @param [boolean] whether to focus Comment if checked
+* @param {HTMLInputElement} el
+* @param {boolean} [focus] whether to focus Comment if checked
 */
 function editingCommentsClick(el, focus) {
 	const comment = el.form['Comment'];
@@ -575,7 +575,7 @@ function editingCommentsClick(el, focus) {
 
 
 /** Uncheck 'all' checkbox
-* @param MouseEvent
+* @param {MouseEvent} event
 * @this HTMLTableElement
 */
 function dumpClick(event) {
@@ -627,7 +627,7 @@ function indexesAddRow() {
 }
 
 /** Change column in index
-* @param string name prefix
+* @param {string} prefix
 * @this HTMLSelectElement
 */
 function indexesChangeColumn(prefix) {
@@ -644,7 +644,7 @@ function indexesChangeColumn(prefix) {
 }
 
 /** Add column for index
-* @param string name prefix
+* @param {string} prefix
 * @this HTMLSelectElement
 */
 function indexesAddColumn(prefix) {
@@ -675,8 +675,8 @@ function indexesAddColumn(prefix) {
 
 
 /** Update the form action
-* @param HTMLFormElement
-* @param string
+* @param {HTMLFormElement} form
+* @param {string} root
 */
 function sqlSubmit(form, root) {
 	const action = root
@@ -691,7 +691,7 @@ function sqlSubmit(form, root) {
 }
 
 /** Export the result table by JS without re-running the query
-* @return boolean false when handled by JS
+* @return {boolean} false when handled by JS
 * @this HTMLInputElement
 */
 function sqlExport() {
@@ -740,11 +740,11 @@ function sqlExport() {
 }
 
 /** Check if PHP can handle the uploaded files
-* @param Event
-* @param number
-* @param string
-* @param number
-* @param string
+* @param {Event} event
+* @param {number} count
+* @param {string} countMessage
+* @param {number} size
+* @param {string} sizeMessage
 */
 function fileChange(event, count, countMessage, size, sizeMessage) {
 	if (event.target.files.length > count) {
@@ -757,9 +757,9 @@ function fileChange(event, count, countMessage, size, sizeMessage) {
 
 
 /** Handle changing trigger time or event
-* @param RegExp
-* @param string
-* @param HTMLFormElement
+* @param {RegExp} tableRe
+* @param {string} table
+* @param {HTMLFormElement} form
 */
 function triggerChange(tableRe, table, form) {
 	const formEvent = selectValue(form['Event']);
@@ -774,7 +774,7 @@ function triggerChange(tableRe, table, form) {
 let that, x, y; // em and tablePos defined in schema.inc.php
 
 /** Get mouse position
-* @param MouseEvent
+* @param {MouseEvent} event
 * @this HTMLElement
 */
 function schemaMousedown(event) {
@@ -786,7 +786,7 @@ function schemaMousedown(event) {
 }
 
 /** Move object
-* @param MouseEvent
+* @param {MouseEvent} event
 */
 function schemaMousemove(event) {
 	if (that !== undefined) {
@@ -827,8 +827,8 @@ function schemaMousemove(event) {
 }
 
 /** Finish move
-* @param MouseEvent
-* @param string
+* @param {MouseEvent} event
+* @param {string} db
 */
 function schemaMouseup(event, db) {
 	if (that !== undefined) {
@@ -850,9 +850,9 @@ function schemaMouseup(event, db) {
 let helpOpen, helpIgnore; // when mouse outs <option> then it mouse overs border of <select> - ignore it
 
 /** Display help
-* @param MouseEvent
-* @param string
-* @param bool display on left side (otherwise on top)
+* @param {MouseEvent} event
+* @param {string} text
+* @param {boolean} side display on left side (otherwise on top)
 * @this HTMLElement
 */
 function helpMouseover(event, text, side) {
@@ -873,7 +873,7 @@ function helpMouseover(event, text, side) {
 }
 
 /** Close help after timeout
-* @param MouseEvent
+* @param {MouseEvent} event
 * @this HTMLElement
 */
 function helpMouseout(event) {

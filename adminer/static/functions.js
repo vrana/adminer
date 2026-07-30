@@ -1,18 +1,18 @@
 'use strict';
 
 /** Get first element by selector
-* @param string
-* @param [HTMLElement] defaults to document
-* @return HTMLElement
+* @param {string} selector
+* @param {HTMLElement} [context=document]
+* @return {HTMLElement}
 */
 function qs(selector, context = document) {
 	return context.querySelector(selector);
 }
 
 /** Get last element by selector
-* @param string
-* @param [HTMLElement] defaults to document
-* @return HTMLElement
+* @param {string} selector
+* @param {HTMLElement} [context=document]
+* @return {HTMLElement}
 */
 function qsl(selector, context) {
 	const els = qsa(selector, context);
@@ -20,18 +20,18 @@ function qsl(selector, context) {
 }
 
 /** Get all elements by selector
-* @param string
-* @param [HTMLElement] defaults to document
-* @return NodeList
+* @param {string} selector
+* @param {HTMLElement} [context=document]
+* @return {NodeList}
 */
 function qsa(selector, context = document) {
 	return context.querySelectorAll(selector);
 }
 
 /** Return a function calling fn with the next arguments
-* @param function
-* @param ...
-* @return function with preserved this
+* @param {function} fn
+* @param {...*} args
+* @return {function} with preserved this
 */
 function partial(fn, ...args) {
 	return function () {
@@ -40,8 +40,8 @@ function partial(fn, ...args) {
 }
 
 /** Assign values from source to target
-* @param Object
-* @param Object
+* @param {Object} target
+* @param {Object} source
 */
 function mixin(target, source) {
 	for (const key in source) {
@@ -50,17 +50,17 @@ function mixin(target, source) {
 }
 
 /** Add or remove CSS class
-* @param HTMLElement
-* @param string
-* @param [boolean]
+* @param {HTMLElement} el
+* @param {string} className
+* @param {boolean} [enable]
 */
 function alterClass(el, className, enable) {
 	el?.classList.toggle(className, !!enable); // !! - undefined would toggle
 }
 
 /** Toggle visibility
-* @param string
-* @return boolean false
+* @param {string} id
+* @return {boolean} false
 */
 function toggle(id) {
 	const el = qs('#' + id);
@@ -69,8 +69,8 @@ function toggle(id) {
 }
 
 /** Set permanent cookie
-* @param string
-* @param number
+* @param {string} assign
+* @param {number} days
 */
 function cookie(assign, days) {
 	const date = new Date();
@@ -82,7 +82,7 @@ function cookie(assign, days) {
 }
 
 /** Verify current Adminer version
-* @param string
+* @param {string} current
 */
 function verifyVersion(current) {
 	cookie('adminer_version=0', 1);
@@ -95,8 +95,8 @@ function verifyVersion(current) {
 }
 
 /** Get value of select
-* @param HTMLElement <select> or <input>
-* @return string
+* @param {HTMLElement} select <select> or <input>
+* @return {string}
 */
 function selectValue(select) {
 	if (!select.selectedIndex) {
@@ -107,9 +107,9 @@ function selectValue(select) {
 }
 
 /** Verify if element has a specified tag name
-* @param HTMLElement
-* @param string regular expression
-* @return boolean
+* @param {HTMLElement} el
+* @param {string} tag regular expression
+* @return {boolean}
 */
 function isTag(el, tag) {
 	const re = new RegExp('^(' + tag + ')$', 'i');
@@ -117,9 +117,9 @@ function isTag(el, tag) {
 }
 
 /** Get parent node with specified tag name
-* @param HTMLElement
-* @param string regular expression
-* @return HTMLElement
+* @param {HTMLElement} el
+* @param {string} tag regular expression
+* @return {HTMLElement}
 */
 function parentTag(el, tag) {
 	while (el && !isTag(el, tag)) {
@@ -129,7 +129,7 @@ function parentTag(el, tag) {
 }
 
 /** Set checked class
-* @param HTMLInputElement
+* @param {HTMLInputElement} el
 */
 function trCheck(el) {
 	const tr = parentTag(el, 'tr');
@@ -138,8 +138,8 @@ function trCheck(el) {
 }
 
 /** Fill number of selected items
-* @param string
-* @param string
+* @param {string} id
+* @param {string} count
 * @uses thousandsSeparator
 */
 function selectCount(id, count) {
@@ -153,7 +153,7 @@ function selectCount(id, count) {
 }
 
 /** Check all elements matching given name
-* @param RegExp
+* @param {RegExp} name
 * @this HTMLInputElement
 */
 function formCheck(name) {
@@ -172,7 +172,7 @@ function tableCheck() {
 }
 
 /** Uncheck single element
-* @param string
+* @param {string} id
 */
 function formUncheck(id) {
 	const el = qs('#' + id);
@@ -181,17 +181,17 @@ function formUncheck(id) {
 }
 
 /** Get number of checked elements matching given name
-* @param HTMLInputElement
-* @param RegExp
-* @return number
+* @param {HTMLInputElement} input
+* @param {RegExp} name
+* @return {number}
 */
 function formChecked(input, name) {
 	return [...input.form.elements].filter(el => name.test(el.name) && el.checked).length;
 }
 
 /** Select clicked row
-* @param MouseEvent
-* @param [boolean] force click
+* @param {MouseEvent} event
+* @param {boolean} [click] force click
 */
 function tableClick(event, click) {
 	const td = parentTag(event.target, 'td');
@@ -234,7 +234,7 @@ function tableClick(event, click) {
 let lastChecked;
 
 /** Shift-click on checkbox for multiple selection.
-* @param MouseEvent
+* @param {MouseEvent} event
 * @this HTMLInputElement
 */
 function checkboxClick(event) {
@@ -264,8 +264,8 @@ function checkboxClick(event) {
 }
 
 /** Set HTML code of an element
-* @param string
-* @param string undefined to set parentNode to empty string
+* @param {string} id
+* @param {string} html undefined to set parentNode to empty string
 */
 function setHtml(id, html) {
 	const el = qs('[id="' + id.replace(/[\\"]/g, '\\$&') + '"]'); // database name is used as ID
@@ -279,8 +279,8 @@ function setHtml(id, html) {
 }
 
 /** Find node position
-* @param Node
-* @return number
+* @param {Node} el
+* @return {number}
 */
 function nodePosition(el) {
 	let pos = 0;
@@ -291,8 +291,8 @@ function nodePosition(el) {
 }
 
 /** Go to the specified page
-* @param string
-* @param string
+* @param {string} href
+* @param {string} page
 */
 function pageClick(href, page) {
 	if (!isNaN(page) && page) {
@@ -303,7 +303,7 @@ function pageClick(href, page) {
 
 
 /** Display items in menu
-* @param MouseEvent
+* @param {MouseEvent} event
 * @this HTMLElement
 */
 function menuOver(event) {
@@ -321,7 +321,7 @@ function menuOut() {
 }
 
 /** Toggle the menu on small screens
-* @param MouseEvent
+* @param {MouseEvent} event
 */
 function menuToggle(event) {
 	const foot = qs('#foot');
@@ -374,7 +374,7 @@ function selectAddRow() {
 }
 
 /** Prevent onsearch handler on Enter
-* @param KeyboardEvent
+* @param {KeyboardEvent} event
 * @this HTMLInputElement
 */
 function selectSearchKeydown(event) {
@@ -395,8 +395,8 @@ function selectSearchSearch() {
 
 
 /** Fill column in search field
-* @param string
-* @return boolean false
+* @param {string} name
+* @return {boolean} false
 */
 function selectSearch(name) {
 	const fieldset = qs('#fieldset-search');
@@ -417,8 +417,8 @@ function selectSearch(name) {
 
 
 /** Check if Ctrl key (Command key on Mac) was pressed
-* @param KeyboardEvent|MouseEvent
-* @return boolean
+* @param {KeyboardEvent|MouseEvent} event
+* @return {boolean}
 */
 function isCtrl(event) {
 	return (event.ctrlKey || event.metaKey) && !event.altKey; // shiftKey allowed
@@ -427,9 +427,9 @@ function isCtrl(event) {
 
 
 /** Send form by Ctrl+Enter on <select> and <textarea>, close the menu by Esc
-* @param KeyboardEvent
-* @param [string]
-* @return boolean
+* @param {KeyboardEvent} event
+* @param {string} [button]
+* @return {boolean}
 */
 function bodyKeydown(event, button) {
 	event.stopPropagation();
@@ -455,7 +455,7 @@ function bodyKeydown(event, button) {
 }
 
 /** Toggle visibility by .toggle links, open form to a new window on Ctrl+click or Shift+click
-* @param MouseEvent
+* @param {MouseEvent} event
 */
 function bodyClick(event) {
 	delegateEvent(event);
@@ -483,7 +483,7 @@ const handlers = {__proto__: null};
 /** Call handlers registered by data-<event> attributes between the event target and the body
 * The handler gets the arguments from the attribute followed by the event, returning false prevents
 * the default action, returning true stops calling the handlers on ancestor elements
-* @param Event
+* @param {Event} event
 */
 function delegateEvent(event) {
 	const attr = 'data-' + event.type;
@@ -507,8 +507,8 @@ function delegateEvent(event) {
 
 
 /** Change focus by Ctrl+Shift+Up or Ctrl+Shift+Down
-* @param KeyboardEvent
-* @return boolean
+* @param {KeyboardEvent} event
+* @return {boolean}
 */
 function editingKeydown(event) {
 	if (/^Arrow(Down|Up)$/.test(event.key) && isCtrl(event)) {
@@ -562,7 +562,7 @@ function functionChange() {
 }
 
 /** Skip 'original' when typing
-* @param number
+* @param {number} first
 * @this HTMLTableCellElement
 */
 function skipOriginal(first) {
@@ -589,11 +589,11 @@ function fieldChange() {
 
 
 /** Create AJAX request
-* @param string
-* @param function (XMLHttpRequest)
-* @param [string]
-* @param [string]
-* @return XMLHttpRequest or false in case of an error
+* @param {string} url
+* @param {function(XMLHttpRequest)} callback
+* @param {string} [data]
+* @param {string} [message]
+* @return {XMLHttpRequest|false} false in case of an error
 * @uses offlineMessage
 */
 function ajax(url, callback, data, message) {
@@ -622,8 +622,8 @@ function ajax(url, callback, data, message) {
 }
 
 /** Use setHtml(key, value) for JSON response
-* @param string
-* @return boolean false for success
+* @param {string} url
+* @return {boolean} false for success
 */
 function ajaxSetHtml(url) {
 	return !ajax(url, request => {
@@ -638,10 +638,10 @@ let editChanged; // used by plugins
 let adminerHighlighter = els => {}; // overwritten by syntax highlighters
 
 /** Save form contents through AJAX
-* @param HTMLFormElement
-* @param string
-* @param [HTMLInputElement]
-* @return boolean
+* @param {HTMLFormElement} form
+* @param {string} message
+* @param {HTMLInputElement} [button]
+* @return {boolean}
 */
 function ajaxForm(form, message, button) {
 	let data = [];
@@ -676,10 +676,10 @@ function ajaxForm(form, message, button) {
 
 
 /** Display edit field
-* @param MouseEvent
-* @param number display textarea instead of input, 2 - load long text
-* @param [string] warning to display
-* @return boolean
+* @param {MouseEvent} event
+* @param {number} text display textarea instead of input, 2 - load long text
+* @param {string} [warning] warning to display
+* @return {boolean}
 * @this HTMLElement
 */
 function selectClick(event, text, warning) {
@@ -736,9 +736,9 @@ function selectClick(event, text, warning) {
 
 
 /** Load and display next page in select
-* @param number
-* @param string
-* @return boolean false for success
+* @param {number} limit
+* @param {string} loading
+* @return {boolean} false for success
 * @this HTMLLinkElement
 */
 function selectLoadMore(limit, loading) {
@@ -767,14 +767,14 @@ function selectLoadMore(limit, loading) {
 
 
 /** Setup highlighting of default submit button on form field focus
-* @param HTMLElement
+* @param {HTMLElement} parent
 */
 function setupSubmitHighlight(parent) {
 	qsa('input, select, textarea', parent).forEach(setupSubmitHighlightInput);
 }
 
 /** Setup submit highlighting for single element
-* @param HTMLElement
+* @param {HTMLElement} input
 */
 function setupSubmitHighlightInput(input) {
 	if (!/submit|button|image|file/.test(input.type)) {
@@ -801,8 +801,8 @@ function inputBlur() {
 }
 
 /** Find submit button used by Enter
-* @param HTMLElement
-* @return HTMLInputElement
+* @param {HTMLElement} el
+* @return {HTMLInputElement}
 */
 function findDefaultSubmit(el) {
 	if (el.jushTextarea) {
@@ -814,17 +814,17 @@ function findDefaultSubmit(el) {
 
 
 /** Add event listener
-* @param HTMLElement
-* @param string without 'on'
-* @param function
+* @param {HTMLElement} el
+* @param {string} action without 'on'
+* @param {function} handler
 */
 function addEvent(el, action, handler) {
 	el.addEventListener(action, handler);
 }
 
 /** Clone node and setup submit highlighting
-* @param HTMLElement
-* @return HTMLElement
+* @param {HTMLElement} el
+* @return {HTMLElement}
 */
 function cloneNode(el) {
 	const el2 = el.cloneNode(true);

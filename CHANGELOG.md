@@ -53,6 +53,7 @@
 - New plugin: Display images in select, same as in Adminer Editor
 ### Internal
 - Register JavaScript event handlers by a data attribute instead of a script element
+- Use standard JSDoc @param and @return syntax
 
 ## Adminer 5.5.1 (released 2026-07-21)
 - Ignore invalid X-Forwarded-Prefix (GHSA-fr74-9mf9-gf44)

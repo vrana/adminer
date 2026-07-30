@@ -18,7 +18,7 @@ function helpClose() {
 }
 
 /** Display typeahead
-* @param string
+* @param {string} url
 * @this HTMLInputElement
 */
 function whisper(url) {
@@ -39,8 +39,8 @@ function whisper(url) {
 }
 
 /** Select typeahead value
-* @param MouseEvent
-* @return boolean false for success
+* @param {MouseEvent} event
+* @return {boolean} false for success
 * @this HTMLDivElement
 */
 function whisperClick(event) {
