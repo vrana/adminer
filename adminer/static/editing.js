@@ -903,4 +903,4 @@ function helpClose() {
 
 
 // not in the object literal in functions.js - this file is loaded after it so the functions wouldn't be defined yet
-mixin(handlers, {editingAddLastRow, editingRemoveRow, sqlExport});
+mixin(handlers, {dumpClick, editingAddLastRow, editingRemoveRow, sqlExport});

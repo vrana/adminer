@@ -190,9 +190,8 @@ echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style,
 <p><input type='submit' value='<?php echo lang('Export'); ?>'>
 <?php echo input_token(); ?>
 
-<table>
+<table<?php echo on('click', 'dumpClick'); ?>>
 <?php
-echo script("qsl('table').onclick = dumpClick;");
 $prefixes = array();
 if ($_GET["ns"] === "") {
 	echo "<thead><tr><th style='text-align: left;'>";
