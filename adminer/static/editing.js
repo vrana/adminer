@@ -694,10 +694,11 @@ function sqlSubmit(form, root) {
 }
 
 /** Export the result table by JS without re-running the query
+* @param {MouseEvent} event
 * @return {boolean} false when handled by JS
 * @this HTMLInputElement
 */
-function sqlExport() {
+function sqlExport(event) {
 	const form = this.form;
 	const format = form['format'].value;
 	const output = form['output'].value;
@@ -736,6 +737,10 @@ function sqlExport() {
 		a.click();
 		a.remove();
 		setTimeout(() => URL.revokeObjectURL(url));
+	} else if (isCtrl(event) || event.shiftKey) {
+		// the same modifiers open the server-side export in a new window in bodyClick(), submit the form if the pop-up is blocked
+		// the URL is not revoked to not break the load of the new window
+		return !open(url);
 	} else {
 		location.href = url;
 	}
