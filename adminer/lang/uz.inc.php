@@ -86,7 +86,7 @@ Lang::$translations = array(
 	'Output' => 'Natija',
 	'open' => 'ochish',
 	'save' => 'saqlash',
-	'Saving' => 'Saqlanmoqda',
+	'Saving…' => 'Saqlanmoqda…',
 	'Format' => 'Format',
 	'Data' => 'Ma\'lumotlar',
 
@@ -255,7 +255,7 @@ Lang::$translations = array(
 	'Page' => 'Sahifa',
 	'last' => 'oxirgi',
 	'Load more data' => 'Ko\'proq ma\'lumot yuklash',
-	'Loading' => 'Yuklanmoqda',
+	'Loading…' => 'Yuklanmoqda…',
 	'Whole result' => 'Butun natija',
 	'%d byte(s)' => array('%d bayt', '%d baytlar'),
 

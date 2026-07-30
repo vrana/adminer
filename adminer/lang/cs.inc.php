@@ -263,7 +263,7 @@ Lang::$translations = array(
 	'Page' => 'Stránka',
 	'last' => 'poslední',
 	'Load more data' => 'Načíst další data',
-	'Loading' => 'Načítá se',
+	'Loading…' => 'Načítá se…',
 	'Whole result' => 'Celý výsledek',
 	'%d byte(s)' => array('%d bajt', '%d bajty', '%d bajtů'),
 
@@ -287,7 +287,7 @@ Lang::$translations = array(
 	'Edit' => 'Upravit',
 	'Insert' => 'Vložit',
 	'Save' => 'Uložit',
-	'Saving' => 'Ukládá se',
+	'Saving…' => 'Ukládá se…',
 	'Save and continue edit' => 'Uložit a pokračovat v editaci',
 	'Save and insert next' => 'Uložit a vložit další',
 	'Selected' => 'Označené',

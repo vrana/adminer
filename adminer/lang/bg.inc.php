@@ -242,7 +242,7 @@ Lang::$translations = array(
 	'Page' => 'Страница',
 	'last' => 'последен',
 	'Load more data' => 'Зареждане на повече данни',
-	'Loading' => 'Зареждане',
+	'Loading…' => 'Зареждане…',
 	'Whole result' => 'Пълен резултат',
 	'%d byte(s)' => array('%d байт', '%d байта'),
 
@@ -266,7 +266,7 @@ Lang::$translations = array(
 	'Edit' => 'Редактиране',
 	'Insert' => 'Вмъкване',
 	'Save' => 'Запис',
-	'Saving' => 'Записване',
+	'Saving…' => 'Записване…',
 	'Save and continue edit' => 'Запис и редакция',
 	'Save and insert next' => 'Запис и нов',
 	'Selected' => 'Избран',

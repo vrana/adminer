@@ -74,7 +74,7 @@ Lang::$translations = array(
 	'Output' => 'Tulos',
 	'open' => 'avaa',
 	'save' => 'tallenna',
-	'Saving' => 'Tallennetaan',
+	'Saving…' => 'Tallennetaan…',
 	'Format' => 'Muoto',
 	'Data' => 'Data',
 
@@ -242,7 +242,7 @@ Lang::$translations = array(
 	'Page' => 'Sivu',
 	'last' => 'viimeinen',
 	'Load more data' => 'Lataa lisää dataa',
-	'Loading' => 'Ladataan',
+	'Loading…' => 'Ladataan…',
 	'Whole result' => 'Koko tulos',
 	'%d byte(s)' => array('%d tavu', '%d tavua'),
 

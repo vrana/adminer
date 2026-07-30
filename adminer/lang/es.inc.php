@@ -304,7 +304,7 @@ Lang::$translations = array(
 	'All rows on this page' => 'Todas las filas de esta página', // Claude Opus 5
 	'Modify' => 'Modificar', // Claude Fable 5
 	'Load more data' => 'Cargar más datos', // Claude Fable 5
-	'Loading' => 'Cargando', // Claude Fable 5
+	'Loading…' => 'Cargando…', // Claude Fable 5
 	'%d / ' => '%d / ', // Claude Fable 5
 	'Limit rows' => 'Límite de registros', // Claude Fable 5
 	'Inherits from' => 'Hereda de', // Claude Fable 5
@@ -318,7 +318,7 @@ Lang::$translations = array(
 	'Compute' => 'Calcular', // Claude Fable 5
 	'screenshot' => 'captura de pantalla', // Claude Fable 5
 	'Increase %s.' => 'Aumente %s.', // Claude Fable 5
-	'Saving' => 'Guardando', // Claude Fable 5
+	'Saving…' => 'Guardando…', // Claude Fable 5
 	'yes' => 'sí', // Claude Fable 5
 	'no' => 'no', // Claude Fable 5
 );

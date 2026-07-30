@@ -233,7 +233,7 @@ Lang::$translations = array(
 	'Page' => 'trang',
 	'last' => 'cuối',
 	'Load more data' => 'Xem thêm dữ liệu',
-	'Loading' => 'Đang nạp',
+	'Loading…' => 'Đang nạp…',
 	'Whole result' => 'Toàn bộ kết quả',
 	'%d byte(s)' => '%d byte(s)',
 
@@ -339,7 +339,7 @@ Lang::$translations = array(
 	'screenshot' => 'ảnh chụp màn hình', // Claude Fable 5
 	'You are offline.' => 'Bạn đang ngoại tuyến.', // Claude Fable 5
 	'Increase %s.' => 'Hãy tăng %s.', // Claude Fable 5
-	'Saving' => 'Đang lưu', // Claude Fable 5
+	'Saving…' => 'Đang lưu…', // Claude Fable 5
 	'Unknown error.' => 'Lỗi không xác định.', // Claude Fable 5
 	'%s must <a%s>return an array</a>.' => '%s phải <a%s>trả về một mảng</a>.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Cấu hình</a> %s trong %s.', // Claude Fable 5

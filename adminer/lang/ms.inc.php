@@ -76,7 +76,7 @@ Lang::$translations = array(
 	'Output' => 'Pengeluaran',
 	'open' => 'buka',
 	'save' => 'simpan',
-	'Saving' => 'Menyimpan',
+	'Saving…' => 'Menyimpan…',
 	'Format' => 'Format',
 	'Data' => 'Data',
 
@@ -243,7 +243,7 @@ Lang::$translations = array(
 	'Page' => 'Halaman',
 	'last' => 'akhir',
 	'Load more data' => 'Load lebih data',
-	'Loading' => 'Loading',
+	'Loading…' => 'Loading…',
 	'Whole result' => 'Keputusan keseluruhan',
 	'%d byte(s)' => array('%d byte', '%d bytes'),
 

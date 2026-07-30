@@ -237,7 +237,7 @@ Lang::$translations = array(
 	'Page' => 'صفحه',
 	'last' => 'آخری',
 	'Load more data' => 'بارگزاری اطلاعات بیشتر',
-	'Loading' => 'در حال بارگزاری',
+	'Loading…' => 'در حال بارگزاری…',
 	'Whole result' => 'همه نتایج',
 	'%d byte(s)' => '%d بایت',
 

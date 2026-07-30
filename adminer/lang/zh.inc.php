@@ -84,7 +84,7 @@ Lang::$translations = array(
 	'Output' => '输出',
 	'open' => '打开',
 	'save' => '保存',
-	'Saving' => '保存中',
+	'Saving…' => '保存中…',
 	'Format' => '格式',
 	'Data' => '数据',
 
@@ -254,7 +254,7 @@ Lang::$translations = array(
 	'Page' => '页面',
 	'last' => '最后',
 	'Load more data' => '加载更多数据',
-	'Loading' => '加载中',
+	'Loading…' => '加载中…',
 	'Whole result' => '所有结果',
 	'%d byte(s)' => '%d 字节',
 

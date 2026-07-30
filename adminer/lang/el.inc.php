@@ -74,7 +74,7 @@ Lang::$translations = array(
 	'Output' => 'Αποτέλεσμα',
 	'open' => 'άνοιγμα',
 	'save' => 'αποθήκευση',
-	'Saving' => 'Γίνεται Αποθήκευση',
+	'Saving…' => 'Γίνεται Αποθήκευση…',
 	'Format' => 'Μορφή',
 	'Data' => 'Δεδομένα',
 
@@ -242,7 +242,7 @@ Lang::$translations = array(
 	'Page' => 'Σελίδα',
 	'last' => 'τελευταία',
 	'Load more data' => 'Φόρτωση κι άλλων δεδομένων',
-	'Loading' => 'Φορτώνει',
+	'Loading…' => 'Φορτώνει…',
 	'Whole result' => 'Όλο το αποτέλεσμα',
 	'%d byte(s)' => array('%d byte', '%d bytes'),
 

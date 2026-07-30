@@ -272,7 +272,7 @@ Lang::$translations = array(
 	'Limit rows' => 'Datensätze begrenzen',
 	'Tables have been optimized.' => 'Tabellen wurden optimiert.',
 	'File must be in UTF-8 encoding.' => 'Die Datei muss UTF-8 kodiert sein.',
-	'Loading' => 'Lade',
+	'Loading…' => 'Lade…',
 	'Load more data' => 'Mehr Daten laden',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Zu viele erfolglose Login-Versuche. Bitte probieren Sie es in %d Minute noch einmal.', 'Zu viele erfolglose Login-Versuche. Bitte probieren Sie es in %d Minuten noch einmal.'),
 	'If you did not send this request from Adminer then close this page.' => 'Wenn Sie diese Anfrage nicht von Adminer gesendet haben, schließen Sie diese Seite.',
@@ -280,7 +280,7 @@ Lang::$translations = array(
 	'You are offline.' => 'Sie sind offline.',
 	'Menu' => 'Menü', // Claude Opus 5
 	'You have no privileges to update this table.' => 'Sie haben keine Rechte, diese Tabelle zu aktualisieren.',
-	'Saving' => 'Speichere',
+	'Saving…' => 'Speichere…',
 	'yes' => 'ja',
 	'no' => 'nein',
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Das Master-Passwort ist abgelaufen. <a href="https://www.adminer.org/de/extension/"%s>Implementieren</a> Sie die %s Methode, um es permanent zu machen.',

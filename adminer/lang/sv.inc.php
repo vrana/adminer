@@ -84,7 +84,7 @@ Lang::$translations = array(
 	'Output' => 'Utmatning',
 	'open' => 'Öppna',
 	'save' => 'Spara',
-	'Saving' => 'Sparar',
+	'Saving…' => 'Sparar…',
 	'Format' => 'Format',
 	'Data' => 'Data',
 
@@ -255,7 +255,7 @@ Lang::$translations = array(
 	'Page' => 'Sida',
 	'last' => 'sist',
 	'Load more data' => 'Ladda mer data',
-	'Loading' => 'Laddar',
+	'Loading…' => 'Laddar…',
 	'Whole result' => 'Hela resultatet',
 	'%d byte(s)' => array('%d byte', '%d bytes'),
 

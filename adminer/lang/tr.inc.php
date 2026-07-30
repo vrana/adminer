@@ -79,7 +79,7 @@ Lang::$translations = array(
 	'Output' => 'Çıktı',
 	'open' => 'aç',
 	'save' => 'kaydet',
-	'Saving' => 'Saydediliyor',
+	'Saving…' => 'Saydediliyor…',
 	'Format' => 'Biçim',
 	'Data' => 'Veri',
 
@@ -250,7 +250,7 @@ Lang::$translations = array(
 	'Page' => 'Sayfa',
 	'last' => 'son',
 	'Load more data' => 'Daha fazla veri yükle',
-	'Loading' => 'Yükleniyor',
+	'Loading…' => 'Yükleniyor…',
 	'Whole result' => 'Tüm sonuç',
 	'%d byte(s)' => '%d bayt',
 

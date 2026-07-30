@@ -88,7 +88,7 @@ Lang::$translations = array(
 	'Output' => 'Rezultat',
 	'open' => 'otwórz',
 	'save' => 'zapisz',
-	'Saving' => 'Zapisywanie',
+	'Saving…' => 'Zapisywanie…',
 	'Format' => 'Format',
 	'Data' => 'Dane',
 
@@ -264,7 +264,7 @@ Lang::$translations = array(
 	'Page' => 'Strona',
 	'last' => 'ostatni',
 	'Load more data' => 'Wczytaj więcej danych',
-	'Loading' => 'Wczytywanie',
+	'Loading…' => 'Wczytywanie…',
 	'Whole result' => 'Wybierz wszystkie',
 	'%d byte(s)' => array('%d bajt', '%d bajty', '%d bajtów'),
 

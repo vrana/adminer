@@ -266,7 +266,7 @@ Lang::$translations = array(
 	'File must be in UTF-8 encoding.' => 'על הקובץ להיות בקידוד utf-8',
 	'All rows on this page' => 'כל השורות בעמוד זה', // Claude Opus 5
 	'Modify' => 'ערוך',
-	'Loading' => 'טוען',
+	'Loading…' => 'טוען…',
 	'Load more data' => 'טען נתונים נוספים',
 	'%s queries are not supported.' => 'שאילתת %s אינה נתמכת',
 	'%d / ' => '%d / ',
@@ -283,7 +283,7 @@ Lang::$translations = array(
 	'You are offline.' => 'הינך לא מקוון',
 	'Menu' => 'תפריט', // Claude Opus 5
 	'You have no privileges to update this table.' => 'אין לך ההרשאות המתאימות לעדכן טבלה זו',
-	'Saving' => 'שומר',
+	'Saving…' => 'שומר…',
 	'yes' => 'כן',
 	'no' => 'לא',
 );
