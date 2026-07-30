@@ -487,7 +487,7 @@ function bodyClick(event) {
 }
 
 /** Handlers which can be registered by data-<event> attributes */
-const handlers = {confirmClick, formCheck, selectLoadMore, selectSearch};
+const handlers = {ajaxSetHtml, confirmClick, formCheck, selectLoadMore, selectSearch};
 
 /** Call handlers registered by data-<event> attributes between the event target and the body
 * @param {Event} event
