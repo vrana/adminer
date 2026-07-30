@@ -601,47 +601,46 @@ function fieldChange() {
 * @param {function(XMLHttpRequest)} callback
 * @param {string} [data]
 * @param {string} [message] null to not report errors
-* @return {XMLHttpRequest|false} false in case of an error
+* @return {XMLHttpRequest}
 * @uses offlineMessage
 */
 function ajax(url, callback, data, message) {
 	const request = new XMLHttpRequest();
-	if (request) {
-		const ajaxStatus = qs('#ajaxstatus');
-		// empty the live region instead of hiding it, display: none would remove it from the accessibility tree
-		ajaxStatus.innerHTML = (message ? '<div class="message">' + message + '</div>' : '');
-		request.open((data ? 'POST' : 'GET'), url);
-		if (data) {
-			request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-		}
-		if (new URL(url, location).origin == location.origin) { // cross-origin would be preflighted and is_ajax() is only ours
-			request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-		}
-		request.onreadystatechange = () => {
-			if (request.readyState == 4) {
-				if (/^2/.test(request.status)) {
-					callback(request);
-				} else if (message !== null) {
-					ajaxStatus.innerHTML = (request.status ? request.responseText : '<div class="error">' + offlineMessage + '</div>');
-				}
-			}
-		};
-		request.send(data);
+	const ajaxStatus = qs('#ajaxstatus');
+	// empty the live region instead of hiding it, display: none would remove it from the accessibility tree
+	ajaxStatus.innerHTML = (message ? '<div class="message">' + message + '</div>' : '');
+	request.open((data ? 'POST' : 'GET'), url);
+	if (data) {
+		request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 	}
+	if (new URL(url, location).origin == location.origin) { // cross-origin would be preflighted and is_ajax() is only ours
+		request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+	}
+	request.onreadystatechange = () => {
+		if (request.readyState == 4) {
+			if (/^2/.test(request.status)) {
+				callback(request);
+			} else if (message !== null) {
+				ajaxStatus.innerHTML = (request.status ? request.responseText : '<div class="error">' + offlineMessage + '</div>');
+			}
+		}
+	};
+	request.send(data);
 	return request;
 }
 
 /** Use setHtml(key, value) for JSON response
 * @param {string} url
-* @return {boolean} false for success
+* @return {boolean} false
 */
 function ajaxSetHtml(url) {
-	return !ajax(url, request => {
+	ajax(url, request => {
 		const data = JSON.parse(request.responseText);
 		for (const key in data) {
 			setHtml(key, data[key]);
 		}
 	});
+	return false;
 }
 
 let editChanged; // used by plugins
@@ -748,7 +747,7 @@ function selectClick(event, text, warning) {
 /** Load and display next page in select
 * @param {number} limit
 * @param {string} loading
-* @return {boolean} false for success
+* @return {boolean} false
 * @this HTMLLinkElement
 */
 function selectLoadMore(limit, loading) {
@@ -756,7 +755,7 @@ function selectLoadMore(limit, loading) {
 	const title = a.innerHTML;
 	const href = a.href;
 	if (href) {
-		const failed = !ajax(href, request => {
+		ajax(href, request => {
 			const tbody = document.createElement('tbody');
 			tbody.innerHTML = request.responseText;
 			adminerHighlighter(qsa('code', tbody));
@@ -769,12 +768,9 @@ function selectLoadMore(limit, loading) {
 				a.innerHTML = title;
 			}
 		});
-		if (!failed) {
-			// change the link only after creating the request, returning true lets the browser open it
-			a.innerHTML = loading;
-			a.removeAttribute('href');
-		}
-		return failed;
+		a.innerHTML = loading;
+		a.removeAttribute('href');
+		return false;
 	}
 }
 
