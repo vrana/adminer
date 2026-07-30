@@ -192,7 +192,7 @@ foreach ($row["indexes"] as $index) {
 		if (support("partial_indexes")) {
 			echo "<td$idxopts><input name='indexes[$j][partial]' value='" . h($index["partial"]) . "' autocapitalize='off' aria-labelledby='label-condition'>\n";
 		}
-		echo "<td>" . icon("cross", "drop_col[$j]", "x", lang('Remove')) . script("qsl('button').onclick = partial(editingRemoveRow, 'indexes\$1[type]');");
+		echo "<td>" . icon("cross", "drop_col[$j]", "x", lang('Remove'), on('click', 'editingRemoveRow', 'indexes$1[type]'));
 	}
 	$j++;
 }

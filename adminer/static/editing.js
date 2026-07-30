@@ -419,9 +419,6 @@ function editingAddLastRow() {
 	return editingAddRow.call(inputs[inputs.length - 1], 1);
 }
 
-// not in the object literal in functions.js - this file is loaded after it so the function wouldn't be defined yet
-handlers.editingAddLastRow = editingAddLastRow;
-
 /** Remove table row for field
 * @param {string} name regular expression replacement
 * @return {boolean} false
@@ -433,6 +430,9 @@ function editingRemoveRow(name) {
 	parentTag(this, 'tr').hidden = true;
 	return false;
 }
+
+// not in the object literal in functions.js - this file is loaded after it so the functions wouldn't be defined yet
+Object.assign(handlers, {editingAddLastRow, editingRemoveRow});
 
 let lastType = '';
 
