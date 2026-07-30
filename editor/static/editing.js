@@ -25,7 +25,7 @@ function whisper(url) {
 	const field = this;
 	field.orig = field.value;
 	field.previousSibling.value = field.value; // accept number, reject string
-	return ajax(url + encodeURIComponent(field.value), xmlhttp => {
+	ajax(url + encodeURIComponent(field.value), xmlhttp => {
 		if (xmlhttp.status && field.orig == field.value) { // ignore old responses
 			field.nextSibling.innerHTML = xmlhttp.responseText;
 			field.nextSibling.style.display = '';
