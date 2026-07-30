@@ -19,6 +19,7 @@
 - Alter table: Move columns on touch screens
 - Alter table: Edit multiline column comments in a textarea
 - Alter table, Privileges: Do not print a success message if nothing was changed
+- Select: Remove asking for the page number after clicking the Page legend
 - Select: Fix the number of selected rows after going back in history
 - Edit: Keep values of columns with special characters in name after error
 - Edit: Fix switching function to SQL with the edit-foreign plugin (bug #1254)

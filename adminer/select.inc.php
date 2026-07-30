@@ -543,10 +543,8 @@ if (!$columns && support("table")) {
 						? $page + ($rows ? (count($rows) >= $limit ? 2 : 1) : 0)
 						: floor(($found_rows - 1) / $limit)
 					);
-					echo "<fieldset>";
+					echo "<fieldset><legend>" . lang('Page') . "</legend>";
 					if (JUSH != "simpledb" && JUSH != "redis") {
-						echo "<legend><a href='" . h(remove_from_uri("page")) . "'>" . lang('Page') . "</a></legend>";
-						echo script("qsl('a').onclick = function () { pageClick(this.href, +prompt('" . js_escape(lang('Page')) . "', '" . ($page + 1) . "')); return false; };");
 						echo pagination(0, $page) . ($page > 5 ? " …" : "");
 						for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
 							echo pagination($i, $page);
@@ -559,7 +557,6 @@ if (!$columns && support("table")) {
 							);
 						}
 					} else {
-						echo "<legend>" . lang('Page') . "</legend>";
 						echo pagination(0, $page) . ($page > 1 ? " …" : "");
 						echo ($page ? pagination($page, $page) : "");
 						echo ($max_page > $page ? pagination($page + 1, $page) . ($max_page > $page + 1 ? " …" : "") : "");

@@ -302,16 +302,6 @@ function nodePosition(el) {
 	return pos;
 }
 
-/** Go to the specified page
-* @param {string} href
-* @param {string} page
-*/
-function pageClick(href, page) {
-	if (!isNaN(page) && page) {
-		location.href = href + (page != 1 ? '&page=' + (page - 1) : '');
-	}
-}
-
 
 
 /** Display items in menu
