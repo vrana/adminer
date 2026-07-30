@@ -94,4 +94,6 @@ Plugins are not compiled but compilation converts core `lang()` identifiers to n
 
 **Commit style:** `Area: Message` format (e.g., `MySQL: Fix connection timeout`). Bug fixes append `(fix #n)`. Update `CHANGELOG.md` with user-visible changes.
 
+**Changelog `### Internal`:** Each release section may end with an `### Internal` subsection – no blank line before the heading – for changes a user cannot observe: build and compilation, dev tooling, tests, code organization, refactoring. Everything a user can notice stays in the main list, including the plugin and `(customization)` API, which is a documented interface, and compilation fixes with a visible symptom. Accessibility attributes, new translations and skin-affecting HTML/CSS restructuring are deliberately not recorded at all.
+
 **CSS skins:** Default styles are `adminer/static/{default,dark}.css`, but users apply alternative skins by dropping an `adminer.css` (or `adminer-dark.css`) next to the deployed script. These skins target Adminer's HTML structure, class names, and IDs. Bundled examples live in `designs/`, but many more exist in the wild (gallery: https://www.adminer.org/#extras) and can't be updated in lockstep. Avoid breaking them: don't rename or drop existing selectors, IDs, or class names, or restructure HTML, without good reason – prefer additive changes.

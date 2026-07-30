@@ -78,6 +78,7 @@
 - PostgreSQL: Log in with empty server (bug #1304, regression from 5.5.0)
 ### Internal
 - Compile: Replace LZW with deflate compression
+- Update PHPCS and PHPStan
 
 ## Adminer 5.5.0 (released 2026-07-17)
 - Disallow invalid port or socket (GHSA-58cq-mgw2-38m5)
@@ -267,6 +268,20 @@
 - Plugins: Allow changing CSP by more plugins
 - New plugin: Use Monaco Editor for syntax highlighting
 - New plugin: Use Prism for syntax highlighting
+### Internal
+- Describe array shapes in doc-comments by the PHPStan syntax
+- Declare parameter, return and property types in the code instead of the @param tag
+- Require PHP 7.4 to run from source, strip the types when compiling to stay compatible with PHP 5.3
+- Check the code by PHPStan level 6
+- Add a common ancestor to the Db classes of all extensions
+- Plugins: Call the plugins by __call(), register Adminer as the last plugin
+- Remove all global variables
+- Stop ignoring the notice about accessing an array offset on null
+- Use strict mode in JavaScript
+- CSS: Style the alter table images by background-image instead of &lt;input type="image">
+- CSS: Inline the images and remove them from the repository together with the code serving them
+- CSS: Add variables for the default background and foreground color
+- Tests: Generate the same test for all databases, add Elasticsearch, create the homepage screenshots
 
 ## Adminer 5.1.0 (released 2025-03-24)
 - Display collation at table structure if different from table
@@ -294,6 +309,10 @@
 - New plugin: Allow switching light and dark mode (bug #926)
 - New plugin: Confirm before unloading page with changed form
 - Uzbek translation
+### Internal
+- Modernize JavaScript: let and const instead of var, arrow functions, for...of, classList
+- Report E_NOTICE and E_STRICT except accessing an undefined array element
+- Docs: Notes for developers
 
 ## Adminer 5.0.6 (released 2025-03-17)
 - Align numbers right (bug #912)
@@ -308,6 +327,8 @@
 - Designs named adminer-dark.css use dark basic style
 - Plugins: Add method syntaxHighlighting()
 - New plugin: Use Codemirror 5 for syntax highlighting and SQL with typeahead
+### Internal
+- Move PhpShrink to a separate repository
 
 ## Adminer 5.0.5 (released 2025-03-13)
 - MySQL: Display converting function for binary, bit or geometry fields
@@ -320,6 +341,9 @@
 - MS SQL: Fix editing rows with datetime column in primary key
 - MongoDB: Move to plugin
 - CSS: Add dark theme
+### Internal
+- Tests: Run the whole suite also against MariaDB, PostgreSQL, CockroachDB and MS SQL
+- Tests: Cover PhpShrink, revive code coverage
 
 ## Adminer 5.0.4 (released 2025-03-11)
 - Compile: Fix shortening in private methods (regression from 5.0.3)
@@ -384,6 +408,9 @@
 - MongoDB: Remove support for deprecated extension mongo
 - Elasticsearch: Fix text search on boolean fields
 - Plugins: Adminer code is now in a namespace
+### Internal
+- Formalize the coding style
+- Remove most global variables
 
 ## Adminer 4.17.1 (released 2025-02-25)
 - MySQL: Fix typo in the date type (regression from 4.17.0)
@@ -1107,6 +1134,8 @@
 - Set MySQL time zone by PHP setting (Editor)
 - Allow own code in &lt;head> (customization)
 - Polish translation
+### Internal
+- Rework AJAX, the only visible change is the placement of the loading icon
 
 ## Adminer 3.2.0 (released 2011-02-24)
 - Get long texts and slow information by AJAX
@@ -1181,6 +1210,9 @@
 - Hungarian, Japanese and Tamil translation
 - Defer table information in database overview to JavaScript (performance)
 - Big tables optimizations (performance)
+### Internal
+- Compile: Remove functions not supported by the driver
+- Move the source code from SVN to Git
 
 ## Adminer 2.3.2 (released 2010-04-21)
 - Fix COUNT(*) link
@@ -1228,6 +1260,8 @@
 - Align numbers to right in select (Editor)
 - Move &lt;h1> to $adminer->navigation (customization)
 - Rename get_dbh to connection (customization)
+### Internal
+- Print checkboxes and selects by functions, which reduced the size
 
 ## Adminer 2.1.0 (released 2009-09-12)
 - Edit default values directly in table creation
@@ -1293,7 +1327,10 @@
 - Automatically add new fields in table creation
 - Use \n in SQL commands
 ### Internal
-- Separate JavaScript functions
+- Separate JavaScript functions, which allowed compressing and caching them
+- Move the source to adminer/, editor/ and tests/, take JSMin and JUSH from externals/
+- Add comments to the code
+- Prefix the cookies so that they do not collide with other applications on the same domain
 
 ## phpMinAdmin 1.10.1 (released 2009-05-07)
 - Highlight odd and hover rows
@@ -1414,6 +1451,9 @@
 - Display MySQL version and used PHP extension
 - More friendly user interface
 - Slovak translation
+### Internal
+- Split the source into files joined by a compile script
+- Compile: Inline the favicon by base64, the data: URI was not supported by Internet Explorer
 
 ## phpMinAdmin 1.2.0 (released 2007-07-25)
 - Manipulate triggers
