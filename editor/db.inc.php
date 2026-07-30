@@ -13,7 +13,7 @@ if (adminer()->homepage()) {
 	echo "<table class='nowrap checkable odds'>\n";
 	echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: event => tableClick(event, true)});");
 	echo '<thead><tr class="wrap">';
-	echo '<td><input id="check-all" type="checkbox" class="jsonly">' . script("qs('#check-all').onclick = partial(formCheck, /^tables\[/);", "");
+	echo '<td><input id="check-all" type="checkbox" class="jsonly"' . on('click', 'formCheck', '^tables\[') . '>';
 	echo '<th>' . lang('Table');
 	echo '<td>' . lang('Rows');
 	echo "<tbody>\n";

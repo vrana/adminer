@@ -155,12 +155,13 @@ function selectCount(id, count) {
 }
 
 /** Check all elements matching given name
-* @param {RegExp} name
+* @param {string} name regular expression
 * @this HTMLInputElement
 */
 function formCheck(name) {
+	const re = new RegExp(name); // string - a regular expression can't be passed in a data attribute
 	for (const elem of this.form.elements) {
-		if (name.test(elem.name)) {
+		if (re.test(elem.name)) {
 			elem.checked = this.checked;
 			trCheck(elem);
 		}
@@ -486,7 +487,7 @@ function bodyClick(event) {
 }
 
 /** Handlers which can be registered by data-<event> attributes */
-const handlers = {confirmClick};
+const handlers = {confirmClick, formCheck};
 
 /** Call handlers registered by data-<event> attributes between the event target and the body
 * @param {Event} event
