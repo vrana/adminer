@@ -370,8 +370,7 @@ if (!$columns && support("table")) {
 						echo ($sortable ? "<a href='" . h($href . ($sorted && $sort_column == $order[0] ? $desc : '')) . "'>$fun</a>" : $fun);
 						$menu = ($sortable ? "<a href='" . h($href . $desc) . "' title='" . lang('descending') . "' class='text'> ↓</a>" : '');
 						if (!$val["fun"] && isset($field["privileges"]["where"])) {
-							$menu .= "<a href='#fieldset-search' title='" . lang('Search') . "' class='text jsonly'> =</a>";
-							$menu .= script("qsl('a').onclick = partial(selectSearch, '" . js_escape($key) . "');");
+							$menu .= "<a href='#fieldset-search' title='" . lang('Search') . "' class='text jsonly'" . on('click', 'selectSearch', $key) . "> =</a>";
 						}
 						echo ($menu ? "<span class='column'>$menu</span>" : "");
 					}
