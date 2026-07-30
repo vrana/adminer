@@ -477,7 +477,7 @@ function bodyClick(event) {
 }
 
 /** Handlers which can be registered by data-<event> attributes */
-const handlers = {ajaxSetHtml, confirmClick, formCheck, menuToggle, selectLoadMore, selectSearch};
+const handlers = {ajaxForm, ajaxSetHtml, confirmClick, formCheck, menuToggle, selectLoadMore, selectSearch};
 
 /** Call handlers registered by data-<event> attributes between the event target and the body
 * @param {Event} event
@@ -637,17 +637,18 @@ let editChanged; // used by plugins
 let adminerHighlighter = els => {}; // overwritten by syntax highlighters
 
 /** Save form contents through AJAX
-* @param {HTMLFormElement} form
 * @param {string} message
-* @param {HTMLInputElement} [button]
-* @return {boolean}
+* @return {boolean} false when sent by AJAX
+* @this HTMLInputElement submit button
 */
-function ajaxForm(form, message, button) {
+function ajaxForm(message) {
+	const button = this;
+	const form = button.form;
 	let data = [];
 	for (const el of form.elements) {
 		if (el.name && !el.disabled) {
 			if (/^file$/i.test(el.type) && el.value) {
-				return false;
+				return true; // files can't be sent by AJAX, submit the form
 			}
 			if (!/^(checkbox|radio|submit|file)$/i.test(el.type) || el.checked || el == button) {
 				data.push(encodeURIComponent(el.name) + '=' + encodeURIComponent(isTag(el, 'select') ? selectValue(el) : el.value));
@@ -661,7 +662,7 @@ function ajaxForm(form, message, button) {
 		url = url.replace(/\?.*/, '') + '?' + data;
 		data = '';
 	}
-	return ajax(url, request => {
+	ajax(url, request => {
 		const ajaxstatus = qs('#ajaxstatus');
 		setHtml('ajaxstatus', request.responseText);
 		if (qs('.message', ajaxstatus)) { // success
@@ -670,6 +671,7 @@ function ajaxForm(form, message, button) {
 		adminerHighlighter(qsa('code', ajaxstatus));
 		messagesPrint(ajaxstatus);
 	}, data, message);
+	return false;
 }
 
 
