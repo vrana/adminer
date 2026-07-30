@@ -755,10 +755,8 @@ function selectLoadMore(limit, loading) {
 	const a = this;
 	const title = a.innerHTML;
 	const href = a.href;
-	a.innerHTML = loading;
 	if (href) {
-		a.removeAttribute('href');
-		return !ajax(href, request => {
+		const failed = !ajax(href, request => {
 			const tbody = document.createElement('tbody');
 			tbody.innerHTML = request.responseText;
 			adminerHighlighter(qsa('code', tbody));
@@ -771,6 +769,12 @@ function selectLoadMore(limit, loading) {
 				a.innerHTML = title;
 			}
 		});
+		if (!failed) {
+			// change the link only after creating the request, returning true lets the browser open it
+			a.innerHTML = loading;
+			a.removeAttribute('href');
+		}
+		return failed;
 	}
 }
 
