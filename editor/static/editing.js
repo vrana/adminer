@@ -55,4 +55,4 @@ function whisperClick(event) {
 }
 
 // not in the object literal in functions.js - this file is loaded after it so the function wouldn't be defined yet
-Object.assign(handlers, {whisperClick});
+mixin(handlers, {whisperClick});
