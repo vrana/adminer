@@ -487,7 +487,7 @@ function bodyClick(event) {
 }
 
 /** Handlers which can be registered by data-<event> attributes */
-const handlers = {confirmClick, formCheck};
+const handlers = {confirmClick, formCheck, selectLoadMore};
 
 /** Call handlers registered by data-<event> attributes between the event target and the body
 * @param {Event} event

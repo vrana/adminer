@@ -529,9 +529,9 @@ if (!$columns && support("table")) {
 				$pagination = ($limit && ($found_rows === false || $found_rows > $limit || $page));
 				if ($pagination) {
 					echo (($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit
-						? '<p><a href="' . h(remove_from_uri("page|next") . ($_GET["next"] ? "&next=" . urlencode($_GET["next"]) : "") . "&page=" . ($page + 1)) . '" class="loadmore">'
+						? '<p><a href="' . h(remove_from_uri("page|next") . ($_GET["next"] ? "&next=" . urlencode($_GET["next"]) : "") . "&page=" . ($page + 1)) . '" class="loadmore"'
+							. on('click', 'selectLoadMore', $limit, lang('Loading') . "…") . '>'
 							. lang('Load more data') . '</a>'
-							. script("qsl('a').onclick = partial(selectLoadMore, $limit, '" . js_escape(lang('Loading')) . "…');", "")
 						: ''
 					);
 					echo "\n";
