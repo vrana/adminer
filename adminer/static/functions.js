@@ -289,18 +289,6 @@ function setHtml(id, html) {
 	}
 }
 
-/** Find node position
-* @param {Node} el
-* @return {number}
-*/
-function nodePosition(el) {
-	let pos = 0;
-	while ((el = el.previousSibling)) {
-		pos++;
-	}
-	return pos;
-}
-
 
 
 /** Display items in menu
@@ -510,10 +498,21 @@ function delegateEvent(event) {
 function editingKeydown(event) {
 	if (/^Arrow(Down|Up)$/.test(event.key) && isCtrl(event)) {
 		const target = event.target;
-		const sibling = (event.key == 'ArrowUp' ? 'previousSibling' : 'nextSibling');
-		let el = target.parentNode.parentNode[sibling];
-		if (el && (isTag(el, 'tr') || (el = el[sibling])) && isTag(el, 'tr') && (el = el.childNodes[nodePosition(target.parentNode)]) && (el = el.childNodes[nodePosition(target)])) {
-			el.focus();
+		const cell = parentTag(target, 'td|th'); // not parentNode - the NULL checkbox is wrapped in a <label>
+		const cells = [...cell.parentNode.children];
+		const sibling = (event.key == 'ArrowUp' ? 'previousElementSibling' : 'nextElementSibling');
+		let row = cell.parentNode;
+		do {
+			row = row[sibling];
+		} while (row && row.hidden); // skip removed columns
+		const cell2 = (row ? row.children[cells.indexOf(cell)] : null);
+		if (cell2) {
+			// the element at the same position can be hidden, the cell displays e.g. collation or ON DELETE by the column type
+			const name = target.name.replace(/.*(\[[^[]+])$/, '$1');
+			const el = [qs('[name$="' + name + '"]', cell2), ...qsa('input, select, textarea, button', cell2)].find(el2 => el2 && el2.offsetParent);
+			if (el) {
+				el.focus();
+			}
 		}
 		return false;
 	}
