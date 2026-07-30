@@ -287,9 +287,33 @@ Adminer functions without JavaScript but is more user-friendly when JavaScript i
 It does not rely on any framework but includes simple helpers like `qsa()`, a shorthand for `document.querySelectorAll()`, along with small functions that call these helpers.
 
 Previously, these functions were bound directly in HTML (`<a onclick="tableClick()">`), but strict CSP enforcement made this impossible.
-Now, Adminer registers event handlers using a short `<script>` element immediately following the relevant tag, typically using `qsl()` (query selector last).
-This ensures handlers are available immediately.
-The only exception is handlers registered in a loop, where bulk registration is more efficient.
+Adminer then registered event handlers using a short `<script>` element immediately following the relevant tag, typically using `qsl()` (query selector last).
+That works but puts a `<script>`, each with its own `nonce`, all over the page.
+
+Handlers are now registered by a `data-<event>` attribute printed by `on()`:
+
+```php
+echo "<a href='#$id'" . on('click', 'toggle', $id) . ">" . lang('Warnings') . "</a>";
+```
+
+```html
+<a href='#warnings' data-click='toggle("warnings")'>Warnings</a>
+```
+
+The attribute looks like a call but it is never executed as one: `delegateEvent()` in [functions.js](/adminer/static/functions.js) splits it by a regular expression and decodes the arguments by `JSON.parse()` after wrapping them in `[]`.
+It walks from the event target up to the body and calls the handler named by each `data-<event>` attribute on the way.
+The handler gets the arguments from the attribute followed by the event, which is the same signature as `partial()` produces, so the same function still works when registered by `qsl()`.
+Returning false prevents the default action (`addEventListener()` ignores the return value, unlike the `onclick` property) and returning true stops calling the handlers on ancestor elements.
+
+The listener is registered on `<body>` as soon as the element opens, so handlers work even for elements which are not parsed yet - unlike a `<script>`, which activates the handler only when the parser reaches it.
+Prefer the attribute over a `<script>`; register a handler on a common ancestor only when the number of elements grows with the number of rows, like `tableClick` on the whole result table.
+One-shot code (e.g. `tableCheck()`) still uses `script()`, as do plugins, which can keep using `qsl()`.
+
+This is not a way around CSP.
+The attribute is data that the browser never executes, so the allowlist is what makes it safe: `delegateEvent()` looks the name up in the `handlers` object and never in the global scope, where `window['eval']` would allow running any code injected in the attribute.
+Nothing is passed to `eval()` or `new Function()`.
+Don't be fooled by the call-like syntax - the regular expression is anchored, so an injected `handler("x");alert(1)` doesn't match and nothing runs.
+Don't put URLs in the arguments if the element can carry them in `href`.
 
 JavaScript code is split into [functions.js](/adminer/static/functions.js) (common utilities) and [editing.js](/adminer/static/editing.js) (specific to Adminer or Adminer Editor).
 These files are concatenated during compilation since they depend on each other.

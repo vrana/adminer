@@ -162,7 +162,7 @@ if (!$error && $_POST) {
 									$warnings = ($_POST["only_errors"] ? "" : driver()->warnings());
 									$warnings_id = "warnings-$commands";
 									if ($warnings) {
-										$time .= ", <a href='#$warnings_id'>" . lang('Warnings') . "</a>" . script("qsl('a').onclick = partial(toggle, '$warnings_id');", "");
+										$time .= ", <a href='#$warnings_id'" . on('click', 'toggle', $warnings_id) . ">" . lang('Warnings') . "</a>";
 									}
 									$explain = null;
 									$orgtables = null;
@@ -177,10 +177,10 @@ if (!$error && $_POST) {
 											echo "<p class='sql-footer'>" . ($num_rows ? ($limit && $num_rows > $limit ? lang('%d / ', $limit) : "") . lang('%d row(s)', $num_rows) : "");
 											echo $time;
 											if ($connection2 && preg_match("~^($space|\\()*+SELECT\\b~i", $q) && ($explain = explain($connection2, $q))) {
-												echo ", <a href='#$explain_id'>Explain</a>" . script("qsl('a').onclick = partial(toggle, '$explain_id');", "");
+												echo ", <a href='#$explain_id'" . on('click', 'toggle', $explain_id) . ">Explain</a>";
 											}
 											$id = "export-$commands";
-											echo ", <a href='#$id'>" . lang('Export') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "") . "<span id='$id' class='hidden'>: "
+											echo ", <a href='#$id'" . on('click', 'toggle', $id) . ">" . lang('Export') . "</a><span id='$id' class='hidden'>: "
 												. html_select("output", adminer()->dumpOutput(), $adminer_export["output"]) . " "
 												. html_select("format", adminer()->dumpFormat(), $adminer_export["format"])
 												. input_hidden("query", $q)

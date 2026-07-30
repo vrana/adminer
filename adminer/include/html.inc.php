@@ -16,6 +16,24 @@ function nonce(): string {
 	return ' nonce="' . get_nonce() . '"';
 }
 
+/** Get an attribute registering a JS event handler
+* @param string $event event name without "on"
+* @param string $handler key from the handlers allowlist in functions.js
+* @param mixed $arg argument passed to the handler before the event object
+* @return string HTML attribute including the leading space
+*/
+function on(string $event, string $handler, $arg = null): string {
+	$args = array();
+	foreach (array_slice(func_get_args(), 2) as $val) { // not ...$args - variadics are available since PHP 5.6
+		$args[] = json_encode($val, 256); // 256 - JSON_UNESCAPED_UNICODE available since PHP 5.4
+	}
+	return " data-$event='" . str_replace( // h() would escape " to &quot; but the value is printed in a single-quoted attribute so only ' matters
+		array('&', '<', "'"),
+		array('&amp;', '&lt;', '&#039;'),
+		"$handler(" . implode(", ", $args) . ")"
+	) . "'";
+}
+
 /** Get <input type="hidden">
 * @param string|int $value
 * @return string HTML
@@ -132,8 +150,7 @@ function confirm(string $message = "", string $selector = "qsl('input')"): strin
 */
 function print_fieldset(string $id, string $legend, $visible = false): void {
 	echo "<fieldset><legend>";
-	echo "<a href='#fieldset-$id'>$legend</a>";
-	echo script("qsl('a').onclick = partial(toggle, 'fieldset-$id');", "");
+	echo "<a href='#fieldset-$id'" . on('click', 'toggle', "fieldset-$id") . ">$legend</a>";
 	echo "</legend>";
 	echo "<div id='fieldset-$id'" . ($visible ? "" : " class='hidden'") . ">\n";
 }

@@ -310,7 +310,7 @@ class Adminer {
 		$return = "</p>\n"; // required for IE9 inline edit
 		if (!$failed && ($warnings = driver()->warnings())) {
 			$id = "warnings";
-			$return = ", <a href='#$id'>" . lang('Warnings') . "</a>" . script("qsl('a').onclick = partial(toggle, '$id');", "")
+			$return = ", <a href='#$id'" . on('click', 'toggle', $id) . ">" . lang('Warnings') . "</a>"
 				. "$return<div id='$id' class='hidden'>\n$warnings</div>\n"
 			;
 		}
