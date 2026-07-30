@@ -87,6 +87,9 @@ function cookie(assign, days) {
 * @param {string} current
 */
 function verifyVersion(current) {
+	if (!window.fetch) {
+		return; // don't set the cookie, the check can be done after an upgrade
+	}
 	cookie('adminer_version=0', 1);
 	// do not send X-Requested-With to avoid preflight
 	fetch('https://www.adminer.org/version/?current=' + current)

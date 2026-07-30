@@ -65,8 +65,9 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	echo script("mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick"
 		. (isset($_COOKIE["adminer_version"]) || !adminer()->verifyVersion() ? "" : ", onload: partial(verifyVersion, '" . VERSION . "')")
 		. "});
-document.body.classList.replace('nojs', 'js');
-if (!window.isSecureContext) {
+document.body.classList.add('js');
+document.body.classList.remove('nojs'); // not replace() - unsupported in Chrome < 61
+if (!navigator.clipboard) { // undefined also in an insecure context
 	document.body.classList.add('insecure');
 }
 const offlineMessage = '" . js_escape(lang('You are offline.')) . "';

@@ -90,7 +90,7 @@ Plugins are not compiled but compilation converts core `lang()` identifiers to n
 
 **Naming:** Functions and variables use `snake_case`; class methods use `camelCase` (except `Db` and driver classes which use `snake_case` to match mysqli conventions).
 
-**JavaScript:** ES6 (ES2015) only – no `?.`, `??`, `??=`, `async`/`await` or ES2017+ built-ins like `Object.entries()`, in `adminer/static/*.js`, `editor/static/*.js`, plugins and inline `script()`. Newer syntax is a parse error, so one modern token disables all of Adminer's JavaScript. `conf/eslint.config.mjs` pins `ecmaVersion` (it catches syntax, not built-ins).
+**JavaScript:** ES6 (ES2015) only – no `?.`, `??`, `??=`, `async`/`await` or ES2017+ built-ins like `Object.entries()`, in `adminer/static/*.js`, `editor/static/*.js`, plugins and inline `script()`. Newer syntax is a parse error, so one modern token disables all of Adminer's JavaScript. `conf/eslint.config.mjs` pins `ecmaVersion` (it catches syntax, not built-ins). Browser APIs stay at the same generation (~Safari 10, Chrome 54, Firefox 50); feature-detect anything newer instead of using it outright – `fetch` and `navigator.clipboard` already are.
 
 **Comments:** `//!` = TODO, `//~` = debug code. Doc-comments are imperative ("Get" not "Gets"), no trailing period, `@param` only when type is more specific than the declaration.
 
