@@ -511,7 +511,7 @@ function delegateEvent(event) {
 function editingKeydown(event) {
 	if (/^Arrow(Down|Up)$/.test(event.key) && isCtrl(event)) {
 		const target = event.target;
-		const sibling = (event.key == 'ArrowDown' ? 'nextSibling' : 'previousSibling');
+		const sibling = (event.key == 'ArrowUp' ? 'previousSibling' : 'nextSibling');
 		let el = target.parentNode.parentNode[sibling];
 		if (el && (isTag(el, 'tr') || (el = el[sibling])) && isTag(el, 'tr') && (el = el.childNodes[nodePosition(target.parentNode)]) && (el = el.childNodes[nodePosition(target)])) {
 			el.focus();
