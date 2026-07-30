@@ -140,9 +140,9 @@ function html_radios(string $name, array $options, ?string $value = "", string $
 	return $return;
 }
 
-/** Get onclick confirmation */
-function confirm(string $message = "", string $selector = "qsl('input')"): string {
-	return script("$selector.onclick = () => confirm('" . js_escape($message ?: lang('Are you sure?')) . "');", "");
+/** Get an attribute asking for confirmation before submit */
+function confirm(string $message = ""): string {
+	return on('click', 'confirmClick', $message ?: lang('Are you sure?'));
 }
 
 /** Print header for hidden fieldset (close by </div></fieldset>)
@@ -515,7 +515,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 			echo ($update ? script("qsl('input').onclick = function () { return !ajaxForm(this.form, '" . js_escape(lang('Saving')) . "…', this); };") : "");
 		}
 	}
-	echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'>" . confirm() . "\n" : "");
+	echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'" . confirm() . ">\n" : "");
 	if (isset($_GET["select"])) {
 		hidden_fields(array("check" => (array) $_POST["check"], "clone" => $_POST["clone"], "all" => $_POST["all"]));
 	}

@@ -202,11 +202,11 @@ if (adminer()->homepage()) {
 					. "<input type='submit' name='repair' value='" . lang('Repair') . "'> " . on_help("'REPAIR TABLE'")
 				: "")))
 				. (function_exists('Adminer\truncate_tables')
-					? "<input type='submit' name='truncate' value='" . lang('Truncate') . "'> "
-						. on_help(JUSH == "sqlite" ? "'DELETE'" : "'TRUNCATE" . (JUSH == "pgsql" ? "'" : " TABLE'")) . confirm()
+					? "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm() . "> "
+						. on_help(JUSH == "sqlite" ? "'DELETE'" : "'TRUNCATE" . (JUSH == "pgsql" ? "'" : " TABLE'"))
 					: "")
-				. (JUSH == "pgsql" ? "<input type='submit' name='truncate_cascade' value='" . lang('Truncate Cascade') . "'> " . on_help("'TRUNCATE CASCADE'") . confirm() : "")
-				. (function_exists('Adminer\drop_tables') ? "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . on_help("'DROP TABLE'") . confirm() : "");
+				. (JUSH == "pgsql" ? "<input type='submit' name='truncate_cascade' value='" . lang('Truncate Cascade') . "'" . confirm() . "> " . on_help("'TRUNCATE CASCADE'") : "")
+				. (function_exists('Adminer\drop_tables') ? "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . ">" . on_help("'DROP TABLE'") : "");
 				echo ($print ? "<div class='footer'><div>\n<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>$print\n</div></fieldset>\n" : "");
 
 				$databases = (support("scheme") ? adminer()->schemas() : adminer()->databases());

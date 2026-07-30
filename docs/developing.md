@@ -306,7 +306,7 @@ Use the class for a show/hide link; the attribute is for handlers which need arg
 The attribute looks like a call but it is never executed as one: `delegateEvent()` in [functions.js](/adminer/static/functions.js) splits it by a regular expression and decodes the arguments by `JSON.parse()` after wrapping them in `[]`.
 It walks from the event target up to the body and calls the handler named by each `data-<event>` attribute on the way.
 The handler gets the arguments from the attribute followed by the event, which is the same signature as `partial()` produces, so the same function still works when registered by `qsl()`.
-Returning false prevents the default action (`addEventListener()` ignores the return value, unlike the `onclick` property) and returning true stops calling the handlers on ancestor elements.
+Returning anything means that the handler handled the event, so the handlers on ancestor elements are not called; returning false also prevents the default action (`addEventListener()` ignores the return value, unlike the `onclick` property).
 
 The listener is registered on `<body>` as soon as the element opens, so handlers work even for elements which are not parsed yet - unlike a `<script>`, which activates the handler only when the parser reaches it.
 Prefer the attribute over a `<script>`; register a handler on a common ancestor only when the number of elements grows with the number of rows, like `tableClick` on the whole result table.

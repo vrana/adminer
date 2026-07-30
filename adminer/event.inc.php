@@ -55,7 +55,7 @@ if (!$row && $EVENT != "") {
 <p>
 <input type='submit' value='<?php echo lang('Save'); ?>'>
 <?php if ($EVENT != "") { ?>
-<input type='submit' name='drop' value='<?php echo lang('Drop'); ?>'><?php echo confirm(lang('Drop %s?', $EVENT)); ?>
+<input type='submit' name='drop' value='<?php echo lang('Drop'); ?>'<?php echo confirm(lang('Drop %s?', $EVENT)); ?>>
 <?php } ?>
 <?php echo input_token(); ?>
 </form>

@@ -115,7 +115,7 @@ foreach ($row["source"] as $key => $val) {
 <input type='submit' value='<?php echo lang('Save'); ?>'>
 <noscript><p><input type='submit' name='add' value='<?php echo lang('Add column'); ?>'></noscript>
 <?php if ($name != "") { ?>
-<input type='submit' name='drop' value='<?php echo lang('Drop'); ?>'><?php echo confirm(lang('Drop %s?', $name)); ?>
+<input type='submit' name='drop' value='<?php echo lang('Drop'); ?>'<?php echo confirm(lang('Drop %s?', $name)); ?>>
 <?php } ?>
 <?php echo input_token(); ?>
 </form>

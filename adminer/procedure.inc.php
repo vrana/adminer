@@ -79,7 +79,7 @@ if (isset($_GET["function"])) {
 <p>
 <input type='submit' value='<?php echo lang('Save'); ?>'>
 <?php if ($PROCEDURE != "") { ?>
-<input type='submit' name='drop' value='<?php echo lang('Drop'); ?>'><?php echo confirm(lang('Drop %s?', $PROCEDURE)); ?>
+<input type='submit' name='drop' value='<?php echo lang('Drop'); ?>'<?php echo confirm(lang('Drop %s?', $PROCEDURE)); ?>>
 <?php } ?>
 <?php echo input_token(); ?>
 </form>

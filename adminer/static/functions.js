@@ -191,6 +191,15 @@ function formChecked(input, name) {
 	return [...input.form.elements].filter(el => name.test(el.name) && el.checked).length;
 }
 
+/** Ask for confirmation before submit
+* @param {string} message
+* @return {boolean} false to cancel the submit
+*/
+function confirmClick(message) {
+	// window.confirm can't be registered as the handler itself - it throws Illegal invocation when apply() passes the element as this
+	return confirm(message);
+}
+
 /** Select clicked row
 * @param {MouseEvent} event
 * @param {boolean} [click] force click
@@ -476,31 +485,27 @@ function bodyClick(event) {
 	}
 }
 
-/** Handlers which can be registered by data-<event> attributes
-* Never look the name up in the global scope - window['eval'] would allow running any code injected in the attribute
-* __proto__: null - an injected 'constructor' or 'toString' must not find anything either
-*/
-const handlers = {__proto__: null};
+/** Handlers which can be registered by data-<event> attributes */
+const handlers = {confirmClick};
 
 /** Call handlers registered by data-<event> attributes between the event target and the body
-* The handler gets the arguments from the attribute followed by the event, returning false prevents
-* the default action, returning true stops calling the handlers on ancestor elements
 * @param {Event} event
 */
 function delegateEvent(event) {
 	const attr = 'data-' + event.type;
 	for (let el = event.target; el && el.getAttribute; el = el.parentNode) {
 		const value = el.getAttribute(attr);
-		const match = (value ? /^(\w+)\((.*)\)$/.exec(value) : null); // e.g. toggle("fieldset-export")
-		const handler = (match ? handlers[match[1]] : null);
+		const match = (value ? /^(\w+)\((.*)\)$/.exec(value) : null); // e.g. confirmClick("Are you sure?")
+		// hasOwnProperty() - an injected 'constructor' or 'toString' must not find anything either
+		const handler = (match && Object.prototype.hasOwnProperty.call(handlers, match[1]) ? handlers[match[1]] : null);
 		if (handler) {
-			// JSON.parse() - the arguments must never be evaluated as code
+			// the handler gets the arguments from the attribute followed by the event, JSON.parse() - they must never be evaluated as code
 			const result = handler.apply(el, JSON.parse('[' + match[2] + ']').concat(event));
 			if (result === false) {
 				event.preventDefault();
 			}
-			if (result === true) {
-				break;
+			if (result !== undefined) {
+				break; // the handler handled the event, don't call the handlers on ancestor elements
 			}
 		}
 	}

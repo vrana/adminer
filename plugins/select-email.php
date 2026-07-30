@@ -21,7 +21,7 @@ class AdminerSelectEmail extends Adminer\Plugin {
 				. " <input type='submit' name='email_append' value='" . $this->lang('Insert') . "'>\n"; //! JavaScript
 			echo "<p>" . $this->lang('Attachments') . ": <input type='file' name='email_files[]'>" . Adminer\script("qsl('input').onchange = emailFileChange;");
 			echo "<p>" . (count($emailFields) == 1 ? Adminer\input_hidden("email_field", key($emailFields)) : Adminer\html_select("email_field", $emailFields));
-			echo "<input type='submit' name='email' value='" . $this->lang('Send') . "'>" . Adminer\confirm();
+			echo "<input type='submit' name='email' value='" . $this->lang('Send') . "'" . Adminer\confirm() . ">";
 			echo "</div>\n";
 			echo "</div></fieldset>\n";
 			return true;

@@ -32,7 +32,7 @@ if (!$row) {
 <input type='submit' value='<?php echo lang('Save'); ?>'>
 <?php
 if ($_GET["ns"] != "") {
-	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . confirm(lang('Drop %s?', $_GET["ns"])) . "\n";
+	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm(lang('Drop %s?', $_GET["ns"])) . ">\n";
 }
 echo input_token();
 ?>

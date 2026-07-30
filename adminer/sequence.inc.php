@@ -30,7 +30,7 @@ if (!$row) {
 <input type='submit' value='<?php echo lang('Save'); ?>'>
 <?php
 if ($SEQUENCE != "") {
-	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . confirm(lang('Drop %s?', $SEQUENCE)) . "\n";
+	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm(lang('Drop %s?', $SEQUENCE)) . ">\n";
 }
 echo input_token();
 ?>

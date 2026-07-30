@@ -76,7 +76,7 @@ echo ($_POST["add"] || strpos($name, "\n")
 <input type='submit' value='<?php echo lang('Save'); ?>'>
 <?php
 if (DB != "") {
-	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'>" . confirm(lang('Drop %s?', DB)) . "\n";
+	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm(lang('Drop %s?', DB)) . ">\n";
 } elseif (!$_POST["add"] && $_GET["db"] == "") {
 	echo icon("plus", "add[0]", "+", lang('Add next')) . "\n";
 }
