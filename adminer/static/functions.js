@@ -55,7 +55,9 @@ function mixin(target, source) {
 * @param {boolean} [enable]
 */
 function alterClass(el, className, enable) {
-	el?.classList.toggle(className, !!enable); // !! - undefined would toggle
+	if (el) {
+		el.classList.toggle(className, !!enable); // !! - undefined would toggle
+	}
 }
 
 /** Toggle visibility
@@ -64,7 +66,7 @@ function alterClass(el, className, enable) {
 */
 function toggle(id) {
 	const el = qs('#' + id);
-	el?.classList.toggle('hidden');
+	el && el.classList.toggle('hidden');
 	return false;
 }
 
@@ -87,11 +89,13 @@ function cookie(assign, days) {
 function verifyVersion(current) {
 	cookie('adminer_version=0', 1);
 	// do not send X-Requested-With to avoid preflight
-	fetch('https://www.adminer.org/version/?current=' + current).then(async response => {
-		const json = await response.json();
-		cookie('adminer_version=' + (json.version || current), 7); // empty if there's no newer version
-		qs('#version').textContent = json.version;
-	});
+	fetch('https://www.adminer.org/version/?current=' + current)
+		.then(response => response.json())
+		.then(json => {
+			cookie('adminer_version=' + (json.version || current), 7); // empty if there's no newer version
+			qs('#version').textContent = json.version;
+		})
+	;
 }
 
 /** Get value of select
@@ -103,7 +107,7 @@ function selectValue(select) {
 		return select.value;
 	}
 	const selected = select.options[select.selectedIndex];
-	return (selected.attributes.value?.specified ? selected.value : selected.text);
+	return ((selected.attributes.value || {}).specified ? selected.value : selected.text);
 }
 
 /** Verify if element has a specified tag name
@@ -134,7 +138,8 @@ function parentTag(el, tag) {
 function trCheck(el) {
 	const tr = parentTag(el, 'tr');
 	alterClass(tr, 'checked', el.checked);
-	el.form?.['all']?.onclick?.();
+	const all = el.form && el.form['all'];
+	all && all.onclick && all.onclick();
 }
 
 /** Fill number of selected items
@@ -219,7 +224,7 @@ function tableClick(event, click) {
 	el = el.firstChild.firstChild;
 	if (click) {
 		el.checked = !el.checked;
-		el.onclick?.();
+		el.onclick && el.onclick();
 	}
 	if (el.name == 'check[]') {
 		el.form['all'].checked = false;
@@ -460,7 +465,7 @@ function bodyKeydown(event, button) {
 function bodyClick(event) {
 	delegateEvent(event);
 	const target = event.target;
-	const toggler = target.closest?.('.toggle'); // closest() - the link can contain other elements
+	const toggler = target.closest && target.closest('.toggle'); // closest() - the link can contain other elements
 	if (toggler) {
 		toggle(toggler.getAttribute('href').slice(1));
 		event.preventDefault();
@@ -703,7 +708,7 @@ function selectClick(event, text, warning) {
 	};
 
 	const pos = getSelection().anchorOffset;
-	let value = td.firstChild?.alt || td.textContent;
+	let value = (td.firstChild && td.firstChild.alt) || td.textContent;
 	const tdStyle = window.getComputedStyle(td, null);
 
 	input.style.width = Math.max(td.clientWidth - parseFloat(tdStyle.paddingLeft) - parseFloat(tdStyle.paddingRight), (text ? 200 : 20)) + 'px';

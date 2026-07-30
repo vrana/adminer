@@ -30,7 +30,7 @@ function whisper(url) {
 			field.nextSibling.innerHTML = xmlhttp.responseText;
 			field.nextSibling.style.display = '';
 			const a = field.nextSibling.firstChild;
-			if (a?.firstChild.data == field.value) {
+			if (a && a.firstChild.data == field.value) {
 				field.previousSibling.value = decodeURIComponent(a.href.replace(/.*=/, ''));
 				a.classList.add('active');
 			}

@@ -8,7 +8,9 @@ export default [
 	globalIgnores(["externals/"]),
 	js.configs.recommended,
 	{
+		files: ["**/*.js"], // not this .mjs config
 		languageOptions: {
+			ecmaVersion: 2015, // newer syntax is a parse error, disabling the whole file; doesn't catch newer built-ins (e.g. Object.entries())
 			globals: {
 				...globals.browser,
 				jush: false, jushLinks: false,

@@ -111,7 +111,9 @@ function dbMouseDown(event) {
 	}
 
 	dbCtrl = isCtrl(event);
-	dbPrevious[this.name] ??= this.value;
+	if (dbPrevious[this.name] == undefined) {
+		dbPrevious[this.name] = this.value;
+	}
 }
 
 /** Load database after selecting it
@@ -272,7 +274,7 @@ function editFields() {
 	// HTML5 drag and drop doesn't work on touch screens; addEventListener() because the handlers must not be passive
 	table.addEventListener('touchstart', e => {
 		const el = parentTag(e.target, 'button');
-		if (el?.draggable) {
+		if (el && el.draggable) {
 			e.preventDefault(); // to not scroll the page
 			dragStart(el);
 		}
@@ -702,7 +704,7 @@ function sqlExport() {
 		return true;
 	}
 	const div = form.previousElementSibling;
-	const table = (div?.classList.contains('scrollable') ? qs('table', div) : null);
+	const table = (div && div.classList.contains('scrollable') ? qs('table', div) : null);
 	if (!table) {
 		return true;
 	}
@@ -835,7 +837,8 @@ function schemaMouseup(event, db) {
 		tablePos[that.firstChild.firstChild.firstChild.data] = [ (event.clientY - y) / em, (event.clientX - x) / em ];
 		that = undefined;
 		let s = '';
-		for (const [key, [top, left]] of Object.entries(tablePos)) {
+		for (const key in tablePos) {
+			const [top, left] = tablePos[key];
 			s += '_' + key + ':' + Math.round(top) + 'x' + Math.round(left);
 		}
 		s = encodeURIComponent(s.slice(1));

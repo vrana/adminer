@@ -323,6 +323,11 @@ These files are concatenated during compilation since they depend on each other.
 
 JavaScript code follows the coding style defined in [eslint.config.mjs](/conf/eslint.config.mjs), but because ESLint requires additional dependencies, I run it externally.
 
+The code must not use anything newer than ES6, which the config pins by `ecmaVersion`.
+Newer syntax is not just unsupported in older browsers, it is a parse error, so a single modern token disables all of Adminer's JavaScript instead of only the feature using it.
+The bundled syntax highlighter [JUSH](https://github.com/vrana/jush) holds the same baseline.
+Newer built-ins (e.g. `Object.entries()`) fail only at runtime but are avoided too, and ESLint doesn't report them.
+
 ## Styles
 
 Adminer generates simple HTML and styles it with basic CSS, respecting user preferences for dark mode.

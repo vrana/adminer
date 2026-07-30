@@ -5,6 +5,7 @@
 - Escape &lt; in strings printed to JavaScript, a name containing &lt;!--&lt;script> broke the page
 - Login: Disallow accessing servers which accept any password (e.g. PostgreSQL with trust authentication)
 - Check for a new version even without JavaScript
+- Fix JavaScript in Safari < 11 and Firefox < 52 (regression from 5.5.0)
 - Sort languages by their translated name
 - Fix the copy to clipboard icon not displayed on Apple systems
 - Close the menu on small screens by Esc
@@ -64,7 +65,7 @@
 - Use named constants instead of their values
 - Compile: Exit if a replacement doesn't match
 - Plugins: Compute official checksums from the plugins directory instead of a generated file
-- Modernize JavaScript, remove old browser workarounds
+- Require ES6 in JavaScript, remove old browser workarounds
 - Use standard JSDoc @param and @return syntax
 - Docs: Handling of values and binary data, plugin translations, CSS changes must not break skins
 

@@ -90,6 +90,8 @@ Plugins are not compiled but compilation converts core `lang()` identifiers to n
 
 **Naming:** Functions and variables use `snake_case`; class methods use `camelCase` (except `Db` and driver classes which use `snake_case` to match mysqli conventions).
 
+**JavaScript:** ES6 (ES2015) only – no `?.`, `??`, `??=`, `async`/`await` or ES2017+ built-ins like `Object.entries()`, in `adminer/static/*.js`, `editor/static/*.js`, plugins and inline `script()`. Newer syntax is a parse error, so one modern token disables all of Adminer's JavaScript. `conf/eslint.config.mjs` pins `ecmaVersion` (it catches syntax, not built-ins).
+
 **Comments:** `//!` = TODO, `//~` = debug code. Doc-comments are imperative ("Get" not "Gets"), no trailing period, `@param` only when type is more specific than the declaration.
 
 **Commit style:** `Area: Message` format (e.g., `MySQL: Fix connection timeout`). Bug fixes append `(fix #n)`. Update `CHANGELOG.md` with user-visible changes.
