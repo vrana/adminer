@@ -330,7 +330,8 @@ Newer built-ins (e.g. `Object.entries()`) fail only at runtime but are avoided t
 
 Browser APIs are held to the same generation, roughly Safari 10, Chrome 54 and Firefox 50 - `append()` and `replaceWith()` set that floor and are not worth trading back for `appendChild()`.
 ESLint checks none of this, so newer APIs slip in easily: `classList.replace()` (Chrome 61) broke showing and hiding elements for three releases.
-Where an API is genuinely newer than the rest, feature-detect it instead of dropping the baseline - `verifyVersion()` returns early without `fetch()`, and the `insecure` body class hides the copy icon when `navigator.clipboard` is missing, which covers both old browsers and insecure connections.
+Where a newer API has an older equivalent, use the older one instead of feature-detecting: the version check goes through `ajax()`, which sends `X-Requested-With` only to our own origin so the cross-origin request stays simple and needs no preflight.
+Feature-detect only when there is no alternative - the `insecure` body class hides the copy icon when `navigator.clipboard` is missing, which covers both old browsers and insecure connections.
 
 ## Styles
 

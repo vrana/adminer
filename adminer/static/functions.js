@@ -87,18 +87,12 @@ function cookie(assign, days) {
 * @param {string} current
 */
 function verifyVersion(current) {
-	if (!window.fetch) {
-		return; // don't set the cookie, the check can be done after an upgrade
-	}
 	cookie('adminer_version=0', 1);
-	// do not send X-Requested-With to avoid preflight
-	fetch('https://www.adminer.org/version/?current=' + current)
-		.then(response => response.json())
-		.then(json => {
-			cookie('adminer_version=' + (json.version || current), 7); // empty if there's no newer version
-			qs('#version').textContent = json.version;
-		})
-	;
+	ajax('https://www.adminer.org/version/?current=' + current, request => {
+		const json = JSON.parse(request.responseText);
+		cookie('adminer_version=' + (json.version || current), 7); // empty if there's no newer version
+		qs('#version').textContent = json.version;
+	}, '', null); // null - a failed check must not report being offline
 }
 
 /** Get value of select
@@ -600,7 +594,7 @@ function fieldChange() {
 * @param {string} url
 * @param {function(XMLHttpRequest)} callback
 * @param {string} [data]
-* @param {string} [message]
+* @param {string} [message] null to not report errors
 * @return {XMLHttpRequest|false} false in case of an error
 * @uses offlineMessage
 */
@@ -614,7 +608,9 @@ function ajax(url, callback, data, message) {
 		if (data) {
 			request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		}
-		request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+		if (new URL(url, location).origin == location.origin) { // cross-origin would be preflighted and is_ajax() is only ours
+			request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+		}
 		request.onreadystatechange = () => {
 			if (request.readyState == 4) {
 				if (/^2/.test(request.status)) {
