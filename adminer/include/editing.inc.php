@@ -311,8 +311,8 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 		echo "<td id='label-default'$default_class>" . lang('Default value');
 		echo (support("comment") ? "<td id='label-comment'$comment_class>" . lang('Comment') : "");
 	}
-	echo "<td>" . icon("plus", "add[" . (support("move_col") ? 0 : count($fields)) . "]", "+", lang('Add next'));
-	echo (support("move_col") ? "" : script("qsl('button').onclick = editingAddLastRow;"));
+	$last_col = !support("move_col"); // the column can be added only to the end
+	echo "<td>" . icon("plus", "add[" . ($last_col ? count($fields) : 0) . "]", "+", lang('Add next'), ($last_col ? on('click', 'editingAddLastRow') : ""));
 	echo "<tbody>\n";
 	echo script("mixin(qsl('tbody'), {onclick: editingClick, onkeydown: editingKeydown, oninput: editingInput});");
 	foreach ($fields as $i => $field) {
