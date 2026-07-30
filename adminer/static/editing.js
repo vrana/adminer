@@ -1,5 +1,6 @@
 'use strict'; // Adminer specific functions
 
+// eslint-disable-next-line no-unassigned-vars
 let autocompleter; // set in adminer.inc.php
 
 /** Load syntax highlighting

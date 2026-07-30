@@ -322,6 +322,7 @@ JavaScript code is split into [functions.js](/adminer/static/functions.js) (comm
 These files are concatenated during compilation since they depend on each other.
 
 JavaScript code follows the coding style defined in [eslint.config.mjs](/conf/eslint.config.mjs), but because ESLint requires additional dependencies, I run it externally.
+The config prepends the counterpart file to each of them by a processor, so ESLint sees the same code as the browser and shifts the reported line numbers back.
 
 The code must not use anything newer than ES6, which the config pins by `ecmaVersion`.
 Newer syntax is not just unsupported in older browsers, it is a parse error, so a single modern token disables all of Adminer's JavaScript instead of only the feature using it.
