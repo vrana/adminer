@@ -58,13 +58,10 @@ function typePassword(el, disable) {
 	}
 }
 
-/** Install toggle handler
+/** Install handlers in messages
 * @param [HTMLElement]
 */
 function messagesPrint(parent) {
-	for (const el of qsa('.toggle', parent)) {
-		el.onclick = partial(toggle, el.getAttribute('href').slice(1));
-	}
 	copyCode(parent);
 }
 

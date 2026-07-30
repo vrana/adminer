@@ -611,7 +611,7 @@ if (!$columns && support("table")) {
 
 			if (adminer()->selectImportPrint()) {
 				echo "<p>";
-				echo "<a href='#import'" . on('click', 'toggle', 'import') . ">" . lang('Import') . "</a>";
+				echo "<a href='#import' class='toggle'>" . lang('Import') . "</a>";
 				echo "<span id='import'" . ($_POST["import"] ? "" : " class='hidden'") . ">: ";
 				echo file_input("<input type='file' name='csv_file'> "
 					. html_select("separator", array("csv" => "CSV,", "csv;" => "CSV;", "tsv" => "TSV"), $adminer_import["format"])

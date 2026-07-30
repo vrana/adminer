@@ -150,7 +150,7 @@ function confirm(string $message = "", string $selector = "qsl('input')"): strin
 */
 function print_fieldset(string $id, string $legend, $visible = false): void {
 	echo "<fieldset><legend>";
-	echo "<a href='#fieldset-$id'" . on('click', 'toggle', "fieldset-$id") . ">$legend</a>";
+	echo "<a href='#fieldset-$id' class='toggle'>$legend</a>";
 	echo "</legend>";
 	echo "<div id='fieldset-$id'" . ($visible ? "" : " class='hidden'") . ">\n";
 }

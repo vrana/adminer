@@ -293,12 +293,15 @@ That works but puts a `<script>`, each with its own `nonce`, all over the page.
 Handlers are now registered by a `data-<event>` attribute printed by `on()`:
 
 ```php
-echo "<a href='#$id'" . on('click', 'toggle', $id) . ">" . lang('Warnings') . "</a>";
+echo "<a href='#$id'" . on('click', 'showRow', $id) . ">" . lang('Warnings') . "</a>";
 ```
 
 ```html
-<a href='#warnings' data-click='toggle("warnings")'>Warnings</a>
+<a href='#warnings' data-click='showRow("warnings")'>Warnings</a>
 ```
+
+The handler name is illustrative - the `handlers` allowlist is currently empty because the only handler it held, `toggle`, moved to `bodyClick()`, which calls it for every clicked `class='toggle'` link.
+Use the class for a show/hide link; the attribute is for handlers which need arguments.
 
 The attribute looks like a call but it is never executed as one: `delegateEvent()` in [functions.js](/adminer/static/functions.js) splits it by a regular expression and decodes the arguments by `JSON.parse()` after wrapping them in `[]`.
 It walks from the event target up to the body and calls the handler named by each `data-<event>` attribute on the way.

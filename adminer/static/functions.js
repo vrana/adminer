@@ -454,12 +454,17 @@ function bodyKeydown(event, button) {
 	return true;
 }
 
-/** Open form to a new window on Ctrl+click or Shift+click
+/** Toggle visibility by .toggle links, open form to a new window on Ctrl+click or Shift+click
 * @param MouseEvent
 */
 function bodyClick(event) {
 	delegateEvent(event);
 	const target = event.target;
+	const toggler = target.closest?.('.toggle'); // closest() - the link can contain other elements
+	if (toggler) {
+		toggle(toggler.getAttribute('href').slice(1));
+		event.preventDefault();
+	}
 	if ((isCtrl(event) || event.shiftKey) && target.type == 'submit' && isTag(target, 'input')) {
 		target.form.target = '_blank';
 		setTimeout(() => {
@@ -473,7 +478,7 @@ function bodyClick(event) {
 * Never look the name up in the global scope - window['eval'] would allow running any code injected in the attribute
 * __proto__: null - an injected 'constructor' or 'toString' must not find anything either
 */
-const handlers = {__proto__: null, toggle};
+const handlers = {__proto__: null};
 
 /** Call handlers registered by data-<event> attributes between the event target and the body
 * The handler gets the arguments from the attribute followed by the event, returning false prevents
