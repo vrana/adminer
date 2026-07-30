@@ -24,6 +24,8 @@ function adminerDarkSet() {
 	cookie('adminer_dark=' + (adminerDark ? 1 : 0), 30);
 }
 
+mixin(handlers, {adminerDarkSwitch}); // a plugin can't extend the object literal in functions.js
+
 const saved = document.cookie.match(/adminer_dark=(\d)/);
 if (saved) {
 	adminerDark = +saved[1];
@@ -36,8 +38,8 @@ if (saved) {
 	}
 
 	function navigation($missing) {
-		echo "<big style='position: fixed; bottom: .5em; right: .5em; cursor: pointer;'>☀</big>"
-			. Adminer\script("adminerDarkSet(); qsl('big').onclick = adminerDarkSwitch;") . "\n"
+		echo "<big style='position: fixed; bottom: .5em; right: .5em; cursor: pointer;'" . Adminer\on('click', 'adminerDarkSwitch') . ">☀</big>"
+			. Adminer\script("adminerDarkSet();") . "\n"
 		;
 	}
 
