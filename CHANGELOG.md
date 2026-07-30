@@ -68,6 +68,7 @@
 - Plugins: Compute official checksums from the plugins directory instead of a generated file
 - Require ES6 in JavaScript, remove old browser workarounds
 - Use standard JSDoc @param and @return syntax
+- ESLint: Install it by composer install, run it in composer check and CI
 - Docs: Handling of values and binary data, plugin translations, CSS changes must not break skins
 
 ## Adminer 5.5.1 (released 2026-07-21)

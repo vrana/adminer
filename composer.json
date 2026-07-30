@@ -35,10 +35,11 @@
     "scripts": {
         "post-install-cmd": "@submodules",
         "post-update-cmd": "@submodules",
-        "submodules": "@php -r \"passthru('git submodule update --init --recursive');\"",
+        "submodules": "@php -r \"passthru('git submodule update --init --recursive'); passthru('npm install --no-save --prefix . eslint @eslint/js globals');\"",
         "check": [
             "phpcs --standard=conf/phpcs.xml",
-            "phpstan analyse -c conf/phpstan.neon"
+            "phpstan analyse -c conf/phpstan.neon",
+            "npx eslint -c conf/eslint.config.mjs"
         ],
         "compile": "@php compile.php",
         "clean": "@php -r \"array_map('unlink', array_merge(glob('adminer*.php'), glob('editor*.php')));\""

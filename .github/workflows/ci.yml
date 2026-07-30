@@ -20,3 +20,8 @@ jobs:
         with:
           version: latest
           configuration: conf/phpstan.neon
+      - uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+      - run: npm install --no-save --prefix . eslint @eslint/js globals
+      - run: npx eslint -c conf/eslint.config.mjs

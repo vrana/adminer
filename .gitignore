@@ -9,5 +9,6 @@
 /tests/cropped/
 /vendor/
 /composer.lock
+/node_modules/
 adminer-plugins/
 adminer-plugins.php

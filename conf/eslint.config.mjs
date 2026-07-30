@@ -1,4 +1,3 @@
-import { globalIgnores } from "eslint/config";
 import js from "@eslint/js";
 import globals from "globals";
 import { readFileSync } from "node:fs";
@@ -34,7 +33,7 @@ function merge(prepended) {
 }
 
 export default [
-	globalIgnores(["externals/"]),
+	{ignores: ["externals/"]}, // a config with only ignores is global; not globalIgnores() to not require the eslint package itself
 	js.configs.recommended,
 	{
 		files: ["**/*.js"], // not this .mjs config

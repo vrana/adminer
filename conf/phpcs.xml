@@ -8,6 +8,7 @@
 	<file>..</file>
 	<exclude-pattern>/externals/</exclude-pattern>
 	<exclude-pattern>/vendor/</exclude-pattern><!-- Created by Composer in CI -->
+	<exclude-pattern>/node_modules/</exclude-pattern><!-- Created by npm, the flatted package ships a PHP file -->
 	<exclude-pattern>/\.claude/</exclude-pattern><!-- Git worktrees created by Claude Code -->
 	<exclude-pattern>/designs/</exclude-pattern>
 	<exclude-pattern type="relative">^(adminer|editor)[-.]</exclude-pattern>

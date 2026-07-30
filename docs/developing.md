@@ -321,7 +321,9 @@ Don't put URLs in the arguments if the element can carry them in `href`.
 JavaScript code is split into [functions.js](/adminer/static/functions.js) (common utilities) and [editing.js](/adminer/static/editing.js) (specific to Adminer or Adminer Editor).
 These files are concatenated during compilation since they depend on each other.
 
-JavaScript code follows the coding style defined in [eslint.config.mjs](/conf/eslint.config.mjs), but because ESLint requires additional dependencies, I run it externally.
+JavaScript code follows the coding style defined in [eslint.config.mjs](/conf/eslint.config.mjs), which `composer check` verifies by ESLint.
+`composer install` fetches ESLint by npm, together with `@eslint/js` and `globals`, which ESLint doesn't ship but the config needs.
+Run it by `npx eslint -c conf/eslint.config.mjs`, which prefers the local installation over a global one.
 The config prepends the counterpart file to each of them by a processor, so ESLint sees the same code as the browser and shifts the reported line numbers back.
 
 The code must not use anything newer than ES6, which the config pins by `ecmaVersion`.
