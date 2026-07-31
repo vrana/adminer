@@ -11,6 +11,7 @@
 - Fix the copy to clipboard icon not displayed on Apple systems
 - Close the menu on small screens by Esc
 - Tables overview: speed up, show totals in SQLite, real size in MS SQL, Oracle
+- Table structure: Shorten long checks
 - SQL command: Show column type in result table header
 - SQL command: Show number of rows in all drivers
 - SQL command: Export result to CSV by JavaScript without re-running the query (bug #1108, SF-760)

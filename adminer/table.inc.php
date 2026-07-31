@@ -95,7 +95,7 @@ if (!is_view($table_status)) {
 			echo "<table class='actions'>\n";
 			foreach ($check_constraints as $key => $val) {
 				echo "<tr title='" . h($key) . "'>";
-				echo "<td><code class='jush-" . JUSH . "'>" . h($val);
+				echo "<td><code class='jush-" . JUSH . "'>" . shorten_utf8(preg_replace('~\s+~', ' ', ltrim($val)), 80, "</code>");
 				echo "<td><a href='" . h(ME . 'check=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "' class='hover'>" . lang('Alter') . "</a>";
 				echo "\n";
 			}

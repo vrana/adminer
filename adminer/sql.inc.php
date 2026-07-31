@@ -284,7 +284,7 @@ if (!isset($_GET["import"]) && $history) {
 		list($q, $time, $elapsed) = $val;
 		echo '<div><a href="' . h(ME . "sql=&history=$key") . '" class="hover">' . lang('Edit') . "</a>"
 			. " <span class='time' title='" . @date('Y-m-d', $time) . "'>" . @date("H:i:s", $time) . "</span>" // @ - time zone may be not set
-			. " <code class='jush-" . JUSH . "'>" . shorten_utf8(ltrim(str_replace("\n", " ", str_replace("\r", "", preg_replace("~^(#|$line_comment).*~m", '', $q)))), 80, "</code>")
+			. " <code class='jush-" . JUSH . "'>" . shorten_utf8(preg_replace('~\s+~', ' ', ltrim(preg_replace("~^(#|$line_comment).*~m", '', $q))), 80, "</code>")
 			. ($elapsed ? " <span class='time'>($elapsed)</span>" : "")
 			. "</div>\n"
 		;
