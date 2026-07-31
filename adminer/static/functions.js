@@ -350,9 +350,9 @@ function formSubmit() {
 */
 function selectAddRow() {
 	const field = this;
-	const row = cloneNode(field.parentNode);
-	field.onchange = selectFieldChange;
-	field.onchange();
+	const row = cloneNode(field.parentNode); // the clone keeps the attribute so that it adds the next row
+	field.setAttribute('data-change', 'selectFieldChange()');
+	fire(field, 'change');
 	for (const select of qsa('select', row)) {
 		select.name = select.name.replace(/[a-z]\[\d+/, '$&1');
 		select.selectedIndex = 0;
@@ -405,7 +405,7 @@ function selectSearch(name) {
 	if (!div) { // use the last empty row
 		div = divs[divs.length - 1];
 		div.firstChild.value = name;
-		div.firstChild.onchange();
+		fire(div.firstChild, 'change');
 	}
 	qs('[name$="[val]"]', div).focus();
 	return false;
@@ -473,7 +473,7 @@ function bodyClick(event) {
 /** Handlers which can be registered by data-<event> attributes */
 const handlers = {
 	ajaxForm, ajaxSetHtml, confirmClick, formCheck, menuToggle, selectLoadMore, selectSearch, // click
-	formSubmit, // change
+	formSubmit, selectAddRow, // change
 };
 
 /** Call handlers registered by data-<event> attributes between the event target and the body

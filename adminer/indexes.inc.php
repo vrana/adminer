@@ -166,10 +166,10 @@ foreach ($row["indexes"] as $index) {
 		$i = 1;
 		foreach ($index["columns"] as $key => $column) {
 			echo "<span>" . select_input(
-				" name='indexes[$j][columns][$i]' title='" . lang('Column') . "'",
+				" name='indexes[$j][columns][$i]' title='" . lang('Column') . "'"
+					. on('change', ($i == count($index["columns"]) ? 'indexesAddColumn' : 'indexesChangeColumn'), (JUSH == "sql" ? "" : $_GET["indexes"] . "_")),
 				($fields && ($column == "" || $fields[$column]) ? array_combine($fields_keys, $fields_keys) : array()),
-				$column,
-				"partial(" . ($i == count($index["columns"]) ? "indexesAddColumn" : "indexesChangeColumn") . ", '" . js_escape(JUSH == "sql" ? "" : $_GET["indexes"] . "_") . "')"
+				$column
 			);
 			echo " <span$idxopts>";
 			echo ($lengths ? "<input type='number' name='indexes[$j][lengths][$i]' class='size' value='" . h(idx($index["lengths"], $key)) . "' title='" . lang('Length') . "'>" : "");

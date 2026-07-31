@@ -133,12 +133,12 @@ function textarea(string $name, $value, int $rows = 10, int $cols = 80): void {
 /** Generate HTML <select> or <input> if $options are empty
 * @param string[] $options
 */
-function select_input(string $attrs, array $options, ?string $value = "", string $onchange = "", string $placeholder = ""): string {
-	$tag = ($options ? "select" : "input");
+function select_input(string $attrs, array $options, ?string $value = "", string $placeholder = ""): string {
+	$tag = ($options ? "select" : "input"); //! a change handler in $attrs fires only on blur for the input, it should use input
 	return "<$tag$attrs" . ($options
 		? "><option value=''>$placeholder" . optionlist($options, $value, true) . "</select>"
 		: " size='10' value='" . h($value) . "' placeholder='$placeholder'>"
-	) . ($onchange ? script("qsl('$tag').onchange = $onchange;", "") : ""); //! use oninput for input
+	);
 }
 
 /** Print one row in JSON object

@@ -464,15 +464,14 @@ class Adminer {
 		foreach ($select as $key => $val) {
 			$val = idx($_GET["columns"], $key, array());
 			$column = select_input(
-				" name='columns[$i][col]'",
+				" name='columns[$i][col]'" . on('change', ($key !== "" ? 'selectFieldChange' : 'selectAddRow')),
 				$columns,
-				$val["col"],
-				($key !== "" ? "selectFieldChange" : "selectAddRow")
+				$val["col"]
 			);
 			echo "<div>" . (driver()->functions || driver()->grouping
 				? html_select("columns[$i][fun]", array(-1 => "") + array_filter(array(lang('Functions') => driver()->functions, lang('Aggregation') => driver()->grouping)), $val["fun"])
 					. on_help("event.target.value && event.target.value.replace(/ |\$/, '(') + ')'", 1)
-					. script("qsl('select').onchange = function () { helpClose();" . ($key !== "" ? "" : " qsl('select, input', this.parentNode).onchange();") . " };", "")
+					. script("qsl('select').onchange = function () { helpClose();" . ($key !== "" ? "" : " fire(qsl('select, input', this.parentNode), 'change');") . " };", "")
 					. "($column)"
 				: $column
 			) . "</div>\n";
@@ -500,10 +499,9 @@ class Adminer {
 		foreach (array_merge((array) $_GET["where"], array(array())) as $i => $val) {
 			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], adminer()->operators()))) {
 				echo "<div>" . select_input(
-					" name='where[$i][col]'",
+					" name='where[$i][col]'" . on('change', ($val ? 'selectFieldChange' : 'selectAddRow')),
 					$columns,
 					$val["col"],
-					($val ? "selectFieldChange" : "selectAddRow"),
 					"(" . lang('anywhere') . ")"
 				);
 				echo html_select("where[$i][op]", adminer()->operators(), $val["op"], on('change', 'selectFirstChange'));
@@ -525,12 +523,12 @@ class Adminer {
 		$i = 0;
 		foreach ((array) $_GET["order"] as $key => $val) {
 			if ($val != "") {
-				echo "<div>" . select_input(" name='order[$i]'", $columns, $val, "selectFieldChange");
+				echo "<div>" . select_input(" name='order[$i]'" . on('change', 'selectFieldChange'), $columns, $val);
 				echo checkbox("desc[$i]", 1, isset($_GET["desc"][$key]), lang('descending')) . "</div>\n";
 				$i++;
 			}
 		}
-		echo "<div>" . select_input(" name='order[$i]'", $columns, "", "selectAddRow");
+		echo "<div>" . select_input(" name='order[$i]'" . on('change', 'selectAddRow'), $columns);
 		echo checkbox("desc[$i]", 1, false, lang('descending')) . "</div>\n";
 		echo "</div></fieldset>\n";
 	}

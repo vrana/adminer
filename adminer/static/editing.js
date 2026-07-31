@@ -673,14 +673,14 @@ function indexesAddColumn(prefix) {
 		while (selectValue(select) != "INDEX" && select.selectedIndex < select.options.length) {
 			select.selectedIndex++;
 		}
-		select.onchange();
+		fire(select, 'change');
 	}
-	const column = cloneNode(field.parentNode);
+	const column = cloneNode(field.parentNode); // the clone keeps the attribute so that it adds the next column
 	for (const select of qsa('select', column)) {
 		select.name = select.name.replace(/]\[\d+/, '$&1');
 		select.selectedIndex = 0;
 	}
-	field.onchange = partial(indexesChangeColumn, prefix);
+	field.setAttribute('data-change', 'indexesChangeColumn(' + JSON.stringify(prefix) + ')'); // the same format as on() prints
 	for (const input of qsa('input', column)) {
 		input.name = input.name.replace(/]\[\d+/, '$&1');
 		if (input.type != 'checkbox') {
@@ -688,7 +688,7 @@ function indexesAddColumn(prefix) {
 		}
 	}
 	parentTag(field, 'td').append(column);
-	field.onchange();
+	fire(field, 'change'); // the attribute is indexesChangeColumn() now
 }
 
 
@@ -922,5 +922,5 @@ function helpClose() {
 // not in the object literal in functions.js - this file is loaded after it so the functions wouldn't be defined yet
 mixin(handlers, {
 	dumpClick, editingAddLastRow, editingRemoveRow, sqlExport, // click
-	foreignAddRow, foreignChange, indexesAddRow, loginDriver, partitionByChange, selectFirstChange, triggerChange, // change
+	foreignAddRow, foreignChange, indexesAddColumn, indexesAddRow, indexesChangeColumn, loginDriver, partitionByChange, selectFieldChange, selectFirstChange, triggerChange, // change
 });
