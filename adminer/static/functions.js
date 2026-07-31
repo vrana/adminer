@@ -345,6 +345,14 @@ function formSubmit() {
 	this.form.submit();
 }
 
+/** Disable Save and continue edit after changing a value identifying the row
+* @this HTMLTableRowElement
+*/
+function whereChange() {
+	// the WHERE condition in the URL is not updated by the AJAX save so the next save would not match the row
+	qs('#form [name=insert]').disabled = true;
+}
+
 /** Add row in select fieldset
 * @this HTMLSelectElement
 */
@@ -473,7 +481,7 @@ function bodyClick(event) {
 /** Handlers which can be registered by data-<event> attributes */
 const handlers = {
 	ajaxForm, ajaxSetHtml, confirmClick, formCheck, menuToggle, selectLoadMore, selectSearch, // click
-	formSubmit, selectAddRow, // change
+	formSubmit, selectAddRow, whereChange, // change
 };
 
 /** Call handlers registered by data-<event> attributes between the event target and the body

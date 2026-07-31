@@ -292,6 +292,28 @@ function where(array $where, array $fields = array()): string {
 	return implode(" AND ", $return);
 }
 
+/** Get names of columns used in the WHERE condition in the URL
+* @param Field[] $fields
+* @return array<string, bool> keys are column names
+* @uses $_GET["where"]
+* @uses $_GET["null"]
+*/
+function where_columns(array $fields): array {
+	$return = array();
+	foreach ((array) $_GET["null"] as $key) {
+		$return[$key] = true;
+	}
+	foreach ((array) $_GET["where"] as $key => $val) {
+		$key = bracket_escape($key, true); // true - back
+		foreach ($fields as $name => $field) {
+			if ($key == $name || strpos($key, idf_escape($name)) !== false) { // e.g. MD5(`name`) is used for long values
+				$return[$name] = true;
+			}
+		}
+	}
+	return $return;
+}
+
 /** Create SQL condition from query string
 * @param Field[] $fields
 */

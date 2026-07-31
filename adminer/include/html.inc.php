@@ -432,13 +432,19 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 	}
 	echo "<form action='' method='post' enctype='multipart/form-data' id='form'>\n";
 	$editable = false;
+	// the WHERE condition in the URL is not updated after saving so changing these values would break Save and continue edit
+	$where_columns = ($update && !isset($_GET["select"]) ? where_columns($fields) : array());
+	$continue_edit = (count($where_columns) != count($fields)); // without a unique key the condition uses all columns so the button would be always disabled
+	if (!$continue_edit) {
+		$where_columns = array();
+	}
 	if (!$fields) {
 		echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";
 	} else {
 		echo "<table class='layout nowrap'>" . script("qsl('table').onkeydown = editingKeydown;");
 		$autofocus = !$_POST;
 		foreach ($fields as $name => $field) {
-			echo "<tr><th>" . adminer()->fieldName($field);
+			echo "<tr" . ($where_columns[$name] ? on('change', 'whereChange') : "") . "><th>" . adminer()->fieldName($field);
 			$default = idx($_GET["set"], bracket_escape($name));
 			if ($default === null) {
 				$default = $field["default"];
@@ -506,7 +512,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 	echo "<p>\n";
 	if ($editable) {
 		echo "<input type='submit' value='" . lang('Save') . "'>\n";
-		if (!isset($_GET["select"])) {
+		if (!isset($_GET["select"]) && $continue_edit) {
 			echo "<input type='submit' name='insert' value='" . ($update
 				? lang('Save and continue edit')
 				: lang('Save and insert next')
