@@ -478,15 +478,23 @@ function delegateEvent(event) {
 		const match = (value ? /^(\w+)\((.*)\)$/.exec(value) : null); // e.g. confirmClick("Are you sure?")
 		// hasOwnProperty() - an injected 'constructor' or 'toString' must not find anything either
 		const handler = (match && Object.prototype.hasOwnProperty.call(handlers, match[1]) ? handlers[match[1]] : null);
-		if (handler) {
-			// the handler gets the arguments from the attribute followed by the event, JSON.parse() - they must never be evaluated as code
-			const result = handler.apply(el, JSON.parse('[' + match[2] + ']').concat(event));
+		let args;
+		try {
+			args = (handler ? JSON.parse('[' + match[2] + ']') : null); // JSON.parse() - the arguments must never be evaluated as code
+		} catch (e) { // empty - an invalid value is reported below together with an unknown handler
+		}
+		if (args) { // an empty array for a handler without arguments
+			// the handler gets the arguments from the attribute followed by the event
+			const result = handler.apply(el, args.concat(event));
 			if (result === false) {
 				event.preventDefault();
 			}
 			if (result !== undefined) {
 				break; // the handler handled the event, don't call the handlers on ancestor elements
 			}
+		} else if (value) {
+			// not lang() - it reports a bug in Adminer or in a plugin, the element would do nothing at all otherwise
+			console.error('Invalid handler in ' + attr + "='" + value + "'", el);
 		}
 	}
 }

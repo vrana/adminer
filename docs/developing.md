@@ -300,8 +300,10 @@ echo "<a href='#$id'" . on('click', 'showRow', $id) . ">" . lang('Warnings') . "
 <a href='#warnings' data-click='showRow("warnings")'>Warnings</a>
 ```
 
-The handler name is illustrative - the `handlers` allowlist is currently empty because the only handler it held, `toggle`, moved to `bodyClick()`, which calls it for every clicked `class='toggle'` link.
-Use the class for a show/hide link; the attribute is for handlers which need arguments.
+The handler name is illustrative - it must be listed in the `handlers` allowlist in [functions.js](/adminer/static/functions.js), grouped by the event it handles (`click` and `change` are delegated so far).
+Files loaded after it and plugins extend the object by `mixin(handlers, {...})`.
+A name which is not there is reported by `console.error()` - the element would do nothing at all otherwise, which is easy to miss.
+A show/hide link needs no handler: `bodyClick()` calls `toggle()` for every clicked `class='toggle'` link.
 
 The attribute looks like a call but it is never executed as one: `delegateEvent()` in [functions.js](/adminer/static/functions.js) splits it by a regular expression and decodes the arguments by `JSON.parse()` after wrapping them in `[]`.
 It walks from the event target up to the body and calls the handler named by each `data-<event>` attribute on the way.
@@ -315,7 +317,8 @@ One-shot code (e.g. `tableCheck()`) still uses `script()`, as do plugins, which 
 This is not a way around CSP.
 The attribute is data that the browser never executes, so the allowlist is what makes it safe: `delegateEvent()` looks the name up in the `handlers` object and never in the global scope, where `window['eval']` would allow running any code injected in the attribute.
 Nothing is passed to `eval()` or `new Function()`.
-Don't be fooled by the call-like syntax - the regular expression is anchored, so an injected `handler("x");alert(1)` doesn't match and nothing runs.
+Don't be fooled by the call-like syntax - the arguments are decoded by `JSON.parse()`, which can't run code.
+An injected `handler("x");alert(1)` does match the anchored pattern, because `.*` reaches the last `)`, but `JSON.parse()` then rejects it instead of `alert()` running.
 Don't put URLs in the arguments if the element can carry them in `href`.
 
 JavaScript code is split into [functions.js](/adminer/static/functions.js) (common utilities) and [editing.js](/adminer/static/editing.js) (specific to Adminer or Adminer Editor).
