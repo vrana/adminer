@@ -147,7 +147,7 @@ if (support("partial_indexes")) {
 if ($primary) {
 	echo "<tr><td>PRIMARY<td>";
 	foreach ($primary["columns"] as $key => $column) {
-		echo select_input(" disabled", $fields_keys, $column);
+		echo select_input(" disabled", array_combine($fields_keys, $fields_keys), $column);
 		echo "<label><input disabled type='checkbox'>" . lang('descending') . "</label> ";
 	}
 	echo "<td><td>\n";
