@@ -66,13 +66,13 @@ if ($row["ns"] != "") {
 }
 $referencable = array_keys(array_filter(table_status('', true), 'Adminer\fk_support'));
 $target = array_keys(fields(in_array($row["table"], $referencable) ? $row["table"] : reset($referencable)));
-$onchange = "this.form['change-js'].value = '1'; this.form.submit();";
-echo "<p><label>" . lang('Target table') . ": " . html_select("table", $referencable, $row["table"], $onchange) . "</label>\n";
+$attrs = on('change', 'foreignChange');
+echo "<p><label>" . lang('Target table') . ": " . html_select("table", $referencable, $row["table"], $attrs) . "</label>\n";
 if (support("scheme")) {
 	$schemas = array_filter(adminer()->schemas(), function ($schema) {
 		return !information_schema(DB, $schema);
 	});
-	echo "<label>" . lang('Schema') . ": " . html_select("ns", $schemas, $row["ns"] != "" ? $row["ns"] : $_GET["ns"], $onchange) . "</label>";
+	echo "<label>" . lang('Schema') . ": " . html_select("ns", $schemas, $row["ns"] != "" ? $row["ns"] : $_GET["ns"], $attrs) . "</label>";
 	if ($row["ns"] != "") {
 		set_schema($orig_schema);
 	}
@@ -83,7 +83,7 @@ if (support("scheme")) {
 			$dbs[] = $db;
 		}
 	}
-	echo "<label>" . lang('DB') . ": " . html_select("db", $dbs, $row["db"] != "" ? $row["db"] : $_GET["db"], $onchange) . "</label>";
+	echo "<label>" . lang('DB') . ": " . html_select("db", $dbs, $row["db"] != "" ? $row["db"] : $_GET["db"], $attrs) . "</label>";
 }
 echo input_hidden("change-js");
 ?>
@@ -94,7 +94,7 @@ echo input_hidden("change-js");
 $j = 0;
 foreach ($row["source"] as $key => $val) {
 	echo "<tr>";
-	echo "<td>" . html_select("source[" . (+$key) . "]", array(-1 => "") + $source, $val, ($j == count($row["source"]) - 1 ? "foreignAddRow.call(this);" : ""), "label-source");
+	echo "<td>" . html_select("source[" . (+$key) . "]", array(-1 => "") + $source, $val, ($j == count($row["source"]) - 1 ? on('change', 'foreignAddRow') : ""), "label-source");
 	echo "<td>" . html_select("target[" . (+$key) . "]", $target, idx($row["target"], $key), "", "label-target");
 	$j++;
 }

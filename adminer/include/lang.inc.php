@@ -106,7 +106,7 @@ function langs(): array {
 
 function switch_lang(): void {
 	echo "<form action='' method='post'>\n<div id='lang'>";
-	echo "<label>" . lang('Language') . ": " . html_select("lang", langs(), LANG, "this.form.submit();") . "</label>";
+	echo "<label>" . lang('Language') . ": " . html_select("lang", langs(), LANG, on('change', 'formSubmit')) . "</label>";
 	echo " <input type='submit' value='" . lang('Use') . "' class='hidden'>\n";
 	echo input_token();
 	echo "</div>\n</form>\n";

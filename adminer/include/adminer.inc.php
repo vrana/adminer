@@ -148,7 +148,7 @@ class Adminer {
 	function loginForm(): void {
 		echo "<table class='layout'>\n";
 		// this is matched by compile.php
-		echo adminer()->loginFormField('driver', '<tr><th>' . lang('System') . '<td>', html_select("auth[driver]", SqlDriver::$drivers, DRIVER, "loginDriver(this);"));
+		echo adminer()->loginFormField('driver', '<tr><th>' . lang('System') . '<td>', html_select("auth[driver]", SqlDriver::$drivers, DRIVER, on('change', 'loginDriver')));
 		echo adminer()->loginFormField(
 			'server',
 			'<tr><th>' . lang('Server') . '<td>',
@@ -159,7 +159,7 @@ class Adminer {
 			'username',
 			'<tr><th>' . lang('Username') . '<td>',
 			'<input name="auth[username]" id="username" autofocus value="' . h($_GET["username"]) . '" autocomplete="username" autocapitalize="off">'
-				. script("const authDriver = qs('#username').form['auth[driver]']; authDriver && authDriver.onchange();")
+				. script("fire(qs('#username').form['auth[driver]'], 'change');")
 		);
 		echo adminer()->loginFormField('password', '<tr><th>' . lang('Password') . '<td>', '<input type="password" name="auth[password]" autocomplete="current-password">');
 		echo adminer()->loginFormField('db', '<tr><th>' . lang('Database') . '<td>', '<input name="auth[db]" value="' . h($_GET["db"]) . '" autocapitalize="off">');
@@ -497,7 +497,6 @@ class Adminer {
 				echo "</div>\n";
 			}
 		}
-		$change_next = "this.parentNode.firstChild.onchange();";
 		foreach (array_merge((array) $_GET["where"], array(array())) as $i => $val) {
 			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], adminer()->operators()))) {
 				echo "<div>" . select_input(
@@ -507,9 +506,9 @@ class Adminer {
 					($val ? "selectFieldChange" : "selectAddRow"),
 					"(" . lang('anywhere') . ")"
 				);
-				echo html_select("where[$i][op]", adminer()->operators(), $val["op"], $change_next);
+				echo html_select("where[$i][op]", adminer()->operators(), $val["op"], on('change', 'selectFirstChange'));
 				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'>";
-				echo script("mixin(qsl('input'), {oninput: function () { $change_next }, onkeydown: selectSearchKeydown, onsearch: selectSearchSearch});", "");
+				echo script("mixin(qsl('input'), {oninput: selectFirstChange, onkeydown: selectSearchKeydown, onsearch: selectSearchSearch});", "");
 				echo "</div>\n";
 			}
 		}

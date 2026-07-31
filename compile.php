@@ -308,11 +308,11 @@ if ($vendor) {
 	}
 	if ($project != "editor" && count(Adminer\SqlDriver::$drivers) == 1) {
 		$file = replace(
-			'html_select("auth[driver]", SqlDriver::$drivers, DRIVER, "loginDriver(this);")',
+			'html_select("auth[driver]", SqlDriver::$drivers, DRIVER, on(\'change\', \'loginDriver\'))',
 			'input_hidden("auth[driver]", "' . ($vendor == "mysql" ? "server" : $vendor) . '") . "' . reset(Adminer\SqlDriver::$drivers) . '"',
 			$file
 		);
-		$file = replace(". script(\"const authDriver = qs('#username').form['auth[driver]']; authDriver && authDriver.onchange();\")", "", $file);
+		$file = replace(". script(\"fire(qs('#username').form['auth[driver]'], 'change');\")", "", $file);
 		if ($vendor == "sqlite") {
 			// SQLite doesn't use the server but the value must be preserved for the login form
 			$file = replace_re('~(\t*)echo adminer\(\)->loginFormField\(\s*\'server\',.*?\);\n~s', "\\1echo input_hidden(\"auth[server]\", SERVER);\n", $file);

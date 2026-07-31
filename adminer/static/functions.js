@@ -338,6 +338,13 @@ function menuClose() {
 
 
 
+/** Submit the form of the changed field
+* @this HTMLElement
+*/
+function formSubmit() {
+	this.form.submit();
+}
+
 /** Add row in select fieldset
 * @this HTMLSelectElement
 */
@@ -466,6 +473,7 @@ function bodyClick(event) {
 /** Handlers which can be registered by data-<event> attributes */
 const handlers = {
 	ajaxForm, ajaxSetHtml, confirmClick, formCheck, menuToggle, selectLoadMore, selectSearch, // click
+	formSubmit, // change
 };
 
 /** Call handlers registered by data-<event> attributes between the event target and the body
@@ -830,6 +838,16 @@ function findDefaultSubmit(el) {
 */
 function addEvent(el, action, handler) {
 	el.addEventListener(action, handler);
+}
+
+/** Dispatch an event to run the handlers registered by the data attributes
+* @param {HTMLElement} el
+* @param {string} type event name without 'on'
+*/
+function fire(el, type) {
+	if (el) {
+		el.dispatchEvent(new Event(type, {bubbles: true})); // bubbles - the handlers are delegated from the body
+	}
 }
 
 /** Clone node and setup submit highlighting

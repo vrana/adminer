@@ -85,11 +85,11 @@ function copyCode(parent) {
 
 
 /** Hide or show some login rows for selected driver
-* @param {HTMLSelectElement} driver
+* @this HTMLSelectElement
 */
-function loginDriver(driver) {
-	const trs = parentTag(driver, 'table').rows;
-	const disabled = /sqlite/.test(selectValue(driver));
+function loginDriver() {
+	const trs = parentTag(this, 'table').rows;
+	const disabled = /sqlite/.test(selectValue(this));
 	alterClass(trs[1], 'hidden', disabled);	// 1 - row with server
 	qs('input', trs[1]).disabled = disabled;
 }
@@ -184,6 +184,13 @@ function selectFieldChange() {
 		return ok;
 	})();
 	setHtml('noindex', (ok ? '' : '!'));
+}
+
+/** Rerun the handler of the first field in the row, it checks whether an index will be used
+ * @this HTMLElement
+ */
+function selectFirstChange() {
+	fire(this.parentNode.firstChild, 'change');
 }
 
 
@@ -541,6 +548,15 @@ function indexOptionsShow(checked) {
 	}
 }
 
+/** Reload the page for the selected target
+* @this HTMLSelectElement
+*/
+function foreignChange() {
+	const form = this.form;
+	form['change-js'].value = '1';
+	form.submit();
+}
+
 /** Display partition options
 * @this HTMLSelectElement
 */
@@ -600,8 +616,8 @@ function dumpClick(event) {
 */
 function foreignAddRow() {
 	const tr = parentTag(this, 'tr');
-	const row = cloneNode(tr);
-	this.onchange = () => { };
+	const row = cloneNode(tr); // the clone keeps the attribute so that it adds the next row
+	this.removeAttribute('data-change');
 	for (const select of qsa('select', row)) {
 		select.name = select.name.replace(/\d+]/, '1$&');
 		select.selectedIndex = 0;
@@ -616,8 +632,8 @@ function foreignAddRow() {
 */
 function indexesAddRow() {
 	const tr = parentTag(this, 'tr');
-	const row = cloneNode(tr);
-	this.onchange = () => { };
+	const row = cloneNode(tr); // the clone keeps the attribute so that it adds the next row
+	this.removeAttribute('data-change');
 	for (const tag of qsa('select, input, button', row)) {
 		tag.name = tag.name.replace(/\[\d+/, '$&1'); // indexes[$j] and drop_col[$j]
 		if (isTag(tag, 'select')) {
@@ -765,13 +781,14 @@ function fileChange(event, count, countMessage, size, sizeMessage) {
 
 
 /** Handle changing trigger time or event
-* @param {RegExp} tableRe
+* @param {string} tableRe string - a regular expression can't be passed in a data attribute
 * @param {string} table
-* @param {HTMLFormElement} form
+* @this HTMLSelectElement
 */
-function triggerChange(tableRe, table, form) {
+function triggerChange(tableRe, table) {
+	const form = this.form;
 	const formEvent = selectValue(form['Event']);
-	if (tableRe.test(form['Trigger'].value)) {
+	if (new RegExp(tableRe).test(form['Trigger'].value)) {
 		form['Trigger'].value = table + '_' + (selectValue(form['Timing'])[0] + formEvent[0]).toLowerCase();
 	}
 	alterClass(form['Of'], 'hidden', !/ OF/.test(formEvent));
@@ -905,5 +922,5 @@ function helpClose() {
 // not in the object literal in functions.js - this file is loaded after it so the functions wouldn't be defined yet
 mixin(handlers, {
 	dumpClick, editingAddLastRow, editingRemoveRow, sqlExport, // click
-	partitionByChange, // change
+	foreignAddRow, foreignChange, indexesAddRow, loginDriver, partitionByChange, selectFirstChange, triggerChange, // change
 });

@@ -32,18 +32,19 @@ if ($_POST) {
 }
 
 page_header(($name != "" ? lang('Alter trigger') . ": " . h($name) : lang('Create trigger')), $error, array("table" => $TABLE));
+$trigger_change = on('change', 'triggerChange', "^" . preg_quote($TABLE, "/") . "_[ba][iud]$", $TABLE);
 ?>
 
 <form action="" method="post" id="form">
 <table class="layout">
 <tr><th><?php echo lang('Time'); ?>
-<td><?php echo html_select("Timing", $trigger_options["Timing"], $row["Timing"], "triggerChange(/^" . js_escape_re($TABLE) . "_[ba][iud]$/, '" . js_escape($TABLE) . "', this.form);"); ?>
-<tr><th><?php echo lang('Event'); ?><td><?php echo html_select("Event", $trigger_options["Event"], $row["Event"], "this.form['Timing'].onchange();"); ?>
+<td><?php echo html_select("Timing", $trigger_options["Timing"], $row["Timing"], $trigger_change); ?>
+<tr><th><?php echo lang('Event'); ?><td><?php echo html_select("Event", $trigger_options["Event"], $row["Event"], $trigger_change); ?>
 <?php echo (in_array("UPDATE OF", $trigger_options["Event"]) ? " <input name='Of' value='" . h($row["Of"]) . "' class='hidden'>": ""); ?>
 <tr><th><?php echo lang('Type'); ?><td><?php echo html_select("Type", $trigger_options["Type"], $row["Type"]); ?>
 </table>
 <p><?php echo lang('Name'); ?>: <input name="Trigger" value="<?php echo h($row["Trigger"]); ?>" data-maxlength="64" autocapitalize="off">
-<?php echo script("qs('#form')['Timing'].onchange();"); ?>
+<?php echo script("fire(qs('#form')['Timing'], 'change');"); ?>
 <p><?php textarea("Statement", $row["Statement"]); ?>
 <p>
 <input type='submit' value='<?php echo lang('Save'); ?>'>
