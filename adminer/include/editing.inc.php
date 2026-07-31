@@ -134,6 +134,9 @@ function textarea(string $name, $value, int $rows = 10, int $cols = 80): void {
 * @param string[] $options
 */
 function select_input(string $attrs, array $options, ?string $value = "", string $placeholder = ""): string {
+	if ($options && $value != "" && !isset($options[$value])) {
+		$options = array($value => $value) + $options; // e.g. ORDER BY COUNT(*)
+	}
 	$tag = ($options ? "select" : "input"); //! a change handler in $attrs fires only on blur for the input, it should use input
 	return "<$tag$attrs" . ($options
 		? "><option value=''>$placeholder" . optionlist($options, $value, true) . "</select>"

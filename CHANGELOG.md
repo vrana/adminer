@@ -22,6 +22,7 @@
 - Alter table, Privileges: Do not print a success message if nothing was changed
 - Select: Remove asking for the page number after clicking the Page legend
 - Select: Fix the number of selected rows after going back in history
+- Select: Keep sorting by an aggregation function in the Sort fieldset
 - Edit: Keep values of columns with special characters in name after error
 - Edit: Fix switching function to SQL with the edit-foreign plugin (bug #1254)
 - Edit: Hide the value field for functions without arguments (e.g. now, uuid)
