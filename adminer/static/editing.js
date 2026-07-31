@@ -50,7 +50,7 @@ function syntaxHighlighting(version, vendor) {
 
 /** Try to change input type to password or to text
 * @param {HTMLInputElement} el
-* @param {boolean} disable
+* @param {boolean} [disable]
 */
 function typePassword(el, disable) {
 	try {
@@ -374,7 +374,7 @@ function editingNameChange() {
 }
 
 /** Add table row for next field
-* @param {boolean} [focus]
+* @param {number} [focus]
 * @return {boolean} false
 * @this HTMLInputElement
 */
@@ -878,7 +878,7 @@ let helpOpen, helpIgnore; // when mouse outs <option> then it mouse overs border
 /** Display help
 * @param {MouseEvent} event
 * @param {string} text
-* @param {boolean} side display on left side (otherwise on top)
+* @param {number} side 1 to display on left side, 0 on top
 * @this HTMLElement
 */
 function helpMouseover(event, text, side) {

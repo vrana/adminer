@@ -49,7 +49,7 @@ function mixin(target, source) {
 }
 
 /** Add or remove CSS class
-* @param {HTMLElement} el
+* @param {?HTMLElement} el
 * @param {string} className
 * @param {boolean} [enable]
 */
@@ -107,7 +107,7 @@ function selectValue(select) {
 }
 
 /** Verify if element has a specified tag name
-* @param {HTMLElement} el
+* @param {?HTMLElement} el
 * @param {string} tag regular expression
 * @return {boolean}
 */
@@ -117,9 +117,9 @@ function isTag(el, tag) {
 }
 
 /** Get parent node with specified tag name
-* @param {HTMLElement} el
+* @param {?HTMLElement} el
 * @param {string} tag regular expression
-* @return {HTMLElement}
+* @return {?HTMLElement}
 */
 function parentTag(el, tag) {
 	while (el && !isTag(el, tag)) {
@@ -140,7 +140,7 @@ function trCheck(el) {
 
 /** Fill number of selected items
 * @param {string} id
-* @param {string} count
+* @param {string|number} count
 * @uses thousandsSeparator
 */
 function selectCount(id, count) {
@@ -276,7 +276,7 @@ function checkboxClick(event) {
 
 /** Set HTML code of an element
 * @param {string} id
-* @param {string} html undefined to set parentNode to empty string
+* @param {?string} html undefined to set parentNode to empty string
 */
 function setHtml(id, html) {
 	const el = qs('[id="' + id.replace(/[\\"]/g, '\\$&') + '"]'); // database name is used as ID
@@ -605,8 +605,8 @@ function fieldChange() {
 /** Create AJAX request
 * @param {string} url
 * @param {function(XMLHttpRequest)} callback
-* @param {string} [data]
-* @param {string} [message] null to not report errors
+* @param {?string} [data]
+* @param {?string} [message] null to not report errors
 * @return {XMLHttpRequest}
 * @uses offlineMessage
 */
@@ -820,7 +820,7 @@ function inputBlur() {
 
 /** Find submit button used by Enter
 * @param {HTMLElement} el
-* @return {HTMLInputElement}
+* @return {?HTMLInputElement}
 */
 function findDefaultSubmit(el) {
 	if (el.jushTextarea) {
@@ -841,7 +841,7 @@ function addEvent(el, action, handler) {
 }
 
 /** Dispatch an event to run the handlers registered by the data attributes
-* @param {HTMLElement} el
+* @param {?HTMLElement} el
 * @param {string} type event name without 'on'
 */
 function fire(el, type) {
