@@ -19,7 +19,7 @@ if (isset($_SESSION["lang"])) {
 $messages_all = array();
 foreach (glob(__DIR__ . "/{adminer,adminer/include,adminer/drivers,editor,editor/include}/*.php", GLOB_BRACE) as $include) {
 	$file = file_get_contents($include);
-	if (preg_match_all("~[^>]lang\\(('(?:[^\\\\']+|\\\\.)*')([),])~", $file, $matches)) { // lang() always uses apostrophes
+	if (preg_match_all("~[^>]lang\\(\\s*('(?:[^\\\\']+|\\\\.)*')\\s*([),])~", $file, $matches)) { // lang() always uses apostrophes, the message can be on its own line
 		$messages_all += array_combine($matches[1], $matches[2]);
 	}
 }
@@ -31,7 +31,7 @@ foreach (glob(__DIR__ . "/adminer/lang/" . ($_SESSION["lang"] ?: "*") . ".inc.ph
 		foreach (glob(__DIR__ . "/plugins/*.php") as $filename) {
 			$file = file_get_contents($filename);
 			if (preg_match('~extends Adminer\\\\Plugin~', $file)) {
-				preg_match_all("~\\\$this->lang\\(('(?:[^\\\\']+|\\\\.)*')([),])~", $file, $matches);
+				preg_match_all("~\\\$this->lang\\(\\s*('(?:[^\\\\']+|\\\\.)*')\\s*([),])~", $file, $matches);
 				$messages = array("''" => "") + array_combine($matches[1], $matches[2]);
 				$file = preg_replace("~(\\\$translations = array\\((?!.*'$lang').*?)\t\\);~s", "\\1\t\t'$lang' => array(\n\t\t),\n\t);", $file);
 				file_put_contents($filename, $file);
