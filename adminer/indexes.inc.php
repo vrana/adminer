@@ -167,7 +167,7 @@ foreach ($row["indexes"] as $index) {
 		foreach ($index["columns"] as $key => $column) {
 			echo "<span>" . select_input(
 				" name='indexes[$j][columns][$i]' title='" . lang('Column') . "'"
-					. on('change', ($i == count($index["columns"]) ? 'indexesAddColumn' : 'indexesChangeColumn'), (JUSH == "sql" ? "" : $_GET["indexes"] . "_")),
+					. on('change', 'indexesChangeColumn', (JUSH == "sql" ? "" : $_GET["indexes"] . "_")),
 				($fields && ($column == "" || $fields[$column]) ? array_combine($fields_keys, $fields_keys) : array()),
 				$column
 			);
