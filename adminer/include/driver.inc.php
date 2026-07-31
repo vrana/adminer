@@ -297,12 +297,17 @@ AND CHECK_CLAUSE NOT LIKE '% IS NOT NULL'" : ""), $this->conn); // ignore defaul
 	function allFields(): array {
 		$return = array();
 		if (DB != "") {
+			// 'primary' is the column name or null because PostgreSQL returns booleans as 't' and 'f' (both truthy) and MS SQL doesn't support them in SELECT
 			foreach (
-				get_rows("SELECT TABLE_NAME AS tab, COLUMN_NAME AS field, IS_NULLABLE AS nullable,
-	DATA_TYPE AS type, CHARACTER_MAXIMUM_LENGTH AS length" . (JUSH == 'sql' ? ", COLUMN_KEY = 'PRI' AS `primary`" : "") . "
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_SCHEMA = " . q($_GET["ns"] != "" ? $_GET["ns"] : DB) . "
-ORDER BY TABLE_NAME, ORDINAL_POSITION", $this->conn) as $row
+				get_rows("SELECT c.TABLE_NAME AS tab, c.COLUMN_NAME AS field, c.IS_NULLABLE AS nullable,
+	c.DATA_TYPE AS type, c.CHARACTER_MAXIMUM_LENGTH AS length,
+	" . (JUSH == 'sql' ? "c.COLUMN_KEY = 'PRI'" : "k.COLUMN_NAME") . " AS " . idf_escape("primary") . "
+FROM INFORMATION_SCHEMA.COLUMNS c" . (JUSH == 'sql' ? "" : "
+LEFT JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS t ON c.TABLE_SCHEMA = t.TABLE_SCHEMA AND c.TABLE_NAME = t.TABLE_NAME AND t.CONSTRAINT_TYPE = 'PRIMARY KEY'
+LEFT JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE k
+	ON t.CONSTRAINT_SCHEMA = k.CONSTRAINT_SCHEMA AND t.CONSTRAINT_NAME = k.CONSTRAINT_NAME AND c.TABLE_SCHEMA = k.TABLE_SCHEMA AND c.TABLE_NAME = k.TABLE_NAME AND c.COLUMN_NAME = k.COLUMN_NAME") . "
+WHERE c.TABLE_SCHEMA = " . q($_GET["ns"] != "" ? $_GET["ns"] : DB) . "
+ORDER BY c.TABLE_NAME, c.ORDINAL_POSITION", $this->conn) as $row
 			) {
 				$row["null"] = ($row["nullable"] == "YES");
 				$return[$row["tab"]][] = $row;

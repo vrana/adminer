@@ -37,6 +37,7 @@
 - PostgreSQL: Fix altering functions with parameters of array or user-defined types
 - PostgreSQL: Hide table actions and row editing in pg_catalog and pg_toast
 - PostgreSQL, MS SQL: Show two columns in select COUNT(*), COUNT(DISTINCT id)
+- PostgreSQL, MS SQL: Highlight primary keys in the database schema (regression from 5.1.0)
 - SQLite: Fix working with binary data through PDO
 - MS SQL: Treat binary fields as blob (bug SF-369)
 - MS SQL: Hide table actions and row editing in the sys schema
