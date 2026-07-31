@@ -22,7 +22,7 @@ class AdminerConfig extends Adminer\Plugin {
 				// this plugin itself defines config() so this branch is not currently used
 				echo "<p>" . $this->lang(
 					'Only some plugins support configuration, e.g. %s.',
-					'<a href="https://github.com/vrana/adminer/blob/master/plugins/menu-links.php"' . Adminer\target_blank() . '>menu-links</a>'
+					'<a href="https://github.com/vrana/adminer/blob/main/plugins/menu-links.php"' . Adminer\target_blank() . '>menu-links</a>'
 				) . "\n";
 			} else {
 				echo "<form action=''>\n";

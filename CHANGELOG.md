@@ -71,6 +71,7 @@
 - Use standard JSDoc @param and @return syntax
 - ESLint: Install it by composer install, run it in composer check and CI
 - Docs: Handling of values and binary data, plugin translations, CSS changes must not break skins
+- Rename the Git master branch to main
 
 ## Adminer 5.5.1 (released 2026-07-21)
 - Ignore invalid X-Forwarded-Prefix (GHSA-fr74-9mf9-gf44)
