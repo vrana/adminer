@@ -31,7 +31,13 @@ if ($_POST) {
 	$row = $_POST;
 }
 
-page_header(($name != "" ? lang('Alter trigger') . ": " . h($name) : lang('Create trigger')), $error, array("table" => $TABLE));
+page_header(
+	($name != "" ? lang('Alter trigger') : lang('Create trigger')),
+	$error,
+	array("table" => $TABLE),
+	h($name != "" ? $name : $TABLE)
+);
+
 $trigger_change = on('change', 'triggerChange', "^" . preg_quote($TABLE, "/") . "_[ba][iud]$", $TABLE);
 ?>
 

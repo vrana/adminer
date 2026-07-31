@@ -215,7 +215,6 @@ Lang::$translations = array(
 	'Condition' => 'Podmínka',
 
 	'Foreign keys' => 'Cizí klíče',
-	'Foreign key' => 'Cizí klíč',
 	'Foreign key has been dropped.' => 'Cizí klíč byl odstraněn.',
 	'Foreign key has been altered.' => 'Cizí klíč byl změněn.',
 	'Foreign key has been created.' => 'Cizí klíč byl vytvořen.',
@@ -225,13 +224,13 @@ Lang::$translations = array(
 	'Target' => 'Cíl',
 	'Add column' => 'Přidat sloupec',
 	'Alter' => 'Změnit',
-	'Add foreign key' => 'Přidat cizí klíč',
+	'Alter foreign key' => 'Změnit cizí klíč',
+	'Create foreign key' => 'Vytvořit cizí klíč',
 	'ON DELETE' => 'Při smazání',
 	'ON UPDATE' => 'Při změně',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Zdrojové a cílové sloupce musí mít stejný datový typ, nad cílovými sloupci musí být definován index a odkazovaná data musí existovat.',
 
 	'Triggers' => 'Triggery',
-	'Add trigger' => 'Přidat trigger',
 	'Trigger has been dropped.' => 'Trigger byl odstraněn.',
 	'Trigger has been altered.' => 'Trigger byl změněn.',
 	'Trigger has been created.' => 'Trigger byl vytvořen.',

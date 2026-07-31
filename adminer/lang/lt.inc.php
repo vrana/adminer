@@ -179,7 +179,6 @@ Lang::$translations = array(
 	'length' => 'ilgis',
 
 	'Foreign keys' => 'Išoriniai raktai',
-	'Foreign key' => 'Išorinis raktas',
 	'Foreign key has been dropped.' => 'Išorinis raktas pašalintas.',
 	'Foreign key has been altered.' => 'Išorinis raktas pakeistas.',
 	'Foreign key has been created.' => 'Išorinis raktas sukurtas.',
@@ -189,13 +188,13 @@ Lang::$translations = array(
 	'Target' => 'Tikslas',
 	'Add column' => 'Pridėti stulpelį',
 	'Alter' => 'Redaguoti',
-	'Add foreign key' => 'Pridėti išorinį raktą',
+	'Alter foreign key' => 'Redaguoti išorinį raktą', // Claude Opus 5
+	'Create foreign key' => 'Sukurti išorinį raktą', // Claude Opus 5
 	'ON DELETE' => 'Ištrinant',
 	'ON UPDATE' => 'Atnaujinant',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Šaltinio ir tikslinis stulpelis turi būti to paties tipo, tiksliniame stulpelyje turi būti naudojamas indeksas ir duomenys turi egzistuoti.',
 
 	'Triggers' => 'Trigeriai',
-	'Add trigger' => 'Pridėti trigerį',
 	'Trigger has been dropped.' => 'Trigeris pašalintas.',
 	'Trigger has been altered.' => 'Trigeris pakeistas.',
 	'Trigger has been created.' => 'Trigeris sukurtas.',

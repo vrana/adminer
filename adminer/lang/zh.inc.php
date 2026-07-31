@@ -206,7 +206,6 @@ Lang::$translations = array(
 	'Index Type' => '索引类型',
 
 	'Foreign keys' => '外键',
-	'Foreign key' => '外键',
 	'Foreign key has been dropped.' => '已删除外键。',
 	'Foreign key has been altered.' => '已修改外键。',
 	'Foreign key has been created.' => '已创建外键。',
@@ -216,13 +215,13 @@ Lang::$translations = array(
 	'Target' => '目标',
 	'Add column' => '增加列',
 	'Alter' => '修改',
-	'Add foreign key' => '添加外键',
+	'Alter foreign key' => '修改外键', // Claude Opus 5
+	'Create foreign key' => '创建外键', // Claude Opus 5
 	'ON DELETE' => 'ON DELETE',
 	'ON UPDATE' => 'ON UPDATE',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => '源列和目标列必须具有相同的数据类型，在目标列上必须有一个索引并且引用的数据必须存在。',
 
 	'Triggers' => '触发器',
-	'Add trigger' => '创建触发器',
 	'Trigger has been dropped.' => '已删除触发器。',
 	'Trigger has been altered.' => '已修改触发器。',
 	'Trigger has been created.' => '已创建触发器。',

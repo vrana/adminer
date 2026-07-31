@@ -85,7 +85,7 @@ if (!is_view($table_status)) {
 			}
 			echo "</table>\n";
 		}
-		echo '<p class="links"><a href="' . h(ME) . 'foreign=' . urlencode($TABLE) . '">' . lang('Add foreign key') . "</a>\n";
+		echo '<p class="links"><a href="' . h(ME) . 'foreign=' . urlencode($TABLE) . '">' . lang('Create foreign key') . "</a>\n";
 	}
 
 	if (support("check")) {
@@ -116,7 +116,7 @@ if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
 		}
 		echo "</table>\n";
 	}
-	echo '<p class="links"><a href="' . h(ME) . 'trigger=' . urlencode($TABLE) . '">' . lang('Add trigger') . "</a>\n";
+	echo '<p class="links"><a href="' . h(ME) . 'trigger=' . urlencode($TABLE) . '">' . lang('Create trigger') . "</a>\n";
 }
 
 $inherited = driver()->inheritedTables($TABLE);

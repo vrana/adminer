@@ -189,7 +189,6 @@ Lang::$translations = array(
 	'length' => 'طول',
 
 	'Foreign keys' => 'کلیدهای خارجی',
-	'Foreign key' => 'کلید خارجی',
 	'Foreign key has been dropped.' => 'کلید خارجی حذف شد.',
 	'Foreign key has been altered.' => 'کلید خارجی ویرایش شد.',
 	'Foreign key has been created.' => 'کلید خارجی ایجاد شد.',
@@ -199,13 +198,13 @@ Lang::$translations = array(
 	'Target' => 'هدف',
 	'Add column' => 'افزودن ستون',
 	'Alter' => 'ویرایش',
-	'Add foreign key' => 'افزودن کلید خارجی',
+	'Alter foreign key' => 'ویرایش کلید خارجی', // Claude Opus 5
+	'Create foreign key' => 'ایجاد کلید خارجی', // Claude Opus 5
 	'ON DELETE' => 'ON DELETE',
 	'ON UPDATE' => 'ON UPDATE',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'داده مبدا و مقصد ستونها بایستی شبیه هم باشند.',
 
 	'Triggers' => 'تریگرها',
-	'Add trigger' => 'افزودن تریگر',
 	'Trigger has been dropped.' => 'تریگر حذف شد.',
 	'Trigger has been altered.' => 'تریگر ویرایش شد.',
 	'Trigger has been created.' => 'تریگر ایجاد شد.',

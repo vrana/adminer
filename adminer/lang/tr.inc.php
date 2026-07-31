@@ -202,7 +202,6 @@ Lang::$translations = array(
 	'operator class' => 'operatör sınıfı', // Claude Fable 5
 
 	'Foreign keys' => 'Dış anahtarlar',
-	'Foreign key' => 'Dış anahtar',
 	'Foreign key has been dropped.' => 'Dış anahtar silindi.',
 	'Foreign key has been altered.' => 'Dış anahtar değiştirildi.',
 	'Foreign key has been created.' => 'Dış anahtar oluşturuldu.',
@@ -212,13 +211,13 @@ Lang::$translations = array(
 	'Target' => 'Hedef',
 	'Add column' => 'Kolon ekle',
 	'Alter' => 'Değiştir',
-	'Add foreign key' => 'Dış anahtar ekle',
+	'Alter foreign key' => 'Dış anahtarı değiştir', // Claude Opus 5
+	'Create foreign key' => 'Dış anahtar oluştur', // Claude Opus 5
 	'ON DELETE' => 'ON DELETE (Hedefteki Kayıt Silinirse)',
 	'ON UPDATE' => 'ON UPDATE (Hedefteki Kayıt Değiştirilirse)',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Kaynak ve hedef kolonlar aynı veri türünde olmalı, hedef kolonlarda dizin bulunmalı ve başvurulan veri mevcut olmalı.',
 
 	'Triggers' => 'Tetikler',
-	'Add trigger' => 'Tetik ekle',
 	'Trigger has been dropped.' => 'Tetik silindi.',
 	'Trigger has been altered.' => 'Tetik değiştirildi.',
 	'Trigger has been created.' => 'Tetik oluşturuldu.',

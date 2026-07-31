@@ -178,7 +178,6 @@ Lang::$translations = array(
 	'operator class' => 'razred operatorjev', // Claude Fable 5
 
 	'Foreign keys' => 'Tuji ključi',
-	'Foreign key' => 'Tuj ključ',
 	'Foreign key has been dropped.' => 'Tuj ključ je zavržen.',
 	'Foreign key has been altered.' => 'Tuj ključ je spremenjen.',
 	'Foreign key has been created.' => 'Tuj ključ je ustvarjen.',
@@ -188,13 +187,13 @@ Lang::$translations = array(
 	'Target' => 'Cilj',
 	'Add column' => 'Dodaj stolpec',
 	'Alter' => 'Spremeni',
-	'Add foreign key' => 'Dodaj tuj ključ',
+	'Alter foreign key' => 'Spremeni tuj ključ', // Claude Opus 5
+	'Create foreign key' => 'Ustvari tuj ključ', // Claude Opus 5
 	'ON DELETE' => 'pri brisanju',
 	'ON UPDATE' => 'pri posodabljanju',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Izvorni in ciljni stolpec mora imeti isti podatkovni tip. Obstajati mora indeks na ciljnih stolpcih in obstajati morajo referenčni podatki.',
 
 	'Triggers' => 'Sprožilniki',
-	'Add trigger' => 'Dodaj sprožilnik',
 	'Trigger has been dropped.' => 'Sprožilnik je odstranjen.',
 	'Trigger has been altered.' => 'Sprožilnik je spremenjen.',
 	'Trigger has been created.' => 'Sprožilnik je ustvarjen.',

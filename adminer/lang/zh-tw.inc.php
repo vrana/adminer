@@ -208,7 +208,6 @@ Lang::$translations = array(
 	'operator class' => '運算子類別', // Claude Fable 5
 
 	'Foreign keys' => '外來鍵',
-	'Foreign key' => '外來鍵',
 	'Foreign key has been dropped.' => '已刪除外來鍵。',
 	'Foreign key has been altered.' => '已修改外來鍵。',
 	'Foreign key has been created.' => '已建立外來鍵。',
@@ -218,13 +217,13 @@ Lang::$translations = array(
 	'Target' => '目標',
 	'Add column' => '新增欄位',
 	'Alter' => '修改',
-	'Add foreign key' => '新增外來鍵',
+	'Alter foreign key' => '修改外來鍵', // Claude Opus 5
+	'Create foreign key' => '建立外來鍵', // Claude Opus 5
 	'ON DELETE' => 'ON DELETE',
 	'ON UPDATE' => 'ON UPDATE',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => '來源列和目標列必須具有相同的資料類型，在目標列上必須有一個索引並且引用的資料必須存在。',
 
 	'Triggers' => '觸發器',
-	'Add trigger' => '建立觸發器',
 	'Trigger has been dropped.' => '已刪除觸發器。',
 	'Trigger has been altered.' => '已修改觸發器。',
 	'Trigger has been created.' => '已建立觸發器。',

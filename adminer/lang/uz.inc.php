@@ -207,7 +207,6 @@ Lang::$translations = array(
 	'length' => 'uzunlik',
 
 	'Foreign keys' => 'Tashqi kalitlar',
-	'Foreign key' => 'Tashqi kalit',
 	'Foreign key has been dropped.' => 'Tashqi kalit o\'chirildi.',
 	'Foreign key has been altered.' => 'Tashqi kalit o\'zgartirildi.',
 	'Foreign key has been created.' => 'Tashqi kalit yaratildi.',
@@ -217,13 +216,13 @@ Lang::$translations = array(
 	'Target' => 'Maqsad',
 	'Add column' => 'Ustun qo\'shish',
 	'Alter' => 'O\'zgartirish',
-	'Add foreign key' => 'Tashqi kalit qo\'shish',
+	'Alter foreign key' => 'Tashqi kalitni o\'zgartirish', // Claude Opus 5
+	'Create foreign key' => 'Tashqi kalit yaratish', // Claude Opus 5
 	'ON DELETE' => 'O\'CHIRILGANDA',
 	'ON UPDATE' => 'YANGILANGANDA',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Manba va maqsad ustunlari bir xil ma\'lumot turiga ega bo\'lishi kerak, maqsad ustunlarda indeks bo\'lishi kerak va havolalar qilingan ma\'lumotlar mavjud bo\'lishi kerak.',
 
 	'Triggers' => 'Triggerlar',
-	'Add trigger' => 'Trigger qo\'shish',
 	'Trigger has been dropped.' => 'Trigger o\'chirildi.',
 	'Trigger has been altered.' => 'Trigger o\'zgartirildi.',
 	'Trigger has been created.' => 'Trigger yaratildi.',

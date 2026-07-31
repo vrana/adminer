@@ -207,7 +207,6 @@ Lang::$translations = array(
 	'operator class' => 'operatorklass', // Claude Fable 5
 
 	'Foreign keys' => 'Främmande nycklar',
-	'Foreign key' => 'Främmande nyckel',
 	'Foreign key has been dropped.' => 'Främmande nyckel har tagits bort.',
 	'Foreign key has been altered.' => 'Främmande nyckel har ändrats.',
 	'Foreign key has been created.' => 'Främmande nyckel har skapats.',
@@ -217,13 +216,13 @@ Lang::$translations = array(
 	'Target' => 'Mål',
 	'Add column' => 'Lägg till kolumn',
 	'Alter' => 'Ändra',
-	'Add foreign key' => 'Lägg till främmande nyckel',
+	'Alter foreign key' => 'Ändra främmande nyckel', // Claude Opus 5
+	'Create foreign key' => 'Skapa främmande nyckel', // Claude Opus 5
 	'ON DELETE' => 'VID BORTTAGNING',
 	'ON UPDATE' => 'VID UPPDATERING',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Käll- och mål-tabellen måste ha samma datatyp, ett index på målkolumnerna och refererad data måste finnas.',
 
 	'Triggers' => 'Avtryckare',
-	'Add trigger' => 'Lägg till avtryckare',
 	'Trigger has been dropped.' => 'Avtryckare har tagits bort.',
 	'Trigger has been altered.' => 'Avtryckare har ändrats.',
 	'Trigger has been created.' => 'Avtryckare har skapats.',

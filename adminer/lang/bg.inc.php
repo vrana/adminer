@@ -194,7 +194,6 @@ Lang::$translations = array(
 	'operator class' => 'клас оператори', // Claude Fable 5
 
 	'Foreign keys' => 'Препратки',
-	'Foreign key' => 'Препратка',
 	'Foreign key has been dropped.' => 'Препратката беше премахната.',
 	'Foreign key has been altered.' => 'Препратката беше променена.',
 	'Foreign key has been created.' => 'Препратката беше създадена.',
@@ -204,13 +203,13 @@ Lang::$translations = array(
 	'Target' => 'Цел',
 	'Add column' => 'Добавяне на колона',
 	'Alter' => 'Промяна',
-	'Add foreign key' => 'Добавяне на препратка',
+	'Alter foreign key' => 'Промяна на препратка', // Claude Opus 5
+	'Create foreign key' => 'Създаване на препратка', // Claude Opus 5
 	'ON DELETE' => 'При изтриване',
 	'ON UPDATE' => 'При промяна',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Колоните източник и цел трябва да са от еднакъв вид, трябва да има индекс на колоните приемник и да има въведени данни.',
 
 	'Triggers' => 'Тригери',
-	'Add trigger' => 'Добавяне на тригер',
 	'Trigger has been dropped.' => 'Тригера беше премахнат.',
 	'Trigger has been altered.' => 'Тригера беше променен.',
 	'Trigger has been created.' => 'Тригера беше създаден.',

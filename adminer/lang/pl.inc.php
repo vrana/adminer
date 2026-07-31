@@ -216,7 +216,6 @@ Lang::$translations = array(
 	'Condition' => 'Warunek',
 
 	'Foreign keys' => 'Klucze obce',
-	'Foreign key' => 'Klucz obcy',
 	'Foreign key has been dropped.' => 'Klucz obcy został usunięty.',
 	'Foreign key has been altered.' => 'Klucz obcy został zmieniony.',
 	'Foreign key has been created.' => 'Klucz obcy został utworzony.',
@@ -226,13 +225,13 @@ Lang::$translations = array(
 	'Target' => 'Cel',
 	'Add column' => 'Dodaj kolumnę',
 	'Alter' => 'Zmień',
-	'Add foreign key' => 'Dodaj klucz obcy',
+	'Alter foreign key' => 'Zmień klucz obcy', // Claude Opus 5
+	'Create foreign key' => 'Utwórz klucz obcy', // Claude Opus 5
 	'ON DELETE' => 'W przypadku usunięcia',
 	'ON UPDATE' => 'W przypadku zmiany',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Źródłowa i docelowa kolumna muszą być tego samego typu, powinien istnieć indeks na docelowej kolumnie oraz muszą istnieć dane referencyjne.',
 
 	'Triggers' => 'Wyzwalacze',
-	'Add trigger' => 'Dodaj wyzwalacz',
 	'Trigger has been dropped.' => 'Wyzwalacz został usunięty.',
 	'Trigger has been altered.' => 'Wyzwalacz został zmieniony.',
 	'Trigger has been created.' => 'Wyzwalacz został utworzony.',

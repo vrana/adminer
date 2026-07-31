@@ -182,7 +182,6 @@ Lang::$translations = array(
 	'operator class' => 'kelas operator', // Claude Fable 5
 
 	'Foreign keys' => 'Kunci asing',
-	'Foreign key' => 'Kunci asing',
 	'Foreign key has been dropped.' => 'Kunci asing berhasil dihapus.',
 	'Foreign key has been altered.' => 'Kunci asing berhasil diubah.',
 	'Foreign key has been created.' => 'Kunci asing berhasil dibuat.',
@@ -192,13 +191,13 @@ Lang::$translations = array(
 	'Target' => 'Sasaran',
 	'Add column' => 'Tambah kolom',
 	'Alter' => 'Ubah',
-	'Add foreign key' => 'Tambah kunci asing',
+	'Alter foreign key' => 'Ubah kunci asing', // Claude Opus 5
+	'Create foreign key' => 'Buat kunci asing', // Claude Opus 5
 	'ON DELETE' => 'ON DELETE',
 	'ON UPDATE' => 'ON UPDATE',
 	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Kolom sumber dan sasaran harus memiliki jenis data yang sama. Kolom sasaran harus memiliki indeks dan data rujukan harus ada.',
 
 	'Triggers' => 'Pemicu',
-	'Add trigger' => 'Tambah pemicu',
 	'Trigger has been dropped.' => 'Pemicu berhasil dihapus.',
 	'Trigger has been altered.' => 'Pemicu berhasil diubah.',
 	'Trigger has been created.' => 'Pemicu berhasil dibuat.',
