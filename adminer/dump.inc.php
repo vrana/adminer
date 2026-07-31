@@ -195,7 +195,7 @@ echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style,
 $prefixes = array();
 if ($_GET["ns"] === "") {
 	echo "<thead><tr><th style='text-align: left;'>";
-	echo "<label class='block'><input type='checkbox' checked class='jsonly'" . on('click', 'formCheck', '^schemas\[') . ">" . lang('Schema') . "</label>";
+	echo "<label class='block'><input type='checkbox' id='check-schemas' checked class='jsonly'" . on('click', 'formCheck', '^schemas\[') . ">" . lang('Schema') . "</label>";
 	echo "<tbody>\n";
 	foreach (adminer()->schemas() as $schema) {
 		if (!information_schema(DB, $schema)) {
@@ -205,8 +205,9 @@ if ($_GET["ns"] === "") {
 } elseif (DB != "") {
 	$checked = ($TABLE != "" ? "" : " checked");
 	echo "<thead><tr>";
-	echo "<th style='text-align: left;'><label class='block'><input type='checkbox'$checked class='jsonly'" . on('click', 'formCheck', '^tables\[') . ">" . lang('Table') . "</label>";
-	echo "<th style='text-align: right;'><label class='block'>" . lang('Data') . "<input type='checkbox'$checked class='jsonly'" . on('click', 'formCheck', '^data\[') . "></label>";
+	echo "<th style='text-align: left;'><label class='block'><input type='checkbox' id='check-tables'$checked class='jsonly'"
+		. on('click', 'formCheck', '^tables\[') . ">" . lang('Table') . "</label>";
+	echo "<th style='text-align: right;'><label class='block'>" . lang('Data') . "<input type='checkbox' id='check-data'$checked class='jsonly'" . on('click', 'formCheck', '^data\[') . "></label>";
 	echo "<tbody>\n";
 
 	$views = "";
@@ -233,7 +234,7 @@ if ($_GET["ns"] === "") {
 	echo "<thead><tr><th style='text-align: left;'>";
 	echo "<label class='block'>"
 		. ($databases
-			? "<input type='checkbox'" . ($TABLE == "" ? " checked" : "") . " class='jsonly'" . on('click', 'formCheck', '^databases\[') . ">"
+			? "<input type='checkbox' id='check-databases'" . ($TABLE == "" ? " checked" : "") . " class='jsonly'" . on('click', 'formCheck', '^databases\[') . ">"
 			: "")
 		. lang('Database')
 		. "</label>"
