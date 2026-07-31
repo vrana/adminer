@@ -21,6 +21,7 @@
 - Alter table: Edit multiline column comments in a textarea
 - Alter table, Privileges: Do not print a success message if nothing was changed
 - Select: Remove asking for the page number after clicking the Page legend
+- Select: Highlight the current page in the pagination
 - Select: Fix the number of selected rows after going back in history
 - Select: Keep sorting by an aggregation function in the Sort fieldset
 - Edit: Keep values of columns with special characters in name after error

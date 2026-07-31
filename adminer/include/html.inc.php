@@ -175,7 +175,7 @@ function js_escape_re(string $string): string {
 /** Generate page number for pagination */
 function pagination(int $page, ?int $current): string {
 	return " " . ($page == $current
-		? $page + 1
+		? ($page ? "<b>" . ($page + 1) . "</b>" : $page + 1) // the first page is not highlighted
 		: '<a href="' . h(remove_from_uri("page|next") . ($page ? "&page=$page" . ($_GET["next"] ? "&next=" . urlencode($_GET["next"]) : "") : "")) . '">' . ($page + 1) . "</a>"
 	);
 }
