@@ -83,7 +83,7 @@ if (adminer()->homepage()) {
 			echo "<table class='nowrap checkable odds'>\n";
 			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: event => tableClick(event, true)});");
 			echo '<thead><tr class="wrap">';
-			echo '<td><input id="check-all" type="checkbox" class="jsonly" title="' . lang('All') . '"' . on('click', 'formCheck', '^(tables|views)\[') . '>';
+			echo '<td><input id="check-all" type="checkbox" class="jsonly hover" title="' . lang('All') . '"' . on('click', 'formCheck', '^(tables|views)\[') . '>';
 			// without $order, the tables are sorted by name, except in SQLite which puts the sqlite_ tables last
 			echo '<th' . (!$order && JUSH != 'sqlite' ? " aria-sort='ascending'" : '') . '><a href="' . h(substr(ME, 0, -1)) . '">' . lang('Table') . '</a>';
 			$columns = array("Engine" => array(lang('Engine') . doc_link(array('sql' => 'storage-engines.html'))));

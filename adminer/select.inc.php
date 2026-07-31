@@ -344,8 +344,8 @@ if (!$columns && support("table")) {
 			echo script("mixin(qs('#table'), {onclick: tableClick, ondblclick: event => tableClick(event, true), onkeydown: editingKeydown});");
 			echo "<thead><tr>" . (!$group && $select
 				? ""
-				: "<td><input type='checkbox' id='all-page' class='jsonly' title='" . lang('All rows on this page') . "'" . on('click', 'formCheck', '^check') . ">"
-					. " <a href='" . h($_GET["modify"] ? remove_from_uri("modify") : $_SERVER["REQUEST_URI"] . "&modify=1") . "'>" . lang('Modify') . "</a>");
+				: "<td><input type='checkbox' id='all-page' class='jsonly hover' title='" . lang('All rows on this page') . "'" . on('click', 'formCheck', '^check') . ">"
+					. " <a href='" . h($_GET["modify"] ? remove_from_uri("modify") : $_SERVER["REQUEST_URI"] . "&modify=1") . "' class='hover'>" . lang('Modify') . "</a>");
 			$names = array();
 			$functions = array();
 			reset($select);
