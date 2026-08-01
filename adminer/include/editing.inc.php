@@ -185,24 +185,34 @@ function edit_type(string $key, array $field, array $collations, array $foreign_
 		. " aria-labelledby='label-length'>";
 	echo "<td class='options'>";
 	echo ($collations
-		? "<input list='collations' name='" . h($key) . "[collation]'" . (preg_match('~(char|text|enum|set)$~', $type) ? "" : " class='hidden'")
+		? "<input list='collations' name='" . h($key) . "[collation]'" . option_types($type, '(char|text|enum|set)$')
 			. " value='" . h($field["collation"]) . "' placeholder='(" . lang('collation') . ")'>"
 		: ''
 	);
 	echo (driver()->unsigned
-		? "<select name='" . h($key) . "[unsigned]'" . (!$type || preg_match(number_type(), $type) ? "" : " class='hidden'") . '><option>'
+		? "<select name='" . h($key) . "[unsigned]'" . option_types($type, '^$|' . number_type()) . '><option>' // ^$ - the type is not known yet
 			. optionlist(driver()->unsigned, $field["unsigned"]) . '</select>'
 		: ''
 	);
-	echo (isset($field['on_update']) ? "<select name='" . h($key) . "[on_update]'" . (preg_match('~timestamp|datetime~', $type) ? "" : " class='hidden'") . '>'
+	echo (isset($field['on_update']) ? "<select name='" . h($key) . "[on_update]'" . option_types($type, 'timestamp|datetime') . '>' // MySQL supports datetime since 5.6.5
 		. optionlist(array("" => "(" . lang('ON UPDATE') . ")", "CURRENT_TIMESTAMP"), (preg_match('~^CURRENT_TIMESTAMP~i', $field["on_update"]) ? "CURRENT_TIMESTAMP" : $field["on_update"]))
 		. '</select>' : ''
 	);
 	echo ($foreign_keys
-		? "<select name='" . h($key) . "[on_delete]'" . (preg_match("~`~", $type) ? "" : " class='hidden'") . "><option value=''>(" . lang('ON DELETE') . ")"
+		? "<select name='" . h($key) . "[on_delete]'" . option_types($type, '`') . "><option value=''>(" . lang('ON DELETE') . ")"
 			. optionlist(explode("|", driver()->onActions), $field["on_delete"]) . "</select> "
 		: " " // space for IE
 	);
+}
+
+/** Get attributes of an option displayed only for some column types
+* @param string $type current column type
+* @param string $types regular expression matching the column types displaying the option
+* @return string HTML attributes including the leading space
+*/
+function option_types(string $type, string $types): string {
+	// the expression is printed for editingTypeChange() which re-evaluates it after changing the type
+	return " data-types='" . h($types) . "'" . (preg_match("~$types~", $type) ? "" : " class='hidden'");
 }
 
 /** Filter length value including enums */

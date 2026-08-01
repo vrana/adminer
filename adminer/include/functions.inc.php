@@ -67,7 +67,8 @@ function number(string $val): string {
 
 /** Get regular expression to match numeric types */
 function number_type(): string {
-	return '((?<!o)int(?!er)|numeric|real|float|double|decimal|money)'; // not point, not interval
+	// (^|[^o]) instead of (?<!o) - the expression is used also by JavaScript, lookbehind is unsupported in Safari < 16.4
+	return '((^|[^o])int(?!er)|numeric|real|float|double|decimal|money)'; // not point, not interval
 }
 
 /** Disable magic_quotes_gpc

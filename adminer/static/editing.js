@@ -484,17 +484,9 @@ function editingTypeChange() {
 			el.checked = false;
 			el.selectedIndex = 0;
 		}
-		if (el.name == name + '[collation]') {
-			alterClass(el, 'hidden', !/(char|text|enum|set)$/.test(text));
-		}
-		if (el.name == name + '[unsigned]') {
-			alterClass(el, 'hidden', !/(^|[^o])int(?!er)|numeric|real|float|double|decimal|money/.test(text));
-		}
-		if (el.name == name + '[on_update]') {
-			alterClass(el, 'hidden', !/timestamp|datetime/.test(text)); // MySQL supports datetime since 5.6.5
-		}
-		if (el.name == name + '[on_delete]') {
-			alterClass(el, 'hidden', !/`/.test(text));
+		// the expressions come from option_types(), the options of the other columns start with another name
+		if (el.dataset.types && el.name.startsWith(name + '[')) {
+			alterClass(el, 'hidden', !new RegExp(el.dataset.types).test(text));
 		}
 	}
 	helpClose();
