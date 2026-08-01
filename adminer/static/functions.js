@@ -339,10 +339,8 @@ function menuOut() {
 	this.style.overflow = 'hidden';
 }
 
-/** Toggle the menu on small screens
-* @param {MouseEvent} event
-*/
-function menuToggle(event) {
+/** Toggle the menu on small screens */
+function menuToggle() {
 	const foot = qs('#foot');
 	const opened = !foot.classList.toggle('foot');
 	qs('#menuopen button').setAttribute('aria-expanded', opened);
@@ -350,7 +348,6 @@ function menuToggle(event) {
 		foot.tabIndex = -1; // to make it focusable
 		foot.focus(); // to continue tabbing in the menu
 	}
-	event.stopPropagation(); // don't close the menu by the document click handler
 }
 
 /** Close the menu on small screens */
@@ -488,7 +485,7 @@ function bodyKeydown(event, button) {
 	return true;
 }
 
-/** Toggle visibility by .toggle links, open form to a new window on Ctrl+click or Shift+click
+/** Toggle visibility by .toggle links, close the menu, open form to a new window on Ctrl+click or Shift+click
 * @param {MouseEvent} event
 */
 function bodyClick(event) {
@@ -506,9 +503,13 @@ function bodyClick(event) {
 			target.form.target = '';
 		}, 0);
 	}
+	const foot = qs('#foot'); // null if fire() dispatches a click before the menu is printed at the end of the page
+	if (foot && !foot.contains(target) && !qs('#menuopen').contains(target)) { // menuopen - delegateEvent() has toggled the menu by it already
+		menuClose();
+	}
 }
 
-/** Call handlers registered by data-<event> attributes between the event target and the body
+/** Call handlers registered by data-<event> attributes between the event target and the <html> element
 * @param {Event} event
 */
 function delegateEvent(event) {
@@ -879,7 +880,7 @@ function addEvent(el, action, handler) {
 */
 function fire(el, type) {
 	if (el) {
-		el.dispatchEvent(new Event(type, {bubbles: true})); // bubbles - the handlers are delegated from the body
+		el.dispatchEvent(new Event(type, {bubbles: true})); // bubbles - the handlers are delegated from the document
 	}
 }
 
@@ -909,9 +910,14 @@ oninput = event => {
 	alterClass(target, 'maxlength', target.value && maxLength != null && target.value.length > maxLength); // maxLength could be 0
 };
 
-addEvent(document, 'click', event => {
-	const foot = qs('#foot'); // null if fire() dispatches a click before the menu is printed at the end of the page
-	if (foot && !foot.contains(event.target)) {
-		menuClose();
-	}
+// documentElement - this file is loaded in <head> where document.body doesn't exist yet
+alterClass(document.documentElement, 'js', true);
+alterClass(document.documentElement, 'nojs'); // two calls, not classList.replace() - unsupported in Chrome < 61
+alterClass(document.documentElement, 'insecure', !navigator.clipboard); // clipboard is undefined also in an insecure context
+
+mixin(document, {
+	onchange: delegateEvent,
+	onclick: bodyClick, // calls delegateEvent() itself
+	ondblclick: delegateEvent,
+	onkeydown: bodyKeydown,
 });

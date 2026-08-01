@@ -305,11 +305,11 @@ A name which is not defined is reported by `console.error()` - the element would
 A show/hide link needs no handler: `bodyClick()` calls `toggle()` for every clicked `class='toggle'` link.
 
 The attribute looks like a call but it is never executed as one: `delegateEvent()` in [functions.js](/adminer/static/functions.js) splits it by a regular expression and decodes the arguments by `JSON.parse()` after wrapping them in `[]`.
-It walks from the event target up to the body and calls the handler named by each `data-<event>` attribute on the way.
+It walks from the event target up to the `<html>` element and calls the handler named by each `data-<event>` attribute on the way.
 The handler gets the arguments from the attribute followed by the event, which is the same signature as `partial()` produces, so the same function still works when registered by `qsl()`.
 Returning anything means that the handler handled the event, so the handlers on ancestor elements are not called; returning false also prevents the default action (`addEventListener()` ignores the return value, unlike the `onclick` property).
 
-The listener is registered on `<body>` as soon as the element opens, so handlers work even for elements which are not parsed yet - unlike a `<script>`, which activates the handler only when the parser reaches it.
+The listener is registered on `document` by [functions.js](/adminer/static/functions.js) in `<head>`, so handlers work even for elements which are not parsed yet - unlike a `<script>`, which activates the handler only when the parser reaches it.
 Prefer the attribute over a `<script>`; register a handler on a common ancestor only when the number of elements grows with the number of rows, like `tableClick` on the whole result table.
 One-shot code (e.g. `tableCheck()`) still uses `script()`, as do plugins, which can keep using `qsl()`.
 
@@ -339,7 +339,7 @@ Newer built-ins (e.g. `Object.entries()`) fail only at runtime but are avoided t
 Browser APIs are held to the same generation, roughly Safari 10, Chrome 54 and Firefox 50 - `append()` and `replaceWith()` set that floor and are not worth trading back for `appendChild()`.
 ESLint checks none of this, so newer APIs slip in easily: `classList.replace()` (Chrome 61) broke showing and hiding elements for three releases.
 Where a newer API has an older equivalent, use the older one instead of feature-detecting: the version check goes through `ajax()`, which sends `X-Requested-With` only to our own origin so the cross-origin request stays simple and needs no preflight.
-Feature-detect only when there is no alternative - the `insecure` body class hides the copy icon when `navigator.clipboard` is missing, which covers both old browsers and insecure connections.
+Feature-detect only when there is no alternative - the `insecure` class on `<html>` hides the copy icon when `navigator.clipboard` is missing, which covers both old browsers and insecure connections.
 
 ## Styles
 

@@ -63,6 +63,7 @@
 - New plugin: Display images in select, same as in Adminer Editor
 ### Internal
 - Register JavaScript event handlers by a data attribute instead of a script element
+- Register the event handlers in functions.js instead of an inline script
 - Composer: Initialize submodules on install
 - Remove the Makefile, Composer scripts cover compiling and cleaning
 - Move documentation to docs/, linter configuration to conf/, coverage.php to tests/

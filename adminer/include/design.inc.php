@@ -20,7 +20,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	// initial-scale=1 is the default but Chrome 134 on iOS is not able to zoom out without it
 	?>
 <!DOCTYPE html>
-<html lang='<?php echo LANG; ?>' dir='<?php echo lang('ltr'); ?>'>
+<html lang='<?php echo LANG; ?>' dir='<?php echo lang('ltr'); ?>' class='<?php echo lang('ltr'); ?> nojs'>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -59,20 +59,13 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 		);
 		echo "<link rel='stylesheet'$attrs href='" . h($url) . "'>\n";
 	}
-	echo "\n<body class='" . lang('ltr') . " nojs";
+	echo "\n<body class='";
 	adminer()->bodyClass();
 	echo "'>\n";
-	echo script("mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick, ondblclick: delegateEvent, onchange: delegateEvent" // bodyClick() calls delegateEvent() itself
-		. (isset($_COOKIE["adminer_version"]) || !adminer()->verifyVersion() ? "" : ", onload: partial(verifyVersion, '" . VERSION . "')")
-		. "});
-document.body.classList.add('js');
-document.body.classList.remove('nojs'); // not replace() - unsupported in Chrome < 61
-if (!navigator.clipboard) { // undefined also in an insecure context
-	document.body.classList.add('insecure');
-}
-const offlineMessage = '" . js_escape(lang('You are offline.')) . "';
-const thousandsSeparator = '" . js_escape(lang(',')) . "';")
-	;
+	// the event handlers and the <html> classes are registered by functions.js
+	echo script((isset($_COOKIE["adminer_version"]) || !adminer()->verifyVersion() ? "" : "onload = partial(verifyVersion, '" . VERSION . "');\n")
+		. "const offlineMessage = '" . js_escape(lang('You are offline.')) . "';
+const thousandsSeparator = '" . js_escape(lang(',')) . "';");
 	echo "<div id='help' class='jush-" . JUSH . " jsonly hidden'></div>\n";
 	echo script("mixin(qs('#help'), {onmouseover: () => { helpOpen = 1; }, onmouseout: helpMouseout});");
 	echo "<div id='content'>\n";
