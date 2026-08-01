@@ -210,6 +210,14 @@ function selectFirstChange() {
 	fire(this.parentNode.firstChild, 'change');
 }
 
+/** Close the help and add a row in select fieldset after selecting a function
+* @this HTMLSelectElement
+*/
+function selectFunAddRow() {
+	helpClose();
+	fire(qsl('select, input', this.parentNode), 'change'); // qsl - the column is printed after the function
+}
+
 
 
 let added = '.';

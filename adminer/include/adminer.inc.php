@@ -473,10 +473,9 @@ class Adminer {
 					"columns[$i][fun]",
 					array(-1 => "") + array_filter(array(lang('Functions') => driver()->functions, lang('Aggregation') => driver()->grouping)),
 					$val["fun"],
-					on_help_value(' (.*)|$', '($1)')
-				)
-					. script("qsl('select').onchange = function () { helpClose();" . ($key !== "" ? "" : " fire(qsl('select, input', this.parentNode), 'change');") . " };", "")
-					. "($column)"
+					on('change', ($key !== "" ? 'helpClose' : 'selectFunAddRow'))
+						. on_help_value(' (.*)|$', '($1)')
+				) . "($column)"
 				: $column
 			) . "</div>\n";
 			$i++;
