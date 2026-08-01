@@ -9,6 +9,10 @@
  * Blue: 2980b9
  */
 
+html {
+	--lit: #3498db;
+}
+
 /*
  * Basic tags
  */
@@ -51,7 +55,6 @@ td, th {
 }
 
 thead th, thead td {
-	background: #3498db;
 	color: white;
 	border-right: 1px solid white;
 	border-bottom: 1px solid white;
@@ -61,13 +64,6 @@ thead th, thead td {
 thead th a, thead td a {
 	color: #eee;
 }
-
-.js span.column {
-	background: white;
-}
-	th span.column a.text {
-		color: #2980b9;
-	}
 
 .js .checkable .checked td, .js .checkable .checked th {
 	background: rgba(52, 152, 219, .3);
