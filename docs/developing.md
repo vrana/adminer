@@ -220,7 +220,7 @@ Several helpers take part in this and it is easy to reach for the wrong one, bec
 `convert_field()` returns an SQL expression converting a column in the select so that the extension returns something PHP can work with, or nothing if the column needs no conversion.
 MySQL wraps `binary` and `varbinary` in `HEX()`, `bit` in `BIN()` and geometry in `AsWKT()`.
 `unconvert_field()` is the inverse and wraps an already quoted SQL expression, so `HEX()` becomes `UNHEX()`.
-Whatever is read through `convert_field()` must be written back through `unconvert_field()`, and the value travelling in `where[]` is hexadecimal in that case, not raw bytes.
+Whatever is read through `convert_field()` must be written back through `unconvert_field()`, and the value traveling in `where[]` is hexadecimal in that case, not raw bytes.
 
 `Driver::unconvertFunction()` is the display counterpart of `unconvert_field()`.
 It returns the HTML label printed in front of the edit input so that the user knows which function will be applied to the entered value, e.g. `UNHEX` for `binary` in MySQL.

@@ -38,7 +38,7 @@ addEventListener('DOMContentLoaded', () => {
 				container.style.height = el.clientHeight + 'px';
 				el.before(container);
 				el.style.display = 'none';
-				var editor = monaco.editor.create(container, {
+				const editor = monaco.editor.create(container, {
 					value: el.value,
 					lineNumbers: 'off',
 					glyphMargin: false,

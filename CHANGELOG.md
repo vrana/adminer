@@ -219,7 +219,7 @@
 - PostgreSQL: Shorten values in hstore columns
 - PostgreSQL: Quote edit value with interval operator
 - PostgreSQL: Fix calling functions with name-less parameters
-- PostgreSQL: Fix calling functions returing table
+- PostgreSQL: Fix calling functions returning table
 - PostgreSQL: Don't treat user types containing 'file' as blobs (bug #1118)
 - PostgreSQL: Export DROP and CREATE DATABASE (bug #1140)
 - PostgreSQL 11-: Avoid duplicate oid in table status (bug #1089, regression from 5.3.0)
@@ -450,7 +450,7 @@
 - PostgreSQL: Preserve whitespace in EXPLAIN (bug SF-827)
 - PostgreSQL: Support SSL
 - PostgreSQL: Support altering auto_increment (bug SF-761)
-- SQLite: Fix altering forign keys (bug SF-841)
+- SQLite: Fix altering foreign keys (bug SF-841)
 - SQLite: Fix expressions in default values (bug SF-860)
 - MS SQL: Foreign keys in non-default schema (bug SF-833)
 - Oracle: Include tables granted by other user
@@ -644,7 +644,7 @@
 - Warn when using password with leading or trailing spaces
 - Hide import from server if importServerPath() returns an empty string
 - Fix inline editing of empty cells (regression from 4.6.3)
-- Allow adding more than two indexes and forign key columns at a time (regression from 4.4.0)
+- Allow adding more than two indexes and foreign key columns at a time (regression from 4.4.0)
 - Avoid overwriting existing tables when copying tables (bug SF-642)
 - Fix function change with set data type
 - Increase username maxlength to 80 (bug SF-623)
@@ -861,7 +861,7 @@
 - SimpleDB, MongoDB: insert more fields at once
 - SQLite: Fix creating table and altering primary key, bug since Adminer 4.0.0
 - Don't store invalid credentials to session, bug since Adminer 4.0.0
-- Norweigan translation
+- Norwegian translation
 
 ## Adminer 4.0.2 (released 2014-01-11)
 - Fix handling of long text in SQL textarea

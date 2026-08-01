@@ -11,7 +11,7 @@ class AdminerVersionGithub extends Adminer\Plugin {
 	function head($dark = null) {
 		?>
 <script <?php echo Adminer\nonce(); ?>>
-verifyVersion = current => {
+verifyVersion = () => {
 	// dummy value to prevent repeated verifications after AJAX failure
 	cookie('adminer_version=0', 1);
 	ajax('https://api.github.com/repos/vrana/adminer/releases/latest', request => {

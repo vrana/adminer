@@ -653,7 +653,7 @@ function ajaxSetHtml(url) {
 }
 
 let editChanged; // used by plugins
-let adminerHighlighter = els => {}; // overwritten by syntax highlighters
+let adminerHighlighter = () => {}; // overwritten by syntax highlighters
 
 /** Save form contents through AJAX
 * @param {string} message
