@@ -18,7 +18,7 @@ function nonce(): string {
 
 /** Get an attribute registering a JS event handler
 * @param string $event event name without "on"
-* @param string $handler key from the handlers allowlist in functions.js
+* @param string $handler name of a JavaScript function defined by Adminer or by a plugin
 * @param mixed $arg argument passed to the handler before the event object
 * @return string HTML attribute including the leading space
 */

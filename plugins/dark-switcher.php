@@ -24,8 +24,6 @@ function adminerDarkSet() {
 	cookie('adminer_dark=' + (adminerDark ? 1 : 0), 30);
 }
 
-mixin(handlers, {adminerDarkSwitch}); // a plugin can't extend the object literal in functions.js
-
 const saved = document.cookie.match(/adminer_dark=(\d)/);
 if (saved) {
 	adminerDark = +saved[1];

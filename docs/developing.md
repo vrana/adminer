@@ -300,9 +300,8 @@ echo "<a href='#$id'" . on('click', 'showRow', $id) . ">" . lang('Warnings') . "
 <a href='#warnings' data-click='showRow("warnings")'>Warnings</a>
 ```
 
-The handler name is illustrative - it must be listed in the `handlers` allowlist in [functions.js](/adminer/static/functions.js), grouped by the event it handles (`click` and `change` are delegated so far).
-Files loaded after it and plugins extend the object by `mixin(handlers, {...})`.
-A name which is not there is reported by `console.error()` - the element would do nothing at all otherwise, which is easy to miss.
+The handler can be any function declared by Adminer or by a plugin, in any file and in any `<script>`; no registration is needed (`click` and `change` are delegated so far).
+A name which is not defined is reported by `console.error()` - the element would do nothing at all otherwise, which is easy to miss.
 A show/hide link needs no handler: `bodyClick()` calls `toggle()` for every clicked `class='toggle'` link.
 
 The attribute looks like a call but it is never executed as one: `delegateEvent()` in [functions.js](/adminer/static/functions.js) splits it by a regular expression and decodes the arguments by `JSON.parse()` after wrapping them in `[]`.
@@ -315,7 +314,10 @@ Prefer the attribute over a `<script>`; register a handler on a common ancestor 
 One-shot code (e.g. `tableCheck()`) still uses `script()`, as do plugins, which can keep using `qsl()`.
 
 This is not a way around CSP.
-The attribute is data that the browser never executes, so the allowlist is what makes it safe: `delegateEvent()` looks the name up in the `handlers` object and never in the global scope, where `window['eval']` would allow running any code injected in the attribute.
+The attribute is data that the browser never executes, and the name is not resolved in the global scope either, where `window['eval']` or `window['setTimeout']` would allow running any code injected in the attribute.
+`delegateEvent()` accepts only an own non-configurable property of `window` holding a function, which is exactly what a `function` declaration in our code and in plugins creates: built-ins are configurable (`eval`, `alert`, `setTimeout`) or not own properties of `window` at all (in browsers predating the WebIDL `[Global]` change), and the only non-configurable properties a browser defines itself are `Infinity`, `NaN`, `undefined`, `window`, `document`, `location` and `top`, none of them a function.
+Enumerability must not be used instead - `setTimeout` and `alert` are enumerable.
+An injected `constructor` or `toString` finds nothing either, they are not own properties of `window`.
 Nothing is passed to `eval()` or `new Function()`.
 Don't be fooled by the call-like syntax - the arguments are decoded by `JSON.parse()`, which can't run code.
 An injected `handler("x");alert(1)` does match the anchored pattern, because `.*` reaches the last `)`, but `JSON.parse()` then rejects it instead of `alert()` running.

@@ -53,9 +53,3 @@ function whisperClick(event) {
 		return false;
 	}
 }
-
-// not in the object literal in functions.js - this file is loaded after it so the function wouldn't be defined yet
-mixin(handlers, {
-	whisperClick, // click
-	selectFieldChange, // change - selectAddRow() sets the attribute
-});

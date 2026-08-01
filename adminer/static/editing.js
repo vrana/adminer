@@ -909,11 +909,3 @@ function helpMouseout(event) {
 function helpClose() {
 	alterClass(qs('#help'), 'hidden', true);
 }
-
-
-
-// not in the object literal in functions.js - this file is loaded after it so the functions wouldn't be defined yet
-mixin(handlers, {
-	dumpClick, editingAddLastRow, editingRemoveRow, sqlExport, // click
-	foreignAddRow, foreignChange, indexesAddRow, indexesChangeColumn, loginDriver, partitionByChange, selectFieldChange, selectFirstChange, triggerChange, // change
-});

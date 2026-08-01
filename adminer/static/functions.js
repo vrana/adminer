@@ -464,7 +464,7 @@ function bodyKeydown(event, button) {
 function bodyClick(event) {
 	delegateEvent(event);
 	const target = event.target;
-	const toggler = target.closest && target.closest('.toggle'); // closest() - the link can contain other elements
+	const toggler = target.closest && target.closest('.toggle'); // closest && - the target can be a text node, e.g. from fire(); closest() - the link can contain other elements
 	if (toggler) {
 		toggle(toggler.getAttribute('href').slice(1));
 		event.preventDefault();
@@ -478,12 +478,6 @@ function bodyClick(event) {
 	}
 }
 
-/** Handlers which can be registered by data-<event> attributes */
-const handlers = {
-	ajaxForm, ajaxSetHtml, confirmClick, formCheck, menuToggle, selectLoadMore, selectSearch, // click
-	formSubmit, selectAddRow, whereChange, // change
-};
-
 /** Call handlers registered by data-<event> attributes between the event target and the body
 * @param {Event} event
 */
@@ -492,8 +486,9 @@ function delegateEvent(event) {
 	for (let el = event.target; el && el.getAttribute; el = el.parentNode) {
 		const value = el.getAttribute(attr);
 		const match = (value ? /^(\w+)\((.*)\)$/.exec(value) : null); // e.g. confirmClick("Are you sure?")
-		// hasOwnProperty() - an injected 'constructor' or 'toString' must not find anything either
-		const handler = (match && Object.prototype.hasOwnProperty.call(handlers, match[1]) ? handlers[match[1]] : null);
+		// only a function declared by Adminer or by a plugin - it creates a non-configurable property of window, built-ins are configurable or not own properties at all, so window['eval'] or window['setTimeout'] is never used
+		const desc = (match ? Object.getOwnPropertyDescriptor(window, match[1]) : null);
+		const handler = (desc && !desc.configurable && typeof desc.value == 'function' ? desc.value : null);
 		let args;
 		try {
 			args = (handler ? JSON.parse('[' + match[2] + ']') : null); // JSON.parse() - the arguments must never be evaluated as code
