@@ -309,8 +309,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		}
 		echo "<div><select name='where[$i][col]'" . on('change', 'selectAddRow') . "><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, null, true) . "</select>";
 		echo html_select("where[$i][op]", array(-1 => "") + adminer()->operators());
-		echo "<input type='search' name='where[$i][val]'></div>";
-		echo script("mixin(qsl('input'), {onchange: function () { fire(this.parentNode.firstChild, 'change'); }, onsearch: selectSearchSearch});");
+		echo "<input type='search' name='where[$i][val]'" . on('change', 'selectFirstChange') . "></div>";
+		echo script("qsl('input').onsearch = selectSearchSearch;");
 		echo "</div></fieldset>\n";
 	}
 

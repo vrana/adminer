@@ -203,13 +203,6 @@ function selectFieldChange() {
 	setHtml('noindex', (ok ? '' : '!'));
 }
 
-/** Rerun the handler of the first field in the row, it checks whether an index will be used
- * @this HTMLElement
- */
-function selectFirstChange() {
-	fire(this.parentNode.firstChild, 'change');
-}
-
 /** Close the help and add a row in select fieldset after selecting a function
 * @this HTMLSelectElement
 */

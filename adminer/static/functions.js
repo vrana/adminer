@@ -408,6 +408,13 @@ function selectAddRow() {
 	field.parentNode.parentNode.append(row);
 }
 
+/** Rerun the handler of the first field in the row, it checks whether an index will be used
+* @this HTMLElement
+*/
+function selectFirstChange() {
+	fire(this.parentNode.firstChild, 'change');
+}
+
 /** Prevent onsearch handler on Enter
 * @param {KeyboardEvent} event
 * @this HTMLInputElement
