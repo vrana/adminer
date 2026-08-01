@@ -59,6 +59,13 @@ function typePassword(el, disable) {
 	}
 }
 
+/** Display the password as a text if it's hashed
+* @this HTMLInputElement
+*/
+function hashedClick() {
+	typePassword(this.form['pass'], this.checked);
+}
+
 /** Install handlers in messages
 * @param {HTMLElement} [parent]
 */
@@ -539,12 +546,20 @@ function columnShow(checked, column) {
 	}
 }
 
-/** Show or hide index column options
-* @param {boolean} checked
+/** Show or hide the clicked table column
+* @param {number} column
+* @this HTMLInputElement
 */
-function indexOptionsShow(checked) {
+function columnShowClick(column) {
+	columnShow(this.checked, column);
+}
+
+/** Show or hide index column options
+* @this HTMLInputElement
+*/
+function indexOptionsShow() {
 	for (const option of qsa('.idxopts')) {
-		alterClass(option, 'hidden', !checked);
+		alterClass(option, 'hidden', !this.checked);
 	}
 }
 
@@ -579,14 +594,14 @@ function partitionNameChange() {
 }
 
 /** Show or hide comment fields
-* @param {HTMLInputElement} el
 * @param {boolean} [focus] whether to focus Comment if checked
+* @this HTMLInputElement
 */
-function editingCommentsClick(el, focus) {
-	const comment = el.form['Comment'];
-	columnShow(el.checked, 6);
-	alterClass(comment, 'hidden', !el.checked);
-	if (focus && el.checked) {
+function editingCommentsClick(focus) {
+	const comment = this.form['Comment'];
+	columnShow(this.checked, 6);
+	alterClass(comment, 'hidden', !this.checked);
+	if (focus && this.checked) {
 		comment.focus();
 	}
 }

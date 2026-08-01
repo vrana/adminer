@@ -132,7 +132,7 @@ if ($index_algorithms) {
 <th><input type="submit" hidden><?php
 echo lang('Columns') . ($lengths ? "<span$idxopts> (" . lang('length') . ")</span>" : "");
 if ($lengths || support("descidx")) {
-	echo checkbox("options", 1, $show_options, lang('Options'), "indexOptionsShow(this.checked)", "jsonly") . "\n";
+	echo checkbox("options", 1, $show_options, lang('Options'), on('click', 'indexOptionsShow'), "jsonly") . "\n";
 }
 ?>
 <th id="label-name"><?php echo lang('Name'); ?>

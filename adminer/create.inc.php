@@ -194,10 +194,10 @@ if (support("columns")) {
 	echo script("editFields();");
 	echo "</div>\n<p>\n";
 	echo lang('Auto Increment') . ": <input type='number' name='Auto_increment' class='size' value='" . h($row["Auto_increment"]) . "'>\n";
-	echo checkbox("defaults", 1, ($_POST ? $_POST["defaults"] : get_setting("defaults")), lang('Default values'), "columnShow(this.checked, 5)", "jsonly");
+	echo checkbox("defaults", 1, ($_POST ? $_POST["defaults"] : get_setting("defaults")), lang('Default values'), on('click', 'columnShowClick', 5), "jsonly");
 	$comments = ($_POST ? $_POST["comments"] : get_setting("comments"));
 	if (support("comment")) {
-		echo checkbox("comments", 1, $comments, lang('Comment'), "editingCommentsClick(this, true);", "jsonly") . ' ';
+		echo checkbox("comments", 1, $comments, lang('Comment'), on('click', 'editingCommentsClick', true), "jsonly") . ' ';
 		$attrs = " name='Comment' data-maxlength='" . (min_version(5.5) ? 2048 : 60) . "'" . ($comments ? "" : " class='hidden'");
 		echo adminer()->commentInput('TABLE', $attrs, $row["Comment"]);
 	}

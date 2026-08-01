@@ -122,7 +122,7 @@ if ($row) {
 <tr><th><?php echo lang('Username'); ?><td><input name="user" data-maxlength="80" value="<?php echo h($row["user"]); ?>" autocapitalize="off">
 <tr><th><?php echo lang('Password'); ?><td><input name="pass" id="pass" value="<?php echo h($row["pass"]); ?>" autocomplete="new-password">
 <?php echo ($row["hashed"] ? "" : script("typePassword(qs('#pass'));")); ?>
-<?php echo (min_version(8, 99) ? "" : checkbox("hashed", 1, $row["hashed"], lang('Hashed'), "typePassword(this.form['pass'], this.checked);")); ?>
+<?php echo (min_version(8, 99) ? "" : checkbox("hashed", 1, $row["hashed"], lang('Hashed'), on('click', 'hashedClick'))); ?>
 </table>
 
 <?php
