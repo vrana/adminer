@@ -476,7 +476,7 @@ function bodyKeydown(event, button) {
 		if (target.form[button]) {
 			target.form[button].click();
 		} else {
-			target.form.dispatchEvent(new Event('submit', {bubbles: true}));
+			fire(target.form, 'submit'); // submit() doesn't dispatch the event
 			target.form.submit();
 		}
 		target.focus();
