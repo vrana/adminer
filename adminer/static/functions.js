@@ -134,8 +134,7 @@ function parentTag(el, tag) {
 function trCheck(el) {
 	const tr = parentTag(el, 'tr');
 	alterClass(tr, 'checked', el.checked);
-	const all = el.form && el.form['all'];
-	all && all.onclick && all.onclick();
+	fire(el.form && el.form['all'], 'click'); // the element named all counts the selected items, its handler is registered by a data attribute
 }
 
 /** Fill number of selected items
@@ -189,6 +188,34 @@ function formUncheck(id) {
 */
 function formChecked(input, name) {
 	return [...input.form.elements].filter(el => name.test(el.name) && el.checked).length;
+}
+
+/** Fill number of selected databases
+* @this HTMLInputElement
+*/
+function countDbs() {
+	selectCount('selected', formChecked(this, /^db/));
+}
+
+/** Fill numbers of selected tables
+* @param {number} tables number of tables in the database
+* @this HTMLInputElement
+*/
+function countTables(tables) {
+	const checked = formChecked(this, /^(tables|views)\[/);
+	selectCount('selected', checked);
+	selectCount('selected2', formChecked(this, /^tables\[/) || tables); // search is performed in all tables if none is selected
+	selectCount('selected3', checked);
+}
+
+/** Fill numbers of selected rows
+* @param {string} rows number of rows in the whole result
+* @this HTMLInputElement
+*/
+function countRows(rows) {
+	const checked = formChecked(this, /^check/);
+	selectCount('selected', this.checked ? rows : checked);
+	selectCount('selected2', this.checked || !checked ? rows : checked); // the command is performed on the whole result if no row is selected
 }
 
 /** Ask for confirmation before submit

@@ -211,7 +211,6 @@ if (adminer()->homepage()) {
 				echo ($print ? "<div class='footer'><div>\n<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>$print\n</div></fieldset>\n" : "");
 
 				$databases = (support("scheme") ? adminer()->schemas() : adminer()->databases());
-				$script = "";
 				if (count($databases) != 1 && function_exists('Adminer\move_tables')) {
 					echo "<fieldset><legend>" . lang('Move to other database') . " <span id='selected3'></span></legend><div>";
 					$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));
@@ -219,13 +218,8 @@ if (adminer()->homepage()) {
 					echo "</label> <input type='submit' name='move' value='" . lang('Move') . "'>";
 					echo (support("copy") ? " <input type='submit' name='copy' value='" . lang('Copy') . "'> " . checkbox("overwrite", 1, $_POST["overwrite"], lang('overwrite')) : "");
 					echo "</div></fieldset>\n";
-					$script = " selectCount('selected3', formChecked(this, /^(tables|views)\[/));";
 				}
-				echo "<input type='hidden' name='all' value=''>"; // used by trCheck()
-				echo script("qsl('input').onclick = function () { selectCount('selected', formChecked(this, /^(tables|views)\[/));"
-					. (support("table") ? " selectCount('selected2', formChecked(this, /^tables\[/) || $tables);" : "")
-					. "$script }")
-				;
+				echo "<input type='hidden' name='all' value=''" . on('click', 'countTables', $tables) . ">\n"; // used by trCheck()
 				echo input_token();
 				echo "</div></div>\n";
 			}
