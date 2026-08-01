@@ -910,7 +910,8 @@ oninput = event => {
 };
 
 addEvent(document, 'click', event => {
-	if (!qs('#foot').contains(event.target)) {
+	const foot = qs('#foot'); // null if fire() dispatches a click before the menu is printed at the end of the page
+	if (foot && !foot.contains(event.target)) {
 		menuClose();
 	}
 });
