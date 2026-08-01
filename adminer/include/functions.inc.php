@@ -486,6 +486,7 @@ function is_ajax(): bool {
 
 /** Send Location header and exit
 * @param ?string $location null to only set a message
+* @return ($location is null ? void : never)
 */
 function redirect(?string $location, ?string $message = null): void {
 	if ($message !== null) {
