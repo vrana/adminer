@@ -290,14 +290,14 @@ Previously, these functions were bound directly in HTML (`<a onclick="tableClick
 Adminer then registered event handlers using a short `<script>` element immediately following the relevant tag, typically using `qsl()` (query selector last).
 That works but puts a `<script>`, each with its own `nonce`, all over the page.
 
-Handlers are now registered by a `data-<event>` attribute printed by `on()`:
+Handlers are now registered by a `data-on<event>` attribute printed by `on()`:
 
 ```php
 echo "<a href='#$id'" . on('click', 'showRow', $id) . ">" . lang('Warnings') . "</a>";
 ```
 
 ```html
-<a href='#warnings' data-click='showRow("warnings")'>Warnings</a>
+<a href='#warnings' data-onclick='showRow("warnings")'>Warnings</a>
 ```
 
 The handler can be any function declared by Adminer or by a plugin, in any file and in any `<script>`; no registration is needed (`click`, `dblclick`, `change`, `mouseover` and `mouseout` are delegated so far).
@@ -305,7 +305,7 @@ A name which is not defined is reported by `console.error()` - the element would
 A show/hide link needs no handler: `bodyClick()` calls `toggle()` for every clicked `class='toggle'` link.
 
 The attribute looks like a call but it is never executed as one: `delegateEvent()` in [functions.js](/adminer/static/functions.js) splits it by a regular expression and decodes the arguments by `JSON.parse()` after wrapping them in `[]`.
-It walks from the event target up to the `<html>` element and calls the handler named by each `data-<event>` attribute on the way.
+It walks from the event target up to the `<html>` element and calls the handler named by each `data-on<event>` attribute on the way.
 The handler gets the arguments from the attribute followed by the event, which is the same signature as `partial()` produces, so the same function still works when registered by `qsl()`.
 Returning anything means that the handler handled the event, so the handlers on ancestor elements are not called; returning false also prevents the default action (`addEventListener()` ignores the return value, unlike the `onclick` property).
 

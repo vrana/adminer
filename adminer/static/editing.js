@@ -641,7 +641,7 @@ function dumpClick(event) {
 function foreignAddRow() {
 	const tr = parentTag(this, 'tr');
 	const row = cloneNode(tr); // the clone keeps the attribute so that it adds the next row
-	this.removeAttribute('data-change');
+	this.removeAttribute('data-onchange');
 	for (const select of qsa('select', row)) {
 		select.name = select.name.replace(/\d+]/, '1$&');
 		select.selectedIndex = 0;
@@ -657,7 +657,7 @@ function foreignAddRow() {
 function indexesAddRow() {
 	const tr = parentTag(this, 'tr');
 	const row = cloneNode(tr); // the clone keeps the attribute so that it adds the next row
-	this.removeAttribute('data-change');
+	this.removeAttribute('data-onchange');
 	for (const tag of qsa('select, input, button', row)) {
 		tag.name = tag.name.replace(/\[\d+/, '$&1'); // indexes[$j] and drop_col[$j]
 		if (isTag(tag, 'select')) {

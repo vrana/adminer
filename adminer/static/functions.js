@@ -390,7 +390,7 @@ function whereChange(event) {
 function selectAddRow() {
 	const field = this;
 	const row = cloneNode(field.parentNode); // the clone keeps the attribute so that it adds the next row
-	field.setAttribute('data-change', 'selectFieldChange()');
+	field.setAttribute('data-onchange', 'selectFieldChange()');
 	fire(field, 'change');
 	for (const select of qsa('select', row)) {
 		select.name = select.name.replace(/[a-z]\[\d+/, '$&1');
@@ -520,11 +520,11 @@ function bodyClick(event) {
 	}
 }
 
-/** Call handlers registered by data-<event> attributes between the event target and the <html> element
+/** Call handlers registered by data-on<event> attributes between the event target and the <html> element
 * @param {Event} event
 */
 function delegateEvent(event) {
-	const attr = 'data-' + event.type;
+	const attr = 'data-on' + event.type;
 	for (let el = event.target; el && el.getAttribute; el = el.parentNode) {
 		const value = el.getAttribute(attr);
 		const match = (value ? /^(\w+)\((.*)\)$/.exec(value) : null); // e.g. confirmClick("Are you sure?")

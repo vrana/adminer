@@ -27,7 +27,7 @@ function on(string $event, string $handler, $arg = null): string {
 	foreach (array_slice(func_get_args(), 2) as $val) { // not ...$args - variadics are available since PHP 5.6
 		$args[] = json_encode($val, 256); // 256 - JSON_UNESCAPED_UNICODE available since PHP 5.4
 	}
-	return " data-$event='" . str_replace( // h() would escape " to &quot; but the value is printed in a single-quoted attribute so only ' matters
+	return " data-on$event='" . str_replace( // h() would escape " to &quot; but the value is printed in a single-quoted attribute so only ' matters
 		array('&', '<', "'"),
 		array('&amp;', '&lt;', '&#039;'),
 		"$handler(" . implode(", ", $args) . ")"
