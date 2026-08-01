@@ -114,6 +114,9 @@ const thousandsSeparator = '" . js_escape(lang(',')) . "';")
 	}
 	stop_session();
 	define('Adminer\PAGE_HEADER', 1);
+	// let the browser download the CSS and JS while we are running the queries for the page body
+	ob_flush();
+	flush();
 }
 
 /** Send HTTP headers */
