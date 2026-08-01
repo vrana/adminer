@@ -494,7 +494,7 @@ function bodyKeydown(event, button) {
 function bodyClick(event) {
 	delegateEvent(event);
 	const target = event.target;
-	const toggler = target.closest && target.closest('.toggle'); // closest && - the target can be a text node, e.g. from fire(); closest() - the link can contain other elements
+	const toggler = target.closest && target.closest('.toggle'); // closest && - the target can be a text node, e.g. from fire()
 	if (toggler) {
 		toggle(toggler.getAttribute('href').slice(1));
 		event.preventDefault();
@@ -524,7 +524,7 @@ function delegateEvent(event) {
 			args = (handler ? JSON.parse('[' + match[2] + ']') : null); // JSON.parse() - the arguments must never be evaluated as code
 		} catch (e) { // empty - an invalid value is reported below together with an unknown handler
 		}
-		if (args) { // an empty array for a handler without arguments
+		if (args) {
 			// the handler gets the arguments from the attribute followed by the event
 			const result = handler.apply(el, args.concat(event));
 			if (result === false) {
