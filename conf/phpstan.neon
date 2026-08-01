@@ -43,7 +43,6 @@ parameters:
 		- identifier: notIdentical.alwaysTrue
 		- identifier: booleanNot.alwaysTrue
 		- identifier: booleanNot.alwaysFalse
-		- identifier: booleanAnd.alwaysFalse
 		- identifier: booleanAnd.leftAlwaysTrue
 		- identifier: booleanAnd.rightAlwaysTrue
 		- identifier: booleanAnd.rightAlwaysFalse
