@@ -228,6 +228,9 @@ function tableClick(event, click) {
 		}
 	}
 	el = el.firstChild.firstChild;
+	if (!el || el.type != 'checkbox') { // the header row of the process list and of the database list has an empty first cell
+		return;
+	}
 	if (click) {
 		el.checked = !el.checked;
 		fire(el, 'click'); // the handler can be registered by a data attribute
