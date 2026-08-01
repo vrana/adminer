@@ -212,7 +212,7 @@ function selectFirstChange() {
 
 
 
-let added = '.', rowCount;
+let added = '.';
 
 /** Check if val is equal to a-delimiter-b where delimiter is '_', '' or big letter
 * @param {string} val
@@ -423,8 +423,18 @@ function editingAddRow(focus) {
 		tags2[0].focus();
 	}
 	added += '0';
-	rowCount++;
+	maxFieldsCheck();
 	return false;
+}
+
+/** Display the error about the number of fields if the form has too many columns */
+function maxFieldsCheck() {
+	const el = qs('#max-fields'); // only in create.inc.php, only if max_input_vars is set and only if the message is hidden
+	// [orig] is printed for every column and editingRemoveRow() keeps it, so the removed columns are counted too
+	if (el && qsa('#edit-fields [name$="[orig]"]').length > +el.dataset.columns) {
+		alterClass(el, 'hidden');
+		qs('#edit-fields').parentNode.after(el); // the top of the page is not visible after adding columns
+	}
 }
 
 /** Add table row after the last field; used by drivers where columns can be added only to the end

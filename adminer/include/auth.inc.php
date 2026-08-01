@@ -239,21 +239,7 @@ if ($auth && $_POST["token"]) {
 $error = ''; ///< @var string
 if ($_POST) {
 	if (!verify_token()) {
-		$ini = "max_input_vars";
-		$max_vars = ini_get($ini);
-		if (extension_loaded("suhosin")) {
-			foreach (array("suhosin.request.max_vars", "suhosin.post.max_vars") as $key) {
-				$val = ini_get($key);
-				if ($val && (!$max_vars || $val < $max_vars)) {
-					$ini = $key;
-					$max_vars = $val;
-				}
-			}
-		}
-		$error = (!$_POST["token"] && $max_vars
-			? lang('Maximum number of allowed fields exceeded. Please increase %s.', "'$ini'")
-			: lang('Invalid CSRF token. Send the form again.') . ' ' . lang('If you did not send this request from Adminer then close this page.')
-		);
+		$error = lang('Invalid CSRF token. Send the form again.') . ' ' . lang('If you did not send this request from Adminer then close this page.');
 	}
 
 } elseif ($_SERVER["REQUEST_METHOD"] == "POST") {

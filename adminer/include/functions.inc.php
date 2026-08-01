@@ -139,6 +139,22 @@ function ini_bytes(string $ini): int {
 	return $val;
 }
 
+/** Get the maximum number of rows that a form can send
+* @param int $row number of inputs in one row
+* @param int $other number of the other inputs
+* @return int 0 if the number of fields is not limited
+*/
+function max_input_vars(int $row, int $other): int {
+	$max = (int) ini_get("max_input_vars");
+	return ($max ? (int) floor(($max - $other) / $row) : 0);
+}
+
+/** Get an error message about exceeding max_input_vars */
+function max_input_vars_error(): string {
+	$ini = "max_input_vars";
+	return lang('Maximum number of allowed fields exceeded. Please increase %s.', "$ini = " . (int) ini_get($ini));
+}
+
 /** Check if SID is necessary */
 function sid(): bool {
 	static $return;

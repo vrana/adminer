@@ -320,7 +320,6 @@ if (!$columns && support("table")) {
 			$result->seek($limit * $page);
 		}
 		$email_fields = array();
-		echo "<form action='' method='post' enctype='multipart/form-data'>\n";
 		$rows = array();
 		while ($row = $result->fetch_assoc()) {
 			if ($page && JUSH == "oracle") {
@@ -328,6 +327,12 @@ if (!$columns && support("table")) {
 			}
 			$rows[] = $row;
 		}
+
+		if ($_GET["modify"] && $rows) { // without modify, the values are printed as links, only the checked checkboxes are sent
+			$max_rows = max_input_vars(count($rows[0]) + 1, 20); // 1 - the checkbox of each row, 20 - the other inputs
+			echo ($max_rows && count($rows) > $max_rows ? "<p class='error'>" . max_input_vars_error() . "\n" : "");
+		}
+		echo "<form action='' method='post' enctype='multipart/form-data'>\n";
 
 		// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
 		if ($_GET["page"] != "last" && $limit && $group && $is_group && JUSH == "sql") {
