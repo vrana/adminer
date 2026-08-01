@@ -10,8 +10,7 @@ if (adminer()->homepage()) {
 		search_tables();
 	}
 	echo "<div class='scrollable'>\n";
-	echo "<table class='nowrap checkable odds'>\n";
-	echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: event => tableClick(event, true)});");
+	echo "<table class='nowrap checkable odds'" . on('click', 'tableClick') . on('dblclick', 'tableClick') . ">\n";
 	echo '<thead><tr class="wrap">';
 	echo '<td><input id="check-all" type="checkbox" class="jsonly"' . on('click', 'formCheck', '^tables\[') . '>';
 	echo '<th>' . lang('Table');

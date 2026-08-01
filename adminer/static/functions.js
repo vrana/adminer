@@ -229,9 +229,8 @@ function confirmClick(message) {
 
 /** Select clicked row
 * @param {MouseEvent} event
-* @param {boolean} [click] force click
 */
-function tableClick(event, click) {
+function tableClick(event) {
 	const td = parentTag(event.target, 'td');
 	let text;
 	if (td && (text = td.dataset.text)) {
@@ -239,7 +238,8 @@ function tableClick(event, click) {
 			return;
 		}
 	}
-	click = (click || getSelection().isCollapsed);
+	// dblclick undoes the check by the first click of the double click - the user is only selecting a word
+	let click = (event.type == 'dblclick' || getSelection().isCollapsed);
 	let el = event.target;
 	while (!isTag(el, 'tr')) {
 		if (isTag(el, 'table|a|input|textarea')) {

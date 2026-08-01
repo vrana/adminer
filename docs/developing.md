@@ -300,7 +300,7 @@ echo "<a href='#$id'" . on('click', 'showRow', $id) . ">" . lang('Warnings') . "
 <a href='#warnings' data-click='showRow("warnings")'>Warnings</a>
 ```
 
-The handler can be any function declared by Adminer or by a plugin, in any file and in any `<script>`; no registration is needed (`click` and `change` are delegated so far).
+The handler can be any function declared by Adminer or by a plugin, in any file and in any `<script>`; no registration is needed (`click`, `dblclick` and `change` are delegated so far).
 A name which is not defined is reported by `console.error()` - the element would do nothing at all otherwise, which is easy to miss.
 A show/hide link needs no handler: `bodyClick()` calls `toggle()` for every clicked `class='toggle'` link.
 

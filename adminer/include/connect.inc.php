@@ -54,8 +54,7 @@ if (
 			$scheme = support("scheme");
 			$collations = collations();
 			echo "<form action='' method='post'>\n";
-			echo "<table class='checkable odds'>\n";
-			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: event => tableClick(event, true)});");
+			echo "<table class='checkable odds'" . on('click', 'tableClick') . on('dblclick', 'tableClick') . ">\n";
 			echo "<thead><tr>"
 				. (support("database") ? "<td class='hover'>" : "")
 				// the databases are sorted by name, except in MS SQL which doesn't order them at all

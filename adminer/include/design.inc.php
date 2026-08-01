@@ -62,7 +62,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	echo "\n<body class='" . lang('ltr') . " nojs";
 	adminer()->bodyClass();
 	echo "'>\n";
-	echo script("mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick, onchange: delegateEvent" // bodyClick() calls delegateEvent() itself
+	echo script("mixin(document.body, {onkeydown: bodyKeydown, onclick: bodyClick, ondblclick: delegateEvent, onchange: delegateEvent" // bodyClick() calls delegateEvent() itself
 		. (isset($_COOKIE["adminer_version"]) || !adminer()->verifyVersion() ? "" : ", onload: partial(verifyVersion, '" . VERSION . "')")
 		. "});
 document.body.classList.add('js');

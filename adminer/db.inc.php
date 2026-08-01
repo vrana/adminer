@@ -81,8 +81,7 @@ if (adminer()->homepage()) {
 				}
 			}
 			echo "<div class='scrollable'>\n";
-			echo "<table class='nowrap checkable odds'>\n";
-			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: event => tableClick(event, true)});");
+			echo "<table class='nowrap checkable odds'" . on('click', 'tableClick') . on('dblclick', 'tableClick') . ">\n";
 			echo '<thead><tr class="wrap">';
 			echo '<td class="hover"><input id="check-all" type="checkbox" class="jsonly" title="' . lang('All') . '"' . on('click', 'formCheck', '^(tables|views)\[') . '>';
 			// without $order, the tables are sorted by name, except in SQLite which puts the sqlite_ tables last
