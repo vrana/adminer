@@ -567,9 +567,8 @@ if (!$columns && support("table")) {
 				echo "<fieldset>";
 				echo "<legend>" . lang('Whole result') . "</legend>";
 				$display_rows = ($exact_count ? "" : "~ ") . $found_rows;
-				// not checkbox() - it can't print the data attribute
-				$all = "<input type='checkbox' name='all' value='1'" . on('click', 'countRows', $display_rows) . ">";
-				echo ($found_rows !== false ? "<label>$all" . h(($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows)) . "</label>" : $all) . "\n";
+				$label = ($found_rows !== false ? ($exact_count ? "" : "~ ") . lang('%d row(s)', $found_rows) : "");
+				echo checkbox("all", 1, 0, $label, on('click', 'countRows', $display_rows)) . "\n";
 				echo "</fieldset>\n";
 
 				if (adminer()->selectCommandPrint()) {
