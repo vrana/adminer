@@ -66,6 +66,16 @@ function hashedClick() {
 	typePassword(this.form['pass'], this.checked);
 }
 
+/** Uncheck the All privileges checkbox after granting a single privilege
+* @param {string} id
+* @this HTMLInputElement
+*/
+function grantsClick(id) {
+	if (this.checked) {
+		formUncheck(id);
+	}
+}
+
 /** Install handlers in messages
 * @param {HTMLElement} [parent]
 */

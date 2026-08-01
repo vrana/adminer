@@ -162,8 +162,9 @@ foreach (
 			} else {
 				echo "<td align='center'><label class='block'>";
 				echo "<input type='checkbox' name=$name value='1'" . ($value ? " checked" : "") . ($privilege == "All privileges"
-					? " id='grants-$i-all'>" //! uncheck all except grant if all is checked
-					: ">" . ($privilege == "Grant option" ? "" : script("qsl('input').onclick = function () { if (this.checked) formUncheck('grants-$i-all'); };")));
+					? " id='grants-$i-all'" //! uncheck all except grant if all is checked
+					: ($privilege == "Grant option" ? "" : on('click', 'grantsClick', "grants-$i-all"))
+				) . ">";
 				echo "</label>";
 			}
 			$i++;
