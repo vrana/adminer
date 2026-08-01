@@ -316,8 +316,8 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 	}
 	$last_col = !support("move_col"); // the column can be added only to the end
 	echo "<td>" . icon("plus", "add[" . ($last_col ? count($fields) : 0) . "]", "+", lang('Add next'), ($last_col ? on('click', 'editingAddLastRow') : ""));
-	echo "<tbody>\n";
-	echo script("mixin(qsl('tbody'), {onclick: editingClick, onkeydown: editingKeydown, oninput: editingInput});");
+	echo "<tbody" . on('click', 'editingClick') . ">\n";
+	echo script("mixin(qsl('tbody'), {onkeydown: editingKeydown, oninput: editingInput});"); // keydown and input are not delegated
 	foreach ($fields as $i => $field) {
 		$i++;
 		$orig = $field[($_POST ? "orig" : "field")];
