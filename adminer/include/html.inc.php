@@ -282,7 +282,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 			echo $input;
 		} elseif (preg_match('~bool~', $field["type"])) {
 			echo "<input type='hidden'$attrs value='0'>"
-				. "<input type='checkbox'" . (preg_match('~^(1|t|true|y|yes|on)$~i', $value) ? " checked='checked'" : "") . "$attrs value='1'>";
+				. "<input type='checkbox'" . (preg_match('~^(1|t|true|y|yes|on)$~i', $value) ? " checked" : "") . "$attrs value='1'>";
 		} elseif ($field["type"] == "set") {
 			echo enum_input("checkbox", $attrs, $field, (is_string($value) ? explode(",", $value) : $value));
 		} elseif (is_blob($field) && ini_bool("file_uploads")) {
@@ -372,7 +372,6 @@ function process_input(array $field) {
 		$value = implode(",", (array) $value);
 	}
 	if ($function == "json") {
-		$function = "";
 		$value = json_decode($value, true);
 		if (!is_array($value)) {
 			return false; //! report errors
