@@ -61,6 +61,7 @@ if (adminer()->homepage()) {
 	if ($_GET["ns"] !== "") {
 		$order = $_GET["order"];
 		$full = ($order || support("fast_status")); // whether to print the full table_status() without a background request
+		echo "<div>\n";
 		echo "<h3 id='tables-views'>" . lang('Tables and views') . "</h3>\n";
 		$tables_list = ($full ? table_status() : tables_list());
 		if (!$tables_list) {
@@ -232,10 +233,12 @@ if (adminer()->homepage()) {
 			echo script("tableCheck();");
 		}
 
-		echo (function_exists('Adminer\alter_table') ? "<p class='links'><a href='" . h(ME) . "create='>" . lang('Create table') . "</a>\n" : '');
+		echo (function_exists('Adminer\alter_table') ? "<p class='links hover'><a href='" . h(ME) . "create='>" . lang('Create table') . "</a>\n" : '');
 		echo (support("view") ? "<a href='" . h(ME) . "view='>" . lang('Create view') . "</a>\n" : "");
+		echo "</div>\n";
 
 		if (support("routine")) {
+			echo "<div>\n";
 			echo "<h3 id='routines'>" . lang('Routines') . "</h3>\n";
 			$routines = routines();
 			if ($routines) {
@@ -252,13 +255,15 @@ if (adminer()->homepage()) {
 				}
 				echo "</table>\n";
 			}
-			echo '<p class="links">'
+			echo '<p class="links hover">'
 				. (support("procedure") ? '<a href="' . h(ME) . 'procedure=">' . lang('Create procedure') . '</a>' : '')
 				. '<a href="' . h(ME) . 'function=">' . lang('Create function') . "</a>\n"
 			;
+			echo "</div>\n";
 		}
 
 		if (support("sequence")) {
+			echo "<div>\n";
 			echo "<h3 id='sequences'>" . lang('Sequences') . "</h3>\n";
 			$sequences = get_vals("SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = current_schema() ORDER BY sequence_name");
 			if ($sequences) {
@@ -269,10 +274,12 @@ if (adminer()->homepage()) {
 				}
 				echo "</table>\n";
 			}
-			echo "<p class='links'><a href='" . h(ME) . "sequence='>" . lang('Create sequence') . "</a>\n";
+			echo "<p class='links hover'><a href='" . h(ME) . "sequence='>" . lang('Create sequence') . "</a>\n";
+			echo "</div>\n";
 		}
 
 		if (support("type")) {
+			echo "<div>\n";
 			echo "<h3 id='user-types'>" . lang('User types') . "</h3>\n";
 			$user_types = types();
 			if ($user_types) {
@@ -283,10 +290,12 @@ if (adminer()->homepage()) {
 				}
 				echo "</table>\n";
 			}
-			echo "<p class='links'><a href='" . h(ME) . "type='>" . lang('Create type') . "</a>\n";
+			echo "<p class='links hover'><a href='" . h(ME) . "type='>" . lang('Create type') . "</a>\n";
+			echo "</div>\n";
 		}
 
 		if (support("event")) {
+			echo "<div>\n";
 			echo "<h3 id='events'>" . lang('Events') . "</h3>\n";
 			$rows = get_rows("SHOW EVENTS");
 			if ($rows) {
@@ -307,7 +316,8 @@ if (adminer()->homepage()) {
 					echo "<p class='error'><code class='jush-sqlset'>event_scheduler</code>: " . h($event_scheduler) . "\n";
 				}
 			}
-			echo '<p class="links"><a href="' . h(ME) . 'event=">' . lang('Create event') . "</a>\n";
+			echo '<p class="links hover"><a href="' . h(ME) . 'event=">' . lang('Create event') . "</a>\n";
+			echo "</div>\n";
 		}
 	}
 }

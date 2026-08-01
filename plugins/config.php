@@ -56,7 +56,7 @@ class AdminerConfig extends Adminer\Plugin {
 
 	function pluginsLinks() {
 		$link = preg_replace('~\b(db|ns)=[^&]*&~', '', Adminer\ME);
-		echo "<p><a href='" . Adminer\h($link) . "config='>" . $this->lang('Configuration') . "</a>\n";
+		echo "<p class='links hover'><a href='" . Adminer\h($link) . "config='>" . $this->lang('Configuration') . "</a>\n";
 	}
 
 	function screenshot() {

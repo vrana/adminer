@@ -34,20 +34,16 @@ class AdminerMenuLinks extends Adminer\Plugin {
 		?>
 <style>
 /* opacity keeps the elements focusable and the layout stable */
-@media (hover: hover) { .hover { opacity: 0; } }
-tr:hover .hover, li:hover .hover, p:hover .hover, #fieldset-history div:hover .hover, .hover:focus, .hover:checked { opacity: 1; }
+@media (hover: hover) { .hover { opacity: 0.3; } }
+tr:hover .hover, li:hover .hover, p:hover .hover, div:hover > .hover, .hover.active, .hover:focus, .hover:checked { opacity: 1; }
 /* the action is printed outside the table so that it creates no empty column */
 .actions td:last-child { position: relative; width: 0; padding: 0; border-width: 0; }
 .actions td:last-child a { position: absolute; top: 0; padding: .2em .3em; }
-/* bold select would be wider than the other ones and shift the table name, so the name is bold instead - not in Editor where the link is the name */
-#tables a.select.active:not(:last-child) { font-weight: normal; }
-#tables a.select.active ~ * { font-weight: bold; }
 </style>
 <?php
 		//! table names in menu should be aligned left
 		//! the column with edit link in select should be invisible (also checkboxes in db and elsewhere), same as the Alter links
 		//! skins are not compatible with .actions
-		//! consider hiding also the ?indexes=, ?foreign=, ... links (appear when hovering DIV around H3, looks weird if there are no objects)
 	}
 
 	function tablesPrint(array $tables) {

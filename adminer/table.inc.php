@@ -49,16 +49,19 @@ if ($inherits) {
 }
 
 if (support("indexes") && driver()->supportsIndex($table_status)) {
+	echo "<div>\n";
 	echo "<h3 id='indexes'>" . lang('Indexes') . "</h3>\n";
 	$indexes = indexes($TABLE);
 	if ($indexes) {
 		adminer()->tableIndexesPrint($indexes, $table_status);
 	}
-	echo '<p class="links"><a href="' . h(ME) . 'indexes=' . urlencode($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
+	echo '<p class="links hover"><a href="' . h(ME) . 'indexes=' . urlencode($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
+	echo "</div>\n";
 }
 
 if (!is_view($table_status)) {
 	if (fk_support($table_status)) {
+		echo "<div>\n";
 		echo "<h3 id='foreign-keys'>" . lang('Foreign keys') . "</h3>\n";
 		$foreign_keys = foreign_keys($TABLE);
 		if ($foreign_keys) {
@@ -85,10 +88,12 @@ if (!is_view($table_status)) {
 			}
 			echo "</table>\n";
 		}
-		echo '<p class="links"><a href="' . h(ME) . 'foreign=' . urlencode($TABLE) . '">' . lang('Create foreign key') . "</a>\n";
+		echo '<p class="links hover"><a href="' . h(ME) . 'foreign=' . urlencode($TABLE) . '">' . lang('Create foreign key') . "</a>\n";
+		echo "</div>\n";
 	}
 
 	if (support("check")) {
+		echo "<div>\n";
 		echo "<h3 id='checks'>" . lang('Checks') . "</h3>\n";
 		$check_constraints = driver()->checkConstraints($TABLE);
 		if ($check_constraints) {
@@ -101,11 +106,13 @@ if (!is_view($table_status)) {
 			}
 			echo "</table>\n";
 		}
-		echo '<p class="links"><a href="' . h(ME) . 'check=' . urlencode($TABLE) . '">' . lang('Create check') . "</a>\n";
+		echo '<p class="links hover"><a href="' . h(ME) . 'check=' . urlencode($TABLE) . '">' . lang('Create check') . "</a>\n";
+		echo "</div>\n";
 	}
 }
 
 if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
+	echo "<div>\n";
 	echo "<h3 id='triggers'>" . lang('Triggers') . "</h3>\n";
 	$triggers = triggers($TABLE);
 	if ($triggers) {
@@ -116,7 +123,8 @@ if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
 		}
 		echo "</table>\n";
 	}
-	echo '<p class="links"><a href="' . h(ME) . 'trigger=' . urlencode($TABLE) . '">' . lang('Create trigger') . "</a>\n";
+	echo '<p class="links hover"><a href="' . h(ME) . 'trigger=' . urlencode($TABLE) . '">' . lang('Create trigger') . "</a>\n";
+	echo "</div>\n";
 }
 
 $inherited = driver()->inheritedTables($TABLE);
