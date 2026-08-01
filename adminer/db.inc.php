@@ -84,7 +84,7 @@ if (adminer()->homepage()) {
 			echo "<table class='nowrap checkable odds'>\n";
 			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: event => tableClick(event, true)});");
 			echo '<thead><tr class="wrap">';
-			echo '<td><input id="check-all" type="checkbox" class="jsonly hover" title="' . lang('All') . '"' . on('click', 'formCheck', '^(tables|views)\[') . '>';
+			echo '<td class="hover"><input id="check-all" type="checkbox" class="jsonly" title="' . lang('All') . '"' . on('click', 'formCheck', '^(tables|views)\[') . '>';
 			// without $order, the tables are sorted by name, except in SQLite which puts the sqlite_ tables last
 			echo '<th' . (!$order && JUSH != 'sqlite' ? " aria-sort='ascending'" : '') . '><a href="' . h(substr(ME, 0, -1)) . '">' . lang('Table') . '</a>';
 			$columns = array("Engine" => array(lang('Engine') . doc_link(array('sql' => 'storage-engines.html'))));
@@ -142,7 +142,7 @@ if (adminer()->homepage()) {
 				$view = ($full ? is_view($status) : $status !== null && !preg_match('~table|sequence~i', $status));
 				$status = ($full ? $status : array('Engine' => $status));
 				$id = h("Table-" . $name);
-				echo '<tr><td>' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array("$name", $tables_views, true), "", "", "hover", $id); // "$name" to check numeric table names
+				echo '<tr><td class="hover">' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array("$name", $tables_views, true), "", "", "", $id); // "$name" to check numeric table names
 				echo '<th>' . (support("table") || support("indexes")
 					? "<a href='" . h(ME) . "table=" . urlencode($name) . "' title='" . lang('Show structure') . "' id='$id'>" . h($name) . '</a>'
 					: h($name)
@@ -178,7 +178,7 @@ if (adminer()->homepage()) {
 				echo "\n";
 			}
 
-			echo "<tr><td><th>" . lang('%d in total', count($tables_list));
+			echo "<tr><td class='hover'><th>" . lang('%d in total', count($tables_list));
 			echo "<td>" . h(JUSH == "sql" ? get_val("SELECT @@default_storage_engine") : "");
 			echo (collations() ? "<td>" . h(db_collation(DB, collations())) : '');
 			if ($full && function_exists('Adminer\db_status')) {
@@ -242,15 +242,15 @@ if (adminer()->homepage()) {
 			echo "<h3 id='routines'>" . lang('Routines') . "</h3>\n";
 			$routines = routines();
 			if ($routines) {
-				echo "<table class='odds actions'>\n";
-				echo '<thead><tr><th>' . lang('Name') . '<td>' . lang('Type') . '<td>' . lang('Return type') . "<td><tbody>\n";
+				echo "<table class='odds'>\n";
+				echo '<thead><tr><th>' . lang('Name') . '<td>' . lang('Type') . '<td>' . lang('Return type') . "<td class='hover'><tbody>\n";
 				foreach ($routines as $row) {
 					$name = ($row["SPECIFIC_NAME"] == $row["ROUTINE_NAME"] ? "" : "&name=" . urlencode($row["ROUTINE_NAME"])); // not computed on the pages to be able to print the header first
 					echo '<tr>';
 					echo '<th><a href="' . h(ME . ($row["ROUTINE_TYPE"] != "PROCEDURE" ? 'callf=' : 'call=') . urlencode($row["SPECIFIC_NAME"]) . $name) . '">' . h($row["ROUTINE_NAME"]) . '</a>';
 					echo '<td>' . h($row["ROUTINE_TYPE"]);
 					echo '<td>' . h($row["DTD_IDENTIFIER"]);
-					echo '<td><a href="' . h(ME . ($row["ROUTINE_TYPE"] != "PROCEDURE" ? 'function=' : 'procedure=') . urlencode($row["SPECIFIC_NAME"]) . $name) . '" class="hover">'
+					echo '<td class="hover"><a href="' . h(ME . ($row["ROUTINE_TYPE"] != "PROCEDURE" ? 'function=' : 'procedure=') . urlencode($row["SPECIFIC_NAME"]) . $name) . '">'
 						. lang('Alter') . "</a>";
 				}
 				echo "</table>\n";

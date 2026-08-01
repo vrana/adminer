@@ -57,7 +57,7 @@ if (
 			echo "<table class='checkable odds'>\n";
 			echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: event => tableClick(event, true)});");
 			echo "<thead><tr>"
-				. (support("database") ? "<td>" : "")
+				. (support("database") ? "<td class='hover'>" : "")
 				// the databases are sorted by name, except in MS SQL which doesn't order them at all
 				. "<th" . (JUSH != 'mssql' ? " aria-sort='ascending'" : "") . ">" . lang('Database')
 				. (get_session("dbs") !== null ? " - <a href='" . h(ME) . "refresh=1'>" . lang('Refresh') . "</a>" : "")
@@ -71,7 +71,7 @@ if (
 			foreach ($databases as $db => $tables) {
 				$root = h(ME) . "db=" . urlencode($db);
 				$id = h("Db-" . $db);
-				echo "<tr>" . (support("database") ? "<td>" . checkbox("db[]", $db, in_array($db, (array) $_POST["db"]), "", "", "hover", $id) : "");
+				echo "<tr>" . (support("database") ? "<td class='hover'>" . checkbox("db[]", $db, in_array($db, (array) $_POST["db"]), "", "", "", $id) : "");
 				echo "<th><a href='$root' id='$id'>" . h($db) . "</a>";
 				$collation = h(db_collation($db, $collations));
 				echo "<td>" . (support("database") ? "<a href='$root" . ($scheme ? "&amp;ns=" : "") . "&amp;database=' title='" . lang('Alter database') . "'>$collation</a>" : $collation);

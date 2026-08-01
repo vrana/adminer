@@ -65,8 +65,8 @@ if (!is_view($table_status)) {
 		echo "<h3 id='foreign-keys'>" . lang('Foreign keys') . "</h3>\n";
 		$foreign_keys = foreign_keys($TABLE);
 		if ($foreign_keys) {
-			echo "<table class='actions'>\n";
-			echo "<thead><tr><th>" . lang('Source') . "<td>" . lang('Target') . "<td>" . lang('ON DELETE') . "<td>" . lang('ON UPDATE') . "<td><tbody>\n";
+			echo "<table>\n";
+			echo "<thead><tr><th>" . lang('Source') . "<td>" . lang('Target') . "<td>" . lang('ON DELETE') . "<td>" . lang('ON UPDATE') . "<td class='hover'><tbody>\n";
 			foreach ($foreign_keys as $name => $foreign_key) {
 				echo "<tr title='" . h($name) . "'>";
 				echo "<th><i>" . implode("</i>, <i>", array_map('Adminer\h', $foreign_key["source"])) . "</i>";
@@ -83,7 +83,7 @@ if (!is_view($table_status)) {
 				echo "(<i>" . implode("</i>, <i>", array_map('Adminer\h', $foreign_key["target"])) . "</i>)";
 				echo "<td>" . h($foreign_key["on_delete"]);
 				echo "<td>" . h($foreign_key["on_update"]);
-				echo '<td><a href="' . h(ME . 'foreign=' . urlencode($TABLE) . '&name=' . urlencode($name)) . '" class="hover">' . lang('Alter') . '</a>';
+				echo '<td class="hover"><a href="' . h(ME . 'foreign=' . urlencode($TABLE) . '&name=' . urlencode($name)) . '">' . lang('Alter') . '</a>';
 				echo "\n";
 			}
 			echo "</table>\n";
@@ -97,11 +97,11 @@ if (!is_view($table_status)) {
 		echo "<h3 id='checks'>" . lang('Checks') . "</h3>\n";
 		$check_constraints = driver()->checkConstraints($TABLE);
 		if ($check_constraints) {
-			echo "<table class='actions'>\n";
+			echo "<table>\n";
 			foreach ($check_constraints as $key => $val) {
 				echo "<tr title='" . h($key) . "'>";
 				echo "<td><code class='jush-" . JUSH . "'>" . shorten_utf8(preg_replace('~\s+~', ' ', ltrim($val)), 80, "</code>");
-				echo "<td><a href='" . h(ME . 'check=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "' class='hover'>" . lang('Alter') . "</a>";
+				echo "<td class='hover'><a href='" . h(ME . 'check=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "'>" . lang('Alter') . "</a>";
 				echo "\n";
 			}
 			echo "</table>\n";
@@ -116,10 +116,10 @@ if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
 	echo "<h3 id='triggers'>" . lang('Triggers') . "</h3>\n";
 	$triggers = triggers($TABLE);
 	if ($triggers) {
-		echo "<table class='actions'>\n";
+		echo "<table>\n";
 		foreach ($triggers as $key => $val) {
 			echo "<tr valign='top'><td>" . h($val[0]) . "<td>" . h($val[1]) . "<th>" . h($key)
-				. "<td><a href='" . h(ME . 'trigger=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "' class='hover'>" . lang('Alter') . "</a>\n";
+				. "<td class='hover'><a href='" . h(ME . 'trigger=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "'>" . lang('Alter') . "</a>\n";
 		}
 		echo "</table>\n";
 	}

@@ -344,8 +344,8 @@ if (!$columns && support("table")) {
 			echo script("mixin(qs('#table'), {onclick: tableClick, ondblclick: event => tableClick(event, true), onkeydown: editingKeydown});");
 			echo "<thead><tr>" . (!$group && $select
 				? ""
-				: "<td><input type='checkbox' id='all-page' class='jsonly hover' title='" . lang('All rows on this page') . "'" . on('click', 'formCheck', '^check') . ">"
-					. " <a href='" . h($_GET["modify"] ? remove_from_uri("modify") : $_SERVER["REQUEST_URI"] . "&modify=1") . "' class='hover'>" . lang('Modify') . "</a>");
+				: "<td class='hover'><input type='checkbox' id='all-page' class='jsonly' title='" . lang('All rows on this page') . "'" . on('click', 'formCheck', '^check') . ">"
+					. " <a href='" . h($_GET["modify"] ? remove_from_uri("modify") : $_SERVER["REQUEST_URI"] . "&modify=1") . "'>" . lang('Modify') . "</a>");
 			$names = array();
 			$functions = array();
 			reset($select);
@@ -417,9 +417,9 @@ if (!$columns && support("table")) {
 					}
 					$unique_idf .= "&" . ($val !== null ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val === false ? "f" : $val) : "null%5B%5D=" . urlencode($key));
 				}
-				echo "<tr>" . (!$group && $select ? "" : "<td>"
-					. checkbox("check[]", substr($unique_idf, 1), in_array(substr($unique_idf, 1), (array) $_POST["check"]), "", "", "hover")
-					. ($is_group || information_schema(DB) ? "" : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . $unique_idf) . "' class='edit hover'>" . lang('edit') . "</a>")
+				echo "<tr>" . (!$group && $select ? "" : "<td class='hover'>"
+					. checkbox("check[]", substr($unique_idf, 1), in_array(substr($unique_idf, 1), (array) $_POST["check"]))
+					. ($is_group || information_schema(DB) ? "" : " <a href='" . h(ME . "edit=" . urlencode($TABLE) . $unique_idf) . "' class='edit'>" . lang('edit') . "</a>")
 				);
 
 				reset($select);

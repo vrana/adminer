@@ -25,7 +25,7 @@ echo script("mixin(qsl('table'), {onclick: tableClick, ondblclick: event => tabl
 $i = -1;
 foreach (adminer()->processList() as $i => $row) {
 	if (!$i) {
-		echo "<thead><tr lang='en'>" . (support("kill") ? "<th>" : "");
+		echo "<thead><tr lang='en'>" . (support("kill") ? "<td class='hover'>" : "");
 		foreach ($row as $key => $val) {
 			echo "<th>$key" . doc_link(array(
 				'sql' => "show-processlist.html#processlist_" . strtolower($key),
@@ -35,7 +35,7 @@ foreach (adminer()->processList() as $i => $row) {
 		}
 		echo "<tbody>\n";
 	}
-	echo "<tr>" . (support("kill") ? "<td>" . checkbox("kill[]", $row[JUSH == "sql" ? "Id" : "pid"], 0, "", "", "hover") : "");
+	echo "<tr>" . (support("kill") ? "<td class='hover'>" . checkbox("kill[]", $row[JUSH == "sql" ? "Id" : "pid"], 0) : "");
 	foreach ($row as $key => $val) {
 		echo "<td>" . ($val != "" && (
 			(JUSH == "sql" && $key == "Info" && preg_match("~Query|Killed~", $row["Command"])) ||
