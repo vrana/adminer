@@ -273,8 +273,8 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 	} else {
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
-			? "<select name='function[$name]'" . on_help_value('^SQL$') . ">" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
-				. script("qsl('select').onchange = functionChange;", "")
+			? "<select name='function[$name]'" . on('change', 'functionChange') . on_help_value('^SQL$') . ">"
+				. optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
 			: h(reset($functions))
 		) . '<td>';
 		$input = adminer()->editInput($table, $field, $attrs, $value); // usage in call is without a table
@@ -316,7 +316,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 			;
 		}
 		echo adminer()->editHint($table, $field, $value);
-		echo (count($functions) > 1 ? script("qs('select', qsl('td').previousSibling).onchange();", "") : ""); // apply the initially selected function (e.g. hide the input for now())
+		echo (count($functions) > 1 ? script("fire(qs('select', qsl('td').previousSibling), 'change');", "") : ""); // apply the initially selected function (e.g. hide the input for now())
 		// skip 'original'
 		$first = 0;
 		foreach ($functions as $key => $val) {

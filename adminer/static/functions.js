@@ -373,11 +373,15 @@ function formSubmit() {
 }
 
 /** Disable Save and continue edit after changing a value identifying the row
+* @param {Event} event
 * @this HTMLTableRowElement
 */
-function whereChange() {
-	// the WHERE condition in the URL is not updated by the AJAX save so the next save would not match the row
-	qs('#form [name=insert]').disabled = true;
+function whereChange(event) {
+	// isTrusted - fire() dispatches change to apply the initially selected function, which is not a change by the user
+	if (event.isTrusted !== false) {
+		// the WHERE condition in the URL is not updated by the AJAX save so the next save would not match the row
+		qs('#form [name=insert]').disabled = true;
+	}
 }
 
 /** Add row in select fieldset
