@@ -105,7 +105,7 @@ function copyCode(parent) {
 * @this HTMLSelectElement
 */
 function loginDriver() {
-	const trs = parentTag(this, 'table').rows;
+	const trs = this.closest('table').rows;
 	const disabled = /sqlite/.test(selectValue(this));
 	alterClass(trs[1], 'hidden', disabled);	// 1 - row with server
 	qs('input', trs[1]).disabled = disabled;
@@ -259,12 +259,12 @@ function editFields() {
 	const table = qs('#edit-fields');
 	let dragged;
 	const dragStart = el => {
-		dragged = parentTag(el, 'tr');
+		dragged = el.closest('tr');
 		alterClass(table, 'dragging', true);
 		alterClass(dragged, 'dragged', true);
 	};
 	const dragMove = el => { // returns whether the element is a valid drop target
-		const row = parentTag(el, 'tr');
+		const row = el && el.closest('tr'); // el is null if the touch is outside the viewport
 		if (!dragged || !row || !qs('[draggable]', row)) {
 			return false;
 		}
@@ -295,7 +295,7 @@ function editFields() {
 	});
 	// HTML5 drag and drop doesn't work on touch screens; addEventListener() because the handlers must not be passive
 	table.addEventListener('touchstart', e => {
-		const el = parentTag(e.target, 'button');
+		const el = e.target.closest('button');
 		if (el && el.draggable) {
 			e.preventDefault(); // to not scroll the page
 			dragStart(el);
@@ -316,7 +316,7 @@ function editFields() {
 * @return {boolean} false to cancel action
 */
 function editingClick(event) {
-	let el = parentTag(event.target, 'button');
+	let el = event.target.closest('button');
 	if (el) {
 		const name = el.name;
 		if (/^add\[/.test(name)) {
@@ -328,7 +328,7 @@ function editingClick(event) {
 	}
 	el = event.target;
 	if (!isTag(el, 'input')) {
-		el = parentTag(el, 'label');
+		el = el.closest('label');
 		el = el && qs('input', el);
 	}
 	if (el) {
@@ -395,7 +395,7 @@ function editingNameChange() {
 function editingAddRow(focus) {
 	const match = /(\d+)(\.\d+)?/.exec(this.name);
 	const x = match[0] + (match[2] ? added.slice(match[2].length) : added) + '1';
-	const row = parentTag(this, 'tr');
+	const row = this.closest('tr');
 	const row2 = cloneNode(row);
 	let tags = qsa('select, input, button', row);
 	let tags2 = qsa('select, input, button', row2);
@@ -458,7 +458,7 @@ function editingAddLastRow() {
 function editingRemoveRow(name) {
 	const field = this.form[this.name.replace(/[^[]+(.+)/, name)];
 	field.remove();
-	parentTag(this, 'tr').hidden = true;
+	this.closest('tr').hidden = true;
 	return false;
 }
 
@@ -595,7 +595,7 @@ function partitionByChange() {
 * @this HTMLInputElement
 */
 function partitionNameChange() {
-	const tr = parentTag(this, 'tr');
+	const tr = this.closest('tr');
 	const row = cloneNode(tr);
 	row.firstChild.firstChild.value = '';
 	tr.parentNode.append(row);
@@ -622,7 +622,7 @@ function editingCommentsClick(focus) {
 * @this HTMLTableElement
 */
 function dumpClick(event) {
-	let el = parentTag(event.target, 'label');
+	let el = event.target.closest('label');
 	if (el) {
 		el = qs('input', el);
 		const match = /(.+)\[]$/.exec(el.name);
@@ -639,7 +639,7 @@ function dumpClick(event) {
 * @this HTMLSelectElement
 */
 function foreignAddRow() {
-	const tr = parentTag(this, 'tr');
+	const tr = this.closest('tr');
 	const row = cloneNode(tr); // the clone keeps the attribute so that it adds the next row
 	this.removeAttribute('data-onchange');
 	for (const select of qsa('select', row)) {
@@ -655,7 +655,7 @@ function foreignAddRow() {
 * @this HTMLSelectElement
 */
 function indexesAddRow() {
-	const tr = parentTag(this, 'tr');
+	const tr = this.closest('tr');
 	const row = cloneNode(tr); // the clone keeps the attribute so that it adds the next row
 	this.removeAttribute('data-onchange');
 	for (const tag of qsa('select, input, button', row)) {
@@ -675,7 +675,7 @@ function indexesAddRow() {
 */
 function indexesChangeColumn(prefix) {
 	const field = this;
-	const td = parentTag(field, 'td');
+	const td = field.closest('td');
 	const columns = [...qsa('select, input', td)].filter(column => /\[columns]/.test(column.name));
 	if (columns[columns.length - 1] == field) { // the appended column becomes the last one so it adds the next
 		const type = field.form[field.name.replace(/].*/, '][type]')];

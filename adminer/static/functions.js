@@ -116,23 +116,11 @@ function isTag(el, tag) {
 	return el && re.test(el.tagName);
 }
 
-/** Get parent node with specified tag name
-* @param {?HTMLElement} el
-* @param {string} tag regular expression
-* @return {?HTMLElement}
-*/
-function parentTag(el, tag) {
-	while (el && !isTag(el, tag)) {
-		el = el.parentNode;
-	}
-	return el;
-}
-
 /** Set checked class
 * @param {HTMLInputElement} el
 */
 function trCheck(el) {
-	const tr = parentTag(el, 'tr');
+	const tr = el.closest('tr');
 	alterClass(tr, 'checked', el.checked);
 	fire(el.form && el.form['all'], 'click'); // the element named all counts the selected items, its handler is registered by a data attribute
 }
@@ -231,7 +219,7 @@ function confirmClick(message) {
 * @param {MouseEvent} event
 */
 function tableClick(event) {
-	const td = parentTag(event.target, 'td');
+	const td = event.target.closest('td');
 	let text;
 	if (td && (text = td.dataset.text)) {
 		if (selectClick.call(td, event, +text, td.dataset.warning)) {
@@ -285,7 +273,7 @@ function checkboxClick(event) {
 	if (event.shiftKey && (!lastChecked || lastChecked.name == this.name)) {
 		const checked = (lastChecked ? lastChecked.checked : true);
 		let checking = !lastChecked;
-		for (const input of qsa('input', parentTag(this, 'table'))) {
+		for (const input of qsa('input', this.closest('table'))) {
 			if (input.name === this.name) {
 				if (checking) {
 					input.checked = checked;
@@ -561,7 +549,7 @@ function delegateEvent(event) {
 function editingKeydown(event) {
 	if (/^Arrow(Down|Up)$/.test(event.key) && isCtrl(event)) {
 		const target = event.target;
-		const cell = parentTag(target, 'td|th'); // not parentNode - the NULL checkbox is wrapped in a <label>
+		const cell = target.closest('td, th'); // not parentNode - the NULL checkbox is wrapped in a <label>
 		const cells = [...cell.parentNode.children];
 		const sibling = (event.key == 'ArrowUp' ? 'previousElementSibling' : 'nextElementSibling');
 		let row = cell.parentNode;
@@ -635,7 +623,7 @@ function skipOriginal(first) {
 * @this HTMLInputElement
 */
 function fieldChange() {
-	const tr = parentTag(this, 'tr');
+	const tr = this.closest('tr');
 	const row = cloneNode(tr);
 	for (const input of qsa('input', row)) {
 		input.value = '';
