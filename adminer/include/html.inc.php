@@ -522,10 +522,12 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 	if ($editable) {
 		echo "<input type='submit' value='" . lang('Save') . "'>\n";
 		if (!isset($_GET["select"]) && $continue_edit) {
+			// the printed values were not saved so they can differ from the WHERE condition in the URL and no change event fires for them
+			$disabled = ($where_columns && ($error != "" || adminer()->error != "") ? " disabled" : "");
 			echo "<input type='submit' name='insert' value='" . ($update
 				? lang('Save and continue edit')
 				: lang('Save and insert next')
-			) . "' title='Ctrl+Shift+Enter'" . ($update ? on('click', 'ajaxForm', lang('Saving…')) : "") . ">\n";
+			) . "' title='Ctrl+Shift+Enter'$disabled" . ($update ? on('click', 'ajaxForm', lang('Saving…')) : "") . ">\n";
 		}
 	}
 	echo ($update ? "<input type='submit' name='delete' value='" . lang('Delete') . "'" . confirm() . ">\n" : "");
