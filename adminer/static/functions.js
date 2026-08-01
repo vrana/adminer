@@ -230,7 +230,7 @@ function tableClick(event, click) {
 	el = el.firstChild.firstChild;
 	if (click) {
 		el.checked = !el.checked;
-		el.onclick && el.onclick();
+		fire(el, 'click'); // the handler can be registered by a data attribute
 	}
 	if (el.name == 'check[]') {
 		el.form['all'].checked = false;
