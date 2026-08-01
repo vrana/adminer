@@ -18,7 +18,7 @@ jobs:
           standard: conf/phpcs.xml
       - uses: php-actions/phpstan@v3
         with:
-          version: latest
+          version: 2.2.7
           configuration: conf/phpstan.neon
       - uses: actions/setup-node@v7
         with:
