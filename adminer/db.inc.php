@@ -192,21 +192,21 @@ if (adminer()->homepage()) {
 			echo ($full ? '' : script("ajaxSetHtml('" . js_escape(ME) . "script=db');"));
 			echo "</div>\n";
 			if (!information_schema(DB)) {
-				$vacuum = "<input type='submit' value='" . lang('Vacuum') . "'> " . on_help("'VACUUM'");
-				$optimize = "<input type='submit' name='optimize' value='" . lang('Optimize') . "'> " . on_help(JUSH == "sql" ? "'OPTIMIZE TABLE'" : "'VACUUM ANALYZE'");
-				$print = (JUSH == "sqlite" ? $vacuum . "<input type='submit' name='check' value='" . lang('Check') . "'> " . on_help("'PRAGMA integrity_check'")
+				$vacuum = "<input type='submit' value='" . lang('Vacuum') . "'" . on_help("VACUUM") . "> ";
+				$optimize = "<input type='submit' name='optimize' value='" . lang('Optimize') . "'" . on_help(JUSH == "sql" ? "OPTIMIZE TABLE" : "VACUUM ANALYZE") . "> ";
+				$print = (JUSH == "sqlite" ? $vacuum . "<input type='submit' name='check' value='" . lang('Check') . "'" . on_help("PRAGMA integrity_check") . "> "
 				: (JUSH == "pgsql" ? $vacuum . $optimize
-				: (JUSH == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'> " . on_help("'ANALYZE TABLE'")
+				: (JUSH == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'" . on_help("ANALYZE TABLE") . "> "
 					. $optimize
-					. "<input type='submit' name='check' value='" . lang('Check') . "'> " . on_help("'CHECK TABLE'")
-					. "<input type='submit' name='repair' value='" . lang('Repair') . "'> " . on_help("'REPAIR TABLE'")
+					. "<input type='submit' name='check' value='" . lang('Check') . "'" . on_help("CHECK TABLE") . "> "
+					. "<input type='submit' name='repair' value='" . lang('Repair') . "'" . on_help("REPAIR TABLE") . "> "
 				: "")))
 				. (function_exists('Adminer\truncate_tables')
-					? "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm() . "> "
-						. on_help(JUSH == "sqlite" ? "'DELETE'" : "'TRUNCATE" . (JUSH == "pgsql" ? "'" : " TABLE'"))
+					? "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm()
+						. on_help(JUSH == "sqlite" ? "DELETE" : "TRUNCATE" . (JUSH == "pgsql" ? "" : " TABLE")) . "> "
 					: "")
-				. (JUSH == "pgsql" ? "<input type='submit' name='truncate_cascade' value='" . lang('Truncate Cascade') . "'" . confirm() . "> " . on_help("'TRUNCATE CASCADE'") : "")
-				. (function_exists('Adminer\drop_tables') ? "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . ">" . on_help("'DROP TABLE'") : "");
+				. (JUSH == "pgsql" ? "<input type='submit' name='truncate_cascade' value='" . lang('Truncate Cascade') . "'" . confirm() . on_help("TRUNCATE CASCADE") . "> " : "")
+				. (function_exists('Adminer\drop_tables') ? "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . on_help("DROP TABLE") . ">" : "");
 				echo ($print ? "<div class='footer'><div>\n<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>$print\n</div></fieldset>\n" : "");
 
 				$databases = (support("scheme") ? adminer()->schemas() : adminer()->databases());

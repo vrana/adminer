@@ -252,11 +252,7 @@ function editFields() {
 			onfocus: function () {
 				lastType = selectValue(this);
 			},
-			onchange: editingTypeChange,
-			onmouseover: function (event) {
-				helpMouseover.call(this, event, event.target.value, 1);
-			},
-			onmouseout: helpMouseout
+			onchange: editingTypeChange
 		});
 	}
 	const table = qs('#edit-fields');
@@ -894,12 +890,12 @@ function schemaMouseup(event, db) {
 let helpOpen, helpIgnore; // when mouse outs <option> then it mouse overs border of <select> - ignore it
 
 /** Display help
-* @param {MouseEvent} event
 * @param {string} text
 * @param {number} side 1 to display on left side, 0 on top
+* @param {MouseEvent} event
 * @this HTMLElement
 */
-function helpMouseover(event, text, side) {
+function helpMouseover(text, side, event) {
 	const target = event.target;
 	if (!text) {
 		helpClose();
@@ -916,6 +912,20 @@ function helpMouseover(event, text, side) {
 	}
 }
 
+/** Display help with the hovered value
+* @param {string} regexp regular expression transforming the value, empty to display the value itself
+* @param {string} replacement can use $& and $1
+* @param {MouseEvent} event
+* @this HTMLSelectElement
+*/
+function helpValueMouseover(regexp, replacement, event) {
+	// target - the hovered <option> in an open <select>
+	const value = event.target.value;
+	// new RegExp() - a regular expression can't be passed in a data attribute
+	// 1 - an open <select> would cover the help displayed on top
+	helpMouseover.call(this, (value && regexp ? value.replace(new RegExp(regexp), replacement) : value), 1, event);
+}
+
 /** Close help after timeout
 * @param {MouseEvent} event
 * @this HTMLElement
@@ -928,6 +938,11 @@ function helpMouseout(event) {
 			helpClose();
 		}
 	}, 200);
+}
+
+/** Keep the help open while hovering it */
+function helpKeep() {
+	helpOpen = 1;
 }
 
 /** Close help */

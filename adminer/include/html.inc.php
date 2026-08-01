@@ -273,8 +273,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 	} else {
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
 		echo (count($functions) > 1
-			? "<select name='function[$name]'>" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
-				. on_help("event.target.value.replace(/^SQL\$/, '')", 1)
+			? "<select name='function[$name]'" . on_help_value('^SQL$') . ">" . optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
 				. script("qsl('select').onchange = functionChange;", "")
 			: h(reset($functions))
 		) . '<td>';
@@ -406,12 +405,22 @@ function search_tables(): void {
 	echo ($sep ? "<p class='message'>" . lang('No tables.') : "</ul>") . "\n";
 }
 
-/** Return events to display help on mouse over
-* @param string $command JS expression
+/** Get attributes to display help on mouse over
+* @param string $text SQL command
 * @param int $side 0 top, 1 left
+* @return string HTML attributes including the leading space
 */
-function on_help(string $command, int $side = 0): string {
-	return script("mixin(qsl('select, input'), {onmouseover: function (event) { helpMouseover.call(this, event, $command, $side) }, onmouseout: helpMouseout});", "");
+function on_help(string $text, int $side = 0): string {
+	return on('mouseover', 'helpMouseover', $text, $side) . on('mouseout', 'helpMouseout');
+}
+
+/** Get attributes to display help with the hovered value on mouse over
+* @param string $regexp regular expression transforming the value, empty to display the value itself
+* @param string $replacement can use $& and $1
+* @return string HTML attributes including the leading space
+*/
+function on_help_value(string $regexp = "", string $replacement = ""): string {
+	return on('mouseover', 'helpValueMouseover', $regexp, $replacement) . on('mouseout', 'helpMouseout');
 }
 
 /** Print edit data form

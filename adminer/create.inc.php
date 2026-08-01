@@ -176,7 +176,7 @@ foreach ($engines as $engine) {
 if (support("columns") || $TABLE == "") {
 	echo lang('Table name') . ": <input name='name'" . ($TABLE == "" && !$_POST ? " autofocus" : "") . " data-maxlength='64' value='" . h($row["name"]) . "' autocapitalize='off'>\n";
 	echo ($engines
-		? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"], on('change', 'helpClose')) . on_help("event.target.value", 1) . "\n"
+		? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"], on('change', 'helpClose') . on_help_value()) . "\n"
 		: ""
 	);
 	if ($collations) {
@@ -213,8 +213,7 @@ if (support("columns")) {
 if ($partition_by && (JUSH == 'sql' || $TABLE == "")) {
 	$partition_table = preg_match('~RANGE|LIST~', $row["partition_by"]);
 	print_fieldset("partition", lang('Partition by'), $row["partition_by"]);
-	echo "<p>" . html_select("partition_by", array_merge(array(""), $partition_by), $row["partition_by"], on('change', 'partitionByChange'))
-		. on_help("event.target.value.replace(/./, 'PARTITION BY \$&')", 1) . "\n";
+	echo "<p>" . html_select("partition_by", array_merge(array(""), $partition_by), $row["partition_by"], on('change', 'partitionByChange') . on_help_value('.', 'PARTITION BY $&')) . "\n";
 	echo "(<input name='partition' value='" . h($row["partition"]) . "'>)\n";
 	echo lang('Partitions') . ": <input type='number' name='partitions' class='size" . ($partition_table || !$row["partition_by"] ? " hidden" : "") . "' value='" . h($row["partitions"]) . "'>\n";
 	echo "<table id='partition-table'" . ($partition_table ? "" : " class='hidden'") . ">\n";

@@ -11,7 +11,13 @@ let helpOpen;
 function helpMouseover() {
 }
 
+function helpValueMouseover() {
+}
+
 function helpMouseout() {
+}
+
+function helpKeep() {
 }
 
 function helpClose() {

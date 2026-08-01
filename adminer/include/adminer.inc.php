@@ -469,8 +469,12 @@ class Adminer {
 				$val["col"]
 			);
 			echo "<div>" . (driver()->functions || driver()->grouping
-				? html_select("columns[$i][fun]", array(-1 => "") + array_filter(array(lang('Functions') => driver()->functions, lang('Aggregation') => driver()->grouping)), $val["fun"])
-					. on_help("event.target.value && event.target.value.replace(/ |\$/, '(') + ')'", 1)
+				? html_select(
+					"columns[$i][fun]",
+					array(-1 => "") + array_filter(array(lang('Functions') => driver()->functions, lang('Aggregation') => driver()->grouping)),
+					$val["fun"],
+					on_help_value(' (.*)|$', '($1)')
+				)
 					. script("qsl('select').onchange = function () { helpClose();" . ($key !== "" ? "" : " fire(qsl('select, input', this.parentNode), 'change');") . " };", "")
 					. "($column)"
 				: $column

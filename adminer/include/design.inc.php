@@ -66,8 +66,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	echo script((isset($_COOKIE["adminer_version"]) || !adminer()->verifyVersion() ? "" : "onload = partial(verifyVersion, '" . VERSION . "');\n")
 		. "const offlineMessage = '" . js_escape(lang('You are offline.')) . "';
 const thousandsSeparator = '" . js_escape(lang(',')) . "';");
-	echo "<div id='help' class='jush-" . JUSH . " jsonly hidden'></div>\n";
-	echo script("mixin(qs('#help'), {onmouseover: () => { helpOpen = 1; }, onmouseout: helpMouseout});");
+	echo "<div id='help' class='jush-" . JUSH . " jsonly hidden'" . on('mouseover', 'helpKeep') . on('mouseout', 'helpMouseout') . "></div>\n";
 	echo "<div id='content'>\n";
 	echo "<span id='menuopen' class='jsonly'" . on('click', 'menuToggle') . "><button title='" . lang('Menu') . "' class='icon icon-move' aria-expanded='false'></button></span>\n";
 	if ($breadcrumb !== null) {
