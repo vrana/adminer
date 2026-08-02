@@ -55,20 +55,23 @@ class AdminerLoginPasskey extends Adminer\Plugin {
 		}
 	}
 
-	/** Print the login form row with the passkey buttons; it is hidden without JavaScript or without a support for passkeys */
+	/** Print the login form row with the passkey buttons; the buttons are displayed only if the passkey can be used, otherwise the requirements are */
 	protected function printRow() {
 		// 1 - JSON_HEX_TAG because the values are printed to a script element, 256 - JSON_UNESCAPED_UNICODE
 		$lang = json_encode(array(
 			'unsupported' => $this->lang('The passkey does not support storing passwords.'),
 			'invalid' => $this->lang('The accounts cannot be decrypted by this passkey.'),
+			'browser' => $this->lang('This browser does not support passkeys.'),
 		), 1 | 256);
 		?>
-<tr id='passkey-row' hidden><th>Passkey<td>
+<tr id='passkey-row'><th>Passkey<td>
+<span id='passkey-buttons' hidden>
 <?php if ($this->accounts) { ?>
 <input type='button' id='passkey-unlock' value='<?php echo $this->lang('Unlock with passkey'); ?>'>
 <?php } ?>
 <a href='#passkey-setup' id='passkey-setup-link'><?php echo $this->lang('Set up passkey'); ?></a>
-<div id='passkey-message'></div>
+</span>
+<div id='passkey-message' class='error'><?php echo $this->lang('Passkeys require HTTPS and JavaScript.'); ?></div>
 <div id='passkey-setup' hidden>
 <p><?php echo $this->lang('Fill in the login form and add it to the passkey.'); ?> <input id='passkey-label' size='10' placeholder='<?php echo $this->lang('Label'); ?>'>
 <input type='button' id='passkey-add' value='<?php echo $this->lang('Add to passkey'); ?>'>
@@ -280,36 +283,45 @@ function passkeyAccount(label) {
 	return account;
 }
 
+/** Get the passkey used by the setup form, creating or unlocking it if necessary
+* @return {Promise}
+*/
+function passkeySetUpGet() {
+	if (passkeySetUp) {
+		return Promise.resolve(); // the passkey is already unlocked so more accounts can be added and removed without using it again
+	}
+	const passkey = (passkeyAccounts
+		? passkeyGet(passkeyId).then(auth => passkeyDecrypt(auth.key, passkeyAccounts).then(accounts => ({auth: auth, accounts: accounts})))
+		: passkeyCreate().then(auth => ({auth: auth, accounts: []}))
+	);
+	return passkey.then(data => {
+		passkeySetUp = data;
+	});
+}
+
 /** Add the account from the login form to the passkey and print the configuration */
 function passkeyAdd() {
 	passkeyMessage('');
 	const account = passkeyAccount(qs('#passkey-label').value);
-	const passkey = (passkeySetUp
-		? Promise.resolve(passkeySetUp) // the passkey is already unlocked so more accounts can be added without using it again
-		: (passkeyAccounts
-			? passkeyGet(passkeyId).then(auth => passkeyDecrypt(auth.key, passkeyAccounts).then(accounts => ({auth: auth, accounts: accounts})))
-			: passkeyCreate().then(auth => ({auth: auth, accounts: []}))
-		)
-	);
-	passkey.then(data => {
-		passkeySetUp = data;
-		data.accounts.push(account);
+	passkeySetUpGet().then(() => {
+		passkeySetUp.accounts.push(account);
 		return Promise.all([
-			passkeyEncrypt(data.auth.key, data.accounts),
-			crypto.subtle.digest('SHA-256', new TextEncoder().encode(data.auth.password)).then(passkeyHex),
+			passkeyEncrypt(passkeySetUp.auth.key, passkeySetUp.accounts),
+			crypto.subtle.digest('SHA-256', new TextEncoder().encode(passkeySetUp.auth.password)).then(passkeyHex),
 		]).then(config => {
-			qs('#passkey-config').value = "new AdminerLoginPasskey('" + data.auth.id + "', '" + config[0] + "', '" + config[1] + "'),";
+			qs('#passkey-config').value = "new AdminerLoginPasskey('" + passkeySetUp.auth.id + "', '" + config[0] + "', '" + config[1] + "'),";
 			qs('#passkey-output').removeAttribute('hidden');
 			qs('#passkey-label').value = '';
 			// clear the password so that it is not stored again with an account of a server not requiring it
 			qs('#username').form['auth[password]'].value = '';
-			passkeyMessage(data.accounts.map(stored => stored.label || stored.username).join(', '));
+			passkeyMessage(passkeySetUp.accounts.map(stored => stored.label || stored.username).join(', '));
 		});
 	}).catch(passkeyFailure);
 }
 
-if (window.PublicKeyCredential && window.isSecureContext && window.crypto && crypto.subtle) {
-	qs('#passkey-row').removeAttribute('hidden');
+if (window.isSecureContext && window.PublicKeyCredential && window.crypto && crypto.subtle) {
+	passkeyMessage(''); // clear the requirements printed for browsers without JavaScript
+	qs('#passkey-buttons').removeAttribute('hidden');
 	const unlock = qs('#passkey-unlock');
 	if (unlock) {
 		unlock.addEventListener('click', () => {
@@ -328,6 +340,9 @@ if (window.PublicKeyCredential && window.isSecureContext && window.crypto && cry
 		qs('#passkey-setup').removeAttribute('hidden');
 	});
 	qs('#passkey-add').addEventListener('click', passkeyAdd);
+
+} else if (window.isSecureContext) { // HTTPS is used so the printed requirements would be misleading
+	passkeyMessage(passkeyLang.browser, true);
 }
 </script>
 <?php
@@ -345,6 +360,8 @@ if (window.PublicKeyCredential && window.isSecureContext && window.crypto && cry
 			'Fill in the login form and add it to the passkey.' => 'Vyplňte přihlašovací formulář a přidejte ho do passkey.',
 			'Label' => 'Popis',
 			'Add to passkey' => 'Přidat do passkey',
+			'Passkeys require HTTPS and JavaScript.' => 'Passkey vyžaduje HTTPS a JavaScript.',
+			'This browser does not support passkeys.' => 'Tento prohlížeč nepodporuje passkey.',
 			'Add this line to %s:' => 'Přidejte tento řádek do %s:',
 			'The passkey does not support storing passwords.' => 'Tato passkey neumí ukládat hesla.',
 			'The accounts cannot be decrypted by this passkey.' => 'Touto passkey se přístupy nepodařilo dešifrovat.',
