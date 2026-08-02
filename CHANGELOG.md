@@ -65,6 +65,7 @@
 - Plugin login-password-less: Allow the plugin password to be also the password of some server
 - Plugin menu-links: Add option to show the select link and other repeated links only on hover
 - New plugin: Display images in select, same as in Adminer Editor
+- New plugin: Log in by a passkey holding the passwords
 ### Internal
 - Register JavaScript event handlers by a data attribute instead of a script element
 - Register the event handlers in functions.js instead of an inline script
