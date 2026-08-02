@@ -738,7 +738,7 @@ function selectClick(event, text, warning) {
 	const input = document.createElement(text ? 'textarea' : 'input');
 	input.onkeydown = event => {
 		if (event.key == 'Escape' && !event.shiftKey && !event.altKey && !isCtrl(event)) {
-			inputBlur.call(input);
+			inputBlur();
 			td.innerHTML = original;
 		}
 	};
@@ -827,7 +827,7 @@ function setupSubmitHighlightInput(input) {
 		addEvent(input, 'focus', inputFocus);
 		addEvent(input, 'blur', inputBlur);
 		if (document.activeElement === input) {
-			inputFocus.call(input); // focus event was missed, e.g. jush.textarea() focuses the <pre> before this
+			fire(input, 'focus'); // focus event was missed, e.g. jush.textarea() focuses the <pre> before this
 		}
 	}
 }
