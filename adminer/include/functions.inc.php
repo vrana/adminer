@@ -580,7 +580,7 @@ function remove_from_uri(string $param = ""): string {
 }
 
 /** Get file contents from $_FILES
-* @return mixed int for error, string otherwise
+* @return int|string|null null if the file was not sent at all, int for error, string otherwise
 */
 function get_file(string $key, bool $decompress = false, string $delimiter = "") {
 	$file = $_FILES[$key];
@@ -619,7 +619,7 @@ function get_file(string $key, bool $decompress = false, string $delimiter = "")
 }
 
 /** Determine upload error */
-function upload_error(int $error): string {
+function upload_error(?int $error): string {
 	$max_size = ($error == UPLOAD_ERR_INI_SIZE ? ini_get("upload_max_filesize") : 0); // post_max_size is checked in index.php
 	return ($error ? lang('Unable to upload a file.') . ($max_size ? " " . lang('Maximum allowed file size is %sB.', $max_size) : "") : lang('File does not exist.'));
 }
