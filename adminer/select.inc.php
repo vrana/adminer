@@ -196,7 +196,6 @@ if ($_POST && !$error) {
 			$error = lang('File must be in UTF-8 encoding.');
 		} else {
 			save_settings(array("output" => $adminer_import["output"], "format" => $_POST["separator"]), "adminer_import");
-			$result = true;
 			$cols = array_keys($fields);
 			preg_match_all('~(?>"[^"]*"|[^"\r\n]+)+~', $file, $matches);
 			$affected = count($matches[0]);
@@ -471,15 +470,15 @@ if (!$columns && support("table")) {
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
 						$posted = idx(idx($_POST["val"], $unique_idf), bracket_escape($key));
 						$update = idx($field["privileges"], "update");
-						$editable = !is_array($row[$key]) && !is_blob($field) && is_utf8($val) && $rows[$n][$key] == $row[$key] && !$functions[$key] && !$field["generated"] && $update;
+						$editable = !is_array($row[$key]) && !is_blob($field) && is_utf8($val) && $rows[$n][$key] == $val && !$functions[$key] && !$field["generated"] && $update;
 						$type = (preg_match('~^(AVG|MIN|MAX)\((.+)\)~', $column, $match) ? $fields[idf_unescape($match[2])]["type"] : $field["type"]);
 						$text = preg_match('~text|json|lob~', $type);
 						$is_number = preg_match(number_type(), $type) || preg_match('~^(CHAR_LENGTH|ROUND|FLOOR|CEIL|TIME_TO_SEC|COUNT|SUM)\(~', $column);
 						echo "<td id='$id'" . ($is_number && ($val === null || is_numeric(strip_tags($html)) || $type == "money") ? " class='number'" : "");
 						if (($_GET["modify"] && $editable && $val !== null) || $posted !== null) {
-							$h_value = h($posted !== null ? $posted : $row[$key]);
+							$h_value = h($posted !== null ? $posted : $val);
 							echo ">" . ($text
-								? "<textarea name='$id' cols='30' rows='" . (substr_count($row[$key], "\n") + 1) . "'>$h_value</textarea>"
+								? "<textarea name='$id' cols='30' rows='" . (substr_count($val, "\n") + 1) . "'>$h_value</textarea>"
 								: "<input name='$id' value='$h_value' size='$lengths[$key]'>"
 							);
 						} else {
