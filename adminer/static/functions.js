@@ -919,6 +919,7 @@ mixin(document, {
 	onclick: bodyClick, // calls delegateEvent() itself
 	ondblclick: delegateEvent,
 	onkeydown: bodyKeydown,
+	onmousedown: delegateEvent,
 	onmouseout: delegateEvent,
 	onmouseover: delegateEvent,
 });
