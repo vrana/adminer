@@ -75,7 +75,7 @@ if (adminer()->homepage()) {
 				echo script("qsl('input').onkeydown = event => bodyKeydown(event, 'search');", "");
 				echo " <input type='submit' name='search' value='" . lang('Search') . "'>\n";
 				echo "</div></fieldset>\n";
-				if ($_POST["search"] && $_POST["query"] != "") {
+				if (!$error && $_POST["search"] && $_POST["query"] != "") {
 					$_GET["where"][0]["op"] = $_POST["op"];
 					search_tables();
 				}
