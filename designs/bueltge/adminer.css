@@ -102,6 +102,10 @@ border-width: 1px 0 0 1px;
 tr:first-child td, tr:first-child th {
 border-top-width: 0;
 }
+/* default.css sets 1px there */
+table > :first-child > :first-child > td, table > :first-child > :first-child > th {
+border-top-width: 0;
+}
 td:first-child, th:first-child {
 border-left-width: 0;
 }

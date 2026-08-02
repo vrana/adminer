@@ -67,6 +67,7 @@
 - Redis: Display the type of keys
 - SimpleDB: Use default server
 - CSS: Improve contrast of query time and dark mode
+- CSS: Display the repeated links and row checkboxes outside the table, designs/adminer-border keeps them inside
 - Editor: Display all images recognized by PHP, set their size, load them lazily
 - Designs: Show version of Adminer next to a used design not matching this version
 - Plugins: Method verifyVersion()

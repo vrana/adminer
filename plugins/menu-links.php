@@ -33,12 +33,9 @@ class AdminerMenuLinks extends Adminer\Plugin {
 		// Adminer marks the repeated links and checkboxes by the hover class but doesn't style them
 		?>
 <style>
-table { border-collapse: collapse; border: 0; }
-td, th { border-width: 1px; }
 /* opacity keeps the elements focusable and the layout stable */
 @media (hover: hover) { .hover:not(td), td.hover > * { opacity: 0.3; } }
 li:hover .hover, p:hover .hover, div:hover > .hover, .hover.active, tr:hover td.hover > *, td.hover:has(:focus) > *, td.hover:has(:checked) > * { opacity: 1; }
-td.hover, tr:hover td.hover, .js .checkable .checked td.hover { border-width: 0; background-color: var(--bg); }
 </style>
 <?php
 		//! table names in menu should be aligned left

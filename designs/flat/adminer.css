@@ -44,15 +44,14 @@ h2 {
  * Tables
  */
 
-table {
-	border-top: 0;
-	border-left: 1px solid silver;
+td, th {
+	border-color: silver;
+	padding: .3em .5em;
 }
 
-td, th {
-	border-right: 1px solid silver;
-	border-bottom: 1px solid silver;
-	padding: .3em .5em;
+/* default.css sets 1px there */
+table > :first-child > :first-child > td, table > :first-child > :first-child > th {
+	border-top-width: 0;
 }
 
 thead th, thead td {

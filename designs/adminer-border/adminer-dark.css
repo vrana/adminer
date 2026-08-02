@@ -1,0 +1,11 @@
+/* Adminer design adminer-border */
+/* Same as adminer.css with the colors of the dark mode - it is also here so that Adminer keeps switching between the light and dark mode. */
+td.hover, tr:hover td.hover, .js .checkable .checked td.hover { border-bottom-width: 1px; }
+td.hover:first-child { border-left-width: 1px; }
+td.hover:last-child { border-right-width: 1px; }
+table > :first-child > :first-child > td.hover { border-top-width: 1px; }
+tbody td.hover { background-color: transparent; }
+thead td.hover, thead tr:hover td.hover { background-color: var(--lit); }
+tbody tr:hover td.hover { background-color: #133553; }
+.js .checkable .checked td.hover { background-color: #1a5178; }
+.js .checkable .checked:hover td.hover { background-color: #15486c; }

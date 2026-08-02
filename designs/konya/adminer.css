@@ -73,6 +73,7 @@ table {margin: 10px 12px 12px 0; border: 1px #BBB solid; font-size: 90%;}
 th {text-align: left;}
 td, th {background-color: #fff; padding: 4px 6px; border: 1px #DfDfDf solid; border-width: 1px 0 0 1px;}
 tr:first-child td, tr:first-child th {border-top-width: 0;}
+table > :first-child > :first-child > td, table > :first-child > :first-child > th {border-top-width: 0;} /* default.css sets 1px there */
 tr:first-child th {padding-right: 30px;}
 td:first-child, th:first-child {border-left-width: 0;}
 thead td, thead th {background-color: #DFDFDF; border: none; border-bottom: 1px #BBB solid;}

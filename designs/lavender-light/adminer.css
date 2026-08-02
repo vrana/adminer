@@ -84,18 +84,13 @@ h2 {
  * Tables
  */
 
-table {
-    border-left: 1px solid silver;
-}
-
 #table .column {
     display: none;
 }
 
 td, th {
     font-size: 1.05em;
-    border-right: 1px solid silver;
-    border-bottom: 1px solid silver;
+    border-color: silver;
     padding: .3em .6em;
     background: none;
 }
@@ -239,7 +234,7 @@ table#table thead .checked th {
 }
 
 #logins ul {
-	padding: 3rem 0 1rem;	
+	padding: 3rem 0 1rem;
 }
 
 #logins ul li {

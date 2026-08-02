@@ -17,19 +17,25 @@ h1 { font-size: 150%; margin: 0; padding: .8em .667em; border-bottom: 1px solid 
 h2 { font-size: 150%; margin: 0 0 20px -18px; padding: .8em 1em; border-bottom: 1px solid var(--fg); font-weight: normal; background: var(--lit); }
 h3 { font-weight: normal; font-size: 130%; margin: 1em 0 0; }
 form { margin: 0; }
-table { margin: 1em 20px 0 0; font-size: 90%; border-spacing: 0; border-width: 1px 0 0 1px; } /* border-collapse would paint the borders on the table so the sticky thead would lose them */
+table { margin: 1em 20px 0 0; font-size: 90%; border-spacing: 0; border: 0; } /* collapsing paints the borders on the table, so on a sticky thead, Chrome loses top border and Firefox all borders: https://bugzilla.mozilla.org/show_bug.cgi?id=1727594 */
 table, td, th, .column { border-color: #999; border-style: solid; }
 td, th { border-width: 0 1px 1px 0; padding: .2em .3em; margin: 0; }
+td:first-child, th:first-child { border-left-width: 1px; }
+table > :first-child > :first-child > td, table > :first-child > :first-child > th { border-top-width: 1px; }
 td table { width: 100%; margin: 0; }
 th { background: var(--dim); text-align: left; }
 thead { position: sticky; top: 0; }
 thead th { text-align: center; padding: .2em .5em; }
 thead td, thead th { background: var(--lit); }
+tbody tr:hover td, tbody tr:hover th { background: var(--dim); }
+td.hover, tr:hover td.hover, .js .checkable .checked td.hover { background-color: var(--bg); border-bottom-width: 0; }
+td.hover:first-child { border-left-width: 0; }
+td.hover:last-child { border-right-width: 0; }
+table > :first-child > :first-child > td.hover { border-top-width: 0; }
 fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: .8em .5em 0 0; border: 1px solid #999; border-radius: 5px; }
 p { margin: .8em 20px 0 0; }
 img { vertical-align: middle; border: 0; }
 td img { max-width: 200px; max-height: 200px; }
-tbody tr:hover td, tbody tr:hover th { background: var(--dim); }
 code { font-size: 110%; padding: 1px 2px; background: var(--dim); }
 pre { margin: 1em 0 0; }
 td pre { margin: 0; }

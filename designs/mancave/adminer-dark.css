@@ -294,6 +294,7 @@ table{
 	margin-bottom: 20px;
 	/*border: 0;*/
     border-color:#777;
+	border-width: 1px 0 0 1px; /* default.css doesn't set the table border anymore */
 	border-collapse: collapse;
 	font-size: 13px;
 	width: 100%;
@@ -363,6 +364,10 @@ th{
 	border-left: 5px solid #777;
 	border-bottom: 1px solid #777;
 	color: #eee;
+}
+
+th:first-child{
+	border-left-width: 5px; /* default.css narrows the first column to 1px */
 }
 
 .checkable td:first-child{

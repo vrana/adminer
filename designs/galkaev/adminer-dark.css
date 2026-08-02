@@ -336,6 +336,10 @@ th{
 	color: #999;
 }
 
+th:first-child{
+	border-left-width: 5px; /* default.css narrows the first column to 1px */
+}
+
 .checkable td:first-child{
 	background: #222;
 	border-right-style: solid;
