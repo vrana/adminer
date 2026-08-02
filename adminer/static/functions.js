@@ -513,9 +513,12 @@ function bodyClick(event) {
 */
 function delegateEvent(event) {
 	const attr = 'data-on' + event.type;
-	for (let el = event.target; el && el.getAttribute; el = el.parentNode) {
+	const selector = '[' + attr + ']';
+	// closest() - much faster than getAttribute() on every ancestor, target.closest - the target can be a text node
+	let el = event.target.closest && event.target.closest(selector);
+	while (el) {
 		const value = el.getAttribute(attr);
-		const match = (value ? /^(\w+)\((.*)\)$/.exec(value) : null); // e.g. confirmClick("Are you sure?")
+		const match = /^(\w+)\((.*)\)$/.exec(value); // e.g. confirmClick("Are you sure?")
 		// only a function declared by Adminer or by a plugin - it creates a non-configurable property of window, built-ins are configurable or not own properties at all, so window['eval'] or window['setTimeout'] is never used
 		const desc = (match ? Object.getOwnPropertyDescriptor(window, match[1]) : null);
 		const handler = (desc && !desc.configurable && typeof desc.value == 'function' ? desc.value : null);
@@ -525,7 +528,6 @@ function delegateEvent(event) {
 		} catch (e) { // empty - an invalid value is reported below together with an unknown handler
 		}
 		if (args) {
-			// the handler gets the arguments from the attribute followed by the event
 			const result = handler.apply(el, args.concat(event));
 			if (result === false) {
 				event.preventDefault();
@@ -533,10 +535,10 @@ function delegateEvent(event) {
 			if (result !== undefined) {
 				break; // the handler handled the event, don't call the handlers on ancestor elements
 			}
-		} else if (value) {
-			// not lang() - it reports a bug in Adminer or in a plugin, the element would do nothing at all otherwise
-			console.error('Invalid handler in ' + attr + "='" + value + "'", el);
+		} else {
+			console.error('Invalid handler in ' + attr + "='" + value + "'", el); // not lang() - it reports a bug in Adminer or in a plugin, the element would do nothing at all otherwise
 		}
+		el = el.parentElement && el.parentElement.closest(selector); // parentElement - closest() starts at the element itself
 	}
 }
 
