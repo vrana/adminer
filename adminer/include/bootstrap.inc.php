@@ -32,12 +32,6 @@ if (isset($_GET["file"])) {
 
 // Adminer doesn't use any global variables; they used to be declared here
 
-if (!$_SERVER["REQUEST_URI"]) { // IIS 5 compatibility
-	$_SERVER["REQUEST_URI"] = $_SERVER["ORIG_PATH_INFO"];
-}
-if (!strpos($_SERVER["REQUEST_URI"], '?') && $_SERVER["QUERY_STRING"] != "") { // IIS 7 compatibility
-	$_SERVER["REQUEST_URI"] .= "?$_SERVER[QUERY_STRING]";
-}
 if (preg_match('~^/[-\w.]~', $_SERVER["HTTP_X_FORWARDED_PREFIX"])) {
 	$_SERVER["REQUEST_URI"] = $_SERVER["HTTP_X_FORWARDED_PREFIX"] . $_SERVER["REQUEST_URI"];
 }
