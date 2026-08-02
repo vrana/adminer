@@ -230,8 +230,8 @@ function tableClick(event) {
 	if (!el) { // Ctrl+click on text fields hides the element
 		return;
 	}
-	el = el.firstChild.firstChild;
-	if (!el || el.type != 'checkbox') { // the header row of the process list and of the database list has an empty first cell
+	el = qs('input[type=checkbox]', el.firstChild); // not firstChild - the first cell of select also contains the edit link
+	if (!el) { // the header row of the process list and of the database list has an empty first cell
 		return;
 	}
 	if (click) {

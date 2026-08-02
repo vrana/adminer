@@ -472,8 +472,8 @@ td input[type='radio']{
 }
 
 
-td input + a,
-td input + a:visited
+td a.edit,
+td a.edit:visited
 {
 	text-transform: uppercase;
 	margin-left: 5px;
@@ -482,7 +482,7 @@ td input + a:visited
 	font-weight: normal;
 }
 
-td input + a:hover{
+td a.edit:hover{
 	color: lightskyblue !important;
 }
 

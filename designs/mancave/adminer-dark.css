@@ -505,8 +505,8 @@ td input[type='radio']{
 }
 
 
-td input + a,
-td input + a:visited
+td a.edit,
+td a.edit:visited
 {
 	margin-left: 5px;
 	/*color: #F1E5B3;*/
@@ -514,7 +514,7 @@ td input + a:visited
 	font-weight: normal;
 }
 
-td input + a:hover{
+td a.edit:hover{
 	color: red !important;
     text-decoration:underline;
 }
@@ -1182,7 +1182,7 @@ p#tables a.select::before {
 }
 
 /* edit row */
-html/*\*/>/*/*/body table input + a[href*="&edit="][href*="&where"] {
+html/*\*/>/*/*/body table a.edit {
     content: '';
     width:18px;
     vertical-align:middle;

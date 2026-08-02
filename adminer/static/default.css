@@ -84,6 +84,7 @@ th:not(:hover) .column { display: none; }
 .links a { white-space: nowrap; margin-right: 20px; }
 .logout { margin-top: .5em; position: absolute; top: 0; right: 0; background-color: var(--bg); box-shadow: 0 0 5px 5px var(--bg); }
 .loadmore { margin-left: 1ex; }
+td.check { text-align: right; } /* to display the checkboxes next to the data */
 /* .edit used in designs */
 #foot:focus { outline: none; } /* focused by JS after opening the menu, never by the user */
 #menu { position: absolute; margin: 10px 0 0; top: 2em; left: 0; width: 19em; }
