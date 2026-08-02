@@ -106,16 +106,6 @@ function selectValue(select) {
 	return ((selected.attributes.value || {}).specified ? selected.value : selected.text);
 }
 
-/** Verify if element has a specified tag name
-* @param {?HTMLElement} el
-* @param {string} tag regular expression
-* @return {boolean}
-*/
-function isTag(el, tag) {
-	const re = new RegExp('^(' + tag + ')$', 'i');
-	return el && re.test(el.tagName);
-}
-
 /** Set checked class
 * @param {HTMLInputElement} el
 */
@@ -228,19 +218,17 @@ function tableClick(event) {
 	}
 	// dblclick undoes the check by the first click of the double click - the user is only selecting a word
 	let click = (event.type == 'dblclick' || getSelection().isCollapsed);
-	let el = event.target;
-	while (!isTag(el, 'tr')) {
-		if (isTag(el, 'table|a|input|textarea')) {
-			if (el.type != 'checkbox') {
-				return;
-			}
-			checkboxClick.call(el, event);
-			click = false;
-		}
-		el = el.parentNode;
-		if (!el) { // Ctrl+click on text fields hides the element
+	let el = event.target.closest('tr, table, a, input, textarea'); // the other elements handle the click themselves
+	if (el && !el.matches('tr')) {
+		if (el.type != 'checkbox') {
 			return;
 		}
+		checkboxClick.call(el, event);
+		click = false;
+		el = el.closest('tr');
+	}
+	if (!el) { // Ctrl+click on text fields hides the element
+		return;
 	}
 	el = el.firstChild.firstChild;
 	if (!el || el.type != 'checkbox') { // the header row of the process list and of the database list has an empty first cell
@@ -315,7 +303,7 @@ function setHtml(id, html) {
 */
 function menuOver(event) {
 	const a = event.target;
-	if (isTag(a, 'a|span') && a.offsetLeft + a.offsetWidth > a.parentNode.offsetWidth) {
+	if (a.matches('a, span') && a.offsetLeft + a.offsetWidth > a.parentNode.offsetWidth) {
 		this.style.overflow = 'visible';
 	}
 }
@@ -470,7 +458,7 @@ function bodyKeydown(event, button) {
 	if (target.jushTextarea) {
 		target = target.jushTextarea;
 	}
-	if (isCtrl(event) && event.key == 'Enter' && isTag(target, 'select|textarea|input')) {
+	if (isCtrl(event) && event.key == 'Enter' && target.matches('select, textarea, input')) {
 		target.blur();
 		if (target.form[button]) {
 			target.form[button].click();
@@ -495,7 +483,7 @@ function bodyClick(event) {
 		toggle(toggler.getAttribute('href').slice(1));
 		event.preventDefault();
 	}
-	if ((isCtrl(event) || event.shiftKey) && target.type == 'submit' && isTag(target, 'input')) {
+	if ((isCtrl(event) || event.shiftKey) && target.type == 'submit' && target.matches('input')) { // type - the target can be a text node without matches()
 		target.form.target = '_blank';
 		setTimeout(() => {
 			// if (isCtrl(event)) { focus(); } doesn't work
@@ -702,7 +690,7 @@ function ajaxForm(message) {
 				return true; // files can't be sent by AJAX, submit the form
 			}
 			if (!/^(checkbox|radio|submit|file)$/i.test(el.type) || el.checked || el == button) {
-				data.push(encodeURIComponent(el.name) + '=' + encodeURIComponent(isTag(el, 'select') ? selectValue(el) : el.value));
+				data.push(encodeURIComponent(el.name) + '=' + encodeURIComponent(el.matches('select') ? selectValue(el) : el.value));
 			}
 		}
 	}
@@ -737,7 +725,7 @@ function ajaxForm(message) {
 function selectClick(event, text, warning) {
 	const td = this;
 	const target = event.target;
-	if (!isCtrl(event) || isTag(td.firstChild, 'input|textarea') || isTag(target, 'a')) {
+	if (!isCtrl(event) || (td.firstElementChild && td.firstElementChild.matches('input, textarea')) || target.matches('a')) {
 		return;
 	}
 	if (warning) {

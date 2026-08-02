@@ -52,7 +52,7 @@ function whisper(url) {
 function whisperClick(event) {
 	const field = this.previousSibling;
 	const el = event.target;
-	if (isTag(el, 'a') && !(event.button || event.shiftKey || event.altKey || isCtrl(event))) {
+	if (el.matches('a') && !(event.button || event.shiftKey || event.altKey || isCtrl(event))) {
 		field.value = el.firstChild.data;
 		field.previousSibling.value = decodeURIComponent(el.href.replace(/.*=/, ''));
 		field.nextSibling.style.display = 'none';

@@ -327,7 +327,7 @@ function editingClick(event) {
 		return false;
 	}
 	el = event.target;
-	if (!isTag(el, 'input')) {
+	if (!el.matches('input')) {
 		el = el.closest('label');
 		el = el && qs('input', el);
 	}
@@ -660,9 +660,9 @@ function indexesAddRow() {
 	this.removeAttribute('data-onchange');
 	for (const tag of qsa('select, input, button', row)) {
 		tag.name = tag.name.replace(/\[\d+/, '$&1'); // indexes[$j] and drop_col[$j]
-		if (isTag(tag, 'select')) {
+		if (tag.matches('select')) {
 			tag.selectedIndex = 0;
-		} else if (isTag(tag, 'input')) {
+		} else if (tag.matches('input')) {
 			tag.value = '';
 		}
 	}
