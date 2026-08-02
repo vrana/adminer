@@ -781,16 +781,16 @@ function sqlExport(event) {
 }
 
 /** Check if PHP can handle the uploaded files
-* @param {Event} event
 * @param {number} count
 * @param {string} countMessage
 * @param {number} size
 * @param {string} sizeMessage
+* @this HTMLInputElement
 */
-function fileChange(event, count, countMessage, size, sizeMessage) {
-	if (event.target.files.length > count) {
+function fileChange(count, countMessage, size, sizeMessage) {
+	if (this.files.length > count) {
 		alert(countMessage);
-	} else if (Array.from(event.target.files).reduce((sum, file) => sum + file.size, 0) > size) {
+	} else if (Array.from(this.files).reduce((sum, file) => sum + file.size, 0) > size) {
 		alert(sizeMessage);
 	}
 }

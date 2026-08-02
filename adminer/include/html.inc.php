@@ -207,17 +207,25 @@ function hidden_fields_get(): void {
 	echo input_hidden("username", $_GET["username"]);
 }
 
-/** Get <input type='file'> */
-function file_input(string $input): string {
+/** Get <input type='file'>
+* @param string $attrs attributes including the leading space
+* @param string $rest HTML printed after the input, dropped together with it if the uploads are disabled
+*/
+function file_input(string $attrs, string $rest = ""): string {
 	$max_file_uploads = "max_file_uploads";
 	$max_file_uploads_value = ini_get($max_file_uploads);
 	$upload_max_filesize = "upload_max_filesize";
 	$upload_max_filesize_value = ini_get($upload_max_filesize);
 	return (ini_bool("file_uploads")
-		? $input . script("qsl('input[type=\"file\"]').onchange = event => fileChange(event, "
-				// ignore post_max_size because it is for all form fields together and bytes computing would be necessary
-				. "$max_file_uploads_value, '" . js_escape(lang('Increase %s.', "$max_file_uploads = $max_file_uploads_value")) . "', "
-				. ini_bytes("upload_max_filesize") . ", '" . js_escape(lang('Increase %s.', "$upload_max_filesize = $upload_max_filesize_value")) . "')")
+		? "<input type='file'$attrs" . on(
+			'change',
+			'fileChange',
+			// ignore post_max_size because it is for all form fields together and bytes computing would be necessary
+			(int) $max_file_uploads_value,
+			lang('Increase %s.', "$max_file_uploads = $max_file_uploads_value"),
+			ini_bytes($upload_max_filesize),
+			lang('Increase %s.', "$upload_max_filesize = $upload_max_filesize_value")
+		) . ">$rest"
 		: lang('File uploads are disabled.')
 	);
 }

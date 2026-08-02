@@ -261,7 +261,7 @@ if (!isset($_GET["import"])) {
 } else {
 	$gz = (extension_loaded("zlib") ? "[.gz]" : "");
 	echo "<fieldset><legend>" . lang('File upload') . "</legend><div>";
-	echo file_input("SQL$gz: <input type='file' name='sql_file[]' multiple>\n$execute");
+	echo "SQL$gz: " . file_input(" name='sql_file[]' multiple", "\n$execute");
 	echo "</div></fieldset>\n";
 	$importServerPath = adminer()->importServerPath();
 	if ($importServerPath) {
