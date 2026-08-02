@@ -471,7 +471,7 @@ if (!$columns && support("table")) {
 						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
 						$posted = idx(idx($_POST["val"], $unique_idf), bracket_escape($key));
 						$update = idx($field["privileges"], "update");
-						$editable = !is_array($row[$key]) && is_utf8($html) && $rows[$n][$key] == $row[$key] && !$functions[$key] && !$field["generated"] && $update;
+						$editable = !is_array($row[$key]) && !is_blob($field) && is_utf8($val) && $rows[$n][$key] == $row[$key] && !$functions[$key] && !$field["generated"] && $update;
 						$type = (preg_match('~^(AVG|MIN|MAX)\((.+)\)~', $column, $match) ? $fields[idf_unescape($match[2])]["type"] : $field["type"]);
 						$text = preg_match('~text|json|lob~', $type);
 						$is_number = preg_match(number_type(), $type) || preg_match('~^(CHAR_LENGTH|ROUND|FLOOR|CEIL|TIME_TO_SEC|COUNT|SUM)\(~', $column);
