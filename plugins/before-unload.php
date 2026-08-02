@@ -17,7 +17,8 @@ class AdminerBeforeUnload extends Adminer\Plugin {
 addEvent(document, 'change', event => {
 	const el = event.target;
 	// isTrusted - fire() dispatches change to run the delegated handlers, which is not a change by the user
-	if (event.isTrusted !== false && el.form && /post/i.test(el.form.method)) {
+	// auth[ - browsers pre-fill the login form, there's nothing to lose there anyway
+	if (event.isTrusted !== false && el.form && /post/i.test(el.form.method) && !/^auth\[/.test(el.name)) {
 		editChanged = true;
 	}
 });
