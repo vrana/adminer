@@ -127,6 +127,7 @@ function selectCount(id, count) {
 		for (const input of qsa('input[type=submit]', el.parentNode.parentNode)) {
 			input.disabled = (count == '0');
 		}
+		fire(document.activeElement, 'focus'); // the default submit button changes with the disabled buttons
 	}
 }
 
@@ -756,6 +757,10 @@ function selectClick(event, text, warning) {
 	}
 	td.innerHTML = '';
 	td.append(input);
+	const save = qs('#save');
+	if (save) { // missing if a plugin returns false from selectCommandPrint()
+		save.disabled = false;
+	}
 	setupSubmitHighlight(td);
 	input.focus();
 	if (text == 2) { // long text
@@ -831,14 +836,13 @@ function setupSubmitHighlightInput(input) {
 * @this HTMLInputElement
 */
 function inputFocus() {
+	inputBlur();
 	alterClass(findDefaultSubmit(this), 'default', true);
 }
 
-/** Unhighlight default submit button
-* @this HTMLInputElement
-*/
+/** Unhighlight default submit button */
 function inputBlur() {
-	alterClass(findDefaultSubmit(this), 'default');
+	alterClass(qs('input.default'), 'default'); // not findDefaultSubmit() - some buttons could get disabled since the highlighting
 }
 
 /** Find submit button used by Enter
@@ -849,7 +853,7 @@ function findDefaultSubmit(el) {
 	if (el.jushTextarea) {
 		el = el.jushTextarea;
 	}
-	return (el.form ? qs('input[type=submit]:not([hidden])', el.form) : null);
+	return (el.form ? qs('input[type=submit]:not([hidden]):enabled', el.form) : null); // the browser also skips disabled buttons in the implicit submission
 }
 
 

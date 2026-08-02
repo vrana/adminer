@@ -168,31 +168,27 @@ if ($_POST && !$error) {
 			}
 
 		} elseif (!$_POST["import"]) { // modify
-			if (!$_POST["val"]) {
-				$error = lang('Ctrl+click on a value to modify it.');
-			} else {
-				$result = true;
-				$affected = 0;
-				foreach ($_POST["val"] as $unique_idf => $row) {
-					$set = array();
-					foreach ($row as $key => $val) {
-						$key = bracket_escape($key, true); // true - back
-						$set[idf_escape($key)] = (preg_match('~char|text~', $fields[$key]["type"]) || $val != "" ? adminer()->processInput($fields[$key], $val) : "NULL");
-					}
-					$result = driver()->update(
-						$TABLE,
-						$set,
-						" WHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($unique_idf, $fields),
-						($is_group || $primary ? 0 : 1),
-						" "
-					);
-					if (!$result) {
-						break;
-					}
-					$affected += connection()->affected_rows;
+			$result = true;
+			$affected = 0;
+			foreach ((array) $_POST["val"] as $unique_idf => $row) {
+				$set = array();
+				foreach ($row as $key => $val) {
+					$key = bracket_escape($key, true); // true - back
+					$set[idf_escape($key)] = (preg_match('~char|text~', $fields[$key]["type"]) || $val != "" ? adminer()->processInput($fields[$key], $val) : "NULL");
 				}
-				queries_redirect(remove_from_uri(), lang('%d item(s) have been affected.', $affected), $result);
+				$result = driver()->update(
+					$TABLE,
+					$set,
+					" WHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($unique_idf, $fields),
+					($is_group || $primary ? 0 : 1),
+					" "
+				);
+				if (!$result) {
+					break;
+				}
+				$affected += connection()->affected_rows;
 			}
+			queries_redirect(remove_from_uri(), lang('%d item(s) have been affected.', $affected), $result);
 
 		} elseif (!is_string($file = get_file("csv_file", true))) {
 			$error = upload_error($file);
@@ -349,8 +345,7 @@ if (!$columns && support("table")) {
 			echo script("qs('#table').onkeydown = editingKeydown;"); // keydown is not delegated
 			echo "<thead><tr>" . (!$group && $select
 				? ""
-				: "<td class='hover check'><a href='" . h($_GET["modify"] ? remove_from_uri("modify") : $_SERVER["REQUEST_URI"] . "&modify=1") . "'>" . lang('Modify') . "</a>"
-					. " <input type='checkbox' id='all-page' class='jsonly' title='" . lang('All rows on this page') . "'" . on('click', 'formCheck', '^check') . ">");
+				: "<td class='hover check'><input type='checkbox' id='all-page' class='jsonly' title='" . lang('All rows on this page') . "'" . on('click', 'formCheck', '^check') . ">");
 			$names = array();
 			$functions = array();
 			reset($select);
@@ -578,9 +573,11 @@ if (!$columns && support("table")) {
 
 				if (adminer()->selectCommandPrint()) {
 					?>
-<fieldset<?php echo ($_GET["modify"] ? '' : ' class="jsonly"'); ?>><legend><?php echo lang('Modify'); ?></legend><div>
-<input type='submit' value='<?php echo lang('Save'); ?>'<?php echo ($_GET["modify"] ? '' : " title='" . lang('Ctrl+click on a value to modify it.') . "'"); ?>>
+<fieldset<?php echo ($_GET["modify"] ? '' : " title='" . lang('Ctrl+click on a value to modify it.') . "'"); ?>>
+<legend><a href='<?php echo h($_GET["modify"] ? remove_from_uri("modify") : relative_uri() . "&modify=1"); ?>'><?php echo lang('Modify'); ?></a></legend><div>
+<input type='submit' id='save' value='<?php echo lang('Save'); ?>'<?php echo ($_GET["modify"] ? '' : " class='jsonly' disabled"); ?>>
 </div></fieldset>
+
 <fieldset><legend><?php echo lang('Selected'); ?> <span id="selected"></span></legend><div>
 <input type='submit' name='edit' value='<?php echo lang('Edit'); ?>'>
 <input type='submit' name='clone' value='<?php echo lang('Clone'); ?>'>
