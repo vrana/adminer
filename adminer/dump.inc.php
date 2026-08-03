@@ -54,12 +54,14 @@ SET foreign_key_checks = 0;
 				$out = "";
 
 				if ($_POST["types"]) {
+					//! types are exported in alphabetical order, not in the order of their dependencies
 					foreach (types() as $id => $type) {
-						$enums = type_values($id);
-						if ($enums) {
-							$out .= ($style != 'DROP+CREATE' ? "DROP TYPE IF EXISTS " . idf_escape($type) . ";;\n" : "") . "CREATE TYPE " . idf_escape($type) . " AS ENUM ($enums);\n\n";
+						$definition = type_definition($id);
+						$object = ($definition["kind"] == 'd' ? "DOMAIN" : "TYPE");
+						if ($definition["definition"]) {
+							$out .= ($style != 'DROP+CREATE' ? "DROP $object IF EXISTS " . idf_escape($type) . ";;\n" : "")
+								. "CREATE $object " . idf_escape($type) . " $definition[definition];\n\n";
 						} else {
-							//! https://github.com/postgres/postgres/blob/REL_17_4/src/bin/pg_dump/pg_dump.c#L10846
 							$out .= "-- Could not export type $type\n\n";
 						}
 					}
