@@ -81,7 +81,7 @@ abstract class SqlDriver {
 	* @param int $limit result of adminer()->selectLimitProcess()
 	* @param int $page index of page starting at zero
 	* @param bool $print whether to print the query
-	* @return Result|false
+	* @return Result|bool
 	*/
 	function select(string $table, array $select, array $where, array $group, array $order = array(), int $limit = 1, ?int $page = 0, bool $print = false) {
 		$is_group = (count($group) < count($select));

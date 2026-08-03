@@ -308,8 +308,8 @@ if (!$columns && support("table")) {
 	}
 	$result = driver()->select($TABLE, $select2, $where, $group2, $order, $limit, $page, true);
 
-	if (!$result) {
-		echo "<p class='error'>" . error() . "\n";
+	if (!is_object($result)) { // a query returning no result set can succeed, e.g. a multi-statement query in PostgreSQL
+		echo "<p class='error'>" . (error() ?: lang('Unknown error.')) . "\n";
 	} else {
 		if (JUSH == "mssql" && $page) {
 			$result->seek($limit * $page);
