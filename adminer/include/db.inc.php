@@ -54,4 +54,9 @@ abstract class SqlDb {
 	function next_result(): bool {
 		return false;
 	}
+
+	/** Check if a transaction is in progress, false if the extension can't tell */
+	function inTransaction(): bool {
+		return false;
+	}
 }

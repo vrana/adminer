@@ -65,6 +65,11 @@ if (extension_loaded('pdo')) {
 			$result->_offset = 0;
 			return @$result->nextRowset(); // @ - PDO_PgSQL doesn't support it
 		}
+
+		function inTransaction(): bool {
+			// PDO_PgSQL, PDO_MySQL and PDO_SQLite ask the connection, other drivers report only transactions started by PDO
+			return $this->pdo->inTransaction();
+		}
 	}
 
 	class PdoResult extends \PDOStatement {

@@ -109,6 +109,11 @@ if (isset($_GET["pgsql"])) {
 				return nl_br(h($return));
 			}
 
+			function inTransaction(): bool {
+				$status = pg_transaction_status($this->link);
+				return $status == PGSQL_TRANSACTION_INTRANS || $status == PGSQL_TRANSACTION_INERROR; // not PGSQL_TRANSACTION_UNKNOWN - the connection is bad
+			}
+
 			/** Copy from array into a table
 			* @param list<string> $rows
 			*/

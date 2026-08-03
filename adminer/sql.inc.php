@@ -230,7 +230,11 @@ if (!$error && $_POST) {
 		if ($empty) {
 			echo "<p class='message'>" . lang('No commands to execute.') . "\n";
 		} else {
+			$in_transaction = connection()->inTransaction(); // ROLLBACK doesn't report whether it did anything
 			driver()->rollback(); // an unfinished transaction would break the following queries (e.g. in the menu)
+			if ($in_transaction) {
+				echo "<pre><code class='jush-" . JUSH . "'>ROLLBACK -- Adminer</code></pre>\n"; // print it also with only_errors - the data was discarded
+			}
 			if ($_POST["only_errors"]) {
 				echo "<p class='message'>" . lang('%d query(s) executed OK.', $commands - count($errors));
 				echo " <span class='time'>(" . format_time($total_start) . ")</span>\n";
