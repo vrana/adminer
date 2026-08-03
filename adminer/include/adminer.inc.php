@@ -1082,7 +1082,7 @@ class Adminer {
 				}
 			}
 			if ($output) {
-				echo "<ul id='logins'>\n$output</ul>\n" . script("mixin(qs('#logins'), {onmouseover: menuOver, onmouseout: menuOut});");
+				echo "<ul id='logins'" . on('mouseover', 'menuOver') . on('mouseout', 'menuOut') . ">\n$output</ul>\n";
 			}
 		} else {
 			$tables = array();
@@ -1207,7 +1207,7 @@ class Adminer {
 	* @param TableStatus[] $tables
 	*/
 	function tablesPrint(array $tables): void {
-		echo "<ul id='tables'>" . script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
+		echo "<ul id='tables'" . on('mouseover', 'menuOver') . on('mouseout', 'menuOut') . ">";
 		foreach ($tables as $table => $status) {
 			$table = "$table"; // do not highlight "0" as active everywhere
 			$name = adminer()->tableName($status);

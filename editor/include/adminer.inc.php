@@ -600,8 +600,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 				foreach ($servers[""] as $username => $password) {
 					if ($password !== null) {
 						if ($first) {
-							echo "<ul id='logins'>";
-							echo script("mixin(qs('#logins'), {onmouseover: menuOver, onmouseout: menuOut});");
+							echo "<ul id='logins'" . on('mouseover', 'menuOver') . on('mouseout', 'menuOut') . ">";
 							$first = false;
 						}
 						echo "<li><a href='" . h(auth_url($vendor, "", $username)) . "'>" . ($username != "" ? h($username) : "<i>" . lang('empty') . "</i>") . "</a>\n";
@@ -634,8 +633,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function tablesPrint(array $tables): void {
-		echo "<ul id='tables'>";
-		echo script("mixin(qs('#tables'), {onmouseover: menuOver, onmouseout: menuOut});");
+		echo "<ul id='tables'" . on('mouseover', 'menuOver') . on('mouseout', 'menuOut') . ">";
 		foreach ($tables as $row) {
 			echo '<li>';
 			$name = adminer()->tableName($row);
