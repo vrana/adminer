@@ -19,7 +19,7 @@ class AdminerSlugify extends Adminer\Plugin {
 	}
 
 	function editInput($table, $field, $attrs, $value) {
-		static $slugify;
+		static $slugify, $printed;
 		if (!$_GET["select"] && !$_GET["where"] && $table) {
 			if ($slugify === null) {
 				$slugify = array();
@@ -33,16 +33,22 @@ class AdminerSlugify extends Adminer\Plugin {
 			}
 			$slug = $slugify[$field["field"]];
 			if ($slug !== null) {
-				return "<input value='" . Adminer\h($value) . "' data-maxlength='$field[length]' size='40'$attrs>"
-					. Adminer\script("qsl('input').onchange = function () {
-	const find = '$this->from';
-	const repl = '$this->to';
-	this.form['fields[$slug]'].value = this.value.toLowerCase()
+				$script = "";
+				if (!$printed) {
+					$printed = true;
+					$script = Adminer\script("
+function slugifyChange(slug, length) {
+	const find = '" . Adminer\js_escape($this->from) . "';
+	const repl = '" . Adminer\js_escape($this->to) . "';
+	this.form['fields[' + slug + ']'].value = this.value.toLowerCase()
 		.replace(new RegExp('[' + find + ']', 'g'), function (str) { return repl[find.indexOf(str)]; })
 		.replace(/[^a-z0-9_]+/g, '-')
 		.replace(/^-|-\$/g, '')
-		.substr(0, $field[length]);
-};", "");
+		.slice(0, length || undefined); // no length means no truncation
+}", "");
+				}
+				return "<input value='" . Adminer\h($value) . "' data-maxlength='$field[length]' size='40'$attrs"
+					. Adminer\on('change', 'slugifyChange', $slug, $field["length"]) . ">" . $script;
 			}
 		}
 	}
