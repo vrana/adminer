@@ -89,8 +89,8 @@ define(
 	'Adminer\ME',
 	preg_replace('~\?.*~', '', relative_uri()) . '?'
 		. (sid() ? SID . '&' : '')
-		. (SERVER !== null ? DRIVER . "=" . urlencode(SERVER) . '&' : '')
 		. ($_GET["ext"] ? "ext=" . urlencode($_GET["ext"]) . '&' : '')
+		. (SERVER !== null ? DRIVER . "=" . urlencode(SERVER) . '&' : '')
 		. (isset($_GET["username"]) ? "username=" . urlencode($_GET["username"]) . '&' : '')
 		. (DB != "" ? 'db=' . urlencode(DB) . '&' . (isset($_GET["ns"]) ? "ns=" . urlencode($_GET["ns"]) . "&" : "") : '')
 );
