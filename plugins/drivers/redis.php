@@ -241,12 +241,12 @@ if (isset($_GET["redis"])) {
 
 		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 			if (preg_match('~^key =~', $where[0])) {
-				$args = $this->where($where[0]);
+				$args = $this->whereKeys($where[0]);
 			} elseif ($limit) {
 				$args = array("SCAN", $_GET["next"] ?: 0, "COUNT", $limit);
 				if ($where) {
 					$args[] = "MATCH";
-					$args[] = $this->where($where[0])[0];
+					$args[] = $this->whereKeys($where[0])[0];
 				}
 				$scan = $this->send($args, $print);
 				if (!$scan) {
@@ -254,7 +254,7 @@ if (isset($_GET["redis"])) {
 				}
 				list($_GET["next"], $args) = $scan;
 			} else {
-				$args = $this->send(array("KEYS", ($where ? $this->where($where[0])[0] : "*")), $print);
+				$args = $this->send(array("KEYS", ($where ? $this->whereKeys($where[0])[0] : "*")), $print);
 				if ($args === false) {
 					return false;
 				}
@@ -299,37 +299,41 @@ if (isset($_GET["redis"])) {
 		}
 
 		function insert($table, $set) {
-			$args = array("SET");
-			foreach ($set as $val) {
-				$args[] = parse_command($val)[0];
-			}
-			return $this->conn->send($args);
+			return queries("SET " . implode(" ", $set)); // the values are quoted by quote()
 		}
 
 		function update($table, $set, $queryWhere, $limit = 0, $separator = "\n") {
-			$args = array("MSET");
+			$args = array();
 			$where = $this->where($queryWhere);
 			foreach ($where as $key) {
-				$args[] = $key;
-				$args[] = parse_command($set["value"])[0];
+				$args[] = "$key " . $set["value"];
 			}
 			$this->conn->affected_rows = count($where);
-			return $this->conn->send($args);
+			return !!queries("MSET " . implode(" ", $args)); // not the Result, Select would add its num_rows to the affected rows
 		}
 
 		function delete($table, $queryWhere, $limit = 0) {
-			$args = $this->where($queryWhere);
-			array_unshift($args, "DEL");
-			$this->conn->affected_rows = $this->conn->send($args);
+			$result = queries("DEL " . implode(" ", $this->where($queryWhere)));
+			if (!$result) {
+				return false;
+			}
+			$this->conn->affected_rows = $result->fetch_row()[0]; // DEL returns the number of deleted keys
 			return true;
+		}
+
+		/** Get the keys of a where condition as quoted arguments
+		* @return list<string>
+		*/
+		private function where($queryWhere) {
+			preg_match_all('~key . ("(?:\\\\.|[^\\\\"])*+")~', $queryWhere, $matches);
+			return $matches[1];
 		}
 
 		/** Get the keys of a where condition
 		* @return list<string>
 		*/
-		private function where($queryWhere) {
-			preg_match_all('~key . ("(?:\\\\.|[^\\\\"])*+")~', $queryWhere, $matches);
-			return parse_command(implode(" ", $matches[1]));
+		private function whereKeys($queryWhere) {
+			return parse_command(implode(" ", $this->where($queryWhere)));
 		}
 	}
 

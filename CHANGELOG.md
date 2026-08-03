@@ -60,7 +60,7 @@
 - MongoDB: Authenticate against the database used in login
 - MongoDB: Do not treat the string NULL as the NULL value
 - MongoDB: Show the primary key column when altering indexes (regression from 5.4.0)
-- Redis: SQL command in the redis-cli syntax, print executed commands in select
+- Redis: SQL command in the redis-cli syntax, print executed commands
 - SimpleDB: Use default server
 - CSS: Improve contrast of query time and dark mode
 - Editor: Display all images recognized by PHP, set their size, load them lazily
