@@ -31,8 +31,11 @@ if (isset($_GET["mongo"])) {
 					$options["authSource"] = $auth_source;
 				}
 				$this->_link = new \MongoDB\Driver\Manager("mongodb://$server", $options);
-				$this->executeDbCommand($options["db"], array('ping' => 1));
-				return '';
+				$result = ($options["username"]
+					? $this->executeDbCommand($options["db"] ?: "admin", array('ping' => 1)) // the connection is authenticated before running the command
+					: $this->executeDbCommand("admin", array('listDatabases' => 1)) // ping doesn't require authentication so it would pass even on a server requiring it
+				);
+				return ($result ? '' : $this->error);
 			}
 
 			function executeCommand($command) {

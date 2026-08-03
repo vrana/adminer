@@ -159,6 +159,9 @@ if (isset($_GET["igdb"])) {
 		}
 
 		static function connect($server, $username, $password) {
+			if ($password == "") { // the API requires an access token, without this Adminer would refuse the driver as accepting any password
+				return lang('Invalid credentials.');
+			}
 			$filename = self::docsFilename();
 			if (!file_exists($filename)) {
 				list($contents, $status) = get_url("https://api-docs.igdb.com/", stream_context_create(array('http' => array('ignore_errors' => true))));

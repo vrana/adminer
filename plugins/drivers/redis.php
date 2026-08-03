@@ -25,7 +25,8 @@ if (isset($_GET["redis"])) {
 			if (!$this->fp) {
 				return $error;
 			}
-			if ($password != "" && !$this->send(array("AUTH", $username, $password))) {
+			// PING verifies that a server without a password really doesn't require one
+			if (!$this->send($password != "" ? array("AUTH", $username, $password) : array("PING"))) {
 				return $this->error;
 			}
 			if (DB == "" && preg_match('~redis_version:(.+)~', $this->send(array("INFO", "server")), $match)) {
