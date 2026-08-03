@@ -307,7 +307,7 @@ class Adminer {
 	* @param float $start start time of the query
 	*/
 	function selectQuery(string $query, float $start, bool $failed = false): string {
-		$return = "</p>\n"; // required for IE9 inline edit
+		$return = "\n";
 		if (!$failed && ($warnings = driver()->warnings())) {
 			$id = "warnings";
 			$return = ", <a href='#$id' class='toggle'>" . lang('Warnings') . "</a>"
