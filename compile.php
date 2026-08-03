@@ -351,7 +351,13 @@ if ($_SESSION["lang"]) {
 }
 $file = replace('echo script_src("static/editing.js");' . "\n", "", $file); // merged into functions.js
 if ($project != "editor") { // the Editor doesn't use jush
-	$file = replace_re('~\s+echo script_src\("\.\./externals/jush/modules/jush-(autocomplete-sql|textarea|txt|json|" \. JUSH \. ")\.js", true\);~', '', $file); // merged into jush.js
+	$file = replace_re('~\s+echo script_src\("\.\./externals/jush/modules/jush-(autocomplete-sql|textarea|txt|json)\.js", true\);~', '', $file); // merged into jush.js
+	// modules of bundled drivers are merged into jush.js, plugin drivers can ship their own module
+	$file = replace_re(
+		'~(\t*)echo script_src\("\.\./externals/jush/modules/(jush-" \. JUSH \. "\.js)", true\);~',
+		'\1$jush_file = "adminer-plugins/\2";' . "\n" . '\1echo (file_exists($jush_file) ? script_src($jush_file, true) : "");',
+		$file
+	);
 	$file = replace_re('~echo .*/jush(-dark)?.css\'>.*~', '', $file); // merged into default.css or dark.css
 }
 if (function_exists('stripTypes')) {
