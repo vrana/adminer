@@ -44,6 +44,7 @@ class Adminer {
 			}
 			return $databases[0];
 		}
+		return null; // drivers ask for the database also before connecting
 	}
 
 	function operators(): array {
