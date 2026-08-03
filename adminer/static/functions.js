@@ -948,4 +948,5 @@ mixin(document, {
 	onmouseout: delegateEvent,
 	onmouseover: delegateEvent,
 	onsearch: delegateEvent, // WebKit only, it bubbles
+	onsubmit: delegateEvent,
 });

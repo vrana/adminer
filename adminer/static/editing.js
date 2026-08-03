@@ -711,18 +711,18 @@ function indexesChangeColumn(prefix) {
 
 
 /** Update the form action
-* @param {HTMLFormElement} form
 * @param {string} root
+* @this HTMLFormElement
 */
-function sqlSubmit(form, root) {
+function sqlSubmit(root) {
 	const action = root
-		+ '&sql=' + encodeURIComponent(form['query'].value)
-		+ (form['limit'].value ? '&limit=' + +form['limit'].value : '')
-		+ (form['error_stops'].checked ? '&error_stops=1' : '')
-		+ (form['only_errors'].checked ? '&only_errors=1' : '')
+		+ '&sql=' + encodeURIComponent(this['query'].value)
+		+ (this['limit'].value ? '&limit=' + +this['limit'].value : '')
+		+ (this['error_stops'].checked ? '&error_stops=1' : '')
+		+ (this['only_errors'].checked ? '&only_errors=1' : '')
 	;
 	if ((location.origin + location.pathname + action).length < 2000) { // reasonable minimum is 2048
-		form.action = action;
+		this.action = action; // the action is read after the event handlers finish
 	}
 }
 

@@ -243,7 +243,9 @@ if (!$error && $_POST) {
 }
 ?>
 
-<form action="" method="post" enctype="multipart/form-data" id="form">
+<form action="" method="post" enctype="multipart/form-data" id="form"<?php
+echo (isset($_GET["import"]) ? "" : on('submit', 'sqlSubmit', remove_from_uri("sql|limit|error_stops|only_errors|history")));
+?>>
 <?php
 $execute = "<input type='submit' value='" . lang('Execute') . "' title='Ctrl+Enter'>";
 if (!isset($_GET["import"])) {
@@ -257,8 +259,7 @@ if (!isset($_GET["import"])) {
 	}
 	echo "<p>";
 	textarea("query", $q, 20);
-	echo script(($_POST ? "" : "qs('textarea').focus();\n")
-		. "qs('#form').onsubmit = partial(sqlSubmit, qs('#form'), '" . js_escape(remove_from_uri("sql|limit|error_stops|only_errors|history")) . "');");
+	echo ($_POST ? "" : script("qs('textarea').focus();"));
 	echo "<p>";
 	adminer()->sqlPrintAfter();
 	echo "$execute\n";
