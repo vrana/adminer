@@ -209,6 +209,33 @@
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Types</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=Create type</td><td></td></tr>
+<tr><td>type</td><td>name=name</td><td>genre</td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="as"]').value = "AS ENUM ('rock', 'pop')"</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Type has been created.</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=genre</td><td></td></tr>
+<tr><td>type</td><td>name=name</td><td>genres</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Type has been altered.</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=genres</td><td></td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="as"]').value = "AS ENUM ('rock', 'jazz', 'pop')"</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Type has been altered.</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=genres</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>'rock', 'jazz', 'pop'</td><td></td></tr>
+<tr><td>runScript</td><td>document.querySelector('[name="as"]').value = "AS ENUM ('rock', 'jazz', 'pop', 'jazz')"</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>enum label "jazz" already exists</td><td></td></tr>
+<tr><td>chooseOkOnNextConfirmation</td><td>Drop genres?</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Drop']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Type has been dropped.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3" data-tags="">Enum</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public</td><td></td></tr>
