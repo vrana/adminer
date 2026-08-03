@@ -635,6 +635,9 @@ class Adminer {
 		foreach ((array) $_GET["where"] as $key => $val) {
 			$col = $val["col"];
 			if ("$col$val[val]" != "" && in_array($val["op"], adminer()->operators())) {
+				if ($val["op"] == "SQL" && (!$_POST || !verify_token())) {
+					SqlDb::$untrusted = true; // the condition can be sent by GET which is not protected by the CSRF token
+				}
 				$conds = array();
 				foreach (($col != "" ? array($col => $fields[$col]) : $fields) as $name => $field) {
 					$prefix = "";

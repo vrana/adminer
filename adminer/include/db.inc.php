@@ -5,6 +5,7 @@ namespace Adminer;
 // interfaces can include properties only since PHP 8.4
 abstract class SqlDb {
 	/** @var Db */ static $instance;
+	/** @var bool */ static $untrusted = false; // queries contain a fragment sent by the user, drivers should not allow multiple commands and modifying data in them
 
 	/** @var string */ public $extension; // extension name
 	/** @var string */ public $flavor = ''; // different vendor with the same API, e.g. MariaDB; usually stays empty
