@@ -485,6 +485,15 @@
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">COPY from stdin</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;sql=CREATE+TABLE+copy_test+(id+int%2C+name+varchar)%3B%0ACOPY+copy_test+FROM+stdin%3B%0A1%09a%3B+b%0A2%09c%0A%5C.%0ASELECT+'copied+'+%7C%7C+count(*)+%7C%7C+'+'+%7C%7C+min(name)+AS+test+FROM+copy_test%3B%0ADROP+TABLE+copy_test%3B</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Execute']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Query executed OK, 2 rows affected.</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>copied 2 a; b</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Logout</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC</td><td></td></tr>

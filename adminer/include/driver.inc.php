@@ -19,7 +19,7 @@ abstract class SqlDriver {
 
 	/** @var Db */ protected $conn;
 	/** @var int[][] */ protected $types = array(); // [$group => [$type => $maximum_unsigned_length, ...], ...]
-	/** @var string */ public $delimiter = ";";
+	/** @var string */ public $delimiter = ";"; // string separating queries, it is used also as a regular expression
 	/** @var string[] */ public $insertFunctions = array(); // ["$type|$type2" => "$function/$function2"] functions used in edit and insert
 	/** @var string[] */ public $editFunctions = array(); // ["$type|$type2" => "$function/$function2"] functions used in edit only
 	/** @var list<string> */ public $unsigned = array(); // number variants
@@ -246,6 +246,11 @@ abstract class SqlDriver {
 	/** Check if C-style escapes are supported */
 	function hasCStyleEscapes(): bool {
 		return false;
+	}
+
+	/** Get regular expression matching the start of a line comment; must not match an empty string */
+	function lineComment(): string {
+		return "--";
 	}
 
 	/** Get supported engines

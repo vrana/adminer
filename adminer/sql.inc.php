@@ -29,9 +29,10 @@ if ($_POST && $adminer_export) { //! delete on 2026-09-26
 }
 
 page_header((isset($_GET["import"]) ? lang('Import') : lang('SQL command')), $error);
-$line_comment = '--' . (JUSH == 'sql' ? ' ' : '');
+$line_comment = driver()->lineComment();
 
 if (!$error && $_POST) {
+	$delimiter = driver()->delimiter;
 	$fp = false;
 	if (!isset($_GET["import"])) {
 		$query = $_POST["query"];
@@ -43,7 +44,7 @@ if (!$error && $_POST) {
 		), "rb");
 		$query = ($fp ? fread($fp, 1e6) : false);
 	} else {
-		$query = get_file("sql_file", true, ";");
+		$query = get_file("sql_file", true, $delimiter);
 	}
 
 	if (is_string($query)) { // get_file() returns error as number, fread() as false
@@ -52,7 +53,7 @@ if (!$error && $_POST) {
 		}
 
 		if ($query != "" && strlen($query) < 1e6) { // don't add big queries
-			$q = $query . (preg_match("~;[ \t\r\n]*\$~", $query) ? "" : ";"); //! doesn't work with DELIMITER |
+			$q = $query . (preg_match("~$delimiter\\s*\$~", $query) ? "" : $delimiter); //! doesn't work with DELIMITER |
 			if (!$history || first(end($history)) != $q) { // no repeated queries
 				restart_session();
 				$history[] = array($q, time()); //! add elapsed time
@@ -61,10 +62,10 @@ if (!$error && $_POST) {
 			}
 		}
 
-		$space = "(?:\\s|/\\*[\s\S]*?\\*/|(?:#|$line_comment)[^\n]*\n?|--\r?\n)";
-		$delimiter = driver()->delimiter;
+		$space = "(?:\\s|/\\*[\s\S]*?\\*/|(?:$line_comment)[^\n]*\n?|--\r?\n)";
 		$offset = 0;
 		$empty = true;
+		$copy = false; // PostgreSQL COPY ... FROM stdin
 		$connection2 = connect(); // connection for exploring indexes and EXPLAIN (to not replace FOUND_ROWS()) //! PDO - silent error
 		if ($connection2 && DB != "") {
 			$connection2->select_db(DB);
@@ -74,7 +75,7 @@ if (!$error && $_POST) {
 		}
 		$commands = 0;
 		$errors = array();
-		$parse = '[\'"' . (JUSH == "sql" ? '`#' : (JUSH == "sqlite" ? '`[' : (JUSH == "mssql" ? '[' : ''))) . ']|/\*|' . $line_comment . '|$' . (JUSH == "pgsql" ? '|\$([a-zA-Z]\w*)?\$' : '');
+		$parse = '[\'"' . (JUSH == "sql" ? '`' : (JUSH == "sqlite" ? '`[' : (JUSH == "mssql" ? '[' : ''))) . ']|/\*|' . $line_comment . '|$' . (JUSH == "pgsql" ? '|\$([a-zA-Z]\w*)?\$' : '');
 		$total_start = microtime(true);
 
 		while ($query != "") {
@@ -83,6 +84,7 @@ if (!$error && $_POST) {
 				$query = substr($query, strlen($match[0]));
 			} elseif (!$offset && JUSH == 'pgsql' && preg_match("~^($space*+COPY\\s+)[^;]+\\s+FROM\\s+stdin;~i", $query, $match)) {
 				$delimiter = "\n\\\\\\.\r?\n";
+				$copy = true;
 				$offset = strlen($match[0]);
 			} else {
 				preg_match("($delimiter\\s*|$parse)", $query, $match, PREG_OFFSET_CAPTURE, $offset); // always matches
@@ -101,7 +103,7 @@ if (!$error && $_POST) {
 						$pattern =
 							($found == '/*' ? '\*/' :
 							($found == '[' ? ']' :
-							(preg_match("~^$line_comment|^#~", $found) ? "\n" :
+							(preg_match("~^(?:$line_comment)~", $found) ? "\n" :
 							preg_quote($found) . ($c_style_escapes ? '|\\\\.' : ''))))
 						;
 
@@ -119,7 +121,7 @@ if (!$error && $_POST) {
 
 					} else { // end of a query
 						$empty = false;
-						$q = substr($query, 0, $pos + ($delimiter[0] == "\n" ? 3 : 0)); // 3 - pass "\n\\." to PostgreSQL COPY
+						$q = substr($query, 0, $pos + ($copy ? 3 : 0)); // 3 - pass "\n\\." to PostgreSQL COPY
 						$commands++;
 						$print = "<pre id='sql-$commands'><code class='jush-" . JUSH . "'>" . adminer()->sqlCommandQuery($q) . "</code></pre>\n";
 						if (JUSH == "sqlite" && preg_match("~^$space*+(ATTACH|VACUUM\\b.*\\bINTO)\\b~is", $q, $match) !== 0) {
@@ -215,6 +217,10 @@ if (!$error && $_POST) {
 
 						$query = substr($query, $offset);
 						$offset = 0;
+						if ($copy) { // the COPY delimiter is valid only for the single query
+							$delimiter = driver()->delimiter;
+							$copy = false;
+						}
 					}
 
 				}
@@ -284,7 +290,7 @@ if (!isset($_GET["import"]) && $history) {
 		list($q, $time, $elapsed) = $val;
 		echo '<div><a href="' . h(ME . "sql=&history=$key") . '" class="hover">' . lang('Edit') . "</a>"
 			. " <span class='time' title='" . @date('Y-m-d', $time) . "'>" . @date("H:i:s", $time) . "</span>" // @ - time zone may be not set
-			. " <code class='jush-" . JUSH . "'>" . shorten_utf8(preg_replace('~\s+~', ' ', ltrim(preg_replace("~^(#|$line_comment).*~m", '', $q))), 80, "</code>")
+			. " <code class='jush-" . JUSH . "'>" . shorten_utf8(preg_replace('~\s+~', ' ', ltrim(preg_replace("~^(?:$line_comment).*~m", '', $q))), 80, "</code>")
 			. ($elapsed ? " <span class='time'>($elapsed)</span>" : "")
 			. "</div>\n"
 		;

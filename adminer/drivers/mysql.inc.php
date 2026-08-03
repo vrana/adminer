@@ -376,6 +376,10 @@ if (!defined('Adminer\DRIVER')) {
 			return $c_style;
 		}
 
+		function lineComment(): string {
+			return "#|-- "; // MySQL requires a space after --
+		}
+
 		function engines(): array {
 			$return = array();
 			foreach (get_rows("SHOW ENGINES") as $row) {
