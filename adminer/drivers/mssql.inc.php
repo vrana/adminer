@@ -146,7 +146,7 @@ if (isset($_GET["mssql"])) {
 		}
 
 		function last_id($result): string {
-			return get_val("SELECT SCOPE_IDENTITY()"); // @@IDENTITY can return trigger INSERT
+			return (string) get_val("SELECT SCOPE_IDENTITY()"); // @@IDENTITY can return trigger INSERT; SCOPE_IDENTITY() is NULL if the table has no IDENTITY column
 		}
 
 		function explain(Db $connection, string $query) {
