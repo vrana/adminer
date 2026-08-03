@@ -293,8 +293,14 @@ if (isset($_GET["redis"])) {
 				if ($values === false) {
 					return false;
 				}
+				$columns = (in_array("*", $select) ? array('key', 'value') : $select);
 				foreach ($values as $i => $val) {
-					$return[] = array('key' => escape_value($args[$i + 1]), 'value' => escape_value($val));
+					$row = array('key' => $args[$i + 1], 'value' => $val);
+					$selected = array();
+					foreach ($columns as $column) { // in this order, Select pairs the printed cells with the selected columns
+						$selected[$column] = escape_value($row[$column]);
+					}
+					$return[] = $selected;
 				}
 			}
 			return new Result($return);
