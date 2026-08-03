@@ -8,7 +8,7 @@ function compress_alphabet(): string {
 }
 
 // used in compiled version
-function decompress_string(string $string): string {
+function decompress_string(string $string, string $dictionary = ""): string {
 	// convert string to bytes; 2 chars from a 93-symbol alphabet hold 13 bits
 	$alphabet = array_flip(str_split(compress_alphabet()));
 	$length = strlen($string);
@@ -29,17 +29,20 @@ function decompress_string(string $string): string {
 	if ($binary == "") {
 		return "";
 	}
-	return (function_exists('gzinflate') ? gzinflate($binary) : inflate($binary));
+	if ($dictionary != "" && function_exists('inflate_init')) { // gzinflate() doesn't accept a dictionary, inflate_init() is available since PHP 7
+		return inflate_add(inflate_init(ZLIB_ENCODING_RAW, array('dictionary' => $dictionary)), $binary, ZLIB_FINISH);
+	}
+	return ($dictionary == "" && function_exists('gzinflate') ? gzinflate($binary) : inflate($binary, $dictionary));
 }
 
 /** Decompress a raw deflate stream (RFC 1951) */
-function inflate(string $binary): string {
+function inflate(string $binary, string $dictionary = ""): string {
 	// used when the zlib extension is missing
 	$length_bases = array(3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 15, 17, 19, 23, 27, 31, 35, 43, 51, 59, 67, 83, 99, 115, 131, 163, 195, 227, 258);
 	$length_extras = array(0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0);
 	$dist_bases = array(1, 2, 3, 4, 5, 7, 9, 13, 17, 25, 33, 49, 65, 97, 129, 193, 257, 385, 513, 769, 1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577);
 	$dist_extras = array(0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13);
-	$return = "";
+	$return = $dictionary; // a preset dictionary is a pre-filled sliding window, distances are counted from the end of $return
 	$pos = 0;
 	do {
 		$final = inflate_bits($binary, $pos, 1);
@@ -96,7 +99,7 @@ function inflate(string $binary): string {
 			}
 		}
 	} while (!$final);
-	return $return;
+	return ($dictionary == "" ? $return : substr($return, strlen($dictionary)));
 }
 
 /** Read the given number of bits, least significant first, and advance the bit position */

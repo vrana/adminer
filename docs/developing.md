@@ -383,6 +383,7 @@ This makes the compiled file valid UTF-8 which also survives stripping trailing 
 Translations used to occupy a large portion of the compiled file.
 In the source code, translations map English strings to localized versions.
 During compilation, identifiers are converted to numbers, and translations are deflate-compressed to save space.
+Every language except English is compressed with the English translation as a preset dictionary, which saves 13% of their size, so English is decompressed first to serve as the dictionary.
 This data is decompressed into a session variable at runtime to improve performance.
 A single-language compilation is also possible to create even smaller files.
 

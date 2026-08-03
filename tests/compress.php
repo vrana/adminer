@@ -12,20 +12,23 @@ require __DIR__ . "/../adminer/include/compress.inc.php";
 
 $errors = 0;
 
-function check(string $name, string $string): void {
+function check(string $name, string $string, string $dictionary = ""): void {
 	global $errors;
-	$compressed = compress_string($string);
+	$compressed = compress_string($string, $dictionary);
 	if (strspn($compressed, compress_alphabet()) != strlen($compressed)) {
 		echo "$name: compressed string contains a character outside of compress_alphabet()\n";
 		$errors++;
 	}
-	if (decompress_string($compressed) !== $string) {
+	if (decompress_string($compressed, $dictionary) !== $string) {
 		echo "$name: decompressed string doesn't match the original\n";
 		$errors++;
 	}
 	foreach (array(0, 1, 9) as $level) { // level 0 stores uncompressed blocks
-		$binary = gzdeflate($string, $level);
-		if (inflate($binary) !== $string) {
+		$binary = ($dictionary != ""
+			? deflate_add(deflate_init(ZLIB_ENCODING_RAW, array('level' => $level, 'dictionary' => $dictionary)), $string, ZLIB_FINISH)
+			: gzdeflate($string, $level)
+		);
+		if (inflate($binary, $dictionary) !== $string) {
 			echo "$name: inflate() of gzdeflate() level $level doesn't match the original\n";
 			$errors++;
 		}
@@ -65,8 +68,14 @@ check("long random binary", $string);
 
 check("CSS file", file_get_contents(__DIR__ . "/../adminer/static/default.css"));
 check("JS file", file_get_contents(__DIR__ . "/../adminer/static/functions.js"));
+$dictionary = file_get_contents(__DIR__ . "/../adminer/lang/en.inc.php"); // the compiled version compresses translations against English
 foreach (glob(__DIR__ . "/../adminer/lang/*.inc.php") as $filename) {
 	check(basename($filename), file_get_contents($filename));
+	check(basename($filename) . " with dictionary", file_get_contents($filename), $dictionary);
 }
+
+check("empty string with dictionary", "", $dictionary);
+check("string with nothing in common with the dictionary", "abc", "xyz");
+check("dictionary longer than 32 kB", str_repeat("abcabc", 100), str_repeat("x", 40000) . "abcabc"); // only the last 32 kB of the dictionary is used
 
 exit($errors ? 1 : 0);

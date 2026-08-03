@@ -4,8 +4,12 @@ namespace Adminer;
 // this file is used only in compilation, decompress_string() is in decompress.inc.php; requires the zlib extension
 
 /** Compress string with deflate to characters from compress_alphabet(), tested by tests/compress.php */
-function compress_string(string $string): string {
-	$binary = ($string != "" ? gzdeflate($string, 9) : "");
+function compress_string(string $string, string $dictionary = ""): string {
+	// $dictionary is data known to the decompressor, only its last 32 kB is used
+	$binary = "";
+	if ($string != "") {
+		$binary = ($dictionary != "" ? deflate_add(deflate_init(ZLIB_ENCODING_RAW, array('level' => 9, 'dictionary' => $dictionary)), $string, ZLIB_FINISH) : gzdeflate($string, 9));
+	}
 	// convert bytes to string; 2 chars from a 93-symbol alphabet hold 13 bits
 	$alphabet = compress_alphabet();
 	$return = "";

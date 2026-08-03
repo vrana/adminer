@@ -132,21 +132,15 @@ function put_file($match) {
 }
 
 function put_file_lang($match) {
-	global $lang_ids, $project;
 	if ($_SESSION["lang"]) {
 		return "";
 	}
 	$return = "";
-	foreach (Adminer\langs() as $lang => $val) {
-		include __DIR__ . "/adminer/lang/$lang.inc.php";
-		$translation_ids = array_flip($lang_ids); // default translation
-		foreach (Adminer\Lang::$translations as $key => $val) {
-			if ($val !== null) {
-				$translation_ids[$lang_ids[$key]] = implode("\t", (array) $val);
-			}
-		}
+	$dictionary = get_lang_translations("en"); // other languages are compressed against English, it saves 13% of their size
+	foreach (array_keys(Adminer\langs()) as $lang) {
+		$compressed = Adminer\compress_string(get_lang_translations($lang), ($lang != "en" ? $dictionary : ""));
 		$return .= '
-		case "' . $lang . '": $compressed = \'' . Adminer\compress_string(implode("\n", $translation_ids)) . '\'; break;';
+		case "' . $lang . '": return \'' . $compressed . '\';';
 	}
 	$translations_version = crc32($return);
 	return 'Lang::$translations = (array) $_SESSION["translations"];
@@ -159,16 +153,33 @@ if (!Lang::$translations) {
 	$_SESSION["translations"] = Lang::$translations;
 }
 
-function get_translations($lang) {
+function get_compressed($lang) {
 	switch ($lang) {' . $return . '
 	}
+}
+
+function get_translations($lang) {
+	$dictionary = ($lang != "en" ? decompress_string(get_compressed("en")) : "");
 	$translations = array();
-	foreach (explode("\n", decompress_string($compressed)) as $val) {
+	foreach (explode("\n", decompress_string(get_compressed($lang), $dictionary)) as $val) {
 		$translations[] = (strpos($val, "\t") ? explode("\t", $val) : $val);
 	}
 	return $translations;
 }
 ';
+}
+
+/** Get translations of a language indexed by $lang_ids, joined by newlines */
+function get_lang_translations($lang) {
+	global $lang_ids;
+	include __DIR__ . "/adminer/lang/$lang.inc.php";
+	$translation_ids = array_flip($lang_ids); // default translation
+	foreach (Adminer\Lang::$translations as $key => $val) {
+		if ($val !== null) {
+			$translation_ids[$lang_ids[$key]] = implode("\t", (array) $val);
+		}
+	}
+	return implode("\n", $translation_ids);
 }
 
 function minify_css($file) {
