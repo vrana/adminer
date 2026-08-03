@@ -162,7 +162,7 @@ if (support("scheme")) {
 		}
 		if (!set_schema($_GET["ns"])) {
 			header("HTTP/1.1 404 Not Found");
-			page_header(lang('Schema') . ": " . h($_GET["ns"]), lang('Invalid schema.'), true);
+			page_header(lang('Schema') . h(": $_GET[ns]"), lang('Invalid schema.'), true);
 			page_footer("ns");
 			exit;
 		}
