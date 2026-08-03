@@ -216,6 +216,7 @@ if (isset($_GET["pgsql"])) {
 		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 
 		public string $nsOid = "(SELECT oid FROM pg_namespace WHERE nspname = current_schema())";
+		/** @var int[] */ private array $userTypes = array(); // [$name => $oid]
 
 		static function connect(string $server, string $username, string $password) {
 			$connection = parent::connect($server, $username, $password);
@@ -272,12 +273,14 @@ if (isset($_GET["pgsql"])) {
 		}
 
 		function enumLength(array $field) {
-			$enum = $this->types[lang('User types')][$field["type"]];
-			return ($enum ? type_values($enum) : "");
+			$oid = $this->userTypes[$field["type"]];
+			return ($oid ? type_values($oid) : "");
 		}
 
 		function setUserTypes(array $types): void {
-			$this->types[lang('User types')] = array_flip($types);
+			$this->userTypes = array_flip($types);
+			// $this->types holds maximum lengths, user types have none
+			$this->types[lang('User types')] = array_fill_keys(array_keys($this->userTypes), 0);
 		}
 
 		function insertReturning(string $table): string {
@@ -905,13 +908,22 @@ ORDER BY SPECIFIC_NAME'); // 'e' - functions created by extensions
 	}
 
 	function types(bool $extensions = false): array {
+		$cockroach = connection()->flavor == 'cockroach';
+		// 'b' - base, 'c' - composite, 'd' - domain, 'e' - enum, 'r' - range; 'p' pseudo-types and 'm' multiranges are not created on their own
+		$kinds = ($cockroach ? "'e'" : "'b','c','d','e'" . (min_version(9.2) ? ",'r'" : ""));
 		return get_key_vals(
-			"SELECT oid, typname
-FROM pg_type
-WHERE typnamespace = " . driver()->nsOid . "
-AND typtype IN ('b','d','e')
-AND typelem = 0" . ($extensions || connection()->flavor == 'cockroach' ? '' : "
-AND oid NOT IN (SELECT objid FROM pg_catalog.pg_depend WHERE classid = 'pg_type'::regclass AND deptype = 'e')") // 'e' - types created by extensions
+			"SELECT t.oid, t.typname
+FROM pg_type t
+WHERE t.typnamespace = " . driver()->nsOid . "
+AND t.typtype IN ($kinds)" . ($cockroach ? "
+AND t.typelem = 0" : "
+AND (t.typrelid = 0 OR (SELECT c.relkind FROM pg_class c WHERE c.oid = t.typrelid) = 'c')" // pg_type contains also the row type of every table, view and sequence
+				. "
+AND NOT EXISTS (SELECT 1 FROM pg_type e WHERE e.typarray = t.oid)" // types created automatically for arrays
+				. ($extensions ? '' : "
+AND t.oid NOT IN (SELECT objid FROM pg_catalog.pg_depend WHERE classid = 'pg_type'::regclass AND deptype = 'e')")) // 'e' - types created by extensions
+			. "
+ORDER BY t.typname"
 		);
 	}
 
@@ -919,6 +931,72 @@ AND oid NOT IN (SELECT objid FROM pg_catalog.pg_depend WHERE classid = 'pg_type'
 		// to get values from type string: unnest(enum_range(NULL::"$type"))
 		$enums = get_vals("SELECT enumlabel FROM pg_enum WHERE enumtypid = $id ORDER BY enumsortorder");
 		return ($enums ? "'" . implode("', '", array_map('addslashes', $enums)) . "'" : "");
+	}
+
+	/** Get SQL expression returning the name of a collation if it's not the one defined by the type
+	* @param string $oid SQL expression with the collation OID
+	*/
+	function collation_name(string $oid): string {
+		return (min_version(9.1) ? "(SELECT collname FROM pg_collation WHERE oid = $oid AND collname != 'default')" : "NULL");
+	}
+
+	function type_definition(int $id): array {
+		$type = first(get_rows("SELECT typtype, typisdefined::int AS defined, typrelid FROM pg_type WHERE oid = $id"));
+		$return = array("kind" => ($type ? $type["typtype"] : ""), "definition" => "");
+		if (!$type || !$type["defined"]) { // shell type created by CREATE TYPE without options
+			return $return;
+		}
+		switch ($return["kind"]) {
+			case 'e':
+				$values = get_vals("SELECT enumlabel FROM pg_enum WHERE enumtypid = $id ORDER BY enumsortorder");
+				$return["definition"] = "AS ENUM (" . implode(", ", array_map('Adminer\q', $values)) . ")";
+				break;
+
+			case 'c':
+				$columns = array();
+				foreach (
+					get_rows("SELECT attname, format_type(atttypid, atttypmod) AS full_type, " . collation_name("attcollation") . " AS collation
+FROM pg_attribute
+WHERE attrelid = $type[typrelid] AND attnum > 0 AND NOT attisdropped
+ORDER BY attnum") as $row
+				) {
+					$columns[] = idf_escape($row["attname"]) . " $row[full_type]" . ($row["collation"] ? " COLLATE " . idf_escape($row["collation"]) : "");
+				}
+				$return["definition"] = "AS (\n\t" . implode(",\n\t", $columns) . "\n)";
+				break;
+
+			case 'd':
+				$domain = first(get_rows("SELECT format_type(typbasetype, typtypmod) AS base, typnotnull::int AS notnull, typdefault, " . collation_name("typcollation") . " AS collation
+FROM pg_type WHERE oid = $id"));
+				$return["definition"] = "AS $domain[base]"
+					. ($domain["collation"] ? " COLLATE " . idf_escape($domain["collation"]) : "")
+					. ($domain["typdefault"] != "" ? " DEFAULT $domain[typdefault]" : "") // typdefault is an SQL expression
+					. ($domain["notnull"] ? " NOT NULL" : "")
+				;
+				// 'n' - NOT NULL constraint created since PostgreSQL 17, it's already covered by typnotnull
+				foreach (get_rows("SELECT conname, pg_get_constraintdef(oid) AS definition FROM pg_constraint WHERE contypid = $id AND contype != 'n' ORDER BY conname") as $row) {
+					$return["definition"] .= " CONSTRAINT " . idf_escape($row["conname"]) . " $row[definition]"; // definition is CHECK (...)
+				}
+				break;
+
+			case 'r':
+				$range = first(get_rows("SELECT format_type(rngsubtype, NULL) AS subtype,
+(SELECT opcname FROM pg_opclass WHERE oid = rngsubopc) AS subtype_opclass,
+" . collation_name("rngcollation") . " AS collation,
+NULLIF(rngcanonical, 0)::regproc::text AS canonical,
+NULLIF(rngsubdiff, 0)::regproc::text AS subtype_diff" . (min_version(14) ? ",
+(SELECT typname FROM pg_type WHERE oid = rngmultitypid) AS multirange_type_name" : "") . "
+FROM pg_range WHERE rngtypid = $id"));
+				$options = array();
+				foreach (array("subtype" => 0, "subtype_opclass" => 1, "collation" => 1, "canonical" => 0, "subtype_diff" => 0, "multirange_type_name" => 1) as $key => $escape) {
+					if ($range[$key] != "") {
+						$options[] = strtoupper($key) . " = " . ($escape ? idf_escape($range[$key]) : $range[$key]);
+					}
+				}
+				$return["definition"] = "AS RANGE (" . implode(", ", $options) . ")";
+		}
+		//! 'b' - base types, they are created only by a superuser so they are usually a part of an extension
+		return $return;
 	}
 
 	function schemas(): array {

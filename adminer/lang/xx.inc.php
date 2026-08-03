@@ -337,6 +337,7 @@ Lang::$translations = array(
 	'Create type' => 'Xx',
 	'Type has been dropped.' => 'Xx.',
 	'Type has been created.' => 'Xx.',
+	'Type has been altered.' => 'Xx.',
 	'Alter type' => 'Xx',
 
 	// Table check constraints

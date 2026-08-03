@@ -43,6 +43,8 @@
 - PostgreSQL: Do not show functions and types created by extensions
 - PostgreSQL: Fix altering functions with parameters of array or user-defined types
 - PostgreSQL: Hide table actions and row editing in pg_catalog and pg_toast
+- PostgreSQL: Show composite, domain and range types next to enums
+- PostgreSQL: Alter and rename user defined types
 - PostgreSQL, MS SQL: Show two columns in select COUNT(*), COUNT(DISTINCT id)
 - PostgreSQL, MS SQL: Highlight primary keys in the database schema (regression from 5.1.0)
 - SQLite: Fix working with binary data through PDO

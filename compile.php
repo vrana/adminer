@@ -89,7 +89,7 @@ function put_file($match) {
 				"indexes" => array("alter_indexes"),
 				"table" => array("auto_increment"),
 				"trigger" => array("triggers", "trigger", "trigger_options", "trigger_sql"),
-				"type" => array("types", "type_values"),
+				"type" => array("types", "type_values", "type_definition"),
 				"variables" => array("show_variables"),
 				"view" => array("drop_views", "view"),
 			);

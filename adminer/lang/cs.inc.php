@@ -337,6 +337,7 @@ Lang::$translations = array(
 	'Create type' => 'Vytvořit typ',
 	'Type has been dropped.' => 'Typ byl odstraněn.',
 	'Type has been created.' => 'Typ byl vytvořen.',
+	'Type has been altered.' => 'Typ byl změněn.',
 	'Alter type' => 'Pozměnit typ',
 
 	// Table check constraints

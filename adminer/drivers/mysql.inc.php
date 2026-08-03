@@ -1141,6 +1141,16 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 		return "";
 	}
 
+	/** Get definition of user defined type
+	* @param int $id type ID
+	* @return array{kind:string, definition:string}
+	*/
+	function type_definition(int $id): array {
+		// kind is 'b' base, 'c' composite, 'd' domain, 'e' enum, 'r' range
+		// definition is the part of CREATE TYPE or CREATE DOMAIN after the name, empty if the type can't be expressed
+		return array("kind" => "", "definition" => "");
+	}
+
 	/** Get existing schemas
 	* @return list<string>
 	*/
