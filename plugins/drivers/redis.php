@@ -65,17 +65,23 @@ if (isset($_GET["redis"])) {
 
 	/** Escape an argument as a double quoted string in the redis-cli syntax */
 	function quote_arg($arg) {
-		static $escapes;
+		static $escapes, $escapes_binary;
 		if (!$escapes) {
-			// bytes >= 0x80 are not escaped to keep UTF-8 keys readable; redis-cli doesn't understand octal escapes
+			// redis-cli doesn't understand octal escapes
 			$escapes = array("\\" => '\\\\', '"' => '\"', "\n" => '\n', "\r" => '\r', "\t" => '\t', "\x07" => '\a', "\x08" => '\b', "\x7F" => '\x7f');
 			for ($i = 0; $i < 32; $i++) {
 				if (!isset($escapes[chr($i)])) {
 					$escapes[chr($i)] = sprintf('\x%02x', $i);
 				}
 			}
+			$escapes_binary = $escapes;
+			for ($i = 128; $i < 256; $i++) {
+				$escapes_binary[chr($i)] = sprintf('\x%02x', $i);
+			}
 		}
-		return '"' . strtr((string) $arg, $escapes) . '"';
+		$arg = (string) $arg;
+		// bytes >= 0x80 are escaped only outside UTF-8 where there's no readability to preserve
+		return '"' . strtr($arg, (is_utf8($arg) ? $escapes : $escapes_binary)) . '"';
 	}
 
 	/** Format arguments as a command in the redis-cli syntax
@@ -85,9 +91,30 @@ if (isset($_GET["redis"])) {
 		$return = array();
 		foreach ($args as $arg) {
 			$arg = (string) $arg;
-			$return[] = ($arg == '' || preg_match('~[\s"\'\\\\\x00-\x1F\x7F]~', $arg) ? quote_arg($arg) : $arg);
+			$return[] = ($arg == '' || !is_utf8($arg) || preg_match('~[\s"\'\\\\\x00-\x1F\x7F]~', $arg) ? quote_arg($arg) : $arg);
 		}
 		return implode(" ", $return);
+	}
+
+	/** Escape a value in the redis-cli syntax if it can't be printed as is
+	* @param string|mixed[]|null $val
+	* @return string|mixed[]|null
+	*/
+	function escape_value($val) {
+		if (is_array($val)) {
+			return array_map('Adminer\escape_value', $val);
+		}
+		// a printable value starting and ending with a quote is escaped too, otherwise unescape_value() couldn't tell it apart
+		return ($val !== null && (!is_utf8($val) || preg_match('~^".*"$~s', $val)) ? quote_arg($val) : $val);
+	}
+
+	/** Get a value escaped by escape_value(), keep it intact if it's not a single quoted string */
+	function unescape_value($val) {
+		if (!preg_match('~^".*"$~s', $val)) {
+			return $val;
+		}
+		$args = parse_command($val);
+		return ($args && count($args) == 1 ? $args[0] : $val);
 	}
 
 	class Db extends SqlDb {
@@ -121,7 +148,7 @@ if (isset($_GET["redis"])) {
 		}
 
 		function quote($string): string {
-			return quote_arg($string); // the values are used as arguments of the commands
+			return quote_arg(unescape_value($string)); // the values are used as arguments of the commands
 		}
 
 		function query($query, $unbuffered = false) {
@@ -142,7 +169,7 @@ if (isset($_GET["redis"])) {
 			$name = strtoupper($args[0]);
 			$rows = array();
 			foreach ((is_array($reply) ? $reply : array($reply)) as $val) {
-				$rows[] = array($name => $val); // nested arrays are printed as nested tables by select_value()
+				$rows[] = array($name => escape_value($val)); // nested arrays are printed as nested tables by select_value()
 			}
 			return new Result($rows);
 		}
@@ -267,7 +294,7 @@ if (isset($_GET["redis"])) {
 					return false;
 				}
 				foreach ($values as $i => $val) {
-					$return[] = array('key' => $args[$i + 1], 'value' => $val);
+					$return[] = array('key' => escape_value($args[$i + 1]), 'value' => escape_value($val));
 				}
 			}
 			return new Result($return);
