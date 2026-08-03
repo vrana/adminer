@@ -63,10 +63,8 @@ if (isset($_GET["redis"])) {
 		return $args;
 	}
 
-	/** Format arguments as a command in the redis-cli syntax
-	* @param list<string> $args
-	*/
-	function format_command($args) {
+	/** Escape an argument as a double quoted string in the redis-cli syntax */
+	function quote_arg($arg) {
 		static $escapes;
 		if (!$escapes) {
 			// bytes >= 0x80 are not escaped to keep UTF-8 keys readable; redis-cli doesn't understand octal escapes
@@ -77,10 +75,17 @@ if (isset($_GET["redis"])) {
 				}
 			}
 		}
+		return '"' . strtr((string) $arg, $escapes) . '"';
+	}
+
+	/** Format arguments as a command in the redis-cli syntax
+	* @param list<string> $args
+	*/
+	function format_command($args) {
 		$return = array();
 		foreach ($args as $arg) {
 			$arg = (string) $arg;
-			$return[] = ($arg == '' || preg_match('~[\s"\'\\\\\x00-\x1F\x7F]~', $arg) ? '"' . strtr($arg, $escapes) . '"' : $arg);
+			$return[] = ($arg == '' || preg_match('~[\s"\'\\\\\x00-\x1F\x7F]~', $arg) ? quote_arg($arg) : $arg);
 		}
 		return implode(" ", $return);
 	}
@@ -116,7 +121,7 @@ if (isset($_GET["redis"])) {
 		}
 
 		function quote($string): string {
-			return "'" . addcslashes($string, "\\'") . "'";
+			return quote_arg($string); // the values are used as arguments of the commands
 		}
 
 		function query($query, $unbuffered = false) {
@@ -296,7 +301,7 @@ if (isset($_GET["redis"])) {
 		function insert($table, $set) {
 			$args = array("SET");
 			foreach ($set as $val) {
-				$args[] = stripslashes(substr($val, 1, -1));
+				$args[] = parse_command($val)[0];
 			}
 			return $this->conn->send($args);
 		}
@@ -306,7 +311,7 @@ if (isset($_GET["redis"])) {
 			$where = $this->where($queryWhere);
 			foreach ($where as $key) {
 				$args[] = $key;
-				$args[] = stripslashes(substr($set["value"], 1, -1));
+				$args[] = parse_command($set["value"])[0];
 			}
 			$this->conn->affected_rows = count($where);
 			return $this->conn->send($args);
@@ -319,9 +324,12 @@ if (isset($_GET["redis"])) {
 			return true;
 		}
 
+		/** Get the keys of a where condition
+		* @return list<string>
+		*/
 		private function where($queryWhere) {
-			preg_match_all("~key . '((\\\\.|[^\\\\'])*+)'~", $queryWhere, $matches);
-			return array_map('stripslashes', $matches[1]);
+			preg_match_all('~key . ("(?:\\\\.|[^\\\\"])*+")~', $queryWhere, $matches);
+			return parse_command(implode(" ", $matches[1]));
 		}
 	}
 
