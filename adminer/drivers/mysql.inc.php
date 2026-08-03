@@ -149,6 +149,9 @@ if (!defined('Adminer\DRIVER')) {
 
 			function attach(string $server, string $username, string $password): string {
 				$options = array(\PDO::MYSQL_ATTR_LOCAL_INFILE => false);
+				if (isset($_GET["select"])) { // we don't have SqlDb::$untrusted here yet
+					$options[\PDO::MYSQL_ATTR_MULTI_STATEMENTS] = false; // can be set only when connecting
+				}
 				$ssl = adminer()->connectSsl();
 				if ($ssl) {
 					if ($ssl['key']) {
