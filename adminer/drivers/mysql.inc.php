@@ -1093,7 +1093,7 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 
 	/** Check whether a feature is supported
 	* @param literal-string $feature check|comment|columns|copy|database|descidx|drop_col|dump|event|indexes|kill|materializedview
-	* |move_col|privileges|procedure|processlist|routine|scheme|sequence|sql|status|table|trigger|type|variables|view|view_trigger
+	* |move_col|privileges|procedure|processlist|routine|scheme|sequence|sql|status|table|transaction_ddl|trigger|type|variables|view|view_trigger
 	*/
 	function support(string $feature): bool {
 		return preg_match(

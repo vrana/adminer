@@ -22,6 +22,7 @@
 - Alter table: Edit multiline column comments in a textarea
 - Alter table, Privileges: Do not print a success message if nothing was changed
 - Alter table, Select: Warn if the number of fields can exceed max_input_vars
+- Alter view, routine and type: Use a transaction instead of a temporary object in PostgreSQL, SQLite, MS SQL
 - Alter routine: Fix altering a routine with a name longer than 42 characters
 - Select: Remove asking for the page number after clicking the Page legend
 - Select: Highlight the current page in the pagination

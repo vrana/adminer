@@ -732,6 +732,6 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)) as $row
 	}
 
 	function support(string $feature): bool {
-		return preg_match('~^(check|comment|columns|database|drop_col|dump|fast_status|indexes|descidx|scheme|sql|table|trigger|view|view_trigger)$~', $feature); //! routine|
+		return preg_match('~^(check|comment|columns|database|drop_col|dump|fast_status|indexes|descidx|scheme|sql|table|transaction_ddl|trigger|view|view_trigger)$~', $feature); //! routine|
 	}
 }

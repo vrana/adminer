@@ -405,9 +405,9 @@ function grant(string $grant, array $privileges, ?string $columns, string $on) {
 /** Drop old object and create a new one
 * @param string $drop drop old object query
 * @param string $create create new object query
-* @param string $drop_created drop new object query
-* @param string $test create test object query
-* @param string $drop_test drop test object query
+* @param string $drop_created drop new object query, used if DDL is not transactional
+* @param string $test create test object query, used if DDL is not transactional
+* @param string $drop_test drop test object query, used if DDL is not transactional
 * @return void redirect on success
 */
 function drop_create(
@@ -427,6 +427,10 @@ function drop_create(
 		query_redirect($drop, $location, $message_drop);
 	} elseif ($old_name == "") {
 		query_redirect($create, $location, $message_create);
+	} elseif (support("transaction_ddl")) {
+		driver()->begin();
+		queries_redirect($location, $message_alter, queries($drop) && queries($create) && driver()->commit());
+		driver()->rollback(); // after queries_redirect() to not overwrite error
 	} elseif ($old_name != $new_name) {
 		$created = queries($create);
 		queries_redirect($location, $message_alter, $created && queries($drop));
