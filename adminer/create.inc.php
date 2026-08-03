@@ -227,8 +227,8 @@ if ($partition_by && (JUSH == 'sql' || $TABLE == "")) {
 	echo "<thead><tr><th>" . lang('Partition name') . "<th>" . lang('Values') . "<tbody>\n";
 	foreach ($row["partition_names"] as $key => $val) {
 		echo '<tr>';
-		echo '<td><input name="partition_names[]" value="' . h($val) . '" autocapitalize="off">';
-		echo ($key == count($row["partition_names"]) - 1 ? script("qsl('input').oninput = partitionNameChange;") : '');
+		echo '<td><input name="partition_names[]" value="' . h($val) . '" autocapitalize="off"'
+			. ($key == count($row["partition_names"]) - 1 ? on('input', 'partitionNameChange') : '') . '>';
 		echo '<td><input name="partition_values[]" value="' . h(idx($row["partition_values"], $key)) . '">';
 	}
 	echo "</table>\n</div></fieldset>\n";

@@ -497,6 +497,22 @@ function bodyClick(event) {
 	}
 }
 
+/** Highlight the value exceeding the maximum length
+* @param {HTMLInputElement} el
+*/
+function maxlengthCheck(el) {
+	const maxLength = el.dataset.maxlength;
+	alterClass(el, 'maxlength', el.value && maxLength != null && el.value.length > maxLength); // maxLength could be 0
+}
+
+/** Highlight too long values
+* @param {InputEvent} event
+*/
+function bodyInput(event) {
+	delegateEvent(event);
+	maxlengthCheck(event.target);
+}
+
 /** Call handlers registered by data-on<event> attributes between the event target and the <html> element
 * @param {Event} event
 */
@@ -594,7 +610,7 @@ function functionChange() {
 			delete input.origMaxLength;
 		}
 		alterClass(input, 'hidden', /^(now|getdate|current_date|current_timestamp|uuid)$/.test(func)); // these functions take no argument
-		oninput({target: input});
+		maxlengthCheck(input); // not fire() - the input event would also run skipOriginal() on the parent <td>
 	}
 	helpClose();
 }
@@ -621,7 +637,7 @@ function fieldChange() {
 	}
 	// keep value in <select> (function)
 	tr.parentNode.append(row);
-	this.oninput = () => { };
+	this.removeAttribute('data-oninput'); // the appended row adds the next one
 }
 
 
@@ -897,12 +913,6 @@ function cloneNode(el) {
 	return el2;
 }
 
-oninput = event => {
-	const target = event.target;
-	const maxLength = target.dataset.maxlength;
-	alterClass(target, 'maxlength', target.value && maxLength != null && target.value.length > maxLength); // maxLength could be 0
-};
-
 // documentElement - this file is loaded in <head> where document.body doesn't exist yet
 alterClass(document.documentElement, 'js', true);
 alterClass(document.documentElement, 'nojs'); // two calls, not classList.replace() - unsupported in Chrome < 61
@@ -912,6 +922,7 @@ mixin(document, {
 	onchange: delegateEvent,
 	onclick: bodyClick, // calls delegateEvent() itself
 	ondblclick: delegateEvent,
+	oninput: bodyInput, // calls delegateEvent() itself
 	onkeydown: bodyKeydown,
 	onmousedown: delegateEvent,
 	onmouseout: delegateEvent,

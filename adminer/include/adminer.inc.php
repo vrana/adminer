@@ -493,8 +493,7 @@ class Adminer {
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
 				echo "<div>(<i>" . implode("</i>, <i>", array_map('Adminer\h', $index["columns"])) . "</i>) AGAINST";
-				echo " <input type='search' name='fulltext[$i]' value='" . h(idx($_GET["fulltext"], $i)) . "'>";
-				echo script("qsl('input').oninput = selectFieldChange;", "");
+				echo " <input type='search' name='fulltext[$i]' value='" . h(idx($_GET["fulltext"], $i)) . "'" . on('input', 'selectFieldChange') . ">";
 				echo (JUSH == 'sql' ? checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL") : '');
 				echo "</div>\n";
 			}
@@ -508,8 +507,8 @@ class Adminer {
 					"(" . lang('anywhere') . ")"
 				);
 				echo html_select("where[$i][op]", adminer()->operators(), $val["op"], on('change', 'selectFirstChange'));
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'>";
-				echo script("mixin(qsl('input'), {oninput: selectFirstChange, onkeydown: selectSearchKeydown, onsearch: selectSearchSearch});", "");
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'" . on('input', 'selectFirstChange') . ">";
+				echo script("mixin(qsl('input'), {onkeydown: selectSearchKeydown, onsearch: selectSearchSearch});", ""); // keydown and search are not delegated
 				echo "</div>\n";
 			}
 		}
@@ -539,8 +538,7 @@ class Adminer {
 	/** Print limit box in select */
 	function selectLimitPrint(int $limit): void {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
-		echo "<input type='number' name='limit' class='size' value='" . intval($limit) . "'>";
-		echo script("qsl('input').oninput = selectFieldChange;", "");
+		echo "<input type='number' name='limit' class='size' value='" . intval($limit) . "'" . on('input', 'selectFieldChange') . ">";
 		echo "</div></fieldset>\n";
 	}
 

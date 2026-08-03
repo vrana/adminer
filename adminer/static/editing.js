@@ -599,7 +599,7 @@ function partitionNameChange() {
 	const row = cloneNode(tr);
 	row.firstChild.firstChild.value = '';
 	tr.parentNode.append(row);
-	this.oninput = () => { };
+	this.removeAttribute('data-oninput'); // the appended row adds the next one
 }
 
 /** Show or hide comment fields

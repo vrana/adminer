@@ -64,7 +64,7 @@ sessionStorage && document.addEventListener('DOMContentLoaded', () => {
 	sessionStorage.setItem('adminer_tables_filter_db', db);
 });
 </script>
-<p class="jsonly"><?php echo $this->lang('Filter'); ?>: <input id="filter-field" autocomplete="off" type="search"><?php echo Adminer\script("qs('#filter-field').oninput = tablesFilterInput;"); ?>
+<p class="jsonly"><?php echo $this->lang('Filter'); ?>: <input id="filter-field" autocomplete="off" type="search"<?php echo Adminer\on('input', 'tablesFilterInput'); ?>>
 <?php
 	}
 

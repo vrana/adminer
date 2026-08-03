@@ -280,11 +280,19 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 		echo h($functions[""]) . "<td>" . adminer()->editInput($table, $field, $attrs, $value);
 	} else {
 		$has_function = (in_array($function, $functions) || isset($functions[$function]));
+		// skip 'original'
+		$first = 0;
+		foreach ($functions as $key => $val) {
+			if ($key === "" || !$val) {
+				break;
+			}
+			$first++;
+		}
 		echo (count($functions) > 1
 			? "<select name='function[$name]'" . on('change', 'functionChange') . on_help_value('^SQL$') . ">"
 				. optionlist($functions, $function === null || $has_function ? $function : "") . "</select>"
 			: h(reset($functions))
-		) . '<td>';
+		) . "<td" . ($first && count($functions) > 1 ? on('input', 'skipOriginal', $first) : "") . ">";
 		$input = adminer()->editInput($table, $field, $attrs, $value); // usage in call is without a table
 		if ($input != "") {
 			echo $input;
@@ -325,17 +333,6 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 		}
 		echo adminer()->editHint($table, $field, $value);
 		echo (count($functions) > 1 ? script("fire(qs('select', qsl('td').previousSibling), 'change');", "") : ""); // apply the initially selected function (e.g. hide the input for now())
-		// skip 'original'
-		$first = 0;
-		foreach ($functions as $key => $val) {
-			if ($key === "" || !$val) {
-				break;
-			}
-			$first++;
-		}
-		if ($first && count($functions) > 1) {
-			echo script("qsl('td').oninput = partial(skipOriginal, $first);");
-		}
 	}
 }
 
@@ -518,8 +515,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 		}
 		if (!support("table") && !fields($table)) {
 			echo "<tr>"
-				. "<th><input name='field_keys[]'>"
-				. script("qsl('input').oninput = fieldChange;", "")
+				. "<th><input name='field_keys[]'" . on('input', 'fieldChange') . ">"
 				. "<td class='function'>" . html_select("field_funs[]", adminer()->editFunctions(array("null" => isset($_GET["select"]))))
 				. "<td><input name='field_vals[]'>"
 			;
