@@ -32,6 +32,9 @@
     "require": {
         "php": ">=7.4"
     },
+    "config": {
+        "process-timeout": 0
+    },
     "scripts": {
         "post-install-cmd": "@submodules",
         "post-update-cmd": "@submodules",
@@ -39,9 +42,15 @@
         "check": [
             "phpcs --standard=conf/phpcs.xml",
             "phpstan analyse -c conf/phpstan.neon",
+            "phpstan analyse -c conf/phpstan-e2e.neon",
             "npx eslint -c conf/eslint.config.mjs"
         ],
         "compile": "@php compile.php",
+        "e2e": "@php tests/e2e/vendor/bin/behat -c tests/e2e/behat.yml",
+        "e2e-visual": [
+            "@putenv ADMINER_E2E_HEADED=1",
+            "@php tests/e2e/vendor/bin/behat -c tests/e2e/behat.yml"
+        ],
         "clean": "@php -r \"array_map('unlink', array_merge(glob('adminer*.php'), glob('editor*.php')));\""
     }
 }

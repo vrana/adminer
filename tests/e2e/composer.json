@@ -1,0 +1,37 @@
+{
+    "name": "vrana/adminer-e2e",
+    "description": "Adminer's browser end-to-end tests, see README.md.",
+    "type": "project",
+    "license": [
+        "Apache-2.0",
+        "GPL-2.0-only"
+    ],
+    "require": {
+        "php": ">=8.2",
+        "behat/behat": "^3.32",
+        "playwright-php/playwright": "^1.3",
+        "testcontainers/testcontainers": "^1.0.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "Adminer\\Tests\\": "bootstrap/"
+        }
+    },
+    "scripts": {
+        "test": "behat",
+        "test-visual": [
+            "@putenv ADMINER_E2E_HEADED=1",
+            "behat"
+        ],
+        "browser": [
+            "@php vendor/bin/playwright-install",
+            "@php -r \"chdir('vendor/playwright-php/playwright/bin'); passthru('npx --no-install playwright install chromium');\""
+        ]
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        },
+        "process-timeout": 0
+    }
+}

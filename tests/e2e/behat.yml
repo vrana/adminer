@@ -1,0 +1,32 @@
+# One suite per driver, so that `composer e2e` covers all of them in one run.
+#
+# Every suite runs features/shared/, which describes what all drivers do, and the directory named
+# after its driver, which describes what only that one has. The directory is what decides: a
+# feature cannot run against a driver it was not written for by forgetting a tag.
+#
+# The driver and the port of its web server are handed to the context - the suites share a
+# process, so they cannot share a port.
+
+default:
+  suites:
+    pgsql:
+      paths:
+        - "%paths.base%/features/shared"
+        - "%paths.base%/features/pgsql"
+      contexts:
+        - Adminer\Tests\AdminerContext:
+            driver: pgsql
+            port: 18080
+
+    mysql:
+      paths:
+        - "%paths.base%/features/shared"
+        - "%paths.base%/features/mysql"
+      contexts:
+        - Adminer\Tests\AdminerContext:
+            driver: mysql
+            port: 18081
+
+  formatters:
+    pretty:
+      paths: false # the steps all live in one file, naming it after each of them says nothing

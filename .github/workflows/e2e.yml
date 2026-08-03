@@ -1,0 +1,41 @@
+name: End-to-end tests
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pgsql, pdo_pgsql, mysqli, pdo_mysql
+      - uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+      # Adminer itself has no dependencies; this initializes the submodules, the dev version needs
+      # jush for syntax highlighting.
+      - run: composer install --no-interaction --no-progress
+      # The tests have a composer.json of their own, see tests/e2e/README.md.
+      - run: composer install -d tests/e2e --no-interaction --no-progress
+      # The Playwright server, then the only browser the tests use (the default installs three).
+      - run: tests/e2e/vendor/bin/playwright-install
+      - run: npx --no-install playwright install --with-deps chromium
+        working-directory: tests/e2e/vendor/playwright-php/playwright/bin
+      # Both suites, one per driver, see tests/e2e/behat.yml. Behat colours its output only when it
+      # is talking to a terminal and a workflow step is not one, so it is asked for it explicitly -
+      # passed and failed are otherwise the same shade of nothing in the log.
+      - run: composer e2e -- --colors
+      # The screenshot and the HTML of every page a step failed on, which is all there is to
+      # look at once the run is over.
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: e2e-failures
+          path: tests/e2e/artifacts/
+          if-no-files-found: ignore

@@ -33,7 +33,10 @@ function merge(prepended) {
 }
 
 export default [
-	{ignores: ["externals/"]}, // a config with only ignores is global; not globalIgnores() to not require the eslint package itself
+	// a config with only ignores is global; not globalIgnores() to not require the eslint package itself
+	// vendor/ - Composer installs the JavaScript of the Playwright server the end-to-end tests
+	// drive, which is written for a newer ECMAScript than the one pinned below
+	{ignores: ["externals/", "**/vendor/"]},
 	js.configs.recommended,
 	{
 		files: ["**/*.js"], // not this .mjs config

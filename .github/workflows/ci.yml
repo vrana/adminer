@@ -20,6 +20,15 @@ jobs:
         with:
           version: latest
           configuration: conf/phpstan.neon
+      # The end-to-end tests are checked apart from Adminer, see the configuration for why. Their
+      # dependencies are what PHPStan loads to know the classes they use.
+      - run: composer install -d tests/e2e --no-interaction --no-progress
+      - uses: php-actions/phpstan@v3
+        with:
+          version: latest
+          php_version: "8.4"
+          configuration: conf/phpstan-e2e.neon
+          memory_limit: 1G
       - uses: actions/setup-node@v7
         with:
           node-version: lts/*

@@ -21,6 +21,7 @@ If downloaded from Git then run: `git submodule update --init` (or `composer ins
 - `compile.php` - Create a single file version
 - `lang.php` - Update translations
 - `tests/*.html` - Katalon Recorder test suites
+- `tests/e2e/` - Browser end-to-end tests, run by `composer e2e` ([how they work](tests/e2e/README.md))
 
 ## Plugins
 There are several plugins distributed with Adminer, as well as many user-contributed plugins listed on the [Adminer Plugins page](https://www.adminer.org/plugins/).

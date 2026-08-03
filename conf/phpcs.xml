@@ -85,7 +85,9 @@
 	<rule ref="Generic.CodeAnalysis.UnnecessaryFinalModifier"/>
 	<rule ref="Generic.CodeAnalysis.UselessOverridingMethod"/>
 	<rule ref="Generic.Files.EndFileNewline"/>
-	<rule ref="Generic.Files.LowercasedFilename"/>
+	<rule ref="Generic.Files.LowercasedFilename">
+		<exclude-pattern>/tests/e2e/bootstrap/</exclude-pattern><!-- Behat autoloads the context class by its file name -->
+	</rule>
 	<rule ref="Generic.Formatting.SpaceAfterCast"/>
 	<rule ref="Generic.Functions.OpeningFunctionBraceKernighanRitchie"/>
 	<rule ref="Generic.NamingConventions.ConstructorName"/>

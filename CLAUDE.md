@@ -4,6 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
+**If the machine has no PHP, run everything in the dev container** – it needs only Docker and
+brings PHP with the database extensions, Composer, Node and the browser the e2e tests drive:
+```bash
+npx @devcontainers/cli up --workspace-folder .                   # once, a few minutes
+npx @devcontainers/cli exec --workspace-folder . composer e2e    # any command below, inside
+```
+Do not reach for a PHP of your own making instead – no source builds, no ad-hoc `docker run php`.
+Everything below assumes either a PHP on the PATH or that prefix.
+
 **First-time setup:**
 ```bash
 git submodule update --init --recursive   # Initialize submodules (jush, JsShrink, PhpShrink)
@@ -37,6 +46,8 @@ composer clean    # Remove all compiled adminer*.php and editor*.php
 ```
 
 **Tests:** Browser-based end-to-end tests in `tests/*.html` (Katalon Recorder format). No unit test runner. Standalone unit tests: `tests/compress.php` (string compression round-trip and pure-PHP inflate fallback) and `tests/host_port.php` (host:port parsing) – run directly with `php`, they print errors and exit 0 when OK.
+
+**End-to-end tests:** Gherkin scenarios run by Behat against PostgreSQL and MySQL started by Testcontainers – `composer e2e`, needs Docker and `composer install -d tests/e2e`. They have a composer.json of their own; see [tests/e2e/README.md](tests/e2e/README.md) and the `e2e-tests` skill before writing one.
 
 ## Architecture
 

@@ -1,0 +1,67 @@
+{
+	// A development environment for Adminer which needs nothing installed but Docker: PHP with the
+	// database extensions, Composer, Node, and the browser the end-to-end tests drive.
+	//
+	// Open the repository in it (VS Code, IntelliJ, GitHub Codespaces) or use it from a terminal:
+	//
+	//     npx @devcontainers/cli up --workspace-folder .
+	//     npx @devcontainers/cli exec --workspace-folder . composer e2e
+	//
+	// See tests/e2e/README.md for what the tests need and how they are run.
+	"name": "Adminer",
+	"image": "mcr.microsoft.com/devcontainers/php:8.4",
+
+	"features": {
+		// The tests start their databases through Testcontainers, which needs a Docker daemon.
+		// Outside-of-docker forwards to the one on the host instead of nesting a second one, so the
+		// databases are containers next to this one and the host's image cache is reused.
+		// moby - the image is Debian trixie, which has no moby-cli package; this installs Docker's
+		// own CLI instead, which is what the feature suggests when it fails on it.
+		"ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+			"moby": false
+		},
+		// Playwright downloads and runs its browser through npm.
+		"ghcr.io/devcontainers/features/node:1": {
+			"version": "lts"
+		},
+		// `composer e2e-visual` shows the browser, and a browser needs somewhere to draw. This is an
+		// X server with a window manager and a VNC server in front of it, reachable in a browser on
+		// port 6080 (the password is the default, "vscode"); it sets DISPLAY, which is what
+		// Playwright refuses to start a headed browser without.
+		"ghcr.io/devcontainers/features/desktop-lite:1": {}
+	},
+
+	"containerEnv": {
+		// The databases are started next to this container, not in it, so 127.0.0.1 is the wrong
+		// address for them; Testcontainers rewrites it to this one.
+		"TESTCONTAINERS_HOST_OVERRIDE": "host.docker.internal",
+		// The image sets Xdebug up to connect to an IDE, which prints two lines about failing to
+		// on every single PHP run. Set it to debug, develop or coverage when it is wanted.
+		"XDEBUG_MODE": "off",
+		// Taller than the browser the tests open, which is the 1280x900 viewport they set plus the
+		// chrome around it. The desktop is 1440x768 by default, the window does not fit on it, and
+		// what you watch is a browser hanging off the edge of its own screen.
+		"VNC_RESOLUTION": "1920x1080x16"
+	},
+
+	"postCreateCommand": ".devcontainer/setup.sh",
+
+	// 8000 - php -S 127.0.0.1:8000 -t . serves the dev version, see the README.
+	// 6080 - the desktop above, to watch `composer e2e-visual` drive the browser.
+	"forwardPorts": [8000, 6080],
+
+	// The desktop again, published by Docker rather than forwarded by the editor. forwardPorts is
+	// something an editor does when it feels like it - VS Code does, others do not - and a desktop
+	// nobody can open is the same as no desktop. This one is mapped whoever starts the container.
+	"appPort": ["6080:6080"],
+
+	// Open the desktop when it is forwarded, for the editors which do that. Nothing inside the
+	// container can open a browser on the host - it has no way to reach the window server - so
+	// where the editor does not, the README says which command to run on the machine itself.
+	"portsAttributes": {
+		"6080": {
+			"label": "e2e desktop (watch composer e2e-visual)",
+			"onAutoForward": "openBrowser"
+		}
+	}
+}

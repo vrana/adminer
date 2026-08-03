@@ -281,6 +281,17 @@ These tests verify correct behavior, including UI functionality, which is otherw
 The tests take about 10 minutes to run, which is acceptable before a release.
 They help detect even JavaScript errors in real-world use cases.
 
+There are also automated end-to-end tests in [tests/e2e/](/tests/e2e/), run by `composer e2e` and by a GitHub workflow on every pull request.
+They drive a real browser through the dev version of Adminer served by the PHP web server, against a database started in Docker by [Testcontainers](https://testcontainers.com/).
+The tests have a `composer.json` of their own, installed by `composer install -d tests/e2e`, so that Adminer itself keeps having no dependencies and the tests can require the PHP 8.2 that Behat and Playwright need.
+
+The scenarios are written in Gherkin and run by [Behat](https://docs.behat.org/), one suite per driver: `tests/e2e/features/shared/` describes what all drivers do and is run against each of them, `tests/e2e/features/<driver>/` what only that one has.
+The steps they are written in are in `tests/e2e/bootstrap/AdminerContext.php`, the rows they expect in `tests/e2e/seed/<driver>.sql`, which is the same data in each driver's own types.
+[tests/e2e/README.md](/tests/e2e/README.md) says how to write one.
+`composer e2e -- --suite=pgsql` runs one driver only, `composer e2e -- --name "Sorting"` a single scenario.
+`composer e2e-visual` runs everything in a browser you can watch, slowed down enough to follow.
+A step which fails leaves a screenshot and the HTML of the page in `tests/e2e/artifacts/`; the workflow uploads them.
+
 ## JavaScript
 
 Adminer functions without JavaScript but is more user-friendly when JavaScript is enabled.

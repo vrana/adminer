@@ -1,0 +1,25 @@
+# The end-to-end tests are checked apart from Adminer itself because they are a different
+# codebase, down to a composer.json of their own: they never ship, they run on the PHP the
+# developer has, and their dependencies require PHP 8.2. phpstan.neon analyzes as PHP 7.1, where
+# `mixed` is not a type yet, so the same run would report every `mixed` in those packages as a
+# missing class.
+parameters:
+	level: 6
+
+	# Behat, Playwright and Testcontainers, installed by `composer install -d tests/e2e`.
+	bootstrapFiles:
+		- ../tests/e2e/vendor/autoload.php
+
+	paths:
+		- ../tests/e2e/
+	excludePaths:
+		- ../tests/e2e/vendor/ # inside the analyzed directory now, unlike Adminer's own
+
+	# The whole range the tests declare they run on, so that the code is checked against both ends.
+	phpVersion:
+		min: 80200
+		max: 80500
+
+	typeAliases:
+		E2eDriver: "array{name:string, key:string, port:int, username:string, password:string}"
+		E2eFixture: "array{root:string, artifacts:string, server:Symfony\\Component\\Process\\Process, base:string, database:string, driver:E2eDriver}"

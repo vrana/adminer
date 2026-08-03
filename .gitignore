@@ -7,6 +7,11 @@
 /tests/pdo-*.html
 /tests/screenshots/
 /tests/cropped/
+/tests/e2e/artifacts/
+/tests/e2e/vendor/
+/tests/e2e/composer.lock
+/.cache/
+/.devcontainer/devcontainer-lock.json
 /vendor/
 /composer.lock
 /node_modules/
