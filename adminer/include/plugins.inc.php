@@ -83,7 +83,7 @@ class Plugins {
 		return include_once "./$filename";
 	}
 
-	/** Get checksum of a plugin file, ignoring line ends and translations
+	/** Get checksum of a plugin or design file, ignoring line ends and translations
 	* @return string hex crc32
 	*/
 	static function checksum(string $filename): string {
@@ -107,10 +107,11 @@ class Plugins {
 		return $return;
 	}
 
-	/** Get checksums of official plugins shipped with this Adminer version; the body is inlined by compile.php
+	/** Get checksums of official plugins shipped with this Adminer version
 	* @return string[] plugin name in key, hex crc32
 	*/
 	static function officialChecksums(): array {
+		// inlined by compile.php
 		$return = array();
 		foreach (array("../plugins", "../plugins/drivers") as $dir) {
 			foreach (glob("$dir/*.php") as $filename) {

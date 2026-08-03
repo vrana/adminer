@@ -146,6 +146,38 @@ function csp(): array {
 	);
 }
 
+/** Get names and checksums of the used designs
+* @return array<string, string[]> filename in key, [design name, hex crc32] in value, name is empty for designs without the marker
+*/
+function design_checksums(): array {
+	$used = array();
+	foreach (array_keys(adminer()->css()) as $url) {
+		$used[preg_replace('~\?.*~', '', $url)] = true;
+	}
+	$return = array();
+	foreach (array("adminer.css", "adminer-dark.css") as $filename) {
+		if ($used[$filename] && file_exists($filename)) {
+			preg_match('~^/\* Adminer design ([-\w]+) \*/~', file_get_contents($filename), $match);
+			$return[$filename] = array((string) $match[1], Plugins::checksum($filename));
+		}
+	}
+	return $return;
+}
+
+/** Get checksums of official designs shipped with this Adminer version
+* @return string[] design name with filename in key, hex crc32 in value
+*/
+function official_design_checksums(): array {
+	// inlined by compile.php
+	$return = array();
+	foreach (glob("../designs/*/*.css") as $filename) {
+		if (preg_match('~^/\* Adminer design ([-\w]+) \*/~', file_get_contents($filename), $match)) {
+			$return["$match[1]/" . basename($filename)] = Plugins::checksum($filename);
+		}
+	}
+	return $return;
+}
+
 /** Get HTML displaying a new version even without JavaScript
 * @return string noscript iframe or empty string
 */

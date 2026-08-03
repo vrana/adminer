@@ -95,20 +95,27 @@ if (
 		}
 
 		$adminer = adminer();
-		if ($adminer instanceof Plugins && ($adminer->plugins || $adminer->drivers)) {
-			$checksums = $adminer->checksums();
+		$plugins = ($adminer instanceof Plugins ? $adminer->plugins : array());
+		$drivers = ($adminer instanceof Plugins ? $adminer->drivers : array());
+		$designs = design_checksums();
+		if ($plugins || $drivers || $designs) {
+			$checksums = ($adminer instanceof Plugins ? $adminer->checksums() : array());
 			$official = Plugins::officialChecksums();
 
-			$plugin_version = function (string $file) use ($checksums, $official): string {
+			$update_link = function (string $url): string {
+				return " (<a href='$url'" . target_blank() . " class='update'>" . VERSION . "</a>)";
+			};
+
+			$plugin_version = function (string $file) use ($checksums, $official, $update_link): string {
 				return ($checksums[$file] && $official[$file] && $checksums[$file] !== $official[$file] // unknown plugins are never reported; !== because e.g. '1e5' == '100000'
-					? " (<a href='https://www.adminer.org/plugins/?version=" . VERSION . "'" . target_blank() . " class='update'>" . VERSION . "</a>)"
+					? $update_link("https://www.adminer.org/plugins/?version=" . VERSION)
 					: ""
 				);
 			};
 
 			echo "<div class='plugins'>\n";
 			echo "<h3>" . lang('Loaded plugins') . "</h3>\n<ul>\n";
-			foreach ($adminer->plugins as $plugin) {
+			foreach ($plugins as $plugin) {
 				$reflection = new \ReflectionObject($plugin);
 				$description = (method_exists($plugin, 'description') ? $plugin->description() : "");
 				if (!$description) {
@@ -124,8 +131,19 @@ if (
 					. "\n"
 				;
 			}
-			foreach ($adminer->drivers as $id => $name) {
+			foreach ($drivers as $id => $name) {
 				echo "<li><b>" . h($id) . "</b>: " . h($name) . $plugin_version(basename((string) $adminer->driverFiles[$id], '.php')) . "\n";
+			}
+			if ($designs) {
+				$official_designs = official_design_checksums();
+				foreach ($designs as $filename => $design) {
+					list($name, $checksum) = $design;
+					$official_design = $official_designs["$name/$filename"];
+					echo "<li><b>" . h($filename) . "</b>" . h($name ? ": $name" : "")
+						. ($official_design && $official_design !== $checksum ? $update_link("https://www.adminer.org/?version=" . VERSION . "#extras") : "") // unknown designs are never reported
+						. "\n"
+					;
+				}
 			}
 			echo "</ul>\n";
 			adminer()->pluginsLinks();

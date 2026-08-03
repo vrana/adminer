@@ -300,6 +300,15 @@ foreach (array("plugins", "plugins/drivers") as $dir) {
 	}
 }
 $file = replace_re('~(function officialChecksums\(\): array \{\n).*?(\n\t\})~s', "\\1\t\treturn array($checksums\n\t\t);\\2", $file, 1);
+
+// inline the checksums of official designs, the designs/ directory is not available next to the compiled file
+$designs = "";
+foreach (glob(__DIR__ . "/designs/*/*.css") as $filename) {
+	if (preg_match('~^/\* Adminer design ([-\w]+) \*/~', file_get_contents($filename), $match)) {
+		$designs .= "\n\t\t'$match[1]/" . basename($filename) . "' => '" . Adminer\Plugins::checksum($filename) . "',";
+	}
+}
+$file = replace_re('~(function official_design_checksums\(\): array \{\n).*?(\n\})~s', "\\1\treturn array($designs\n\t);\\2", $file, 1);
 if ($vendor) {
 	foreach ($features as $feature) {
 		if (!Adminer\support($feature)) {
