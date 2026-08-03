@@ -62,6 +62,7 @@
 - MongoDB: Show the primary key column when altering indexes (regression from 5.4.0)
 - Redis: SQL command in the redis-cli syntax, print executed commands
 - Redis: Print binary keys and values in the redis-cli syntax
+- Redis: Display the type of keys
 - SimpleDB: Use default server
 - CSS: Improve contrast of query time and dark mode
 - Editor: Display all images recognized by PHP, set their size, load them lazily

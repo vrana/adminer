@@ -175,12 +175,28 @@ if (isset($_GET["redis"])) {
 		}
 
 		function send($args) {
-			$cmd = "*" . count($args) . "\r\n";
-			foreach ($args as $arg) {
-				$cmd .= '$' . strlen($arg) . "\r\n$arg\r\n";
+			return first($this->sendMulti(array($args)));
+		}
+
+		/** Send commands in a pipeline
+		* @param list<list<string|int>> $commands
+		* @return list<mixed> replies in the order of the commands
+		*/
+		function sendMulti($commands) {
+			$cmd = '';
+			foreach ($commands as $args) {
+				$cmd .= "*" . count($args) . "\r\n";
+				foreach ($args as $arg) {
+					$cmd .= '$' . strlen($arg) . "\r\n$arg\r\n";
+				}
 			}
 			fwrite($this->fp, $cmd);
-			return $this->read();
+			$return = array();
+			$count = count($commands);
+			for ($i = 0; $i < $count; $i++) {
+				$return[] = $this->read(); // all replies must be read even after an error, otherwise the next command would get them
+			}
+			return $return;
 		}
 
 		function read() {
@@ -288,14 +304,27 @@ if (isset($_GET["redis"])) {
 			}
 			$return = array();
 			if ($args) {
-				array_unshift($args, "MGET"); // MGET is not printed, it is an implementation detail of getting the values
-				$values = $this->conn->send($args);
-				if ($values === false) {
-					return false;
+				$columns = (in_array("*", $select) ? array('key', 'type', 'value') : $select);
+				$types = array();
+				if (in_array('type', $columns)) {
+					$commands = array();
+					foreach ($args as $key) {
+						$commands[] = array("TYPE", $key);
+					}
+					$types = $this->conn->sendMulti($commands); // TYPE is not printed, it is an implementation detail of getting the types
+					if (in_array(false, $types, true)) {
+						return false;
+					}
 				}
-				$columns = (in_array("*", $select) ? array('key', 'value') : $select);
-				foreach ($values as $i => $val) {
-					$row = array('key' => $args[$i + 1], 'value' => $val);
+				$values = array();
+				if (in_array('value', $columns)) {
+					$values = $this->conn->send(array_merge(array("MGET"), $args)); // MGET is not printed, it is an implementation detail of getting the values
+					if ($values === false) {
+						return false;
+					}
+				}
+				foreach ($args as $i => $key) {
+					$row = array('key' => $key, 'type' => $types[$i], 'value' => $values[$i]);
 					$selected = array();
 					foreach ($columns as $column) { // in this order, Select pairs the printed cells with the selected columns
 						$selected[$column] = escape_value($row[$column]);
@@ -395,6 +424,7 @@ if (isset($_GET["redis"])) {
 	function fields($table) {
 		return array(
 			"key" => array("field" => "key", "privileges" => array("select" => 1, "where" => 1, "insert" => 1)),
+			"type" => array("field" => "type", "privileges" => array("select" => 1)), // the type is determined by the command creating the key
 			"value" => array("field" => "value", "privileges" => array("select" => 1, "insert" => 1, "update" => 1)),
 		);
 	}
