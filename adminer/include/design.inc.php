@@ -63,8 +63,8 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	adminer()->bodyClass();
 	echo "'>\n";
 	// the event handlers and the <html> classes are registered by functions.js
-	echo script((isset($_COOKIE["adminer_version"]) || !adminer()->verifyVersion() ? "" : "onload = partial(verifyVersion, '" . VERSION . "');\n")
-		. "const offlineMessage = '" . js_escape(lang('You are offline.')) . "';
+	echo script((isset($_COOKIE["adminer_version"]) || !adminer()->verifyVersion() ? "" : "onload = partial(verifyVersion, '" . VERSION . "');\n") . "
+const offlineMessage = '" . js_escape(lang('You are offline.')) . "';
 const thousandsSeparator = '" . js_escape(lang(',')) . "';");
 	echo "<div id='help' class='jush-" . JUSH . " jsonly hidden'" . on('mouseover', 'helpKeep') . on('mouseout', 'helpMouseout') . "></div>\n";
 	echo "<div id='content'>\n";
