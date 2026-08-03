@@ -236,6 +236,7 @@ Lang::$translations = array(
 	'Alter type' => 'Modifier le type',
 	'Type has been dropped.' => 'Le type a été supprimé.',
 	'Type has been created.' => 'Le type a été créé.',
+	'Type has been altered.' => 'Le type a été modifié.', // Claude Opus 5
 	'Ctrl+click on a value to modify it.' => 'Ctrl+cliquez sur une valeur pour la modifier.',
 	'Use edit link to modify this value.' => 'Utilisez le lien \'modifier\' pour modifier cette valeur.',
 	'last' => 'dernière',

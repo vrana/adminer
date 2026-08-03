@@ -328,6 +328,7 @@ Lang::$translations = array(
 	'Create type' => 'Skapa typ',
 	'Type has been dropped.' => 'Typ har, typ, tagits bort.',
 	'Type has been created.' => 'Typ har skapats.',
+	'Type has been altered.' => 'Typ har ändrats.', // Claude Opus 5
 	'Alter type' => 'Ändra typ',
 	'Check has been dropped.' => 'Kontrollvillkoret har tagits bort.', // Claude Fable 5
 	'Check has been altered.' => 'Kontrollvillkoret har ändrats.', // Claude Fable 5

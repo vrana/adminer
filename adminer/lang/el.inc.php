@@ -315,6 +315,7 @@ Lang::$translations = array(
 	'Create type' => 'Δημιουργία τύπου',
 	'Type has been dropped.' => 'Ο τύπος διαγράφηκε.',
 	'Type has been created.' => 'Ο τύπος δημιουργήθηκε.',
+	'Type has been altered.' => 'Ο τύπος τροποποιήθηκε.', // Claude Opus 5
 	'Alter type' => 'Τροποποίηση τύπου',
 	'Check has been dropped.' => 'Ο έλεγχος διαγράφηκε.', // Claude Fable 5
 	'Check has been altered.' => 'Ο έλεγχος τροποποιήθηκε.', // Claude Fable 5

@@ -329,6 +329,7 @@ Lang::$translations = array(
 	'Create type' => '建立類型',
 	'Type has been dropped.' => '已刪除類型。',
 	'Type has been created.' => '已建立類型。',
+	'Type has been altered.' => '已修改類型。', // Claude Opus 5
 	'Alter type' => '修改類型',
 	'Check has been dropped.' => '已刪除檢查約束。', // Claude Fable 5
 	'Check has been altered.' => '已修改檢查約束。', // Claude Fable 5

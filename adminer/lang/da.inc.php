@@ -272,6 +272,7 @@ Lang::$translations = array(
 	'Create type' => 'Opret type',
 	'Type has been dropped.' => 'Typen er slettet.',
 	'Type has been created.' => 'Typen er oprettet.',
+	'Type has been altered.' => 'Typen er ændret.', // Claude Opus 5
 	'Alter type' => 'Ændre type',
 	'Saving…' => 'Gemmer…',
 	'Check has been dropped.' => 'Kontrollen er slettet.', // Claude Fable 5

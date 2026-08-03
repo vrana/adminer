@@ -242,6 +242,7 @@ Lang::$translations = array(
 	'Create type' => 'Típus létrehozása',
 	'Type has been dropped.' => 'Típus eldobva.',
 	'Type has been created.' => 'Típus létrehozva.',
+	'Type has been altered.' => 'Típus módosult.', // Claude Opus 5
 	'Alter type' => 'Típus módosítása',
 	'Search data in tables' => 'Keresés a táblákban',
 	'From server' => 'Szerverről',

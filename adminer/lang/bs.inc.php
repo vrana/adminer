@@ -298,6 +298,7 @@ Lang::$translations = array(
 	'Create type' => 'Definiši tip',
 	'Type has been dropped.' => 'Tip je izbrisan.',
 	'Type has been created.' => 'tip je spašen.',
+	'Type has been altered.' => 'Tip je izmijenjen.', // Claude Opus 5
 	'Alter type' => 'Ažuriraj tip',
 	'Check has been dropped.' => 'Provjera je izbrisana.', // Claude Fable 5
 	'Check has been altered.' => 'Provjera je izmijenjena.', // Claude Fable 5

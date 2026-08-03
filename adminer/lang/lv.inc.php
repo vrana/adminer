@@ -234,6 +234,7 @@ Lang::$translations = array(
 	'Alter type' => 'Izmainīt tipu',
 	'Type has been dropped.' => 'Tips dzēsts.',
 	'Type has been created.' => 'Tips izveidots.',
+	'Type has been altered.' => 'Tips izmainīts.', // Claude Opus 5
 	'Ctrl+click on a value to modify it.' => 'Lai izmainītu vērtību, izmanto Ctrl + peles klikšķi.',
 	'Use edit link to modify this value.' => 'Izmainīt vērtību var tikai ar saiti \'Izmainīt\'.',
 	'last' => 'pēdējā',

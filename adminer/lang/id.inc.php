@@ -293,6 +293,7 @@ Lang::$translations = array(
 	'Create type' => 'Buat jenis',
 	'Type has been dropped.' => 'Jenis berhasil dihapus.',
 	'Type has been created.' => 'Jenis berhasil dibuat.',
+	'Type has been altered.' => 'Jenis berhasil diubah.', // Claude Opus 5
 	'Alter type' => 'Ubah jenis',
 	'Check has been dropped.' => 'Pemeriksaan berhasil dihapus.', // Claude Fable 5
 	'Check has been altered.' => 'Pemeriksaan berhasil diubah.', // Claude Fable 5

@@ -269,6 +269,7 @@ Lang::$translations = array(
 	'Alter type' => 'ユーザー定義型変更',
 	'Type has been dropped.' => 'ユーザー定義型を削除しました。',
 	'Type has been created.' => 'ユーザー定義型を追加しました。',
+	'Type has been altered.' => 'ユーザー定義型を変更しました。', // Claude Opus 5
 	'Ctrl+click on a value to modify it.' => 'Ctrl+クリックで値を修正します。',
 	'Use edit link to modify this value.' => 'この値を修正するにはリンクを使用してください。',
 	'last' => '最終',

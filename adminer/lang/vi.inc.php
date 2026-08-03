@@ -305,6 +305,7 @@ Lang::$translations = array(
 	'Create type' => 'Tạo kiểu',
 	'Type has been dropped.' => 'Đã xoá kiểu.',
 	'Type has been created.' => 'Đã tạo kiểu.',
+	'Type has been altered.' => 'Đã sửa kiểu.', // Claude Opus 5
 	'Alter type' => 'Sửa kiểu dữ liệu',
 	'Check has been dropped.' => 'Kiểm tra đã bị xoá.', // Claude Fable 5
 	'Check has been altered.' => 'Kiểm tra đã được sửa.', // Claude Fable 5

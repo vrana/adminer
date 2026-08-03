@@ -323,6 +323,7 @@ Lang::$translations = array(
 	'Create type' => 'Tür oluştur',
 	'Type has been dropped.' => 'Tür silindi.',
 	'Type has been created.' => 'Tür oluşturuldu.',
+	'Type has been altered.' => 'Tür değiştirildi.', // Claude Opus 5
 	'Alter type' => 'Türü değiştir',
 	'Check has been dropped.' => 'Kontrol silindi.', // Claude Fable 5
 	'Check has been altered.' => 'Kontrol değiştirildi.', // Claude Fable 5

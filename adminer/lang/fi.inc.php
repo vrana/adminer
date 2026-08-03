@@ -315,6 +315,7 @@ Lang::$translations = array(
 	'Create type' => 'Luo tyyppi',
 	'Type has been dropped.' => 'Tyyppi poistettiin.',
 	'Type has been created.' => 'Tyyppi luotiin.',
+	'Type has been altered.' => 'Tyyppiä muutettiin.', // Claude Opus 5
 	'Alter type' => 'Muuta tyyppiä',
 
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Kiitos, kun käytät Admineriä, voit <a href="https://www.adminer.org/en/donation/">tehdä lahjoituksen tästä</a>.',

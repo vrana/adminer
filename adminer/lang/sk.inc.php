@@ -236,6 +236,7 @@ Lang::$translations = array(
 	'Create type' => 'Vytvoriť typ',
 	'Type has been dropped.' => 'Typ bol odstránený.',
 	'Type has been created.' => 'Typ bol vytvorený.',
+	'Type has been altered.' => 'Typ bol zmenený.', // Claude Opus 5
 	'Alter type' => 'Pozmeniť typ',
 	'Ctrl+click on a value to modify it.' => 'Ctrl+kliknite na políčko, ktoré chcete zmeniť.',
 	'Use edit link to modify this value.' => 'Pre zmenu tejto hodnoty použite odkaz upraviť.',

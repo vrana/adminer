@@ -298,6 +298,7 @@ Lang::$translations = array(
 	'Create type' => 'Kreiraj tip',
 	'Type has been dropped.' => 'Tip je izbrisan.',
 	'Type has been created.' => 'Tip je kreiran.',
+	'Type has been altered.' => 'Tip je izmijenjen.', // Claude Opus 5
 	'Alter type' => 'Izmijeni tip',
 
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Previše neuspješnih pokušaja prijave, pokušajte ponovo za %d minutu.', 'Previše neuspješnih pokušaja prijave, pokušajte ponovo za %d minute.', 'Previše neuspješnih pokušaja prijave, pokušajte ponovo za %d minuta.'), // MS SQL login
