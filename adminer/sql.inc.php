@@ -229,11 +229,14 @@ if (!$error && $_POST) {
 
 		if ($empty) {
 			echo "<p class='message'>" . lang('No commands to execute.') . "\n";
-		} elseif ($_POST["only_errors"]) {
-			echo "<p class='message'>" . lang('%d query(s) executed OK.', $commands - count($errors));
-			echo " <span class='time'>(" . format_time($total_start) . ")</span>\n";
-		} elseif ($errors && $commands > 1) {
-			echo "<p class='error'>" . lang('Error in query') . ": " . implode("", $errors) . "\n";
+		} else {
+			driver()->rollback(); // an unfinished transaction would break the following queries (e.g. in the menu)
+			if ($_POST["only_errors"]) {
+				echo "<p class='message'>" . lang('%d query(s) executed OK.', $commands - count($errors));
+				echo " <span class='time'>(" . format_time($total_start) . ")</span>\n";
+			} elseif ($errors && $commands > 1) {
+				echo "<p class='error'>" . lang('Error in query') . ": " . implode("", $errors) . "\n";
+			}
 		}
 		//! MS SQL - SET SHOWPLAN_ALL OFF
 

@@ -17,6 +17,7 @@
 - SQL command: Show column type in result table header
 - SQL command: Show number of rows in all drivers
 - SQL command: Export result to CSV by JavaScript without re-running the query (bug #1108, SF-760)
+- SQL command: Rollback an unfinished transaction so that it doesn't break the following queries
 - Alter table: Add next column without page reload
 - Alter table: Do not highlight other move handles while dragging a column
 - Alter table: Move columns on touch screens
