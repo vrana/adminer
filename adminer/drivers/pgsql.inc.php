@@ -1004,7 +1004,7 @@ FROM pg_range WHERE rngtypid = $id"));
 	}
 
 	function get_schema(): string {
-		return get_val("SELECT current_schema()");
+		return (string) get_val("SELECT current_schema()"); // NULL if no schema in search_path exists or is visible
 	}
 
 	function set_schema(string $schema, ?Db $connection2 = null): bool {

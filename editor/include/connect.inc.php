@@ -3,5 +3,8 @@ namespace Adminer;
 
 connection()->select_db(adminer()->database());
 if (support("scheme")) {
-	set_schema(get_schema());
+	$schema = get_schema();
+	if ($schema != "") {
+		set_schema($schema);
+	}
 }
