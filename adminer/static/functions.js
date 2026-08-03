@@ -392,13 +392,17 @@ function selectFirstChange() {
 	fire(this.parentNode.firstChild, 'change');
 }
 
-/** Prevent the search handler on Enter
+/** Prevent the search handler on Enter, clear the field by Esc
 * @param {KeyboardEvent} event
 * @this HTMLInputElement
 */
 function selectSearchKeydown(event) {
 	if (event.key == 'Enter') {
 		this.removeAttribute('data-onsearch');
+	} else if (isEscape(event)) {
+		// the same as clicking the cancel button; Firefox displays none and dispatches no search event, WebKit does both and repeats this
+		this.value = '';
+		selectSearchSearch.call(this);
 	}
 }
 
@@ -443,6 +447,14 @@ function isCtrl(event) {
 	return (event.ctrlKey || event.metaKey) && !event.altKey; // shiftKey allowed
 }
 
+/** Check if Esc was pressed alone
+* @param {KeyboardEvent} event
+* @return {boolean}
+*/
+function isEscape(event) {
+	return event.key == 'Escape' && !event.shiftKey && !event.altKey && !isCtrl(event);
+}
+
 
 
 /** Send form by Ctrl+Enter on <select>, <textarea> and <input>
@@ -473,7 +485,7 @@ function submitKeydown(button, event) {
 * @return {boolean}
 */
 function bodyKeydown(event) {
-	if (event.key == 'Escape' && !event.shiftKey && !event.altKey && !isCtrl(event)) {
+	if (isEscape(event)) {
 		menuClose();
 	}
 	if (!delegateEvent(event)) { // a delegated handler sends the form by its own button
@@ -761,7 +773,7 @@ function selectClick(event, text, warning) {
 	text = text || /\n/.test(original);
 	const input = document.createElement(text ? 'textarea' : 'input');
 	input.onkeydown = event => {
-		if (event.key == 'Escape' && !event.shiftKey && !event.altKey && !isCtrl(event)) {
+		if (isEscape(event)) {
 			inputBlur();
 			td.innerHTML = original;
 		}

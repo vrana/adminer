@@ -31,6 +31,7 @@
 - Select: Show the edit link before the row checkbox and align the column to the right
 - Select: Move the Modify link to the Modify fieldset, disable Save until a value is modified
 - Select: Disable inline edit of binary values
+- Select: Clear the search field and its column by Esc in Firefox
 - Edit: Keep values of columns with special characters in name after error
 - Edit: Fix switching function to SQL with the edit-foreign plugin (bug #1254)
 - Edit: Hide the value field for functions without arguments (e.g. now, uuid)

@@ -310,7 +310,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		}
 		echo "<div><select name='where[$i][col]'" . on('change', 'selectAddRow') . "><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, null, true) . "</select>";
 		echo html_select("where[$i][op]", array(-1 => "") + adminer()->operators());
-		echo "<input type='search' name='where[$i][val]'" . on('change', 'selectFirstChange') . on('search', 'selectSearchSearch') . "></div>\n";
+		echo "<input type='search' name='where[$i][val]'"
+			. on('change', 'selectFirstChange') . on('keydown', 'selectSearchKeydown') . on('search', 'selectSearchSearch') . "></div>\n";
 		echo "</div></fieldset>\n";
 	}
 
