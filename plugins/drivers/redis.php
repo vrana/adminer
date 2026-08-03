@@ -1,6 +1,5 @@
 <?php
 //! clone
-//! SQL command
 
 namespace Adminer;
 
@@ -8,6 +7,83 @@ add_driver("redis", "Redis");
 
 if (isset($_GET["redis"])) {
 	define('Adminer\DRIVER', "redis");
+
+	/** Split a command to arguments the same way as redis-cli does
+	* @return list<string>|false false for unbalanced quotes
+	*/
+	function parse_command($command) {
+		$escapes = array('n' => "\n", 'r' => "\r", 't' => "\t", 'a' => "\x07", 'b' => "\x08");
+		$length = strlen($command);
+		$args = array();
+		$i = 0;
+		while ($i < $length) {
+			if (preg_match('~\s~', $command[$i])) {
+				$i++;
+				continue;
+			}
+			$arg = '';
+			$quote = '';
+			for (; $i < $length; $i++) {
+				$c = $command[$i];
+				if ($quote == '"') {
+					if ($c == '\\' && $i + 1 < $length) {
+						$c = $command[++$i];
+						if ($c == 'x' && $i + 2 < $length && ctype_xdigit(substr($command, $i + 1, 2))) {
+							$arg .= chr(hexdec(substr($command, $i + 1, 2)));
+							$i += 2;
+						} else {
+							$arg .= idx($escapes, $c, $c);
+						}
+					} elseif ($c == '"') {
+						$quote = '';
+					} else {
+						$arg .= $c;
+					}
+				} elseif ($quote == "'") {
+					if ($c == '\\' && $i + 1 < $length && $command[$i + 1] == "'") {
+						$arg .= $command[++$i];
+					} elseif ($c == "'") {
+						$quote = '';
+					} else {
+						$arg .= $c;
+					}
+				} elseif (preg_match('~\s~', $c)) {
+					break;
+				} elseif ($c == '"' || $c == "'") {
+					$quote = $c;
+				} else {
+					$arg .= $c;
+				}
+			}
+			if ($quote != '') {
+				return false;
+			}
+			$args[] = $arg;
+		}
+		return $args;
+	}
+
+	/** Format arguments as a command in the redis-cli syntax
+	* @param list<string> $args
+	*/
+	function format_command($args) {
+		static $escapes;
+		if (!$escapes) {
+			// bytes >= 0x80 are not escaped to keep UTF-8 keys readable; redis-cli doesn't understand octal escapes
+			$escapes = array("\\" => '\\\\', '"' => '\"', "\n" => '\n', "\r" => '\r', "\t" => '\t', "\x07" => '\a', "\x08" => '\b', "\x7F" => '\x7f');
+			for ($i = 0; $i < 32; $i++) {
+				if (!isset($escapes[chr($i)])) {
+					$escapes[chr($i)] = sprintf('\x%02x', $i);
+				}
+			}
+		}
+		$return = array();
+		foreach ($args as $arg) {
+			$arg = (string) $arg;
+			$return[] = ($arg == '' || preg_match('~[\s"\'\\\\\x00-\x1F\x7F]~', $arg) ? '"' . strtr($arg, $escapes) . '"' : $arg);
+		}
+		return implode(" ", $return);
+	}
 
 	class Db extends SqlDb {
 		public $extension = "socket";
@@ -44,7 +120,26 @@ if (isset($_GET["redis"])) {
 		}
 
 		function query($query, $unbuffered = false) {
-			return false;
+			$this->error = ''; // the error is checked after each command in SQL command
+			$args = parse_command($query);
+			if ($args === false) {
+				$this->error = "Unbalanced quotes";
+				return false;
+			}
+			if (!$args) {
+				$this->error = "Query was empty";
+				return false;
+			}
+			$reply = $this->send($args);
+			if ($reply === false) {
+				return false;
+			}
+			$name = strtoupper($args[0]);
+			$rows = array();
+			foreach ((is_array($reply) ? $reply : array($reply)) as $val) {
+				$rows[] = array($name => $val); // nested arrays are printed as nested tables by select_value()
+			}
+			return new Result($rows);
 		}
 
 		function send($args) {
@@ -105,10 +200,14 @@ if (isset($_GET["redis"])) {
 	}
 
 	class Result {
+		public $num_rows;
 		private $result;
+		private $fields;
 
 		function __construct($result) {
 			$this->result = $result;
+			$this->num_rows = count($result);
+			$this->fields = array_keys(idx($result, 0, array()));
 		}
 
 		function fetch_assoc() {
@@ -116,11 +215,23 @@ if (isset($_GET["redis"])) {
 			next($this->result);
 			return $row;
 		}
+
+		function fetch_row() {
+			$row = $this->fetch_assoc();
+			return ($row ? array_values($row) : false);
+		}
+
+		function fetch_field(): \stdClass {
+			$field = current($this->fields);
+			next($this->fields);
+			return (object) array('name' => $field, 'type' => 15, 'charsetnr' => 0);
+		}
 	}
 
 	class Driver extends SqlDriver {
 		static $jush = "redis";
 
+		public $delimiter = "\n"; // commands are separated by a newline as in redis-cli
 		public $operators = array("*");
 
 		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
@@ -132,18 +243,54 @@ if (isset($_GET["redis"])) {
 					$args[] = "MATCH";
 					$args[] = $this->where($where[0])[0];
 				}
-				list($_GET["next"], $args) = $this->conn->send($args);
+				$scan = $this->send($args, $print);
+				if (!$scan) {
+					return false;
+				}
+				list($_GET["next"], $args) = $scan;
 			} else {
-				$args = $this->conn->send(array("KEYS", ($where ? $this->where($where[0])[0] : "*")));
+				$args = $this->send(array("KEYS", ($where ? $this->where($where[0])[0] : "*")), $print);
+				if ($args === false) {
+					return false;
+				}
 			}
 			$return = array();
 			if ($args) {
-				array_unshift($args, "MGET");
-				foreach ($this->conn->send($args) as $i => $val) {
+				array_unshift($args, "MGET"); // MGET is not printed, it is an implementation detail of getting the values
+				$values = $this->conn->send($args);
+				if ($values === false) {
+					return false;
+				}
+				foreach ($values as $i => $val) {
 					$return[] = array('key' => $args[$i + 1], 'value' => $val);
 				}
 			}
 			return new Result($return);
+		}
+
+		/** Send a command and optionally print it
+		* @param list<string|int> $args
+		* @return mixed
+		*/
+		private function send($args, $print) {
+			$start = microtime(true);
+			$return = $this->conn->send($args);
+			if ($print) {
+				echo adminer()->selectQuery(format_command($args), $start, $return === false);
+			}
+			return $return;
+		}
+
+		function hasCStyleEscapes(): bool {
+			return true;
+		}
+
+		function lineComment(): string {
+			return '[^\s\S]'; // Redis has no comments
+		}
+
+		function allFields(): array {
+			return array(); // the parent implementation would send a SQL query
 		}
 
 		function insert($table, $set) {
@@ -246,6 +393,10 @@ if (isset($_GET["redis"])) {
 		return h(connection()->error);
 	}
 
+	// SELECT is a Redis command so this is called from SQL command
+	function explain($connection, $query) {
+	}
+
 	function is_view($table_status) {
 		return false;
 	}
@@ -263,6 +414,6 @@ if (isset($_GET["redis"])) {
 	}
 
 	function support($feature) {
-		return false;
+		return $feature == "sql";
 	}
 }
