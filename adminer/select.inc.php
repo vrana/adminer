@@ -268,6 +268,15 @@ if (!$columns && support("table")) {
 	adminer()->selectActionPrint($indexes);
 	echo "</form>\n";
 
+	foreach ((array) $_GET["where"] as $val) {
+		// the SQL operator passes the value to the database unescaped, GET is not protected by the CSRF token
+		if ($val["op"] == "SQL" && !in_array($_SERVER["HTTP_SEC_FETCH_SITE"], array("", "same-origin"))) {
+			echo "<p class='error'>" . lang('Invalid CSRF token. Send the form again.') . ' ' . lang('If you did not send this request from Adminer then close this page.') . "\n";
+			page_footer();
+			exit;
+		}
+	}
+
 	$page = $_GET["page"];
 	$found_rows = null;
 	if ($page == "last") {
