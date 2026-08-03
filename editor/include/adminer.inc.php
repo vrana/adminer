@@ -303,15 +303,14 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			if (($val["col"] == "" || $columns[$val["col"]]) && "$val[col]$val[val]" != "") {
 				echo "<div><select name='where[$i][col]'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
 				echo html_select("where[$i][op]", array(-1 => "") + adminer()->operators(), $val["op"]);
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'" . on('keydown', 'selectSearchKeydown') . ">"
-					. script("qsl('input').onsearch = selectSearchSearch;", "") . "</div>\n"; // search is not delegated
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'"
+					. on('keydown', 'selectSearchKeydown') . on('search', 'selectSearchSearch') . "></div>\n";
 				$i++;
 			}
 		}
 		echo "<div><select name='where[$i][col]'" . on('change', 'selectAddRow') . "><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, null, true) . "</select>";
 		echo html_select("where[$i][op]", array(-1 => "") + adminer()->operators());
-		echo "<input type='search' name='where[$i][val]'" . on('change', 'selectFirstChange') . "></div>";
-		echo script("qsl('input').onsearch = selectSearchSearch;");
+		echo "<input type='search' name='where[$i][val]'" . on('change', 'selectFirstChange') . on('search', 'selectSearchSearch') . "></div>\n";
 		echo "</div></fieldset>\n";
 	}
 

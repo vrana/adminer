@@ -392,13 +392,13 @@ function selectFirstChange() {
 	fire(this.parentNode.firstChild, 'change');
 }
 
-/** Prevent onsearch handler on Enter
+/** Prevent the search handler on Enter
 * @param {KeyboardEvent} event
 * @this HTMLInputElement
 */
 function selectSearchKeydown(event) {
 	if (event.key == 'Enter') {
-		this.onsearch = () => { };
+		this.removeAttribute('data-onsearch');
 	}
 }
 
@@ -935,4 +935,5 @@ mixin(document, {
 	onmousedown: delegateEvent,
 	onmouseout: delegateEvent,
 	onmouseover: delegateEvent,
+	onsearch: delegateEvent, // WebKit only, it bubbles
 });

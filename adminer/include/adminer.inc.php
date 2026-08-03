@@ -508,8 +508,7 @@ class Adminer {
 				);
 				echo html_select("where[$i][op]", adminer()->operators(), $val["op"], on('change', 'selectFirstChange'));
 				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'"
-					. on('input', 'selectFirstChange') . on('keydown', 'selectSearchKeydown') . ">";
-				echo script("qsl('input').onsearch = selectSearchSearch;", ""); // search is not delegated
+					. on('input', 'selectFirstChange') . on('keydown', 'selectSearchKeydown') . on('search', 'selectSearchSearch') . ">";
 				echo "</div>\n";
 			}
 		}
