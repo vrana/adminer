@@ -46,6 +46,7 @@
 - MS SQL: Hide table actions and row editing in the sys schema
 - Elasticsearch, ClickHouse: Use default port
 - ClickHouse: Fix nullable columns, fix default values, show server version
+- ClickHouse: Support schema management, introspection and administration
 - MongoDB: Authenticate against the database used in login
 - MongoDB: Do not treat the string NULL as the NULL value
 - MongoDB: Show the primary key column when altering indexes (regression from 5.4.0)
