@@ -303,8 +303,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			if (($val["col"] == "" || $columns[$val["col"]]) && "$val[col]$val[val]" != "") {
 				echo "<div><select name='where[$i][col]'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
 				echo html_select("where[$i][op]", array(-1 => "") + adminer()->operators(), $val["op"]);
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'>"
-					. script("mixin(qsl('input'), {onkeydown: selectSearchKeydown, onsearch: selectSearchSearch});", "") . "</div>\n";
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'" . on('keydown', 'selectSearchKeydown') . ">"
+					. script("qsl('input').onsearch = selectSearchSearch;", "") . "</div>\n"; // search is not delegated
 				$i++;
 			}
 		}

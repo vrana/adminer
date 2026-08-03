@@ -455,7 +455,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 	if (!$fields) {
 		echo "<p class='error'>" . lang('You have no privileges to update this table.') . "\n";
 	} else {
-		echo "<table class='layout nowrap'>" . script("qsl('table').onkeydown = editingKeydown;");
+		echo "<table class='layout nowrap'" . on('keydown', 'editingKeydown') . ">\n";
 		$autofocus = !$_POST;
 		foreach ($fields as $name => $field) {
 			echo "<tr" . ($where_columns[$name] ? on('change', 'whereChange') : "") . "><th>" . adminer()->fieldName($field);

@@ -71,8 +71,7 @@ if (adminer()->homepage()) {
 			if (support("table")) {
 				echo "<fieldset><legend>" . lang('Search data in tables') . " <span id='selected2'></span></legend><div>";
 				echo html_select("op", adminer()->operators(), idx($_POST, "op", JUSH == "elastic" ? "should" : "LIKE %%"));
-				echo " <input type='search' name='query' value='" . h($_POST["query"]) . "'>";
-				echo script("qsl('input').onkeydown = event => bodyKeydown(event, 'search');", "");
+				echo " <input type='search' name='query' value='" . h($_POST["query"]) . "'" . on('keydown', 'submitKeydown', 'search') . ">";
 				echo " <input type='submit' name='search' value='" . lang('Search') . "'>\n";
 				echo "</div></fieldset>\n";
 				if (!$error && $_POST["search"] && $_POST["query"] != "") {

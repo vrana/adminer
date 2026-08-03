@@ -507,8 +507,9 @@ class Adminer {
 					"(" . lang('anywhere') . ")"
 				);
 				echo html_select("where[$i][op]", adminer()->operators(), $val["op"], on('change', 'selectFirstChange'));
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'" . on('input', 'selectFirstChange') . ">";
-				echo script("mixin(qsl('input'), {onkeydown: selectSearchKeydown, onsearch: selectSearchSearch});", ""); // keydown and search are not delegated
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'"
+					. on('input', 'selectFirstChange') . on('keydown', 'selectSearchKeydown') . ">";
+				echo script("qsl('input').onsearch = selectSearchSearch;", ""); // search is not delegated
 				echo "</div>\n";
 			}
 		}

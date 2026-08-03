@@ -340,8 +340,8 @@ if (!$columns && support("table")) {
 			$backward_keys = adminer()->backwardKeys($TABLE, $table_name);
 
 			echo "<div class='scrollable'>";
-			echo "<table id='table' class='nowrap checkable odds'" . on('click', 'tableClick') . on('dblclick', 'tableClick') . ">";
-			echo script("qs('#table').onkeydown = editingKeydown;"); // keydown is not delegated
+			echo "<table id='table' class='nowrap checkable odds'"
+				. on('click', 'tableClick') . on('dblclick', 'tableClick') . on('keydown', 'editingKeydown') . ">\n";
 			echo "<thead><tr>" . (!$group && $select
 				? ""
 				: "<td class='hover check'><input type='checkbox' id='all-page' class='jsonly' title='" . lang('All rows on this page') . "'" . on('click', 'formCheck', '^check') . ">");

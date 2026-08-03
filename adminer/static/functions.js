@@ -445,16 +445,12 @@ function isCtrl(event) {
 
 
 
-/** Send form by Ctrl+Enter on <select> and <textarea>, close the menu by Esc
+/** Send form by Ctrl+Enter on <select>, <textarea> and <input>
+* @param {string} button name of the submit button to click, empty for the implicit one
 * @param {KeyboardEvent} event
-* @param {string} [button]
-* @return {boolean}
+* @return {boolean} false if the form was sent
 */
-function bodyKeydown(event, button) {
-	event.stopPropagation();
-	if (event.key == 'Escape' && !event.shiftKey && !event.altKey && !isCtrl(event)) {
-		menuClose();
-	}
+function submitKeydown(button, event) {
 	let target = event.target;
 	if (target.jushTextarea) {
 		target = target.jushTextarea;
@@ -470,7 +466,19 @@ function bodyKeydown(event, button) {
 		target.focus();
 		return false;
 	}
-	return true;
+}
+
+/** Close the menu by Esc, send form by Ctrl+Enter
+* @param {KeyboardEvent} event
+* @return {boolean}
+*/
+function bodyKeydown(event) {
+	if (event.key == 'Escape' && !event.shiftKey && !event.altKey && !isCtrl(event)) {
+		menuClose();
+	}
+	if (!delegateEvent(event)) { // a delegated handler sends the form by its own button
+		return submitKeydown('', event);
+	}
 }
 
 /** Toggle visibility by .toggle links, close the menu, open form to a new window on Ctrl+click or Shift+click
@@ -515,6 +523,7 @@ function bodyInput(event) {
 
 /** Call handlers registered by data-on<event> attributes between the event target and the <html> element
 * @param {Event} event
+* @return {boolean} true if a handler has handled the event, never false - it is registered by a property, which would preventDefault()
 */
 function delegateEvent(event) {
 	const attr = 'data-on' + event.type;
@@ -538,7 +547,7 @@ function delegateEvent(event) {
 				event.preventDefault();
 			}
 			if (result !== undefined) {
-				break; // the handler handled the event, don't call the handlers on ancestor elements
+				return true; // the handler handled the event, don't call the handlers on ancestor elements
 			}
 		} else {
 			console.error('Invalid handler in ' + attr + "='" + value + "'", el); // not lang() - it reports a bug in Adminer or in a plugin, the element would do nothing at all otherwise
@@ -575,9 +584,8 @@ function editingKeydown(event) {
 		return false;
 	}
 	if (event.shiftKey) {
-		return bodyKeydown(event, 'insert');
+		return submitKeydown('insert', event);
 	}
-	return true;
 }
 
 /** Change the value field to a plain <input> for the SQL function and disable maxlength for functions
@@ -923,7 +931,7 @@ mixin(document, {
 	onclick: bodyClick, // calls delegateEvent() itself
 	ondblclick: delegateEvent,
 	oninput: bodyInput, // calls delegateEvent() itself
-	onkeydown: bodyKeydown,
+	onkeydown: bodyKeydown, // calls delegateEvent() itself
 	onmousedown: delegateEvent,
 	onmouseout: delegateEvent,
 	onmouseover: delegateEvent,
