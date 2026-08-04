@@ -9,11 +9,16 @@
 */
 class AdminerRemoteColor extends Adminer\Plugin {
 	/** @var list<string> */ private $localHosts = array('', 'localhost', '::1');
+	/** @var string */ private $color;
 	/** @var ?bool */ private $remote;
 
-	/** @param list<string> $localHosts hosts to also consider local, e.g. a development database or a Docker gateway */
-	function __construct(array $localHosts = array()) {
+	/**
+	* @param list<string> $localHosts hosts to also consider local, e.g. a development database or a Docker gateway
+	* @param string $color
+	*/
+	function __construct(array $localHosts = array(), $color = '#dd1818') {
 		$this->localHosts = array_merge($this->localHosts, array_map('strtolower', $localHosts));
+		$this->color = $color;
 	}
 
 	function bodyClass() {
@@ -26,7 +31,7 @@ class AdminerRemoteColor extends Adminer\Plugin {
 		if ($this->isRemote()) {
 			// #breadcrumb and #menuopen are positioned over the body border
 			echo "<style>
-body.remote, body.remote #breadcrumb { border-top: 5px solid #dd1818; }
+body.remote, body.remote #breadcrumb { border-top: 5px solid $this->color; }
 body.remote #menuopen { margin-top: 5px; }
 </style>
 ";
