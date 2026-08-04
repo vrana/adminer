@@ -364,7 +364,12 @@ function where_check(string $val, array $fields = array()): string {
 * @param string $column column identifier
 */
 function where_link(int $i, string $column, ?string $value, string $operator = "="): string {
-	return "&where[$i][col]=" . url_escape($column) . "&where[$i][op]=" . url_escape(($value !== null ? $operator : "IS NULL")) . "&where[$i][val]=" . url_escape($value);
+	$op = ($value !== null ? $operator : "IS NULL");
+	return "&where[$i][col]=" . url_escape($column)
+		// the first operator doesn't have to be sent, selectSearchProcess() uses it for a missing one
+		. ($op != first(adminer()->operators()) ? "&where[$i][op]=" . url_escape($op) : "")
+		. "&where[$i][val]=" . url_escape($value)
+	;
 }
 
 /** Get select clause for convertible fields
