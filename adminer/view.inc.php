@@ -12,7 +12,7 @@ if (JUSH == "pgsql" && $TABLE != "") {
 if ($_POST && !$error) {
 	$name = trim($row["name"]);
 	$as = " AS\n$row[select]";
-	$location = ME . "table=" . urlencode($name);
+	$location = ME . "table=" . url_escape($name);
 	$message = lang('View has been altered.');
 
 	$type = ($_POST["materialized"] ? "MATERIALIZED VIEW" : "VIEW");

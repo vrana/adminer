@@ -275,7 +275,7 @@ class Adminer {
 			$links["edit"] = lang('New item');
 		}
 		foreach ($links as $key => $val) {
-			echo " <a href='" . h(ME) . "$key=" . urlencode($name) . ($key == "edit" ? $set : "") . "'" . bold(isset($_GET[$key])) . ">$val</a>";
+			echo " <a href='" . h(ME) . "$key=" . url_escape($name) . ($key == "edit" ? $set : "") . "'" . bold(isset($_GET[$key])) . ">$val</a>";
 		}
 		echo doc_link(array(JUSH => driver()->tableHelp($name, $is_view)), "?");
 		echo "\n";
@@ -315,7 +315,7 @@ class Adminer {
 			;
 		}
 		return "<p><code class='jush-" . JUSH . "'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>(" . format_time($start) . ")</span>"
-			. (support("sql") ? " <a href='" . h(ME) . "sql=" . urlencode($query) . "' class='hover'>" . lang('Edit') . "</a>" : "")
+			. (support("sql") ? " <a href='" . h(ME) . "sql=" . url_escape($query) . "' class='hover'>" . lang('Edit') . "</a>" : "")
 			. $return
 		;
 	}
@@ -403,7 +403,7 @@ class Adminer {
 			$collation = h($field["collation"]);
 			echo "<td><span title='$collation'>"
 				. (in_array($type, (array) $structured_types[lang('User types')])
-					? "<a href='" . h(ME . 'type=' . urlencode($type)) . "'>$type</a>"
+					? "<a href='" . h(ME . 'type=' . url_escape($type)) . "'>$type</a>"
 					: $type . ($collation && isset($tableStatus["Collation"]) && $collation != $tableStatus["Collation"] ? " $collation" : ""))
 				. "</span>"
 			;
@@ -751,7 +751,7 @@ class Adminer {
 			. " $return<div id='$sql_id' class='hidden'><pre><code class='jush-" . JUSH . "'>" . shorten_utf8($query, 1e4) . "</code></pre>"
 			. ($time ? " <span class='time'>($time)</span>" : '')
 			. (support("sql")
-				? '<p><a href="' . h(str_replace("db=" . urlencode(DB), "db=" . urlencode($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a>'
+				? '<p><a href="' . h(str_replace("db=" . url_escape(DB), "db=" . url_escape($_GET["db"]), ME) . 'sql=&history=' . (count($history[$_GET["db"]]) - 1)) . '">' . lang('Edit') . '</a>'
 				: '')
 			. '</div>'
 		;
@@ -1101,7 +1101,7 @@ class Adminer {
 					$actions['sql'] = "<a href='" . h(ME) . "sql='" . bold(isset($_GET["sql"]) && !isset($_GET["import"])) . ">" . lang('SQL command') . "</a>";
 					$actions['import'] = "<a href='" . h(ME) . "import='" . bold(isset($_GET["import"])) . ">" . lang('Import') . "</a>";
 				}
-				$actions['dump'] = "<a href='" . h(ME) . "dump=" . urlencode(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'"
+				$actions['dump'] = "<a href='" . h(ME) . "dump=" . url_escape(isset($_GET["table"]) ? $_GET["table"] : $_GET["select"]) . "' id='dump'"
 					. bold(isset($_GET["dump"])) . ">" . lang('Export') . "</a>";
 			}
 			$in_db = $_GET["ns"] !== "" && !$missing && DB != "";
@@ -1144,7 +1144,7 @@ class Adminer {
 				$sql_pages = array("sql", "check", "event", "procedure", "trigger", "view", "type", "table", "processlist"); // ?function= sets ?procedure=
 				if (support('routine') && array_intersect_key($_GET, array_flip($sql_pages))) {
 					foreach (routines() as $row) {
-						json_row(js_escape(ME) . 'function=' . urlencode($row["SPECIFIC_NAME"]) . '&name=$&', '/\b' . js_escape_re($row["ROUTINE_NAME"]) . '(?=["`\]]?\()/g', false);
+						json_row(js_escape(ME) . 'function=' . url_escape($row["SPECIFIC_NAME"]) . '&name=$&', '/\b' . js_escape_re($row["ROUTINE_NAME"]) . '(?=["`\]]?\()/g', false);
 					}
 				}
 				json_row('');
@@ -1215,12 +1215,12 @@ class Adminer {
 			$table = "$table"; // do not highlight "0" as active everywhere
 			$name = adminer()->tableName($status);
 			if ($name != "" && !$status["partition"]) {
-				echo '<li><a href="' . h(ME) . 'select=' . urlencode($table) . '"'
+				echo '<li><a href="' . h(ME) . 'select=' . url_escape($table) . '"'
 					. bold($_GET["select"] == $table || $_GET["edit"] == $table, "select hover")
 					. " title='" . lang('Select data') . "'>" . lang('select') . "</a> "
 				;
 				echo (support("table") || support("indexes")
-					? '<a href="' . h(ME) . 'table=' . urlencode($table) . '"'
+					? '<a href="' . h(ME) . 'table=' . url_escape($table) . '"'
 						. bold(
 							in_array($table, array($_GET["table"], $_GET["create"], $_GET["indexes"], $_GET["foreign"], $_GET["trigger"], $_GET["check"], $_GET["view"])),
 							(is_view($status) ? "view" : "structure")

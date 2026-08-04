@@ -156,9 +156,10 @@ if (!$error && $_POST) {
 									}
 
 								} else {
+									$link = ME . "sql=" . url_escape(trim($q));
 									$time = " <span class='time'>(" . format_time($start) . ")</span>"
-										// 1000 - maximum length of encoded URL in IE is 2083 characters
-										. (strlen($q) < 1000 ? " <a href='" . h(ME) . "sql=" . urlencode(trim($q)) . "'>" . lang('Edit') . "</a>" : "")
+										// 1900 - the same limit as in sqlSubmit() lowered by the expected length of the origin
+										. (strlen($link) < 1900 ? " <a href='" . h($link) . "'>" . lang('Edit') . "</a>" : "")
 									;
 									$affected = connection()->affected_rows; // getting warnings overwrites this
 									$warnings = ($_POST["only_errors"] ? "" : driver()->warnings());

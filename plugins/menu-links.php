@@ -58,7 +58,7 @@ li:hover .hover, p:hover .hover, div:hover > .hover, .hover.active, tr:hover td.
 			if ($name != "" && !$status["partition"]) {
 				echo '<li>';
 				if ($both) {
-					echo '<a href="' . Adminer\h(Adminer\ME) . 'select=' . urlencode($table) . '"'
+					echo '<a href="' . Adminer\h(Adminer\ME) . 'select=' . Adminer\url_escape($table) . '"'
 						. Adminer\bold($_GET["select"] == $table || $_GET["edit"] == $table, "select" . ($menu ? " hover" : ""))
 						. " title='$titles[select]'>" . $this->lang('select') . "</a> "
 					;
@@ -75,7 +75,7 @@ li:hover .hover, p:hover .hover, div:hover > .hover, .hover.active, tr:hover td.
 				));
 				$class = ($link == "select" ? "select" : (Adminer\is_view($status) ? "view" : "structure"));
 				echo (Adminer\support("table") || Adminer\support("indexes") || $menu
-					? '<a href="' . Adminer\h(Adminer\ME) . "$link=" . urlencode($table) . '"'
+					? '<a href="' . Adminer\h(Adminer\ME) . "$link=" . Adminer\url_escape($table) . '"'
 						. Adminer\bold(in_array($table, $actives), $class)
 						. " title='$titles[$link]'>$name</a>"
 					: "<span>$name</span>"

@@ -42,7 +42,7 @@ export default [
 			globals: {
 				...globals.browser,
 				jush: false, jushLinks: false,
-				offlineMessage: false, thousandsSeparator: false, // include/design.inc.php
+				offlineMessage: false, thousandsSeparator: false, urlSeparators: false, // include/design.inc.php
 				indexColumns: false, // select.inc.php
 				tablePos: false, em: false, // schema.inc.php
 			}

@@ -12,7 +12,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 		// create or rename database
 		if (DB != "") {
 			$_GET["db"] = $name;
-			queries_redirect(preg_replace('~\bdb=[^&]*&~', '', ME) . "db=" . urlencode($name), lang('Database has been renamed.'), rename_database($name, $row["collation"]));
+			queries_redirect(preg_replace('~\bdb=[^&]*&~', '', ME) . "db=" . url_escape($name), lang('Database has been renamed.'), rename_database($name, $row["collation"]));
 		} else {
 			$databases = explode("\n", str_replace("\r", "", $name));
 			$success = true;
@@ -27,7 +27,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 			}
 			restart_session();
 			set_session("dbs", null);
-			queries_redirect(ME . "db=" . urlencode($last), lang('Database has been created.'), $success);
+			queries_redirect(ME . "db=" . url_escape($last), lang('Database has been created.'), $success);
 		}
 	} else {
 		// alter database

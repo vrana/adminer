@@ -177,7 +177,7 @@ function js_escape_re(string $string): string {
 function pagination(int $page, ?int $current): string {
 	return " " . ($page == $current
 		? ($page ? "<b>" . ($page + 1) . "</b>" : $page + 1) // the first page is not highlighted
-		: '<a href="' . h(remove_from_uri("page|next") . ($page ? "&page=$page" . ($_GET["next"] ? "&next=" . urlencode($_GET["next"]) : "") : "")) . '">' . ($page + 1) . "</a>"
+		: '<a href="' . h(remove_from_uri("page|next") . ($page ? "&page=$page" . ($_GET["next"] ? "&next=" . url_escape($_GET["next"]) : "") : "")) . '">' . ($page + 1) . "</a>"
 	);
 }
 
@@ -399,9 +399,9 @@ function search_tables(): void {
 		if (isset($table_status["Engine"]) && $name != "" && (!$_POST["tables"] || in_array($table, $_POST["tables"]))) {
 			$result = connection()->query("SELECT" . limit("1 FROM " . table($table), " WHERE " . implode(" AND ", adminer()->selectSearchProcess(fields($table), array())), 1));
 			if (!$result || $result->fetch_row()) {
-				$print = "<a href='" . h(ME . "select=" . urlencode($table)
-					. "&where[0][op]=" . urlencode($_GET["where"][0]["op"])
-					. "&where[0][val]=" . urlencode($_GET["where"][0]["val"])) . "'>$name</a>";
+				$print = "<a href='" . h(ME . "select=" . url_escape($table)
+					. "&where[0][op]=" . url_escape($_GET["where"][0]["op"])
+					. "&where[0][val]=" . url_escape($_GET["where"][0]["val"])) . "'>$name</a>";
 				echo "$sep<li>" . ($result ? $print : "<p class='error'>$print: " . error()) . "\n";
 				$sep = "";
 			}

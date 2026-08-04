@@ -82,9 +82,9 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 		$alter[] = array($existing["type"], $name, "DROP");
 	}
 	if (!$alter) {
-		redirect(ME . "table=" . urlencode($TABLE));
+		redirect(ME . "table=" . url_escape($TABLE));
 	}
-	queries_redirect(ME . "table=" . urlencode($TABLE), lang('Indexes have been altered.'), alter_indexes($TABLE, $alter));
+	queries_redirect(ME . "table=" . url_escape($TABLE), lang('Indexes have been altered.'), alter_indexes($TABLE, $alter));
 }
 
 page_header(lang('Indexes'), $error, array("table" => $TABLE), h($TABLE));

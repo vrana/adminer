@@ -12,6 +12,8 @@
 - Fix the copy to clipboard icon not displayed on Apple systems
 - Close the menu on small screens by Esc
 - Drop compatibility with IIS 5 and with IIS 7.0 before its 2008 FastCGI update
+- Shorten URLs by escaping only the necessary characters, e.g. `where[0][col]` instead of `where%5B0%5D%5Bcol%5D`
+- Send GET forms by JavaScript to shorten their URLs too
 - Tables overview: speed up, show totals in SQLite, real size in MS SQL, Oracle
 - Table structure: Shorten long checks
 - SQL command: Show column type in result table header

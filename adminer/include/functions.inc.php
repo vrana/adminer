@@ -89,9 +89,28 @@ function remove_slashes(array $values, bool $filter = false): array {
 
 /** Escape or unescape string to use inside form [] */
 function bracket_escape(string $idf, bool $back = false): string {
-	// escape brackets inside name="x[]"
-	static $trans = array(':' => ':1', ']' => ':2', '[' => ':3', '"' => ':4');
+	// escape brackets inside name="x[]"; = would be treated as the end of the parameter name
+	static $trans = array(':' => ':1', ']' => ':2', '[' => ':3', '"' => ':4', '=' => ':5');
 	return strtr($idf, ($back ? array_flip($trans) : $trans));
+}
+
+/** Escape string to use in a query string */
+function url_escape(?string $string): string {
+	// unlike urlencode(), escapes only the characters misinterpreted by PHP or by the URL syntax and those rewritten by the browser
+	/** @var string[] */ static $trans = array();
+	if (!$trans) {
+		$trans = array(' ' => '+');
+		// "'<> are rewritten by the browser, #%&+=? are significant in the URL or in PHP
+		foreach (str_split("\"'<>#%&+=?" . ini_get("arg_separator.input")) as $char) {
+			$trans[$char] = sprintf('%%%02X', ord($char));
+		}
+		for ($i = 0; $i < 256; $i++) {
+			if ($i < 32 || $i > 126) { // control characters are removed by the browser, the rest is not ASCII
+				$trans[chr($i)] = sprintf('%%%02X', $i);
+			}
+		}
+	}
+	return strtr((string) $string, $trans);
 }
 
 /** Check if connection has at least the given version
@@ -345,7 +364,7 @@ function where_check(string $val, array $fields = array()): string {
 * @param string $column column identifier
 */
 function where_link(int $i, string $column, ?string $value, string $operator = "="): string {
-	return "&where%5B$i%5D%5Bcol%5D=" . urlencode($column) . "&where%5B$i%5D%5Bop%5D=" . urlencode(($value !== null ? $operator : "IS NULL")) . "&where%5B$i%5D%5Bval%5D=" . urlencode($value);
+	return "&where[$i][col]=" . url_escape($column) . "&where[$i][op]=" . url_escape(($value !== null ? $operator : "IS NULL")) . "&where[$i][val]=" . url_escape($value);
 }
 
 /** Get select clause for convertible fields
@@ -471,10 +490,10 @@ function auth_url(string $vendor, ?string $server, string $username, ?string $db
 	preg_match('~([^?]*)\??(.*)~', $uri, $match);
 	return "$match[1]?"
 		. (sid() ? SID . "&" : "")
-		. ($_GET["ext"] ? "ext=" . urlencode($_GET["ext"]) . "&" : "")
-		. ($vendor != "server" || $server != "" ? urlencode($vendor) . "=" . urlencode($server) . "&" : "")
-		. "username=" . urlencode($username)
-		. ($db != "" ? "&db=" . urlencode($db) : "")
+		. ($_GET["ext"] ? "ext=" . url_escape($_GET["ext"]) . "&" : "")
+		. ($vendor != "server" || $server != "" ? url_escape($vendor) . "=" . url_escape($server) . "&" : "")
+		. "username=" . url_escape($username)
+		. ($db != "" ? "&db=" . url_escape($db) : "")
 		. ($match[2] ? "&$match[2]" : "")
 	;
 }
@@ -571,7 +590,10 @@ function format_time(float $start): string {
 
 /** Get relative REQUEST_URI */
 function relative_uri(): string {
-	return str_replace(":", "%3a", preg_replace('~^[^?]*/([^?]*)~', '\1', $_SERVER["REQUEST_URI"]));
+	return preg_replace_callback('~^[^?]*~', function ($match) {
+		// ':' in the filename would make the relative URI look like an absolute one; not in the query string which may contain it verbatim
+		return str_replace(":", "%3A", $match[0]);
+	}, preg_replace('~^[^?]*/([^?]*)~', '\1', $_SERVER["REQUEST_URI"]));
 }
 
 /** Remove parameter from query string */

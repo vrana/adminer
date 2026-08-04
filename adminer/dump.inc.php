@@ -263,7 +263,7 @@ if ($_GET["ns"] === "") {
 $first = true;
 foreach ($prefixes as $key => $val) {
 	if ($key != "" && $val > 1) {
-		echo ($first ? "<p>" : " ") . "<a href='" . h(ME) . "dump=" . urlencode("$key%") . "'>" . h($key) . "</a>";
+		echo ($first ? "<p>" : " ") . "<a href='" . h(ME) . "dump=" . url_escape("$key%") . "'>" . h($key) . "</a>";
 		$first = false;
 	}
 }

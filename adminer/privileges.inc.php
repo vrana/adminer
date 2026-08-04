@@ -22,7 +22,7 @@ echo "<thead><tr><th>" . lang('Username') . "<th>" . lang('Server') . "<td class
 while ($row = $result->fetch_assoc()) {
 	echo '<tr><td>' . h($row["User"]);
 	echo "<td>" . h($row["Host"]);
-	echo '<td class="hover"><a href="' . h(ME . 'user=' . urlencode($row["User"]) . '&host=' . urlencode($row["Host"])) . '">' . lang('Edit') . "</a>\n";
+	echo '<td class="hover"><a href="' . h(ME . 'user=' . url_escape($row["User"]) . '&host=' . url_escape($row["Host"])) . '">' . lang('Edit') . "</a>\n";
 }
 
 if (!$grant || DB != "") {

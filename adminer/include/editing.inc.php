@@ -69,15 +69,15 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 			if (isset($links[$key]) && !$columns[$links[$key]]) {
 				if ($orgtables && JUSH == "sql") { // MySQL EXPLAIN
 					$table = $row[array_search("table=", $links)];
-					$link = ME . $links[$key] . urlencode($orgtables[$table] != "" ? $orgtables[$table] : $table);
+					$link = ME . $links[$key] . url_escape($orgtables[$table] != "" ? $orgtables[$table] : $table);
 				} else {
-					$link = ME . "edit=" . urlencode($links[$key]);
+					$link = ME . "edit=" . url_escape($links[$key]);
 					foreach ($indexes[$links[$key]] as $col => $j) {
 						if ($row[$j] === null) {
 							$link = "";
 							break;
 						}
-						$link .= "&where" . urlencode("[" . bracket_escape($col) . "]") . "=" . urlencode($row[$j]);
+						$link .= "&where[" . url_escape(bracket_escape($col)) . "]=" . url_escape($row[$j]);
 					}
 				}
 			}

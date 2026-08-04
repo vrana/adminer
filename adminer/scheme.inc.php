@@ -9,7 +9,7 @@ if ($_POST && !$error) {
 		query_redirect("DROP SCHEMA " . idf_escape($_GET["ns"]), $link, lang('Schema has been dropped.'));
 	} else {
 		$name = trim($row["name"]);
-		$link .= urlencode($name);
+		$link .= url_escape($name);
 		if ($_GET["ns"] == "") {
 			query_redirect("CREATE SCHEMA " . idf_escape($name), $link, lang('Schema has been created.'));
 		} elseif ($_GET["ns"] != $name) {

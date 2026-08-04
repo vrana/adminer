@@ -107,7 +107,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 		}
 		$name = trim($row["name"]);
 
-		$location = ME . (support("table") ? "table=" : "select=") . urlencode($name);
+		$location = ME . (support("table") ? "table=" : "select=") . url_escape($name);
 		$result = alter_table(
 			$TABLE,
 			$name,

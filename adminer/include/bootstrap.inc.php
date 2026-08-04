@@ -39,6 +39,7 @@ if (preg_match('~^/[-\w.]~', $_SERVER["HTTP_X_FORWARDED_PREFIX"])) {
 define('Adminer\HTTPS', ($_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off")) || ini_bool("session.cookie_secure"));
 
 ini_set("session.use_trans_sid", '0'); // protect links in export
+ini_set("arg_separator.output", "&"); // some hosts set it to "&amp;" which would break http_build_query()
 if (!defined("SID")) {
 	session_cache_limiter(""); // to allow restarting session
 	session_name("adminer_sid"); // use specific session name to get own namespace
@@ -89,10 +90,10 @@ define(
 	'Adminer\ME',
 	preg_replace('~\?.*~', '', relative_uri()) . '?'
 		. (sid() ? SID . '&' : '')
-		. ($_GET["ext"] ? "ext=" . urlencode($_GET["ext"]) . '&' : '')
-		. (SERVER !== null ? DRIVER . "=" . urlencode(SERVER) . '&' : '')
-		. (isset($_GET["username"]) ? "username=" . urlencode($_GET["username"]) . '&' : '')
-		. (DB != "" ? 'db=' . urlencode(DB) . '&' . (isset($_GET["ns"]) ? "ns=" . urlencode($_GET["ns"]) . "&" : "") : '')
+		. ($_GET["ext"] ? "ext=" . url_escape($_GET["ext"]) . '&' : '')
+		. (SERVER !== null ? DRIVER . "=" . url_escape(SERVER) . '&' : '')
+		. (isset($_GET["username"]) ? "username=" . url_escape($_GET["username"]) . '&' : '')
+		. (DB != "" ? 'db=' . url_escape(DB) . '&' . (isset($_GET["ns"]) ? "ns=" . url_escape($_GET["ns"]) . "&" : "") : '')
 );
 
 include "../adminer/include/design.inc.php";

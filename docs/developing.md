@@ -31,7 +31,7 @@ The PHP session is stopped before rendering begins.
 This prevents modifying `$_SESSION` later in the code but allows multiple Adminer pages to be opened simultaneously, even if one has a long-running query.
 
 Database identifiers, such as column names, can be arbitrary, so they are never transferred in URLs or POST requests directly.
-They are always wrapped (e.g., `fields[col]`), and any `[` in the name is escaped.
+They are always wrapped (e.g., `fields[col]`), and `[`, `]` and `=` in the name are escaped by `bracket_escape()`.
 
 Adminer often checks for empty strings using `$table != ""` instead of `!$table`, since table names can be `0`, and `!$table` would fail in such cases.
 
@@ -212,6 +212,25 @@ Adminer prints data immediately to display partial results when a query is slow.
 When constructing SQL queries, use `q()` for strings and `idf_escape()` for identifiers.
 Adminer requires full control when constructing queries, making the use of additional helpers challenging.
 
+Query strings are escaped by `url_escape()`, which is deliberately much weaker than `urlencode()`.
+Only `%`, `&`, `+`, `=`, `?` and `#` are significant in a query string.
+`"`, `'`, `<`, `>`, space and everything outside printable ASCII are rewritten by the browser anyway, so escaping them keeps the generated URL byte-identical to the one the browser sends back - `remove_from_uri()` matches URLs as text and `redirect()` keys the flash messages by them.
+Tabs and newlines must be escaped for a different reason: the browser removes them from an URL instead of escaping them.
+Everything else stays verbatim, which makes URLs both shorter and readable: `where[0][col]=name` instead of `where%5B0%5D%5Bcol%5D=name`.
+A space becomes `+` because it is two characters shorter than `%20`.
+The hexadecimal digits are upper case to match the browser.
+The escaped set is extended by `arg_separator.input` because a host can set it to e.g. `&;`; it can only be read, never set at runtime.
+
+`url_escape()` is only for Adminer's own query string.
+Path segments, an URL authority and external APIs (e.g. the AWS signature in [simpledb.php](/plugins/drivers/simpledb.php)) still need the strict `urlencode()` or `rawurlencode()`.
+This is also why the function is not named `urlencode()` - the namespace fallback would silently retarget every unqualified call in the `Adminer` namespace, including the drivers.
+
+Brackets stay verbatim in an URL but a parameter *name* is a different matter.
+PHP decodes a parameter name once and only then parses the brackets, so a name must not contain `[`, `]` or `=` after that single decoding.
+This is exactly what `bracket_escape()` is for, including a whole query string used as a name - `$unique_idf` in `val[...]` in [select.inc.php](/adminer/select.inc.php) - which is read back by `bracket_escape($idf, true)`.
+The browser escapes the name once more when submitting the form and PHP undoes only that one layer.
+`urlencode()` would work there too but it is longer, and this identifier is repeated in every cell of the result table.
+
 ## Values and Binary Data
 
 A value makes a round trip: the database returns it, Adminer prints it to HTML and to URLs, the browser sends it back, and Adminer builds a condition from it.
@@ -322,6 +341,11 @@ Nothing is passed to `eval()` or `new Function()`.
 Don't be fooled by the call-like syntax - the arguments are decoded by `JSON.parse()`, which can't run code.
 An injected `handler("x");alert(1)` does match the anchored pattern, because `.*` reaches the last `)`, but `JSON.parse()` then rejects it instead of `alert()` running.
 Don't put URLs in the arguments if the element can carry them in `href`.
+
+`urlEscape()` is the counterpart of PHP's `url_escape()` and both must produce the same output for the same input.
+GET forms are therefore sent by JavaScript: the browser would serialize them with full escaping, putting `where%5B0%5D%5Bcol%5D` back in the URL.
+`bodySubmit()` serializes the form by `formData()` and navigates to the result instead; `ajaxForm()` reuses `formData()` for its request.
+This is only an enhancement - without JavaScript the browser submits the form itself and everything works, just with a longer URL.
 
 JavaScript code is split into [functions.js](/adminer/static/functions.js) (common utilities) and [editing.js](/adminer/static/editing.js) (specific to Adminer or Adminer Editor).
 These files are concatenated during compilation since they depend on each other.

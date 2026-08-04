@@ -65,7 +65,8 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	// the event handlers and the <html> classes are registered by functions.js
 	echo script((isset($_COOKIE["adminer_version"]) || !adminer()->verifyVersion() ? "" : "onload = partial(verifyVersion, '" . VERSION . "');\n") . "
 const offlineMessage = '" . js_escape(lang('You are offline.')) . "';
-const thousandsSeparator = '" . js_escape(lang(',')) . "';");
+const thousandsSeparator = '" . js_escape(lang(',')) . "';
+const urlSeparators = '" . js_escape(ini_get("arg_separator.input")) . "';");
 	echo "<div id='help' class='jush-" . JUSH . " jsonly hidden'" . on('mouseover', 'helpKeep') . on('mouseout', 'helpMouseout') . "></div>\n";
 	echo "<div id='content'>\n";
 	echo "<span id='menuopen' class='jsonly'" . on('click', 'menuToggle') . "><button title='" . lang('Menu') . "' class='icon icon-move' aria-expanded='false'></button></span>\n";
@@ -80,7 +81,7 @@ const thousandsSeparator = '" . js_escape(lang(',')) . "';");
 		} else {
 			echo "<a href='" . h($link) . "' accesskey='1' title='Alt+Shift+1'>$server</a> » ";
 			if ($_GET["ns"] != "" || (DB != "" && is_array($breadcrumb))) {
-				echo '<a href="' . h($link . "&db=" . urlencode(DB) . (support("scheme") ? "&ns=" : "")) . '">' . h(DB) . '</a> » ';
+				echo '<a href="' . h($link . "&db=" . url_escape(DB) . (support("scheme") ? "&ns=" : "")) . '">' . h(DB) . '</a> » ';
 			}
 			if (is_array($breadcrumb)) {
 				if ($_GET["ns"] != "") {
@@ -89,7 +90,7 @@ const thousandsSeparator = '" . js_escape(lang(',')) . "';");
 				foreach ($breadcrumb as $key => $val) {
 					$desc = (is_array($val) ? $val[1] : h($val));
 					if ($desc != "") {
-						echo "<a href='" . h(ME . "$key=") . urlencode(is_array($val) ? $val[0] : $val) . "'>$desc</a> » ";
+						echo "<a href='" . h(ME . "$key=") . url_escape(is_array($val) ? $val[0] : $val) . "'>$desc</a> » ";
 					}
 				}
 			}

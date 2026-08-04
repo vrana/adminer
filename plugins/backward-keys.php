@@ -49,7 +49,7 @@ ORDER BY s.ordinal_position", null, "") as $row
 	function backwardKeysPrint($backwardKeys, $row) {
 		foreach ($backwardKeys as $table => $backwardKey) {
 			foreach ($backwardKey["keys"] as $cols) {
-				$link = Adminer\ME . 'select=' . urlencode($table);
+				$link = Adminer\ME . 'select=' . Adminer\url_escape($table);
 				$i = 0;
 				foreach ($cols as $column => $val) {
 					if (!isset($row[$val])) {
@@ -60,9 +60,9 @@ ORDER BY s.ordinal_position", null, "") as $row
 				echo "<a href='" . Adminer\h($link) . "'>"
 					. Adminer\h(preg_replace('(^' . preg_quote($_GET["select"]) . (substr($_GET["select"], -1) == 's' ? '?' : '') . '_)', '_', $backwardKey["name"]))
 					. "</a>";
-				$link = Adminer\ME . 'edit=' . urlencode($table);
+				$link = Adminer\ME . 'edit=' . Adminer\url_escape($table);
 				foreach ($cols as $column => $val) {
-					$link .= "&set" . urlencode("[" . Adminer\bracket_escape($column) . "]") . "=" . urlencode($row[$val]);
+					$link .= "&set[" . Adminer\url_escape(Adminer\bracket_escape($column)) . "]=" . Adminer\url_escape($row[$val]);
 				}
 				echo "<a href='" . Adminer\h($link) . "' title='" . $this->lang('New item') . "'>+</a> ";
 			}

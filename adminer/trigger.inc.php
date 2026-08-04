@@ -11,7 +11,7 @@ if ($_POST) {
 		// don't use drop_create() because there may not be more triggers for the same action
 		$on = " ON " . table($TABLE);
 		$drop = "DROP TRIGGER " . idf_escape($name) . (JUSH == "pgsql" ? $on : "");
-		$location = ME . "table=" . urlencode($TABLE);
+		$location = ME . "table=" . url_escape($TABLE);
 		if ($_POST["drop"]) {
 			query_redirect($drop, $location, lang('Trigger has been dropped.'));
 		} else {

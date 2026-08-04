@@ -20,7 +20,7 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 		//! it should redirect to Select if the values in ?where changed (handled only in JS)
 		$location = ($update ? null : $_SERVER["REQUEST_URI"]);
 	} elseif (!preg_match('~^.+&select=.+$~', $location)) {
-		$location = ME . "select=" . urlencode($TABLE);
+		$location = ME . "select=" . url_escape($TABLE);
 	}
 
 	$indexes = indexes($TABLE);

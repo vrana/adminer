@@ -10,7 +10,7 @@ if ($_GET["script"] == "kill") {
 		. " WHERE " . (preg_match('~^[0-9]+$~', $_GET["value"]) ? "$id = $_GET[value] OR " : "")
 		. "$name LIKE " . q("$_GET[value]%") . " ORDER BY 2 LIMIT $limit");
 	for ($i=1; ($row = $result->fetch_row()) && $i < $limit; $i++) {
-		echo "<a href='" . h(ME . "edit=" . urlencode($table) . "&where" . urlencode("[" . bracket_escape(idf_unescape($id)) . "]") . "=" . urlencode($row[0])) . "'>" . h($row[1]) . "</a><br>\n";
+		echo "<a href='" . h(ME . "edit=" . url_escape($table) . "&where[" . url_escape(bracket_escape(idf_unescape($id))) . "]=" . url_escape($row[0])) . "'>" . h($row[1]) . "</a><br>\n";
 	}
 	if ($row) {
 		echo "...\n";

@@ -41,7 +41,7 @@ foreach (adminer()->processList() as $i => $row) {
 			(JUSH == "pgsql" && $key == "query") ||
 			(JUSH == "oracle" && $key == "sql_text"))
 			? "<code class='jush-" . JUSH . "' data-full='" . h($val) . "'>" . shorten_utf8($val, 100, "</code>")
-				. ' <a href="' . h(ME . ($row["db"] != "" ? "db=" . urlencode($row["db"]) . "&" : "") . "sql=" . urlencode($val)) . '">' . lang('Clone') . '</a>'
+				. ' <a href="' . h(ME . ($row["db"] != "" ? "db=" . url_escape($row["db"]) . "&" : "") . "sql=" . url_escape($val)) . '">' . lang('Clone') . '</a>'
 				. ' ' . copy_icon()
 			: h($val)
 		);

@@ -66,7 +66,7 @@ document.onmouseup = event => schemaMouseup(event, '<?php echo js_escape(DB); ?>
 <?php
 foreach ($schema as $name => $table) {
 	echo "<div class='table'" . on('mousedown', 'schemaMousedown') . " style='top: " . $table["pos"][0] . "em; left: " . $table["pos"][1] . "em;'>";
-	echo '<a href="' . h(ME) . 'table=' . urlencode($name) . '"><b>' . h($name) . "</b></a>";
+	echo '<a href="' . h(ME) . 'table=' . url_escape($name) . '"><b>' . h($name) . "</b></a>";
 
 	foreach ($table["fields"] as $field) {
 		$val = '<span' . type_class($field["type"])
@@ -124,4 +124,4 @@ foreach ($schema as $name => $table) {
 }
 ?>
 </div>
-<p class="links"><a href="<?php echo h(ME . "schema=" . urlencode($SCHEMA)); ?>" id="schema-link"><?php echo lang('Permanent link'); ?></a>
+<p class="links"><a href="<?php echo h(ME . "schema=" . url_escape($SCHEMA)); ?>" id="schema-link"><?php echo lang('Permanent link'); ?></a>

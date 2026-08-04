@@ -716,7 +716,7 @@ function indexesChangeColumn(prefix) {
 */
 function sqlSubmit(root) {
 	const action = root
-		+ '&sql=' + encodeURIComponent(this['query'].value)
+		+ '&sql=' + urlEscape(this['query'].value)
 		+ (this['limit'].value ? '&limit=' + +this['limit'].value : '')
 		+ (this['error_stops'].checked ? '&error_stops=1' : '')
 		+ (this['only_errors'].checked ? '&only_errors=1' : '')

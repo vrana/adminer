@@ -142,14 +142,14 @@ if (adminer()->homepage()) {
 				$id = h("Table-" . $name);
 				echo '<tr><td class="hover">' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array("$name", $tables_views, true), "", "", "", $id); // "$name" to check numeric table names
 				echo '<th>' . (support("table") || support("indexes")
-					? "<a href='" . h(ME) . "table=" . urlencode($name) . "' title='" . lang('Show structure') . "' id='$id'>" . h($name) . '</a>'
+					? "<a href='" . h(ME) . "table=" . url_escape($name) . "' title='" . lang('Show structure') . "' id='$id'>" . h($name) . '</a>'
 					: h($name)
 				);
 				if ($view && !preg_match('~materialized~i', $status['Engine'])) {
 					$title = lang('View');
 					echo '<td colspan="' . (count($columns) - (support("comment") ? 2 : 1)) . '">'
-						. (support("view") ? "<a href='" . h(ME) . "view=" . urlencode($name) . "' title='" . lang('Alter view') . "'>$title</a>" : $title);
-					echo "<td align='right'><a href='" . h(ME) . "select=" . urlencode($name) . "' title='" . lang('Select data') . "'>?</a>";
+						. (support("view") ? "<a href='" . h(ME) . "view=" . url_escape($name) . "' title='" . lang('Alter view') . "'>$title</a>" : $title);
+					echo "<td align='right'><a href='" . h(ME) . "select=" . url_escape($name) . "' title='" . lang('Select data') . "'>?</a>";
 					if (support("comment")) {
 						echo '<td>' . h($status['Comment']);
 					}
@@ -164,7 +164,7 @@ if (adminer()->homepage()) {
 						$id = " id='$key-" . h($name) . "'";
 						$val = idx($status, $key, '?');
 						echo ($column[1]
-							? "<td align='right'><a href='" . h(ME . "$column[1]=") . urlencode($name) . "'$id title='$column[2]'>" . (is_numeric($val)
+							? "<td align='right'><a href='" . h(ME . "$column[1]=") . url_escape($name) . "'$id title='$column[2]'>" . (is_numeric($val)
 								? ($val < 0 ? '?' : ($key == "Rows" ? format_rows($status) : format_number($val)))
 								: h($val)
 							) . "</a>"
@@ -237,12 +237,12 @@ if (adminer()->homepage()) {
 				echo "<table class='odds'>\n";
 				echo '<thead><tr><th>' . lang('Name') . '<td>' . lang('Type') . '<td>' . lang('Return type') . "<td class='hover'><tbody>\n";
 				foreach ($routines as $row) {
-					$name = ($row["SPECIFIC_NAME"] == $row["ROUTINE_NAME"] ? "" : "&name=" . urlencode($row["ROUTINE_NAME"])); // not computed on the pages to be able to print the header first
+					$name = ($row["SPECIFIC_NAME"] == $row["ROUTINE_NAME"] ? "" : "&name=" . url_escape($row["ROUTINE_NAME"])); // not computed on the pages to be able to print the header first
 					echo '<tr>';
-					echo '<th><a href="' . h(ME . ($row["ROUTINE_TYPE"] != "PROCEDURE" ? 'callf=' : 'call=') . urlencode($row["SPECIFIC_NAME"]) . $name) . '">' . h($row["ROUTINE_NAME"]) . '</a>';
+					echo '<th><a href="' . h(ME . ($row["ROUTINE_TYPE"] != "PROCEDURE" ? 'callf=' : 'call=') . url_escape($row["SPECIFIC_NAME"]) . $name) . '">' . h($row["ROUTINE_NAME"]) . '</a>';
 					echo '<td>' . h($row["ROUTINE_TYPE"]);
 					echo '<td>' . h($row["DTD_IDENTIFIER"]);
-					echo '<td class="hover"><a href="' . h(ME . ($row["ROUTINE_TYPE"] != "PROCEDURE" ? 'function=' : 'procedure=') . urlencode($row["SPECIFIC_NAME"]) . $name) . '">'
+					echo '<td class="hover"><a href="' . h(ME . ($row["ROUTINE_TYPE"] != "PROCEDURE" ? 'function=' : 'procedure=') . url_escape($row["SPECIFIC_NAME"]) . $name) . '">'
 						. lang('Alter') . "</a>";
 				}
 				echo "</table>\n";
@@ -262,7 +262,7 @@ if (adminer()->homepage()) {
 				echo "<table class='odds'>\n";
 				echo "<thead><tr><th>" . lang('Name') . "<tbody>\n";
 				foreach ($sequences as $val) {
-					echo "<tr><th><a href='" . h(ME) . "sequence=" . urlencode($val) . "'>" . h($val) . "</a>\n";
+					echo "<tr><th><a href='" . h(ME) . "sequence=" . url_escape($val) . "'>" . h($val) . "</a>\n";
 				}
 				echo "</table>\n";
 			}
@@ -278,7 +278,7 @@ if (adminer()->homepage()) {
 				echo "<table class='odds'>\n";
 				echo "<thead><tr><th>" . lang('Name') . "<tbody>\n";
 				foreach ($user_types as $val) {
-					echo "<tr><th><a href='" . h(ME) . "type=" . urlencode($val) . "'>" . h($val) . "</a>\n";
+					echo "<tr><th><a href='" . h(ME) . "type=" . url_escape($val) . "'>" . h($val) . "</a>\n";
 				}
 				echo "</table>\n";
 			}
@@ -300,7 +300,7 @@ if (adminer()->homepage()) {
 						? lang('At given time') . "<td>" . h($row["Execute at"])
 						: lang('Every') . " " . h($row["Interval value"]) . " " . h($row["Interval field"]) . "<td>" . h($row["Starts"]));
 					echo "<td>" . h($row["Ends"]);
-					echo '<td><a href="' . h(ME) . 'event=' . urlencode($row["Name"]) . '">' . lang('Alter') . '</a>';
+					echo '<td><a href="' . h(ME) . 'event=' . url_escape($row["Name"]) . '">' . lang('Alter') . '</a>';
 				}
 				echo "</table>\n";
 				$event_scheduler = get_val("SELECT @@event_scheduler");

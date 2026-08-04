@@ -15,7 +15,7 @@ if ($row && !$error) {
 		}
 	}
 	queries_redirect(
-		ME . "table=" . urlencode($TABLE),
+		ME . "table=" . url_escape($TABLE),
 		($row["drop"] ? lang('Check has been dropped.') : ($name != "" ? lang('Check has been altered.') : lang('Check has been created.'))),
 		$result
 	);

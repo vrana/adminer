@@ -68,7 +68,7 @@ if (
 
 			$databases = ($_GET["dbsize"] ? count_tables($databases) : array_flip($databases));
 			foreach ($databases as $db => $tables) {
-				$root = h(ME) . "db=" . urlencode($db);
+				$root = h(ME) . "db=" . url_escape($db);
 				$id = h("Db-" . $db);
 				echo "<tr>" . (support("database") ? "<td class='hover'>" . checkbox("db[]", $db, in_array($db, (array) $_POST["db"]), "", "", "", $id) : "");
 				echo "<th><a href='$root' id='$id'>" . h($db) . "</a>";
@@ -158,7 +158,7 @@ if (
 if (support("scheme")) {
 	if (DB != "" && $_GET["ns"] !== "") {
 		if (!isset($_GET["ns"])) { // when the user goes to a database, take him to the default schema
-			redirect(preg_replace('~&db=[^&]+~', '\0&ns=' . urlencode(get_schema()), relative_uri()));
+			redirect(preg_replace('~&db=[^&]+~', '\0&ns=' . url_escape(get_schema()), relative_uri()));
 		}
 		if (!set_schema($_GET["ns"])) {
 			header("HTTP/1.1 404 Not Found");

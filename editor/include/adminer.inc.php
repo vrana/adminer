@@ -134,7 +134,7 @@ class Adminer {
 	function selectLinks(array $tableStatus, ?string $set = ""): void {
 		$TABLE = $tableStatus["Name"];
 		if ($set !== null) {
-			echo '<p class="tabs"><a href="' . h(ME . 'edit=' . urlencode($TABLE) . $set) . '">' . lang('New item') . "</a>\n";
+			echo '<p class="tabs"><a href="' . h(ME . 'edit=' . url_escape($TABLE) . $set) . '">' . lang('New item') . "</a>\n";
 		}
 	}
 
@@ -170,15 +170,15 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	function backwardKeysPrint(array $backwardKeys, array $row): void {
 		foreach ($backwardKeys as $table => $backwardKey) {
 			foreach ($backwardKey["keys"] as $cols) {
-				$link = ME . 'select=' . urlencode($table);
+				$link = ME . 'select=' . url_escape($table);
 				$i = 0;
 				foreach ($cols as $column => $val) {
 					$link .= where_link($i++, $column, $row[$val]);
 				}
 				echo "<a href='" . h($link) . "'>" . h($backwardKey["name"]) . "</a>";
-				$link = ME . 'edit=' . urlencode($table);
+				$link = ME . 'edit=' . url_escape($table);
 				foreach ($cols as $column => $val) {
-					$link .= "&set" . urlencode("[" . bracket_escape($column) . "]") . "=" . urlencode($row[$val]);
+					$link .= "&set[" . url_escape(bracket_escape($column)) . "]=" . url_escape($row[$val]);
 				}
 				echo "<a href='" . h($link) . "' title='" . lang('New item') . "'>+</a> ";
 			}
@@ -488,7 +488,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 				? "<select$attrs>" . optionlist($options, (string) $value, true) . "</select>"
 				: "<input value='" . h($value) . "'$attrs class='hidden'>"
 					. "<input value='" . h($options) . "' class='jsonly'"
-						. on('input', 'whisper', ME . "script=complete&source=" . urlencode($table) . "&field=" . urlencode($field["field"]) . "&value=") . ">"
+						. on('input', 'whisper', ME . "script=complete&source=" . url_escape($table) . "&field=" . url_escape($field["field"]) . "&value=") . ">"
 					. "<div" . on('click', 'whisperClick') . "></div>"
 			);
 		}
@@ -638,7 +638,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			echo '<li>';
 			$name = adminer()->tableName($row);
 			if ($name != "") { // ignore tables without name
-				echo "<a href='" . h(ME) . 'select=' . urlencode($row["Name"]) . "'"
+				echo "<a href='" . h(ME) . 'select=' . url_escape($row["Name"]) . "'"
 					. bold($_GET["select"] == $row["Name"] || $_GET["edit"] == $row["Name"], "select")
 					. " title='" . lang('Select data') . "'>$name</a>\n"
 				;

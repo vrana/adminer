@@ -45,7 +45,7 @@ if ($_GET["val"] && is_ajax()) {
 	foreach ($_GET["val"] as $unique_idf => $row) {
 		$as = convert_field($fields[key($row)]);
 		$select = array($as ?: idf_escape(key($row)));
-		$where[] = where_check($unique_idf, $fields);
+		$where[] = where_check(bracket_escape($unique_idf, true), $fields); // true - back
 		$return = driver()->select($TABLE, $select, $where, $select);
 		if ($return) {
 			echo first($return->fetch_row());
@@ -179,7 +179,8 @@ if ($_POST && !$error) {
 				$result = driver()->update(
 					$TABLE,
 					$set,
-					" WHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($unique_idf, $fields),
+					// true - back
+					" WHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check(bracket_escape($unique_idf, true), $fields),
 					($is_group || $primary ? 0 : 1),
 					" "
 				);
@@ -368,8 +369,8 @@ if (!$columns && support("table")) {
 						$rank++;
 						$names[$key] = $name;
 						$column = idf_escape($key);
-						$href = remove_from_uri('(order|desc)[^=]*|page') . '&order%5B0%5D=' . urlencode($key);
-						$desc = "&desc%5B0%5D=1";
+						$href = remove_from_uri('(order|desc)[^=]*|page') . '&order[0]=' . url_escape($key);
+						$desc = "&desc[0]=1";
 						$sort_column = preg_replace('~ DESC( NULLS LAST)?$~', '', $order[0]);
 						$sorted = ($sort_column == $column || $sort_column == $key); // $sort_column == $key - COUNT(*)
 						echo "<th id='th[" . h(bracket_escape($key)) . "]'" . ($sorted ? " aria-sort='" . ($sort_column == $order[0] ? "ascending" : "descending") . "'" : "") . ">";
@@ -423,10 +424,10 @@ if (!$columns && support("table")) {
 						$key = "MD5(" . ($is_binary || JUSH != 'sql' || preg_match("~^utf8~", $field["collation"]) ? $key : "CONVERT($key USING " . charset(connection()) . ")") . ")";
 						$val = md5($is_binary ? (string) driver()->value($val, $field) : $val); // value() decodes bytea in PostgreSQL
 					}
-					$unique_idf .= "&" . ($val !== null ? urlencode("where[" . bracket_escape($key) . "]") . "=" . urlencode($val === false ? "f" : $val) : "null%5B%5D=" . urlencode($key));
+					$unique_idf .= "&" . ($val !== null ? "where[" . url_escape(bracket_escape($key)) . "]=" . url_escape($val === false ? "f" : $val) : "null[]=" . url_escape($key));
 				}
 				echo "<tr>" . (!$group && $select ? "" : "<td class='hover check'>"
-					. ($is_group || information_schema(DB) ? "" : "<a href='" . h(ME . "edit=" . urlencode($TABLE) . $unique_idf) . "' class='edit'>" . lang('edit') . "</a> ")
+					. ($is_group || information_schema(DB) ? "" : "<a href='" . h(ME . "edit=" . url_escape($TABLE) . $unique_idf) . "' class='edit'>" . lang('edit') . "</a> ")
 					. checkbox("check[]", substr($unique_idf, 1), in_array(substr($unique_idf, 1), (array) $_POST["check"]))
 				);
 
@@ -441,7 +442,7 @@ if (!$columns && support("table")) {
 
 						$link = "";
 						if (is_blob($field) && $val != "") {
-							$link = ME . 'download=' . urlencode($TABLE) . '&field=' . urlencode($key) . $unique_idf;
+							$link = ME . 'download=' . url_escape($TABLE) . '&field=' . url_escape($key) . $unique_idf;
 						}
 						if (!$link && $val !== null) { // link related items
 							foreach ((array) $foreign_keys[$key] as $foreign_key) {
@@ -451,10 +452,10 @@ if (!$columns && support("table")) {
 										$link .= where_link($i, $foreign_key["target"][$i], $rows[$n][$source]);
 									}
 									// InnoDB supports non-UNIQUE keys
-									$link = ($foreign_key["db"] != "" ? preg_replace('~([?&]db=)[^&]+~', '\1' . urlencode($foreign_key["db"]), ME) : ME)
-										. 'select=' . urlencode($foreign_key["table"]) . $link;
+									$link = ($foreign_key["db"] != "" ? preg_replace('~([?&]db=)[^&]+~', '\1' . url_escape($foreign_key["db"]), ME) : ME)
+										. 'select=' . url_escape($foreign_key["table"]) . $link;
 									if ($foreign_key["ns"]) {
-										$link = preg_replace('~([?&]ns=)[^&]+~', '\1' . urlencode($foreign_key["ns"]), $link);
+										$link = preg_replace('~([?&]ns=)[^&]+~', '\1' . url_escape($foreign_key["ns"]), $link);
 									}
 									if (count($foreign_key["source"]) == 1) {
 										break;
@@ -463,7 +464,7 @@ if (!$columns && support("table")) {
 							}
 						}
 						if ($column == "COUNT(*)") {
-							$link = ME . "select=" . urlencode($TABLE);
+							$link = ME . "select=" . url_escape($TABLE);
 							$i = 0;
 							foreach ((array) $_GET["where"] as $v) {
 								if (!array_key_exists($v["col"], $unique_array)) {
@@ -476,8 +477,10 @@ if (!$columns && support("table")) {
 						}
 
 						$html = select_value($val, $link, $field, $text_length);
-						$id = h("val[$unique_idf][" . bracket_escape($key) . "]");
-						$posted = idx(idx($_POST["val"], $unique_idf), bracket_escape($key));
+						// PHP decodes the parameter name once and then parses the brackets, the identifier must not contain any
+						$idf = bracket_escape($unique_idf);
+						$id = h("val[$idf][" . bracket_escape($key) . "]");
+						$posted = idx(idx($_POST["val"], $idf), bracket_escape($key));
 						$update = idx($field["privileges"], "update");
 						$editable = !is_array($row[$key]) && !is_blob($field) && is_utf8($val) && $rows[$n][$key] == $val && !$functions[$key] && !$field["generated"] && $update;
 						$type = (preg_match('~^(AVG|MIN|MAX)\((.+)\)~', $column, $match) ? $fields[idf_unescape($match[2])]["type"] : $field["type"]);
@@ -536,7 +539,7 @@ if (!$columns && support("table")) {
 				$pagination = ($limit && ($found_rows === false || $found_rows > $limit || $page));
 				if ($pagination) {
 					echo (($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit
-						? '<p><a href="' . h(remove_from_uri("page|next") . ($_GET["next"] ? "&next=" . urlencode($_GET["next"]) : "") . "&page=" . ($page + 1)) . '" class="loadmore"'
+						? '<p><a href="' . h(remove_from_uri("page|next") . ($_GET["next"] ? "&next=" . url_escape($_GET["next"]) : "") . "&page=" . ($page + 1)) . '" class="loadmore"'
 							. on('click', 'selectLoadMore', $limit, lang('Loading…')) . '>'
 							. lang('Load more data') . '</a>'
 						: ''

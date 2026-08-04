@@ -69,6 +69,51 @@ function toggle(id) {
 	return false;
 }
 
+/** Escape string to use in a query string; counterpart of PHP url_escape()
+* @param {string} string
+* @return {string}
+*/
+function urlEscape(string) {
+  // unlike encodeURIComponent(), escapes only the characters misinterpreted by PHP or by the URL syntax and those rewritten by the browser
+	return encodeURIComponent(string)
+		.replace(/'/g, '%27') // encodeURIComponent() keeps it but the browser escapes it anyway
+		.replace(/%20/g, '+')
+		// $,/:;@[\]^`{|} - the browser keeps them verbatim; urlSeparators are set by arg_separator.input
+		.replace(/%(24|2C|2F|3A|3B|40|5[BCDE]|60|7[BCD])/g, (all, hex) => {
+			const char = String.fromCharCode(parseInt(hex, 16));
+			return (urlSeparators.indexOf(char) < 0 ? char : all);
+		})
+	;
+}
+
+/** Get value from a query string; counterpart of PHP urldecode()
+* @param {string} string
+* @return {string}
+*/
+function urlUnescape(string) {
+	return decodeURIComponent(string.replace(/\+/g, ' '));
+}
+
+/** Serialize form fields to a query string
+* @param {HTMLFormElement} form
+* @param {HTMLElement} [submitter] the button which sent the form
+* @return {?string} null if the form contains a file
+*/
+function formData(form, submitter) {
+	const data = [];
+	for (const el of form.elements) {
+		if (el.name && !el.disabled) {
+			if (/^file$/i.test(el.type) && el.value) {
+				return null;
+			}
+			if (!/^(checkbox|radio|submit|file)$/i.test(el.type) || el.checked || el == submitter) {
+				data.push(urlEscape(el.name) + '=' + urlEscape(el.matches('select') ? selectValue(el) : el.value));
+			}
+		}
+	}
+	return data.join('&');
+}
+
 /** Set permanent cookie
 * @param {string} assign
 * @param {number} days
@@ -472,8 +517,9 @@ function submitKeydown(button, event) {
 		if (target.form[button]) {
 			target.form[button].click();
 		} else {
-			fire(target.form, 'submit'); // submit() doesn't dispatch the event
-			target.form.submit();
+			if (fire(target.form, 'submit')) { // submit() doesn't dispatch the event
+				target.form.submit();
+			}
 		}
 		target.focus();
 		return false;
@@ -523,6 +569,29 @@ function bodyClick(event) {
 function maxlengthCheck(el) {
 	const maxLength = el.dataset.maxlength;
 	alterClass(el, 'maxlength', el.value && maxLength != null && el.value.length > maxLength); // maxLength could be 0
+}
+
+/** Send GET forms with minimal URL escaping
+* @param {SubmitEvent} event
+* @return {boolean} false if the form was sent by JS
+*/
+function bodySubmit(event) {
+	if (delegateEvent(event)) { // a data-onsubmit handler has handled the event
+		return true;
+	}
+	const form = event.target;
+	if (/^get$/i.test(form.method)) { // the browser would serialize the form with full escaping
+		const data = formData(form, event.submitter); // submitter is undefined in Chrome < 81, no GET form uses a named submit button
+		if (data !== null) {
+			const url = form.action.replace(/\?.*/, '') + '?' + data;
+			if (form.target) { // set by Ctrl+click or Shift+click; open() is not blocked, the click activation is still valid
+				open(url, form.target);
+			} else {
+				location.href = url;
+			}
+			return false;
+		}
+	}
 }
 
 /** Highlight too long values
@@ -720,18 +789,10 @@ let adminerHighlighter = () => {}; // overwritten by syntax highlighters
 function ajaxForm(message) {
 	const button = this;
 	const form = button.form;
-	let data = [];
-	for (const el of form.elements) {
-		if (el.name && !el.disabled) {
-			if (/^file$/i.test(el.type) && el.value) {
-				return true; // files can't be sent by AJAX, submit the form
-			}
-			if (!/^(checkbox|radio|submit|file)$/i.test(el.type) || el.checked || el == button) {
-				data.push(encodeURIComponent(el.name) + '=' + encodeURIComponent(el.matches('select') ? selectValue(el) : el.value));
-			}
-		}
+	let data = formData(form, button);
+	if (data === null) {
+		return true; // files can't be sent by AJAX, submit the form
 	}
-	data = data.join('&');
 
 	let url = form.action;
 	if (!/post/i.test(form.method)) {
@@ -906,11 +967,11 @@ function addEvent(el, action, handler) {
 /** Dispatch an event to run the handlers registered by the data attributes
 * @param {?HTMLElement} el
 * @param {string} type event name without 'on'
+* @return {boolean} false if a handler has canceled the event
 */
 function fire(el, type) {
-	if (el) {
-		el.dispatchEvent(new Event(type, {bubbles: true})); // bubbles - the handlers are delegated from the document
-	}
+	// bubbles - the handlers are delegated from the document; cancelable - the caller can skip the default action
+	return (el ? el.dispatchEvent(new Event(type, {bubbles: true, cancelable: true})) : true);
 }
 
 /** Clone node and setup submit highlighting
@@ -948,5 +1009,5 @@ mixin(document, {
 	onmouseout: delegateEvent,
 	onmouseover: delegateEvent,
 	onsearch: delegateEvent, // WebKit only, it bubbles
-	onsubmit: delegateEvent,
+	onsubmit: bodySubmit, // calls delegateEvent() itself
 });

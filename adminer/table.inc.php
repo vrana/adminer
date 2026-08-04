@@ -36,8 +36,8 @@ if ($fields) {
 function tables_links(array $tables): void {
 	echo "<ul>\n";
 	foreach ($tables as $row) {
-		$link = preg_replace('~ns=[^&]*~', "ns=" . urlencode($row["ns"]), ME);
-		echo "<li><a href='" . h($link . "table=" . urlencode($row["table"])) . "'>" . ($row["ns"] != $_GET["ns"] ? "<b>" . h($row["ns"]) . "</b>." : "") . h($row["table"]) . "</a>";
+		$link = preg_replace('~ns=[^&]*~', "ns=" . url_escape($row["ns"]), ME);
+		echo "<li><a href='" . h($link . "table=" . url_escape($row["table"])) . "'>" . ($row["ns"] != $_GET["ns"] ? "<b>" . h($row["ns"]) . "</b>." : "") . h($row["table"]) . "</a>";
 	}
 	echo "</ul>\n";
 }
@@ -55,7 +55,7 @@ if (support("indexes") && driver()->supportsIndex($table_status)) {
 	if ($indexes) {
 		adminer()->tableIndexesPrint($indexes, $table_status);
 	}
-	echo '<p class="links hover"><a href="' . h(ME) . 'indexes=' . urlencode($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
+	echo '<p class="links hover"><a href="' . h(ME) . 'indexes=' . url_escape($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
 	echo "</div>\n";
 }
 
@@ -71,10 +71,10 @@ if (!is_view($table_status)) {
 				echo "<tr title='" . h($name) . "'>";
 				echo "<th><i>" . implode("</i>, <i>", array_map('Adminer\h', $foreign_key["source"])) . "</i>";
 				$link = ($foreign_key["db"] != ""
-					? preg_replace('~db=[^&]*~', "db=" . urlencode($foreign_key["db"]), ME)
-					: ($foreign_key["ns"] != "" ? preg_replace('~ns=[^&]*~', "ns=" . urlencode($foreign_key["ns"]), ME) : ME)
+					? preg_replace('~db=[^&]*~', "db=" . url_escape($foreign_key["db"]), ME)
+					: ($foreign_key["ns"] != "" ? preg_replace('~ns=[^&]*~', "ns=" . url_escape($foreign_key["ns"]), ME) : ME)
 				);
-				echo "<td><a href='" . h($link . "table=" . urlencode($foreign_key["table"])) . "'>"
+				echo "<td><a href='" . h($link . "table=" . url_escape($foreign_key["table"])) . "'>"
 					. ($foreign_key["db"] != "" && $foreign_key["db"] != DB ? "<b>" . h($foreign_key["db"]) . "</b>." : "")
 					. ($foreign_key["ns"] != "" && $foreign_key["ns"] != $_GET["ns"] ? "<b>" . h($foreign_key["ns"]) . "</b>." : "")
 					. h($foreign_key["table"])
@@ -83,12 +83,12 @@ if (!is_view($table_status)) {
 				echo "(<i>" . implode("</i>, <i>", array_map('Adminer\h', $foreign_key["target"])) . "</i>)";
 				echo "<td>" . h($foreign_key["on_delete"]);
 				echo "<td>" . h($foreign_key["on_update"]);
-				echo '<td class="hover"><a href="' . h(ME . 'foreign=' . urlencode($TABLE) . '&name=' . urlencode($name)) . '">' . lang('Alter') . '</a>';
+				echo '<td class="hover"><a href="' . h(ME . 'foreign=' . url_escape($TABLE) . '&name=' . url_escape($name)) . '">' . lang('Alter') . '</a>';
 				echo "\n";
 			}
 			echo "</table>\n";
 		}
-		echo '<p class="links hover"><a href="' . h(ME) . 'foreign=' . urlencode($TABLE) . '">' . lang('Create foreign key') . "</a>\n";
+		echo '<p class="links hover"><a href="' . h(ME) . 'foreign=' . url_escape($TABLE) . '">' . lang('Create foreign key') . "</a>\n";
 		echo "</div>\n";
 	}
 
@@ -101,12 +101,12 @@ if (!is_view($table_status)) {
 			foreach ($check_constraints as $key => $val) {
 				echo "<tr title='" . h($key) . "'>";
 				echo "<td><code class='jush-" . JUSH . "'>" . shorten_utf8(preg_replace('~\s+~', ' ', ltrim($val)), 80, "</code>");
-				echo "<td class='hover'><a href='" . h(ME . 'check=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "'>" . lang('Alter') . "</a>";
+				echo "<td class='hover'><a href='" . h(ME . 'check=' . url_escape($TABLE) . '&name=' . url_escape($key)) . "'>" . lang('Alter') . "</a>";
 				echo "\n";
 			}
 			echo "</table>\n";
 		}
-		echo '<p class="links hover"><a href="' . h(ME) . 'check=' . urlencode($TABLE) . '">' . lang('Create check') . "</a>\n";
+		echo '<p class="links hover"><a href="' . h(ME) . 'check=' . url_escape($TABLE) . '">' . lang('Create check') . "</a>\n";
 		echo "</div>\n";
 	}
 }
@@ -119,11 +119,11 @@ if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
 		echo "<table>\n";
 		foreach ($triggers as $key => $val) {
 			echo "<tr valign='top'><td>" . h($val[0]) . "<td>" . h($val[1]) . "<th>" . h($key)
-				. "<td class='hover'><a href='" . h(ME . 'trigger=' . urlencode($TABLE) . '&name=' . urlencode($key)) . "'>" . lang('Alter') . "</a>\n";
+				. "<td class='hover'><a href='" . h(ME . 'trigger=' . url_escape($TABLE) . '&name=' . url_escape($key)) . "'>" . lang('Alter') . "</a>\n";
 		}
 		echo "</table>\n";
 	}
-	echo '<p class="links hover"><a href="' . h(ME) . 'trigger=' . urlencode($TABLE) . '">' . lang('Create trigger') . "</a>\n";
+	echo '<p class="links hover"><a href="' . h(ME) . 'trigger=' . url_escape($TABLE) . '">' . lang('Create trigger') . "</a>\n";
 	echo "</div>\n";
 }
 

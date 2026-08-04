@@ -21,8 +21,8 @@ if (adminer()->homepage()) {
 		$name = adminer()->tableName($row);
 		if ($name != "") {
 			echo '<tr><td class="hover">' . checkbox("tables[]", $table, in_array($table, (array) $_POST["tables"], true));
-			echo "<th><a href='" . h(ME) . 'select=' . urlencode($table) . "'>$name</a>";
-			echo "<td align='right'><a href='" . h(ME . "edit=") . urlencode($table) . "'>" . format_rows($row) . "</a>";
+			echo "<th><a href='" . h(ME) . 'select=' . url_escape($table) . "'>$name</a>";
+			echo "<td align='right'><a href='" . h(ME . "edit=") . url_escape($table) . "'>" . format_rows($row) . "</a>";
 		}
 	}
 

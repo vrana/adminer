@@ -26,7 +26,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 		}
 	}
 	queries_redirect(
-		ME . "table=" . urlencode($TABLE),
+		ME . "table=" . url_escape($TABLE),
 		($row["drop"] ? lang('Foreign key has been dropped.') : ($name != "" ? lang('Foreign key has been altered.') : lang('Foreign key has been created.'))),
 		$result
 	);
