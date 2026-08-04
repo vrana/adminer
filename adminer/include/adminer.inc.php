@@ -541,7 +541,8 @@ class Adminer {
 	function selectLimitPrint(int $limit): void {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
 		// data-default - the same value as in selectLimitProcess()
-		echo "<input type='number' name='limit' class='size' value='" . intval($limit) . "' data-default='50'" . on('input', 'selectFieldChange') . ">";
+		// 0 is printed as an empty value, both mean no limit
+		echo "<input type='number' name='limit' class='size' value='" . h($limit ?: "") . "' data-default='50'" . on('input', 'selectFieldChange') . ">";
 		echo "</div></fieldset>\n";
 	}
 
