@@ -408,16 +408,18 @@ function cookie(string $name, ?string $value, int $lifetime = 2592000): void {
 
 /** Get contents from URL
 * @param resource $context
-* @return array{0: string, 1: string} [$contents, $status]
+* @return array{0: string, 1: string, 2: list<string>, 3: string} [$contents, $status, $headers, $error]
 */
 function get_url(string $url, $context): array {
+	$http_response_header = null; // assigning it avoids deprecating the predefined locally scoped variable in PHP 8.4, file_get_contents() overwrites it in older versions
 	$return = @file_get_contents($url, false, $context);
-	if (function_exists('http_get_last_response_headers')) {
-		$http_response_header = http_get_last_response_headers();
-	}
+	$error = ($return === false ? error_get_last() : null); // read before the lines below overwrite the last error
+	$headers = (function_exists('http_get_last_response_headers') ? http_get_last_response_headers() : $http_response_header);
 	return array(
 		$return,
-		(preg_match('~^HTTP/[\d.]+ (\d+)~', $http_response_header[0], $match) ? $match[1] : ''),
+		(preg_match('~^HTTP/[\d.]+ (\d+)~', idx($headers, 0, ''), $match) ? $match[1] : ''),
+		(array) $headers,
+		($error ? preg_replace('~^file_get_contents\([^)]*\):\s*~', '', $error['message']) : ''), // the URL can contain a password
 	);
 }
 
