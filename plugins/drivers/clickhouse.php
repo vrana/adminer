@@ -6,13 +6,6 @@ add_driver("clickhouse", "ClickHouse");
 if (isset($_GET["clickhouse"])) {
 	define('Adminer\DRIVER', "clickhouse");
 
-	// Adminer couples index display to its generic index editor. ClickHouse
-	// indexes have different semantics, so keep the structure view read-only.
-	if (isset($_GET["indexes"])) {
-		$_GET["table"] = $_GET["indexes"];
-		unset($_GET["indexes"]);
-	}
-
 	if (ini_bool('allow_url_fopen')) {
 		class Db extends SqlDb {
 			public $extension = "JSON";
@@ -24,7 +17,7 @@ if (isset($_GET["clickhouse"])) {
 				$this->error = '';
 				$this->errno = 0;
 				$this->affected_rows = 0;
-				list($file, $status) = get_url($this->url . "/?database=" . rawurlencode($db), stream_context_create(array('http' => array(
+				list($file, $status, $headers, $error) = get_url($this->url . "/?database=" . rawurlencode($db), stream_context_create(array('http' => array(
 					'method' => 'POST',
 					'content' => $query,
 					'header' => array(
@@ -43,11 +36,7 @@ if (isset($_GET["clickhouse"])) {
 					return false;
 				}
 				if ($file === false) {
-					$lastError = error_get_last();
-					$this->error = ($lastError && $lastError['message']
-						? preg_replace('~^file_get_contents\([^)]*\):\s*~', '', $lastError['message'])
-						: lang('Unable to connect.')
-					);
+					$this->error = ($error ?: 'Unable to connect to the ClickHouse server.');
 					return false;
 				}
 				if ($status < 200 || $status >= 300) {
@@ -61,6 +50,13 @@ if (isset($_GET["clickhouse"])) {
 						$this->error = "ClickHouse HTTP error $status.";
 					}
 					return false;
+				}
+
+				foreach ($headers as $header) {
+					// the header repeats with progress, the last one is final; it is missing for some commands
+					if (preg_match('~^X-ClickHouse-Summary:\s*(.+)~i', $header, $match)) {
+						$this->affected_rows = (int) idx((array) json_decode($match[1], true), 'written_rows', 0);
+					}
 				}
 
 				if (trim($file) === '') {
@@ -89,6 +85,9 @@ if (isset($_GET["clickhouse"])) {
 
 			function attach($server, $username, $password): string {
 				$this->url = rtrim((preg_match('~^https?://~i', $server) ? $server : "http://$server"), '/');
+				if (!preg_match('~:\d+$~', $this->url)) { // connect() allows no path so this can be only the port
+					$this->url .= (preg_match('~^https://~i', $this->url) ? ":8443" : ":8123");
+				}
 				$this->authorization = base64_encode("$username:$password");
 				$return = $this->query('SELECT version()');
 				if (!$return) {
@@ -130,7 +129,7 @@ if (isset($_GET["clickhouse"])) {
 						$type = (isset($this->meta[$key]['type']) ? $this->meta[$key]['type'] : '');
 						$row[$key] = ($val === null || is_scalar($val)
 							? $this->normalizeValue($val, $type)
-							: json_encode($val, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
+							: json_encode($val, 256 | 64) // JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES available since PHP 5.4
 						);
 					}
 					$this->rows[] = $row;
@@ -194,15 +193,7 @@ if (isset($_GET["clickhouse"])) {
 		public $generated = array("MATERIALIZED", "ALIAS", "EPHEMERAL");
 
 		static function connect($server, $username, $password) {
-			$url = (preg_match('~^https?://~i', $server) ? $server : "http://$server");
-			$parts = @parse_url($url);
-			if (
-				!is_array($parts)
-				|| !isset($parts['scheme'], $parts['host'])
-				|| !in_array(strtolower($parts['scheme']), array('http', 'https'), true)
-				|| isset($parts['user']) || isset($parts['pass']) || isset($parts['query']) || isset($parts['fragment'])
-				|| (isset($parts['path']) && $parts['path'] !== '' && $parts['path'] !== '/')
-			) {
+			if (!preg_match('~^(https?://)?(\[[\da-f:.]+\]|[-\w.]+)(:\d+)?/?$~i', $server)) {
 				return lang('Invalid server.');
 			}
 			return parent::connect($server, $username, $password);
@@ -210,6 +201,14 @@ if (isset($_GET["clickhouse"])) {
 
 		function hasCStyleEscapes(): bool {
 			return true;
+		}
+
+		function supportsAlterIndex(array $table_status): bool {
+			return false; // indexes are listed for information only, altering them requires ClickHouse specific syntax
+		}
+
+		function slowQuery(string $query, int $timeout) {
+			return "$query SETTINGS max_execution_time = $timeout";
 		}
 
 		function __construct(Db $connection) {
@@ -242,7 +241,7 @@ if (isset($_GET["clickhouse"])) {
 			return ($engines ?: array("MergeTree", "ReplacingMergeTree", "Memory", "Log", "TinyLog"));
 		}
 
-		function allFields() {
+		function allFields(): array {
 			$return = array();
 			$rows = get_rows(
 				"SELECT c." . idf_escape('table') . " AS " . idf_escape('table')
@@ -441,6 +440,13 @@ if (isset($_GET["clickhouse"])) {
 			if (!$result) {
 				return false;
 			}
+
+			if ($field[0] != "" && $field[1][3] == "" && min_version("20.10")) {
+				// MODIFY COLUMN without DEFAULT keeps the original default value, $newName is used because the column is already renamed
+				if (!queries("ALTER TABLE " . table($table) . " MODIFY COLUMN $newName REMOVE DEFAULT")) {
+					return false;
+				}
+			}
 		}
 
 		if ($comment !== null) {
@@ -581,13 +587,6 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function indexes($table, $connection2 = null) {
-		// Only expose these on the structure page. ClickHouse primary and sorting
-		// keys are not unique, so returning them during row editing would make
-		// Adminer build unsafe, incomplete WHERE clauses.
-		if (!isset($_GET["table"])) {
-			return array();
-		}
-
 		$conn = connection($connection2);
 		$return = array();
 		$rows = get_rows(
@@ -597,15 +596,20 @@ if (isset($_GET["clickhouse"])) {
 		);
 		if ($rows) {
 			$row = $rows[0];
+			// the types are not PRIMARY so that unique_array() doesn't identify rows by them, ClickHouse keys are not unique
 			if ($row["primary_key"] !== "") {
-				$return["PRIMARY KEY"] = clickhouse_index("PRIMARY", $row["primary_key"]);
+				$return["PRIMARY KEY"] = clickhouse_index("PRIMARY KEY", $row["primary_key"]);
 			}
 			if ($row["sorting_key"] !== "" && $row["sorting_key"] !== $row["primary_key"]) {
 				$return["SORTING KEY"] = clickhouse_index("SORTING KEY", $row["sorting_key"]);
 			}
 		}
 
-		if (get_val("EXISTS TABLE system.data_skipping_indices", 0, $connection2)) {
+		static $skipping; // the answer is the same for the whole request, indexes() is called for each table in the schema
+		if ($skipping === null) {
+			$skipping = (bool) get_val("EXISTS TABLE system.data_skipping_indices", 0, $connection2);
+		}
+		if ($skipping) {
 			$rows = get_rows(
 				"SELECT name, expr, type_full, granularity FROM system.data_skipping_indices "
 				. "WHERE database = " . q($conn->_db) . " AND " . idf_escape('table') . " = " . q($table)
@@ -632,7 +636,8 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function alter_indexes($table, $alter) {
-		connection()->error = 'ClickHouse index editing is disabled in Adminer; use the SQL command page.';
+		// the page is not linked anywhere, see Driver::supportsAlterIndex()
+		connection()->error = 'ClickHouse indexes cannot be altered by Adminer, use the SQL command page.';
 		return false;
 	}
 
@@ -780,10 +785,6 @@ if (isset($_GET["clickhouse"])) {
 		return queries("KILL QUERY WHERE query_id = " . q($id) . " SYNC");
 	}
 
-	function connection_id() {
-		return "SELECT query_id FROM system.processes WHERE query_id != '' ORDER BY elapsed DESC LIMIT 1";
-	}
-
 	function max_connections() {
 		$value = get_val("SELECT value FROM system.settings WHERE name = 'max_concurrent_queries'");
 		return ($value === false ? "0" : $value);
@@ -802,11 +803,8 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function support($feature) {
-		if ($feature === "indexes") {
-			return isset($_GET["table"]);
-		}
 		return (bool) preg_match(
-			"~^(columns|comment|copy|database|drop_col|dump|kill|move_col|processlist|sql|status|table|variables|view)$~",
+			"~^(columns|comment|copy|database|drop_col|dump|indexes|kill|move_col|processlist|sql|status|table|variables|view)$~",
 			$feature
 		);
 	}
