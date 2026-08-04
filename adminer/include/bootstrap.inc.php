@@ -92,7 +92,7 @@ define(
 	preg_replace('~\?.*~', '', relative_uri()) . '?'
 		. (sid() ? SID . '&' : '')
 		. ($_GET["ext"] ? "ext=" . url_escape($_GET["ext"]) . '&' : '')
-		. (SERVER !== null ? DRIVER . "=" . url_escape(SERVER) . '&' : '')
+		. (isset($_GET[DRIVER]) ? DRIVER . "=" . url_escape(SERVER) . '&' : '') // no parameter means the default driver at the default server
 		. (isset($_GET["username"]) ? "username=" . url_escape($_GET["username"]) . '&' : '')
 		. (DB != "" ? 'db=' . url_escape(DB) . '&' . (isset($_GET["ns"]) ? "ns=" . url_escape($_GET["ns"]) . "&" : "") : '')
 );

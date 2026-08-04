@@ -204,7 +204,7 @@ function hidden_fields(array $process, array $ignore = array(), string $prefix =
 function hidden_fields_get(): void {
 	echo (sid() ? input_hidden(session_name(), session_id()) : '');
 	echo ($_GET["ext"] ? input_hidden("ext", $_GET["ext"]) : "");
-	echo (SERVER !== null ? input_hidden(DRIVER, SERVER) : "");
+	echo (isset($_GET[DRIVER]) ? input_hidden(DRIVER, SERVER) : ""); // no parameter means the default driver at the default server
 	echo input_hidden("username", $_GET["username"]);
 }
 
