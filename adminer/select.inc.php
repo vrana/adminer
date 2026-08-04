@@ -13,7 +13,7 @@ $rights = array(); // privilege => 0
 $columns = array(); // selectable columns
 $search_columns = array(); // searchable columns
 $order_columns = array(); // sortable columns
-$text_length = "";
+$text_length = null; // null - no column can be shortened
 foreach ($fields as $key => $field) {
 	$name = adminer()->fieldName($field);
 	$name_plain = html_entity_decode(strip_tags($name), ENT_QUOTES);
@@ -265,7 +265,9 @@ if (!$columns && support("table")) {
 	adminer()->selectSearchPrint($where, $search_columns, $indexes);
 	adminer()->selectOrderPrint($order, $order_columns, $indexes);
 	adminer()->selectLimitPrint($limit);
-	adminer()->selectLengthPrint($text_length);
+	if ($text_length !== null) {
+		adminer()->selectLengthPrint($text_length);
+	}
 	adminer()->selectActionPrint($indexes);
 	echo "</form>\n";
 

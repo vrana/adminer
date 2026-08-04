@@ -546,11 +546,9 @@ class Adminer {
 	* @param numeric-string $text_length result of selectLengthProcess()
 	*/
 	function selectLengthPrint(string $text_length): void {
-		if ($text_length !== null) {
-			echo "<fieldset><legend>" . lang('Text length') . "</legend><div>";
-			echo "<input type='number' name='text_length' class='size' value='" . h($text_length) . "'>";
-			echo "</div></fieldset>\n";
-		}
+		echo "<fieldset><legend>" . lang('Text length') . "</legend><div>";
+		echo "<input type='number' name='text_length' class='size' value='" . h($text_length) . "'>";
+		echo "</div></fieldset>\n";
 	}
 
 	/** Print action box in select
