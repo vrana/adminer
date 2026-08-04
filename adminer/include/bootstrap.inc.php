@@ -40,6 +40,7 @@ define('Adminer\HTTPS', ($_SERVER["HTTPS"] && strcasecmp($_SERVER["HTTPS"], "off
 
 ini_set("session.use_trans_sid", '0'); // protect links in export
 ini_set("arg_separator.output", "&"); // some hosts set it to "&amp;" which would break http_build_query()
+// arg_separator.input is not checked - it is PHP_INI_PERDIR so we couldn't fix it and a value without & would break almost every PHP application
 if (!defined("SID")) {
 	session_cache_limiter(""); // to allow restarting session
 	session_name("adminer_sid"); // use specific session name to get own namespace
