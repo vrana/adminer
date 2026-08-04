@@ -279,10 +279,11 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			if ($field["type"] == "enum" || like_bool($field)) { //! set - uses 1 << $i and FIND_IN_SET()
 				$key = $keys[$name];
 				$i--;
-				echo "<div>" . h($desc) . ":" . input_hidden("where[$i][col]", $name);
+				// data-default - the column alone doesn't filter anything, the row is sent only with a value
+				echo "<div>" . h($desc) . ":" . input_hidden("where[$i][col]", $name, " data-default='" . h($name) . "'");
 				$val = idx($where[$key], "val");
 				echo (like_bool($field)
-					? "<select name='where[$i][val]'>" . optionlist(array("" => "", lang('no'), lang('yes')), $val, true) . "</select>"
+					? "<select name='where[$i][val]' data-default=''>" . optionlist(array("" => "", lang('no'), lang('yes')), $val, true) . "</select>"
 					: enum_input("checkbox", " name='where[$i][val][]'", $field, (array) $val, lang('empty'))
 				);
 				echo "</div>\n";
@@ -293,24 +294,24 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 				}
 				$key = $keys[$name];
 				$i--;
-				echo "<div>" . h($desc) . input_hidden("where[$i][col]", $name) . input_hidden("where[$i][op]", "=")
-					. ": <select name='where[$i][val]'>" . optionlist($options, idx($where[$key], "val"), true) . "</select></div>\n";
+				echo "<div>" . h($desc) . input_hidden("where[$i][col]", $name, " data-default='" . h($name) . "'") . input_hidden("where[$i][op]", "=", " data-default='='")
+					. ": <select name='where[$i][val]' data-default=''>" . optionlist($options, idx($where[$key], "val"), true) . "</select></div>\n";
 				unset($columns[$name]);
 			}
 		}
 		$i = 0;
 		foreach ($where as $val) {
 			if (($val["col"] == "" || $columns[$val["col"]]) && "$val[col]$val[val]" != "") {
-				echo "<div><select name='where[$i][col]'><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
-				echo html_select("where[$i][op]", array(-1 => "") + adminer()->operators(), $val["op"]);
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'"
+				echo "<div><select name='where[$i][col]' data-default=''><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
+				echo html_select("where[$i][op]", array(-1 => "") + adminer()->operators(), $val["op"], " data-default=''");
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' data-default=''"
 					. on('keydown', 'selectSearchKeydown') . on('search', 'selectSearchSearch') . "></div>\n";
 				$i++;
 			}
 		}
-		echo "<div><select name='where[$i][col]'" . on('change', 'selectAddRow') . "><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, null, true) . "</select>";
-		echo html_select("where[$i][op]", array(-1 => "") + adminer()->operators());
-		echo "<input type='search' name='where[$i][val]'"
+		echo "<div><select name='where[$i][col]' data-default=''" . on('change', 'selectAddRow') . "><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, null, true) . "</select>";
+		echo html_select("where[$i][op]", array(-1 => "") + adminer()->operators(), null, " data-default=''");
+		echo "<input type='search' name='where[$i][val]' data-default=''"
 			. on('change', 'selectFirstChange') . on('keydown', 'selectSearchKeydown') . on('search', 'selectSearchSearch') . "></div>\n";
 		echo "</div></fieldset>\n";
 	}
@@ -329,7 +330,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		}
 		if ($orders) {
 			echo '<fieldset><legend>' . lang('Sort') . "</legend><div>";
-			echo "<select name='index_order'>" . optionlist(array("" => "") + $orders, (idx($_GET["order"], 0) != "" ? "" : $_GET["index_order"]), true) . "</select>";
+			echo "<select name='index_order' data-default=''>" . optionlist(array("" => "") + $orders, (idx($_GET["order"], 0) != "" ? "" : $_GET["index_order"]), true) . "</select>";
 			echo "</div></fieldset>\n";
 		}
 		if ($_GET["order"]) {
@@ -342,7 +343,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 
 	function selectLimitPrint(int $limit): void {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
-		echo html_select("limit", array("", "50", "100"), (string) $limit);
+		// data-default - the same value as in selectLimitProcess()
+		echo html_select("limit", array("", "50", "100"), (string) $limit, " data-default='50'");
 		echo "</div></fieldset>\n";
 	}
 

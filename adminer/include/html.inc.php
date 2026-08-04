@@ -36,10 +36,11 @@ function on(string $event, string $handler, $arg = null): string {
 
 /** Get <input type="hidden">
 * @param string|int $value
+* @param string $attrs additional attributes including the leading space
 * @return string HTML
 */
-function input_hidden(string $name, $value = ""): string {
-	return "<input type='hidden' name='" . h($name) . "' value='" . h($value) . "'>\n";
+function input_hidden(string $name, $value = "", string $attrs = ""): string {
+	return "<input type='hidden' name='" . h($name) . "' value='" . h($value) . "'$attrs>\n";
 }
 
 /** Get CSRF <input type="hidden" name="token">

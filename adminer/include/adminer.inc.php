@@ -464,7 +464,7 @@ class Adminer {
 		foreach ($select as $key => $val) {
 			$val = idx($_GET["columns"], $key, array());
 			$column = select_input(
-				" name='columns[$i][col]'" . on('change', ($key !== "" ? 'selectFieldChange' : 'selectAddRow')),
+				" name='columns[$i][col]' data-default=''" . on('change', ($key !== "" ? 'selectFieldChange' : 'selectAddRow')),
 				$columns,
 				$val["col"]
 			);
@@ -473,7 +473,7 @@ class Adminer {
 					"columns[$i][fun]",
 					array(-1 => "") + array_filter(array(lang('Functions') => driver()->functions, lang('Aggregation') => driver()->grouping)),
 					$val["fun"],
-					on('change', ($key !== "" ? 'helpClose' : 'selectFunAddRow'))
+					" data-default=''" . on('change', ($key !== "" ? 'helpClose' : 'selectFunAddRow'))
 						. on_help_value(' (.*)|$', '($1)')
 				) . "($column)"
 				: $column
@@ -493,21 +493,23 @@ class Adminer {
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
 				echo "<div>(<i>" . implode("</i>, <i>", array_map('Adminer\h', $index["columns"])) . "</i>) AGAINST";
-				echo " <input type='search' name='fulltext[$i]' value='" . h(idx($_GET["fulltext"], $i)) . "'" . on('input', 'selectFieldChange') . ">";
+				echo " <input type='search' name='fulltext[$i]' value='" . h(idx($_GET["fulltext"], $i)) . "' data-default=''" . on('input', 'selectFieldChange') . ">";
 				echo (JUSH == 'sql' ? checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL") : '');
 				echo "</div>\n";
 			}
 		}
+		$operators = adminer()->operators();
 		foreach (array_merge((array) $_GET["where"], array(array())) as $i => $val) {
-			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], adminer()->operators()))) {
+			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $operators))) {
 				echo "<div>" . select_input(
-					" name='where[$i][col]'" . on('change', ($val ? 'selectFieldChange' : 'selectAddRow')),
+					" name='where[$i][col]' data-default=''" . on('change', ($val ? 'selectFieldChange' : 'selectAddRow')),
 					$columns,
 					$val["col"],
 					"(" . lang('anywhere') . ")"
 				);
-				echo html_select("where[$i][op]", adminer()->operators(), $val["op"], on('change', 'selectFirstChange'));
-				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "'"
+				// the first operator is selected by the browser if none is
+				echo html_select("where[$i][op]", $operators, $val["op"], " data-default='" . h(first($operators)) . "'" . on('change', 'selectFirstChange'));
+				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' data-default=''"
 					. on('input', 'selectFirstChange') . on('keydown', 'selectSearchKeydown') . on('search', 'selectSearchSearch') . ">";
 				echo "</div>\n";
 			}
@@ -525,12 +527,12 @@ class Adminer {
 		$i = 0;
 		foreach ((array) $_GET["order"] as $key => $val) {
 			if ($val != "") {
-				echo "<div>" . select_input(" name='order[$i]'" . on('change', 'selectFieldChange'), $columns, $val);
+				echo "<div>" . select_input(" name='order[$i]' data-default=''" . on('change', 'selectFieldChange'), $columns, $val);
 				echo checkbox("desc[$i]", 1, isset($_GET["desc"][$key]), lang('descending')) . "</div>\n";
 				$i++;
 			}
 		}
-		echo "<div>" . select_input(" name='order[$i]'" . on('change', 'selectAddRow'), $columns);
+		echo "<div>" . select_input(" name='order[$i]' data-default=''" . on('change', 'selectAddRow'), $columns);
 		echo checkbox("desc[$i]", 1, false, lang('descending')) . "</div>\n";
 		echo "</div></fieldset>\n";
 	}
@@ -538,7 +540,8 @@ class Adminer {
 	/** Print limit box in select */
 	function selectLimitPrint(int $limit): void {
 		echo "<fieldset><legend>" . lang('Limit') . "</legend><div>"; // <div> for easy styling
-		echo "<input type='number' name='limit' class='size' value='" . intval($limit) . "'" . on('input', 'selectFieldChange') . ">";
+		// data-default - the same value as in selectLimitProcess()
+		echo "<input type='number' name='limit' class='size' value='" . intval($limit) . "' data-default='50'" . on('input', 'selectFieldChange') . ">";
 		echo "</div></fieldset>\n";
 	}
 
@@ -547,7 +550,8 @@ class Adminer {
 	*/
 	function selectLengthPrint(string $text_length): void {
 		echo "<fieldset><legend>" . lang('Text length') . "</legend><div>";
-		echo "<input type='number' name='text_length' class='size' value='" . h($text_length) . "'>";
+		// data-default - the same value as in selectLengthProcess()
+		echo "<input type='number' name='text_length' class='size' value='" . h($text_length) . "' data-default='100'>";
 		echo "</div></fieldset>\n";
 	}
 

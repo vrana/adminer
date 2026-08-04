@@ -97,18 +97,40 @@ function urlUnescape(string) {
 /** Serialize form fields to a query string
 * @param {HTMLFormElement} form
 * @param {HTMLElement} [submitter] the button which sent the form
+* @param {boolean} [defaults] skip the fields holding the value from their data-default
 * @return {?string} null if the form contains a file
 */
-function formData(form, submitter) {
+function formData(form, submitter, defaults) {
 	const data = [];
+	const groups = []; // a row is sent as a whole, where[0][op] is useless without where[0][val]
 	for (const el of form.elements) {
 		if (el.name && !el.disabled) {
 			if (/^file$/i.test(el.type) && el.value) {
 				return null;
 			}
 			if (!/^(checkbox|radio|submit|file)$/i.test(el.type) || el.checked || el == submitter) {
-				data.push(urlEscape(el.name) + '=' + urlEscape(el.matches('select') ? selectValue(el) : el.value));
+				const value = selectValue(el);
+				const field = urlEscape(el.name) + '=' + urlEscape(value);
+				if (!defaults) {
+					data.push(field);
+					continue;
+				}
+				const name = el.name.replace(/\].*/, ']'); // where[0][col] and where[0][val] belong to where[0]
+				let group = groups.find(group2 => group2.name == name);
+				if (!group) {
+					group = {name: name, fields: [], send: false};
+					groups.push(group);
+				}
+				group.fields.push(field);
+				if (el.getAttribute('data-default') !== value) { // getAttribute() returns null for a field which must be always sent
+					group.send = true;
+				}
 			}
+		}
+	}
+	for (const group of groups) {
+		if (group.send) {
+			data.push(...group.fields);
 		}
 	}
 	return data.join('&');
@@ -581,7 +603,7 @@ function bodySubmit(event) {
 	}
 	const form = event.target;
 	if (/^get$/i.test(form.method)) { // the browser would serialize the form with full escaping
-		const data = formData(form, event.submitter); // submitter is undefined in Chrome < 81, no GET form uses a named submit button
+		const data = formData(form, event.submitter, true); // submitter is undefined in Chrome < 81, no GET form uses a named submit button
 		if (data !== null) {
 			const url = form.action.replace(/\?.*/, '') + '?' + data;
 			if (form.target) { // set by Ctrl+click or Shift+click; open() is not blocked, the click activation is still valid
