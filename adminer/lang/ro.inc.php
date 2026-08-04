@@ -293,6 +293,7 @@ Lang::$translations = array(
 	'Default value' => 'Valoare implicită', // Claude Fable 5
 	'Full table scan' => 'Scanare completă a tabelului', // Claude Fable 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Prea multe autentificări nereușite, încercați din nou peste %d minut.', 'Prea multe autentificări nereușite, încercați din nou peste %d minute.'), // Claude Fable 5
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Folosiți <a%2$s>pluginul</a> %1$s dacă Adminer rulează în spatele unui proxy invers.', // Claude Opus 5
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Vă mulțumim că folosiți Adminer, luați în considerare o <a href="https://www.adminer.org/en/donation/">donație</a>.', // Claude Fable 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Parola principală a expirat. <a href="https://www.adminer.org/en/extension/"%s>Implementați</a> metoda %s pentru a o face permanentă.', // Claude Fable 5
 	'The action will be performed after successful login with the same credentials.' => 'Acțiunea va fi efectuată după autentificarea reușită cu aceleași date de autentificare.', // Claude Fable 5

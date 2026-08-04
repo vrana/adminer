@@ -276,6 +276,7 @@ Lang::$translations = array(
 	'Default value' => 'Значение по умолчанию',
 	'Full table scan' => 'Анализ полной таблицы',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Слишком много неудачных попыток входа. Попробуйте снова через %d минуту.', 'Слишком много неудачных попыток входа. Попробуйте снова через %d минуты.', 'Слишком много неудачных попыток входа. Попробуйте снова через %d минут.'),
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Используйте <a%2$s>плагин</a> %1$s, если Adminer работает за обратным прокси.', // Claude Opus 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Мастер-пароль истёк. <a href="https://www.adminer.org/en/extension/"%s>Реализуйте</a> метод %s, чтобы сделать его постоянным.',
 	'If you did not send this request from Adminer then close this page.' => 'Если вы не посылали этот запрос из Adminer, закройте эту страницу.',
 	'You can upload a big SQL file via FTP and import it from server.' => 'Вы можете закачать большой SQL-файл по FTP и затем импортировать его с сервера.',

@@ -292,6 +292,7 @@ Lang::$translations = array(
 	'Default value' => 'Valor predeterminado', // Claude Fable 5
 	'Full table scan' => 'Varrimento completo da tabela', // Claude Fable 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Demasiadas tentativas de início de sessão falhadas, tente novamente em %d minuto.', 'Demasiadas tentativas de início de sessão falhadas, tente novamente em %d minutos.'), // Claude Fable 5
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Utilize o <a%2$s>plugin</a> %1$s se o Adminer for executado atrás de um proxy inverso.', // Claude Opus 5
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Obrigado por usar o Adminer, considere <a href="https://www.adminer.org/en/donation/">fazer um donativo</a>.', // Claude Fable 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'A senha mestra expirou. <a href="https://www.adminer.org/en/extension/"%s>Implemente</a> o método %s para a tornar permanente.', // Claude Fable 5
 	'The action will be performed after successful login with the same credentials.' => 'A ação será realizada após iniciar sessão com êxito com as mesmas credenciais.', // Claude Fable 5

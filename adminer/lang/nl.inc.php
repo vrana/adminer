@@ -280,6 +280,7 @@ Lang::$translations = array(
 	'Default value' => 'Standaardwaarde',
 	'Full table scan' => 'Full table scan',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Teveel foutieve aanmeldpogingen, probeer opnieuw binnen %d minuut.', 'Teveel foutieve aanmeldpogingen, probeer opnieuw binnen %d minuten.'),
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Gebruik de <a%2$s>plugin</a> %1$s als Adminer achter een reverse proxy draait.', // Claude Opus 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Master wachtwoord verlopen. <a href="https://www.adminer.org/en/extension/"%s>Implementeer</a> de %s methode om het permanent te maken.',
 	'The action will be performed after successful login with the same credentials.' => 'Deze actie zal uitgevoerd worden na het succesvol aanmelden met dezelfde gebruikersgegevens.',
 	'Connecting to privileged ports is not allowed.' => 'Verbindingen naar geprivilegieerde poorten is niet toegestaan.',

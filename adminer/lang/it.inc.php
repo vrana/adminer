@@ -281,6 +281,7 @@ Lang::$translations = array(
 	'Default value' => 'Valore predefinito',
 	'Full table scan' => 'Analizza intera tabella',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Troppi tentativi infruttuosi di login, si prega di riprovare in %d minuto.', 'Troppi tentativi infruttuosi di login, si prega di riprovare in %d minuti.'),
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Usare il <a%2$s>plugin</a> %1$s se Adminer è eseguito dietro un reverse proxy.', // Claude Opus 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'La password principale é scaduta. <a href="https://www.adminer.org/it/extension/"%s>Implementare</a> %s come metodo per renderla permanente.',
 	'The action will be performed after successful login with the same credentials.' => 'La azione verrá eseguita dopo un login valido con le stesse credenziali.',
 	'Connecting to privileged ports is not allowed.' => 'La connessione a porte privilegiate non é permessa.',

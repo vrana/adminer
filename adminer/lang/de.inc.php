@@ -275,6 +275,7 @@ Lang::$translations = array(
 	'Loading…' => 'Lade…',
 	'Load more data' => 'Mehr Daten laden',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Zu viele erfolglose Login-Versuche. Bitte probieren Sie es in %d Minute noch einmal.', 'Zu viele erfolglose Login-Versuche. Bitte probieren Sie es in %d Minuten noch einmal.'),
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Verwenden Sie das <a%2$s>Plugin</a> %1$s, wenn Adminer hinter einem Reverse Proxy läuft.', // Claude Opus 5
 	'If you did not send this request from Adminer then close this page.' => 'Wenn Sie diese Anfrage nicht von Adminer gesendet haben, schließen Sie diese Seite.',
 	'You can upload a big SQL file via FTP and import it from server.' => 'Sie können eine große SQL-Datei per FTP hochladen und dann vom Server importieren.',
 	'You are offline.' => 'Sie sind offline.',

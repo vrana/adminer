@@ -17,6 +17,7 @@ Lang::$translations = array(
 	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer預設不支援訪問沒有密碼的資料庫，<a href="https://www.adminer.org/en/password/"%s>詳情見這裡</a>。',
 	'Database does not support password.' => '資料庫不支援密碼。',
 	'Too many unsuccessful logins, try again in %d minute(s).' => '登錄失敗次數過多，請 %d 分鐘後重試。',
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => '如果 Adminer 執行在反向代理之後，請使用 %1$s <a%2$s>外掛</a>。', // Claude Opus 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => '主密碼已過期。<a href="https://www.adminer.org/en/extension/"%s>請擴展</a> %s 方法讓它永久化。',
 	'Language' => '語言',
 	'Invalid CSRF token. Send the form again.' => '無效的 CSRF token。請重新發送表單。',

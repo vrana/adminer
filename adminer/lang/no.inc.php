@@ -298,6 +298,7 @@ Lang::$translations = array(
 	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer støtter ikke tilgang til en database uten passord, <a href="https://www.adminer.org/en/password/"%s>mer informasjon</a>.', // Claude Fable 5
 	'Default value' => 'Standardverdi', // Claude Fable 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('For mange mislykkede innloggingsforsøk, prøv igjen om %d minutt.', 'For mange mislykkede innloggingsforsøk, prøv igjen om %d minutter.'), // Claude Fable 5
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Bruk <a%2$s>pluginet</a> %1$s hvis Adminer kjører bak en omvendt proxy.', // Claude Opus 5
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Takk for at du bruker Adminer, vurder å <a href="https://www.adminer.org/en/donation/">donere</a>.', // Claude Fable 5
 	'The action will be performed after successful login with the same credentials.' => 'Handlingen utføres etter vellykket innlogging med samme påloggingsinformasjon.', // Claude Fable 5
 	'Invalid server.' => 'Ugyldig server.', // Claude Fable 5

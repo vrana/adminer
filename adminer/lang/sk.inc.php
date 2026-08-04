@@ -281,6 +281,7 @@ Lang::$translations = array(
 	'Default value' => 'Predvolená hodnota',
 	'Full table scan' => 'Prechod celej tabuľky',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Príliš veľa pokusov o prihlásenie, skúste to znova za %d minútu.', 'Príliš veľa pokusov o prihlásenie, skúste to znova za %d minúty.', 'Príliš veľa pokusov o prihlásenie, skúste to znova za %d minút.'),
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Ak Adminer beží za reverznou proxy, použite <a%2$s>plugin</a> %1$s.', // Claude Opus 5
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Vďaka za používanie Admineru, <a href="https://www.adminer.org/sk/donation/">prispejte</a> na vývoj.',
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Platnosť hlavného hesla vypršala. <a href="https://www.adminer.org/sk/extension/"%s>Implementujte</a> metódu %s, aby platilo natrvalo.',
 	'The action will be performed after successful login with the same credentials.' => 'Akcia sa vykoná po úspešnom prihlásení s rovnakými prihlasovacími údajmi.',

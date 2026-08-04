@@ -313,6 +313,7 @@ Lang::$translations = array(
 	'Default value' => 'Значення за замовчуванням',
 	'Full table scan' => 'Повне сканування таблиці',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Занадто багато невдалих спроб входу. Спробуйте знову через %d хвилину.', 'Занадто багато невдалих спроб входу. Спробуйте знову через %d хвилини.', 'Занадто багато невдалих спроб входу. Спробуйте знову через %d хвилин.'),
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Використовуйте <a%2$s>плагін</a> %1$s, якщо Adminer працює за зворотним проксі.', // Claude Opus 5
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Дякуємо, що користуєтесь Adminer, подумайте про <a href="https://www.adminer.org/en/donation/">внесок</a>.',
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Термін дії майстер пароля минув. <a href="https://www.adminer.org/en/extension/"%s>Реалізуйте</a> метод %s, щоб зробити його постійним.',
 	'The action will be performed after successful login with the same credentials.' => 'Дія буде виконуватися після успішного входу в систему з тими ж обліковими даними.',

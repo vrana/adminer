@@ -299,6 +299,7 @@ Lang::$translations = array(
 	'Default value' => '기본값', // Claude Fable 5
 	'Full table scan' => '전체 테이블 스캔', // Claude Fable 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => '로그인 실패가 너무 많습니다. %d분 후에 다시 시도하세요.', // Claude Fable 5
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Adminer가 리버스 프록시 뒤에서 실행되는 경우 %1$s <a%2$s>플러그인</a>을 사용하세요.', // Claude Opus 5
 	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Adminer를 사용해 주셔서 감사합니다. <a href="https://www.adminer.org/en/donation/">기부</a>를 고려해 주세요.', // Claude Fable 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => '마스터 비밀번호가 만료되었습니다. 영구적으로 유지하려면 <a href="https://www.adminer.org/en/extension/"%s>안내</a>에 따라 %s 메서드를 구현하세요.', // Claude Fable 5
 	'The action will be performed after successful login with the same credentials.' => '같은 자격 증명으로 로그인에 성공하면 작업이 수행됩니다.', // Claude Fable 5
