@@ -267,6 +267,13 @@ abstract class SqlDriver {
 		return !is_view($table_status);
 	}
 
+	/** Check whether table indexes can be altered
+	* @param TableStatus $table_status
+	*/
+	function supportsAlterIndex(array $table_status): bool {
+		return true;
+	}
+
 	/** Return list of supported index algorithms, first one is default
 	 * @param TableStatus $tableStatus
 	 * @return list<string>

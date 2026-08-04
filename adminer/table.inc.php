@@ -55,7 +55,9 @@ if (support("indexes") && driver()->supportsIndex($table_status)) {
 	if ($indexes) {
 		adminer()->tableIndexesPrint($indexes, $table_status);
 	}
-	echo '<p class="links hover"><a href="' . h(ME) . 'indexes=' . url_escape($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
+	if (driver()->supportsAlterIndex($table_status)) {
+		echo '<p class="links hover"><a href="' . h(ME) . 'indexes=' . url_escape($TABLE) . '">' . lang('Alter indexes') . "</a>\n";
+	}
 	echo "</div>\n";
 }
 
