@@ -21,7 +21,7 @@ class AdminerLoginServers extends Adminer\Plugin {
 	}
 
 	function credentials() {
-		return array($this->servers[Adminer\SERVER]["server"], $_GET["username"], Adminer\get_password());
+		return array(Adminer\idx($this->servers[Adminer\SERVER], "server"), $_GET["username"], Adminer\get_password());
 	}
 
 	function login($login, $password) {
