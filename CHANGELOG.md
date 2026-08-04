@@ -61,6 +61,7 @@
 - MS SQL: Treat binary fields as blob (bug SF-369)
 - MS SQL: Hide table actions and row editing in the sys schema
 - Elasticsearch, ClickHouse: Use default port
+- Elasticsearch: The driver is no longer beta, it works with Elasticsearch 7, 8 and 9
 - ClickHouse: Fix nullable columns, fix default values, show server version
 - ClickHouse: Support schema management, introspection and administration
 - MongoDB: Authenticate against the database used in login
@@ -99,6 +100,7 @@
 - Add type declarations to all drivers and the Editor
 - Use named constants instead of their values
 - Compile: Exit if a replacement doesn't match
+- Compile: Fix compiling a driver without support for the SQL command
 - Compile: Compress translations with the English translation as a dictionary, it saves 21 kB
 - Plugins: Compute official checksums from the plugins directory instead of a generated file
 - Require ES6 in JavaScript, remove old browser workarounds

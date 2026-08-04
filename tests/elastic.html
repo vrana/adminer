@@ -39,8 +39,20 @@
 <tr><td>click</td><td>add[2]</td><td></td></tr>
 <tr><td>type</td><td>fields[3][field]</td><td>albums</td></tr>
 <tr><td>select</td><td>fields[3][type]</td><td>label=integer</td></tr>
+<tr><td>click</td><td>add[3]</td><td></td></tr>
+<tr><td>type</td><td>fields[4][field]</td><td>country</td></tr>
+<tr><td>select</td><td>fields[4][type]</td><td>label=keyword</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Table has been altered.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Rename table</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/elastic.php?elastic=https%3A%2F%2Flocalhost:9200&amp;username=ODBC&amp;db=elastic&amp;create=interprets</td><td></td></tr>
+<tr><td>type</td><td>name</td><td>singers</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Elasticsearch does not support renaming indexes.</td><td></td></tr>
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
@@ -48,8 +60,25 @@
 <tbody>
 <tr><td>open</td><td>/adminer/elastic.php?elastic=https%3A%2F%2Flocalhost:9200&amp;username=ODBC&amp;db=elastic&amp;edit=interprets</td><td></td></tr>
 <tr><td>type</td><td>fields[name]</td><td>Michael Jackson</td></tr>
+<tr><td>type</td><td>fields[country]</td><td>US</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>has been inserted.</td><td></td></tr>
+<tr><td>open</td><td>/adminer/elastic.php?elastic=https%3A%2F%2Flocalhost:9200&amp;username=ODBC&amp;db=elastic&amp;edit=interprets</td><td></td></tr>
+<tr><td>type</td><td>fields[name]</td><td>Karel Gott</td></tr>
+<tr><td>type</td><td>fields[country]</td><td>CZ</td></tr>
+<tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>has been inserted.</td><td></td></tr>
+</tbody></table>
+
+<table cellpadding="1" cellspacing="1" border="1">
+<thead><tr><td rowspan="1" colspan="3">Select a full page</td></tr></thead>
+<tbody>
+<tr><td>open</td><td>/adminer/elastic.php?elastic=https%3A%2F%2Flocalhost:9200&amp;username=ODBC&amp;db=elastic&amp;select=interprets&amp;limit=1&amp;order[0]=country</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Karel Gott</td><td></td></tr>
+<tr><td>verifyTextNotPresent</td><td>Michael Jackson</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>2 rows</td><td></td></tr>
+<tr><td>clickAndWait</td><td>link=2</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>Michael Jackson</td><td></td></tr>
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
