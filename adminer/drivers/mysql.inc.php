@@ -530,6 +530,14 @@ if (!defined('Adminer\DRIVER')) {
 		return preg_match('~InnoDB|IBMDB2I' . (min_version(5.6) ? '|NDB' : '') . '~i', $table_status["Engine"]);
 	}
 
+	/** Parse type declaration
+	* @return array{string, string, string} [type, length, unsigned]
+	*/
+	function parse_type(string $full_type): array {
+		preg_match('~^([^( ]+)(?:\((.+)\))?( unsigned)?( zerofill)?$~', $full_type, $match);
+		return array($match[1], $match[2], ltrim($match[3] . $match[4]));
+	}
+
 	/** Get information about fields
 	* @return Field[]
 	*/
@@ -543,10 +551,10 @@ if (!defined('Adminer\DRIVER')) {
 			$extra = $row["EXTRA"];
 			// https://mariadb.com/kb/en/library/show-columns/, https://github.com/vrana/adminer/pull/359#pullrequestreview-276677186
 			preg_match('~^(VIRTUAL|PERSISTENT|STORED)~', $extra, $generated);
-			preg_match('~^([^( ]+)(?:\((.+)\))?( unsigned)?( zerofill)?$~', $type, $match_type);
+			list($type_name, $length, $unsigned) = parse_type($type);
 			$default = $row["COLUMN_DEFAULT"];
 			if ($default != "") {
-				$is_text = preg_match('~text|json~', $match_type[1]);
+				$is_text = preg_match('~text|json~', $type_name);
 				if (!$maria && $is_text) {
 					// default value a'b of text column is stored as _utf8mb4\'a\\\'b\' in MySQL
 					$default = preg_replace("~^(_\w+)?('.*')$~", '\2', stripslashes($default));
@@ -556,16 +564,16 @@ if (!defined('Adminer\DRIVER')) {
 						return stripslashes(str_replace("''", "'", $match[1]));
 					}, $default));
 				}
-				if (!$maria && preg_match('~binary~', $match_type[1]) && preg_match('~^0x(\w*)$~', $default, $match)) {
+				if (!$maria && preg_match('~binary~', $type_name) && preg_match('~^0x(\w*)$~', $default, $match)) {
 					$default = pack("H*", $match[1]);
 				}
 			}
 			$return[$field] = array(
 				"field" => $field,
 				"full_type" => $type,
-				"type" => $match_type[1],
-				"length" => $match_type[2],
-				"unsigned" => ltrim($match_type[3] . $match_type[4]),
+				"type" => $type_name,
+				"length" => $length,
+				"unsigned" => $unsigned,
 				"default" => ($generated
 					? ($maria ? $generation : stripslashes($generation))
 					: $default
@@ -934,18 +942,25 @@ if (!defined('Adminer\DRIVER')) {
 	* @return Routine
 	*/
 	function routine(string $name, string $type): array {
-		$fields = get_rows("SELECT
-	PARAMETER_NAME field,
-	DATA_TYPE type,
-	REGEXP_REPLACE(DTD_IDENTIFIER, '^[^(]+\\\\(?|\\\\)$', '') length,
-	REGEXP_REPLACE(DTD_IDENTIFIER, '^[^ ]+ ', '') `unsigned`,
-	1 `null`,
-	DTD_IDENTIFIER full_type,
-	" . ($type == "FUNCTION" ? "''" : "PARAMETER_MODE") . " `inout`,
-	CHARACTER_SET_NAME collation
+		$rows = get_rows("SELECT PARAMETER_NAME, DTD_IDENTIFIER, PARAMETER_MODE, CHARACTER_SET_NAME
 FROM information_schema.PARAMETERS
 WHERE SPECIFIC_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND SPECIFIC_NAME = " . q($name) . "
 ORDER BY ORDINAL_POSITION");
+		$fields = array();
+		foreach ($rows as $row) {
+			$full_type = $row["DTD_IDENTIFIER"];
+			list($type_name, $length, $unsigned) = parse_type($full_type);
+			$fields[] = array(
+				"field" => $row["PARAMETER_NAME"],
+				"type" => $type_name,
+				"length" => $length,
+				"unsigned" => $unsigned,
+				"null" => true,
+				"full_type" => $full_type,
+				"inout" => ($type == "FUNCTION" ? "" : $row["PARAMETER_MODE"]), // FUNCTION parameters are always IN
+				"collation" => $row["CHARACTER_SET_NAME"],
+			);
+		}
 		$return = connection()->query("SELECT
 	ROUTINE_COMMENT comment,
 	CONCAT(IF(IS_DETERMINISTIC = 'YES', 'DETERMINISTIC\\n', ''), IF(SQL_DATA_ACCESS != 'CONTAINS SQL', CONCAT(SQL_DATA_ACCESS, '\\n'), ''), ROUTINE_DEFINITION) definition,

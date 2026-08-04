@@ -46,6 +46,7 @@
 - MySQL: Do not use SSL if the login-ssl plugin is configured only for other drivers
 - MySQL: Cache the list of databases only if getting it is slow
 - MySQL: Link performance_schema and sys tables to their documentation
+- MySQL: Fix length of routine parameters with unsigned or zerofill, support MySQL < 8 again (bug #1312, regression from 5.4.4)
 - PostgreSQL: Support operator classes in indexes
 - PostgreSQL: Add Truncate Cascade button
 - PostgreSQL: Do not show functions and types created by extensions

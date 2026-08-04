@@ -101,6 +101,7 @@ function put_file($match) {
 				}
 			}
 			unset($functions["__construct"], $functions["__destruct"], $functions["set_charset"], $functions["multi_query"], $functions["store_result"], $functions["next_result"]);
+			unset($functions["parse_type"]); // helper of the MySQL driver, not a part of the driver interface
 			foreach ($functions as $val) {
 				if (!strpos($return, "$val(")) {
 					fprintf(STDERR, "Missing $val in $vendor\n");
