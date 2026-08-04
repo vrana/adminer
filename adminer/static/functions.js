@@ -102,7 +102,6 @@ function urlUnescape(string) {
 */
 function formData(form, submitter, defaults) {
 	const data = [];
-	const groups = []; // a row is sent as a whole, where[0][op] is useless without where[0][val]
 	for (const el of form.elements) {
 		if (el.name && !el.disabled) {
 			if (/^file$/i.test(el.type) && el.value) {
@@ -110,27 +109,10 @@ function formData(form, submitter, defaults) {
 			}
 			if (!/^(checkbox|radio|submit|file)$/i.test(el.type) || el.checked || el == submitter) {
 				const value = selectValue(el);
-				const field = urlEscape(el.name) + '=' + urlEscape(value);
-				if (!defaults) {
-					data.push(field);
-					continue;
-				}
-				const name = el.name.replace(/\].*/, ']'); // where[0][col] and where[0][val] belong to where[0]
-				let group = groups.find(group2 => group2.name == name);
-				if (!group) {
-					group = {name: name, fields: [], send: false};
-					groups.push(group);
-				}
-				group.fields.push(field);
-				if (el.getAttribute('data-default') !== value) { // getAttribute() returns null for a field which must be always sent
-					group.send = true;
+				if (!defaults || el.getAttribute('data-default') !== value) { // getAttribute() returns null for a field which must be always sent
+					data.push(urlEscape(el.name) + '=' + urlEscape(value));
 				}
 			}
-		}
-	}
-	for (const group of groups) {
-		if (group.send) {
-			data.push(...group.fields);
 		}
 	}
 	return data.join('&');

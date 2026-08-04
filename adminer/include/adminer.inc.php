@@ -635,9 +635,13 @@ class Adminer {
 					. q($_GET["fulltext"][$i]) . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
 			}
 		}
+		$operators = adminer()->operators();
 		foreach ((array) $_GET["where"] as $key => $val) {
+			// the form doesn't send the fields holding the default value, the first operator is preselected by the browser
+			$val += array("col" => "", "op" => first($operators), "val" => "");
+			$_GET["where"][$key] = $val; // used also by selectSearchPrint() and by the COUNT(*) links
 			$col = $val["col"];
-			if ("$col$val[val]" != "" && in_array($val["op"], adminer()->operators())) {
+			if ("$col$val[val]" != "" && in_array($val["op"], $operators)) {
 				if ($val["op"] == "SQL" && (!$_POST || !verify_token())) {
 					SqlDb::$untrusted = true; // the condition can be sent by GET which is not protected by the CSRF token
 				}

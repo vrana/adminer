@@ -265,43 +265,51 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		// can allow grouping functions by indexes
 	}
 
+	/** Get columns having their own search field; they are identified by their position, not by the name in the query string
+	* @param Field[] $fields
+	* @return string[] negative index => column name
+	*/
+	private function searchColumns(array $fields): array {
+		$return = array();
+		$i = 0;
+		foreach ($fields as $name => $field) {
+			if (
+				isset($field["privileges"]["where"]) && $this->fieldName($field) != "" // the same condition as for $search_columns in select.inc.php
+				&& ($field["type"] == "enum" || like_bool($field) || is_array($this->foreignKeyOptions($_GET["select"], $name)))
+			) {
+				$return[--$i] = $name;
+			}
+		}
+		return $return;
+	}
+
 	function selectSearchPrint(array $where, array $columns, array $indexes): void {
 		$where = (array) $_GET["where"];
 		echo '<fieldset id="fieldset-search"><legend>' . lang('Search') . "</legend><div>\n";
-		$keys = array();
-		foreach ($where as $key => $val) {
-			$keys[$val["col"]] = $key;
-		}
-		$i = 0;
 		$fields = fields($_GET["select"]);
-		foreach ($columns as $name => $desc) {
+		foreach ($this->searchColumns($fields) as $i => $name) {
 			$field = $fields[$name];
+			$val = idx($where[$i], "val");
+			echo "<div>" . h($columns[$name]);
 			if ($field["type"] == "enum" || like_bool($field)) { //! set - uses 1 << $i and FIND_IN_SET()
-				$key = $keys[$name];
-				$i--;
-				// data-default - the column alone doesn't filter anything, the row is sent only with a value
-				echo "<div>" . h($desc) . ":" . input_hidden("where[$i][col]", $name, " data-default='" . h($name) . "'");
-				$val = idx($where[$key], "val");
+				echo ":";
 				echo (like_bool($field)
 					? "<select name='where[$i][val]' data-default=''>" . optionlist(array("" => "", lang('no'), lang('yes')), $val, true) . "</select>"
 					: enum_input("checkbox", " name='where[$i][val][]'", $field, (array) $val, lang('empty'))
 				);
-				echo "</div>\n";
-				unset($columns[$name]);
-			} elseif (is_array($options = $this->foreignKeyOptions($_GET["select"], $name))) {
-				if ($fields[$name]["null"]) {
+			} else {
+				$options = $this->foreignKeyOptions($_GET["select"], $name);
+				if ($field["null"]) {
 					$options[0] = '(' . lang('empty') . ')';
 				}
-				$key = $keys[$name];
-				$i--;
-				echo "<div>" . h($desc) . input_hidden("where[$i][col]", $name, " data-default='" . h($name) . "'") . input_hidden("where[$i][op]", "=", " data-default='='")
-					. ": <select name='where[$i][val]' data-default=''>" . optionlist($options, idx($where[$key], "val"), true) . "</select></div>\n";
-				unset($columns[$name]);
+				echo ": <select name='where[$i][val]' data-default=''>" . optionlist($options, $val, true) . "</select>";
 			}
+			echo "</div>\n";
+			unset($columns[$name]);
 		}
 		$i = 0;
-		foreach ($where as $val) {
-			if (($val["col"] == "" || $columns[$val["col"]]) && "$val[col]$val[val]" != "") {
+		foreach ($where as $key => $val) {
+			if ($key >= 0 && ($val["col"] == "" || $columns[$val["col"]]) && "$val[col]$val[val]" != "") {
 				echo "<div><select name='where[$i][col]' data-default=''><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
 				echo html_select("where[$i][op]", array(-1 => "") + adminer()->operators(), $val["op"], " data-default=''");
 				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' data-default=''"
@@ -374,7 +382,13 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 
 	function selectSearchProcess(array $fields, array $indexes): array {
 		$return = array();
+		$search_columns = $this->searchColumns($fields);
 		foreach ((array) $_GET["where"] as $key => $where) {
+			if ($key < 0) { // the column and the operator are given by the position, they are not sent
+				$where["col"] = idx($search_columns, $key, "");
+				$field = idx($fields, $where["col"], array());
+				$where["op"] = ($field && ($field["type"] == "enum" || like_bool($field)) ? "" : "=");
+			}
 			$col = $where["col"];
 			$op = $where["op"];
 			$val = $where["val"];
