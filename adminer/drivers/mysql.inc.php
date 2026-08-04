@@ -53,6 +53,10 @@ if (!defined('Adminer\DRIVER')) {
 			function quote(string $string): string {
 				return "'" . $this->escape_string($string) . "'";
 			}
+
+			function inTransaction(): bool {
+				return false; // MySQLi exposes no API for it and this class can't extend SqlDb to inherit the default
+			}
 		}
 
 	} elseif (extension_loaded("mysql") && !((ini_bool("sql.safe_mode") || ini_bool("mysql.allow_local_infile")) && extension_loaded("pdo_mysql"))) {
