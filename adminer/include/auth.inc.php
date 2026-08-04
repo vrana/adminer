@@ -52,11 +52,21 @@ function check_invalid_login(array &$permanent): void {
 			break;
 		}
 	}
+	$key = adminer()->bruteForceKey();
 	/** @var array{int, int} */
-	$invalid = idx($invalids, adminer()->bruteForceKey(), array());
+	$invalid = idx($invalids, $key, array());
 	$next_attempt = ($invalid[1] > 29 ? $invalid[0] - time() : 0); // allow 30 invalid attempts
 	if ($next_attempt > 0) { //! do the same with permanent login
-		auth_error(lang('Too many unsuccessful logins, try again in %d minute(s).', ceil($next_attempt / 60)), $permanent);
+		$error = lang('Too many unsuccessful logins, try again in %d minute(s).', ceil($next_attempt / 60));
+		if ($_SERVER["HTTP_X_FORWARDED_FOR"] != "" && $key == $_SERVER["REMOTE_ADDR"]) {
+			// the requests are proxied but the attempts are grouped by the address of the proxy
+			$error .= '<br>' . lang(
+				'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.',
+				'<b>login-reverse-proxy</b>',
+				" href='https://www.adminer.org/plugins/?version=" . VERSION . "'" . target_blank()
+			);
+		}
+		auth_error($error, $permanent);
 	}
 }
 
@@ -138,7 +148,7 @@ function unset_permanent(array &$permanent): void {
 }
 
 /** Render an error message and a login form
-* @param string $error plain text
+* @param string $error HTML
 * @param string[] $permanent
 * @return never
 */

@@ -4,6 +4,7 @@
 - Fix translations containing an apostrophe in single language versions
 - Escape &lt; in strings printed to JavaScript, a name containing &lt;!--&lt;script> broke the page
 - Login: Disallow accessing servers which accept any password (e.g. PostgreSQL with trust authentication)
+- Login: Suggest the login-reverse-proxy plugin when throttling logins of a proxied request
 - Select: Disallow modifying data by the SQL operator (CSRF)
 - Check for a new version even without JavaScript
 - Fix JavaScript in Safari < 11 and Firefox < 52 (regression from 5.5.0)
