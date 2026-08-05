@@ -399,10 +399,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 						$name = idf_escape($name);
 						if ($col != "" && $field["type"] == "enum") {
 							$in = array();
-							foreach ($val as $val1) {
-								if (preg_match('~val-~', $val1)) {
-									$in[] = q(substr($val1, 4));
-								}
+							foreach (preg_grep('~^val-~', $val) as $val1) {
+								$in[] = q(substr($val1, 4));
 							}
 							$conds[] = (in_array("null", $val) ? "$name IS NULL OR " : "") . ($in ? "$name IN (" . implode(", ", $in) . ")" : "0");
 						} else {
