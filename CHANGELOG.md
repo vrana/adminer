@@ -101,7 +101,7 @@
 - Move documentation to docs/, linter configuration to conf/, coverage.php to tests/
 - Coding style: Wrap lines to 200 characters
 - Cache PHP_CodeSniffer results in the system temp directory
-- PHPStan: Check the Editor
+- PHPStan: Check the Editor, more checks which the code already passes
 - Add type declarations to all drivers and the Editor
 - Use named constants instead of their values
 - Compile: Exit if a replacement doesn't match

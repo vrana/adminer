@@ -1,6 +1,15 @@
 parameters:
 	level: 6
 	checkNullables: true # level 8
+	# stricter checks which currently report no error
+	checkUninitializedProperties: true # typed property without a default value
+	checkDynamicProperties: true # property not declared in the class
+	checkFunctionNameCase: true
+	checkMissingCallableSignature: true # callable without the types of its parameters
+	reportAnyTypeWideningInVarTag: true # @var widening the inferred type
+	reportMaybesInMethodSignatures: true # nullable parameter and return types of overridden methods
+	reportMaybesInPropertyPhpDocTypes: true
+	reportStaticMethodSignatures: true
 
 	ignoreErrors:
 		# need to fix
@@ -22,6 +31,7 @@ parameters:
 		- "~^Call to an undefined method Adminer\\\\Driver::(setUserTypes|tableOid)~" # defined in PostgreSQL
 		- "~^Call to an undefined method Adminer\\\\Adminer.*::_foreignColumn~" # defined in Editor
 		- "~^Access to an undefined property Adminer\\\\Driver::\\$nsOid~" # defined in PostgreSQL
+		- "~^Class Adminer\\\\PdoDb has an uninitialized property \\$pdo~" # assigned in dsn() which is called right after the constructor
 		- "~expects int, float given~" # this will work
 		- "~expects bool~" # truthy values
 		- "~fread expects int<1, max>, 100000~" # 1e6
