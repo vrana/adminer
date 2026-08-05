@@ -766,8 +766,9 @@ function fields_from_edit(): array {
 function dump_headers(string $identifier, bool $multi_table = false): string {
 	$return = adminer()->dumpHeaders($identifier, $multi_table);
 	$output = $_POST["output"];
-	if ($output != "text") {
-		header("Content-Disposition: attachment; filename=" . adminer()->dumpFilename($identifier) . ".$return" . ($output != "file" && preg_match('~^[0-9a-z]+$~', $output) ? ".$output" : ""));
+	if ($output != "text" || $return == "tar") { // the browser can't display a TAR archive, without the header it would save it as download.tar
+		$compression = ($output != "text" && $output != "file" && preg_match('~^[0-9a-z]+$~', $output) ? ".$output" : "");
+		header("Content-Disposition: attachment; filename=" . adminer()->dumpFilename($identifier) . ".$return$compression");
 	}
 	session_write_close();
 	if (!ob_get_level()) {
