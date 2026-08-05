@@ -31,6 +31,7 @@ abstract class SqlDriver {
 	/** @var string */ public $inout = "IN|OUT|INOUT"; // used in routines
 	/** @var string */ public $enumLength = "'(?:''|[^'\\\\]|\\\\.)*'"; // regular expression for parsing enum lengths
 	/** @var list<string> */ public $generated = array(); // allowed types of generated columns
+	/** @var string */ public $primary = ""; // name of the field identifying a row in drivers without a schema, they compute the fields from the data
 
 	/** Connect to the database
 	* @return Db|string string for error

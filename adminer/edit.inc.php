@@ -94,7 +94,7 @@ if ($where) {
 	}
 }
 
-if (!support("table") && !$fields) { // used by Mongo and SimpleDB
+if (!$fields && driver()->primary != "") {
 	if (!$where) { // insert
 		$result = driver()->select($TABLE, array("*"), array(), array("*"));
 		$row = ($result ? $result->fetch_assoc() : false);

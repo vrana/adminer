@@ -736,7 +736,7 @@ function column_foreign_keys(string $table): array {
 	return $return;
 }
 
-/** Compute fields() from $_POST edit data; used by Mongo and SimpleDB
+/** Compute fields() from $_POST edit data in drivers without a schema
 * @return Field[] same as fields()
 */
 function fields_from_edit(): array {
@@ -752,9 +752,11 @@ function fields_from_edit(): array {
 		$name = bracket_escape($key, true); // true - back
 		$return[$name] = array(
 			"field" => $name,
+			"full_type" => "",
+			"type" => "",
 			"privileges" => array("insert" => 1, "update" => 1, "where" => 1, "order" => 1),
-			"null" => 1,
-			"auto_increment" => ($key == driver()->primary),
+			"null" => true,
+			"auto_increment" => ($name == driver()->primary),
 		);
 	}
 	return $return;
