@@ -391,7 +391,7 @@ ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row
 			}
 		}
 		if ($table == "") {
-			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)");
+			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", array_merge($alter, $foreign)) . "\n)");
 		}
 		return (!$alter || queries("ALTER TABLE " . table($table) . "\n" . implode("\n", $alter)))
 			&& (!$drop || queries("ALTER TABLE " . table($table) . " DROP (" . implode(", ", $drop) . ")"))

@@ -9,7 +9,7 @@
 class AdminerImportCsv extends Adminer\Plugin {
 
 	function importPrint() {
-		if (Adminer\DB == "" || !preg_match('~^(sql|pgsql|sqlite)$~', Adminer\JUSH)) { // the other drivers would need their type names in _type()
+		if (Adminer\DB == "" || !preg_match('~^(sql|pgsql|sqlite|oracle|mssql)$~', Adminer\JUSH)) { // the other drivers would need their type names in _type()
 			return;
 		}
 		$gz = (extension_loaded("zlib") ? "[.gz]" : "");
@@ -145,6 +145,8 @@ class AdminerImportCsv extends Adminer\Plugin {
 			$columns[] = Adminer\idf_escape($column);
 		}
 		$insert = "INSERT INTO " . Adminer\table($table) . " (" . implode(", ", $columns) . ") VALUES\n";
+		// Oracle supports a single row in INSERT, MS SQL is limited to 1000, 0 - no limit
+		$max_rows = (Adminer\JUSH == "oracle" ? 1 : (Adminer\JUSH == "mssql" ? 1000 : 0));
 		Adminer\driver()->begin();
 		$affected = 0;
 		$failed = false;
@@ -157,7 +159,7 @@ class AdminerImportCsv extends Adminer\Plugin {
 				$set[] = ($val == "" && $fields[$column]["null"] ? "NULL" : Adminer\q(Adminer\csv_value($val)));
 			}
 			$value = "(" . implode(", ", $set) . ")";
-			if ($values && strlen($insert) + $length + strlen($value) > 1e6) { // 1e6 - default max_allowed_packet
+			if ($values && (count($values) === $max_rows || strlen($insert) + $length + strlen($value) > 1e6)) { // 1e6 - default max_allowed_packet
 				$failed = !Adminer\connection()->query($insert . implode(",\n", $values));
 				if ($failed) {
 					break;
@@ -247,8 +249,10 @@ class AdminerImportCsv extends Adminer\Plugin {
 				$type = "bigint";
 			}
 			if ($type == "decimal") {
-				if ($integers + $decimals > 65) {
-					$type = "float"; // decimal in MySQL is limited to 65 digits
+				// the precision is limited to 65 digits in MySQL, to 38 in Oracle and MS SQL
+				$max_digits = (Adminer\JUSH == "sql" ? 65 : (preg_match('~^(oracle|mssql)$~', Adminer\JUSH) ? 38 : 1000));
+				if ($integers + $decimals > $max_digits) {
+					$type = "float";
 				} else {
 					$length = ($integers + $decimals) . ",$decimals";
 				}
@@ -336,6 +340,18 @@ class AdminerImportCsv extends Adminer\Plugin {
 		}
 		if (Adminer\JUSH == "pgsql") {
 			$types = array("int" => "integer", "decimal" => "numeric", "float" => "double precision", "datetime" => "timestamp", "varchar" => "character varying");
+			return ($types[$type] ?: $type);
+		}
+		if (Adminer\JUSH == "oracle") {
+			$types = array(
+				"int" => "number", "bigint" => "number", "decimal" => "number", "float" => "binary_double",
+				"time" => "varchar2(8)", // Oracle has no time type, 8 characters hold HH:MM:SS
+				"datetime" => "timestamp", "varchar" => "varchar2", "text" => "clob",
+			);
+			return ($types[$type] ?: $type);
+		}
+		if (Adminer\JUSH == "mssql") {
+			$types = array("datetime" => "datetime2", "varchar" => "nvarchar", "text" => "nvarchar(max)"); // the length is not used with (max)
 			return ($types[$type] ?: $type);
 		}
 		$types = array("float" => "double", "text" => "mediumtext"); // MySQL

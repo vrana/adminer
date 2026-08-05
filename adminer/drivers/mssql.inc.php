@@ -516,7 +516,13 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 			}
 		}
 		if ($table == "") {
-			return queries("CREATE TABLE " . table($name) . " (" . implode(",", (array) $alter["ADD"]) . "\n)");
+			$add = (array) $alter["ADD"];
+			foreach ($foreign as $key => $val) {
+				if (!is_string($key)) { // string keys hold the foreign keys of a column, appended to it above
+					$add[] = "\n$val";
+				}
+			}
+			return queries("CREATE TABLE " . table($name) . " (" . implode(",", $add) . "\n)");
 		}
 		if ($table != $name) {
 			queries("EXEC sp_rename " . q(table($table)) . ", " . q($name));
