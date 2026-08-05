@@ -86,6 +86,7 @@
 - CSS: Improve contrast of query time and dark mode
 - CSS: Display the repeated links and row checkboxes outside the table, designs/adminer-border keeps them inside
 - Editor: Display all images recognized by PHP, set their size, load them lazily
+- Editor: Fix a fatal error in select with an empty foreign key value (regression from 5.1.1)
 - Designs: Show version of Adminer next to a used design not matching this version
 - Plugins: dumpData() gets the parts of the select instead of a query, it selects the rows by Driver::select()
 - Plugins: Methods importPrint() and importProcess()

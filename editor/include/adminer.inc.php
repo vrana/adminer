@@ -206,7 +206,12 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 				// find all used ids
 				$ids = array();
 				foreach ($rows as $row) {
-					$ids[$row[$key]] = q($row[$key]);
+					if (isset($row[$key])) {
+						$ids[$row[$key]] = q($row[$key]);
+					}
+				}
+				if (!$ids) {
+					continue;
 				}
 				// uses constant number of queries to get the descriptions, join would be complex, multiple queries would be slow
 				$descriptions = $this->values[$table];
