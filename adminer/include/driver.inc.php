@@ -96,7 +96,8 @@ abstract class SqlDriver {
 			);
 		}
 		$start = microtime(true);
-		$return = $this->conn->query($query);
+		// export gets all rows and doesn't print the query so nothing runs another query (e.g. SHOW WARNINGS) before fetching them
+		$return = $this->conn->query($query, (!$limit && !$print ? 1 : 0)); // 1 - MYSQLI_USE_RESULT, unbuffered
 		if ($print) {
 			echo adminer()->selectQuery($query, $start, !$return);
 		}

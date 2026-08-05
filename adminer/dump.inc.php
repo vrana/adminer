@@ -113,7 +113,12 @@ SET foreign_key_checks = 0;
 								$views[] = $name;
 							} elseif ($data) {
 								$fields = fields($name);
-								adminer()->dumpData($name, $_POST["data_style"], "SELECT *" . convert_fields($fields, $fields) . " FROM " . table($name));
+								$select = array("*");
+								$convert_fields = convert_fields($fields, $fields);
+								if ($convert_fields) {
+									$select[] = substr($convert_fields, 2); // 2 - strlen(", ")
+								}
+								adminer()->dumpData($name, $_POST["data_style"], "", $select); // empty query - the driver selects the rows
 							}
 							if ($is_sql && $_POST["triggers"] && $table && ($triggers = trigger_sql($name))) {
 								echo "\nDELIMITER ;;\n$triggers\nDELIMITER ;\n";

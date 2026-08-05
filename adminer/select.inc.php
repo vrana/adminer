@@ -81,17 +81,21 @@ if ($_POST && !$error) {
 		}
 		$where_check[] = "((" . implode(") OR (", $checks) . "))";
 	}
+	$where_export = $where_check; // the drivers unable to parse the query get the conditions in this array
 	$where_check = ($where_check ? "\nWHERE " . implode(" AND ", $where_check) : "");
 	if ($_POST["export"]) {
 		save_settings(array("output" => $_POST["output"], "format" => $_POST["format"]), "adminer_import");
 		dump_headers($TABLE);
 		adminer()->dumpTable($TABLE, "");
-		$from = ($select ? implode(", ", $select) : "*")
-			. convert_fields($columns, $fields, $select)
-			. "\nFROM " . table($TABLE);
-		$group_by = ($group && $is_group ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
-		$query = "SELECT $from$where_check$group_by";
+		$select_export = ($select ?: array("*"));
+		$convert_fields = convert_fields($columns, $fields, $select);
+		if ($convert_fields) {
+			$select_export[] = substr($convert_fields, 2); // 2 - strlen(", ")
+		}
+		$query = ""; // empty query - the driver selects the rows from the parts
 		if (is_array($_POST["check"]) && !$primary) {
+			$from = implode(", ", $select_export) . "\nFROM " . table($TABLE);
+			$group_by = ($group && $is_group ? "\nGROUP BY " . implode(", ", $group) : "") . ($order ? "\nORDER BY " . implode(", ", $order) : "");
 			$union = array();
 			foreach ($_POST["check"] as $val) {
 				// where is not unique so OR can't be used
@@ -99,7 +103,7 @@ if ($_POST && !$error) {
 			}
 			$query = implode(" UNION ALL ", $union);
 		}
-		adminer()->dumpData($TABLE, "table", $query);
+		adminer()->dumpData($TABLE, "table", $query, $select_export, $where_export, ($is_group ? $group : array()), $order);
 		adminer()->dumpFooter();
 		exit;
 	}

@@ -287,6 +287,7 @@ if (isset($_GET["igdb"])) {
 			foreach ($where as $i => $val) {
 				$where[$i] = str_replace(' OR ', ' | ', $val);
 			}
+			$limit = ($limit ?: 500); // 0 - all rows, used by export; 500 is the maximum accepted by the API, it has no way to get more
 			$columns = ($select != array('*') ? $select : array_keys($this->fields[$table]));
 			$common = ($where ? "\nwhere " . implode(" & ", $where) . ";" : "");
 			$method = ($table == 'webhooks' || $table == 'dumps' ? 'GET' : 'POST');

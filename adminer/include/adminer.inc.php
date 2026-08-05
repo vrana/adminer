@@ -906,9 +906,14 @@ class Adminer {
 	}
 
 	/** Export table data
+	* @param string $query empty to select the rows by Driver::select() from the parts below
+	* @param list<string> $select
+	* @param list<string> $where
+	* @param list<string> $group
+	* @param list<string> $order
 	* @return void prints data
 	*/
-	function dumpData(string $table, string $style, string $query): void {
+	function dumpData(string $table, string $style, string $query, array $select = array(), array $where = array(), array $group = array(), array $order = array()): void {
 		if ($style) {
 			$max_packet = (JUSH == "sqlite" ? 0 : 1048576); // default, minimum is 1024
 			$fields = array();
@@ -928,7 +933,11 @@ class Adminer {
 					}
 				}
 			}
-			$result = connection()->query($query, 1); // 1 - MYSQLI_USE_RESULT
+			// the query is used by the SQL command page, which exports a result belonging to no table, and by the UNION in select
+			$result = ($query != ""
+				? connection()->query($query, 1) // 1 - MYSQLI_USE_RESULT
+				: driver()->select($table, ($select ?: array("*")), $where, $group, $order, 0) // 0 - all rows
+			);
 			if ($result) {
 				$insert = "";
 				$buffer = "";

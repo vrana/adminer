@@ -19,13 +19,16 @@ class AdminerDumpXml extends Adminer\Plugin {
 		}
 	}
 
-	function dumpData($table, $style, $query) {
+	function dumpData($table, $style, $query, $select = array(), $where = array(), $group = array(), $order = array()) {
 		if ($_POST["format"] == "xml") {
 			if (!$this->database) {
 				$this->database = true;
 				echo "<database name='" . Adminer\h(Adminer\DB) . "'>\n";
 			}
-			$result = Adminer\connection()->query($query, 1);
+			$result = ($query != ""
+				? Adminer\connection()->query($query, 1) // 1 - MYSQLI_USE_RESULT
+				: Adminer\driver()->select($table, ($select ?: array("*")), $where, $group, $order, 0) // 0 - all rows
+			);
 			if ($result) {
 				while ($row = $result->fetch_assoc()) {
 					echo "\t<table name='" . Adminer\h($table) . "'>\n";

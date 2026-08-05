@@ -343,6 +343,9 @@ if (isset($_GET["simpledb"])) {
 		return " $query$where" . ($limit ? $separator . "LIMIT $limit" : "");
 	}
 
+	function convert_field($field) {
+	}
+
 	function unconvert_field($field, $return) {
 		return $return;
 	}

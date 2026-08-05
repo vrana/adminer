@@ -45,6 +45,7 @@
 - Edit: Disable Save and continue edit after changing a value identifying the row
 - Select, Edit: Highlight JSON by a dedicated highlighter instead of the JavaScript one
 - Export: Fix the TAR archive of multiple tables in CSV, it contained SQL of views and foreign keys
+- Export: Export data in all drivers, not only in those able to run the generated SELECT
 - MySQL: Do not use SSL if the login-ssl plugin is configured only for other drivers
 - MySQL: Cache the list of databases only if getting it is slow
 - MySQL: Link performance_schema and sys tables to their documentation
@@ -80,6 +81,7 @@
 - CSS: Display the repeated links and row checkboxes outside the table, designs/adminer-border keeps them inside
 - Editor: Display all images recognized by PHP, set their size, load them lazily
 - Designs: Show version of Adminer next to a used design not matching this version
+- Plugins: dumpData() gets the parts of the select instead of a query, it selects the rows by Driver::select()
 - Plugins: Methods importPrint() and importProcess()
 - Plugins: Method verifyVersion()
 - Plugins: Methods commentValue() and commentInput() (bug #1233)

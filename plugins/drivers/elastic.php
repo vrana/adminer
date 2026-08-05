@@ -135,11 +135,12 @@ if (isset($_GET["elastic"])) {
 
 		class Result {
 			public $num_rows;
-			private $rows;
+			private $rows, $fields;
 
 			function __construct($rows) {
 				$this->num_rows = count($rows);
 				$this->rows = $rows;
+				$this->fields = array_keys(idx($rows, 0, array()));
 				reset($this->rows);
 			}
 
@@ -152,6 +153,12 @@ if (isset($_GET["elastic"])) {
 			function fetch_row() {
 				$row = $this->fetch_assoc();
 				return $row ? array_values($row) : false;
+			}
+
+			function fetch_field(): \stdClass {
+				$field = current($this->fields);
+				next($this->fields);
+				return (object) array('name' => $field, 'type' => 15, 'charsetnr' => 0);
 			}
 		}
 	}
@@ -202,6 +209,8 @@ if (isset($_GET["elastic"])) {
 				if ($page) {
 					$data["from"] = ($page * $limit);
 				}
+			} else {
+				$data["size"] = 10000; // 0 - all rows, used by export; 10000 is the default index.max_result_window, getting more would need a scroll
 			}
 
 			$bool = $this->buildQuery($where, $fields);

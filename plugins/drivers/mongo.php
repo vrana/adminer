@@ -365,12 +365,16 @@ if (isset($_GET["mongo"])) {
 				$val = preg_replace('~ DESC$~', '', $val, 1, $count);
 				$sort[$val] = ($count ? -1 : 1);
 			}
-			$limit = min(200, max(1, $limit));
-			$skip = $page * $limit;
+			$options = array('projection' => $select, 'sort' => $sort);
+			if ($limit) { // 0 - all rows, used by export
+				$limit = min(200, $limit);
+				$options['limit'] = $limit;
+				$options['skip'] = $page * $limit;
+			}
 			try {
 				return new Result($this->conn->_link->executeQuery(
 					$this->conn->_db_name . ".$table",
-					new \MongoDB\Driver\Query($where, array('projection' => $select, 'limit' => $limit, 'skip' => $skip, 'sort' => $sort))
+					new \MongoDB\Driver\Query($where, $options)
 				));
 			} catch (\Exception $e) {
 				$this->conn->error = $e->getMessage();

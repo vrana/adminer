@@ -245,6 +245,13 @@ ORDER BY RDB$INDEX_SEGMENTS.RDB$FIELD_POSITION';
 		return array();
 	}
 
+	function convert_field($field) {
+	}
+
+	function unconvert_field($field, $return) {
+		return $return;
+	}
+
 	function support($feature) {
 		return preg_match("~^(columns|sql|status|table)$~", $feature);
 	}

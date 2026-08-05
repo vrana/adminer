@@ -19,7 +19,7 @@ class AdminerDumpJson extends Adminer\Plugin {
 		}
 	}
 
-	function dumpData($table, $style, $query) {
+	function dumpData($table, $style, $query, $select = array(), $where = array(), $group = array(), $order = array()) {
 		if ($_POST["format"] == "json") {
 			if ($this->database) {
 				echo ",\n";
@@ -27,7 +27,10 @@ class AdminerDumpJson extends Adminer\Plugin {
 				$this->database = true;
 				echo "{\n";
 			}
-			$result = Adminer\connection()->query($query, 1);
+			$result = ($query != ""
+				? Adminer\connection()->query($query, 1) // 1 - MYSQLI_USE_RESULT
+				: Adminer\driver()->select($table, ($select ?: array("*")), $where, $group, $order, 0) // 0 - all rows
+			);
 			if ($result) {
 				echo '"' . addcslashes($table, "\r\n\"\\") . "\": [\n";
 				$first = true;
