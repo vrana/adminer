@@ -107,7 +107,6 @@ Lang::$translations = array(
 	'Check' => 'Проверка',
 	'Repair' => 'Поправка',
 	'Truncate' => 'Изрязване',
-	'Truncate Cascade' => 'Каскадно изрязване', // Claude Fable 5
 	'Tables have been truncated.' => 'Таблиците бяха изрязани.',
 	'Move to other database' => 'Преместване в друга база данни',
 	'Move' => 'Преместване',

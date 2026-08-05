@@ -184,7 +184,6 @@ Lang::$translations = array(
 	'Check' => 'Skontrolovať',
 	'Repair' => 'Opraviť',
 	'Truncate' => 'Vyprázdniť',
-	'Truncate Cascade' => 'Vyprázdniť kaskádovo', // Claude Fable 5
 	'Move to other database' => 'Presunúť do inej databázy',
 	'Move' => 'Presunúť',
 	'%d item(s) have been affected.' => '%d položiek bolo ovplyvnených.',

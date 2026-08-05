@@ -209,7 +209,6 @@ Lang::$translations = array(
 	'Check' => '検査',
 	'Repair' => '修復',
 	'Truncate' => '空にする',
-	'Truncate Cascade' => 'カスケードで空にする', // Claude Fable 5
 	'Move to other database' => '他のデータベースへ移動',
 	'Move' => '移動',
 	'Save and continue edit' => '保存して継続',

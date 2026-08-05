@@ -174,7 +174,6 @@ Lang::$translations = array(
 	'Check' => 'Controlează',
 	'Repair' => 'Repară',
 	'Truncate' => 'Curăță',
-	'Truncate Cascade' => 'Curăță în cascadă', // Claude Fable 5
 	'Tables have been truncated.' => 'Tabelele au fost curățate.',
 	'Rows' => 'Înscrieri',
 	',' => ',',

@@ -173,7 +173,6 @@ Lang::$translations = array(
 	'Check' => 'Comprobar',
 	'Repair' => 'Reparar',
 	'Truncate' => 'Baleirar',
-	'Truncate Cascade' => 'Baleirar en cascada', // Claude Fable 5
 	'Tables have been truncated.' => 'Baleiráronse as táboas.',
 	'Rows' => 'Filas',
 	',' => ' ',

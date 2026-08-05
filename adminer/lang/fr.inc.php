@@ -181,7 +181,6 @@ Lang::$translations = array(
 	'Check' => 'Vérifier',
 	'Repair' => 'Réparer',
 	'Truncate' => 'Tronquer',
-	'Truncate Cascade' => 'Tronquer en cascade', // Claude Fable 5
 	'Move to other database' => 'Déplacer vers une autre base de données',
 	'Move' => 'Déplacer',
 	'%d item(s) have been affected.' => array('%d élément a été modifié.', '%d éléments ont été modifiés.'),
