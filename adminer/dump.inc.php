@@ -61,13 +61,13 @@ SET foreign_key_checks = 0;
 
 				$statuses = ($_POST["table_style"] || $_POST["data_style"] ? table_status('', true) : array());
 				$exported = array(); // tables and views whose structure is exported
-				$truncated = array(); // tables whose data is exported
+				$data_tables = array(); // tables and views whose data is exported
 				foreach ($statuses as $name => $table_status) {
 					if (DB == "" || $_GET["ns"] === "" || in_array($name, (array) $_POST["tables"])) {
 						$exported[$name] = $table_status;
 					}
-					if (!is_view($table_status) && (DB == "" || $_GET["ns"] === "" || in_array($name, (array) $_POST["data"]))) {
-						$truncated[] = $name;
+					if (DB == "" || $_GET["ns"] === "" || in_array($name, (array) $_POST["data"])) {
+						$data_tables[$name] = $table_status;
 					}
 				}
 
@@ -76,8 +76,14 @@ SET foreign_key_checks = 0;
 					if ($_POST["table_style"] == "DROP+CREATE" && function_exists('Adminer\drop_sql')) {
 						echo drop_sql($exported);
 					}
-					// re-created tables are empty so they don't need to be truncated
-					if ($_POST["data_style"] == "TRUNCATE+INSERT" && $_POST["table_style"] != "DROP+CREATE" && function_exists('Adminer\truncate_all_sql')) {
+					if ($_POST["data_style"] == "TRUNCATE+INSERT" && function_exists('Adminer\truncate_all_sql')) {
+						$truncated = array();
+						foreach ($data_tables as $name => $table_status) {
+							// tables re-created below are empty, the others exist in the database and can hold data
+							if (!is_view($table_status) && !($_POST["table_style"] == "DROP+CREATE" && isset($exported[$name]))) {
+								$truncated[] = $name;
+							}
+						}
 						echo truncate_all_sql($truncated);
 					}
 					$out = "";
@@ -122,7 +128,7 @@ SET foreign_key_checks = 0;
 					$views = array();
 					foreach ($statuses as $name => $table_status) {
 						$table = array_key_exists($name, $exported);
-						$data = (DB == "" || $_GET["ns"] === "" || in_array($name, (array) $_POST["data"]));
+						$data = array_key_exists($name, $data_tables);
 						if ($table || $data) {
 							$tmp_file = null;
 							if ($ext == "tar") {
