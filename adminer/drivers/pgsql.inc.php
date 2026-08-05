@@ -528,6 +528,7 @@ ORDER BY 1";
 			// https://github.com/cockroachdb/cockroach/issues/40391
 			$has_size = get_val("SELECT 'pg_table_size'::regproc");
 		}
+		$sequences = (!$fast && min_version(10)); // pg_sequences is available since PostgreSQL 10
 		$return = array();
 		foreach (
 			get_rows("SELECT
@@ -538,12 +539,22 @@ ORDER BY 1";
 	obj_description(c.oid, 'pg_class') AS \"Comment\",
 	" . (min_version(12) ? "''" : "CASE WHEN relhasoids THEN 'oid' ELSE '' END") . " AS \"Oid\",
 	reltuples AS \"Rows\",
+	" . ($sequences ? "seq.last_value" : "NULL") . " AS \"Auto_increment\",
 	" . (min_version(10) ? "relispartition::int AS partition," : "") . "
 	current_schema() AS nspname
 FROM pg_class c
-WHERE relkind IN ('r', 'm', 'v', 'f', 'p')
+" . ($sequences ? "LEFT JOIN (
+	SELECT d.refobjid, max(s.last_value) AS last_value
+	FROM pg_depend d
+	JOIN pg_class sc ON sc.oid = d.objid AND sc.relkind = 'S' AND sc.relnamespace = " . driver()->nsOid . "
+	JOIN pg_sequences s ON s.schemaname = current_schema() AND s.sequencename = sc.relname
+	WHERE d.classid = 'pg_class'::regclass AND d.refclassid = 'pg_class'::regclass AND d.deptype IN ('a', 'i')
+	" . ($name != "" ? "AND d.refobjid = " . driver()->tableOid($name) : "") . "
+	GROUP BY d.refobjid
+) seq ON seq.refobjid = c.oid
+" : "") . "WHERE relkind IN ('r', 'm', 'v', 'f', 'p')
 AND relnamespace = " . driver()->nsOid . "
-" . ($name != "" ? "AND relname = " . q($name) : "ORDER BY relname")) as $row //! Auto_increment
+" . ($name != "" ? "AND relname = " . q($name) : "ORDER BY relname")) as $row
 		) {
 			$return[$row["Name"]] = $row;
 		}
@@ -789,12 +800,17 @@ ORDER BY conkey, conname") as $row
 		if ($comment !== null) {
 			$queries[] = "COMMENT ON TABLE " . table($name) . " IS " . q($comment);
 		}
-		// if ($auto_increment != "") {
-			//! $queries[] = "SELECT setval(pg_get_serial_sequence(" . q($name) . ", ), $auto_increment)";
-		// }
 		foreach ($queries as $query) {
 			if (!queries($query)) {
 				return false;
+			}
+		}
+		if ($auto_increment != "") {
+			// the auto increment column is found after the alter because it could be added or renamed by it
+			foreach (fields($name) as $field_name => $field) {
+				if ($field["auto_increment"]) {
+					return !!queries("SELECT setval(pg_get_serial_sequence(" . q(table($name)) . ", " . q($field_name) . "), $auto_increment)");
+				}
 			}
 		}
 		return true;
@@ -1132,6 +1148,8 @@ FROM pg_range WHERE rngtypid = $id"));
 	function create_sql(string $table, ?bool $auto_increment, string $style): string {
 		$return_parts = array();
 		$sequences = array();
+		$sequences_owned = array(); // ALTER SEQUENCE commands linking the sequences to their columns
+		$sequence_values = array(); // sequences whose value is restored after the table is created
 
 		$status = table_status1($table);
 		$ns = idf_escape($status['nspname']);
@@ -1148,10 +1166,13 @@ FROM pg_range WHERE rngtypid = $id"));
 		}
 
 		$return = "CREATE TABLE $ns." . idf_escape($status['Name']) . " (\n    ";
+		$table_literal = q("$ns." . idf_escape($status['Name'])); // the table name as expected by pg_get_serial_sequence()
 
 		// fields' definitions
 		foreach ($fields as $field) {
+			$serial_sequence = "";
 			if ($field['default'] == "nextval('$status[Name]_$field[field]_seq')") {
+				$serial_sequence = "$ns." . idf_escape("$status[Name]_$field[field]_seq"); // the serial type re-creates it under the same name
 				$field['default'] = null;
 				$field['full_type'] = preg_replace('~int(eger)?~', 'serial', $field['full_type']);
 			}
@@ -1170,9 +1191,19 @@ FROM pg_range WHERE rngtypid = $id"));
 				), null, "-- "));
 				$sequences[] = ($style == "DROP+CREATE" ? "DROP SEQUENCE IF EXISTS $ns.$sequence_name;\n" : "")
 					. "CREATE SEQUENCE $ns.$sequence_name INCREMENT $sq[increment_by] MINVALUE $sq[min_value] MAXVALUE $sq[max_value]"
-					. ($auto_increment && $sq['last_value'] ? " START " . ($sq["last_value"] + 1) : "")
 					. " CACHE $sq[cache_value];"
 				;
+				if (get_val("SELECT pg_get_serial_sequence($table_literal, " . q($field['field']) . ")")) {
+					// the sequence is owned by the column but CREATE SEQUENCE can't say it before the table is created
+					$sequences_owned[] = "\n\nALTER SEQUENCE $ns.$sequence_name OWNED BY $ns." . idf_escape($status['Name']) . "." . idf_escape($field['field']) . ";";
+				}
+				if ($auto_increment) {
+					$sequence_values[] = "$ns.$sequence_name";
+				}
+			} elseif ($auto_increment && $field['auto_increment']) {
+				// the sequence of a serial or identity column is created by CREATE TABLE
+				// a column can own more sequences than the one in its default so pg_get_serial_sequence() is used only without a default
+				$sequence_values[] = ($serial_sequence ?: get_val("SELECT pg_get_serial_sequence($table_literal, " . q($field['field']) . ")"));
 			}
 		}
 
@@ -1202,6 +1233,7 @@ FROM pg_range WHERE rngtypid = $id"));
 		//! don't insert partitioned data twice
 
 		$return .= "\nWITH (oids = " . ($status['Oid'] ? 'true' : 'false') . ");";
+		$return .= implode($sequences_owned);
 
 		// comments for table & fields
 		if ($status['Comment']) {
@@ -1215,6 +1247,14 @@ FROM pg_range WHERE rngtypid = $id"));
 		}
 
 		$return .= indexes_sql($table, $primary);
+
+		foreach (array_filter($sequence_values) as $sequence) {
+			$sq = first(get_rows("SELECT last_value, is_called::int FROM $sequence", null, "-- "));
+			if ($sq['is_called']) { // an unused sequence has nothing to restore
+				// setval() in a DO block - a plain SELECT would print a result in the import, ALTER SEQUENCE RESTART would leave is_called false
+				$return .= "\n\nDO \$\$ BEGIN PERFORM setval(" . q($sequence) . ", $sq[last_value]); END \$\$;";
+			}
+		}
 
 		return rtrim($return, ';');
 	}
