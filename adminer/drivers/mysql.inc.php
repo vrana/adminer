@@ -1023,7 +1023,7 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 	function create_sql(string $table, ?bool $auto_increment, string $style): string {
 		$return = get_val("SHOW CREATE TABLE " . table($table), 1);
 		if (!$auto_increment) {
-			$return = preg_replace('~ AUTO_INCREMENT=\d+~', '', $return); //! skip comments
+			$return = preg_replace('~(\n\)[^\n]*?) AUTO_INCREMENT=\d+~', '\1', $return); // \n) - the table options, not a comment
 		}
 		return $return;
 	}
