@@ -71,7 +71,16 @@ function emailFileChange() {
 	/** Encode e-mail header in UTF-8 */
 	private function emailHeader($header) {
 		// iconv_mime_encode requires iconv, imap_8bit requires IMAP extension
-		return "=?UTF-8?B?" . base64_encode($header) . "?="; //! split long lines
+		$return = array();
+		while ($header != "") {
+			$part = substr($header, 0, 45); // 45 bytes are encoded to 60 characters, the encoded word is limited to 75 characters
+			if (strlen($header) > strlen($part)) {
+				$part = preg_replace('~[\xC0-\xFF][\x80-\xBF]*$~', '', $part); // don't split a multi-byte character
+			}
+			$return[] = "=?UTF-8?B?" . base64_encode($part) . "?=";
+			$header = substr($header, strlen($part));
+		}
+		return implode(PHP_EOL . " ", $return); // the encoded words are joined by the decoder
 	}
 
 	/** Send e-mail in UTF-8
