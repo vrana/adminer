@@ -51,8 +51,9 @@ addEventListener('DOMContentLoaded', () => {
 				el.onchange = () => editor.setValue(el.value);
 				monaco.editor.addKeybindingRules([
 					{keybinding: monaco.KeyCode.Tab, command: null}
-					//! Ctrl+Enter
 				]);
+				// Monaco handles Ctrl+Enter itself, pass it to Adminer which sends the form
+				editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => el.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', ctrlKey: true, bubbles: true})));
 			}
 		}
 	});
