@@ -673,7 +673,7 @@ if (isset($_GET["sqlite"])) {
 		return true;
 	}
 
-	function truncate_tables(array $tables, bool $cascade = false): bool {
+	function truncate_tables(array $tables): bool {
 		return apply_queries("DELETE FROM", $tables);
 	}
 

@@ -597,7 +597,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 		return $return;
 	}
 
-	function truncate_tables(array $tables, bool $cascade = false): bool {
+	function truncate_tables(array $tables): bool {
 		return apply_queries("TRUNCATE TABLE", $tables);
 	}
 

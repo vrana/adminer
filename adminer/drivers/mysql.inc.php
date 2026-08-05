@@ -816,9 +816,8 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Run commands to truncate tables
 	* @param list<string> $tables
-	* @param bool $cascade used only in PostgreSQL
 	*/
-	function truncate_tables(array $tables, bool $cascade = false): bool {
+	function truncate_tables(array $tables): bool {
 		return apply_queries("TRUNCATE TABLE", $tables);
 	}
 

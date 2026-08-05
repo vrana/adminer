@@ -836,8 +836,8 @@ ORDER BY conkey, conname") as $row
 		return true;
 	}
 
-	function truncate_tables(array $tables, bool $cascade = false): bool {
-		return !!queries("TRUNCATE " . implode(", ", array_map('Adminer\table', $tables)) . ($cascade ? " CASCADE" : ""));
+	function truncate_tables(array $tables): bool {
+		return !!queries("TRUNCATE " . implode(", ", array_map('Adminer\table', $tables)));
 	}
 
 	/** Group tables and views by the command dropping them

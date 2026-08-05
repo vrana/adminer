@@ -10,9 +10,9 @@ if ($tables_views && !$error && !$_POST["search"]) {
 		queries("SET foreign_key_checks = 0"); // allows to truncate or drop several tables at once
 	}
 
-	if ($_POST["truncate"] || $_POST["truncate_cascade"]) {
+	if ($_POST["truncate"]) {
 		if ($_POST["tables"]) {
-			$result = truncate_tables($_POST["tables"], (bool) $_POST["truncate_cascade"]);
+			$result = truncate_tables($_POST["tables"]);
 		}
 		$message = lang('Tables have been truncated.');
 	} elseif ($_POST["move"]) {
@@ -204,7 +204,6 @@ if (adminer()->homepage()) {
 					? "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm()
 						. on_help(JUSH == "sqlite" ? "DELETE" : "TRUNCATE" . (JUSH == "pgsql" ? "" : " TABLE")) . "> "
 					: "")
-				. (JUSH == "pgsql" ? "<input type='submit' name='truncate_cascade' value='" . lang('Truncate Cascade') . "'" . confirm() . on_help("TRUNCATE CASCADE") . "> " : "")
 				. (function_exists('Adminer\drop_tables') ? "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm() . on_help("DROP TABLE") . ">" : "");
 				echo ($print ? "<div class='footer'><div>\n<fieldset><legend>" . lang('Selected') . " <span id='selected'></span></legend><div>$print\n</div></fieldset>\n" : "");
 
