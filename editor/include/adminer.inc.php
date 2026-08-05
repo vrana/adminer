@@ -292,7 +292,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			$val = idx($where[$i], "val");
 			echo "<div>" . h($columns[$name]);
 			if ($field["type"] == "enum" || like_bool($field)) { //! set - uses 1 << $i and FIND_IN_SET()
-				echo ":";
+				echo ": ";
 				echo (like_bool($field)
 					? "<select name='where[$i][val]' data-default=''>" . optionlist(array("" => "", lang('no'), lang('yes')), $val, true) . "</select>"
 					: enum_input("checkbox", " name='where[$i][val][]'", $field, (array) $val, lang('empty'))
