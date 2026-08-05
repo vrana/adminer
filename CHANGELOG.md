@@ -60,6 +60,7 @@
 - PostgreSQL: Alter and rename user defined types
 - PostgreSQL: Add values to an enum type without re-creating it
 - PostgreSQL: Export all user defined types, fix exporting enum values containing an apostrophe
+- PostgreSQL: Drop all tables at once in export so that foreign keys, views and types don't prevent the drop
 - PostgreSQL: Import CSV by INSERT ... ON CONFLICT instead of two queries for each row
 - PostgreSQL, MS SQL: Show two columns in select COUNT(*), COUNT(DISTINCT id)
 - PostgreSQL, MS SQL: Highlight primary keys in the database schema (regression from 5.1.0)

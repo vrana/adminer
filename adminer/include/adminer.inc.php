@@ -894,7 +894,7 @@ class Adminer {
 			}
 			set_utf8mb4($create);
 			if ($style && $create) {
-				if ($style == "DROP+CREATE" || $is_view == 1) {
+				if (($style == "DROP+CREATE" && !function_exists('Adminer\drop_sql')) || $is_view == 1) { // drop_sql() drops all tables at the beginning of the export
 					echo "DROP " . ($is_view == 2 ? "VIEW" : "TABLE") . " IF EXISTS " . table($table) . ";\n";
 				}
 				if ($is_view == 1) {

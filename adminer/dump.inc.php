@@ -47,59 +47,73 @@ SET foreign_key_checks = 0;
 	foreach ((array) $databases as $db) {
 		adminer()->dumpDatabase($db);
 		if (connection()->select_db($db)) {
-			if ($is_sql) {
-				if ($style) {
-					echo use_sql($db, $style) . ";\n\n";
-				}
-				$out = "";
-
-				if ($_POST["types"]) {
-					//! types are exported in alphabetical order, not in the order of their dependencies
-					foreach (types() as $id => $type) {
-						$definition = type_definition($id);
-						$object = ($definition["kind"] == 'd' ? "DOMAIN" : "TYPE");
-						if ($definition["definition"]) {
-							$out .= ($style != 'DROP+CREATE' ? "DROP $object IF EXISTS " . idf_escape($type) . ";;\n" : "")
-								. "CREATE $object " . idf_escape($type) . " $definition[definition];\n\n";
-						} else {
-							$out .= "-- Could not export type $type\n\n";
-						}
-					}
-				}
-
-				if ($_POST["routines"]) {
-					foreach (routines() as $row) {
-						$name = $row["ROUTINE_NAME"];
-						$routine = $row["ROUTINE_TYPE"];
-						$create = create_routine($routine, array("name" => $name) + routine($row["SPECIFIC_NAME"], $routine));
-						set_utf8mb4($create);
-						$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($name) . ";;\n" : "") . "$create;\n\n";
-					}
-				}
-
-				if ($_POST["events"]) {
-					foreach (get_rows("SHOW EVENTS", null, "-- ") as $row) {
-						$create = remove_definer(get_val("SHOW CREATE EVENT " . idf_escape($row["Name"]), 3));
-						set_utf8mb4($create);
-						$out .= ($style != 'DROP+CREATE' ? "DROP EVENT IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "") . "$create;;\n\n";
-					}
-				}
-
-				echo ($out && JUSH == 'sql' ? "DELIMITER ;;\n\n$out" . "DELIMITER ;\n\n" : $out);
+			if ($is_sql && $style) {
+				echo use_sql($db, $style) . ";\n\n";
 			}
 
-			if ($_POST["table_style"] || $_POST["data_style"]) {
-				foreach (($_GET["ns"] === "" ? (array) $_POST["schemas"] : (DB != "" || !support("scheme") ? array("") : adminer()->schemas())) as $schema) {
-					if ($schema != "") {
-						if (DB == "" && information_schema(DB, $schema)) {
-							continue;
+			foreach (($_GET["ns"] === "" ? (array) $_POST["schemas"] : (DB != "" || !support("scheme") ? array("") : adminer()->schemas())) as $schema) {
+				if ($schema != "") {
+					if (DB == "" && information_schema(DB, $schema)) {
+						continue;
+					}
+					set_schema($schema);
+				}
+
+				$statuses = ($_POST["table_style"] || $_POST["data_style"] ? table_status('', true) : array());
+				$exported = array(); // tables and views whose structure is exported
+				foreach ($statuses as $name => $table_status) {
+					if (DB == "" || $_GET["ns"] === "" || in_array($name, (array) $_POST["tables"])) {
+						$exported[$name] = $table_status;
+					}
+				}
+
+				if ($is_sql) {
+					// the tables are dropped before the types and routines they use
+					if ($_POST["table_style"] == "DROP+CREATE" && function_exists('Adminer\drop_sql')) {
+						echo drop_sql($exported);
+					}
+					$out = "";
+
+					if ($_POST["types"]) {
+						//! types are exported in alphabetical order, not in the order of their dependencies
+						//! CREATE TYPE is not schema qualified so the same name in two schemas collides
+						foreach (types() as $id => $type) {
+							$definition = type_definition($id);
+							$object = ($definition["kind"] == 'd' ? "DOMAIN" : "TYPE");
+							if ($definition["definition"]) {
+								$out .= ($style != 'DROP+CREATE' ? "DROP $object IF EXISTS " . idf_escape($type) . ";;\n" : "")
+									. "CREATE $object " . idf_escape($type) . " $definition[definition];\n\n";
+							} else {
+								$out .= "-- Could not export type $type\n\n";
+							}
 						}
-						set_schema($schema);
 					}
 
+					if ($_POST["routines"]) {
+						foreach (routines() as $row) {
+							$name = $row["ROUTINE_NAME"];
+							$routine = $row["ROUTINE_TYPE"];
+							$create = create_routine($routine, array("name" => $name) + routine($row["SPECIFIC_NAME"], $routine));
+							set_utf8mb4($create);
+							$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($name) . ";;\n" : "") . "$create;\n\n";
+						}
+					}
+
+					if ($_POST["events"]) {
+						foreach (get_rows("SHOW EVENTS", null, "-- ") as $row) {
+							$create = remove_definer(get_val("SHOW CREATE EVENT " . idf_escape($row["Name"]), 3));
+							set_utf8mb4($create);
+							$out .= ($style != 'DROP+CREATE' ? "DROP EVENT IF EXISTS " . idf_escape($row["Name"]) . ";;\n" : "") . "$create;;\n\n";
+						}
+					}
+
+					echo ($out && JUSH == 'sql' ? "DELIMITER ;;\n\n$out" . "DELIMITER ;\n\n" : $out);
+				}
+
+				if ($_POST["table_style"] || $_POST["data_style"]) {
 					$views = array();
-					foreach (table_status('', true) as $name => $table_status) {
-						$table = (DB == "" || $_GET["ns"] === "" || in_array($name, (array) $_POST["tables"]));
+					foreach ($statuses as $name => $table_status) {
+						$table = array_key_exists($name, $exported);
 						$data = (DB == "" || $_GET["ns"] === "" || in_array($name, (array) $_POST["data"]));
 						if ($table || $data) {
 							$tmp_file = null;
@@ -135,9 +149,8 @@ SET foreign_key_checks = 0;
 
 					// add FKs after creating tables (except in MySQL which uses SET FOREIGN_KEY_CHECKS=0)
 					if ($is_sql && function_exists('Adminer\foreign_keys_sql')) {
-						foreach (table_status('', true) as $name => $table_status) {
-							$table = (DB == "" || $_GET["ns"] === "" || in_array($name, (array) $_POST["tables"]));
-							if ($table && !is_view($table_status)) {
+						foreach ($exported as $name => $table_status) {
+							if (!is_view($table_status)) {
 								echo foreign_keys_sql($name);
 							}
 						}

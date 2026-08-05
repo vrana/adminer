@@ -1070,6 +1070,25 @@ FROM pg_range WHERE rngtypid = $id"));
 		return !!$return;
 	}
 
+	/** Get SQL commands dropping all exported tables and views
+	* @param TableStatus[] $tables
+	* @return string dropping the objects by a single command succeeds even if they depend on each other, dropping them one by one fails
+	*/
+	function drop_sql(array $tables): string {
+		$drops = array("MATERIALIZED VIEW" => array(), "VIEW" => array(), "TABLE" => array()); // views are dropped first, they can depend on the tables
+		foreach ($tables as $name => $table_status) {
+			//! foreign tables have Engine 'table' but they need DROP FOREIGN TABLE
+			$drops[strtoupper($table_status["Engine"])][] = idf_escape($table_status["nspname"]) . "." . table($name);
+		}
+		$return = "";
+		foreach ($drops as $kind => $names) {
+			if ($names) {
+				$return .= "DROP $kind IF EXISTS " . implode(", ", $names) . ";\n";
+			}
+		}
+		return ($return ? "$return\n" : "");
+	}
+
 	// create_sql() produces CREATE TABLE without FK CONSTRAINTs
 	// foreign_keys_sql() produces all FK CONSTRAINTs as ALTER TABLE ... ADD CONSTRAINT
 	// so that all FKs can be added after all tables have been created, avoiding any need to reorder CREATE TABLE statements in order of their FK dependencies
