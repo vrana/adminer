@@ -701,12 +701,21 @@ function format_number($val): string {
 	return strtr(number_format($val, 0, ".", lang(',')), preg_split('~~u', lang('0123456789'), -1, PREG_SPLIT_NO_EMPTY));
 }
 
-/** Format the number of rows from table status, prefixed with "~ " if approximate
+/** Format a numeric value of table status
 * @param TableStatus $table_status
+* @return string HTML code
 */
-function format_rows(array $table_status): string {
-	$val = format_number($table_status["Rows"]);
-	return ($val && (JUSH == "sqlite" || $table_status["Engine"] == (JUSH == "pgsql" ? "table" : "InnoDB")) ? "~ $val" : $val);
+function format_status(array $table_status, string $key): string {
+	$val = idx($table_status, $key, '?'); // "?" if the value is not known yet, null if it doesn't apply to the table
+	if (!is_numeric($val)) {
+		return h($val);
+	}
+	if ($val < 0) {
+		return '?'; // PostgreSQL returns -1 for a table which was never analyzed
+	}
+	// these engines estimate the number of rows, even 0 can be reported for a non-empty table
+	$approximate = ($key == "Rows" && (JUSH == "sqlite" || $table_status["Engine"] == (JUSH == "pgsql" ? "table" : "InnoDB")));
+	return ($approximate ? "~ " : "") . format_number($val);
 }
 
 /** Generate friendly URL */

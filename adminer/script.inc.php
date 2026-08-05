@@ -11,18 +11,13 @@ if ($_GET["script"] == "db") {
 			foreach (array("Engine", "Collation") as $key) {
 				json_row("$key-$name", h($table_status[$key]));
 			}
-			foreach ($sums + array("Auto_increment" => 0, "Rows" => 0) as $key => $val) {
-				if ($table_status[$key] != "") {
-					$val = format_number($table_status[$key]);
-					if ($val >= 0) {
-						json_row("$key-$name", ($key == "Rows" ? format_rows($table_status) : $val));
-					}
-					if (isset($sums[$key])) {
-						// ignore innodb_file_per_table because it is not active for tables created before it was enabled
-						$sums[$key] += ($table_status["Engine"] != "InnoDB" || $key != "Data_free" ? $table_status[$key] : 0);
-					}
-				} elseif (array_key_exists($key, $table_status)) {
-					json_row("$key-$name", "?");
+			foreach (array_keys($sums + array("Auto_increment" => 0, "Rows" => 0)) as $key) {
+				if (array_key_exists($key, $table_status)) {
+					json_row("$key-$name", format_status($table_status, $key));
+				}
+				if ($table_status[$key] != "" && isset($sums[$key])) {
+					// ignore innodb_file_per_table because it is not active for tables created before it was enabled
+					$sums[$key] += ($table_status["Engine"] != "InnoDB" || $key != "Data_free" ? $table_status[$key] : 0);
 				}
 			}
 		}

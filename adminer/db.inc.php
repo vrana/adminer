@@ -162,13 +162,9 @@ if (adminer()->homepage()) {
 					}
 					foreach ($columns as $key => $column) {
 						$id = " id='$key-" . h($name) . "'";
-						$val = idx($status, $key, '?');
 						echo ($column[1]
-							? "<td align='right'><a href='" . h(ME . "$column[1]=") . url_escape($name) . "'$id title='$column[2]'>" . (is_numeric($val)
-								? ($val < 0 ? '?' : ($key == "Rows" ? format_rows($status) : format_number($val)))
-								: h($val)
-							) . "</a>"
-							: "<td id='$key-" . h($name) . "'>" . h($val)
+							? "<td align='right'><a href='" . h(ME . "$column[1]=") . url_escape($name) . "'$id title='$column[2]'>" . format_status($status, $key) . "</a>"
+							: "<td$id>" . h(idx($status, $key, '?'))
 						);
 					}
 					$tables++;

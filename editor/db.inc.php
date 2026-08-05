@@ -22,7 +22,7 @@ if (adminer()->homepage()) {
 		if ($name != "") {
 			echo '<tr><td class="hover">' . checkbox("tables[]", $table, in_array($table, (array) $_POST["tables"], true));
 			echo "<th><a href='" . h(ME) . 'select=' . url_escape($table) . "'>$name</a>";
-			echo "<td align='right'><a href='" . h(ME . "edit=") . url_escape($table) . "'>" . format_rows($row) . "</a>";
+			echo "<td align='right'><a href='" . h(ME . "edit=") . url_escape($table) . "'>" . format_status($row, "Rows") . "</a>";
 		}
 	}
 
