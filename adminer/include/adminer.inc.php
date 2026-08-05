@@ -409,9 +409,11 @@ class Adminer {
 			;
 			echo ($field["null"] ? " <i>NULL</i>" : "");
 			echo ($field["auto_increment"] ? " <i>" . lang('Auto Increment') . "</i>" : "");
-			$default = h($field["default"]);
 			echo (isset($field["default"])
-				? " <span title='" . lang('Default value') . "'>[<b>" . ($field["generated"] ? "<code class='jush-" . JUSH . "'>$default</code>" : $default) . "</b>]</span>"
+				? " <span title='" . lang('Default value') . "'>[<b>" . ($field["generated"]
+					? "<code class='jush-" . JUSH . "'>" . shorten_utf8(preg_replace('~\s+~', ' ', ltrim($field["default"])), 80, "</code>")
+					: h($field["default"])
+				) . "</b>]</span>"
 				: ""
 			);
 			echo (support("comment") ? "<td>" . adminer()->commentValue('COLUMN', $field["comment"]) : "");

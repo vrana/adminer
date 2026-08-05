@@ -16,7 +16,7 @@
 - Shorten URLs by escaping only the necessary characters, e.g. `where[0][col]` instead of `where%5B0%5D%5Bcol%5D`
 - Send GET forms by JavaScript to shorten their URLs too
 - Tables overview: speed up, show totals in SQLite, real size in MS SQL, Oracle
-- Table structure: Shorten long checks
+- Table structure: Shorten long checks and generated columns
 - SQL command: Show column type in result table header
 - SQL command: Show number of rows in all drivers
 - SQL command: Export result to CSV by JavaScript without re-running the query (bug #1108, SF-760)
