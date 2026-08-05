@@ -77,6 +77,7 @@
 - CSS: Display the repeated links and row checkboxes outside the table, designs/adminer-border keeps them inside
 - Editor: Display all images recognized by PHP, set their size, load them lazily
 - Designs: Show version of Adminer next to a used design not matching this version
+- Plugins: Methods importPrint() and importProcess()
 - Plugins: Method verifyVersion()
 - Plugins: Methods commentValue() and commentInput() (bug #1233)
 - Plugins: Show driver plugins in the list of loaded plugins

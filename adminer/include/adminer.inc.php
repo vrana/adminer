@@ -1044,6 +1044,19 @@ class Adminer {
 		return "adminer.sql";
 	}
 
+	/** Print fieldsets with other import formats
+	* @return void prints data
+	*/
+	function importPrint(): void {
+	}
+
+	/** Import data sent to the import form and print the result
+	* @return bool whether the data was imported, false to import them as SQL commands
+	*/
+	function importProcess(): bool {
+		return false;
+	}
+
 	/** Print homepage
 	* @return bool whether to print default homepage
 	*/

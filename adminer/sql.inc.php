@@ -31,7 +31,7 @@ if ($_POST && $adminer_export) { //! delete on 2026-09-26
 page_header((isset($_GET["import"]) ? lang('Import') : lang('SQL command')), $error);
 $line_comment = driver()->lineComment();
 
-if (!$error && $_POST) {
+if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())) {
 	$delimiter = driver()->delimiter;
 	$fp = false;
 	if (!isset($_GET["import"])) {
@@ -285,6 +285,7 @@ if (!isset($_GET["import"])) {
 		echo " <input type='submit' name='webfile' value='" . lang('Run file') . "'>";
 		echo "</div></fieldset>\n";
 	}
+	adminer()->importPrint();
 	echo "<p>";
 }
 
