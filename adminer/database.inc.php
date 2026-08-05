@@ -12,14 +12,14 @@ if ($_POST && !$error && !$_POST["add"]) {
 		// create or rename database
 		if (DB != "") {
 			$_GET["db"] = $name;
-			queries_redirect(preg_replace('~\bdb=[^&]*&~', '', ME) . "db=" . url_escape($name), lang('Database has been renamed.'), rename_database($name, $row["collation"]));
+			queries_redirect(preg_replace('~\bdb=[^&]*&~', '', ME) . "db=" . url_escape($name), lang('Database has been renamed.'), rename_database($name, (string) $row["collation"]));
 		} else {
 			$databases = explode("\n", str_replace("\r", "", $name));
 			$success = true;
 			$last = "";
 			foreach ($databases as $db) {
 				if (count($databases) == 1 || $db != "") { // ignore empty lines but always try to create single database
-					if (!create_database($db, $row["collation"])) {
+					if (!create_database($db, (string) $row["collation"])) {
 						$success = false;
 					}
 					$last = $db;
