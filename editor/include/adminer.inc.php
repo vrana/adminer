@@ -383,6 +383,26 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	function selectSearchProcess(array $fields, array $indexes): array {
 		$return = array();
 		$search_columns = $this->searchColumns($fields);
+		// the columns with their own search field are identified by their position, redirect the links using their name
+		if ($_GET["select"] != "" && !$_POST && !is_ajax()) {
+			$keys = array();
+			$link = "";
+			foreach ((array) $_GET["where"] as $key => $where) {
+				$position = ($key >= 0 ? array_search($where["col"], $search_columns, true) : false);
+				$field = idx($fields, $where["col"], array());
+				if (
+					$position !== false && $field["type"] != "enum" // enum uses an array of values
+					&& !is_array($where["val"]) && $where["val"] != "" // an empty value is ignored in a dedicated field
+					&& $where["op"] == (like_bool($field) ? "" : "=") // the operator is given by the position too
+				) {
+					$keys[] = $key;
+					$link .= "&where[$position][val]=" . url_escape($where["val"]);
+				}
+			}
+			if ($keys) {
+				redirect(remove_from_uri("where(%5B|\[)(" . implode("|", $keys) . ")(%5D|\])[^=]*") . $link);
+			}
+		}
 		foreach ((array) $_GET["where"] as $key => $where) {
 			if ($key < 0) { // the column and the operator are given by the position, they are not sent
 				$where["col"] = idx($search_columns, $key, "");
