@@ -43,6 +43,7 @@
 - Edit: Fix editing rows with binary columns in tables without a unique key
 - Edit: Disable Save and continue edit after changing a value identifying the row
 - Select, Edit: Highlight JSON by a dedicated highlighter instead of the JavaScript one
+- Export: Fix the TAR archive of multiple tables in CSV, it contained SQL of views and foreign keys
 - MySQL: Do not use SSL if the login-ssl plugin is configured only for other drivers
 - MySQL: Cache the list of databases only if getting it is slow
 - MySQL: Link performance_schema and sys tables to their documentation

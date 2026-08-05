@@ -129,7 +129,7 @@ SET foreign_key_checks = 0;
 					}
 
 					// add FKs after creating tables (except in MySQL which uses SET FOREIGN_KEY_CHECKS=0)
-					if (function_exists('Adminer\foreign_keys_sql')) {
+					if ($is_sql && function_exists('Adminer\foreign_keys_sql')) {
 						foreach (table_status('', true) as $name => $table_status) {
 							$table = (DB == "" || $_GET["ns"] === "" || in_array($name, (array) $_POST["tables"]));
 							if ($table && !is_view($table_status)) {
@@ -138,12 +138,14 @@ SET foreign_key_checks = 0;
 						}
 					}
 
-					foreach ($views as $view) {
-						adminer()->dumpTable($view, $_POST["table_style"], 1);
+					if ($is_sql) { // views are exported by the loop above in other formats
+						foreach ($views as $view) {
+							adminer()->dumpTable($view, $_POST["table_style"], 1);
+						}
 					}
 
 					if ($ext == "tar") {
-						echo pack("x512");
+						echo pack("x1024"); // TAR ends with two zero blocks
 					}
 				}
 			}
