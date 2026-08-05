@@ -117,7 +117,6 @@
 - Compile: Exit if a replacement doesn't match
 - Compile: Fix compiling a driver without support for the SQL command
 - Compile: Compress translations with the English translation as a dictionary, it saves 21 kB
-- Plugins: Compute official checksums from the plugins directory instead of a generated file
 - Require ES6 in JavaScript, remove old browser workarounds
 - Use standard JSDoc @param and @return syntax
 - ESLint: Install it by composer install, run it in composer check and CI
