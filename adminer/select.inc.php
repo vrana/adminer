@@ -163,7 +163,7 @@ if ($_POST && !$error) {
 					$message = lang('Item%s has been inserted.', " $last_id");
 				}
 			}
-			queries_redirect(remove_from_uri($_POST["all"] && $_POST["delete"] ? "page" : ""), $message, $result);
+			queries_redirect(remove_from_uri($_POST["all"] && $_POST["delete"] ? "page|next" : ""), $message, $result);
 			if (!$_POST["delete"]) {
 				$post_fields = (array) $_POST["fields"];
 				edit_form($TABLE, array_intersect_key($fields, $post_fields), $post_fields, !$_POST["clone"], $error);
@@ -224,7 +224,7 @@ if ($_POST && !$error) {
 			if ($result) {
 				driver()->commit();
 			}
-			queries_redirect(remove_from_uri("page"), lang('%d row(s) have been imported.', $affected), $result);
+			queries_redirect(remove_from_uri("page|next"), lang('%d row(s) have been imported.', $affected), $result);
 			driver()->rollback(); // after queries_redirect() to not overwrite error
 
 		}
@@ -338,6 +338,12 @@ if (!$columns && support("table")) {
 			$rows[] = $row;
 		}
 
+		// after Driver::select(), $_GET["next"] holds the cursor of the following page, "" if there is none
+		$has_next = ($limit && (support("cursor") ? $_GET["next"] != "" : count($rows) >= $limit));
+		if (is_ajax() && $has_next) {
+			header("X-Next-Page: " . pagination_href($page + 1)); // the AJAX response contains only the rows so the link is not printed
+		}
+
 		if ($_GET["modify"] && $rows) { // without modify, the values are printed as links, only the checked checkboxes are sent
 			$max_rows = max_input_vars(count($rows[0]) + 1, 20); // 1 - the checkbox of each row, 20 - the other inputs
 			echo ($max_rows && count($rows) > $max_rows ? "<p class='error'>" . max_input_vars_error() . "\n" : "");
@@ -374,7 +380,7 @@ if (!$columns && support("table")) {
 						$rank++;
 						$names[$key] = $name;
 						$column = idf_escape($key);
-						$href = remove_from_uri('(order|desc)[^=]*|page') . '&order[0]=' . url_escape($key);
+						$href = remove_from_uri('(order|desc)[^=]*|page|next') . '&order[0]=' . url_escape($key); // next - the cursor is bound to the previous order
 						$desc = "&desc[0]=1";
 						$sort_column = preg_replace('~ DESC( NULLS LAST)?$~', '', $order[0]);
 						$sorted = ($sort_column == $column || $sort_column == $key); // $sort_column == $key - COUNT(*)
@@ -525,7 +531,7 @@ if (!$columns && support("table")) {
 		}
 
 		if (!is_ajax()) {
-			if ($rows || $page) {
+			if ($rows || $page || $has_next) { // $has_next - a cursor driver can return no rows on the first page
 				$exact_count = true;
 				if ($_GET["page"] != "last") {
 					if (!$limit || (count($rows) < $limit && ($rows || !$page))) {
@@ -541,11 +547,15 @@ if (!$columns && support("table")) {
 					}
 				}
 
-				$pagination = ($limit && ($found_rows === false || $found_rows > $limit || $page));
+				if (!support("cursor")) { // the number of the following rows is known
+					$has_next = (($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit);
+				}
+
+				$pagination = ($limit && ($has_next || $page));
 				if ($pagination) {
-					echo (($found_rows === false ? count($rows) + 1 : $found_rows - $page * $limit) > $limit
-						? '<p><a href="' . h(remove_from_uri("page|next") . ($_GET["next"] ? "&next=" . url_escape($_GET["next"]) : "") . "&page=" . ($page + 1)) . '" class="loadmore"'
-							. on('click', 'selectLoadMore', $limit, lang('Loading…')) . '>'
+					echo ($has_next
+						? '<p><a href="' . h(pagination_href($page + 1)) . '" class="loadmore"'
+							. on('click', 'selectLoadMore', lang('Loading…')) . '>'
 							. lang('Load more data') . '</a>'
 						: ''
 					);
@@ -560,7 +570,7 @@ if (!$columns && support("table")) {
 						: floor(($found_rows - 1) / $limit)
 					);
 					echo "<fieldset><legend>" . lang('Page') . "</legend>";
-					if (JUSH != "simpledb" && JUSH != "redis") {
+					if (!support("cursor")) {
 						echo pagination(0, $page) . ($page > 5 ? " …" : "");
 						for ($i = max(1, $page - 4); $i < min($max_page, $page + 5); $i++) {
 							echo pagination($i, $page);
@@ -572,10 +582,10 @@ if (!$columns && support("table")) {
 								: " <a href='" . h(remove_from_uri("page") . "&page=last") . "' title='~$max_page'>" . lang('last') . "</a>"
 							);
 						}
-					} else {
+					} else { // only the existence of the following page is known
 						echo pagination(0, $page) . ($page > 1 ? " …" : "");
 						echo ($page ? pagination($page, $page) : "");
-						echo ($max_page > $page ? pagination($page + 1, $page) . ($max_page > $page + 1 ? " …" : "") : "");
+						echo ($has_next ? pagination($page + 1, $page) . " …" : "");
 					}
 					echo "</fieldset>\n";
 				}

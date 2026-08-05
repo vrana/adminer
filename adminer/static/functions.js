@@ -882,12 +882,11 @@ function selectClick(event, text, warning) {
 
 
 /** Load and display next page in select
-* @param {number} limit
 * @param {string} loading
 * @return {boolean} false
 * @this HTMLLinkElement
 */
-function selectLoadMore(limit, loading) {
+function selectLoadMore(loading) {
 	const a = this;
 	const title = a.innerHTML;
 	const href = a.href;
@@ -896,13 +895,13 @@ function selectLoadMore(limit, loading) {
 			const tbody = document.createElement('tbody');
 			tbody.innerHTML = request.responseText;
 			adminerHighlighter(qsa('code', tbody));
-			const rows = tbody.children.length;
 			qs('#table').tBodies[0].append(...tbody.children); // keep the rows in the original TBODY to continue the .odds highlighting
-			if (rows < limit) {
-				a.remove();
-			} else {
-				a.href = href.replace(/\d+$/, page => +page + 1); //! update &next=
+			const next = request.getResponseHeader('X-Next-Page'); // the response contains only the rows so the URL of the following page is sent in a header
+			if (next) {
+				a.href = next;
 				a.innerHTML = title;
+			} else {
+				a.remove();
 			}
 		});
 		a.innerHTML = loading;

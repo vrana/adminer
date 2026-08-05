@@ -173,11 +173,20 @@ function js_escape_re(string $string): string {
 	return addcslashes(preg_quote($string, "/"), "\r\n"); // preg_quote() escapes also < ! - so the HTML parser doesn't see <!-- or </script>
 }
 
+/** Get URL of a page in select
+* @param int $page 0-based page number
+* @uses $_GET["next"] cursor of the following page in drivers with support("cursor")
+*/
+function pagination_href(int $page): string {
+	// the first page restarts the iteration so it doesn't use the cursor
+	return remove_from_uri("page|next") . ($page ? "&page=$page" . ($_GET["next"] != "" ? "&next=" . url_escape($_GET["next"]) : "") : "");
+}
+
 /** Generate page number for pagination */
 function pagination(int $page, ?int $current): string {
 	return " " . ($page == $current
 		? ($page ? "<b>" . ($page + 1) . "</b>" : $page + 1) // the first page is not highlighted
-		: '<a href="' . h(remove_from_uri("page|next") . ($page ? "&page=$page" . ($_GET["next"] ? "&next=" . url_escape($_GET["next"]) : "") : "")) . '">' . ($page + 1) . "</a>"
+		: '<a href="' . h(pagination_href($page)) . '">' . ($page + 1) . "</a>"
 	);
 }
 

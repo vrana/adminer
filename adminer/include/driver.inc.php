@@ -82,6 +82,7 @@ abstract class SqlDriver {
 	* @param int $page index of page starting at zero
 	* @param bool $print whether to print the query
 	* @return Result|bool
+	* @uses $_GET["next"] drivers with support("cursor") ignore $page, they get the cursor of the selected page here and set it to the cursor of the following page, "" if there is none
 	*/
 	function select(string $table, array $select, array $where, array $group, array $order = array(), int $limit = 1, ?int $page = 0, bool $print = false) {
 		$is_group = (count($group) < count($select));

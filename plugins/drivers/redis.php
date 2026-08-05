@@ -283,10 +283,12 @@ if (isset($_GET["redis"])) {
 		public $operators = array("*");
 
 		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
+			$next = $_GET["next"];
+			$_GET["next"] = ""; // there is no following page unless SCAN returns a cursor
 			if (preg_match('~^key =~', $where[0])) {
 				$args = $this->whereKeys($where[0]);
 			} elseif ($limit) {
-				$args = array("SCAN", $_GET["next"] ?: 0, "COUNT", $limit);
+				$args = array("SCAN", ($next != "" ? $next : 0), "COUNT", $limit);
 				if ($where) {
 					$args[] = "MATCH";
 					$args[] = $this->whereKeys($where[0])[0];
@@ -295,7 +297,8 @@ if (isset($_GET["redis"])) {
 				if (!$scan) {
 					return false;
 				}
-				list($_GET["next"], $args) = $scan;
+				list($cursor, $args) = $scan;
+				$_GET["next"] = ($cursor != "0" ? $cursor : ""); // 0 - the iteration has finished
 			} else {
 				$args = $this->send(array("KEYS", ($where ? $this->whereKeys($where[0])[0] : "*")), $print);
 				if ($args === false) {
@@ -489,6 +492,6 @@ if (isset($_GET["redis"])) {
 	}
 
 	function support($feature) {
-		return $feature == "sql";
+		return preg_match('~^(cursor|sql)$~', $feature);
 	}
 }

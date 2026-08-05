@@ -160,6 +160,7 @@ if (isset($_GET["simpledb"])) {
 
 		function select($table, array $select, array $where, array $group, array $order = array(), $limit = 1, $page = 0, $print = false) {
 			connection()->next = $_GET["next"];
+			$_GET["next"] = ""; // set by sdb_request_all() if there is a following page
 			$return = parent::select($table, $select, $where, $group, $order, $limit, $page, $print);
 			connection()->next = 0;
 			return $return;
@@ -253,7 +254,7 @@ if (isset($_GET["simpledb"])) {
 
 
 	function support($feature) {
-		return preg_match('~sql~', $feature);
+		return preg_match('~^(cursor|sql)$~', $feature);
 	}
 
 	function logged_user() {
@@ -438,7 +439,7 @@ if (isset($_GET["simpledb"])) {
 				$return[] = $element;
 			}
 			if ($limit && count($return) >= $limit) {
-				$_GET["next"] = $xml->NextToken;
+				$_GET["next"] = (string) $xml->NextToken;
 				break;
 			}
 			if ($timeout && microtime(true) - $start > $timeout) {
