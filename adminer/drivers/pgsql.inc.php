@@ -1211,6 +1211,14 @@ FROM pg_range WHERE rngtypid = $id"));
 		return "TRUNCATE " . table($table);
 	}
 
+	/** Get SQL command truncating all tables whose data is exported
+	* @param list<string> $tables
+	* @return string truncating the tables by a single command succeeds even if they reference each other, one by one it fails
+	*/
+	function truncate_all_sql(array $tables): string {
+		return ($tables ? "TRUNCATE " . implode(", ", array_map('Adminer\table', $tables)) . ";\n\n" : "");
+	}
+
 	function trigger_sql(string $table): string {
 		$status = table_status1($table);
 		$return = "";

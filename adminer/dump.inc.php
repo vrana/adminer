@@ -61,9 +61,13 @@ SET foreign_key_checks = 0;
 
 				$statuses = ($_POST["table_style"] || $_POST["data_style"] ? table_status('', true) : array());
 				$exported = array(); // tables and views whose structure is exported
+				$truncated = array(); // tables whose data is exported
 				foreach ($statuses as $name => $table_status) {
 					if (DB == "" || $_GET["ns"] === "" || in_array($name, (array) $_POST["tables"])) {
 						$exported[$name] = $table_status;
+					}
+					if (!is_view($table_status) && (DB == "" || $_GET["ns"] === "" || in_array($name, (array) $_POST["data"]))) {
+						$truncated[] = $name;
 					}
 				}
 
@@ -71,6 +75,10 @@ SET foreign_key_checks = 0;
 					// the tables are dropped before the types and routines they use
 					if ($_POST["table_style"] == "DROP+CREATE" && function_exists('Adminer\drop_sql')) {
 						echo drop_sql($exported);
+					}
+					// re-created tables are empty so they don't need to be truncated
+					if ($_POST["data_style"] == "TRUNCATE+INSERT" && $_POST["table_style"] != "DROP+CREATE" && function_exists('Adminer\truncate_all_sql')) {
+						echo truncate_all_sql($truncated);
 					}
 					$out = "";
 
@@ -148,7 +156,7 @@ SET foreign_key_checks = 0;
 					}
 
 					// add FKs after creating tables (except in MySQL which uses SET FOREIGN_KEY_CHECKS=0)
-					if ($is_sql && function_exists('Adminer\foreign_keys_sql')) {
+					if ($is_sql && $_POST["table_style"] && function_exists('Adminer\foreign_keys_sql')) {
 						foreach ($exported as $name => $table_status) {
 							if (!is_view($table_status)) {
 								echo foreign_keys_sql($name);

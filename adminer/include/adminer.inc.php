@@ -919,7 +919,8 @@ class Adminer {
 			$fields = array();
 			$identity_insert = false;
 			if ($_POST["format"] == "sql") {
-				if ($style == "TRUNCATE+INSERT") {
+				// truncating right before the inserts keeps the other tables filled if the import fails
+				if ($style == "TRUNCATE+INSERT" && !function_exists('Adminer\truncate_all_sql')) {
 					echo truncate_sql($table) . ";\n";
 				}
 				$fields = fields($table);

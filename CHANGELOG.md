@@ -47,6 +47,7 @@
 - Select, Edit: Highlight JSON by a dedicated highlighter instead of the JavaScript one
 - Export: Fix the TAR archive of multiple tables in CSV, it contained SQL of views and foreign keys
 - Export: Export data in all drivers, not only in those able to run the generated SELECT
+- Export: Fix importing a dump with data only, the tables were truncated one by one and their foreign keys were re-created
 - MySQL: Do not use SSL if the login-ssl plugin is configured only for other drivers
 - MySQL: Cache the list of databases only if getting it is slow
 - MySQL: Link performance_schema and sys tables to their documentation
