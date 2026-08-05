@@ -88,6 +88,7 @@
 - Driver plugins: Do not bundle the syntax highlighter of igdb and simpledb, load it from adminer-plugins/jush-&lt;driver>.js
 - Plugin login-password-less: Allow the plugin password to be also the password of some server
 - Plugin menu-links: Add option to show the select link and other repeated links only on hover
+- New plugin: Create a table from an imported CSV file
 - New plugin: Display images in select, same as in Adminer Editor
 - New plugin: Log in by a passkey holding the passwords
 - New plugin: Warn by a red strip if Adminer or the database doesn't run on the local machine

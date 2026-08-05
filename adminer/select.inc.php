@@ -198,21 +198,20 @@ if ($_POST && !$error) {
 		} else {
 			save_settings(array("output" => $adminer_import["output"], "format" => $_POST["separator"]), "adminer_import");
 			$cols = array_keys($fields);
-			preg_match_all('~(?>"[^"]*"|[^"\r\n]+)+~', $file, $matches);
-			$affected = count($matches[0]);
-			driver()->begin();
 			$separator = ($_POST["separator"] == "csv" ? "," : ($_POST["separator"] == "tsv" ? "\t" : ";"));
+			$csv = parse_csv($file, $separator);
+			$affected = count($csv);
+			driver()->begin();
 			$rows = array();
-			foreach ($matches[0] as $key => $val) {
-				preg_match_all("~((?>\"[^\"]*\")+|[^$separator]*)$separator~", $val . $separator, $matches2);
-				if (!$key && !array_diff($matches2[1], $cols)) { //! doesn't work with column names containing ",\n
+			foreach ($csv as $key => $values) {
+				if (!$key && !array_diff($values, $cols)) { //! doesn't work with column names containing ",\n
 					// first row corresponds to column names - use it for table structure
-					$cols = $matches2[1];
+					$cols = $values;
 					$affected--;
 				} else {
 					$set = array();
-					foreach ($matches2[1] as $i => $col) {
-						$set[idf_escape($cols[$i])] = ($col == "" && $fields[$cols[$i]]["null"] ? "NULL" : q(preg_match('~^".*"$~s', $col) ? str_replace('""', '"', substr($col, 1, -1)) : $col));
+					foreach ($values as $i => $col) {
+						$set[idf_escape($cols[$i])] = ($col == "" && $fields[$cols[$i]]["null"] ? "NULL" : q(csv_value($col)));
 					}
 					$rows[] = $set;
 				}

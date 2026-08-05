@@ -621,10 +621,10 @@ function remove_from_uri(string $param = ""): string {
 	return substr(preg_replace("~(?<=[?&])($param" . (SID ? "" : "|" . session_name()) . ")=[^&]*&~", '', relative_uri() . "&"), 0, -1);
 }
 
-/** Get file contents from $_FILES
-* @return int|string|null null if the file was not sent at all, int for error, string otherwise
+/** Get contents of all files sent in one field
+* @return int|list<array{string, string}>|null null if the file was not sent at all, int for error, [$name, $content] pairs otherwise
 */
-function get_file(string $key, bool $decompress = false, string $delimiter = "") {
+function get_files(string $key, bool $decompress = false) {
 	$file = $_FILES[$key];
 	if (!$file) {
 		return null;
@@ -632,7 +632,7 @@ function get_file(string $key, bool $decompress = false, string $delimiter = "")
 	foreach ($file as $key => $val) {
 		$file[$key] = (array) $val;
 	}
-	$return = '';
+	$return = array();
 	foreach ($file["error"] as $key => $error) {
 		if ($error) {
 			return $error;
@@ -652,6 +652,22 @@ function get_file(string $key, bool $decompress = false, string $delimiter = "")
 				$content = substr($content, 3);
 			}
 		}
+		$return[] = array($name, $content);
+	}
+	return $return;
+}
+
+/** Get file contents from $_FILES
+* @return int|string|null null if the file was not sent at all, int for error, string otherwise
+*/
+function get_file(string $key, bool $decompress = false, string $delimiter = "") {
+	$files = get_files($key, $decompress);
+	if (!is_array($files)) {
+		return $files;
+	}
+	$return = '';
+	foreach ($files as $file) {
+		$content = $file[1];
 		$return .= $content;
 		if ($delimiter) {
 			$return .= (preg_match("($delimiter\\s*\$)", $content) ? "" : $delimiter) . "\n\n";
@@ -773,6 +789,24 @@ function dump_csv(array $row): void {
 		}
 	}
 	echo implode(($_POST["format"] == "csv" ? "," : ($tsv ? "\t" : ";")), $row) . "\r\n";
+}
+
+/** Split CSV data to rows and values
+* @return list<list<string>> values as they are in the file, quoted values keep the quotes
+*/
+function parse_csv(string $csv, string $separator): array {
+	$return = array();
+	preg_match_all('~(?>"[^"]*"|[^"\r\n]+)+~', $csv, $matches); // a quoted value can contain a newline
+	foreach ($matches[0] as $row) {
+		preg_match_all("~((?>\"[^\"]*\")+|[^$separator]*)$separator~", $row . $separator, $matches2);
+		$return[] = $matches2[1];
+	}
+	return $return;
+}
+
+/** Get value of a CSV field */
+function csv_value(string $val): string {
+	return (preg_match('~^".*"$~s', $val) ? str_replace('""', '"', substr($val, 1, -1)) : $val);
 }
 
 /** Apply SQL function
