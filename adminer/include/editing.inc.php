@@ -169,7 +169,7 @@ function json_row(string $key, $val = null, bool $escape = true): void {
 * @param list<string> $extra_types extra types to prepend
 */
 function edit_type(string $key, array $field, array $collations, array $foreign_keys = array(), array $extra_types = array()): void {
-	$type = $field["type"];
+	$type = (string) $field["type"]; // the type is not set when creating a function
 	echo "<td><select name='" . h($key) . "[type]' class='type' aria-labelledby='label-type'" . on_help_value() . ">";
 	if ($type && !array_key_exists($type, driver()->types()) && !isset($foreign_keys[$type]) && !in_array($type, $extra_types)) {
 		$extra_types[] = $type;
