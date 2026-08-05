@@ -38,7 +38,7 @@ if ($tables_views && !$error && !$_POST["search"]) {
 	} elseif (JUSH != "sql") {
 		$result = (JUSH == "sqlite"
 			? queries("VACUUM")
-			: apply_queries("VACUUM" . ($_POST["optimize"] ? " ANALYZE" : ""), $_POST["tables"])
+			: apply_queries("VACUUM" . ($_POST["optimize"] ? " ANALYZE" : ""), (array) $_POST["tables"])
 		);
 		$message = lang('Tables have been optimized.');
 	} elseif (!$_POST["tables"]) {
