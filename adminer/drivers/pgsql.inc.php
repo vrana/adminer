@@ -289,6 +289,7 @@ if (isset($_GET["pgsql"])) {
 			);
 			if (min_version(9.2, 0, $connection)) {
 				$this->types[lang('Strings')]["json"] = 4294967295;
+				$this->types[lang('Ranges')] = array("int4range" => 0, "int8range" => 0, "numrange" => 0, "daterange" => 0, "tsrange" => 0, "tstzrange" => 0); //! multiranges since 14
 				if (min_version(9.4, 0, $connection)) {
 					$this->types[lang('Strings')]["jsonb"] = 4294967295;
 				}
@@ -361,7 +362,7 @@ if (isset($_GET["pgsql"])) {
 		function convertSearch(string $idf, array $val, array $field): string {
 			$textTypes = "char|text";
 			if (strpos($val["op"], "LIKE") === false) {
-				$textTypes .= "|date|time(stamp)?|boolean|uuid|inet|cidr|macaddr|" . number_type();
+				$textTypes .= "|date|time(stamp)?|boolean|uuid|inet|cidr|macaddr|range|" . number_type();
 			}
 
 			return (preg_match("~$textTypes~", $field["type"]) ? $idf : "CAST($idf AS text)");
