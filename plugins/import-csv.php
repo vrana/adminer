@@ -14,7 +14,7 @@ class AdminerImportCsv extends Adminer\Plugin {
 		}
 		$gz = (extension_loaded("zlib") ? "[.gz]" : "");
 		echo "<fieldset><legend>CSV</legend><div>";
-		echo "CSV$gz: " . Adminer\file_input(" name='csv_file[]' multiple", " " . $this->lang('If the table exists') . ": "
+		echo "CSV$gz, TAR$gz: " . Adminer\file_input(" name='csv_file[]' multiple", " " . $this->lang('If the table exists') . ": "
 			. Adminer\html_select("csv_exists", array("insert" => $this->lang('Insert'), "truncate" => $this->lang('Truncate'), "drop" => $this->lang('Drop')), $_POST["csv_exists"])
 			. " <input type='submit' name='csv' value='" . $this->lang('Import') . "'>")
 		;
@@ -31,11 +31,39 @@ class AdminerImportCsv extends Adminer\Plugin {
 			return true;
 		}
 		foreach ($files as $file) {
-			if (!$this->_import($file[0], $file[1], $_POST["csv_exists"]) && $_POST["error_stops"]) {
-				break;
+			foreach ($this->_untar($file[0], $file[1]) as $csv) {
+				if (!$this->_import($csv[0], $csv[1], $_POST["csv_exists"]) && $_POST["error_stops"]) {
+					break 2;
+				}
 			}
 		}
 		return true;
+	}
+
+	/** Get files stored in a TAR archive, e.g. an export of several tables to CSV
+	* @param string $name name of the file
+	* @param string $tar contents of the file
+	* @return list<array{string, string}> the file itself if it is not an archive
+	*/
+	protected function _untar($name, $tar) {
+		if (!preg_match('~\.tar(\.gz)?$~i', $name)) {
+			return array(array($name, $tar));
+		}
+		$return = array();
+		$offset = 0;
+		while ($offset + 512 <= strlen($tar)) { // the header of each file is 512 bytes, see tar_file()
+			$filename = rtrim(substr($tar, $offset, 100), "\0");
+			if ($filename == "") {
+				break; // the archive ends with zero blocks
+			}
+			$size = octdec(trim(substr($tar, $offset + 124, 12), "\0 "));
+			$offset += 512;
+			if (substr($filename, -1) != "/") { // directories have no data
+				$return[] = array($filename, substr($tar, $offset, $size));
+			}
+			$offset += (int) ceil($size / 512) * 512; // the data is padded to whole blocks
+		}
+		return $return;
 	}
 
 	/** Create a table named after the file and import the data to it, print the result
@@ -46,6 +74,9 @@ class AdminerImportCsv extends Adminer\Plugin {
 	*/
 	protected function _import($name, $csv, $exists) {
 		$error_prefix = "<p class='error'>" . Adminer\h($name) . ": ";
+		if (substr($csv, 0, 3) == "\xEF\xBB\xBF") {
+			$csv = substr($csv, 3); // UTF-8 BOM, get_files() removes it only from the uploaded file, not from the files in an archive
+		}
 		if (!Adminer\is_utf8($csv)) {
 			echo $error_prefix . $this->lang('File must be in UTF-8 encoding.') . "\n";
 			return false;
