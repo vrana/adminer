@@ -840,14 +840,30 @@ ORDER BY conkey, conname") as $row
 		return !!queries("TRUNCATE " . implode(", ", array_map('Adminer\table', $tables)) . ($cascade ? " CASCADE" : ""));
 	}
 
+	/** Group tables and views by the command dropping them
+	* @param TableStatus[] $tables
+	* @return array<string, list<string>> [$kind => [$table]] dropping the objects of one kind by a single command succeeds even if they depend on each other
+	*/
+	function drop_kinds(array $tables): array {
+		$return = array("MATERIALIZED VIEW" => array(), "VIEW" => array(), "TABLE" => array()); // views are dropped first, they can depend on the tables
+		foreach ($tables as $name => $table_status) {
+			//! foreign tables have Engine 'table' but they need DROP FOREIGN TABLE
+			$return[strtoupper($table_status["Engine"])][] = idf_escape($table_status["nspname"]) . "." . table($name);
+		}
+		return array_filter($return);
+	}
+
 	function drop_views(array $views) {
 		return drop_tables($views);
 	}
 
 	function drop_tables(array $tables) {
+		$statuses = array();
 		foreach ($tables as $table) {
-			$status = table_status1($table);
-			if (!queries("DROP " . strtoupper($status["Engine"]) . " " . table($table))) {
+			$statuses[$table] = table_status1($table);
+		}
+		foreach (drop_kinds($statuses) as $kind => $names) {
+			if (!queries("DROP $kind " . implode(", ", $names))) {
 				return false;
 			}
 		}
@@ -1072,19 +1088,11 @@ FROM pg_range WHERE rngtypid = $id"));
 
 	/** Get SQL commands dropping all exported tables and views
 	* @param TableStatus[] $tables
-	* @return string dropping the objects by a single command succeeds even if they depend on each other, dropping them one by one fails
 	*/
 	function drop_sql(array $tables): string {
-		$drops = array("MATERIALIZED VIEW" => array(), "VIEW" => array(), "TABLE" => array()); // views are dropped first, they can depend on the tables
-		foreach ($tables as $name => $table_status) {
-			//! foreign tables have Engine 'table' but they need DROP FOREIGN TABLE
-			$drops[strtoupper($table_status["Engine"])][] = idf_escape($table_status["nspname"]) . "." . table($name);
-		}
 		$return = "";
-		foreach ($drops as $kind => $names) {
-			if ($names) {
-				$return .= "DROP $kind IF EXISTS " . implode(", ", $names) . ";\n";
-			}
+		foreach (drop_kinds($tables) as $kind => $names) {
+			$return .= "DROP $kind IF EXISTS " . implode(", ", $names) . ";\n";
 		}
 		return ($return ? "$return\n" : "");
 	}
