@@ -144,6 +144,9 @@ if (!$_POST) {
 			$row["Auto_increment"] = "";
 		}
 		foreach ($orig_fields as $field) {
+			if ($field["generated"]) {
+				$field["default"] = ltrim($field["default"]);
+			}
 			$field["generated"] = $field["generated"] ?: (isset($field["default"]) ? "DEFAULT" : "");
 			$row["fields"][] = $field;
 		}
