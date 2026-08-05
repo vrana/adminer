@@ -215,17 +215,23 @@ function hidden_fields_get(): void {
 function file_input(string $attrs, string $rest = ""): string {
 	$max_file_uploads = "max_file_uploads";
 	$max_file_uploads_value = ini_get($max_file_uploads);
-	$upload_max_filesize = "upload_max_filesize";
-	$upload_max_filesize_value = ini_get($upload_max_filesize);
+	$max_size = "upload_max_filesize";
+	$max_size_bytes = ini_bytes($max_size);
+	// post_max_size is for all form fields together but the file is usually by far the biggest one
+	$post_max_size = ini_bytes("post_max_size");
+	if ($post_max_size && $post_max_size < $max_size_bytes) { // 0 means unlimited
+		$max_size = "post_max_size";
+		$max_size_bytes = $post_max_size;
+	}
+	$max_size_value = ini_get($max_size);
 	return (ini_bool("file_uploads")
 		? "<input type='file'$attrs" . on(
 			'change',
 			'fileChange',
-			// ignore post_max_size because it is for all form fields together and bytes computing would be necessary
 			(int) $max_file_uploads_value,
 			lang('Increase %s.', "$max_file_uploads = $max_file_uploads_value"),
-			ini_bytes($upload_max_filesize),
-			lang('Increase %s.', "$upload_max_filesize = $upload_max_filesize_value")
+			$max_size_bytes,
+			lang('Increase %s.', "$max_size = $max_size_value")
 		) . ">$rest"
 		: lang('File uploads are disabled.')
 	);
