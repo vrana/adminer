@@ -252,7 +252,8 @@ if (adminer()->homepage()) {
 		if (support("sequence")) {
 			echo "<div>\n";
 			echo "<h3 id='sequences'>" . lang('Sequences') . "</h3>\n";
-			$sequences = get_vals("SELECT sequence_name FROM information_schema.sequences WHERE sequence_schema = current_schema() ORDER BY sequence_name");
+			// not information_schema.sequences which omits the sequences of identity columns
+			$sequences = get_vals("SELECT relname FROM pg_class WHERE relkind = 'S' AND relnamespace = " . driver()->nsOid . " ORDER BY relname");
 			if ($sequences) {
 				echo "<table class='odds'>\n";
 				echo "<thead><tr><th>" . lang('Name') . "<tbody>\n";
