@@ -54,6 +54,7 @@
 - MySQL: Fix length of routine parameters with unsigned or zerofill, support MySQL < 8 again (bug #1312, regression from 5.4.4)
 - PostgreSQL: Support operator classes in indexes
 - PostgreSQL: Do not show functions and types created by extensions
+- PostgreSQL: Create routines with a dollar quoted body so that it is not escaped
 - PostgreSQL: Fix altering functions with parameters of array or user-defined types
 - PostgreSQL: Hide table actions and row editing in pg_catalog and pg_toast
 - PostgreSQL: Support range types (bug #1308)

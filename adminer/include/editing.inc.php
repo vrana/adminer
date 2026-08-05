@@ -458,6 +458,15 @@ function create_trigger(string $on, array $row): string {
 	;
 }
 
+/** Quote string by dollar quoting which doesn't escape anything, e.g. $$string$$ */
+function q_dollar(string $string): string {
+	$delimiter = '$$';
+	while (strpos($string . $delimiter, $delimiter) != strlen($string)) { // the delimiter must not be inside the string nor overlap its end
+		$delimiter = '$_' . substr($delimiter, 1);
+	}
+	return $delimiter . $string . $delimiter;
+}
+
 /** Generate SQL query for creating routine
 * @param 'PROCEDURE'|'FUNCTION' $routine
 * @param Routine $row
@@ -477,7 +486,7 @@ function create_routine($routine, array $row): string {
 		. " (" . implode(", ", $set) . ")"
 		. ($routine == "FUNCTION" ? " RETURNS" . process_type($row["returns"], "CHARACTER SET") : "")
 		. ($row["language"] ? " LANGUAGE $row[language]" : "")
-		. (JUSH == "pgsql" ? " AS " . q($definition) : "\n$definition;")
+		. (JUSH == "pgsql" ? " AS " . q_dollar("\n" . trim($definition) . "\n") : "\n$definition;")
 	;
 }
 
