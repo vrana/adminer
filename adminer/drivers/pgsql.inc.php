@@ -333,25 +333,38 @@ if (isset($_GET["pgsql"])) {
 			return (count($auto_increment) == 1 ? " RETURNING " . idf_escape(key($auto_increment)) : "");
 		}
 
-		// the same as in SqlDriver but without insertReturning() which would query fields() for each row
 		function insertUpdate(string $table, array $rows, array $primary) {
-			foreach ($rows as $set) {
-				$update = array();
-				$where = array();
-				foreach ($set as $key => $val) {
-					$update[] = "$key = $val";
-					if (isset($primary[idf_unescape($key)])) {
-						$where[] = "$key = $val";
-					}
-				}
-				if (
-					!(($where && queries("UPDATE " . table($table) . " SET " . implode(", ", $update) . " WHERE " . implode(" AND ", $where)) && $this->conn->affected_rows)
-					|| queries("INSERT INTO " . table($table) . " (" . implode(", ", array_keys($set)) . ") VALUES (" . implode(", ", $set) . ")"))
-				) {
-					return false;
+			$columns = array_keys(reset($rows));
+			$conflict = array();
+			$update = array();
+			foreach ($columns as $key) {
+				if (isset($primary[idf_unescape($key)])) {
+					$conflict[] = $key;
+				} else {
+					$update[] = "$key = EXCLUDED.$key";
 				}
 			}
-			return true;
+			// ON CONFLICT is supported since PostgreSQL 9.5 and it needs all the conflicting columns
+			if (!$conflict || !min_version(9.5) || count($conflict) != count($primary)) {
+				return parent::insertUpdate($table, $rows, $primary);
+			}
+			$prefix = "INSERT INTO " . table($table) . " (" . implode(", ", $columns) . ") VALUES\n";
+			$suffix = "\nON CONFLICT (" . implode(", ", $conflict) . ")" . ($update ? " DO UPDATE SET " . implode(", ", $update) : " DO NOTHING");
+			$values = array();
+			$length = 0;
+			foreach ($rows as $set) {
+				$value = "(" . implode(", ", $set) . ")";
+				if ($values && strlen($prefix) + $length + strlen($value) + strlen($suffix) > 1e6) { // 1e6 - the same limit as in MySQL, PostgreSQL has none
+					if (!queries($prefix . implode(",\n", $values) . $suffix)) {
+						return false;
+					}
+					$values = array();
+					$length = 0;
+				}
+				$values[] = $value;
+				$length += strlen($value) + 2; // 2 - strlen(",\n")
+			}
+			return queries($prefix . implode(",\n", $values) . $suffix);
 		}
 
 		function slowQuery(string $query, int $timeout) {
