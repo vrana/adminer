@@ -333,6 +333,7 @@ if (isset($_GET["pgsql"])) {
 			return (count($auto_increment) == 1 ? " RETURNING " . idf_escape(key($auto_increment)) : "");
 		}
 
+		// the same as in SqlDriver but without insertReturning() which would query fields() for each row
 		function insertUpdate(string $table, array $rows, array $primary) {
 			foreach ($rows as $set) {
 				$update = array();

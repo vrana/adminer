@@ -150,7 +150,22 @@ abstract class SqlDriver {
 	* @return Result|bool
 	*/
 	function insertUpdate(string $table, array $rows, array $primary) {
-		return false;
+		// drivers supporting an atomic upsert override this, the others update the row and insert it if nothing was updated
+		foreach ($rows as $set) {
+			$where = array();
+			foreach ($set as $key => $val) {
+				if (isset($primary[idf_unescape($key)])) {
+					$where[] = "$key = $val";
+				}
+			}
+			if (
+				!($where && $this->update($table, $set, " WHERE " . implode(" AND ", $where)) && $this->conn->affected_rows)
+				&& !$this->insert($table, $set)
+			) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/** Begin transaction
