@@ -63,6 +63,7 @@
 - PostgreSQL: Export all user defined types, fix exporting enum values containing an apostrophe
 - PostgreSQL: Drop all tables at once in export so that foreign keys, views and types don't prevent the drop
 - PostgreSQL: Drop the selected tables at once so that foreign keys don't prevent the drop
+- PostgreSQL: Export materialized views with their indexes, they were exported as plain views
 - PostgreSQL: Import CSV by INSERT ... ON CONFLICT instead of two queries for each row
 - PostgreSQL, MS SQL: Show two columns in select COUNT(*), COUNT(DISTINCT id)
 - PostgreSQL, MS SQL: Highlight primary keys in the database schema (regression from 5.1.0)

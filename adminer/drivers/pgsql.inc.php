@@ -1116,6 +1116,19 @@ FROM pg_range WHERE rngtypid = $id"));
 		return ($return ? "$return\n" : $return);
 	}
 
+	/** Get commands creating indexes of a table or a materialized view
+	* @param string $primary index which is already a part of CREATE TABLE
+	* @return string starts with an empty line before each command
+	*/
+	function indexes_sql(string $table, string $primary = ""): string {
+		$return = "";
+		$query = "SELECT indexdef FROM pg_catalog.pg_indexes WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary != "" ? " AND indexname != " . q($primary) : "");
+		foreach (get_rows($query, null, "-- ") as $row) {
+			$return .= "\n\n$row[indexdef];";
+		}
+		return $return;
+	}
+
 	function create_sql(string $table, ?bool $auto_increment, string $style): string {
 		$return_parts = array();
 		$sequences = array();
@@ -1124,7 +1137,9 @@ FROM pg_range WHERE rngtypid = $id"));
 		$ns = idf_escape($status['nspname']);
 		if (is_view($status)) {
 			$view = view($table);
-			return rtrim("CREATE VIEW $ns." . idf_escape($table) . " AS $view[select]", ";");
+			// Engine is 'view' or 'materialized view', only a materialized view can have indexes
+			$create = "CREATE " . strtoupper($status["Engine"]) . " $ns." . idf_escape($table) . " AS " . rtrim($view["select"], ";") . ";";
+			return rtrim($create . indexes_sql($table), ';');
 		}
 		$fields = fields($table);
 
@@ -1199,10 +1214,7 @@ FROM pg_range WHERE rngtypid = $id"));
 			}
 		}
 
-		$query = "SELECT indexdef FROM pg_catalog.pg_indexes WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary ? " AND indexname != " . q($primary) : "");
-		foreach (get_rows($query, null, "-- ") as $row) {
-			$return .= "\n\n$row[indexdef];";
-		}
+		$return .= indexes_sql($table, $primary);
 
 		return rtrim($return, ';');
 	}
