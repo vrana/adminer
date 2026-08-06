@@ -20,7 +20,7 @@ class AdminerLoginPasswordLess extends Adminer\Plugin {
 	function credentials() {
 		$password = Adminer\get_password();
 		// the server doesn't know our password so don't send it - unless the server requires a password, it can be even the same one
-		return array(Adminer\SERVER, $_GET["username"], ($this->passwordMatches($password) && !Adminer\password_required() ? "" : $password));
+		return array(Adminer\SERVER, $_GET["username"], ($this->passwordMatches($password) ? "" : $password));
 	}
 
 	function login($login, $password) {
