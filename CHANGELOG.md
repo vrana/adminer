@@ -52,6 +52,7 @@
 - MySQL: Cache the list of databases only if getting it is slow
 - MySQL: Link performance_schema and sys tables to their documentation
 - MySQL: Fix length of routine parameters with unsigned or zerofill, support MySQL < 8 again (bug #1312, regression from 5.4.4)
+- MySQL: Fix a warning on the Create table page with the PDO extension
 - PostgreSQL: Support operator classes in indexes
 - PostgreSQL: Do not show functions and types created by extensions
 - PostgreSQL: Create routines with a dollar quoted body so that it is not escaped

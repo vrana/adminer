@@ -366,8 +366,12 @@ if (!defined('Adminer\DRIVER')) {
 		function partitionsInfo(string $table): array {
 			$from = "FROM information_schema.PARTITIONS WHERE TABLE_SCHEMA = " . q(DB) . " AND TABLE_NAME = " . q($table);
 			$result = $this->conn->query("SELECT PARTITION_METHOD, PARTITION_EXPRESSION, PARTITION_ORDINAL_POSITION $from ORDER BY PARTITION_ORDINAL_POSITION DESC LIMIT 1");
+			$row = ($result ? $result->fetch_row() : null);
+			if (!$row) { // the table doesn't exist
+				return array();
+			}
 			$return = array();
-			list($return["partition_by"], $return["partition"], $return["partitions"]) = $result->fetch_row();
+			list($return["partition_by"], $return["partition"], $return["partitions"]) = $row;
 			$partitions = get_key_vals("SELECT PARTITION_NAME, PARTITION_DESCRIPTION $from AND PARTITION_NAME != '' ORDER BY PARTITION_ORDINAL_POSITION");
 			$return["partition_names"] = array_keys($partitions);
 			$return["partition_values"] = array_values($partitions);
