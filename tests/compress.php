@@ -6,8 +6,12 @@ namespace Adminer;
 // and the pure-PHP inflate() fallback matches gzinflate(); the fallback is checked only on a sample of the translations, it is slow.
 // Prints found errors, prints nothing and exits with 0 if everything is OK.
 
+$_SESSION["lang"] = "en"; // lang.inc.php reads the language from the session, the same as compile.php does
+
 require __DIR__ . "/../adminer/include/errors.inc.php"; // mutes undefined array key in decompress_string()
+require __DIR__ . "/../adminer/include/functions.inc.php"; // used by lang.inc.php
 require __DIR__ . "/../adminer/include/decompress.inc.php";
+require __DIR__ . "/../adminer/include/lang.inc.php"; // declares Lang::$translations filled by the translation files
 require __DIR__ . "/../adminer/include/compress.inc.php";
 
 $errors = 0;
@@ -36,6 +40,19 @@ function check(string $name, string $string, string $dictionary = "", bool $fall
 			$errors++;
 		}
 	}
+}
+
+/** Join the translations the same way as the compiled version does - plural forms by tabs, messages by newlines
+* @param array<string, string|list<string>|null> $translations
+* @param array<string, string> $english default translations, the message itself
+*/
+function lang_translations(array $translations, array $english): string {
+	foreach ($translations as $key => $val) {
+		if ($val !== null) {
+			$english[$key] = implode("\t", (array) $val);
+		}
+	}
+	return implode("\n", $english);
 }
 
 $alphabet = compress_alphabet();
@@ -71,12 +88,28 @@ check("long random binary", $string);
 
 check("CSS file", file_get_contents(__DIR__ . "/../adminer/static/default.css"));
 check("JS file", file_get_contents(__DIR__ . "/../adminer/static/functions.js"));
-$dictionary = file_get_contents(__DIR__ . "/../adminer/lang/en.inc.php");
-$fallback_langs = array("bn", "en", "et", "ru"); // the largest, the smallest and different scripts; the other translations exercise the same code paths so they only check zlib
+
+// the same text as the compiled version compresses, see get_lang_translations() in compile.php
+$langs = array();
 foreach (glob(__DIR__ . "/../adminer/lang/*.inc.php") as $filename) {
-	$lang = basename($filename, ".inc.php");
+	Lang::$translations = array();
+	include $filename;
+	$langs[basename($filename, ".inc.php")] = Lang::$translations;
+}
+$english = array(); // the default translation of a message is the message itself, en.inc.php overrides only the plural forms
+foreach ($langs as $translations) {
+	foreach (array_keys($translations) as $key) {
+		$english[$key] = $key;
+	}
+}
+
+$dictionary = lang_translations($langs["en"], $english);
+// the pure-PHP inflate() is slow so run it only on a sample: the largest translation, English compressed without a dictionary,
+// Estonian which has the most in common with the dictionary, and different scripts; the other translations exercise the same code paths
+$fallback_langs = array("bn", "en", "et", "ru", "zh");
+foreach ($langs as $lang => $translations) {
 	$lang_dictionary = ($lang != "en" ? $dictionary : ""); // the compiled version compresses English alone and the other translations against it
-	check(basename($filename), file_get_contents($filename), $lang_dictionary, in_array($lang, $fallback_langs));
+	check("$lang translations", lang_translations($translations, $english), $lang_dictionary, in_array($lang, $fallback_langs));
 }
 
 check("empty string with dictionary", "", $dictionary);
