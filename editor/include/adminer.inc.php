@@ -523,6 +523,9 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		}
 		$options = $this->foreignKeyOptions($table, $field["field"], $value);
 		if ($options !== null) {
+			if (!$field["null"] && is_array($options)) {
+				unset($options[""]); // the column requires a value, the database would reject the empty option
+			}
 			return (is_array($options)
 				? "<select$attrs>" . optionlist($options, (string) $value, true) . "</select>"
 				: "<input value='" . h($value) . "'$attrs class='hidden'>"
