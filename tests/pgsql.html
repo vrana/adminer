@@ -53,7 +53,8 @@
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>multiple primary keys for table "interprets" are not allowed</td><td></td></tr>
 <tr><td>select</td><td>indexes[2][type]</td><td>label=INDEX</td></tr>
-<tr><td>click</td><td>//input[@name='options']</td><td></td></tr>
+<tr><td>uncheck</td><td>//input[@name='options']</td><td></td></tr>
+<tr><td>clickAndWait</td><td>//input[@name='options']</td><td></td></tr>
 <tr><td>select</td><td>indexes[3][type]</td><td>label=INDEX</td></tr>
 <tr><td>select</td><td>indexes[3][columns][1]</td><td>label=surname</td></tr>
 <tr><td>select</td><td>indexes[3][algorithm]</td><td>label=hash</td></tr>
@@ -101,12 +102,12 @@
 <tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;table=interprets</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Alter table</td><td></td></tr>
 <tr><td>click</td><td>add[3]</td><td></td></tr>
-<tr><td>type</td><td>fields[4][field]</td><td>albums</td></tr>
-<tr><td>select</td><td>fields[4][type]</td><td>label=integer</td></tr>
-<tr><td>type</td><td>fields[4][length]</td><td></td></tr>
+<tr><td>type</td><td>fields[3.1][field]</td><td>albums</td></tr>
+<tr><td>select</td><td>fields[3.1][type]</td><td>label=integer</td></tr>
+<tr><td>type</td><td>fields[3.1][length]</td><td></td></tr>
 <tr><td>uncheck</td><td>name=defaults</td><td></td></tr>
 <tr><td>clickAndWait</td><td>name=defaults</td><td></td></tr>
-<tr><td>type</td><td>name=fields[4][default]</td><td>0</td></tr>
+<tr><td>type</td><td>name=fields[3.1][default]</td><td>0</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Table has been altered.</td><td></td></tr>
 </tbody></table>
@@ -246,16 +247,16 @@
 <tr><td>click</td><td>link=interprets</td><td></td></tr>
 <tr><td>click</td><td>link=Alter table</td><td></td></tr>
 <tr><td>click</td><td>name=add[4]</td><td></td></tr>
-<tr><td>type</td><td>name=fields[5][field]</td><td>alive</td></tr>
-<tr><td>select</td><td>name=fields[5][type]</td><td>label=alive</td></tr>
-<tr><td>click</td><td>name=fields[5][null]</td><td></td></tr>
+<tr><td>type</td><td>name=fields[4.1][field]</td><td>alive</td></tr>
+<tr><td>select</td><td>name=fields[4.1][type]</td><td>label=alive</td></tr>
+<tr><td>click</td><td>name=fields[4.1][null]</td><td></td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>click</td><td>link=alive</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>'alive', 'deceased'</td><td></td></tr>
 <tr><td>chooseOkOnNextConfirmation</td><td>Drop alive?</td><td></td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Drop']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>cannot drop type</td><td></td></tr>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=interprets&amp;where%5Bid%5D=1</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=interprets&amp;where[id]=1</td><td></td></tr>
 <tr><td>click</td><td>//input[@value='val-deceased']</td><td></td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>deceased</td><td></td></tr>
@@ -292,7 +293,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Update</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=albums&amp;where%5Bid%5D=2</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;edit=albums&amp;where[id]=2</td><td></td></tr>
 <tr><td>type</td><td>fields[title]</td><td>Black or White</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Item has been updated.</td><td></td></tr>
@@ -302,8 +303,8 @@
 <thead><tr><td rowspan="1" colspan="3">Delete</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?pgsql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=public&amp;select=albums</td><td></td></tr>
-<tr><td>click</td><td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td><td></td></tr>
-<tr><td>waitForChecked</td><td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td><td></td></tr>
+<tr><td>click</td><td>//input[@name='check[]' and @value='where[id]=2']</td><td></td></tr>
+<tr><td>waitForChecked</td><td>//input[@name='check[]' and @value='where[id]=2']</td><td></td></tr>
 <tr><td>chooseOkOnNextConfirmation</td><td>Are you sure?</td><td></td></tr>
 <tr><td>click</td><td>delete</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>1 item has been affected.</td><td></td></tr>
@@ -338,7 +339,7 @@
 <tr><td>clickAndWait</td><td>//input[@value='Export']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>CREATE TABLE "public"."interprets"</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>INSERT INTO "interprets"</td><td></td></tr>
-<tr><td>verifyTextPresent</td><td>VIEW "albums_interprets"</td><td></td></tr>
+<tr><td>verifyTextPresent</td><td>VIEW "public"."albums_interprets"</td><td></td></tr>
 </tbody></table>
 
 <table cellpadding="1" cellspacing="1" border="1">
@@ -432,8 +433,8 @@
 <tr><td>type</td><td>name=partition</td><td>id</td></tr>
 <tr><td>type</td><td>name=partition_names[]</td><td>old</td></tr>
 <tr><td>type</td><td>name=partition_values[]</td><td>10</td></tr>
-<tr><td>type</td><td>xpath=//table[@id='partition-table']/tr/td/input</td><td>new</td></tr>
-<tr><td>type</td><td>xpath=//table[@id='partition-table']/tr/td[2]/input</td><td>MAXVALUE</td></tr>
+<tr><td>type</td><td>xpath=//table[@id='partition-table']/tbody/tr[2]/td/input</td><td>new</td></tr>
+<tr><td>type</td><td>xpath=//table[@id='partition-table']/tbody/tr[2]/td[2]/input</td><td>MAXVALUE</td></tr>
 <tr><td>click</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>PARTITION BY RANGE(id)</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>"range_old" PARTITION OF "range" FOR VALUES FROM (MINVALUE) TO (10)</td><td></td></tr>

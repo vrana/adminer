@@ -92,12 +92,12 @@
 <tr><td>open</td><td>/adminer/?mssql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;table=interprets</td><td></td></tr>
 <tr><td>clickAndWait</td><td>link=Alter table</td><td></td></tr>
 <tr><td>click</td><td>add[2]</td><td></td></tr>
-<tr><td>type</td><td>fields[3][field]</td><td>albums</td></tr>
-<tr><td>select</td><td>fields[3][type]</td><td>label=int</td></tr>
-<tr><td>type</td><td>fields[3][length]</td><td></td></tr>
+<tr><td>type</td><td>fields[2.1][field]</td><td>albums</td></tr>
+<tr><td>select</td><td>fields[2.1][type]</td><td>label=int</td></tr>
+<tr><td>type</td><td>fields[2.1][length]</td><td></td></tr>
 <tr><td>uncheck</td><td>name=defaults</td><td></td></tr>
 <tr><td>clickAndWait</td><td>name=defaults</td><td></td></tr>
-<tr><td>type</td><td>name=fields[3][default]</td><td>0</td></tr>
+<tr><td>type</td><td>name=fields[2.1][default]</td><td>0</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Table has been altered.</td><td></td></tr>
 </tbody></table>
@@ -219,7 +219,7 @@
 <table cellpadding="1" cellspacing="1" border="1">
 <thead><tr><td rowspan="1" colspan="3">Update</td></tr></thead>
 <tbody>
-<tr><td>open</td><td>/adminer/?mssql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;edit=albums&amp;where%5Bid%5D=2</td><td></td></tr>
+<tr><td>open</td><td>/adminer/?mssql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;edit=albums&amp;where[id]=2</td><td></td></tr>
 <tr><td>type</td><td>fields[title]</td><td>Black or White</td></tr>
 <tr><td>clickAndWait</td><td>//input[@value='Save']</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>Item has been updated.</td><td></td></tr>
@@ -229,8 +229,8 @@
 <thead><tr><td rowspan="1" colspan="3">Delete</td></tr></thead>
 <tbody>
 <tr><td>open</td><td>/adminer/?mssql=&amp;username=ODBC&amp;db=adminer_test&amp;ns=dbo&amp;select=albums</td><td></td></tr>
-<tr><td>click</td><td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td><td></td></tr>
-<tr><td>waitForChecked</td><td>//input[@name='check[]' and @value='where%5Bid%5D=2']</td><td></td></tr>
+<tr><td>click</td><td>//input[@name='check[]' and @value='where[id]=2']</td><td></td></tr>
+<tr><td>waitForChecked</td><td>//input[@name='check[]' and @value='where[id]=2']</td><td></td></tr>
 <tr><td>chooseOkOnNextConfirmation</td><td>Are you sure?</td><td></td></tr>
 <tr><td>click</td><td>delete</td><td></td></tr>
 <tr><td>verifyTextPresent</td><td>1 item has been affected.</td><td></td></tr>
