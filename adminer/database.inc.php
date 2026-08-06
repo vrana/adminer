@@ -67,11 +67,12 @@ if ($_POST) {
 echo ($_POST["add"] || strpos($name, "\n")
 	? '<textarea autofocus name="name" rows="10" cols="40">' . h($name) . '</textarea><br>'
 	: '<input name="name" autofocus value="' . h($name) . '" data-maxlength="64" autocapitalize="off">'
-) . "\n" . ($collations ? html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $row["collation"]) . doc_link(array(
+) . "\n";
+echo ($collations ? html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $row["collation"]) . doc_link(array(
 	'sql' => "charset-charsets.html",
 	'mariadb' => "supported-character-sets-and-collations/",
 	'mssql' => "relational-databases/system-functions/sys-fn-helpcollations-transact-sql",
-)) : "");
+)) : "") . "\n";
 ?>
 <input type='submit' value='<?php echo lang('Save'); ?>'>
 <?php
