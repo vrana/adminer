@@ -387,6 +387,11 @@ function parse_version($content) {
 	return (preg_match('~VERSION\s*=\s*[\'"]([^\'"]+)~', $content, $match) ? $match[1] : "");
 }
 
+/** Format a size in bytes as kB, empty if the size is not known */
+function size_kb($size) {
+	return ($size != "" ? number_format($size / 1000, 3, ".", "") : ""); // a byte count divided by 1000 has three decimals at most so nothing is rounded
+}
+
 /** Write a row to the CSV, the versions are sorted from the newest */
 function write_row(array $row) {
 	$lines = (file_exists(CSV) ? file(CSV) : array());
@@ -440,7 +445,7 @@ if (!isset($done["v$number"])) { // the working tree including the uncommitted c
 	chdir($repository);
 
 	// the date of the measurement, the code is not committed yet
-	write_row(array_merge(array("v$number", date("Y-m-d"), $source), $compiled, array($langs, $drivers, $plugin_drivers)));
+	write_row(array_merge(array("v$number", date("Y-m-d"), size_kb($source)), array_map('size_kb', $compiled), array($langs, $drivers, $plugin_drivers)));
 }
 
 if (!in_array("--all", $argv)) { // the recorded versions never change so they are measured only on demand
@@ -475,11 +480,10 @@ foreach (versions() as $version => $commits) { // the newest first
 
 	$source = source_size($release) + jush_size(tree_gitlinks($release), $number);
 	$compiler = (tree_files($release, "compile.php") ? "compile.php" : "_compile.php"); // the compiler moved to the root in 1.11.0
-	// the single file distribution is documented since 1.3.0, the older versions are measured only by their source
-	$compiled = (version_compare($number, "1.3", "<") ? array("", "", "") : compile_all($version, $only_mysql, $compiler));
+	$compiled = compile_all($version, $only_mysql, $compiler);
 	clean();
 
 	// the author date, the rebased releases of 4.9 - 4.15 carry the date of the rebase as the committer date
 	$date = (preg_match('~^\d{4}-\d\d-\d\d$~', $dated) ? $dated : git(array("log", "-1", "--format=%as", $dated)));
-	write_row(array_merge(array($version, $date, $source), $compiled, array($langs, $drivers, $plugin_drivers)));
+	write_row(array_merge(array($version, $date, size_kb($source)), array_map('size_kb', $compiled), array($langs, $drivers, $plugin_drivers)));
 }
