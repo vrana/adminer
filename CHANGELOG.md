@@ -1510,7 +1510,6 @@
 - More friendly user interface
 - Slovak translation
 ### Internal
-- Split the source into files joined by a compile script
 - Compile: Inline the favicon by base64, the data: URI was not supported by Internet Explorer
 
 ## phpMinAdmin 1.2.0 (released 2007-07-25)
