@@ -30,7 +30,9 @@
         "GPL-2.0-only"
     ],
     "require": {
-        "php": ">=7.4"
+        "php": ">=7.4",
+        "ext-json": "*",
+        "ext-session": "*"
     },
     "scripts": {
         "post-install-cmd": "@submodules",
