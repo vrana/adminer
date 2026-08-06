@@ -11,6 +11,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v5
+        with:
+          submodules: recursive # ESLint checks externals/jush, otherwise it would silently find no files there
       - uses: php-actions/composer@v6
       - uses: php-actions/phpcs@v1
         with:

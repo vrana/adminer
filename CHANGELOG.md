@@ -122,6 +122,7 @@
 - Require ES6 in JavaScript, remove old browser workarounds
 - Use standard JSDoc @param and @return syntax
 - ESLint: Install it by composer install, run it in composer check and CI
+- ESLint: Check also the jush modules compiled into the single file
 - Docs: Handling of values and binary data, plugin translations, CSS changes must not break skins
 - Rename the Git master branch to main
 
