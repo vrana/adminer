@@ -303,7 +303,7 @@ The tests take about 10 minutes to run, which is acceptable before a release.
 They help detect even JavaScript errors in real-world use cases.
 
 The unit tests run from the command line by `composer test`.
-They print the found errors and exit with a non-zero status, so they can also run in CI.
+They print the found errors and exit with a non-zero status, so they run also in CI.
 
 ## JavaScript
 
