@@ -67,7 +67,9 @@ function git(array $args) {
 	return rtrim($stdout, "\n");
 }
 
-/** Get files in a directory of a tag, empty if the directory doesn't exist */
+/** Get files in a directory of a tag, empty if the directory doesn't exist
+* @param string $dir use "." for the whole tree
+*/
 function tree_files($tag, $dir) {
 	$output = git(array("ls-tree", "-r", "--name-only", $tag, "--", $dir));
 	return ($output != "" ? explode("\n", $output) : array());
@@ -125,6 +127,7 @@ function compile_all($tag, $only_mysql, $compiler = "compile.php") {
 
 /** Compile one variant, return its size in bytes or "" if the compilation fails
 * @param string $compiler compile.php of the measured version, it can be run from any directory and creates the file in the current one
+*   versions before 1.11 use _compile.php producing phpMinAdmin[-lang].php, it must be run from the directory with the source
 */
 function compile($tag, array $args, $compiler = "compile.php") {
 	$binaries = array(PHP_BINARY);
@@ -140,7 +143,7 @@ function compile($tag, array $args, $compiler = "compile.php") {
 		// compile.php prints "Not found: ..." and exits with 1, PHP fatal errors exit with 255
 		// the "Missing ..." warnings on stderr are harmless so the exit code decides
 		// the oldest versions compile also the editor and don't report the size
-		if (!$code && preg_match('~^(adminer\S*) created(?: \((\d+) B\))?\.~m', $stdout, $match)) {
+		if (!$code && preg_match('~^((?:adminer|phpMinAdmin)\S*) created(?: \((\d+) B\))?\.~m', $stdout, $match)) {
 			$size = (isset($match[2]) ? $match[2] : (file_exists($match[1]) ? filesize($match[1]) : ""));
 			if (isset($match[2]) && file_exists($match[1]) && filesize($match[1]) != $match[2]) {
 				$messages[] = "$match[1] has " . filesize($match[1]) . " B but compile.php reported $match[2] B";
@@ -182,6 +185,32 @@ function jush_size(array $gitlinks, $number) {
 	return $return;
 }
 
+/** Count the translations of a version, they moved from lang.inc.php to lang/ in 1.3.0 and to adminer/lang/ in 1.11.0 */
+function count_langs($release) {
+	foreach (array("adminer/lang/", "lang/") as $dir) {
+		$return = 0;
+		foreach (tree_files($release, $dir) as $filename) {
+			if (preg_match('~\.inc\.php$~', $filename) && basename($filename) != "xx.inc.php") { // xx is just a template for new translations
+				$return++;
+			}
+		}
+		if ($return) {
+			return $return;
+		}
+	}
+	list($code, $stdout) = run(array("git", "show", "$release:lang.inc.php"));
+	return (!$code ? preg_match_all("~^\t{1,2}'\\w+' => array\\($~m", $stdout, $match) : 0); // the languages are the top level keys of $translations
+}
+
+/** Get the size of the Adminer source code checked out in the current directory */
+function source_size($release) {
+	if (tree_files($release, "adminer")) {
+		return dir_size("adminer");
+	}
+	// versions before 1.11 keep the source in the root next to the development scripts, the tests and the documentation
+	return files_size(preg_grep('~^(_.*\.php|tests/.*|.*\.txt)$~', tree_files($release, "."), PREG_GREP_INVERT));
+}
+
 /** Get the total size of the files in a directory */
 function dir_size($dir) {
 	$return = 0;
@@ -210,7 +239,7 @@ function file_size($filename) {
 
 /** Delete the compiled files */
 function clean() {
-	foreach (glob("{adminer,editor}*.php", GLOB_BRACE) as $filename) {
+	foreach (glob("{adminer,editor,phpMinAdmin}*.php", GLOB_BRACE) as $filename) {
 		unlink($filename);
 	}
 	// versions 4.9 - 4.14 compile to export/ or temp/, no version tracks these directories
@@ -233,7 +262,7 @@ function delete_dir($dir) {
 	}
 }
 
-/** Get array(version => array(commit to compile, commit with the release date)) of all releases, the newest first */
+/** Get array(version => array(commit to compile, commit with the release date or the date itself)) of all releases, the newest first */
 function versions() {
 	// versions before 3.0.0 are not tagged, they are released by a commit which either sets the version or bumps it to the next -dev right after the release
 	$releases = array();
@@ -268,6 +297,18 @@ function versions() {
 			$return[$version] = $commits;
 		}
 	}
+
+	// the phpMinAdmin era releases are marked by nothing but the changelog, 1.11.0 has no release commit either
+	$padded = array();
+	foreach (array_keys($return) as $version) {
+		$padded[pad_version($version)] = true;
+	}
+	foreach (changelog_releases() as $version => $date) {
+		if (!isset($padded[pad_version("v$version")])) {
+			$return["v$version"] = array(release_at($version, $date), $date, $version);
+		}
+	}
+
 	// by the version number, the tags are prefixed by v
 	uasort($return, function ($a, $b) {
 		return version_compare($b[2], $a[2]);
@@ -282,14 +323,46 @@ function pad_version($version) {
 
 /** Check if a version has an entry in the changelog of main */
 function in_changelog($version) {
-	static $changelog;
-	if (!isset($changelog)) {
-		list($code, $changelog) = run(array("git", "show", "main:CHANGELOG.md"));
+	return preg_match('~^## \w+ ' . preg_quote(substr($version, 1), '~') . '(?![\d.])~m', changelog());
+}
+
+/** Get array(version => release date) of the releases dated in the changelog of main */
+function changelog_releases() {
+	// the entries of 4.9 - 4.15 carry no date, these versions are found by their tag or release commit
+	preg_match_all('~^## \w+ ([\d.]+) \(released ([\d-]+)\)~m', changelog(), $matches, PREG_SET_ORDER);
+	$return = array();
+	foreach ($matches as $match) {
+		$return[$match[1]] = $match[2];
+	}
+	return $return;
+}
+
+/** Get the content of CHANGELOG.md in main */
+function changelog() {
+	static $return;
+	if (!isset($return)) {
+		list($code, $return) = run(array("git", "show", "main:CHANGELOG.md"));
 		if ($code) {
 			fail("CHANGELOG.md was not found in main.");
 		}
 	}
-	return preg_match('~^## \w+ ' . preg_quote(substr($version, 1), '~') . '(?![\d.])~m', $changelog);
+	return $return;
+}
+
+/** Get the commit released as a version, the releases before 1.11.0 are marked by no commit
+* @param string $date the release date from the changelog
+*/
+function release_at($version, $date) {
+	// main because the worktree is left checked out at the oldest processed version, the old commits have the same author and committer date
+	foreach (explode("\n", git(array("log", "main", "--until=$date 23:59:59", "--format=%H"))) as $commit) {
+		// the date alone is not enough, 1.4.0 was bumped to 1.4.1 the same day it was released
+		// the version alone is not enough either, 1.5.0 was released eight days before the bump and 1.6.0 while the code still said 1.5.1
+		$number = version_at($commit);
+		if ($number == "" || version_compare($number, $version, "<=")) {
+			return $commit;
+		}
+	}
+	fail("No commit of $version released on $date was found.");
 }
 
 /** Check if a commit is in the history of main */
@@ -298,10 +371,15 @@ function is_ancestor($commit) {
 	return !$code;
 }
 
-/** Get the version set in a commit, empty if the file doesn't exist there */
+/** Get the version set in a commit, empty if the version is not stored there */
 function version_at($commit) {
 	list($code, $stdout) = run(array("git", "show", "$commit:" . VERSION_FILE));
-	return (!$code ? parse_version($stdout) : "");
+	if (!$code) {
+		return parse_version($stdout);
+	}
+	// versions 1.3.2 - 1.10.1 print the version in the page title, the older ones store it nowhere
+	list($code, $stdout) = run(array("git", "show", "$commit:design.inc.php"));
+	return (!$code && preg_match('~lang\(\'phpMinAdmin\'\) \. " ([\d.]+)~', $stdout, $match) ? $match[1] : "");
 }
 
 /** Get the version defined in the content of version.inc.php, empty if it is not there */
@@ -384,12 +462,7 @@ foreach (versions() as $version => $commits) { // the newest first
 	list($release, $dated, $number) = $commits;
 
 	// read the counts from the commit instead of the checkout so that they are recorded even if the compilation fails
-	$langs = 0;
-	foreach (tree_files($release, "adminer/lang/") as $filename) {
-		if (preg_match('~\.inc\.php$~', $filename) && basename($filename) != "xx.inc.php") { // xx is just a template for new translations
-			$langs++;
-		}
-	}
+	$langs = count_langs($release);
 	// versions before 3.0.0 support only MySQL - they have no drivers directory and compile.php takes no driver so the whole build is the MySQL build
 	$only_mysql = version_compare($number, "3", "<");
 	$drivers = ($only_mysql ? 1 : count(preg_grep('~\.inc\.php$~', tree_files($release, "adminer/drivers/"))));
@@ -400,11 +473,13 @@ foreach (versions() as $version => $commits) { // the newest first
 	create_jsmin();
 	clean();
 
-	$source = dir_size("adminer") + jush_size(tree_gitlinks($release), $number);
-	$compiled = compile_all($version, $only_mysql);
+	$source = source_size($release) + jush_size(tree_gitlinks($release), $number);
+	$compiler = (tree_files($release, "compile.php") ? "compile.php" : "_compile.php"); // the compiler moved to the root in 1.11.0
+	// the single file distribution is documented since 1.3.0, the older versions are measured only by their source
+	$compiled = (version_compare($number, "1.3", "<") ? array("", "", "") : compile_all($version, $only_mysql, $compiler));
 	clean();
 
 	// the author date, the rebased releases of 4.9 - 4.15 carry the date of the rebase as the committer date
-	$date = git(array("log", "-1", "--format=%as", $dated));
+	$date = (preg_match('~^\d{4}-\d\d-\d\d$~', $dated) ? $dated : git(array("log", "-1", "--format=%as", $dated)));
 	write_row(array_merge(array($version, $date, $source), $compiled, array($langs, $drivers, $plugin_drivers)));
 }
