@@ -1,8 +1,9 @@
 <?php
 
-/** Log in with a passkey holding the passwords
+/** Log in only with a passkey holding the passwords
 * The passwords are encrypted by a key derived from the passkey by the WebAuthn PRF extension so the key is never stored anywhere.
-* Requires a secure context (HTTPS or localhost) and an authenticator supporting the PRF extension, otherwise the login form stays unchanged.
+* Logging in without the passkey is refused so remove this plugin after losing the authenticator; list it before login plugins which can allow the login themselves.
+* Requires a secure context (HTTPS or localhost) and an authenticator supporting the PRF extension, otherwise the login form only prints these requirements.
 * Store an account with an empty password to log in to a server which doesn't require a password (e.g. SQLite) - the passkey verifies the user instead.
 * The passkey is bound to the current hostname so it stops working after moving Adminer to a different domain.
 * @link https://www.adminer.org/plugins/#use
@@ -18,7 +19,7 @@ class AdminerLoginPasskey extends Adminer\Plugin {
 	/** Set the passkey created by the setup form; call without parameters to create the first passkey
 	* @param string $credential_id base64url encoded ID of the passkey
 	* @param string $accounts base64 encoded encrypted list of accounts
-	* @param string $password_hash SHA-256 of the password derived from the passkey, sent for accounts stored without a password
+	* @param string $password_hash SHA-256 of the password derived from the passkey, it is prepended to the passwords sent by the login form; empty allows logging in without the passkey
 	*/
 	function __construct($credential_id = '', $accounts = '', $password_hash = '') {
 		$this->credential_id = $credential_id;
@@ -27,24 +28,30 @@ class AdminerLoginPasskey extends Adminer\Plugin {
 	}
 
 	function credentials() {
-		if ($this->passwordMatches(Adminer\get_password())) {
-			// the server doesn't know the password derived from the passkey so don't send it
-			return array(Adminer\SERVER, $_GET["username"], "");
+		$password = $this->verifiedPassword(Adminer\get_password());
+		if ($password !== null) {
+			// the server doesn't know the password derived from the passkey so send only the stored password, empty for servers not requiring it
+			return array(Adminer\SERVER, $_GET["username"], $password);
 		}
 	}
 
 	function login($login, $password) {
-		if ($this->passwordMatches($password)) {
+		if ($this->verifiedPassword($password) !== null) {
 			return true; // the passkey has verified the user
+		}
+		if ($this->password_hash != "") {
+			return $this->lang('Log in with the passkey.');
 		}
 	}
 
-	/** Check if the password is the one derived from the passkey
-	* @param string|false|null $password
-	* @return bool
+	/** Get the stored password from the password verified by the passkey
+	* @param string|false|null $password the password derived from the passkey, a colon and the stored password
+	* @return string|null null if the passkey has not verified the password
 	*/
-	protected function passwordMatches($password) {
-		return $this->password_hash != "" && is_string($password) && hash('sha256', $password) === $this->password_hash;
+	protected function verifiedPassword($password) {
+		if ($this->password_hash != "" && is_string($password) && preg_match('~^([0-9a-f]{64}):~', $password, $match) && hash('sha256', $match[1]) === $this->password_hash) {
+			return substr($password, strlen($match[0]));
+		}
 	}
 
 	function loginFormField($name, $heading, $value) {
@@ -240,8 +247,8 @@ function passkeyLogin(account, password) {
 	for (const name of ['driver', 'server', 'username', 'password', 'db']) {
 		const field = form['auth[' + name + ']'];
 		if (field && account[name] !== undefined) {
-			// the empty password is replaced because Adminer refuses to log in without a password
-			field.value = (name == 'password' && account[name] === '' ? password : account[name]);
+			// the password derived from the passkey verifies the user, the stored password can be empty for a server not requiring it
+			field.value = (name == 'password' ? password + ':' + account[name] : account[name]);
 			if (name == 'driver') {
 				fire(field, 'change');
 			}
@@ -354,7 +361,7 @@ if (window.isSecureContext && window.PublicKeyCredential && window.crypto && cry
 
 	protected $translations = array(
 		'cs' => array(
-			'' => 'Umožňuje přihlášení pomocí passkey, kde jsou uložená hesla',
+			'' => 'Vyžaduje k přihlášení passkey, ve které jsou uložená hesla',
 			'Unlock with passkey' => 'Odemknout pomocí passkey',
 			'Set up passkey' => 'Nastavit passkey',
 			'Fill in the login form and add it to the passkey.' => 'Vyplňte přihlašovací formulář a přidejte ho do passkey.',
@@ -365,6 +372,7 @@ if (window.isSecureContext && window.PublicKeyCredential && window.crypto && cry
 			'Add this line to %s:' => 'Přidejte tento řádek do %s:',
 			'The passkey does not support storing passwords.' => 'Tato passkey neumí ukládat hesla.',
 			'The accounts cannot be decrypted by this passkey.' => 'Touto passkey se přístupy nepodařilo dešifrovat.',
+			'Log in with the passkey.' => 'Přihlaste se pomocí passkey.',
 		),
 	);
 }

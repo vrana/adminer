@@ -102,7 +102,7 @@
 - Plugin menu-links: Add option to show the select link and other repeated links only on hover
 - New plugin: Create a table from an imported CSV file
 - New plugin: Display images in select, same as in Adminer Editor
-- New plugin: Log in by a passkey holding the passwords
+- New plugin: Log in only by a passkey holding the passwords
 - New plugin: Warn by a red strip if Adminer or the database doesn't run on the local machine
 ### Internal
 - Register JavaScript event handlers by a data attribute instead of a script element
