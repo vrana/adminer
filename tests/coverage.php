@@ -27,6 +27,9 @@ function xhtml_open_tags($s) {
 $coverage_filename = sys_get_temp_dir() . "/adminer.coverage";
 if (!extension_loaded("xdebug")) {
 	echo "<p class='error'>Xdebug has to be enabled.\n";
+} elseif (!preg_match('~(^|,)coverage(,|$)~', ini_get("xdebug.mode"))) {
+	// starting the coverage would only print a warning in every request, which is sent before the headers and breaks the pages
+	echo "<p class='error'>Xdebug has to run with xdebug.mode=coverage in php.ini.\n";
 } elseif ($_GET["coverage"] === "0") {
 	file_put_contents($coverage_filename, serialize(array()));
 	echo "<p class='message'>Coverage started.\n";

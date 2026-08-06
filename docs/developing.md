@@ -319,7 +319,8 @@ The helpers in [tests/adminer.js](/tests/adminer.js) cover what Adminer does rep
 
 Code coverage is collected by Xdebug in every request, so it works with the tests as well as with clicking through Adminer by hand.
 Open [tests/coverage.php](/tests/coverage.php) in a browser, click "Start new coverage", run the tests and reload the page - the report accumulates until it is started anew.
-The development server must be started by `php -d xdebug.mode=coverage -S 127.0.0.1:8000 -t .` for this; otherwise Xdebug only prints a warning in every request, which breaks the pages because it is sent before the headers.
+PHP must run with `xdebug.mode=coverage`, set in `php.ini` or by starting the development server by `php -d xdebug.mode=coverage -S 127.0.0.1:8000 -t .`.
+The page refuses to start a new coverage without it, because Xdebug would then only print a warning in every request, which is sent before the headers and breaks the pages.
 
 The screenshots for the website are still recorded by [Katalon Recorder](https://katalon.com/katalon-recorder-ide) in [tests/screenshots.html](/tests/screenshots.html) because they need a manually prepared database.
 
