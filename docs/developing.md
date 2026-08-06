@@ -281,6 +281,8 @@ For example, index names are usually irrelevant compared to the columns they ref
 The same principle applies to the code; for instance, `public` visibility is the default, so it does not need to be explicitly specified.
 Many closing HTML tags are optional (e.g., `</li>` or `</html>`) and Adminer obviously doesn't print them.
 
+The sizes of the releases are recorded in [versions.csv](/docs/versions.csv) by [versions.php](/docs/versions.php), which compiles the working tree before a release and, with `--all`, also the versions missing in the file.
+
 If a feature can be implemented as a plugin, it is only added to the core if it benefits almost everyone.
 For example, [sticky table headers](https://github.com/vrana/adminer/issues/918) are useful to all users and have been included, whereas a [dark mode switcher](https://github.com/vrana/adminer/issues/926) would clutter the UI and is only useful for some, so it remains a plugin.
 

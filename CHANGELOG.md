@@ -110,6 +110,7 @@
 - Composer: Initialize submodules on install
 - Remove the Makefile, Composer scripts cover compiling and cleaning
 - Move documentation to docs/, linter configuration to conf/, coverage.php to tests/
+- Add docs/versions.php measuring the size of all releases
 - Coding style: Wrap lines to 200 characters
 - Cache PHP_CodeSniffer results in the system temp directory
 - PHPStan: Check the Editor, more checks which the code already passes
