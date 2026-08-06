@@ -268,7 +268,7 @@ function enum_input(string $type, string $attrs, array $field, $value, string $e
 * @param Field|RoutineField $field
 * @param mixed $value
 */
-function input(array $field, $value, ?string $function, ?bool $autofocus = false): void {
+function input(array $field, $value, ?string $function, ?bool $autofocus = false, ?bool $update = false): void {
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
 	if (is_array($value) && !$function) {
@@ -279,10 +279,11 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 		// 128 - JSON_PRETTY_PRINT, 64 - JSON_UNESCAPED_SLASHES, 256 - JSON_UNESCAPED_UNICODE available since PHP 5.4
 		$value = json_encode(is_array($value) ? $value : json_decode($value), 128 | 64 | 256);
 	}
-	$reset = (JUSH == "mssql" && $field["auto_increment"]);
+	$reset = (JUSH == "mssql" && $update && $field["auto_increment"]); // MS SQL doesn't allow updating an identity column
 	if ($reset && !$_POST["save"]) {
 		$function = null;
 	}
+	// the form from Select can affect more rows so it must be possible to keep the original value of each of them
 	$functions = (isset($_GET["select"]) || $reset ? array("orig" => lang('original')) : array()) + adminer()->editFunctions($field);
 	$enums = driver()->enumLength($field);
 	if ($enums) {
@@ -291,7 +292,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 	}
 	$attrs = " name='fields[$name]" . ($field["type"] == "enum" || $field["type"] == "set" ? "[]" : "") . "'" . ($autofocus ? " autofocus" : "");
 	echo driver()->unconvertFunction($field) . " ";
-	$table = $_GET["edit"] ?: $_GET["select"];
+	$table = $_GET["edit"] ?: $_GET["select"]; // $_GET["edit"] is not set when re-printing the form after a failed save from Select
 	if ($field["type"] == "enum") {
 		echo h($functions[""]) . "<td>" . adminer()->editInput($table, $field, $attrs, $value);
 	} else {
@@ -485,6 +486,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 					$default = bin2hex($default); // same as UNHEX
 				}
 			}
+			// $row is null in Insert and in the form from Select if it affects other than exactly one row, false then keeps the original value of each of them
 			$value = ($row !== null
 				? ($row[$name] != "" && JUSH == "sql" && preg_match("~enum|set~", $field["type"]) && is_array($row[$name])
 					? implode(",", $row[$name])
@@ -523,7 +525,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 				if ($autofocus !== false) {
 					$autofocus = ($field["auto_increment"] || $function == "now" || $function == "uuid" ? null : true); // null - don't autofocus this input but check the next one
 				}
-				input($field, $value, $function, $autofocus);
+				input($field, $value, $function, $autofocus, $update);
 				if ($autofocus) {
 					$autofocus = false;
 				}

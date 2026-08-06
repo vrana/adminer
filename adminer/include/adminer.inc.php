@@ -779,9 +779,9 @@ class Adminer {
 	*/
 	function editFunctions(array $field): array {
 		$return = ($field["null"] ? "NULL/" : "");
-		$update = isset($_GET["select"]) || where($_GET);
+		$has_value = isset($_GET["select"]) || where($_GET); // the field displays a value to modify, which is also the case in Clone
 		foreach (array(driver()->insertFunctions, driver()->editFunctions) as $key => $functions) {
-			if (!$key || (!isset($_GET["call"]) && $update)) { // relative functions
+			if (!$key || (!isset($_GET["call"]) && $has_value)) { // relative functions
 				foreach ($functions as $pattern => $val) {
 					if (!$pattern || preg_match("~$pattern~", $field["type"])) {
 						$return .= "/$val";
@@ -792,7 +792,7 @@ class Adminer {
 				$return .= "/SQL";
 			}
 		}
-		if ($field["auto_increment"] && !$update) {
+		if ($field["auto_increment"] && !$has_value) {
 			$return = lang('Auto Increment');
 		}
 		return explode("/", $return);

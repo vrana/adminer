@@ -74,6 +74,7 @@
 - SQLite: Fix working with binary data through PDO
 - MS SQL: Treat binary fields as blob (bug SF-369)
 - MS SQL: Hide table actions and row editing in the sys schema
+- MS SQL: Fix cloning and inserting a row with an identity column, the form offered the original value
 - Elasticsearch, ClickHouse: Use default port
 - Elasticsearch: The driver is no longer beta, it works with Elasticsearch 7, 8 and 9
 - ClickHouse: Fix nullable columns, fix default values, show server version

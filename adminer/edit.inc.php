@@ -3,6 +3,8 @@ namespace Adminer;
 
 $TABLE = $_GET["edit"];
 $fields = fields($TABLE);
+// index.php routes here also from Select which prints the same form for the checked rows, so it serves four modes told apart by two independent conditions:
+// $update - modify existing rows (Edit) instead of inserting a new one (Insert, Clone); isset($_GET["select"]) - the form can affect more than one row (Clone, Edit from Select)
 $where = (isset($_GET["select"])
 	? ($_POST["check"] && count($_POST["check"]) == 1 ? where_check($_POST["check"][0], $fields) : "")
 	: where($_GET, $fields)
