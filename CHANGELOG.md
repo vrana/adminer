@@ -68,6 +68,7 @@
 - PostgreSQL: Export materialized views with their indexes, they were exported as plain views
 - PostgreSQL: Import CSV by INSERT ... ON CONFLICT instead of two queries for each row
 - PostgreSQL: Show, alter and export Auto Increment, only sequences with an unusual name were exported
+- PostgreSQL PDO: Fix the number of affected rows in COPY ... FROM stdin
 - PostgreSQL, MS SQL: Show two columns in select COUNT(*), COUNT(DISTINCT id)
 - PostgreSQL, MS SQL: Highlight primary keys in the database schema (regression from 5.1.0)
 - SQLite: Fix working with binary data through PDO

@@ -238,6 +238,7 @@ if (isset($_GET["pgsql"])) {
 			function multi_query(string $query) {
 				if (preg_match('~\bCOPY\s+(.+?)\s+FROM\s+stdin;\n?(.*)\n\\\\\.$~is', str_replace("\r\n", "\n", $query), $match)) { // no ^ to allow leading comments
 					$rows = explode("\n", $match[2]);
+					$this->multi = false; // the result of the previous query would overwrite affected_rows in PdoDb::store_result()
 					$this->affected_rows = count($rows);
 					return $this->copyFrom($match[1], $rows);
 				}
