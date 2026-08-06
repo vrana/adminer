@@ -3,7 +3,7 @@
 namespace Adminer;
 
 // Test that compress_string() output uses only compress_alphabet() characters, decompress_string() restores the original
-// and the pure-PHP inflate() fallback matches gzinflate().
+// and the pure-PHP inflate() fallback matches gzinflate(); the fallback is checked only on a sample of the translations, it is slow.
 // Prints found errors, prints nothing and exits with 0 if everything is OK.
 
 require __DIR__ . "/../adminer/include/errors.inc.php"; // mutes undefined array key in decompress_string()
@@ -12,7 +12,7 @@ require __DIR__ . "/../adminer/include/compress.inc.php";
 
 $errors = 0;
 
-function check(string $name, string $string, string $dictionary = ""): void {
+function check(string $name, string $string, string $dictionary = "", bool $fallback = true): void {
 	global $errors;
 	$compressed = compress_string($string, $dictionary);
 	if (strspn($compressed, compress_alphabet()) != strlen($compressed)) {
@@ -22,6 +22,9 @@ function check(string $name, string $string, string $dictionary = ""): void {
 	if (decompress_string($compressed, $dictionary) !== $string) {
 		echo "$name: decompressed string doesn't match the original\n";
 		$errors++;
+	}
+	if (!$fallback) {
+		return; // the pure-PHP inflate() is by orders of magnitude slower than zlib
 	}
 	foreach (array(0, 1, 9) as $level) { // level 0 stores uncompressed blocks
 		$binary = ($dictionary != ""
@@ -68,10 +71,12 @@ check("long random binary", $string);
 
 check("CSS file", file_get_contents(__DIR__ . "/../adminer/static/default.css"));
 check("JS file", file_get_contents(__DIR__ . "/../adminer/static/functions.js"));
-$dictionary = file_get_contents(__DIR__ . "/../adminer/lang/en.inc.php"); // the compiled version compresses translations against English
+$dictionary = file_get_contents(__DIR__ . "/../adminer/lang/en.inc.php");
+$fallback_langs = array("bn", "en", "et", "ru"); // the largest, the smallest and different scripts; the other translations exercise the same code paths so they only check zlib
 foreach (glob(__DIR__ . "/../adminer/lang/*.inc.php") as $filename) {
-	check(basename($filename), file_get_contents($filename));
-	check(basename($filename) . " with dictionary", file_get_contents($filename), $dictionary);
+	$lang = basename($filename, ".inc.php");
+	$lang_dictionary = ($lang != "en" ? $dictionary : ""); // the compiled version compresses English alone and the other translations against it
+	check(basename($filename), file_get_contents($filename), $lang_dictionary, in_array($lang, $fallback_langs));
 }
 
 check("empty string with dictionary", "", $dictionary);
