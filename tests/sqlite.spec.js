@@ -1,0 +1,271 @@
+import {expect, test} from '@playwright/test';
+import {button, expectExtension, goto, link, setValue} from './adminer.js';
+
+test.describe.configure({mode: 'serial'}); // the tests depend on each other, e.g. on being logged in
+
+let page;
+
+test.beforeAll(async ({browser}) => {
+	page = await browser.newPage();
+	page.on('dialog', dialog => dialog.accept());
+});
+
+test.afterAll(async () => {
+	await page.close();
+});
+
+test('Login', async () => {
+	await goto(page, '/adminer/sqlite.php');
+	await page.locator('[name="lang"]').selectOption({label: 'English'}); // submits the form
+	await page.locator('[name="auth[driver]"]').selectOption({label: 'SQLite'});
+	await page.locator('#username').fill('ODBC');
+	await page.locator('[name="auth[password]"]').fill('YOUR_PASSWORD_HERE');
+	await button(page, 'Login').click();
+	await expectExtension(page);
+	await expect(page.locator('body')).toContainText('AdminerLoginPasswordLess');
+	await link(page, 'Create database').click();
+	await page.locator('[name="name"]').fill('adminer_test');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('Please use one of the extensions');
+	await page.locator('[name="name"]').fill('adminer_test.sqlite');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('Database has been created.');
+});
+
+test('Create table', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite');
+	await link(page, 'Create table').click();
+	await page.locator('[name="name"]').fill('interprets');
+	await page.locator('[name="fields[1][field]"]').fill('id');
+	await page.locator('[name="fields[1][type]"]').selectOption({label: 'integer'});
+	await page.locator('input[name="auto_increment_col"][value="1"]').click();
+	await page.locator('[name="fields[1.1][field]"]').fill('name');
+	await page.locator('[name="fields[1.1][type]"]').selectOption({label: 'text'});
+	await page.locator('[name="fields[1.1][length]"]').fill('50');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('Table has been created.');
+});
+
+test('Create index', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&table=interprets');
+	await link(page, 'Alter indexes').click();
+	await page.locator('[name="indexes[2][type]"]').selectOption({label: 'PRIMARY'});
+	await page.locator('[name="indexes[2][columns][1]"]').selectOption({label: 'name'});
+	await expect(page.locator('[name="indexes[2][name]"]')).toHaveValue('interprets_name');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('has more than one primary key');
+	await page.locator('[name="indexes[2][type]"]').selectOption({label: 'INDEX'});
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('Indexes have been altered.');
+});
+
+test('Create table 2', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&table=interprets');
+	await link(page, 'Create table').click();
+	await page.locator('[name="name"]').fill('albums');
+	await page.locator('[name="fields[1][field]"]').fill('id');
+	await page.locator('[name="fields[1][type]"]').selectOption({label: 'integer'});
+	await page.locator('input[name="auto_increment_col"][value="1"]').click();
+	await page.locator('[name="fields[1.1][field]"]').fill('interpret');
+	await page.locator('[name="fields[1.1][type]"]').selectOption({label: 'integer'});
+	await page.locator('[name="fields[1.11][field]"]').fill('title');
+	await page.locator('[name="fields[1.11][type]"]').selectOption({label: 'text'});
+	await page.locator('[name="fields[1.11][length]"]').fill('50');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('Table has been created.');
+});
+
+test('Foreign key', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&table=albums');
+	await link(page, 'Create foreign key').click();
+	await page.locator('[name="table"]').selectOption({label: 'interprets'});
+	await page.locator('[name="source[0]"]').selectOption({label: 'interpret'});
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('Foreign key has been created.');
+});
+
+test('Alter table', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&table=interprets');
+	await link(page, 'Alter table').click();
+	await page.locator('[name="add[2]"]').click();
+	await page.locator('[name="fields[2.1][field]"]').fill('albums');
+	await page.locator('[name="fields[2.1][type]"]').selectOption({label: 'integer'});
+	await page.locator('[name="fields[2.1][length]"]').fill('');
+	await page.locator('[name="defaults"]').uncheck();
+	await page.locator('[name="defaults"]').click();
+	await page.locator('[name="fields[2.1][default]"]').fill('0');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('Table has been altered.');
+});
+
+test('Create trigger', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&trigger=albums');
+	await page.locator('[name="Timing"]').selectOption({label: 'AFTER'});
+	await setValue(page, 'Statement', 'BEGIN\nUPDATE interprets SET albums = albums + 1 WHERE id = NEW.interpret;\nEND');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('Trigger has been created.');
+});
+
+test('Check constraints', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&table=albums');
+	await link(page, 'Create check').click();
+	await setValue(page, 'clause', 'interpret > 0');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('Check has been created.');
+	await link(page, 'New item').click();
+	await page.locator('[name="fields[interpret]"]').fill('0');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('CHECK constraint failed');
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&check=albums&name=interpret+%3E+0');
+	await expect(page.locator('body')).toContainText('interpret > 0');
+	await page.locator('[name="drop"]').click();
+	await expect(page.locator('body')).toContainText('Check has been dropped.');
+});
+
+test('Create view', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&view=');
+	await setValue(page, 'select', 'SELECT albums.id, albums.title, interprets.name FROM albums LEFT JOIN interprets ON albums.interpret = interprets.id');
+	await page.locator('[name="name"]').fill('albums_interprets');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('View has been created.');
+});
+
+test('Invalid table', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&table=invalid');
+	await expect(page.locator('body')).toContainText('No tables.');
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&create=invalid');
+	await expect(page.locator('body')).toContainText('No tables.');
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&select=invalid');
+	await expect(page.locator('body')).toContainText('Unable to select the table:');
+});
+
+test('Schema', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&schema=');
+	await expect(page.locator('body')).toContainText('Permanent link');
+});
+
+test('Insert', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&edit=interprets');
+	await page.locator('[name="fields[name]"]').fill('Michael Jackson');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('Item 1 has been inserted.');
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&edit=albums');
+	await page.locator('[name="fields[interpret]"]').fill('1');
+	await page.locator('[name="fields[title]"]').fill('Dangerous');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('Item 1 has been inserted.');
+});
+
+test('Clone', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&select=albums');
+	await page.locator('[name="check[]"]').click();
+	await page.locator('[name="clone"]').click();
+	await page.locator('[name="fields[title]"]').fill('Black and White');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('Item 2 has been inserted.');
+});
+
+test('Select', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&select=albums');
+	await link(page, 'Search').click();
+	await page.locator('[name="where[0][col]"]').selectOption({label: 'title'});
+	await page.locator('[name="where[0][val]"]').fill('Dangerous');
+	await link(page, 'Sort').click();
+	await page.locator('[name="order[0]"]').selectOption({label: 'interpret'});
+	await button(page, 'Select').click();
+	await expect(page.locator('body')).toContainText('1 row');
+});
+
+test('Explain', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&select=albums');
+	await link(page, 'Edit').click();
+	await button(page, 'Execute').click();
+	await link(page, 'Explain').click();
+	await expect(page.locator('body')).toContainText('SCAN albums');
+});
+
+test('Reference', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&select=albums');
+	await link(page, '1').click();
+	await expect(page.locator('body')).toContainText('Michael Jackson');
+});
+
+test('Search in tables', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite');
+	await page.locator('[name="query"]').fill('Jackson');
+	await page.locator('[name="search"]').click();
+	await link(page, 'interprets').click();
+	await expect(page.locator('body')).toContainText('Michael Jackson');
+});
+
+test('Update', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&edit=albums&where[id]=2');
+	await page.locator('[name="fields[title]"]').fill('Black or White');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('Item has been updated.');
+});
+
+test('Delete', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&select=albums');
+	await page.locator('input[name="check[]"][value="where[id]=2"]').click();
+	await expect(page.locator('input[name="check[]"][value="where[id]=2"]')).toBeChecked();
+	await page.locator('[name="delete"]').click();
+	await expect(page.locator('body')).toContainText('1 item has been affected.');
+});
+
+test('Truncate', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&select=albums');
+	await page.locator('[name="all"]').click();
+	await expect(page.locator('[name="all"]')).toBeChecked();
+	await page.locator('[name="delete"]').click();
+	await expect(page.locator('body')).toContainText('No rows.');
+});
+
+test('Export', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&dump=');
+	await page.locator('[name="output"]').first().click();
+	await page.locator('[name="format"]').first().click();
+	await page.locator('[name="table_style"]').selectOption({label: 'DROP+CREATE'});
+	await page.locator('[name="triggers"]').check();
+	await page.locator('[name="data_style"]').selectOption({label: 'INSERT'});
+	await button(page, 'Export').click();
+	await expect(page.locator('body')).toContainText('CREATE TABLE "interprets"');
+	await expect(page.locator('body')).toContainText('CREATE TRIGGER "albums_ai"');
+	await expect(page.locator('body')).toContainText('INSERT INTO "interprets"');
+	await expect(page.locator('body')).toContainText('VIEW "albums_interprets"');
+});
+
+test('Generated columns', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&create=');
+	await page.locator('[name="name"]').fill('generated');
+	await page.locator('[name="fields[1][field]"]').fill('normal');
+	await page.locator('[name="fields[1.1][field]"]').fill('stored');
+	await page.locator('[name="fields[1.1][generated]"]').selectOption({label: 'STORED'});
+	await page.locator('[name="fields[1.1][default]"]').fill('normal + 200');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('normal + 200');
+	await link(page, 'Alter indexes').click();
+	await page.locator('[name="indexes[1][columns][1]"]').selectOption({label: 'stored'});
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('Indexes have been altered.');
+	await link(page, 'New item').click();
+	await expect(page.locator('[name="fields[stored]"]')).toHaveCount(0);
+	await page.locator('[name="fields[normal]"]').fill('20');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('220');
+});
+
+test('Variables', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&variables=');
+	await expect(page.locator('body')).toContainText('integrity_check');
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&status=');
+	await expect(page.locator('body')).toContainText('MAX_COLUMN');
+});
+
+test('Drop', async () => {
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&database=');
+	await page.locator('[name="drop"]').click();
+	await expect(page.locator('body')).toContainText('Database has been dropped.');
+	await page.locator('#logout').click();
+	await expect(page.locator('body')).toContainText('Thanks for using Adminer, consider donating.');
+});

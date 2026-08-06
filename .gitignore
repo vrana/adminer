@@ -4,9 +4,9 @@
 /editor/adminer-dark.css
 /adminer*.php
 /editor*.php
-/tests/pdo-*.html
 /tests/screenshots/
 /tests/cropped/
+/tests/results/
 /vendor/
 /composer.lock
 /node_modules/

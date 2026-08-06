@@ -297,10 +297,31 @@ The dependencies are optional, so the command only prints a warning if it fails.
 ## Tests
 
 Adminer includes almost no unit tests ([tests/compress.php](/tests/compress.php) is one of the exceptions) but has extensive [end-to-end tests](/tests/).
-They are stored in `tests/*.html` and run by [Katalon Recorder](https://katalon.com/katalon-recorder-ide).
+They are stored in `tests/*.spec.js`, one file per driver, and run by [Playwright](https://playwright.dev/) in a headless browser:
+
+```
+composer e2e                              # all drivers, both with the native extension and with PDO
+composer e2e mysql                        # only the files matching mysql
+composer e2e -- mysql --project=native    # Composer passes options through only after --
+```
+
 These tests verify correct behavior, including UI functionality, which is otherwise difficult to test.
-The tests take about 10 minutes to run, which is acceptable before a release.
 They help detect even JavaScript errors in real-world use cases.
+
+The development server must be running on <http://127.0.0.1:8000> (or set `ADMINER_URL`), together with the database servers the tested driver uses.
+Each file logs in once and the tests inside it run in the order they are written, so a failing test stops the rest of the file.
+Everything runs in a single worker, which takes about six minutes for all drivers with both extensions.
+Parallelism would help little: the drivers use different database servers but they all share the `adminer_test` database name, the `native` and `pdo` projects of one driver work with the very same data, and the requests would queue in the development server anyway, because it handles one at a time unless `PHP_CLI_SERVER_WORKERS` is set (which needs `fork()`, so not on Windows).
+
+Use `composer e2e -- --ui` to watch a test, `--headed --debug` to step through it; a failed run stores a trace in `tests/results/`, open it by `npx playwright show-trace`.
+A new test can be recorded by `npx playwright codegen http://127.0.0.1:8000/adminer/`.
+The helpers in [tests/adminer.js](/tests/adminer.js) cover what Adminer does repeatedly: `link()` and `button()` take the first match because Adminer prints some links in the menu as well, and `setValue()` fills a field which jush replaces by a highlighted editor.
+
+Code coverage is collected by Xdebug in every request, so it works with the tests as well as with clicking through Adminer by hand.
+Open [tests/coverage.php](/tests/coverage.php) in a browser, click "Start new coverage", run the tests and reload the page - the report accumulates until it is started anew.
+The development server must be started by `php -d xdebug.mode=coverage -S 127.0.0.1:8000 -t .` for this; otherwise Xdebug only prints a warning in every request, which breaks the pages because it is sent before the headers.
+
+The screenshots for the website are still recorded by [Katalon Recorder](https://katalon.com/katalon-recorder-ide) in [tests/screenshots.html](/tests/screenshots.html) because they need a manually prepared database.
 
 The unit tests run from the command line by `composer test`.
 They print the found errors and exit with a non-zero status, so they run also in CI.

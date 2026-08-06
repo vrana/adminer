@@ -21,7 +21,7 @@ If downloaded from Git then run: `git submodule update --init` (or `composer ins
 - `editor/example.php` - Example customization
 - `compile.php` - Create a single file version
 - `lang.php` - Update translations
-- `tests/*.html` - Katalon Recorder test suites
+- `tests/*.spec.js` - Playwright end-to-end tests
 
 ## Plugins
 There are several plugins distributed with Adminer, as well as many user-contributed plugins listed on the [Adminer Plugins page](https://www.adminer.org/plugins/).

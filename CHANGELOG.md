@@ -130,6 +130,7 @@
 - Docs: Handling of values and binary data, plugin translations, CSS changes must not break skins
 - Rename the Git master branch to main
 - Run the command line tests by composer test and in CI
+- Convert the end-to-end tests from Katalon Recorder to Playwright, run them headless by composer e2e
 
 ## Adminer 5.5.1 (released 2026-07-21)
 - Ignore invalid X-Forwarded-Prefix (GHSA-fr74-9mf9-gf44)

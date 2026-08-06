@@ -37,7 +37,7 @@
     "scripts": {
         "post-install-cmd": "@submodules",
         "post-update-cmd": "@submodules",
-        "submodules": "@php -r \"passthru('git submodule update --init --recursive'); passthru('npm install --no-save --prefix . eslint @eslint/js globals');\"",
+        "submodules": "@php -r \"passthru('git submodule update --init --recursive'); passthru('npm install --no-save --prefix . eslint @eslint/js globals @playwright/test');\"",
         "check": [
             "phpcs --standard=conf/phpcs.xml",
             "phpstan analyse -c conf/phpstan.neon",
@@ -48,6 +48,7 @@
             "@php tests/host_port.php",
             "@php tests/url.php"
         ],
+        "e2e": "npx playwright test --config conf/playwright.config.js",
         "compile": "@php compile.php",
         "clean": "@php -r \"array_map('unlink', array_merge(glob('adminer*.php'), glob('editor*.php')));\""
     }
