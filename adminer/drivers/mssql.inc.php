@@ -314,7 +314,7 @@ if (isset($_GET["mssql"])) {
 		return limit($query, $where, 1, 0, $separator);
 	}
 
-	function db_collation(string $db, array $collations): string {
+	function db_collation(string $db, array $collations): ?string {
 		return get_val("SELECT collation_name FROM sys.databases WHERE name = " . q($db));
 	}
 

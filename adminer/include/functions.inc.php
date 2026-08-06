@@ -214,7 +214,7 @@ function get_password() {
 }
 
 /** Get single value from database
-* @return string|false false if error
+* @return string|false|null false if error, null if the value is NULL
 */
 function get_val(string $query, int $field = 0, ?Db $conn = null) {
 	$conn = connection($conn);
