@@ -5,6 +5,9 @@ namespace Adminer;
 require __DIR__ . "/../adminer/include/errors.inc.php";
 require __DIR__ . "/../adminer/include/functions.inc.php";
 
+// Test splitting the server name to host and port or socket.
+// Prints found errors, prints nothing and exits with 0 if everything is OK.
+
 $tests = array(
 	'' => array('', ''),
 	'localhost' => array('localhost', ''),
@@ -39,9 +42,14 @@ $tests = array(
 	'[localhost:22]' => array('localhost:22', ''),
 );
 
+$errors = 0;
+
 foreach ($tests as $server => $expected) {
 	$actual = host_port($server);
 	if ($actual !== $expected) {
 		echo "$server results in " . implode(" : ", $actual) . "\n";
+		$errors++;
 	}
 }
+
+exit($errors ? 1 : 0);
