@@ -169,6 +169,8 @@ function jush_size(array $gitlinks, $number) {
 	if (!isset($gitlinks["jush"])) {
 		return $return;
 	}
+	// merged into default.css and dark.css, jush-dark.css appeared in jush at the same time as Adminer started using it
+	$return += file_size("externals/jush/jush.css") + file_size("externals/jush/jush-dark.css");
 	if (!is_dir("externals/jush/modules")) { // jush before it was split to modules
 		return $return + file_size("externals/jush/jush.js");
 	}
