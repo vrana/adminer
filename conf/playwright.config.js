@@ -1,7 +1,7 @@
 import {defineConfig} from '@playwright/test';
 
 // End-to-end tests, run them by: npx playwright test --config conf/playwright.config.js
-// The dev server and the database servers must be running, see docs/developing.md.
+// The dev server and the database servers must be running, see ../tests/README.md.
 export default defineConfig({
 	testDir: '../tests',
 	outputDir: '../tests/results', // traces and screenshots of failed tests

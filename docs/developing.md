@@ -290,7 +290,7 @@ composer e2e -- mysql --project=native    # Composer passes options through only
 These tests verify correct behavior, including UI functionality, which is otherwise difficult to test.
 They help detect even JavaScript errors in real-world use cases.
 
-The development server must be running on <http://127.0.0.1:8000> (or set `ADMINER_URL`), together with the database servers the tested driver uses.
+The development server must be running on <http://127.0.0.1:8000> (or set `ADMINER_URL`), together with the database servers the tested driver uses, which are described in [tests/README.md](/tests/README.md).
 Each file logs in once and the tests inside it run in the order they are written, so a failing test stops the rest of the file.
 The first test also removes what an interrupted run left behind, mostly by dropping the whole `adminer_test` database, so two runs of the same driver must never overlap.
 Every test fails also on a PHP error printed to any response and on a browser console error or an uncaught JavaScript exception, even if the page otherwise looks right.
