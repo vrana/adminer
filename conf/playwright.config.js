@@ -17,6 +17,6 @@ export default defineConfig({
 	},
 	projects: [
 		{name: 'native'},
-		{name: 'pdo', metadata: {ext: 'pdo'}, testIgnore: '**/elastic.spec.js'},
+		{name: 'pdo', metadata: {ext: 'pdo'}, testIgnore: ['**/elastic.spec.js', '**/screenshots.spec.js']},
 	],
 });

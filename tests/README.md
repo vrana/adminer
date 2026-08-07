@@ -1,6 +1,6 @@
 # Tests
 
-The end-to-end tests in this directory connect to a database server of the tested driver, all of them using the database `adminer_test`.
+The end-to-end tests in this directory connect to a database server of the tested driver, all of them using the database `adminer_test` - the screenshots are the only exception.
 
 ## Running
 
@@ -19,6 +19,18 @@ The first test also removes what an interrupted run left behind, mostly by dropp
 Every test fails also on a PHP error printed to any response and on a browser console error or an uncaught JavaScript exception, even if the page otherwise looks right.
 Everything runs in a single worker, which takes about six minutes for all drivers with both extensions.
 Parallelism would help little: the drivers use different database servers but they all share the `adminer_test` database name, the `native` and `pdo` projects of one driver work with the very same data, and the requests would queue in the development server anyway, because it handles one at a time unless `PHP_CLI_SERVER_WORKERS` is set (which needs `fork()`, so not on Windows).
+
+## Screenshots
+
+[screenshots.spec.js](/tests/screenshots.spec.js) takes the pictures published on [adminer.org](https://www.adminer.org/) and stores them in `tests/screenshots/`, [screenshots.php](/tests/screenshots.php) crops them afterwards.
+It doesn't create anything, it only displays the MySQL database `adminer_demo`, which holds the same data as the demo and is filled from `mysql.sql` of the demo.adminer.org deployment:
+
+```sh
+mysql -u ODBC -pODBC -e "CREATE DATABASE adminer_demo"
+mysql -u ODBC -pODBC adminer_demo < ../adminer-demo/mysql.sql
+```
+
+No plugin may be deployed because it would show in the pictures, and the server overview displays all databases of the server, not only `adminer_demo`.
 
 ## Development Server
 
