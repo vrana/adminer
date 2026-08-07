@@ -12,7 +12,7 @@ composer install                          # Does the same through the `submodule
 
 **Development server:**
 ```bash
-php -S 127.0.0.1:8000 -t .
+php -S 127.0.0.1:8000
 ```
 Browse to `http://127.0.0.1:8000/adminer/` for the dev version.
 
