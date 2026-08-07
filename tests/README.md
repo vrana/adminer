@@ -23,14 +23,21 @@ Parallelism would help little: the drivers use different database servers but th
 ## Screenshots
 
 [screenshots.spec.js](/tests/screenshots.spec.js) takes the pictures published on [adminer.org](https://www.adminer.org/) and stores them in `tests/screenshots/`, [screenshots.php](/tests/screenshots.php) crops them afterwards.
-It doesn't create anything, it only displays the MySQL database `adminer_demo`, which holds the same data as the demo and is filled from `mysql.sql` of the demo.adminer.org deployment:
+It displays the MySQL database `adminer_demo`, which holds the same data as the demo and is filled from `mysql.sql` of the demo.adminer.org deployment; the only thing it changes there is altering `posts`, which displays a message on the table page:
 
 ```sh
-mysql -u ODBC -pODBC -e "CREATE DATABASE adminer_demo"
-mysql -u ODBC -pODBC adminer_demo < ../adminer-demo/mysql.sql
+mysql -e "CREATE DATABASE adminer_demo"
+mysql adminer_demo < ../adminer-demo/mysql.sql
 ```
 
-No plugin may be deployed because it would show in the pictures, and the server overview displays all databases of the server, not only `adminer_demo`.
+They log in as `adminer` with the password `adminer`, a user with privileges only on this database, so that the server overview doesn't list all the other databases of the server:
+
+```sql
+CREATE USER 'adminer'@'localhost' IDENTIFIED BY 'adminer';
+GRANT ALL PRIVILEGES ON adminer_demo.* TO 'adminer'@'localhost';
+```
+
+No plugin may be deployed because it would show in the pictures.
 
 ## Development Server
 

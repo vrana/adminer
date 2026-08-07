@@ -5,10 +5,11 @@ const responses = []; // promises of the responses being searched for PHP errors
 
 /** Open a browser page which collects the errors reported by PHP and by the browser
 * @param {import('@playwright/test').Browser} browser
+* @param {object} [options] passed to browser.newPage(), e.g. deviceScaleFactor
 * @return {Promise<import('@playwright/test').Page>}
 */
-export async function newPage(browser) {
-	const page = await browser.newPage();
+export async function newPage(browser, options) {
+	const page = await browser.newPage(options);
 	page.on('dialog', dialog => dialog.accept()); // Katalon called this chooseOkOnNextConfirmation
 	page.on('console', message => {
 		// HTTP statuses are reported here too but Adminer sends 403 with the login form on purpose
