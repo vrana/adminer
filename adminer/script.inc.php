@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-header("Content-Type: text/javascript; charset=utf-8");
+header("Content-Type: application/json; charset=utf-8");
 
 if ($_GET["script"] == "db") {
 	$sums = array("Data_length" => 0, "Index_length" => 0, "Data_free" => 0);

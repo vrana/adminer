@@ -23,7 +23,7 @@ export async function newPage(browser) {
 
 /** Look for a PHP error in a response, display_errors prints them to the output */
 async function findPhpError(response) {
-	if (!/^text\/(html|plain)/.test(response.headers()['content-type'] || '')) {
+	if (!/^(text\/(html|plain)|application\/json)\b/.test(response.headers()['content-type'] || '')) {
 		return;
 	}
 	// a body of a request superseded by a navigation is never delivered, so don't wait for it forever

@@ -9,6 +9,7 @@
 - Check for a new version even without JavaScript
 - Fix JavaScript in Safari < 11 and Firefox < 52 (regression from 5.5.0)
 - Fix showing and hiding elements in Chrome < 61 and Edge < 17 (regression from 5.1.0)
+- Send the JSON responses of AJAX requests as application/json instead of text/javascript
 - Sort languages by their translated name
 - Fix the copy to clipboard icon not displayed on Apple systems
 - Close the menu on small screens by Esc
