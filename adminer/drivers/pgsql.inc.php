@@ -1316,6 +1316,7 @@ FROM pg_range WHERE rngtypid = $id"));
 			. '|transaction_ddl|trigger|type|variables|view'
 			. (min_version(9.3) ? '|materializedview' : '')
 			. (min_version(11) ? '|procedure' : '')
+			. (connection()->flavor == 'cockroach' ? '' : '|deferrable') // https://github.com/cockroachdb/cockroach/issues/31632
 			. (connection()->flavor == 'cockroach' ? '' : '|processlist') // https://github.com/cockroachdb/cockroach/issues/24745
 			. ')$~', $feature)
 		;

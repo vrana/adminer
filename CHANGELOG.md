@@ -71,6 +71,7 @@
 - PostgreSQL PDO: Fix the number of affected rows in COPY ... FROM stdin
 - PostgreSQL, MS SQL: Show two columns in select COUNT(*), COUNT(DISTINCT id)
 - PostgreSQL, MS SQL: Highlight primary keys in the database schema (regression from 5.1.0)
+- CockroachDB: Do not offer deferrable foreign keys, they are not supported
 - SQLite: Fix working with binary data through PDO
 - MS SQL: Treat binary fields as blob (bug SF-369)
 - MS SQL: Hide table actions and row editing in the sys schema
