@@ -12,7 +12,7 @@ export default defineConfig({
 	use: {
 		baseURL: process.env.ADMINER_URL || 'http://127.0.0.1:8000',
 		channel: 'chrome', // the installed browser, no download
-		actionTimeout: 3000, // an element which is hidden or missing fails fast instead of blocking until the test timeout
+		actionTimeout: 5000, // an element which is hidden or missing fails fast instead of blocking until the test timeout; a click submitting a form also waits for the navigation
 		trace: 'retain-on-failure',
 	},
 	projects: [

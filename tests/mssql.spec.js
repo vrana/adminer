@@ -23,6 +23,12 @@ test('Login', async () => {
 	await page.locator('[name="auth[password]"]').fill('ODBC');
 	await button(page, 'Login').click();
 	await expectExtension(page);
+	await goto(page, '/adminer/?mssql=&username=ODBC&db=adminer_test&ns=dbo');
+	if (await page.locator('#check-all').count()) { // tables left by an interrupted run, the user can't recreate the database
+		await page.locator('#check-all').click();
+		await page.locator('[name="drop"]').click();
+		await expect(page.locator('body')).toContainText('No tables.');
+	}
 });
 
 test('Create table', async () => {

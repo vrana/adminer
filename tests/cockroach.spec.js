@@ -24,6 +24,10 @@ test('Login', async () => {
 	await button(page, 'Login').click();
 	await expectExtension(page);
 	await expect(page.locator('body')).toContainText('CockroachDB');
+	await link(page, 'SQL command').click();
+	await goto(page, '/adminer/?pgsql=localhost:26257&username=ODBC&sql=DROP+DATABASE+IF+EXISTS+adminer_test%3BCREATE+DATABASE+adminer_test');
+	await button(page, 'Execute').click();
+	await expect(page.locator('body')).toContainText('Query executed OK');
 });
 
 test('Create table', async () => {

@@ -21,6 +21,12 @@ test('Login', async () => {
 	await page.locator('[name="auth[password]"]').fill('ODBC12');
 	await button(page, 'Login').click();
 	await expect(page.locator('body')).toContainText('JSON');
+	await goto(page, '/adminer/elastic.php?elastic=https%3A%2F%2Flocalhost:9200&username=ODBC&db=elastic');
+	if (await page.locator('#check-all').count()) { // tables left by an interrupted run
+		await page.locator('#check-all').click();
+		await page.locator('[name="drop"]').click();
+		await expect(page.locator('body')).toContainText('No tables.');
+	}
 });
 
 test('Create table', async () => {

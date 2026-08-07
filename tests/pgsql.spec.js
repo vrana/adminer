@@ -22,6 +22,10 @@ test('Login', async () => {
 	await page.locator('[name="auth[password]"]').fill('ODBC');
 	await button(page, 'Login').click();
 	await expectExtension(page);
+	await link(page, 'SQL command').click();
+	await goto(page, '/adminer/?pgsql=&username=ODBC&sql=DROP+DATABASE+IF+EXISTS+adminer_test%3BCREATE+DATABASE+adminer_test');
+	await button(page, 'Execute').click();
+	await expect(page.locator('body')).toContainText('Query executed OK');
 });
 
 test('Create table', async () => {

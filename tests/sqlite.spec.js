@@ -29,6 +29,16 @@ test('Login', async () => {
 	await expect(page.locator('body')).toContainText('Please use one of the extensions');
 	await page.locator('[name="name"]').fill('adminer_test.sqlite');
 	await button(page, 'Save').click();
+	const exists = page.getByText('File exists.');
+	await expect(exists.or(page.getByText('Database has been created.'))).toBeVisible();
+	if (await exists.count()) { // a database left by an interrupted run; SQLite databases are not listed so it can be dropped only by opening it
+		await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&database=');
+		await page.locator('[name="drop"]').click();
+		await expect(page.locator('body')).toContainText('Database has been dropped.');
+		await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&database=');
+		await page.locator('[name="name"]').fill('adminer_test.sqlite');
+		await button(page, 'Save').click();
+	}
 	await expect(page.locator('body')).toContainText('Database has been created.');
 });
 
