@@ -98,7 +98,8 @@ class Plugins {
 	function checksums(): array {
 		$filenames = array_values($this->driverFiles);
 		foreach ($this->plugins as $plugin) {
-			$filenames[] = (new \ReflectionObject($plugin))->getFileName();
+			$reflection = new \ReflectionObject($plugin);
+			$filenames[] = $reflection->getFileName();
 		}
 		$return = array();
 		foreach ($filenames as $filename) {
