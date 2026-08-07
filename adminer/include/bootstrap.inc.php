@@ -1,10 +1,10 @@
 <?php
 namespace Adminer;
 
+// this is matched by compile.php
+include "../adminer/include/coverage.inc.php"; // must be first, the coverage doesn't cover the files compiled before it starts
 include "../adminer/include/version.inc.php";
 include "../adminer/include/errors.inc.php";
-// this is matched by compile.php
-include "../adminer/include/coverage.inc.php";
 
 // disable filter.default
 $filter = !preg_match('~^(unsafe_raw)?$~', ini_get("filter.default"));

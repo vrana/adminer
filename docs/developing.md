@@ -285,8 +285,11 @@ They help detect even JavaScript errors in real-world use cases.
 
 Code coverage is collected by Xdebug in every request, so it works with the tests as well as with clicking through Adminer by hand.
 Open [tests/coverage.php](/tests/coverage.php) in a browser, click "Start new coverage", run the tests and reload the page - the report accumulates until it is started anew.
-PHP must run with `xdebug.mode=coverage`, set in `php.ini` or by starting the development server by `php -d xdebug.mode=coverage -S 127.0.0.1:8000`.
+PHP must run with `xdebug.mode=coverage`, set in `php.ini` or by starting the development server by `php -d xdebug.mode=coverage -d opcache.enable=0 -S 127.0.0.1:8000`.
 The page refuses to start a new coverage without it, because Xdebug would then only print a warning in every request, which is sent before the headers and breaks the pages.
+OPcache must be disabled, otherwise it serves the cached files without compiling them, which is when Xdebug marks the not executed lines - all files would be reported as fully covered.
+Adminer disables it itself when the coverage runs, the option only makes it explicit.
+The files compiled before the coverage starts are always reported as fully covered: `adminer/index.php`, `editor/index.php` and `adminer/include/{bootstrap,coverage}.inc.php`.
 
 The screenshots for the website are still recorded by [Katalon Recorder](https://katalon.com/katalon-recorder-ide) in [tests/screenshots.html](/tests/screenshots.html) because they need a manually prepared database.
 
