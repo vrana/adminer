@@ -222,20 +222,16 @@ The browser escapes the name once more when submitting the form and PHP undoes o
 A value makes a round trip: the database returns it, Adminer prints it to HTML and to URLs, the browser sends it back, and Adminer builds a condition from it.
 Several helpers take part in this and it is easy to reach for the wrong one, because some of them are driven by the column type and some by the value itself.
 
-`convert_field()` returns an SQL expression converting a column in the select so that the extension returns something PHP can work with, or nothing if the column needs no conversion.
-MySQL wraps `binary` and `varbinary` in `HEX()`, `bit` in `BIN()` and geometry in `AsWKT()`.
-`unconvert_field()` is the inverse and wraps an already quoted SQL expression, so `HEX()` becomes `UNHEX()`.
-Whatever is read through `convert_field()` must be written back through `unconvert_field()`, and the value traveling in `where[]` is hexadecimal in that case, not raw bytes.
+`convert_field()` returns an SQL expression converting a column in the select so that the extension returns something PHP can work with; `unconvert_field()` is the inverse and wraps an already quoted SQL expression.
+Whatever is read through `convert_field()` must be written back through `unconvert_field()`, and the value traveling in `where[]` is then encoded (hexadecimal in MySQL), not raw bytes.
 
-`Driver::unconvertFunction()` is the display counterpart of `unconvert_field()`.
-It returns the HTML label printed in front of the edit input so that the user knows which function will be applied to the entered value, e.g. `UNHEX` for `binary` in MySQL.
-It returns HTML and is never used to build a query, so adding a conversion means editing both - `unconvert_field()` performs it and `unconvertFunction()` announces it.
+`Driver::unconvertFunction()` is the display counterpart: it returns the HTML label printed in front of the edit input so that the user knows which function will be applied to the entered value.
+It is never used to build a query, so adding a conversion means editing both - `unconvert_field()` performs it and `unconvertFunction()` announces it.
 
-`Driver::value()` converts the fetched value in PHP instead of in SQL and is used where the extension itself returns an encoded form.
-PostgreSQL returns `bytea` as the text `\x...`, so `value()` calls `pg_unescape_bytea()` on it.
+`Driver::value()` converts the fetched value in PHP instead of in SQL, where the extension itself returns an encoded form - PostgreSQL returns `bytea` as the text `\x...`.
 It is applied when displaying a value, so the value carried in `where[]` is still the one the extension returned; call it explicitly where the actual bytes are needed, as [select.inc.php](/adminer/select.inc.php) does before hashing a long binary value by `MD5()`.
 
-`q()` quotes a string for SQL and `Driver::quoteBinary()` quotes a byte string as a binary literal - `X'...'` in MySQL, `'\x...'` in PostgreSQL, `x'...'` in SQLite, `0x...` in MS SQL, `HEXTORAW()` in Oracle.
+`q()` quotes a string for SQL and `Driver::quoteBinary()` quotes a byte string as a binary literal.
 
 `is_blob()` asks about the column, `is_utf8()` asks about the value.
 `is_blob()` matches `blob`, `bytea`, `raw` and `file`, plus `binary` and `image` in MS SQL; `binary` and `varbinary` are not matched elsewhere because MySQL converts them to hexadecimal instead.
@@ -346,14 +342,9 @@ The listener is registered on `document` by [functions.js](/adminer/static/funct
 Prefer the attribute over a `<script>`; register a handler on a common ancestor only when the number of elements grows with the number of rows, like `tableClick` on the whole result table.
 One-shot code (e.g. `tableCheck()`) still uses `script()`, as do plugins, which can keep using `qsl()`.
 
-This is not a way around CSP.
-The attribute is data that the browser never executes, and the name is not resolved in the global scope either, where `window['eval']` or `window['setTimeout']` would allow running any code injected in the attribute.
-`delegateEvent()` accepts only an own non-configurable property of `window` holding a function, which is exactly what a `function` declaration in our code and in plugins creates: built-ins are configurable (`eval`, `alert`, `setTimeout`) or not own properties of `window` at all (in browsers predating the WebIDL `[Global]` change), and the only non-configurable properties a browser defines itself are `Infinity`, `NaN`, `undefined`, `window`, `document`, `location` and `top`, none of them a function.
-Enumerability must not be used instead - `setTimeout` and `alert` are enumerable.
-An injected `constructor` or `toString` finds nothing either, they are not own properties of `window`.
-Nothing is passed to `eval()` or `new Function()`.
-Don't be fooled by the call-like syntax - the arguments are decoded by `JSON.parse()`, which can't run code.
-An injected `handler("x");alert(1)` does match the anchored pattern, because `.*` reaches the last `)`, but `JSON.parse()` then rejects it instead of `alert()` running.
+This is not a way around CSP: the attribute is data that the browser never executes and nothing is passed to `eval()` or `new Function()`.
+`delegateEvent()` resolves the name only to an own non-configurable property of `window` holding a function, which is what a `function` declaration creates but no built-in is - don't widen this lookup, and don't use enumerability instead (`setTimeout` and `alert` are enumerable).
+The arguments are decoded by `JSON.parse()`, so an injected `handler("x");alert(1)` is rejected there instead of running.
 Don't put URLs in the arguments if the element can carry them in `href`.
 
 `urlEscape()` is the counterpart of PHP's `url_escape()` and both must produce the same output for the same input.
