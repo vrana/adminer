@@ -1120,9 +1120,50 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 		return $return;
 	}
 
-	/** Check whether a feature is supported
-	* @param literal-string $feature check|comment|columns|copy|cursor|database|deferrable|descidx|drop_col|dump|event|indexes|kill|materializedview
-	* |move_col|privileges|procedure|processlist|routine|scheme|sequence|sql|status|table|transaction_ddl|trigger|type|variables|view|view_trigger
+	/** Check whether a feature is supported:
+	* - check - CHECK constraints on the table structure page
+	* - columns - columns can be defined when creating and altering a table
+	* - comment - comments of tables and columns
+	* - copy - copying a table including its data
+	* - cursor - rows are paged by a cursor so the number of the following rows is unknown (Redis, SimpleDB)
+	* - database - creating, altering and dropping databases
+	* - deferrable - deferrable foreign keys (PostgreSQL)
+	* - descidx - descending index columns
+	* - drop_col - dropping a column
+	* - dump - export in the SQL format
+	* - event - scheduled events (MySQL)
+	* - fast_status - table_status() is cheap so the table list is printed at once instead of by a background request
+	* - indexes - listing and altering indexes
+	* - kill - killing a process or a slow query
+	* - materializedview - materialized views (PostgreSQL)
+	* - move_col - a column can be added in the middle of a table
+	* - partial_indexes - index condition (PostgreSQL)
+	* - privileges - the Privileges page
+	* - procedure - procedures in addition to functions
+	* - processlist - the Process list page
+	* - routine - stored functions
+	* - scheme - schemas inside a database
+	* - sequence - sequences (PostgreSQL)
+	* - sql - the SQL command page and running multiple queries
+	* - status - the Status page
+	* - table - tables have a fixed structure, other drivers just select all columns
+	* - transaction_ddl - DDL is transactional so an object can be dropped and recreated atomically
+	* - trigger - triggers of tables
+	* - type - user defined types (PostgreSQL)
+	* - variables - the Variables page
+	* - view - creating, altering and dropping views
+	* - view_trigger - triggers of views (SQLite, MS SQL)
+	*
+	* Other capabilities are declared by defining an optional driver function, detected by function_exists():
+	* - alter_table() - creating and altering tables
+	* - db_status() - sizes of the whole database at once (SQLite)
+	* - drop_sql() - the export drops all tables at the beginning (PostgreSQL)
+	* - drop_tables() - dropping the selected tables
+	* - foreign_keys_sql() - the export adds foreign keys after creating all tables
+	* - move_tables() - moving the selected tables to another database
+	* - truncate_all_sql() - the export truncates all tables by a single command (PostgreSQL)
+	* - truncate_tables() - truncating the selected tables
+	* @param literal-string $feature
 	*/
 	function support(string $feature): bool {
 		return preg_match(
