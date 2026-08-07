@@ -4,7 +4,6 @@ Jakub Vrána
 
 ## Request Lifecycle
 
-The request lifecycle is straightforward.
 Adminer loads a database driver based on a URL parameter (e.g., `pgsql=`).
 The drivers live in [adminer/drivers/](/adminer/drivers/) and [plugins/drivers/](/plugins/drivers/).
 The driver consists of the class [`Driver`](/adminer/include/driver.inc.php) and a set of functions that ideally belong in `Driver` but remain separate due to historical reasons.
@@ -31,14 +30,13 @@ The PHP session is stopped before rendering begins.
 This prevents modifying `$_SESSION` later in the code but allows multiple Adminer pages to be opened simultaneously, even if one has a long-running query.
 
 Database identifiers, such as column names, can be arbitrary, so they are never transferred in URLs or POST requests directly.
-They are always wrapped (e.g., `fields[col]`), and `[`, `]` and `=` in the name are escaped by `bracket_escape()`.
+They are always wrapped (e.g., `fields[col]`), which requires escaping the name as described in [Escaping](#escaping).
 
 Adminer often checks for empty strings using `$table != ""` instead of `!$table`, since table names can be `0`, and `!$table` would fail in such cases.
 
 ## Classes, Functions, Variables, Constants
 
 There are 4 main classes: `Driver`, `Db`, `Adminer` and `Plugins`.
-They are described in other sections.
 
 Adminer defines many functions which are namespaced to prevent collisions.
 
@@ -88,7 +86,7 @@ For instance, doc-comments are not indented by one space because some editors (e
 
 There is no enforced rule on `"` vs. `'`.
 Most code uses `"` because it's more flexible (e.g., embedding variables).
-Even in cases where variable interpolation is unlikely (e.g., `$_GET["table"]`), I still use `"` due to an existing editor snippet.
+Even in cases where variable interpolation is unlikely (e.g., `$_GET["table"]`), I still use `"`.
 `'` is primarily used for regular expressions and is required for extracting translations in `lang()`.
 
 I avoid `"{$var}"` because it is longer.
@@ -97,12 +95,10 @@ In rare cases where `$var` cannot be used directly within a string, I prefer spl
 Never use `$_REQUEST`.
 Decide where the parameter belongs and access it accordingly.
 
-I am not entirely satisfied with the naming style.
 PHP global functions use `snake_case`, so I use it for functions and variables.
 MySQLi’s `Db` class extends `mysqli`, so it also uses `snake_case`.
 However, I prefer `camelCase` for method names and parameters so I use it in other classes.
 This inconsistency sometimes results in passing `$table_status` to a method expecting `$tableStatus`.
-The best approach would be to use single-word names, though this is impractical.
 Some pages use uppercase for main object (e.g., `$TABLE`), but I dislike this despite its visibility.
 Return values of functions are usually constructed into variables named `$return`.
 
@@ -111,7 +107,6 @@ These are removed during minification.
 `else if` is forbidden; use `elseif` instead.
 
 I use empty lines sparingly to separate code blocks.
-My editor shortcut jumps between empty lines, I use it primarily for navigating functions.
 Lines containing only `}` naturally divide the code visually.
 
 Well-used ternary operators enhance readability, but they are sometimes overused in Adminer.
@@ -132,8 +127,7 @@ if ($update) {
 ```
 
 Adminer has a generous line length limit of 200 characters.
-While all lines fit my screen, I prefer shorter lines.
-A limit of 150 would be more reasonable, but wrapping lines at arbitrary points is unacceptable.
+Shorter lines are preferable but wrapping them at arbitrary points is unacceptable.
 Proper line wrapping often requires refactoring, which has caused bugs in the past, so I hesitate to make changes purely for line length.
 
 Lines are wrapped at the boundaries the expression already has, never at an arbitrary column:
@@ -152,7 +146,7 @@ The doc-comments use [aliases](/conf/phpstan.neon) for complex arrays.
 Doc-comments are imperative ("Get" instead of "Gets"), start with a capital letter, and do not end with a period.
 
 Inline comments are useful for linking specifications but are generally avoided for explaining self-explanatory code.
-They start with a lowercase letter and do not end with a period, though I am not entirely happy with this convention.
+They start with a lowercase letter and do not end with a period.
 
 Comments starting with `//!` mean TODO.
 Comments starting with `//~` are meant for debugging.
@@ -178,17 +172,9 @@ if (extension_loaded("mysqli") && ($_GET["ext"] ?? "") != "pdo")
 if (extension_loaded("mysqli") && idx($_GET, "ext") != "pdo")
 ```
 
-Treating undefined variables as empty was a significant improvement over the C language, where they contained random data.
-Unfortunately, developers abused this feature, leading PHP to issue first notices and later warnings.
 Adminer [silences](/adminer/include/errors.inc.php) these errors, but only for undefined array keys - accessing an offset on null or using an undefined variable is still reported.
-For cases where the whole array may be missing, Adminer defines [`idx()`](/adminer/include/functions.inc.php):
-
-```php
-function idx(?array $array, $key, $default = null) {
-    // Note: isset() cannot be used here because idx(array(null), 0, '') would return an incorrect value.
-    return ($array && array_key_exists($key, $array) ? $array[$key] : $default);
-}
-```
+For cases where the whole array may be missing, Adminer defines [`idx()`](/adminer/include/functions.inc.php).
+It uses `array_key_exists()` because `isset()` would make `idx(array(null), 0, '')` return an incorrect value.
 
 Using `isset` can introduce bugs, such as in this case: `isset($rw["name"])`.
 Here, I intended to check if `$row` contains `name`, but a typo in the variable name is silently ignored.
@@ -204,7 +190,7 @@ Even if you check whether a file is writable, a race condition exists between th
 Adminer does not implement automatic escaping.
 When printing untrusted data (including e.g. table names), you must use `h()`, which escapes HTML special characters including `"` and `'` (it uses `str_replace` because it is much faster than `htmlspecialchars`).
 Translations are an exception - they are trusted and printed unescaped, so they can contain HTML (a few of them do) and `lang()` must never be wrapped in `h()`.
-To keep them usable elsewhere, `lang_format()` replaces `'` by `’`, which also looks nicer.
+To keep them usable elsewhere, `lang_format()` replaces `'` by `’` so that it can't break out of an attribute and also looks nicer; [compile.php](/compile.php) does the same replacement for single language versions, where `lang_format()` is not called.
 HTML attributes containing a translation should therefore be delimited by `'`, and a translation printed inside a JavaScript string should still use `js_escape()` because the replacement doesn't cover `\` or newlines.
 While a templating system would be useful, it would need to support streaming.
 Adminer prints data immediately to display partial results when a query is slow.
@@ -406,7 +392,6 @@ This extracts them for translation and applies translations if available.
 Translations are updated via [lang.php](/lang.php), which also checks for style consistency, such as matching punctuation.
 Plurals are stored as arrays, with selection logic handled in [lang.inc.php](/adminer/include/lang.inc.php).
 A translation may contain HTML only if the English string does.
-An apostrophe in a translation is replaced by `’` so that it can't break out of an attribute; [compile.php](/compile.php) does the same replacement for single language versions, where `lang_format()` is not called.
 
 Some translations are machine-translated by an AI model.
 They are marked with a trailing comment naming the model, e.g. `'Condition' => 'Bedingung', // Claude Fable 5`.
@@ -427,7 +412,6 @@ Static files (`*.js`, `*.css`) are also inlined and served via the `?file=` rout
 Includes in Adminer start with `./` to bypass `include_path`, which is unrelated to compilation.
 
 Compilation also [shrinks](https://github.com/vrana/PhpShrink) PHP code by removing whitespace, comments, and shortening variable names.
-This prevents plugins from overwriting Adminer’s variables.
 Compressed data is encoded to a 93-character alphabet (newline and printable ASCII except space, `'` and `\`), so it doesn't need escaping in single-quoted PHP strings.
 This makes the compiled file valid UTF-8 which also survives stripping trailing whitespace.
 
@@ -467,14 +451,8 @@ An [example](https://github.com/peterpp/jush/commit/2de4bac) of a poor commit in
 
 This commit should be split into three, and I would accept only the change that is actually described.
 
-I try to honor authorship whenever possible, but I don’t want commits introducing an incorrect state into the repository’s history.
-This means that I often amend pull requests.
-Please don’t be offended by this - your proposed change will still be there under your name, but the code might be slightly different.
-This is simpler for me than requesting changes to such pull requests.
-
 If a change modifies Adminer’s behavior for end users, it should be documented in [CHANGELOG](/CHANGELOG.md) in the same commit.
-This is quite important - I have a keyboard shortcut to blame the current line and another shortcut to open GitHub for the returned SHA.
-I often blame lines in the changelog to see what they actually modified.
+This is quite important - I often blame lines in the changelog to see what they actually modified.
 Changes that are invisible to users (such as refactorings) shouldn’t be documented here; the commit log is sufficient for them.
 
 Commit messages should start with a capital letter, and the first line shouldn’t end with a period.
