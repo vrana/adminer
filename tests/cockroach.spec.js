@@ -88,12 +88,12 @@ test('Alter table', async () => {
 	await goto(page, '/adminer/?pgsql=localhost:26257&username=ODBC&db=adminer_test&ns=public&table=interprets');
 	await link(page, 'Alter table').click();
 	await page.locator('[name="add[2]"]').click();
-	await page.locator('[name="fields[3][field]"]').fill('albums');
-	await page.locator('[name="fields[3][type]"]').selectOption({label: 'integer'});
-	await page.locator('[name="fields[3][length]"]').fill('');
+	await page.locator('[name="fields[2.1][field]"]').fill('albums');
+	await page.locator('[name="fields[2.1][type]"]').selectOption({label: 'integer'});
+	await page.locator('[name="fields[2.1][length]"]').fill('');
 	await page.locator('[name="defaults"]').uncheck();
 	await page.locator('[name="defaults"]').click();
-	await page.locator('[name="fields[3][default]"]').fill('0');
+	await page.locator('[name="fields[2.1][default]"]').fill('0');
 	await button(page, 'Save').click();
 	await expect(page.locator('body')).toContainText('Table has been altered.');
 });
@@ -189,9 +189,9 @@ test('Enum', async () => {
 	await link(page, 'interprets').click();
 	await link(page, 'Alter table').click();
 	await page.locator('[name="add[3]"]').click();
-	await page.locator('[name="fields[4][field]"]').fill('alive');
-	await page.locator('[name="fields[4][type]"]').selectOption({label: 'alive'});
-	await page.locator('[name="fields[4][null]"]').click();
+	await page.locator('[name="fields[3.1][field]"]').fill('alive');
+	await page.locator('[name="fields[3.1][type]"]').selectOption({label: 'alive'});
+	await page.locator('[name="fields[3.1][null]"]').click();
 	await button(page, 'Save').click();
 	await link(page, 'alive').click();
 	await expect(page.locator('body')).toContainText("'alive', 'deceased'");
@@ -257,7 +257,7 @@ test('Export', async () => {
 	await button(page, 'Export').click();
 	await expect(page.locator('body')).toContainText('CREATE TABLE "public"."interprets"');
 	await expect(page.locator('body')).toContainText('INSERT INTO "interprets"');
-	await expect(page.locator('body')).toContainText('VIEW "albums_interprets"');
+	await expect(page.locator('body')).toContainText('VIEW "public"."albums_interprets"');
 });
 
 test('Procedures', async () => {
@@ -331,8 +331,8 @@ test('Partitioning', async () => {
 	await page.locator('[name="partition"]').fill('id');
 	await page.locator('[name="partition_names[]"]').fill('old');
 	await page.locator('[name="partition_values[]"]').first().fill('10');
-	await page.locator("//table[@id='partition-table']/tr/td/input").first().fill('new');
-	await page.locator("//table[@id='partition-table']/tr/td[2]/input").fill('MAXVALUE');
+	await page.locator("//table[@id='partition-table']/tbody/tr[2]/td/input").first().fill('new');
+	await page.locator("//table[@id='partition-table']/tbody/tr[2]/td[2]/input").fill('MAXVALUE');
 	await button(page, 'Save').click();
 	await expect(page.locator('body')).toContainText('PARTITION BY RANGE(id)');
 	await expect(page.locator('body')).toContainText('PARTITION "old" VALUES FROM (MINVALUE) TO (10)');
