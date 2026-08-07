@@ -96,7 +96,7 @@ if (adminer()->homepage()) {
 					lang('Alter table'),
 				);
 			}
-			if (support('indexes')) {
+			if (support("indexes")) {
 				$columns["Index_length"] = array(
 					lang('Index Length') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT')),
 					"indexes",

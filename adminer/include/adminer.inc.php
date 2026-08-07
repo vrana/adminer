@@ -1174,7 +1174,7 @@ class Adminer {
 				json_row(js_escape(ME) . (support("table") ? "table" : "select") . '=$&', '/\b(?<!\$)(' . implode('|', $links) . ')(?!\$)\b/g', false); // $ is used in PostgreSQL as part of name
 				// routines() is slow so it is called only on the pages printing SQL where a routine name can appear
 				$sql_pages = array("sql", "check", "event", "procedure", "trigger", "view", "type", "table", "processlist"); // ?function= sets ?procedure=
-				if (support('routine') && array_intersect_key($_GET, array_flip($sql_pages))) {
+				if (support("routine") && array_intersect_key($_GET, array_flip($sql_pages))) {
 					foreach (routines() as $row) {
 						json_row(js_escape(ME) . 'function=' . url_escape($row["SPECIFIC_NAME"]) . '&name=$&', '/\b' . js_escape_re($row["ROUTINE_NAME"]) . '(?=["`\]]?\()/g', false);
 					}
