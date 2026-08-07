@@ -34,6 +34,9 @@
         "ext-json": "*",
         "ext-session": "*"
     },
+    "config": {
+        "process-timeout": 0
+    },
     "scripts": {
         "post-install-cmd": "@submodules",
         "post-update-cmd": "@submodules",
