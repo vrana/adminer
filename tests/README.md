@@ -101,7 +101,7 @@ This driver is tested only with the `native` project because it doesn't use any 
 
 ## Screenshots
 
-[screenshots.spec.js](/tests/screenshots.spec.js) takes the pictures published on [adminer.org](https://www.adminer.org/) and stores them in `tests/screenshots/`, [screenshots.php](/tests/screenshots.php) crops them afterwards.
+[screenshots.spec.js](/tests/screenshots.spec.js) takes the pictures published on [adminer.org](https://www.adminer.org/) and stores them in `tests/screenshots/`, `bin/screenshots.php` of the website repository crops them afterwards.
 It displays the MySQL database `adminer_demo`, which holds the same data as the demo and is filled from `mysql.sql` of the demo.adminer.org deployment; the only thing it changes there is altering `posts`, which displays a message on the table page:
 
 ```sh

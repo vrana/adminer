@@ -1,7 +1,7 @@
 import {test} from '@playwright/test';
 import {button, expectNoErrors, goto, newPage} from './adminer.js';
 
-// Screenshots published on the website, cropped afterwards by screenshots.php - see README.md.
+// Screenshots published on the website, cropped afterwards by bin/screenshots.php of the website repository - see README.md.
 
 test.describe.configure({mode: 'serial'}); // the tests depend on each other, e.g. on being logged in
 

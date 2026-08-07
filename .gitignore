@@ -5,7 +5,6 @@
 /adminer*.php
 /editor*.php
 /tests/screenshots/
-/tests/cropped/
 /tests/results/
 /vendor/
 /composer.lock
