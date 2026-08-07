@@ -1,7 +1,24 @@
-# Test Environment
+# Tests
 
 The end-to-end tests in this directory connect to a database server of the tested driver, all of them using the database `adminer_test`.
-Running the tests is described in [developing.md](/docs/developing.md#tests).
+
+## Running
+
+The tests are stored in `tests/*.spec.js`, one file per driver, and run by [Playwright](https://playwright.dev/) in a headless browser:
+
+- `composer e2e` runs all drivers, both with the native extension and with PDO.
+- `composer e2e mysql` runs only the files matching mysql.
+- `composer e2e -- mysql --project=native` runs only the native extension - Composer passes options through only after `--`.
+
+Use `composer e2e -- --ui` to watch a test, `--headed --debug` to step through it; a failed run stores a trace in `tests/results/`, open it by `npx playwright show-trace`.
+A new test can be recorded by `npx playwright codegen http://127.0.0.1:8000/adminer/`.
+The helpers in [adminer.js](/tests/adminer.js) cover what Adminer does repeatedly: `link()` and `button()` take the first match because Adminer prints some links in the menu as well, and `setValue()` fills a field which jush replaces by a highlighted editor.
+
+Each file logs in once and the tests inside it run in the order they are written, so a failing test stops the rest of the file.
+The first test also removes what an interrupted run left behind, mostly by dropping the whole `adminer_test` database, so two runs of the same driver must never overlap.
+Every test fails also on a PHP error printed to any response and on a browser console error or an uncaught JavaScript exception, even if the page otherwise looks right.
+Everything runs in a single worker, which takes about six minutes for all drivers with both extensions.
+Parallelism would help little: the drivers use different database servers but they all share the `adminer_test` database name, the `native` and `pdo` projects of one driver work with the very same data, and the requests would queue in the development server anyway, because it handles one at a time unless `PHP_CLI_SERVER_WORKERS` is set (which needs `fork()`, so not on Windows).
 
 ## Development Server
 
