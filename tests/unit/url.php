@@ -2,8 +2,8 @@
 <?php
 namespace Adminer;
 
-require __DIR__ . "/../adminer/include/errors.inc.php";
-require __DIR__ . "/../adminer/include/functions.inc.php";
+require __DIR__ . "/../../adminer/include/errors.inc.php";
+require __DIR__ . "/../../adminer/include/functions.inc.php";
 
 // Test url_escape(), bracket_escape(), relative_uri() and remove_from_uri().
 // Prints found errors, prints nothing and exits with 0 if everything is OK.

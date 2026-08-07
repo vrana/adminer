@@ -2,8 +2,8 @@
 <?php
 namespace Adminer;
 
-require __DIR__ . "/../adminer/include/errors.inc.php";
-require __DIR__ . "/../adminer/include/functions.inc.php";
+require __DIR__ . "/../../adminer/include/errors.inc.php";
+require __DIR__ . "/../../adminer/include/functions.inc.php";
 
 // Test splitting the server name to host and port or socket.
 // Prints found errors, prints nothing and exits with 0 if everything is OK.

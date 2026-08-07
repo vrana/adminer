@@ -3,7 +3,7 @@ namespace Adminer;
 
 // this file is used only in compilation, decompress_string() is in decompress.inc.php; requires the zlib extension
 
-/** Compress string with deflate to characters from compress_alphabet(), tested by tests/compress.php */
+/** Compress string with deflate to characters from compress_alphabet(), tested by tests/unit/compress.php */
 function compress_string(string $string, string $dictionary = ""): string {
 	// $dictionary is data known to the decompressor, only its last 32 kB is used
 	$binary = "";

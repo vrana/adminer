@@ -44,9 +44,9 @@
             "npx eslint -c conf/eslint.config.mjs"
         ],
         "test": [
-            "@php tests/compress.php",
-            "@php tests/host_port.php",
-            "@php tests/url.php"
+            "@php tests/unit/compress.php",
+            "@php tests/unit/host_port.php",
+            "@php tests/unit/url.php"
         ],
         "e2e": "npx playwright test --config conf/playwright.config.js",
         "compile": "@php compile.php",

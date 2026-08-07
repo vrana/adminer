@@ -278,7 +278,7 @@ The dependencies are optional, so the command only prints a warning if it fails.
 
 ## Tests
 
-Adminer includes almost no unit tests ([tests/compress.php](/tests/compress.php) is one of the exceptions) but has extensive [end-to-end tests](/tests/).
+Adminer includes almost no unit tests ([tests/unit/](/tests/unit/) holds the few exceptions) but has extensive [end-to-end tests](/tests/).
 They are stored in `tests/*.spec.js`, one file per driver, and run by [Playwright](https://playwright.dev/) in a headless browser:
 
 ```

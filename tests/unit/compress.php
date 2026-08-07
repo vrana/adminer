@@ -8,11 +8,11 @@ namespace Adminer;
 
 $_SESSION["lang"] = "en"; // lang.inc.php reads the language from the session, the same as compile.php does
 
-require __DIR__ . "/../adminer/include/errors.inc.php"; // mutes undefined array key in decompress_string()
-require __DIR__ . "/../adminer/include/functions.inc.php"; // used by lang.inc.php
-require __DIR__ . "/../adminer/include/decompress.inc.php";
-require __DIR__ . "/../adminer/include/lang.inc.php"; // declares Lang::$translations filled by the translation files
-require __DIR__ . "/../adminer/include/compress.inc.php";
+require __DIR__ . "/../../adminer/include/errors.inc.php"; // mutes undefined array key in decompress_string()
+require __DIR__ . "/../../adminer/include/functions.inc.php"; // used by lang.inc.php
+require __DIR__ . "/../../adminer/include/decompress.inc.php";
+require __DIR__ . "/../../adminer/include/lang.inc.php"; // declares Lang::$translations filled by the translation files
+require __DIR__ . "/../../adminer/include/compress.inc.php";
 
 $errors = 0;
 
@@ -86,12 +86,12 @@ for ($i = 0; $i < 100000; $i++) {
 }
 check("long random binary", $string);
 
-check("CSS file", file_get_contents(__DIR__ . "/../adminer/static/default.css"));
-check("JS file", file_get_contents(__DIR__ . "/../adminer/static/functions.js"));
+check("CSS file", file_get_contents(__DIR__ . "/../../adminer/static/default.css"));
+check("JS file", file_get_contents(__DIR__ . "/../../adminer/static/functions.js"));
 
 // the same text as the compiled version compresses, see get_lang_translations() in compile.php
 $langs = array();
-foreach (glob(__DIR__ . "/../adminer/lang/*.inc.php") as $filename) {
+foreach (glob(__DIR__ . "/../../adminer/lang/*.inc.php") as $filename) {
 	Lang::$translations = array();
 	include $filename;
 	$langs[basename($filename, ".inc.php")] = Lang::$translations;
