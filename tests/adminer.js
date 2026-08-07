@@ -1,5 +1,49 @@
 import {expect, test} from '@playwright/test';
 
+const errors = []; // errors reported since the last expectNoErrors()
+const responses = []; // promises of the responses being searched for PHP errors
+
+/** Open a browser page which collects the errors reported by PHP and by the browser
+* @param {import('@playwright/test').Browser} browser
+* @return {Promise<import('@playwright/test').Page>}
+*/
+export async function newPage(browser) {
+	const page = await browser.newPage();
+	page.on('dialog', dialog => dialog.accept()); // Katalon called this chooseOkOnNextConfirmation
+	page.on('console', message => {
+		// HTTP statuses are reported here too but Adminer sends 403 with the login form on purpose
+		if (message.type() == 'error' && !/^Failed to load resource:/.test(message.text())) {
+			errors.push('Console: ' + message.text());
+		}
+	});
+	page.on('pageerror', error => errors.push('JavaScript: ' + error.message));
+	page.on('response', response => responses.push(findPhpError(response)));
+	return page;
+}
+
+/** Look for a PHP error in a response, display_errors prints them to the output */
+async function findPhpError(response) {
+	if (!/^text\/(html|plain)/.test(response.headers()['content-type'] || '')) {
+		return;
+	}
+	// a body of a request superseded by a navigation is never delivered, so don't wait for it forever
+	const body = await Promise.race([
+		response.text().catch(() => ''), // e.g. gone after a redirect
+		new Promise(resolve => setTimeout(resolve, 2000, '')),
+	]);
+	// the development server prints the errors with html_errors, the compiled file can be served without them
+	const match = body.match(/^(?:<b>)?(?:Warning|Notice|Deprecated|Fatal error|Parse error|Recoverable fatal error)(?:<\/b>)?:.*/m);
+	if (match) {
+		errors.push('PHP: ' + match[0].replace(/<[^>]*>/g, ''));
+	}
+}
+
+/** Fail if PHP or the browser reported an error since the last check */
+export async function expectNoErrors() {
+	await Promise.all(responses.splice(0));
+	expect(errors.splice(0)).toEqual([]);
+}
+
 /** Get the PHP extension used by the current project
 * @return {string} e.g. 'pdo', empty for the default extension
 */

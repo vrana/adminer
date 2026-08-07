@@ -1,13 +1,16 @@
 import {expect, test} from '@playwright/test';
-import {button, expectExtension, goto, link, setValue} from './adminer.js';
+import {button, expectExtension, expectNoErrors, goto, link, newPage, setValue} from './adminer.js';
 
 test.describe.configure({mode: 'serial'}); // the tests depend on each other, e.g. on being logged in
 
 let page;
 
 test.beforeAll(async ({browser}) => {
-	page = await browser.newPage();
-	page.on('dialog', dialog => dialog.accept());
+	page = await newPage(browser);
+});
+
+test.afterEach(async () => {
+	await expectNoErrors();
 });
 
 test.afterAll(async () => {

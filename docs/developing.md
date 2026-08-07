@@ -293,6 +293,7 @@ They help detect even JavaScript errors in real-world use cases.
 The development server must be running on <http://127.0.0.1:8000> (or set `ADMINER_URL`), together with the database servers the tested driver uses.
 Each file logs in once and the tests inside it run in the order they are written, so a failing test stops the rest of the file.
 The first test also removes what an interrupted run left behind, mostly by dropping the whole `adminer_test` database, so two runs of the same driver must never overlap.
+Every test fails also on a PHP error printed to any response and on a browser console error or an uncaught JavaScript exception, even if the page otherwise looks right.
 Everything runs in a single worker, which takes about six minutes for all drivers with both extensions.
 Parallelism would help little: the drivers use different database servers but they all share the `adminer_test` database name, the `native` and `pdo` projects of one driver work with the very same data, and the requests would queue in the development server anyway, because it handles one at a time unless `PHP_CLI_SERVER_WORKERS` is set (which needs `fork()`, so not on Windows).
 
