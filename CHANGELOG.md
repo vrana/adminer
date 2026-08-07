@@ -104,6 +104,7 @@
 - Plugins: Do not fail with a fatal error when a plugin is not an object (bug TimWolla/docker-adminer#211)
 - Plugins: Fix missing translations in the compiled version
 - Driver plugins: Do not bundle the syntax highlighter of igdb and simpledb, load it from adminer-plugins/jush-&lt;driver>.js
+- Plugin login-ip: Allow localhost by default, require the request to not be proxied if X-Forwarded-For prefixes are not specified
 - Plugin login-password-less: Allow the plugin password to be also the password of some server
 - Plugin menu-links: Add option to show the select link and other repeated links only on hover
 - New plugin: Create a table from an imported CSV file
