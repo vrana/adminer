@@ -246,7 +246,7 @@ if ($auth && $_POST["token"]) {
 	$_POST["token"] = get_token(); // reset token after explicit login
 }
 
-$error = ''; ///< @var string
+/** @var string */ $error = ''; // HTML
 if ($_POST) {
 	if (!verify_token()) {
 		$error = lang('Invalid CSRF token. Send the form again.') . ' ' . lang('If you did not send this request from Adminer then close this page.');
@@ -254,7 +254,7 @@ if ($_POST) {
 
 } elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
 	// posted form with no data means that post_max_size exceeded because Adminer always sends token at least
-	$error = lang('Too big POST data. Reduce the data or increase the %s configuration directive.', "'post_max_size'");
+	$error = lang('Too big POST data. Reduce the data or increase the %s configuration directive.', "<b>post_max_size</b>'");
 	if (isset($_GET["sql"])) {
 		$error .= ' ' . lang('You can upload a big SQL file via FTP and import it from server.');
 	}

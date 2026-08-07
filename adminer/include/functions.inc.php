@@ -179,7 +179,7 @@ function max_input_vars(int $row, int $other): int {
 /** Get an error message about exceeding max_input_vars */
 function max_input_vars_error(): string {
 	$ini = "max_input_vars";
-	return lang('Maximum number of allowed fields exceeded. Please increase %s.', "$ini = " . (int) ini_get($ini));
+	return lang('Maximum number of allowed fields exceeded. Please increase %s.', "<b>$ini = " . ini_get($ini) . "</b>");
 }
 
 /** Check if SID is necessary */
