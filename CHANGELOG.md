@@ -40,6 +40,7 @@
 - Select: Clear the search field and its column by Esc in Firefox
 - Select: Import CSV in all drivers, not only in those with their own way to insert or update a row
 - Select: Fix Load more data in drivers paginating by a cursor (Redis, SimpleDB)
+- Select: Prefill New item with the values of all columns searched by equality, not only foreign keys
 - Edit: Keep values of columns with special characters in name after error
 - Edit: Fix switching function to SQL with the edit-foreign plugin (bug #1254)
 - Edit: Hide the value field for functions without arguments (e.g. now, uuid)

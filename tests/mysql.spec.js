@@ -216,6 +216,8 @@ test('Select', async () => {
 	await page.locator('[name="order[0]"]').selectOption({label: 'interpret'});
 	await button(page, 'Select').click();
 	await expect(page.locator('body')).toContainText('1 row');
+	await link(page, 'New item').click();
+	await expect(page.locator('[name="fields[title]"]')).toHaveValue('Dangerous'); // prefilled by the searched value
 });
 
 test('Explain', async () => {
@@ -408,6 +410,11 @@ test('Editor', async () => {
 	await page.locator('[name="fields[title]"]').fill('Dangerous');
 	await button(page, 'Save').click();
 	await expect(page.locator('body')).toContainText('Item 4 has been inserted.');
+	await link(page, 'Albums').click();
+	await page.locator('[name="where[-1][val]"]').selectOption('1'); // by value, two interprets are named Michael Jackson
+	await button(page, 'Select').click();
+	await link(page, 'New item').click();
+	await expect(page.locator('[name="fields[interpret]"]')).toHaveValue('1'); // prefilled by the searched value
 	await page.locator('[name="logout"]').click();
 });
 

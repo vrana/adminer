@@ -241,17 +241,19 @@ if (is_ajax()) {
 
 $set = null;
 if (isset($rights["insert"]) || !support("table")) {
-	$params = array();
+	$set = "";
 	foreach ((array) $_GET["where"] as $val) {
+		$value = $val["val"];
+		if (is_array($value)) { // enum checkboxes in Editor send the values prefixed by "val-"
+			$value = (count($value) == 1 && preg_match('~^val-(.*)~s', reset($value), $match) ? $match[1] : "");
+		}
 		if (
-			isset($foreign_keys[$val["col"]]) && count($foreign_keys[$val["col"]]) == 1
-			&& ($val["op"] == "=" || (!$val["op"] && (is_array($val["val"]) || !preg_match('~[_%]~', $val["val"])))) // LIKE in Editor
+			$val["col"] != "" && $value != ""
+			&& ($val["op"] == "=" || (!$val["op"] && (is_array($val["val"]) || !preg_match('~[_%]~', $value)))) // an empty operator means LIKE in Editor
 		) {
-			$params["set" . "[" . bracket_escape($val["col"]) . "]"] = $val["val"];
+			$set .= "&set[" . url_escape(bracket_escape($val["col"])) . "]=" . url_escape($value);
 		}
 	}
-
-	$set = $params ? "&" . http_build_query($params) : "";
 }
 adminer()->selectLinks($table_status, $set);
 

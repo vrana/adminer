@@ -413,6 +413,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 				$where["col"] = idx($search_columns, $key, "");
 				$field = idx($fields, $where["col"], array());
 				$where["op"] = ($field && ($field["type"] == "enum" || like_bool($field)) ? "" : "=");
+				$_GET["where"][$key] = $where; // used by the New item link in select.inc.php
 			}
 			$col = $where["col"];
 			$op = $where["op"];
