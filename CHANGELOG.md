@@ -1,3 +1,5 @@
+## Adminer dev
+
 ## Adminer 6.0.0 (released 2026-08-07)
 - Escape index type, algorithm and length in table structure (XSS)
 - Escape event schedule and non-numeric table status values (XSS)
