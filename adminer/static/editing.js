@@ -881,10 +881,11 @@ function schemaMouseup(event, db) {
 			const [top, left] = tablePos[key];
 			s += '_' + key + ':' + Math.round(top) + 'x' + Math.round(left);
 		}
-		s = encodeURIComponent(s.slice(1));
+		s = s.slice(1);
 		const link = qs('#schema-link');
-		link.href = link.href.replace(/[^=]+$/, '') + s;
-		cookie('adminer_schema-' + db + '=' + s, 30); //! special chars in db
+		link.href = link.href.replace(/[^=]+$/, '') + urlEscape(s);
+		// encodeURIComponent() instead of urlEscape() - it keeps ';' verbatim, which would end the cookie value
+		cookie('adminer_schema-' + db + '=' + encodeURIComponent(s), 30); //! special chars in db
 	}
 }
 

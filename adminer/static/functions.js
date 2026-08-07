@@ -865,7 +865,7 @@ function selectClick(event, text, warning) {
 	setupSubmitHighlight(td);
 	input.focus();
 	if (text == 2) { // long text
-		return ajax(location.href + '&' + encodeURIComponent(td.id) + '=', request => {
+		return ajax(location.href + '&' + urlEscape(td.id) + '=', request => {
 			if (request.responseText) {
 				input.value = request.responseText;
 				input.name = td.id;
