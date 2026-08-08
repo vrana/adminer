@@ -1,4 +1,5 @@
 ## Adminer dev
+- Use the same font in &lt;textarea> as in &lt;input>, keep monospace in the SQL command and JSON values
 ### Internal
 - Install PHPCS and PHPStan by composer install, like ESLint
 - Skip all the linters in composer install --no-dev, it only initializes the submodules
