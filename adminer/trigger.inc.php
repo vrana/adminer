@@ -48,8 +48,8 @@ $trigger_change = on('change', 'triggerChange', "^" . preg_quote($TABLE, "/") . 
 <tr><th><?php echo lang('Event'); ?><td><?php echo html_select("Event", $trigger_options["Event"], $row["Event"], $trigger_change); ?>
 <?php echo (in_array("UPDATE OF", $trigger_options["Event"]) ? " <input name='Of' value='" . h($row["Of"]) . "' class='hidden'>": ""); ?>
 <tr><th><?php echo lang('Type'); ?><td><?php echo html_select("Type", $trigger_options["Type"], $row["Type"]); ?>
+<tr><th><?php echo lang('Name'); ?><td><input name="Trigger" value="<?php echo h($row["Trigger"]); ?>" data-maxlength="64" autocapitalize="off">
 </table>
-<p><?php echo lang('Name'); ?>: <input name="Trigger" value="<?php echo h($row["Trigger"]); ?>" data-maxlength="64" autocapitalize="off">
 <?php echo script("fire(qs('#form')['Timing'], 'change');"); ?>
 <p><?php textarea("Statement", $row["Statement"]); ?>
 <p>
