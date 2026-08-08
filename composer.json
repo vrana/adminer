@@ -34,13 +34,17 @@
         "ext-json": "*",
         "ext-session": "*"
     },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "4.0.4",
+        "phpstan/phpstan": "2.2.8"
+    },
     "config": {
         "process-timeout": 0
     },
     "scripts": {
         "post-install-cmd": "@submodules",
         "post-update-cmd": "@submodules",
-        "submodules": "@php -r \"passthru('git submodule update --init --recursive'); passthru('npm install --no-save --prefix . eslint @eslint/js globals @playwright/test');\"",
+        "submodules": "@php -r \"passthru('git submodule update --init --recursive'); if (getenv('COMPOSER_DEV_MODE') !== '0') { passthru('npm install --no-save --prefix . eslint @eslint/js globals @playwright/test'); }\"",
         "check": [
             "phpcs --standard=conf/phpcs.xml",
             "phpstan analyse -c conf/phpstan.neon",

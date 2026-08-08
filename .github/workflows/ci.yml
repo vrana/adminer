@@ -15,16 +15,8 @@ jobs:
           submodules: recursive # ESLint checks externals/jush, otherwise it would silently find no files there
       - uses: php-actions/composer@v6
       - run: composer test
-      - uses: php-actions/phpcs@v1
-        with:
-          path: .
-          standard: conf/phpcs.xml
-      - uses: php-actions/phpstan@v3
-        with:
-          version: 2.2.7
-          configuration: conf/phpstan.neon
       - uses: actions/setup-node@v7
         with:
           node-version: lts/*
-      - run: npm install --no-save --prefix . eslint @eslint/js globals
-      - run: npx eslint -c conf/eslint.config.mjs
+      - run: npm install --no-save --prefix . eslint @eslint/js globals # composer install runs in a container without npm
+      - run: composer check

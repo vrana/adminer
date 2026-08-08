@@ -1,4 +1,7 @@
 ## Adminer dev
+### Internal
+- Install PHPCS and PHPStan by composer install, like ESLint
+- Skip all the linters in composer install --no-dev, it only initializes the submodules
 
 ## Adminer 6.0.0 (released 2026-08-07)
 - Escape index type, algorithm and length in table structure (XSS)

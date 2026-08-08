@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **First-time setup:**
 ```bash
 git submodule update --init --recursive   # Initialize submodules (jush, JsShrink, PhpShrink)
-composer install                          # Does the same through the `submodules` script, plus the npm packages needed by ESLint
+composer install                          # Does the same through the `submodules` script, plus PHPCS, PHPStan and the npm packages needed by ESLint
 ```
 
 **Development server:**
@@ -26,9 +26,9 @@ php compile.php editor mysql       # Adminer Editor with MySQL
 
 **Code quality:**
 ```bash
-composer check                          # Runs phpcs + phpstan
-phpcs --standard=conf/phpcs.xml         # PHP code style (PSR-12 based, tab-indented)
-phpstan analyse -c conf/phpstan.neon    # Static analysis (level 6)
+composer check                                     # Runs phpcs + phpstan + eslint
+vendor/bin/phpcs --standard=conf/phpcs.xml         # PHP code style (PSR-12 based, tab-indented)
+vendor/bin/phpstan analyse -c conf/phpstan.neon    # Static analysis (level 6)
 ```
 
 **Clean:**

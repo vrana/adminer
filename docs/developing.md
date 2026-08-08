@@ -276,6 +276,10 @@ Adminer commits simply reference the current HEAD of the submodule, avoiding the
 Because many developers expect Composer to bootstrap a checkout, `composer install` initializes the submodules too - it just runs `git submodule update --init --recursive` (also available as `composer submodules`).
 The dependencies are optional, so the command only prints a warning if it fails.
 
+Composer manages no runtime dependency but it does install the development tools - PHP_CS and PHPStan as `require-dev`, ESLint by npm.
+The two Composer packages are pinned to exact versions because the lock file is not committed: the constraint in [composer.json](/composer.json) is what keeps every checkout and CI on the same build, so updating a linter is a deliberate commit.
+Use `composer install --no-dev` to bootstrap a checkout without them - the `submodules` script checks `COMPOSER_DEV_MODE` and skips the npm packages too, so only the submodules are always initialized.
+
 ## Tests
 
 Adminer includes almost no unit tests ([tests/unit/](/tests/unit/) holds the few exceptions) but has extensive [end-to-end tests](/tests/) driven by [Playwright](https://playwright.dev/) in a headless browser.
