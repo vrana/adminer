@@ -28,7 +28,7 @@ Lang::$translations = array(
 	'None of the supported PHP extensions (%s) are available.' => 'Není dostupné žádné z podporovaných PHP rozšíření (%s).',
 	'Connecting to privileged ports is not allowed.' => 'Připojování k privilegovaným portům není povoleno.',
 	'Disable %s or enable the %s or %s extension.' => 'Zakažte %s nebo povolte rozšíření %s nebo %s.',
-	'Session support must be enabled.' => 'Session proměnné musí být povolené.',
+	'Session support must be enabled.' => 'Podpora sessions musí být povolená.',
 	'Session expired. Please log in again.' => 'Session vypršela, přihlaste se prosím znovu.',
 	'The action will be performed after successful login with the same credentials.' => 'Akce bude provedena po úspěšném přihlášení se stejnými přihlašovacími údaji.',
 	'%s version: %s through PHP extension %s' => 'Verze %s: %s přes PHP rozšíření %s',
@@ -96,7 +96,7 @@ Lang::$translations = array(
 	'DB' => 'DB',
 	'Use' => 'Vybrat',
 	'Select database' => 'Vybrat databázi',
-	'Invalid database.' => 'Nesprávná databáze.',
+	'Invalid database.' => 'Neplatná databáze.',
 	'Database has been dropped.' => 'Databáze byla odstraněna.',
 	'Databases have been dropped.' => 'Databáze byly odstraněny.',
 	'Database has been created.' => 'Databáze byla vytvořena.',
@@ -251,7 +251,7 @@ Lang::$translations = array(
 	'Sort' => 'Seřadit',
 	'descending' => 'sestupně',
 	'Limit' => 'Limit',
-	'Limit rows' => 'Limit řádek',
+	'Limit rows' => 'Limit řádků',
 	'Text length' => 'Délka textů',
 	'Action' => 'Akce',
 	'Full table scan' => 'Průchod celé tabulky',
@@ -287,12 +287,12 @@ Lang::$translations = array(
 	'Insert' => 'Vložit',
 	'Save' => 'Uložit',
 	'Saving…' => 'Ukládá se…',
-	'Save and continue editing' => 'Uložit a pokračovat v editaci',
+	'Save and continue editing' => 'Uložit a pokračovat v úpravách',
 	'Save and insert next' => 'Uložit a vložit další',
 	'Selected' => 'Označené',
 	'Clone' => 'Klonovat',
 	'Delete' => 'Smazat',
-	'You have no privileges to update this table.' => 'Nemáte oprávnění editovat tuto tabulku.',
+	'You have no privileges to update this table.' => 'Nemáte oprávnění upravovat tuto tabulku.',
 
 	// data type descriptions
 	'Numbers' => 'Čísla',
@@ -314,7 +314,7 @@ Lang::$translations = array(
 	'no' => 'ne',
 
 	'File exists.' => 'Soubor existuje.', // general SQLite error in create, drop or rename database
-	'Please use one of these file extensions: %s.' => 'Prosím použijte jednu z koncovek %s.',
+	'Please use one of these file extensions: %s.' => 'Použijte prosím jednu z těchto přípon: %s.',
 
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Pozměnit schéma',
@@ -323,7 +323,7 @@ Lang::$translations = array(
 	'Schema has been created.' => 'Schéma bylo vytvořeno.',
 	'Schema has been altered.' => 'Schéma bylo změněno.',
 	'Schema' => 'Schéma',
-	'Invalid schema.' => 'Nesprávné schéma.',
+	'Invalid schema.' => 'Neplatné schéma.',
 
 	// PostgreSQL sequences support
 	'Sequences' => 'Sekvence',
