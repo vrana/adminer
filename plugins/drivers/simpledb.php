@@ -183,7 +183,7 @@ if (isset($_GET["simpledb"])) {
 			unset($set["`itemName()`"]);
 			foreach ($set as $key => $val) {
 				$key = idf_unescape($key);
-				if ($val == "NULL" || ($id != "" && array($id) != $ids)) {
+				if ($val == "NULL" || ($id != "" && $ids != array($id))) {
 					$delete["Attribute." . count($delete) . ".Name"] = $key;
 				}
 				if ($val != "NULL") {

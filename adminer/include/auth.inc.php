@@ -105,10 +105,10 @@ if ($auth) {
 	}
 	if (
 		count($_POST) == 1 // 1 - auth
-		|| DRIVER != $vendor
-		|| SERVER != $server
-		|| $_GET["username"] !== $username // "0" == "00"
-		|| DB != $db
+		|| $vendor != DRIVER
+		|| $server != SERVER
+		|| $username !== $_GET["username"] // "0" == "00"
+		|| $db != DB
 	) {
 		redirect(auth_url($vendor, $server, $username, $db));
 	}

@@ -404,7 +404,6 @@ if (isset($_GET["elastic"])) {
 	}
 
 	function db_collation($db, $collations) {
-		//
 	}
 
 	function count_tables($databases) {
@@ -510,7 +509,6 @@ if (isset($_GET["elastic"])) {
 	}
 
 	function information_schema($db) {
-		//
 	}
 
 	function indexes($table, $connection2 = null) {
@@ -610,7 +608,6 @@ if (isset($_GET["elastic"])) {
 	}
 
 	function convert_field($field) {
-		//
 	}
 
 	function unconvert_field($field, $return) {
@@ -618,7 +615,6 @@ if (isset($_GET["elastic"])) {
 	}
 
 	function fk_support($table_status) {
-		//
 	}
 
 	function found_rows($table_status, $where) {

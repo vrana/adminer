@@ -493,9 +493,8 @@ function &get_session(string $key) {
 
 /** Set session variable for current server
 * @param mixed $val
-* @return mixed
 */
-function set_session(string $key, $val) {
+function set_session(string $key, $val): void {
 	$_SESSION[$key][DRIVER][SERVER][$_GET["username"]] = $val; // used also in auth.inc.php
 }
 
@@ -622,10 +621,10 @@ function remove_from_uri(string $param = ""): string {
 }
 
 /** Get contents of all files sent in one field
-* @return int|list<array{string, string}>|null null if the file was not sent at all, int for error, [$name, $content] pairs otherwise
+* @return int|list<array{string, string}>|null null if the file was not sent at all, int for error, [$filename, $content] pairs otherwise
 */
-function get_files(string $key, bool $decompress = false) {
-	$file = $_FILES[$key];
+function get_files(string $name, bool $decompress = false) {
+	$file = $_FILES[$name];
 	if (!$file) {
 		return null;
 	}
@@ -637,10 +636,10 @@ function get_files(string $key, bool $decompress = false) {
 		if ($error) {
 			return $error;
 		}
-		$name = $file["name"][$key];
+		$filename = $file["name"][$key];
 		$tmp_name = $file["tmp_name"][$key];
 		$content = file_get_contents(
-			$decompress && preg_match('~\.gz$~', $name)
+			$decompress && preg_match('~\.gz$~', $filename)
 			? "compress.zlib://$tmp_name"
 			: $tmp_name
 		); //! may not be reachable because of open_basedir
@@ -652,7 +651,7 @@ function get_files(string $key, bool $decompress = false) {
 				$content = substr($content, 3);
 			}
 		}
-		$return[] = array($name, $content);
+		$return[] = array($filename, $content);
 	}
 	return $return;
 }

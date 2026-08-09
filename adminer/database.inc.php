@@ -8,7 +8,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 	if ($_POST["drop"]) {
 		$_GET["db"] = ""; // to save in global history
 		queries_redirect(remove_from_uri("db|database"), lang('Database has been dropped.'), drop_databases(array(DB)));
-	} elseif (DB !== $name) {
+	} elseif ($name !== DB) {
 		// create or rename database
 		if (DB != "") {
 			$_GET["db"] = $name;

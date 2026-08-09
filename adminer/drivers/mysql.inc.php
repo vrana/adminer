@@ -8,7 +8,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	// MySQLi supports everything, MySQL doesn't support multiple result sets, PDO_MySQL doesn't support orgtable
 	if (extension_loaded("mysqli") && $_GET["ext"] != "pdo") {
-		class Db extends \MySQLi {
+		class Db extends \mysqli {
 			/** @var Db */ static $instance;
 			public $extension = "MySQLi", $flavor = '';
 

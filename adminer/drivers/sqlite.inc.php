@@ -13,7 +13,7 @@ if (isset($_GET["sqlite"])) {
 
 			function attach(string $filename, string $username, string $password): string {
 				$this->link = new \SQLite3($filename);
-				$version = $this->link->version();
+				$version = \SQLite3::version();
 				$this->server_info = $version["versionString"];
 				return '';
 			}
