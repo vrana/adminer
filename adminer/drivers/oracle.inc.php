@@ -62,7 +62,10 @@ if (isset($_GET["oracle"])) {
 			}
 
 			function timeout(int $ms): bool {
-				return oci_set_call_timeout($this->link, $ms);
+				return (function_exists('oci_set_call_timeout')
+					? oci_set_call_timeout($this->link, $ms) // available since PHP 7.2.13
+					: false
+				);
 			}
 		}
 
