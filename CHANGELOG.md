@@ -58,7 +58,6 @@
 - Export: Fix the TAR archive of multiple tables in CSV, it contained SQL of views and foreign keys
 - Export: Export data in all drivers, not only in those able to run the generated SELECT
 - Export: Fix importing a dump with data only, the tables were truncated one by one and their foreign keys were re-created
-- MySQL: Do not use SSL if the login-ssl plugin is configured only for other drivers
 - MySQL: Cache the list of databases only if getting it is slow
 - MySQL: Link performance_schema and sys tables to their documentation
 - MySQL: Fix length of routine parameters with unsigned or zerofill, support MySQL < 8 again (bug #1312, regression from 5.4.4)
@@ -104,16 +103,18 @@
 - Editor: Fix a fatal error in select with an empty foreign key value (regression from 5.1.1)
 - Editor: Don't offer an empty option in a select of a not null foreign key, saving it failed in the database
 - Designs: Show version of Adminer next to a used design not matching this version
-- Plugins: dumpData() gets the parts of the select instead of a query, it selects the rows by Driver::select()
-- Plugins: Methods importPrint() and importProcess()
-- Plugins: Method verifyVersion()
-- Plugins: Methods commentValue() and commentInput() (bug #1233)
-- Plugins: Show driver plugins in the list of loaded plugins
-- Plugins: Show version of Adminer next to plugins not matching this version
-- Plugins: Remove edit-calendar, tinymce, json-column, pretty-json-column, translation, email-table, dump-php, master-slave
-- Plugins: Do not fail with a fatal error when a plugin is not an object (bug TimWolla/docker-adminer#211)
-- Plugins: Fix missing translations in the compiled version
+### Plugins
+- dumpData() gets the parts of the select instead of a query, it selects the rows by Driver::select()
+- Methods importPrint() and importProcess()
+- Method verifyVersion()
+- Methods commentValue() and commentInput() (bug #1233)
+- Show driver plugins in the list of loaded plugins
+- Show version of Adminer next to plugins not matching this version
+- Remove edit-calendar, tinymce, json-column, pretty-json-column, translation, email-table, dump-php, master-slave
+- Do not fail with a fatal error when a plugin is not an object (bug TimWolla/docker-adminer#211)
+- Fix missing translations in the compiled version
 - Driver plugins: Do not bundle the syntax highlighter of igdb and simpledb, load it from adminer-plugins/jush-&lt;driver>.js
+- MySQL: Do not use SSL if the login-ssl plugin is configured only for other drivers
 - Plugin login-ip: Allow localhost by default, require the request to not be proxied if X-Forwarded-For prefixes are not specified
 - Plugin login-password-less: Allow the plugin password to be also the password of some server
 - Plugin menu-links: Add option to show the select link and other repeated links only on hover
@@ -179,6 +180,7 @@
 - SQLite: Do not treat INTEGER PRIMARY KEY without AUTOINCREMENT as auto increment
 - SQLite: Disable editing of sqlite_schema
 - MS SQL: Fix multiple result sets (bug #1180)
+### Plugins
 - New plugin: Redis driver
 - New plugin: Login behind a reverse proxy
 
@@ -199,7 +201,8 @@
 - PDO: Increase precision of double (bug #1214)
 - Editor PDO: Fix foreign key value in edit (bug #1242)
 - Editor PostgreSQL: Fix enums (bug #1241)
-- Plugins: Method menuActions() (bug #1303)
+### Plugins
+- Method menuActions() (bug #1303)
 
 ## Adminer 5.4.3 (released 2026-07-09)
 - Check Sec-Fetch-Site header (GHSA-33j4-hc95-pggg)
@@ -251,8 +254,9 @@
 - non-PostgreSQL: Display NOT NULL checks (bug #1237)
 - ClickHouse: Fix offset (bug #1188)
 - ClickHouse: Fix list of tables (bug #1176)
-- Plugins: Methods showVariables() and showStatus() (bug #1157)
-- Plugins: Allow to be in any namespace
+### Plugins
+- Methods showVariables() and showStatus() (bug #1157)
+- Allow to be in any namespace
 - New plugin: IGDB driver
 
 ## Adminer 5.4.1 (released 2025-09-26)
@@ -291,7 +295,8 @@
 - PostgreSQL: Export DROP and CREATE DATABASE (bug #1140)
 - PostgreSQL 11-: Avoid duplicate oid in table status (bug #1089, regression from 5.3.0)
 - Elasticsearch: Support dropping aliases
-- Plugins: Methods afterConnect(), processList() and killProcess()
+### Plugins
+- Methods afterConnect(), processList() and killProcess()
 - New plugin: Display row numbers in select (bug #1106)
 - New plugin: Specify query timeout
 
@@ -311,9 +316,10 @@
 - PostgreSQL: Add NOT ILIKE operator (bug #1066)
 - Editor: Fix bit and enum search (bug #1062)
 - Designs: adminer.css with 'prefers-color-scheme: dark' doesn't disable dark mode
-- Plugins: Method bodyClass() to add &lt;body class>
-- Plugins: Allow setting dark mode in css()
 - Hindi translation
+### Plugins
+- Method bodyClass() to add &lt;body class>
+- Allow setting dark mode in css()
 
 ## Adminer 5.2.1 (released 2025-04-11)
 - Fix search anywhere (bug #1004, regression from 5.1.1)
@@ -330,8 +336,9 @@
 - non-MySQL: Parse '--' without trailing space as comment in SQL command (bug SF-842)
 - MS SQL: Limit one INSERT in export to 1000 rows (bug #983)
 - CSS: Add logo
+### Plugins
+- Support translations by extending Adminer\Plugin
 - Editor: Move mass sending e-mails to a plugin
-- Plugins: Support translations by extending Adminer\Plugin
 - New plugin: Configure options by end-users and store them to a cookie
 - New plugin: Configure menu table links
 - New plugin: Set up driver, server and database in Adminer Editor
@@ -343,7 +350,8 @@
 - Elasticsearch: Make it work with Elasticsearch 8
 - CSS: Hide menu on mobile
 - CSS: Invert icons in dark mode
-- Plugins: Allow changing CSP by more plugins
+### Plugins
+- Allow changing CSP by more plugins
 - New plugin: Use Monaco Editor for syntax highlighting
 - New plugin: Use Prism for syntax highlighting
 ### Internal
@@ -377,16 +385,17 @@
 - CSS: Allow more custom styles with dark mode (bug #925)
 - CSS: Increase maximum width of string edit (bug #930)
 - CSS: Increase space after SQL result (bug #937)
-- Plugins: Autoload plugins from adminer-plugins/
-- Plugins: Configure plugins with adminer-plugins.php
-- Plugins: Display loaded plugins in server overview
+- Uzbek translation
+### Plugins
+- Autoload plugins from adminer-plugins/
+- Configure plugins with adminer-plugins.php
+- Display loaded plugins in server overview
 - New plugin: AI prompt in SQL command generating the queries with Google Gemini
 - New plugin: Verify new versions from GitHub
 - New plugin: IMAP driver created for fun
 - New plugin: Display links to tables referencing current row
 - New plugin: Allow switching light and dark mode (bug #926)
 - New plugin: Confirm before unloading page with changed form
-- Uzbek translation
 ### Internal
 - Modernize JavaScript: let and const instead of var, arrow functions, for...of, classList
 - Report E_NOTICE and E_STRICT except accessing an undefined array element
@@ -403,7 +412,8 @@
 - CSS: Dark mode syntax highlighting
 - CSS: Dark input fields in dark mode
 - Designs named adminer-dark.css use dark basic style
-- Plugins: Add method syntaxHighlighting()
+### Plugins
+- Add method syntaxHighlighting()
 - New plugin: Use Codemirror 5 for syntax highlighting and SQL with typeahead
 ### Internal
 - Move PhpShrink to a separate repository
@@ -417,8 +427,9 @@
 - CockroachDB: Display version
 - CockroachDB: Recognize unique_rowid() as auto_increment
 - MS SQL: Fix editing rows with datetime column in primary key
-- MongoDB: Move to plugin
 - CSS: Add dark theme
+### Plugins
+- MongoDB: Move to plugin
 ### Internal
 - Tests: Run the whole suite also against MariaDB, PostgreSQL, CockroachDB and MS SQL
 - Tests: Cover PhpShrink, revive code coverage
@@ -438,7 +449,8 @@
 - SQLite: Fix creating table in compiled version (bug #901, regression from 5.0.0)
 - Elasticsearch: Do not pass null values on insert (PR #892)
 - Elasticsearch: Fix displaying sparse rows (PR #893)
-- Plugins: Add method dumpFooter()
+### Plugins
+- Add method dumpFooter()
 
 ## Adminer 5.0.2 (released 2025-03-10)
 - PostgreSQL: Fix setting NULL and original value on enum (bug SF-884)
@@ -485,7 +497,8 @@
 - MS SQL: Fix highlighting columns as primary keys
 - MongoDB: Remove support for deprecated extension mongo
 - Elasticsearch: Fix text search on boolean fields
-- Plugins: Adminer code is now in a namespace
+### Plugins
+- Adminer code is now in a namespace
 ### Internal
 - Formalize the coding style
 - Remove most global variables
@@ -521,8 +534,9 @@
 - SQLite: Fix expressions in default values (bug SF-860)
 - MS SQL: Foreign keys in non-default schema (bug SF-833)
 - Oracle: Include tables granted by other user
-- Elasticsearch: Move to plugin
 - MongoDB: Execute commands against the selected DB
+### Plugins
+- Elasticsearch: Move to plugin
 
 ## Adminer 4.15.0
 - Escape unknown field in select
@@ -576,9 +590,10 @@
 
 ## Adminer 4.9.0
 - Validate connection to server in HTTP based drivers
-- Elasticsearch 5: Make unusable driver usable again, move it to plugins
 - Add new Elasticsearch 7 driver
 - MySQL: Skip dump of generated columns
+### Plugins
+- Elasticsearch 5: Make unusable driver usable again, move it to plugins
 
 ## Adminer 4.8.2
 - Support multi-line table comments
@@ -616,6 +631,7 @@
 - Oracle: Import from CSV
 - Oracle: Fix column size with string type
 - MongoDB: Handle errors
+### Plugins
 - SimpleDB, Firebird, ClickHouse: Move to plugin
 
 ## Adminer 4.7.9 (released 2021-02-07)
@@ -769,8 +785,9 @@
 - PostgreSQL: Cast to string when searching using LIKE (bug SF-325)
 - PostgreSQL: Fix condition for selecting no rows
 - PostgreSQL: Support TRUNCATE+INSERT export
-- Customization: Support connecting to MySQL via SSL
-- Customization: Allow specifying server name displayed in breadcrumbs
+### Customization
+- Support connecting to MySQL via SSL
+- Allow specifying server name displayed in breadcrumbs
 
 ## Adminer 4.6.0 (released 2018-02-05)
 - Fix counting selected rows after going back to select page
@@ -830,8 +847,9 @@
 - Editor: Display field comment's text inside [] only in edit form
 - Editor: Fix doubleclick on database page
 - Editor: Fix Search data in tables
-- Customization: Always send security headers
 - Hebrew translation
+### Customization
+- Always send security headers
 
 ## Adminer 4.3.1 (released 2017-04-14)
 - Fix permanent login after logout (bug SF-539)
@@ -973,9 +991,10 @@
 - SQLite: Allow editing foreign keys
 - PostgreSQL: Fix handling of nextval() default values
 - PostgreSQL: Support creating array columns
-- Customization: Provide schemas()
 - Portugal Portuguese translation
 - Thai translation
+### Customization
+- Provide schemas()
 
 ## Adminer 3.7.1 (released 2013-06-29)
 - Increase click target for checkboxes
@@ -1002,7 +1021,6 @@
 - Highlight default submit button
 - Add server placeholder to login form
 - Disable SQL export when applying functions in select
-- Allow using lang() in plugins (customization)
 - Remove bzip2 compression support
 - Constraint memory used in TAR export
 - Allow exporting views dependent on each other (bug SF-214)
@@ -1020,6 +1038,8 @@
 - MySQL: Fix EXPLAIN in MySQL &lt; 5.1, bug since Adminer 3.6.4
 - SQLite: Export views
 - PostgreSQL: Fix swapped NULL and NOT NULL columns in PDO
+### Customization
+- Allow using lang() in plugins
 
 ## Adminer 3.6.4 (released 2013-04-26)
 - Display pagination on a fixed position
@@ -1039,10 +1059,11 @@
 - Fix unsetting permanent login after logout
 - Disable autocapitalize in identifiers on mobile browsers
 - MySQL: Compatibility with MySQL 5.6
-- MySQL: Move ALTER export to plugin
 - MySQL: Use numeric time zone in export
 - MySQL: Link processlist documentation
 - SQLite: Export indexes
+### Plugins
+- MySQL: Move ALTER export to plugin
 
 ## Adminer 3.6.3 (released 2013-01-23)
 - Display error code in SQL query
@@ -1079,8 +1100,9 @@
 - Ctrl+click and Shift+click on button opens form to a blank window
 - Switch language by POST
 - MySQL: Support geometry data types
-- selectQueryBuild() method (customization)
 - Serbian translation
+### Customization
+- selectQueryBuild() method
 ### Internal
 - Compress translations
 
@@ -1110,13 +1132,14 @@
 - PostgreSQL: approximate row count in table overview
 - PostgreSQL: improve PDO support in SQL command
 - Oracle: schema, processlist, table overview numbers
-- Simplify work with NULL values (customization)
-- Use namespace in login form (customization)
-- Customizable export filename (customization)
 - Don't use AJAX links and forms
 - Indonesian translation
 - Ukrainian translation
 - Bengali translation
+### Customization
+- Simplify work with NULL values
+- Use namespace in login form
+- Customizable export filename
 ### Internal
 - Replace JSMin by better JavaScript minifier
 
@@ -1133,8 +1156,6 @@
 - Don't check row while selecting text
 - Fix invalid references line position on Database schema
 - Disable selecting text on Database schema
-- Ability to disable export (customization)
-- Extensible list of databases (customization)
 - MySQL: set autocommit after connect
 - SQLite, PostgreSQL: vacuum
 - SQLite, PostgreSQL: don't use LIKE for numbers (bug SF-202)
@@ -1142,6 +1163,9 @@
 - PostgreSQL over PDO: connect if the eponymous database does not exist (bug SF-185)
 - Boolean search (Editor)
 - Persian translation
+### Customization
+- Ability to disable export
+- Extensible list of databases
 
 ## Adminer 3.3.3 (released 2011-08-12)
 - Highlight checked rows
@@ -1184,10 +1208,11 @@
 - Display name of the referenced record in PostgreSQL (Editor)
 - Prefer NULL to empty string (Editor, bug SF-162)
 - Display searched columns (Editor)
-- Customizable favicon (customization)
-- Method name can return a link (customization)
-- Easier sending of default headers (customization)
 - Lithuanian and Romanian translation
+### Customization
+- Customizable favicon
+- Method name can return a link
+- Easier sending of default headers
 
 ## Adminer 3.2.2 (released 2011-03-28)
 - Fix AJAX history after reload
@@ -1210,8 +1235,9 @@
 - Time format hint (Editor)
 - Respect order after search (Editor)
 - Set MySQL time zone by PHP setting (Editor)
-- Allow own code in &lt;head> (customization)
 - Polish translation
+### Customization
+- Allow own code in &lt;head>
 ### Internal
 - Rework AJAX, the only visible change is the placement of the loading icon
 
@@ -1231,12 +1257,13 @@
 - Focus upper/lower fields by Ctrl+Up/Ctrl+Down
 - Hide credentials for SQLite
 - Utilize oids in PostgreSQL
-- Homepage customization
 - Use IN for search in numeric fields (Editor)
 - Use password input for _md5 and _sha1 fields (Editor)
 - Work without session.use_cookies (bug SF-107)
 - Fix saving schema to cookie in Opera
 - Portuguese, Slovenian and Turkish translation
+### Customization
+- Homepage customization
 
 ## Adminer 3.1.0 (released 2010-11-16)
 - TSV export and import
@@ -1258,10 +1285,11 @@
 ## Adminer 3.0.1 (released 2010-10-18)
 - Send the form by Ctrl+Enter in all textareas
 - Disable creating SQLite databases with extension other than db, sdb, sqlite
-- Ability to use Adminer in a frame through customization
 - Catalan translation
 - MS SQL 2005 compatibility
 - PostgreSQL: connect if the eponymous database does not exist
+### Customization
+- Ability to use Adminer in a frame
 
 ## Adminer 3.0.0 (released 2010-10-15)
 - Drivers for MS SQL, SQLite, PostgreSQL, Oracle
@@ -1304,7 +1332,6 @@
 - Respect session.auto_start (bug SF-42)
 
 ## Adminer 2.3.0 (released 2010-02-26)
-- Support for permanent login (customization required)
 - Search in all tables
 - Show status variables
 - Print sums in tables overview
@@ -1314,6 +1341,8 @@
 - Show SQL query info if available
 - Delete length when changing type in alter table
 - Ability to check table prefix in export
+### Customization
+- Support for permanent login
 
 ## Adminer 2.2.1 (released 2009-11-26)
 - Highlight current links
@@ -1336,8 +1365,9 @@
 - Optional year in date (Editor)
 - Search operators (Editor)
 - Align numbers to right in select (Editor)
-- Move &lt;h1> to $adminer->navigation (customization)
-- Rename get_dbh to connection (customization)
+### Customization
+- Move &lt;h1> to $adminer->navigation
+- Rename get_dbh to connection
 ### Internal
 - Print checkboxes and selects by functions, which reduced the size
 
@@ -1357,7 +1387,6 @@
 
 ## Adminer 2.0.0 (released 2009-08-06)
 - Editor: User friendly data editor
-- Customization: Adminer class
 - Create single column foreign key in table structure
 - Table relations (Editor)
 - Send e-mails (Editor)
@@ -1378,6 +1407,8 @@
 - Fix grant ALL PRIVILEGES with GRANT OPTION
 - Fix CSV import
 - Fix work with default values
+### Customization
+- Adminer class
 ### Internal
 - Use HTML Strict instead of XHTML
 - Remove function minification in favor of performance and customization
