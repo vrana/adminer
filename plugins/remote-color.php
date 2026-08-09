@@ -1,6 +1,6 @@
 <?php
 
-/** Warn by a red strip if Adminer or the database doesn't run on the local machine
+/** Warn with a red strip if Adminer or the database does not run on the local machine
 * @link https://github.com/dg/adminer/blob/master/adminer-plugins/remoteColor.php original idea by David Grudl
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/

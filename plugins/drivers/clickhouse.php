@@ -637,7 +637,7 @@ if (isset($_GET["clickhouse"])) {
 
 	function alter_indexes($table, $alter) {
 		// the page is not linked anywhere, see Driver::supportsAlterIndex()
-		connection()->error = 'ClickHouse indexes cannot be altered by Adminer, use the SQL command page.';
+		connection()->error = 'ClickHouse indexes cannot be altered by Adminer. Use the SQL command page.';
 		return false;
 	}
 

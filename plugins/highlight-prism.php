@@ -1,6 +1,6 @@
 <?php
 
-/** Use Prism Code Editor for syntax highlighting and <textarea>
+/** Use Prism Code Editor for syntax highlighting and the <textarea>
 * @link https://prism-code-editor.netlify.app/
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/

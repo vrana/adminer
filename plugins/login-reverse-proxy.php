@@ -1,6 +1,6 @@
 <?php
 
-/** Cluster invalid login attempts by last part of X-Forwarded-For (useful if Adminer runs behind a reverse proxy)
+/** Cluster invalid login attempts by the last part of X-Forwarded-For (useful if Adminer runs behind a reverse proxy)
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0

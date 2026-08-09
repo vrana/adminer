@@ -1,6 +1,6 @@
 <?php
 
-/** Display links to tables referencing current row, same as in Adminer Editor
+/** Display links to tables referencing the current row, same as in Adminer Editor
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0

@@ -20,7 +20,7 @@ class AdminerMenuLinks extends Adminer\Plugin {
 			'table' => $this->lang('Show structure'),
 			'' => $this->lang('Both'),
 			'hover' => $this->lang('Both, select on hover'),
-			'auto' => $this->lang('Auto (select on select page, structure otherwise)'),
+			'auto' => $this->lang('Auto (select on the select page, structure otherwise)'),
 		);
 		$menu = Adminer\get_setting("menu", "adminer_config", $this->menu);
 		return array($this->lang('Menu table links') => Adminer\html_radios('config[menu]', $options, $menu, "<br>"));
@@ -97,7 +97,7 @@ li:hover .hover, p:hover .hover, div:hover > .hover, .hover.active, tr:hover td.
 			'Menu table links' => 'Odkazy na tabulky v menu',
 			'Both' => 'Oboje',
 			'Both, select on hover' => 'Oboje, vypsat při najetí myší',
-			'Auto (select on select page, structure otherwise)' => 'Auto (vypsat na výpisech, jinak struktura)',
+			'Auto (select on the select page, structure otherwise)' => 'Auto (vypsat na výpisech, jinak struktura)',
 			// this is copied from adminer/lang/
 			'select' => 'vypsat',
 			'Select data' => 'Vypsat data',
@@ -107,7 +107,7 @@ li:hover .hover, p:hover .hover, div:hover > .hover, .hover.active, tr:hover td.
 			'Menu table links' => 'Linki do tabel w menu',
 			'Both' => 'Obie',
 			'Both, select on hover' => 'Obie, przeglądaj po najechaniu myszą', // Claude Opus 5
-			'Auto (select on select page, structure otherwise)' => 'Auto (pokaż na stronie przeglądania, w przeciwnym razie struktura)',
+			'Auto (select on the select page, structure otherwise)' => 'Auto (pokaż na stronie przeglądania, w przeciwnym razie struktura)',
 			// this is copied from adminer/lang/
 			'select' => 'przeglądaj',
 			'Select data' => 'Pokaż dane',
@@ -117,7 +117,7 @@ li:hover .hover, p:hover .hover, div:hover > .hover, .hover.active, tr:hover td.
 			'' => 'Menü- und Tabellen-Links konfigurieren. Kombinierbar mit AdminerConfig',
 			'Both' => 'Beide',
 			'Both, select on hover' => 'Beide, zeigen beim Überfahren mit der Maus', // Claude Opus 5
-			'Auto (select on select page, structure otherwise)' => 'Auto (Auswahl auf der ausgewählten Seite, sonst Struktur)',
+			'Auto (select on the select page, structure otherwise)' => 'Auto (Auswahl auf der ausgewählten Seite, sonst Struktur)',
 			'Menu table links' => 'Links verwenden in „Tabelle“',
 			// this is copied from adminer/lang/
 			'select' => 'zeigen',
@@ -128,7 +128,7 @@ li:hover .hover, p:hover .hover, div:hover > .hover, .hover.active, tr:hover td.
 			'' => 'メニュー内テーブルへのリンク設定; AdminerConfig との併用可',
 			'Both' => '両方',
 			'Both, select on hover' => '両方 (選択はマウスオーバー時)', // Claude Opus 5
-			'Auto (select on select page, structure otherwise)' => '自動 (選択ページでは選択、それ以外では構造)',
+			'Auto (select on the select page, structure otherwise)' => '自動 (選択ページでは選択、それ以外では構造)',
 			'Menu table links' => 'メニューテーブルへのリンク',
 			// this is copied from adminer/lang/
 			'select' => '選択',
@@ -141,7 +141,7 @@ li:hover .hover, p:hover .hover, div:hover > .hover, .hover.active, tr:hover td.
 			'Show structure' => 'Prikaži strukturu',
 			'Both' => 'Oboje',
 			'Both, select on hover' => 'Oboje, odaberi prelaskom miša', // Claude Opus 5
-			'Auto (select on select page, structure otherwise)' => 'Automatski (odabir na stranici odabira, inače struktura)',
+			'Auto (select on the select page, structure otherwise)' => 'Automatski (odabir na stranici odabira, inače struktura)',
 			'Menu table links' => 'Veze tablice u izborniku',
 			'select' => 'odaberi',
 		),

@@ -1,6 +1,6 @@
 <?php
 
-/** Check IP address and allow empty password
+/** Check the IP address and allow an empty password
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0

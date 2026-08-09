@@ -1,6 +1,6 @@
 <?php
 
-/** Use VS Code's Monaco Editor for syntax highlighting and SQL <textarea>
+/** Use VS Code's Monaco Editor for syntax highlighting and the SQL <textarea>
 * @link https://microsoft.github.io/monaco-editor/
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/

@@ -1,6 +1,6 @@
 <?php
 
-/** Hide some databases from the interface - just to improve design, not a security plugin
+/** Hide some databases from the interface - just to improve the design, not a security plugin
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0

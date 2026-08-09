@@ -1,6 +1,6 @@
 <?php
 
-/** Configure options by end-users and store them to a cookie
+/** Let end users configure options and store them in a cookie
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
@@ -42,8 +42,8 @@ class AdminerConfig extends Adminer\Plugin {
 
 	function config() {
 		$options = array(
-			'' => $this->lang('Use %s if exists', "adminer.css"),
-			'builtin' => $this->lang('Use builtin design'),
+			'' => $this->lang('Use %s if it exists', "adminer.css"),
+			'builtin' => $this->lang('Use built-in design'),
 		);
 		return array($this->lang('Design') => Adminer\html_radios('config[design]', $options, Adminer\get_setting("design", "adminer_config"), "<br>"));
 	}
@@ -70,8 +70,8 @@ class AdminerConfig extends Adminer\Plugin {
 			'Configuration saved.' => 'Konfigurace uložena.',
 			'Only some plugins support configuration, e.g. %s.' => 'Konfiguraci podporují jen některé pluginy, např. %s.',
 			'Design' => 'Vzhled',
-			'Use %s if exists' => 'Použít %s, pokud existuje',
-			'Use builtin design' => 'Použít vestavěný vzhled',
+			'Use %s if it exists' => 'Použít %s, pokud existuje',
+			'Use built-in design' => 'Použít vestavěný vzhled',
 			'Save' => 'Uložit',
 		),
 		'pl' => array(
@@ -79,8 +79,8 @@ class AdminerConfig extends Adminer\Plugin {
 			'Configuration saved.' => 'Konfiguracja zapisana.',
 			'Only some plugins support configuration, e.g. %s.' => 'Tylko niektóre wtyczki obsługują konfigurację, np. %s.',
 			'Design' => 'Wygląd',
-			'Use %s if exists' => 'Użyj %s, jeśli istnieje',
-			'Use builtin design' => 'Użyj wbudowanego wyglądu',
+			'Use %s if it exists' => 'Użyj %s, jeśli istnieje',
+			'Use built-in design' => 'Użyj wbudowanego wyglądu',
 			'Save' => 'Zapisz zmiany',
 		),
 		'de' => array(
@@ -89,8 +89,8 @@ class AdminerConfig extends Adminer\Plugin {
 			'Configuration saved.' => 'Konfiguration gespeichert.',
 			'Only some plugins support configuration, e.g. %s.' => 'Nur einige Plugins unterstützen die Konfiguration, z.B. %s.',
 			'Design' => 'Design',
-			'Use %s if exists' => '%s verwenden, falls vorhanden',
-			'Use builtin design' => 'Standard Design verwenden',
+			'Use %s if it exists' => '%s verwenden, falls vorhanden',
+			'Use built-in design' => 'Standard Design verwenden',
 			'Save' => 'Speichern',
 		),
 		'ja' => array(
@@ -99,8 +99,8 @@ class AdminerConfig extends Adminer\Plugin {
 			'Configuration saved.' => '設定を保存しました。',
 			'Only some plugins support configuration, e.g. %s.' => '設定変更に対応しているのは一部のプラグインのみです。例: %s。',
 			'Design' => 'デザイン',
-			'Use %s if exists' => 'あれば %s を使う',
-			'Use builtin design' => '組込みのデザインを使う',
+			'Use %s if it exists' => 'あれば %s を使う',
+			'Use built-in design' => '組込みのデザインを使う',
 			'Save' => '保存',
 		),
 		'hr' => array(
@@ -108,8 +108,8 @@ class AdminerConfig extends Adminer\Plugin {
 			'Configuration saved.' => 'Konfiguracija je spremljena.',
 			'Configuration' => 'Konfiguracija',
 			'Only some plugins support configuration, e.g. %s.' => 'Samo neki dodaci podržavaju konfiguraciju, npr. %s.',
-			'Use %s if exists' => 'Koristi %s ako postoji',
-			'Use builtin design' => 'Koristi ugrađeni dizajn',
+			'Use %s if it exists' => 'Koristi %s ako postoji',
+			'Use built-in design' => 'Koristi ugrađeni dizajn',
 			'Design' => 'Dizajn',
 			'Save' => 'Spremi',
 		),

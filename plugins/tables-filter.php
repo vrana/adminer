@@ -1,6 +1,6 @@
 <?php
 
-/** Filter names in tables list
+/** Filter names in the table list
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0

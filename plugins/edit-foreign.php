@@ -1,6 +1,6 @@
 <?php
 
-/** Select foreign key in edit form
+/** Select a foreign key in the edit form
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0

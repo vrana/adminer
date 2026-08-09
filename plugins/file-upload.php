@@ -1,7 +1,7 @@
 <?php
 //! handle delete
 
-/** Edit fields ending with "_path" by <input type="file"> and link to the uploaded files from select
+/** Edit fields ending with "_path" with <input type="file"> and link to the uploaded files from select
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0

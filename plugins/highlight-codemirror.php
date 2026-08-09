@@ -1,6 +1,6 @@
 <?php
 
-/** Use CodeMirror 5 for syntax highlighting and <textarea> including type-ahead of keywords and tables
+/** Use CodeMirror 5 for syntax highlighting and the <textarea>, including type-ahead of keywords and tables
 * @link https://codemirror.net/5/
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/

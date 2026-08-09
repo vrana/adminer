@@ -1,6 +1,6 @@
 <?php
 
-/** Display constant list of servers in login form
+/** Display a fixed list of servers in the login form
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0

@@ -1,6 +1,6 @@
 <?php
 
-/** Specify timeout for running every query
+/** Specify a timeout for every query
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
@@ -41,18 +41,18 @@ class AdminerTimeout extends Adminer\Plugin {
 
 	function config() {
 		$seconds = Adminer\get_setting("timeout", "adminer_config", $this->seconds);
-		return array($this->lang('Queries timeout') => '<input type="number" name="config[timeout]" min="0" value="' . Adminer\h($seconds) . '" class="size"> ' . $this->lang('seconds'));
+		return array($this->lang('Query timeout') => '<input type="number" name="config[timeout]" min="0" value="' . Adminer\h($seconds) . '" class="size"> ' . $this->lang('seconds'));
 	}
 
 	protected $translations = array(
 		'cs' => array(
 			'' => 'Nastaví timeout pro spouštění každého dotazu',
-			'Queries timeout' => 'Timeout dotazů',
+			'Query timeout' => 'Timeout dotazů',
 			'seconds' => 'sekund',
 		),
 		'hr' => array(
 			'' => 'Postavljanje vremenskog ograničenja upita',
-			'Queries timeout' => 'Vremensko ograničenje upita',
+			'Query timeout' => 'Vremensko ograničenje upita',
 			'seconds' => 'sekundi',
 		),
 	);

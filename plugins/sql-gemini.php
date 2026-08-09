@@ -1,6 +1,6 @@
 <?php
 
-/** AI prompt in SQL command generating the queries with Google Gemini
+/** Generate queries with Google Gemini from a prompt on the SQL command page
 * Beware that this sends your whole database structure (not data) to Google Gemini.
 * @link https://gemini.google.com/
 * @link https://www.adminer.org/plugins/#use
@@ -63,7 +63,7 @@ function setSqlareaValue(value) {
 }
 
 geminiButton.onclick = () => {
-	setSqlareaValue('-- <?php echo $this->lang('Just a sec...'); ?>');
+	setSqlareaValue('-- <?php echo $this->lang('Just a sec…'); ?>');
 	ajax(
 		'',
 		req => setSqlareaValue(req.responseText),
@@ -100,26 +100,26 @@ geminiText.onkeydown = event => {
 		'cs' => array(
 			'' => 'Generování SQL příkazů pomocí umělé inteligence Google Gemini',
 			'Ask Gemini' => 'Zeptat se Gemini',
-			'Just a sec...' => 'Chviličku...',
+			'Just a sec…' => 'Chviličku…',
 		),
 		'pl' => array(
 			'Ask Gemini' => 'Zapytaj Gemini',
-			'Just a sec...' => 'Chwileczkę...',
+			'Just a sec…' => 'Chwileczkę…',
 		),
 		'de' => array(
 			'' => 'KI-Eingabeaufforderung im SQL-Befehl zur Erstellung der Abfragen mit Google Gemini',
 			'Ask Gemini' => 'Gemini fragen',
-			'Just a sec...' => 'Einen Moment...',
+			'Just a sec…' => 'Einen Moment…',
 		),
 		'ja' => array(
 			'' => 'Google Gemini AI を用いて SQL 文を生成',
 			'Ask Gemini' => 'Gemini に聞く',
-			'Just a sec...' => 'しばらくお待ち下さい...',
+			'Just a sec…' => 'しばらくお待ち下さい…',
 		),
 		'hr' => array(
 			'' => 'Generiranje SQL naredbi pomoću Google Gemini AI',
 			'Ask Gemini' => 'Pitaj Gemini',
-			'Just a sec...' => 'Samo trenutak...',
+			'Just a sec…' => 'Samo trenutak…',
 		),
 	);
 }

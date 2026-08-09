@@ -1,6 +1,6 @@
 <?php
 
-/** Verify new versions from GitHub
+/** Check for new versions on GitHub
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0

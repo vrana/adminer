@@ -1,6 +1,6 @@
 <?php
 
-/** Use <select><option> for enum edit instead of <input type="radio">
+/** Use <select><option> instead of <input type="radio"> for editing enum
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
