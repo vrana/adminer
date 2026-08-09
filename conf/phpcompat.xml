@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<ruleset name="Adminer PHP Compatibility">
+	<description>Checks the compiled files for APIs missing in the oldest supported PHP. Run it by: composer compat</description>
+	<arg value="s"/>
+	<arg name="parallel" value="8"/>
+	<config name="testVersion" value="5.3-"/>
+
+	<!-- The compiled files, created by: composer compile -->
+	<file>../adminer.php</file>
+	<file>../editor.php</file>
+
+	<!--
+	php53 -l reports the syntax so we only check the APIs, which it can't see.
+	The functions removed in newer PHP (mysql_*, oci_*, get_magic_quotes_*) are supported on purpose so their sniffs are not used here.
+	Enable PHPCompatibility.FunctionUse.RemovedFunctions occasionally anyway - it also reports the functions deprecated in new PHP, which found utf8_decode().
+	-->
+	<rule ref="PHPCompatibility.Classes.NewClasses"/>
+	<rule ref="PHPCompatibility.Constants.NewConstants">
+		<!-- Used only if session_status() exists. -->
+		<exclude name="PHPCompatibility.Constants.NewConstants.php_session_noneFound"/>
+		<!-- Used only if inflate_init() exists. -->
+		<exclude name="PHPCompatibility.Constants.NewConstants.zlib_encoding_rawFound"/>
+		<exclude name="PHPCompatibility.Constants.NewConstants.zlib_finishFound"/>
+		<!-- Used only if PHP_VERSION_ID >= 70100. -->
+		<exclude name="PHPCompatibility.Constants.NewConstants.pgsql_notice_allFound"/>
+		<exclude name="PHPCompatibility.Constants.NewConstants.pgsql_notice_clearFound"/>
+	</rule>
+	<rule ref="PHPCompatibility.FunctionUse.NewFunctionParameters">
+		<!-- Used only if PHP_VERSION_ID >= 70100. -->
+		<exclude name="PHPCompatibility.FunctionUse.NewFunctionParameters.pg_last_notice_modeFound"/>
+	</rule>
+	<rule ref="PHPCompatibility.FunctionUse.NewFunctions">
+		<!-- Guarded by function_exists(). -->
+		<exclude name="PHPCompatibility.FunctionUse.NewFunctions.getimagesizefromstringFound"/>
+		<exclude name="PHPCompatibility.FunctionUse.NewFunctions.inflate_addFound"/>
+		<exclude name="PHPCompatibility.FunctionUse.NewFunctions.inflate_initFound"/>
+		<exclude name="PHPCompatibility.FunctionUse.NewFunctions.oci_set_call_timeoutFound"/>
+		<exclude name="PHPCompatibility.FunctionUse.NewFunctions.pg_escape_literalFound"/>
+		<exclude name="PHPCompatibility.FunctionUse.NewFunctions.random_bytesFound"/>
+		<exclude name="PHPCompatibility.FunctionUse.NewFunctions.session_statusFound"/>
+	</rule>
+	<rule ref="PHPCompatibility.IniDirectives.NewIniDirectives">
+		<!-- ini_get() returns false in older PHP which max_input_vars() reads as no limit. -->
+		<exclude name="PHPCompatibility.IniDirectives.NewIniDirectives.max_input_varsFound"/>
+	</rule>
+	<rule ref="PHPCompatibility.Interfaces.NewInterfaces"/>
+	<rule ref="PHPCompatibility.Extensions.RemovedExtensions">
+		<exclude name="PHPCompatibility.Extensions.RemovedExtensions.mysql_DeprecatedRemoved"/>
+		<exclude name="PHPCompatibility.Extensions.RemovedExtensions.ibaseRemoved"/>
+	</rule>
+</ruleset>

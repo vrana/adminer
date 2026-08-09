@@ -55,7 +55,12 @@ Adminer is highly conservative regarding PHP version requirements.
 Source codes require PHP 7.4 to take advantage of type declarations.
 These type declarations are stripped during compilation to be compatible with PHP 5.3.
 PHP 5.3 is still supported because some users cannot upgrade their servers.
-Compatibility is periodically [checked](https://github.com/vrana/adminer/blob/v5.5.0/phpcs.xml#L125).
+Compatibility is checked by `php53 -l` on the compiled files, which reports the syntax, and by `composer compat`, which reports the rest - a function or a constant missing in PHP 5.3.
+It uses [PHPCompatibility](https://github.com/PHPCompatibility/PHPCompatibility) configured in [conf/phpcompat.xml](/conf/phpcompat.xml) and compiles both files itself.
+The release script runs the same check next to `php -l` over the release builds, passing them on the command line, which overrides the files in the ruleset.
+It runs separately from `composer check` because it is slow and because it can't see the guards - a newer function may be called if `function_exists()` or `PHP_VERSION_ID` allows it, so the ruleset lists every such call as an exclusion.
+Adding a call to a newer function therefore means either guarding it, or verifying that the guard is elsewhere and excluding it there.
+This is not theoretical: 6.0.0 shipped `oci_set_call_timeout()` unguarded, which is available since PHP 7.2.13.
 The required PHP version is only increased if it significantly improves the code.
 Older PHP versions had bugs that required workarounds, but modern versions primarily introduce new features.
 
@@ -277,7 +282,8 @@ Because many developers expect Composer to bootstrap a checkout, `composer insta
 The dependencies are optional, so the command only prints a warning if it fails.
 
 Composer manages no runtime dependency but it does install the development tools - PHP_CS and PHPStan as `require-dev`, ESLint by npm.
-The two Composer packages are pinned to exact versions because the lock file is not committed: the constraint in [composer.json](/composer.json) is what keeps every checkout and CI on the same build, so updating a linter is a deliberate commit.
+The Composer packages are pinned to exact versions because the lock file is not committed: the constraint in [composer.json](/composer.json) is what keeps every checkout and CI on the same build, so updating a linter is a deliberate commit.
+PHPCompatibility has no release supporting PHP_CodeSniffer 4 yet so it is pinned to a commit of its `develop` branch, which works the same way.
 Use `composer install --no-dev` to bootstrap a checkout without them - the `submodules` script checks `COMPOSER_DEV_MODE` and skips the npm packages too, so only the submodules are always initialized.
 
 ## Tests

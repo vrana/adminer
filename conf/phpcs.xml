@@ -115,20 +115,53 @@
 	<rule ref="Squiz.WhiteSpace.LogicalOperatorSpacing"/>
 	<rule ref="Squiz.WhiteSpace.ObjectOperatorSpacing"/>
 
+	<rule ref="SlevomatCodingStandard.Classes.DisallowConstructorPropertyPromotion"/>
+	<rule ref="SlevomatCodingStandard.Commenting.EmptyComment"/>
+	<rule ref="SlevomatCodingStandard.Commenting.UselessFunctionDocComment"/>
+	<rule ref="SlevomatCodingStandard.Commenting.UselessInheritDocComment"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.DisallowNullSafeObjectOperator"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.DisallowYodaComparison"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.UselessIfConditionWithReturn"/>
+	<rule ref="SlevomatCodingStandard.ControlStructures.UselessTernaryOperator"/>
+	<rule ref="SlevomatCodingStandard.Exceptions.DeadCatch"/>
+	<rule ref="SlevomatCodingStandard.Exceptions.DisallowNonCapturingCatch"/>
+	<rule ref="SlevomatCodingStandard.Functions.DisallowArrowFunction"/>
+	<rule ref="SlevomatCodingStandard.Functions.DisallowNamedArguments"/>
+	<rule ref="SlevomatCodingStandard.Functions.UnusedInheritedVariablePassedToClosure"/>
+	<rule ref="SlevomatCodingStandard.Functions.UselessParameterDefaultValue"/>
+	<rule ref="SlevomatCodingStandard.Namespaces.UnusedUses"/>
+	<rule ref="SlevomatCodingStandard.Operators.RequireCombinedAssignmentOperator"/>
+	<rule ref="SlevomatCodingStandard.PHP.TypeCast"/>
+	<rule ref="SlevomatCodingStandard.PHP.UselessSemicolon"/>
+	<rule ref="SlevomatCodingStandard.TypeHints.LongTypeHints"/>
+	<rule ref="SlevomatCodingStandard.TypeHints.NullTypeHintOnLastPosition"/>
+	<!-- @param, @return and @var are used only if they say more than the type declaration. -->
+	<rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHint.UselessAnnotation"/>
+	<rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint.UselessAnnotation"/>
+	<rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint.UselessAnnotation"/>
+	<rule ref="SlevomatCodingStandard.TypeHints.UselessConstantTypeHint"/>
+	<rule ref="SlevomatCodingStandard.Variables.DuplicateAssignmentToVariable"/>
+
 	<!--
-	This is slow and has false positives but it's useful occasionally. It requires PHP_CodeSniffer 3.
-	https://github.com/PHPCompatibility/PHPCompatibility
-	<rule ref="PHPCompatibility"/>
-	<config name="testVersion" value="5.3-"/>
-	<rule ref="PHPCompatibility.Extensions.RemovedExtensions">
-		<exclude name="PHPCompatibility.Extensions.RemovedExtensions.mysql_DeprecatedRemoved"/>
-		<exclude name="PHPCompatibility.Extensions.RemovedExtensions.ibaseRemoved"/>
-	</rule>
-	<rule ref="PHPCompatibility.Constants.RemovedConstants">
-		<exclude-pattern>adminer/plugins/drivers/firebird.php</exclude-pattern>
-	</rule>
-	<rule ref="PHPCompatibility.FunctionUse.RemovedFunctions">
-		<exclude-pattern>adminer/plugins/drivers/firebird.php</exclude-pattern>
-	</rule>
+	Slevomat sniffs which are not used, with the number of places they report (measured 2026-08-09):
+	Namespaces.ReferenceUsedNamesOnly, Namespaces.FullyQualifiedGlobalFunctions (2000+) - the namespace fallback is intentional, see url_escape() in docs/developing.md
+	Operators.DisallowEqualOperators (1183) - $var != "" is used on purpose because a table can be named 0
+	Strings.DisallowVariableParsing (2607) - "{$var}" is longer
+	Commenting.DocCommentSpacing (844) - the doc-comments are not indented by one space
+	Arrays.TrailingArrayComma, Functions.RequireTrailingCommaInCall (hundreds) - a trailing comma only makes the compiled file bigger
+	TypeHints.DeclareStrictTypes - the type declarations are stripped during compilation
+	ControlStructures.RequireNullCoalesceOperator (many) - idx() reports a typo in the variable name, ?? doesn't
+	ControlStructures.DisallowShortTernaryOperator (145) - ?: saves bytes
+	ControlStructures.DisallowEmpty (12) - each of them needs to be decided separately
+	ControlStructures.AssignmentInCondition (32) - 24 of them are while ($row = $result->fetch_row())
+	Functions.RequireStaticClosure (39) - static costs bytes in the compiled file, PHPStan reports $this in a closure anyway
+	Functions.UnusedParameter (many) - the methods overridable by plugins keep the parameters
+	Variables.UnusedVariable (4) - all of them are false positives (a static variable, a global one and two used in the next iteration)
+	Variables.UselessVariable - the result is constructed in $return on purpose
+	PHP.UselessParentheses (12) - 11 of them make the precedence explicit, e.g. ($pos + 7) & ~7
+	Classes.UnusedPrivateElements - reported by PHPStan
+	Whitespaces.DuplicateSpaces (1) - PSR12 expands the tabs so a tab before an inline comment looks like duplicate spaces
 	-->
+
+	<!-- The compiled files are checked for compatibility with the oldest supported PHP by conf/phpcompat.xml. -->
 </ruleset>

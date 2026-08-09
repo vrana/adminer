@@ -1,3 +1,6 @@
+includes:
+	- ../vendor/phpstan/phpstan-strict-rules/rules.neon
+
 parameters:
 	level: 6
 	checkNullables: true # level 8
@@ -10,6 +13,21 @@ parameters:
 	reportMaybesInMethodSignatures: true # nullable parameter and return types of overridden methods
 	reportMaybesInPropertyPhpDocTypes: true
 	reportStaticMethodSignatures: true
+
+	# the strict rules which currently report no error, the others are listed at the end of the file
+	strictRules:
+		allRules: false
+		closureUsesThis: true
+		disallowedBacktick: true
+		disallowedImplicitArrayCreation: true
+		dynamicCallOnStaticMethod: true
+		illegalConstructorMethodCall: true
+		matchingInheritedMethodNames: true
+		switchConditionsMatchingType: true
+	# rules.neon enables these outside strictRules so we set them back
+	polluteScopeWithLoopInitialAssignments: true # for ($i=0; ...) defines $i even if the loop doesn't run
+	polluteScopeWithAlwaysIterableForeach: true # foreach (array($base) as ...) defines the variables too
+	reportWrongPhpDocTypeInVarTag: false # @var is used to narrow the type, e.g. PDOStatement to Result
 
 	ignoreErrors:
 		# need to fix
@@ -84,6 +102,18 @@ parameters:
 	dynamicConstantNames:
 		- Adminer\VERSION # the value changes with every release so the -dev check in file.inc.php must stay undecided
 		- SID # empty when the session ID is in a cookie
+
+	# The strict rules which are not used, with the number of places they report (measured 2026-08-09):
+	# booleansInConditions, booleansInLoopConditions (773) - a truthy value is used on purpose
+	# disallowedLooseComparison (855) - $var != "" is used on purpose because a table can be named 0
+	# strictFunctionCalls (57) - the third parameter of in_array() would have to be added everywhere
+	# disallowedShortTernary (36) - ?: saves bytes
+	# uselessCast (19) - the casts guard against an undefined array key which PHPStan doesn't see
+	# overwriteVariablesWithLoop (19) - e.g. $i = -1 before a foreach which may not run
+	# strictArrayFilter (4) - array_filter() removes the empty values on purpose
+	# disallowedEmpty (2) - each of them needs to be decided separately
+	# requireParentConstructorCall (1) - Db::__construct() calls parent::init() instead
+	# noVariableVariables (1) - $$val is used to read the superglobals in bootstrap.inc.php
 
 	typeAliases:
 		TableStatus: "array{Name:string, Engine?:?string, Comment?:string, Oid?:numeric-string, Rows?:?numeric-string, Collation?:string, Auto_increment?:?numeric-string, Data_length?:numeric-string, Index_length?:numeric-string, Data_free?:numeric-string, Create_options?:string, partition?:numeric-string, nspname?:string}"

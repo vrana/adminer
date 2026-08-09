@@ -1,6 +1,8 @@
 ## Adminer dev
 - Use the same font in &lt;textarea> as in &lt;input>, keep monospace in the SQL command and JSON values
 ### Internal
+- Check the code style also by Slevomat Coding Standard and the compiled files by PHPCompatibility (composer compat)
+- Enable the PHPStan strict rules which report no error
 - Install PHPCS and PHPStan by composer install, like ESLint
 - Skip all the linters in composer install --no-dev, it only initializes the submodules
 

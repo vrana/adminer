@@ -36,10 +36,16 @@
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "4.0.4",
-        "phpstan/phpstan": "2.2.8"
+        "slevomat/coding-standard": "8.31.1",
+        "phpcompatibility/php-compatibility": "dev-develop#299a472",
+        "phpstan/phpstan": "2.2.8",
+        "phpstan/phpstan-strict-rules": "2.0.12"
     },
     "config": {
-        "process-timeout": 0
+        "process-timeout": 0,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     },
     "scripts": {
         "post-install-cmd": "@submodules",
@@ -54,6 +60,11 @@
             "@php tests/unit/compress.php",
             "@php tests/unit/host_port.php",
             "@php tests/unit/url.php"
+        ],
+        "compat": [
+            "@php compile.php",
+            "@php compile.php editor",
+            "phpcs --standard=conf/phpcompat.xml"
         ],
         "e2e": "npx playwright test --config conf/playwright.config.js",
         "compile": "@php compile.php",
