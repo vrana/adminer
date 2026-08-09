@@ -6,7 +6,7 @@
 
 ## Features
 - **Supports:** MySQL, MariaDB, PostgreSQL, CockroachDB, SQLite, MS SQL, Oracle
-- **Plugins for:** Elasticsearch, SimpleDB, MongoDB, Redis, Firebird, ClickHouse, IGDB, IMAP
+- **Plugins for:** Elasticsearch, OpenSearch, SimpleDB, MongoDB, Redis, Firebird, ClickHouse, IGDB, IMAP
 - **Requirements:** PHP 5.3+ (compiled file), PHP 7.4+ (source codes)
 - **Browsers:** Any, with full functionality in browsers since April 2018 (requires JavaScript)
 

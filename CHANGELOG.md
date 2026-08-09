@@ -1,6 +1,8 @@
 ## Adminer dev
 - Use the same font in &lt;textarea> as in &lt;input>, keep monospace in the SQL command and JSON values
 - Create table: Print the success message in drivers not using SQL, e.g. Elasticsearch (regression from 6.0.0)
+- Elasticsearch: Rename the database from elastic to data
+- OpenSearch: Add support via Elasticsearch driver
 ### Plugins
 - Method dumpPrint() to print HTML code in the export form
 - New plugin: Link the plugins usable in each part of the interface

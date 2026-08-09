@@ -116,11 +116,9 @@ if (isset($_GET["elastic"])) {
 				if (!$return) {
 					return $this->error;
 				}
-				$version = $return['version']['number'];
-				if (version_compare("$version", '7') < 0) { // "" if the server is not Elasticsearch
-					return 'Adminer requires Elasticsearch 7 or newer.';
-				}
-				$this->server_info = $version;
+				$version = $return['version'];
+				$this->flavor = ($version['distribution'] == 'opensearch' ? 'opensearch' : ''); // Elasticsearch sends no distribution
+				$this->server_info = $version['number'];
 				return '';
 			}
 
@@ -174,7 +172,14 @@ if (isset($_GET["elastic"])) {
 			if (!preg_match('~^(https?://)?[-a-zA-Z\d.]+(:\d+)?$~', $server)) {
 				return lang('Invalid server.');
 			}
-			return parent::connect($server, $username, $password); // servers accepting any password are refused by Adminer::login()
+			$connection = parent::connect($server, $username, $password); // servers accepting any password are refused by Adminer::login()
+			if (is_string($connection)) {
+				return $connection;
+			}
+			if ($connection->flavor == 'opensearch') { // we don't use "Elasticsearch / OpenSearch" by default because it's too long
+				add_driver(DRIVER, "OpenSearch");
+			}
+			return $connection;
 		}
 
 		function __construct(Db $connection) {
@@ -392,7 +397,7 @@ if (isset($_GET["elastic"])) {
 	}
 
 	function get_databases($flush) {
-		return array("elastic");
+		return array("data");
 	}
 
 	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
@@ -408,7 +413,7 @@ if (isset($_GET["elastic"])) {
 
 	function count_tables($databases) {
 		$return = connection()->cachedQuery('_aliases');
-		return array("elastic" => ($return ? count($return) : 0));
+		return array("data" => ($return ? count($return) : 0));
 	}
 
 	function tables_list() {
@@ -646,7 +651,7 @@ if (isset($_GET["elastic"])) {
 
 		if ($table != '') {
 			if ($name != $table) {
-				connection()->error = 'Elasticsearch does not support renaming indexes.';
+				connection()->error = 'Renaming indexes is not supported.';
 				return false;
 			}
 			return ($properties ? connection()->rootQuery(urlencode($name) . "/_mapping", $properties, 'POST') : true);
