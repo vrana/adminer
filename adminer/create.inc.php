@@ -119,7 +119,8 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 			($row["Auto_increment"] != "" ? number($row["Auto_increment"]) : ""),
 			$partitioning
 		);
-		if ($result && !Queries::$queries) {
+		// a driver performing the change outside queries() records nothing, so also require the form to carry no change
+		if ($result && !Queries::$queries && $TABLE != "" && !$fields && !$foreign) {
 			redirect($location); // nothing was changed
 		}
 		queries_redirect($location, $message, $result);
