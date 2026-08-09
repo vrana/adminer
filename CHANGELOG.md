@@ -2,6 +2,7 @@
 - Use the same font in &lt;textarea> as in &lt;input>, keep monospace in the SQL command and JSON values
 ### Plugins
 - Method dumpPrint() to print HTML code in the export form
+- New plugin: Link the plugins usable in each part of the interface
 ### Internal
 - Check the code style also by Slevomat Coding Standard and the compiled files by PHPCompatibility (composer compat)
 - Enable the PHPStan strict rules which report no error
