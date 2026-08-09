@@ -29,7 +29,7 @@ test('Login', async () => {
 	await link(page, 'Create database').click();
 	await page.locator('[name="name"]').fill('adminer_test');
 	await button(page, 'Save').click();
-	await expect(page.locator('body')).toContainText('Please use one of the extensions');
+	await expect(page.locator('body')).toContainText('Please use one of these file extensions');
 	await page.locator('[name="name"]').fill('adminer_test.sqlite');
 	await button(page, 'Save').click();
 	const exists = page.getByText('File exists.');
@@ -280,5 +280,5 @@ test('Drop', async () => {
 	await page.locator('[name="drop"]').click();
 	await expect(page.locator('body')).toContainText('Database has been dropped.');
 	await page.locator('#logout').click();
-	await expect(page.locator('body')).toContainText('Thanks for using Adminer, consider donating.');
+	await expect(page.locator('body')).toContainText('Thanks for using Adminer. Consider donating.');
 });

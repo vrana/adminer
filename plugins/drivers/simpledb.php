@@ -124,7 +124,7 @@ if (isset($_GET["simpledb"])) {
 				return lang('Invalid server.');
 			}
 			if ($password != "") {
-				return lang('Database does not support password.');
+				return lang('The database does not support passwords.');
 			}
 			return parent::connect($server, $username, $password);
 		}

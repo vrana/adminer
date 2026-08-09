@@ -398,7 +398,7 @@ function formSubmit() {
 	this.form.submit();
 }
 
-/** Disable Save and continue edit after changing a value identifying the row
+/** Disable Save and continue editing after changing a value identifying the row
 * @param {Event} event
 * @this HTMLTableRowElement
 */

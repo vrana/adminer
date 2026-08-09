@@ -9,15 +9,15 @@ Lang::$translations = array(
 	'Permanent login' => 'Pastovus prisijungimas',
 	'Login' => 'Prisijungti',
 	'Logout' => 'Atsijungti',
-	'Logged as: %s' => 'Prisijungęs kaip: %s',
+	'Logged in as: %s' => 'Prisijungęs kaip: %s',
 	'Logout successful.' => 'Jūs atsijungėte nuo sistemos.',
 	'Invalid credentials.' => 'Neteisingi prisijungimo duomenys.',
 	'Language' => 'Kalba',
-	'Invalid CSRF token. Send the form again.' => 'Neteisingas CSRF tokenas. Bandykite siųsti formos duomenis dar kartą.',
+	'Invalid CSRF token. Submit the form again.' => 'Neteisingas CSRF tokenas. Bandykite siųsti formos duomenis dar kartą.',
 	'No extension' => 'Nėra plėtiio',
 	'None of the supported PHP extensions (%s) are available.' => 'Nėra nei vieno iš palaikomų PHP plėtinių (%s).',
 	'Session support must be enabled.' => 'Sesijų palaikymas turi būti įjungtas.',
-	'Session expired, please login again.' => 'Sesijos galiojimas baigėsi. Prisijunkite iš naujo.',
+	'Session expired. Please log in again.' => 'Sesijos galiojimas baigėsi. Prisijunkite iš naujo.',
 	'%s version: %s through PHP extension %s' => '%s versija: %s per PHP plėtinį %s',
 	'Refresh' => 'Atnaujinti',
 
@@ -42,7 +42,7 @@ Lang::$translations = array(
 	'Status' => 'Būsena',
 
 	'SQL command' => 'SQL užklausa',
-	'%d query(s) executed OK.' => array('%d užklausa įvykdyta.', '%d užklausos įvykdytos.', '%d užklausų įvykdyta.'),
+	'%d query(ies) executed OK.' => array('%d užklausa įvykdyta.', '%d užklausos įvykdytos.', '%d užklausų įvykdyta.'),
 	'Query executed OK, %d row(s) affected.' => array('Užklausa įvykdyta. Pakeistas %d įrašas.', 'Užklausa įvykdyta. Pakeisti %d įrašai.', 'Užklausa įvykdyta. Pakeista %d įrašų.'),
 	'No commands to execute.' => 'Nėra vykdomų užklausų.',
 	'Error in query' => 'Klaida užklausoje',
@@ -62,7 +62,7 @@ Lang::$translations = array(
 	'File uploads are disabled.' => 'Failų įkėlimas išjungtas.',
 	'Unable to upload a file.' => 'Nepavyko įkelti failo.',
 	'Maximum allowed file size is %sB.' => 'Maksimalus failo dydis - %sB.',
-	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Per daug POST duomenų. Sumažinkite duomenų kiekį arba padidinkite konfigūracijos nustatymą %s.',
+	'The POST data is too large. Reduce the data or increase the %s configuration directive.' => 'Per daug POST duomenų. Sumažinkite duomenų kiekį arba padidinkite konfigūracijos nustatymą %s.',
 
 	'Export' => 'Eksportas',
 	'Output' => 'Išvestis',
@@ -101,7 +101,7 @@ Lang::$translations = array(
 	'Repair' => 'Pataisyti',
 	'Truncate' => 'Tuštinti',
 	'Tables have been truncated.' => 'Lentelės buvo ištuštintos.',
-	'Move to other database' => 'Perkelti į kitą duomenų bazę',
+	'Move to another database' => 'Perkelti į kitą duomenų bazę',
 	'Move' => 'Perkelti',
 	'Tables have been moved.' => 'Lentelės perkeltos.',
 	'Copy' => 'Kopijuoti',
@@ -192,7 +192,7 @@ Lang::$translations = array(
 	'Create foreign key' => 'Sukurti išorinį raktą', // Claude Opus 5
 	'ON DELETE' => 'Ištrinant',
 	'ON UPDATE' => 'Atnaujinant',
-	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Šaltinio ir tikslinis stulpelis turi būti to paties tipo, tiksliniame stulpelyje turi būti naudojamas indeksas ir duomenys turi egzistuoti.',
+	'Source and target columns must have the same data type, there must be an index on the target columns and the referenced data must exist.' => 'Šaltinio ir tikslinis stulpelis turi būti to paties tipo, tiksliniame stulpelyje turi būti naudojamas indeksas ir duomenys turi egzistuoti.',
 
 	'Triggers' => 'Trigeriai',
 	'Trigger has been dropped.' => 'Trigeris pašalintas.',
@@ -228,7 +228,7 @@ Lang::$translations = array(
 	'Import' => 'Importas',
 	'%d row(s) have been imported.' => array('%d įrašas įkelta.', '%d įrašai įkelti.', '%d įrašų įkelta.'),
 
-	'Use edit link to modify this value.' => 'Norėdami redaguoti reikšmę naudokite redagavimo nuorodą.', // in-place editing in select
+	'Use the edit link to modify this value.' => 'Norėdami redaguoti reikšmę naudokite redagavimo nuorodą.', // in-place editing in select
 
 	'Item%s has been inserted.' => 'Įrašas%s sukurtas.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Įrašas ištrintas.',
@@ -241,7 +241,7 @@ Lang::$translations = array(
 	'Edit' => 'Redaguoti',
 	'Insert' => 'Įrašyti',
 	'Save' => 'Išsaugoti',
-	'Save and continue edit' => 'Išsaugoti ir tęsti redagavimą',
+	'Save and continue editing' => 'Išsaugoti ir tęsti redagavimą',
 	'Save and insert next' => 'Išsaugoti ir įrašyti kitą',
 	'Clone' => 'Klonuoti',
 	'Delete' => 'Trinti',
@@ -263,7 +263,7 @@ Lang::$translations = array(
 	'now' => 'dabar',
 
 	'File exists.' => 'Failas egzistuoja.', // general SQLite error in create, drop or rename database
-	'Please use one of the extensions %s.' => 'Naudokite vieną iš plėtinių %s.',
+	'Please use one of these file extensions: %s.' => 'Naudokite vieną iš plėtinių %s.',
 
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Keisti schemą',

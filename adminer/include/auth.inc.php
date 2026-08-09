@@ -120,7 +120,7 @@ if ($auth) {
 	unset_permanent($permanent);
 	redirect(
 		substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1),
-		lang('Logout successful.') . ' ' . lang('Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.')
+		lang('Logout successful.') . ' ' . lang('Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.')
 	);
 
 } elseif ($permanent && !$_SESSION["pwds"]) {
@@ -157,7 +157,7 @@ function auth_error(string $error, array &$permanent) {
 	if (isset($_GET["username"])) {
 		header("HTTP/1.1 403 Forbidden"); // 401 requires sending WWW-Authenticate header
 		if (($_COOKIE[$session_name] || $_GET[$session_name]) && !$_SESSION["token"]) {
-			$error = lang('Session expired, please login again.');
+			$error = lang('Session expired. Please log in again.');
 		} else {
 			restart_session();
 			add_invalid_login();
@@ -165,7 +165,7 @@ function auth_error(string $error, array &$permanent) {
 			if ($password !== null) {
 				if ($password === false) {
 					$error .= ($error ? '<br>' : '') . lang(
-						'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.',
+						'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.',
 						target_blank(),
 						'<code>permanentLogin()</code>'
 					);
@@ -228,12 +228,12 @@ if (isset($_GET["username"]) && is_string(get_password())) {
 $login = null;
 if (!is_object($connection) || ($login = adminer()->login($_GET["username"], get_password())) !== true) {
 	$error = (is_string($connection) ? nl_br(h($connection)) : (is_string($login) ? $login : lang('Invalid credentials.')))
-		. (preg_match('~^ | $~', get_password()) ? '<br>' . lang('There is a space in the input password which might be the cause.') : '');
+		. (preg_match('~^ | $~', get_password()) ? '<br>' . lang('There is a space in the entered password, which might be the cause.') : '');
 	auth_error($error, $permanent);
 }
 
 if ($_POST["logout"] && $_SESSION["token"] && !verify_token()) {
-	page_header(lang('Logout'), lang('Invalid CSRF token. Send the form again.'));
+	page_header(lang('Logout'), lang('Invalid CSRF token. Submit the form again.'));
 	page_footer("db");
 	exit;
 }
@@ -249,13 +249,13 @@ if ($auth && $_POST["token"]) {
 /** @var string */ $error = ''; // HTML
 if ($_POST) {
 	if (!verify_token()) {
-		$error = lang('Invalid CSRF token. Send the form again.') . ' ' . lang('If you did not send this request from Adminer then close this page.');
+		$error = lang('Invalid CSRF token. Submit the form again.') . ' ' . lang('If you did not send this request from Adminer, close this page.');
 	}
 
 } elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
 	// posted form with no data means that post_max_size exceeded because Adminer always sends token at least
-	$error = lang('Too big POST data. Reduce the data or increase the %s configuration directive.', "<b>post_max_size</b>'");
+	$error = lang('The POST data is too large. Reduce the data or increase the %s configuration directive.', "<b>post_max_size</b>'");
 	if (isset($_GET["sql"])) {
-		$error .= ' ' . lang('You can upload a big SQL file via FTP and import it from server.');
+		$error .= ' ' . lang('You can upload a large SQL file via FTP and import it from the server.');
 	}
 }

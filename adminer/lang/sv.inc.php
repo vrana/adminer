@@ -9,25 +9,25 @@ Lang::$translations = array(
 	'Permanent login' => 'Permanent inloggning',
 	'Login' => 'Logga in',
 	'Logout' => 'Logga ut',
-	'Logged as: %s' => 'Inloggad som: %s',
+	'Logged in as: %s' => 'Inloggad som: %s',
 	'Logout successful.' => 'Du är nu utloggad.',
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Tack för att du använder Adminer, vänligen fundera över att <a href="https://www.adminer.org/en/donation/">donera</a>.',
+	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Tack för att du använder Adminer, vänligen fundera över att <a href="https://www.adminer.org/en/donation/">donera</a>.',
 	'Invalid credentials.' => 'Ogiltiga inloggningsuppgifter.',
-	'There is a space in the input password which might be the cause.' => 'Det finns ett mellanslag i lösenordet, vilket kan vara anledningen.',
-	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer tillåter inte att ansluta till en databas utan lösenord. <a href="https://www.adminer.org/en/password/"%s>Mer information</a>.',
-	'Database does not support password.' => 'Databasen stödjer inte lösenord.',
+	'There is a space in the entered password, which might be the cause.' => 'Det finns ett mellanslag i lösenordet, vilket kan vara anledningen.',
+	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer tillåter inte att ansluta till en databas utan lösenord. <a href="https://www.adminer.org/en/password/"%s>Mer information</a>.',
+	'The database does not support passwords.' => 'Databasen stödjer inte lösenord.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('För många misslyckade inloggningar, försök igen om %d minut.', 'För många misslyckade inloggningar, försök igen om %d minuter.'),
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Använd <a%2$s>pluginet</a> %1$s om Adminer körs bakom en omvänd proxy.', // Claude Opus 5
-	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Huvudlösenordet har löpt ut. <a href="https://www.adminer.org/en/extension/"%s>Implementera</a> %s en metod för att göra det permanent.',
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Huvudlösenordet har löpt ut. <a href="https://www.adminer.org/en/extension/"%s>Implementera</a> %s en metod för att göra det permanent.',
 	'Language' => 'Språk',
-	'Invalid CSRF token. Send the form again.' => 'Ogiltig CSRF-token. Skicka formuläret igen.',
-	'If you did not send this request from Adminer then close this page.' => 'Om du inte skickade en förfrågan från Adminer så kan du stänga den här sidan.',
+	'Invalid CSRF token. Submit the form again.' => 'Ogiltig CSRF-token. Skicka formuläret igen.',
+	'If you did not send this request from Adminer, close this page.' => 'Om du inte skickade en förfrågan från Adminer så kan du stänga den här sidan.',
 	'No extension' => 'Inget tillägg',
 	'None of the supported PHP extensions (%s) are available.' => 'Inga av de PHP-tilläggen som stöds (%s) är tillgängliga.',
 	'Connecting to privileged ports is not allowed.' => 'Anslutning till privilegierade portar är inte tillåtet.',
-	'Disable %s or enable %s or %s extensions.' => 'Stäng av %s eller sätt på %s eller %s tilläggen.',
+	'Disable %s or enable the %s or %s extension.' => 'Stäng av %s eller sätt på %s eller %s tilläggen.',
 	'Session support must be enabled.' => 'Support för sessioner måste vara på.',
-	'Session expired, please login again.' => 'Session har löpt ut, vänligen logga in igen.',
+	'Session expired. Please log in again.' => 'Session har löpt ut, vänligen logga in igen.',
 	'The action will be performed after successful login with the same credentials.' => 'Åtgärden kommer att utföras efter en lyckad inloggning med samma inloggningsuppgifter.',
 	'%s version: %s through PHP extension %s' => '%s version: %s genom PHP-tillägg %s',
 	'Refresh' => 'Ladda om',
@@ -53,7 +53,7 @@ Lang::$translations = array(
 	'Status' => 'Status',
 
 	'SQL command' => 'SQL-kommando',
-	'%d query(s) executed OK.' => array('%d förfrågan lyckades.', '%d förfrågor lyckades.'),
+	'%d query(ies) executed OK.' => array('%d förfrågan lyckades.', '%d förfrågor lyckades.'),
 	'Query executed OK, %d row(s) affected.' => array('Förfrågan lyckades, %d rad påverkades.', 'Förfrågan lyckades, %d rader påverkades.'),
 	'No commands to execute.' => 'Inga kommandon att köra.',
 	'Error in query' => 'Fel i förfrågan',
@@ -76,8 +76,8 @@ Lang::$translations = array(
 	'File uploads are disabled.' => 'Filuppladdningar är avstängda.',
 	'Unable to upload a file.' => 'Det går inte add ladda upp filen.',
 	'Maximum allowed file size is %sB.' => 'Högsta tillåtna storlek är %sB.',
-	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'POST-datan är för stor. Minska det eller höj %s-direktivet.',
-	'You can upload a big SQL file via FTP and import it from server.' => 'Du kan ladda upp en stor SQL-fil via FTP och importera det från servern.',
+	'The POST data is too large. Reduce the data or increase the %s configuration directive.' => 'POST-datan är för stor. Minska det eller höj %s-direktivet.',
+	'You can upload a large SQL file via FTP and import it from the server.' => 'Du kan ladda upp en stor SQL-fil via FTP och importera det från servern.',
 	'You are offline.' => 'Du är offline.',
 	'Menu' => 'Meny', // Claude Opus 5
 
@@ -121,7 +121,7 @@ Lang::$translations = array(
 	'Repair' => 'Reparera',
 	'Truncate' => 'Avkorta',
 	'Tables have been truncated.' => 'Tabeller har blivit avkortade.',
-	'Move to other database' => 'Flytta till en annan databas',
+	'Move to another database' => 'Flytta till en annan databas',
 	'Move' => 'Flytta',
 	'Tables have been moved.' => 'Tabeller har flyttats.',
 	'Copy' => 'Kopiera',
@@ -221,7 +221,7 @@ Lang::$translations = array(
 	'Create foreign key' => 'Skapa främmande nyckel', // Claude Opus 5
 	'ON DELETE' => 'VID BORTTAGNING',
 	'ON UPDATE' => 'VID UPPDATERING',
-	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Käll- och mål-tabellen måste ha samma datatyp, ett index på målkolumnerna och refererad data måste finnas.',
+	'Source and target columns must have the same data type, there must be an index on the target columns and the referenced data must exist.' => 'Käll- och mål-tabellen måste ha samma datatyp, ett index på målkolumnerna och refererad data måste finnas.',
 
 	'Triggers' => 'Avtryckare',
 	'Trigger has been dropped.' => 'Avtryckare har tagits bort.',
@@ -266,7 +266,7 @@ Lang::$translations = array(
 	'All rows on this page' => 'Alla rader på denna sida', // Claude Opus 5
 	'Modify' => 'Ändra', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Ctrl+klicka på ett värde för att ändra det.',
-	'Use edit link to modify this value.' => 'Använd redigeringslänken för att ändra värdet.',
+	'Use the edit link to modify this value.' => 'Använd redigeringslänken för att ändra värdet.',
 
 	'Item%s has been inserted.' => 'Sak%s har skapats.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'En sak har tagits bort.',
@@ -279,7 +279,7 @@ Lang::$translations = array(
 	'Edit' => 'Redigera',
 	'Insert' => 'Infoga',
 	'Save' => 'Spara',
-	'Save and continue edit' => 'Spara och fortsätt att redigera',
+	'Save and continue editing' => 'Spara och fortsätt att redigera',
 	'Save and insert next' => 'Spara och infoga nästa',
 	'Selected' => 'Vald',
 	'Clone' => 'Klona',
@@ -305,7 +305,7 @@ Lang::$translations = array(
 	'no' => 'nej',
 
 	'File exists.' => 'Filen finns redan.', // general SQLite error in create, drop or rename database
-	'Please use one of the extensions %s.' => 'Vänligen använd en av filändelserna %s.',
+	'Please use one of these file extensions: %s.' => 'Vänligen använd en av filändelserna %s.',
 
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Redigera schema',

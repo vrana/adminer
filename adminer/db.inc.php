@@ -205,7 +205,7 @@ if (adminer()->homepage()) {
 
 				$databases = (support("scheme") ? adminer()->schemas() : adminer()->databases());
 				if (count($databases) != 1 && function_exists('Adminer\move_tables')) {
-					echo "<fieldset><legend>" . lang('Move to other database') . " <span id='selected3'></span></legend><div>";
+					echo "<fieldset><legend>" . lang('Move to another database') . " <span id='selected3'></span></legend><div>";
 					$db = (isset($_POST["target"]) ? $_POST["target"] : (support("scheme") ? $_GET["ns"] : DB));
 					echo ($databases ? html_select("target", $databases, $db) : '<input name="target" value="' . h($db) . '" autocapitalize="off">');
 					echo "</label> <input type='submit' name='move' value='" . lang('Move') . "'>";

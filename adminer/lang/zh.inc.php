@@ -9,25 +9,25 @@ Lang::$translations = array(
 	'Permanent login' => '保持登录',
 	'Login' => '登录',
 	'Logout' => '登出',
-	'Logged as: %s' => '登录用户：%s',
+	'Logged in as: %s' => '登录用户：%s',
 	'Logout successful.' => '成功登出。',
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => '感谢使用Adminer，请考虑为我们<a href="https://www.adminer.org/en/donation/">捐款（英文页面）</a>。',
+	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => '感谢使用Adminer，请考虑为我们<a href="https://www.adminer.org/en/donation/">捐款（英文页面）</a>。',
 	'Invalid credentials.' => '无效凭据。',
-	'There is a space in the input password which might be the cause.' => '您输入的密码中有一个空格，这可能是导致问题的原因。',
-	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer默认不支持访问没有密码的数据库，<a href="https://www.adminer.org/en/password/"%s>详情见这里</a>。',
-	'Database does not support password.' => '数据库不支持密码。',
+	'There is a space in the entered password, which might be the cause.' => '您输入的密码中有一个空格，这可能是导致问题的原因。',
+	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer默认不支持访问没有密码的数据库，<a href="https://www.adminer.org/en/password/"%s>详情见这里</a>。',
+	'The database does not support passwords.' => '数据库不支持密码。',
 	'Too many unsuccessful logins, try again in %d minute(s).' => '登录失败次数过多，请 %d 分钟后重试。',
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => '如果 Adminer 运行在反向代理之后，请使用 %1$s <a%2$s>插件</a>。', // Claude Opus 5
-	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => '主密码已过期。<a href="https://www.adminer.org/en/extension/"%s>请扩展</a> %s 方法让它永久化。',
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => '主密码已过期。<a href="https://www.adminer.org/en/extension/"%s>请扩展</a> %s 方法让它永久化。',
 	'Language' => '语言',
-	'Invalid CSRF token. Send the form again.' => '无效 CSRF 令牌。请重新发送表单。',
-	'If you did not send this request from Adminer then close this page.' => '如果您并没有从Adminer发送请求，请关闭此页面。',
+	'Invalid CSRF token. Submit the form again.' => '无效 CSRF 令牌。请重新发送表单。',
+	'If you did not send this request from Adminer, close this page.' => '如果您并没有从Adminer发送请求，请关闭此页面。',
 	'No extension' => '没有扩展',
 	'None of the supported PHP extensions (%s) are available.' => '没有支持的 PHP 扩展可用（%s）。',
 	'Connecting to privileged ports is not allowed.' => '不允许连接到特权端口。',
-	'Disable %s or enable %s or %s extensions.' => '禁用 %s 或启用 %s 或 %s 扩展。',
+	'Disable %s or enable the %s or %s extension.' => '禁用 %s 或启用 %s 或 %s 扩展。',
 	'Session support must be enabled.' => '必须启用会话支持。',
-	'Session expired, please login again.' => '会话已过期，请重新登录。',
+	'Session expired. Please log in again.' => '会话已过期，请重新登录。',
 	'The action will be performed after successful login with the same credentials.' => '此操作将在成功使用相同的凭据登录后执行。',
 	'%s version: %s through PHP extension %s' => '%s 版本：%s， 使用PHP扩展 %s',
 	'Refresh' => '刷新',
@@ -53,7 +53,7 @@ Lang::$translations = array(
 	'Status' => '状态',
 
 	'SQL command' => 'SQL命令',
-	'%d query(s) executed OK.' => '%d 条查询已成功执行。',
+	'%d query(ies) executed OK.' => '%d 条查询已成功执行。',
 	'Query executed OK, %d row(s) affected.' => '查询执行完毕，%d 行受影响。',
 	'No commands to execute.' => '没有命令被执行。',
 	'Error in query' => '查询出错',
@@ -76,8 +76,8 @@ Lang::$translations = array(
 	'File uploads are disabled.' => '文件上传被禁用。',
 	'Unable to upload a file.' => '不能上传文件。',
 	'Maximum allowed file size is %sB.' => '最多允许的文件大小为 %sB。',
-	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'POST 数据太大。请减少数据或者增加 %s 配置命令。',
-	'You can upload a big SQL file via FTP and import it from server.' => '您可以通过FTP上传大型SQL文件并从服务器导入。',
+	'The POST data is too large. Reduce the data or increase the %s configuration directive.' => 'POST 数据太大。请减少数据或者增加 %s 配置命令。',
+	'You can upload a large SQL file via FTP and import it from the server.' => '您可以通过FTP上传大型SQL文件并从服务器导入。',
 	'You are offline.' => '您离线了。',
 	'Menu' => '菜单', // Claude Opus 5
 
@@ -121,7 +121,7 @@ Lang::$translations = array(
 	'Repair' => '修复',
 	'Truncate' => '清空',
 	'Tables have been truncated.' => '已清空表。',
-	'Move to other database' => '转移到其它数据库',
+	'Move to another database' => '转移到其它数据库',
 	'Move' => '转移',
 	'Tables have been moved.' => '已转移表。',
 	'Copy' => '复制',
@@ -219,7 +219,7 @@ Lang::$translations = array(
 	'Create foreign key' => '创建外键', // Claude Opus 5
 	'ON DELETE' => 'ON DELETE',
 	'ON UPDATE' => 'ON UPDATE',
-	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => '源列和目标列必须具有相同的数据类型，在目标列上必须有一个索引并且引用的数据必须存在。',
+	'Source and target columns must have the same data type, there must be an index on the target columns and the referenced data must exist.' => '源列和目标列必须具有相同的数据类型，在目标列上必须有一个索引并且引用的数据必须存在。',
 
 	'Triggers' => '触发器',
 	'Trigger has been dropped.' => '已删除触发器。',
@@ -264,7 +264,7 @@ Lang::$translations = array(
 	'All rows on this page' => '本页所有行', // Claude Opus 5
 	'Modify' => '修改', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => '按住Ctrl并单击某个值进行修改。',
-	'Use edit link to modify this value.' => '使用编辑链接修改该值。',
+	'Use the edit link to modify this value.' => '使用编辑链接修改该值。',
 
 	'Item%s has been inserted.' => '已插入项目%s。', // %s can contain auto-increment value
 	'Item has been deleted.' => '已删除项目。',
@@ -277,7 +277,7 @@ Lang::$translations = array(
 	'Edit' => '编辑',
 	'Insert' => '插入',
 	'Save' => '保存',
-	'Save and continue edit' => '保存并继续编辑',
+	'Save and continue editing' => '保存并继续编辑',
 	'Save and insert next' => '保存并插入下一个',
 	'Selected' => '已选中',
 	'Clone' => '复制',
@@ -303,7 +303,7 @@ Lang::$translations = array(
 	'no' => '否',
 
 	'File exists.' => '文件已存在。', // general SQLite error in create, drop or rename database
-	'Please use one of the extensions %s.' => '请使用其中一个扩展：%s。',
+	'Please use one of these file extensions: %s.' => '请使用其中一个扩展：%s。',
 
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => '修改模式',

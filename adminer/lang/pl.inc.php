@@ -9,27 +9,27 @@ Lang::$translations = array(
 	'Permanent login' => 'Zapamiętaj sesję',
 	'Login' => 'Zaloguj się',
 	'Logout' => 'Wyloguj się',
-	'Logged as: %s' => 'Zalogowany jako: %s',
+	'Logged in as: %s' => 'Zalogowany jako: %s',
 	'Logout successful.' => 'Wylogowano pomyślnie.',
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Dziękujemy za używanie Adminera, rozważ <a href="https://www.adminer.org/pl/donation/">dotację</a>.',
+	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Dziękujemy za używanie Adminera, rozważ <a href="https://www.adminer.org/pl/donation/">dotację</a>.',
 	'hostname[:port] or :socket' => 'hostname[:port] lub :socket',
 	'Invalid server.' => 'Nieprawidłowy serwer.',
 	'Invalid credentials.' => 'Nieprawidłowe dane logowania.',
-	'There is a space in the input password which might be the cause.' => 'W haśle wejściowym znajduje się spacja, która może być przyczyną.',
-	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer nie obsługuje dostępu do bazy danych bez hasła, <a href="https://www.adminer.org/pl/password/"%s>więcej informacji</a>.',
-	'Database does not support password.' => 'Baza danych nie obsługuje hasła.',
+	'There is a space in the entered password, which might be the cause.' => 'W haśle wejściowym znajduje się spacja, która może być przyczyną.',
+	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer nie obsługuje dostępu do bazy danych bez hasła, <a href="https://www.adminer.org/pl/password/"%s>więcej informacji</a>.',
+	'The database does not support passwords.' => 'Baza danych nie obsługuje hasła.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Za dużo nieudanych prób logowania, spróbuj ponownie za %d minutę.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minuty.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minut.'),
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Jeśli Adminer działa za odwrotnym proxy, użyj <a%2$s>wtyczki</a> %1$s.', // Claude Opus 5
-	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Ważność hasła głównego wygasła. <a href="https://www.adminer.org/pl/extension/"%s>Zaimplementuj</a> własną metodę %s, aby ustawić je na stałe.',
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Ważność hasła głównego wygasła. <a href="https://www.adminer.org/pl/extension/"%s>Zaimplementuj</a> własną metodę %s, aby ustawić je na stałe.',
 	'Language' => 'Język',
-	'Invalid CSRF token. Send the form again.' => 'Nieprawidłowy token CSRF. Spróbuj wysłać formularz ponownie.',
-	'If you did not send this request from Adminer then close this page.' => 'Jeżeli nie wywołałeś tej strony z Adminera, zamknij to okno.',
+	'Invalid CSRF token. Submit the form again.' => 'Nieprawidłowy token CSRF. Spróbuj wysłać formularz ponownie.',
+	'If you did not send this request from Adminer, close this page.' => 'Jeżeli nie wywołałeś tej strony z Adminera, zamknij to okno.',
 	'No extension' => 'Brak rozszerzenia',
 	'None of the supported PHP extensions (%s) are available.' => 'Żadne z rozszerzeń PHP umożliwiających połączenie się z bazą danych (%s) nie jest dostępne.',
 	'Connecting to privileged ports is not allowed.' => 'Łączenie do portów uprzywilejowanych jest niedozwolone.',
-	'Disable %s or enable %s or %s extensions.' => 'Wyłącz %s lub włącz rozszerzenia %s lub %s.',
+	'Disable %s or enable the %s or %s extension.' => 'Wyłącz %s lub włącz rozszerzenia %s lub %s.',
 	'Session support must be enabled.' => 'Wymagana jest obsługa sesji w PHP.',
-	'Session expired, please login again.' => 'Sesja wygasła, zaloguj się ponownie.',
+	'Session expired. Please log in again.' => 'Sesja wygasła, zaloguj się ponownie.',
 	'The action will be performed after successful login with the same credentials.' => 'Czynność zostanie wykonana po pomyślnym zalogowaniu przy użyciu tych samych danych logowania.',
 	'%s version: %s through PHP extension %s' => 'Wersja %s: %s za pomocą %s',
 	'Refresh' => 'Odśwież',
@@ -56,7 +56,7 @@ Lang::$translations = array(
 	'Status' => 'Status',
 
 	'SQL command' => 'Zapytanie SQL',
-	'%d query(s) executed OK.' => array('Pomyślnie wykonano %d zapytanie.', 'Pomyślnie wykonano %d zapytania.', 'Pomyślnie wykonano %d zapytań.'),
+	'%d query(ies) executed OK.' => array('Pomyślnie wykonano %d zapytanie.', 'Pomyślnie wykonano %d zapytania.', 'Pomyślnie wykonano %d zapytań.'),
 	'Query executed OK, %d row(s) affected.' => array('Zapytanie wykonane pomyślnie, zmieniono %d rekord.', 'Zapytanie wykonane pomyślnie, zmieniono %d rekordy.', 'Zapytanie wykonane pomyślnie, zmieniono %d rekordów.'),
 	'No commands to execute.' => 'Nic do wykonania.',
 	'Error in query' => 'Błąd w zapytaniu',
@@ -80,8 +80,8 @@ Lang::$translations = array(
 	'File uploads are disabled.' => 'Wgrywanie plików jest wyłączone.',
 	'Unable to upload a file.' => 'Wgranie pliku było niemożliwe.',
 	'Maximum allowed file size is %sB.' => 'Maksymalna wielkość pliku to %sB.',
-	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Przesłano zbyt dużo danych. Zmniejsz objętość danych lub zwiększ zmienną konfiguracyjną %s.',
-	'You can upload a big SQL file via FTP and import it from server.' => 'Większe pliki SQL możesz wgrać na serwer poprzez FTP przed zaimportowaniem.',
+	'The POST data is too large. Reduce the data or increase the %s configuration directive.' => 'Przesłano zbyt dużo danych. Zmniejsz objętość danych lub zwiększ zmienną konfiguracyjną %s.',
+	'You can upload a large SQL file via FTP and import it from the server.' => 'Większe pliki SQL możesz wgrać na serwer poprzez FTP przed zaimportowaniem.',
 	'You are offline.' => 'Jesteś offline.',
 	'Menu' => 'Menu', // Claude Opus 5
 
@@ -125,7 +125,7 @@ Lang::$translations = array(
 	'Repair' => 'Napraw',
 	'Truncate' => 'Opróżnij',
 	'Tables have been truncated.' => 'Tabele zostały opróżnione.',
-	'Move to other database' => 'Przenieś do innej bazy danych',
+	'Move to another database' => 'Przenieś do innej bazy danych',
 	'Move' => 'Przenieś',
 	'Tables have been moved.' => 'Tabele zostały przeniesione.',
 	'Copy' => 'Kopiuj',
@@ -229,7 +229,7 @@ Lang::$translations = array(
 	'Create foreign key' => 'Utwórz klucz obcy', // Claude Opus 5
 	'ON DELETE' => 'W przypadku usunięcia',
 	'ON UPDATE' => 'W przypadku zmiany',
-	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Źródłowa i docelowa kolumna muszą być tego samego typu, powinien istnieć indeks na docelowej kolumnie oraz muszą istnieć dane referencyjne.',
+	'Source and target columns must have the same data type, there must be an index on the target columns and the referenced data must exist.' => 'Źródłowa i docelowa kolumna muszą być tego samego typu, powinien istnieć indeks na docelowej kolumnie oraz muszą istnieć dane referencyjne.',
 
 	'Triggers' => 'Wyzwalacze',
 	'Trigger has been dropped.' => 'Wyzwalacz został usunięty.',
@@ -274,7 +274,7 @@ Lang::$translations = array(
 	'All rows on this page' => 'Wszystkie wiersze na tej stronie', // Claude Opus 5
 	'Modify' => 'Zmień', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Ctrl+kliknij wartość, aby ją edytować.',
-	'Use edit link to modify this value.' => 'Użyj linku edycji, aby zmienić tę wartość.',
+	'Use the edit link to modify this value.' => 'Użyj linku edycji, aby zmienić tę wartość.',
 
 	'Item%s has been inserted.' => 'Rekord%s został dodany.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Rekord został usunięty.',
@@ -287,7 +287,7 @@ Lang::$translations = array(
 	'Edit' => 'Edytuj',
 	'Insert' => 'Dodaj',
 	'Save' => 'Zapisz zmiany',
-	'Save and continue edit' => 'Zapisz i kontynuuj edycję',
+	'Save and continue editing' => 'Zapisz i kontynuuj edycję',
 	'Save and insert next' => 'Zapisz i dodaj następny',
 	'Selected' => 'Zaznaczone',
 	'Clone' => 'Duplikuj',
@@ -313,7 +313,7 @@ Lang::$translations = array(
 	'no' => 'nie',
 
 	'File exists.' => 'Plik już istnieje.', // general SQLite error in create, drop or rename database
-	'Please use one of the extensions %s.' => 'Proszę użyć jednego z rozszerzeń: %s.',
+	'Please use one of these file extensions: %s.' => 'Proszę użyć jednego z rozszerzeń: %s.',
 
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Zmień schemat',

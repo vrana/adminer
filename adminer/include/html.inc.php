@@ -463,7 +463,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 	}
 	echo "<form action='' method='post' enctype='multipart/form-data' id='form'>\n";
 	$editable = false;
-	// the WHERE condition in the URL is not updated after saving so changing these values would break Save and continue edit
+	// the WHERE condition in the URL is not updated after saving so changing these values would break Save and continue editing
 	$where_columns = ($update && !isset($_GET["select"]) ? where_columns($fields) : array());
 	$continue_edit = (count($where_columns) != count($fields)); // without a unique key the condition uses all columns so the button would be always disabled
 	if (!$continue_edit) {
@@ -547,7 +547,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 			// the printed values were not saved so they can differ from the WHERE condition in the URL and no change event fires for them
 			$disabled = ($where_columns && ($error != "" || adminer()->error != "") ? " disabled" : "");
 			echo "<input type='submit' name='insert' value='" . ($update
-				? lang('Save and continue edit')
+				? lang('Save and continue editing')
 				: lang('Save and insert next')
 			) . "' title='Ctrl+Shift+Enter'$disabled" . ($update ? on('click', 'ajaxForm', lang('Saving…')) : "") . ">\n";
 		}

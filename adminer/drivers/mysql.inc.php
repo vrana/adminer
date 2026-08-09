@@ -65,7 +65,7 @@ if (!defined('Adminer\DRIVER')) {
 
 			function attach(string $server, string $username, string $password): string {
 				if (ini_bool("mysql.allow_local_infile")) {
-					return lang('Disable %s or enable %s or %s extensions.', "'mysql.allow_local_infile'", "MySQLi", "PDO_MySQL");
+					return lang('Disable %s or enable the %s or %s extension.', "'mysql.allow_local_infile'", "MySQLi", "PDO_MySQL");
 				}
 				$this->link = @mysql_connect(
 					($server != "" ? $server : ini_get("mysql.default_host")),

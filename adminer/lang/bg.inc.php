@@ -9,18 +9,18 @@ Lang::$translations = array(
 	'Permanent login' => 'Запаметяване',
 	'Login' => 'Вход',
 	'Logout' => 'Изход',
-	'Logged as: %s' => 'Текущ потребител: %s',
+	'Logged in as: %s' => 'Текущ потребител: %s',
 	'Logout successful.' => 'Излизането е успешно.',
 	'Invalid credentials.' => 'Невалидни потребителски данни.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Прекалено много неуспешни опити за вход, опитайте пак след %d минута.', 'Прекалено много неуспешни опити за вход, опитайте пак след %d минути.'),
-	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Главната парола вече е невалидна. <a href="https://www.adminer.org/en/extension/"%s>Изберете</a> %s метод, за да я направите постоянна.',
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Главната парола вече е невалидна. <a href="https://www.adminer.org/en/extension/"%s>Изберете</a> %s метод, за да я направите постоянна.',
 	'Language' => 'Език',
-	'Invalid CSRF token. Send the form again.' => 'Невалиден шифроващ ключ. Попълнете и изпратете формуляра отново.',
-	'If you did not send this request from Adminer then close this page.' => 'Ако не сте изпратили тази заявка през Adminer, затворете тази страница.',
+	'Invalid CSRF token. Submit the form again.' => 'Невалиден шифроващ ключ. Попълнете и изпратете формуляра отново.',
+	'If you did not send this request from Adminer, close this page.' => 'Ако не сте изпратили тази заявка през Adminer, затворете тази страница.',
 	'No extension' => 'Няма разширение',
 	'None of the supported PHP extensions (%s) are available.' => 'Никое от поддържаните PHP разширения (%s) не е налично.',
 	'Session support must be enabled.' => 'Поддръжката на сесии трябва да е разрешена.',
-	'Session expired, please login again.' => 'Сесията е изтекла; моля, влезте отново.',
+	'Session expired. Please log in again.' => 'Сесията е изтекла; моля, влезте отново.',
 	'%s version: %s through PHP extension %s' => '%s версия: %s през PHP разширение %s',
 	'Refresh' => 'Обновяване',
 
@@ -45,7 +45,7 @@ Lang::$translations = array(
 	'Status' => 'Състояние',
 
 	'SQL command' => 'SQL команда',
-	'%d query(s) executed OK.' => array('%d заявка е изпълнена.', '%d заявки са изпълнени.'),
+	'%d query(ies) executed OK.' => array('%d заявка е изпълнена.', '%d заявки са изпълнени.'),
 	'Query executed OK, %d row(s) affected.' => array('Заявката е изпълнена, %d ред е засегнат.', 'Заявката е изпълнена, %d редове са засегнати.'),
 	'No commands to execute.' => 'Няма команди за изпълнение.',
 	'Error in query' => 'Грешка в заявката',
@@ -65,8 +65,8 @@ Lang::$translations = array(
 	'File uploads are disabled.' => 'Прикачването на файлове е забранено.',
 	'Unable to upload a file.' => 'Неуспешно прикачване на файл.',
 	'Maximum allowed file size is %sB.' => 'Максимално разрешената големина на файл е %sB.',
-	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Изпратени са прекалено много данни. Намалете обема на данните или увеличете %s управляващата директива.',
-	'You can upload a big SQL file via FTP and import it from server.' => 'Можете да прикачите голям SQL файл чрез FTP и да го импортирате от сървъра.',
+	'The POST data is too large. Reduce the data or increase the %s configuration directive.' => 'Изпратени са прекалено много данни. Намалете обема на данните или увеличете %s управляващата директива.',
+	'You can upload a large SQL file via FTP and import it from the server.' => 'Можете да прикачите голям SQL файл чрез FTP и да го импортирате от сървъра.',
 	'You are offline.' => 'Вие сте офлайн.',
 	'Menu' => 'Меню', // Claude Opus 5
 
@@ -108,7 +108,7 @@ Lang::$translations = array(
 	'Repair' => 'Поправка',
 	'Truncate' => 'Изрязване',
 	'Tables have been truncated.' => 'Таблиците бяха изрязани.',
-	'Move to other database' => 'Преместване в друга база данни',
+	'Move to another database' => 'Преместване в друга база данни',
 	'Move' => 'Преместване',
 	'Tables have been moved.' => 'Таблиците бяха преместени.',
 	'Copy' => 'Копиране',
@@ -206,7 +206,7 @@ Lang::$translations = array(
 	'Create foreign key' => 'Създаване на препратка', // Claude Opus 5
 	'ON DELETE' => 'При изтриване',
 	'ON UPDATE' => 'При промяна',
-	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Колоните източник и цел трябва да са от еднакъв вид, трябва да има индекс на колоните приемник и да има въведени данни.',
+	'Source and target columns must have the same data type, there must be an index on the target columns and the referenced data must exist.' => 'Колоните източник и цел трябва да са от еднакъв вид, трябва да има индекс на колоните приемник и да има въведени данни.',
 
 	'Triggers' => 'Тригери',
 	'Trigger has been dropped.' => 'Тригера беше премахнат.',
@@ -251,7 +251,7 @@ Lang::$translations = array(
 	'All rows on this page' => 'Всички редове на тази страница', // Claude Opus 5
 	'Modify' => 'Промяна', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Ctrl+щракване в стойността, за да я промените.',
-	'Use edit link to modify this value.' => 'Използвайте \'редакция\' за промяна на данните.',
+	'Use the edit link to modify this value.' => 'Използвайте \'редакция\' за промяна на данните.',
 
 	'Item%s has been inserted.' => 'Елементи%s бяха вмъкнати.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Елемента беше изтрит.',
@@ -265,7 +265,7 @@ Lang::$translations = array(
 	'Insert' => 'Вмъкване',
 	'Save' => 'Запис',
 	'Saving…' => 'Записване…',
-	'Save and continue edit' => 'Запис и редакция',
+	'Save and continue editing' => 'Запис и редакция',
 	'Save and insert next' => 'Запис и нов',
 	'Selected' => 'Избран',
 	'Clone' => 'Клониране',
@@ -291,7 +291,7 @@ Lang::$translations = array(
 	'no' => 'не',
 
 	'File exists.' => 'Файла вече съществува.', // general SQLite error in create, drop or rename database
-	'Please use one of the extensions %s.' => 'Моля, използвайте някое от разширенията %s.',
+	'Please use one of these file extensions: %s.' => 'Моля, използвайте някое от разширенията %s.',
 
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Промяна на схемата',
@@ -334,12 +334,12 @@ Lang::$translations = array(
 	'Checks' => 'Проверки', // Claude Fable 5
 	'Inherited by' => 'Наследява се от', // Claude Fable 5
 	'hostname[:port] or :socket' => 'hostname[:port] или :socket', // Claude Fable 5
-	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer не поддържа достъп до база данни без парола, <a href="https://www.adminer.org/en/password/"%s>повече информация</a>.', // Claude Fable 5
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Благодарим ви, че използвате Adminer, помислете за <a href="https://www.adminer.org/en/donation/">дарение</a>.', // Claude Fable 5
+	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer не поддържа достъп до база данни без парола, <a href="https://www.adminer.org/en/password/"%s>повече информация</a>.', // Claude Fable 5
+	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Благодарим ви, че използвате Adminer, помислете за <a href="https://www.adminer.org/en/donation/">дарение</a>.', // Claude Fable 5
 	'The action will be performed after successful login with the same credentials.' => 'Действието ще бъде извършено след успешно влизане със същите данни.', // Claude Fable 5
 	'Invalid server.' => 'Невалиден сървър.', // Claude Fable 5
 	'Connecting to privileged ports is not allowed.' => 'Свързването към привилегировани портове не е разрешено.', // Claude Fable 5
-	'There is a space in the input password which might be the cause.' => 'Има интервал във въведената парола, което може да е причината.', // Claude Fable 5
+	'There is a space in the entered password, which might be the cause.' => 'Има интервал във въведената парола, което може да е причината.', // Claude Fable 5
 	'Loaded plugins' => 'Заредени плъгини', // Claude Fable 5
 	'screenshot' => 'екранна снимка', // Claude Fable 5
 	'Increase %s.' => 'Увеличете %s.', // Claude Fable 5
@@ -347,8 +347,8 @@ Lang::$translations = array(
 	'%s must <a%s>return an array</a>.' => '%s трябва да <a%s>връща масив</a>.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Конфигурирайте</a> %s в %s.', // Claude Fable 5
 	'Every plugin must <a%s>be an object</a>.' => 'Всеки плъгин трябва да <a%s>бъде обект</a>.', // Claude Opus 5
-	'Disable %s or enable %s or %s extensions.' => 'Изключете %s или включете разширенията %s или %s.', // Claude Fable 5
-	'Database does not support password.' => 'Базата данни не поддържа парола.', // Claude Fable 5
+	'Disable %s or enable the %s or %s extension.' => 'Изключете %s или включете разширенията %s или %s.', // Claude Fable 5
+	'The database does not support passwords.' => 'Базата данни не поддържа парола.', // Claude Fable 5
 );
 
 // run `php ../../lang.php bg` to update this file

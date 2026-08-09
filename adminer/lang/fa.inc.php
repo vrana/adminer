@@ -9,17 +9,17 @@ Lang::$translations = array(
 	'Permanent login' => 'ورود دائم',
 	'Login' => 'ورود',
 	'Logout' => 'خروج',
-	'Logged as: %s' => 'ورود به عنوان: %s',
+	'Logged in as: %s' => 'ورود به عنوان: %s',
 	'Logout successful.' => 'با موفقیت خارج شدید.',
 	'Invalid credentials.' => 'اعتبار سنجی نامعتبر.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'ورودهای ناموفق بیش از حد، %d دقیقه دیگر تلاش نمایید.',
-	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'رمز اصلی باطل شده است. روش %s را <a href="https://www.adminer.org/en/extension/"%s>پیاده سازی</a> کرده تا آن را دائمی سازید.',
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'رمز اصلی باطل شده است. روش %s را <a href="https://www.adminer.org/en/extension/"%s>پیاده سازی</a> کرده تا آن را دائمی سازید.',
 	'Language' => 'زبان',
-	'Invalid CSRF token. Send the form again.' => 'CSRF token نامعتبر است. دوباره سعی کنید.',
+	'Invalid CSRF token. Submit the form again.' => 'CSRF token نامعتبر است. دوباره سعی کنید.',
 	'No extension' => 'پسوند نامعتبر',
 	'None of the supported PHP extensions (%s) are available.' => 'هیچ کدام از افزونه های PHP پشتیبانی شده (%s) موجود نمی باشند.',
 	'Session support must be enabled.' => 'پشتیبانی از نشست بایستی فعال گردد.',
-	'Session expired, please login again.' => 'نشست پایان یافته، لطفا دوباره وارد شوید.',
+	'Session expired. Please log in again.' => 'نشست پایان یافته، لطفا دوباره وارد شوید.',
 	'%s version: %s through PHP extension %s' => 'نسخه %s : %s توسعه پی اچ پی %s',
 	'Refresh' => 'بازیابی',
 
@@ -44,7 +44,7 @@ Lang::$translations = array(
 	'Status' => 'وضعیت',
 
 	'SQL command' => 'دستور SQL',
-	'%d query(s) executed OK.' => '%d کوئری اجرا شد.',
+	'%d query(ies) executed OK.' => '%d کوئری اجرا شد.',
 	'Query executed OK, %d row(s) affected.' => 'کوئری اجرا شد. %d سطر تغیر کرد.',
 	'No commands to execute.' => 'دستوری برای اجرا وجود ندارد.',
 	'Error in query' => 'خطا در کوئری',
@@ -64,8 +64,8 @@ Lang::$translations = array(
 	'File uploads are disabled.' => 'بارگذاری غیر فعال است.',
 	'Unable to upload a file.' => 'قادر به بارگذاری فایل نیستید.',
 	'Maximum allowed file size is %sB.' => ' %sB حداکثر اندازه فایل.',
-	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'حجم داده ارسالی برزگ است. حجم داده کاهش دهید و یا مقدار %s را در پیکربندی افزایش دهید.',
-	'You can upload a big SQL file via FTP and import it from server.' => 'شما می توانید فایل SQL حجیم را از طریق FTP بارگزاری و از روی سرور وارد نمایید.',
+	'The POST data is too large. Reduce the data or increase the %s configuration directive.' => 'حجم داده ارسالی برزگ است. حجم داده کاهش دهید و یا مقدار %s را در پیکربندی افزایش دهید.',
+	'You can upload a large SQL file via FTP and import it from the server.' => 'شما می توانید فایل SQL حجیم را از طریق FTP بارگزاری و از روی سرور وارد نمایید.',
 	'You are offline.' => 'شما آفلاین می باشید.',
 
 	'Export' => 'استخراج',
@@ -106,7 +106,7 @@ Lang::$translations = array(
 	'Repair' => 'تعمیر',
 	'Truncate' => 'کوتاه کردن',
 	'Tables have been truncated.' => 'جدولها بریده شدند.',
-	'Move to other database' => 'انتقال به یک پایگاه داده دیگر',
+	'Move to another database' => 'انتقال به یک پایگاه داده دیگر',
 	'Move' => 'انتقال',
 	'Tables have been moved.' => 'جدولها انتقال داده شدند.',
 	'Copy' => 'کپی کردن',
@@ -202,7 +202,7 @@ Lang::$translations = array(
 	'Create foreign key' => 'ایجاد کلید خارجی', // Claude Opus 5
 	'ON DELETE' => 'ON DELETE',
 	'ON UPDATE' => 'ON UPDATE',
-	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'داده مبدا و مقصد ستونها بایستی شبیه هم باشند.',
+	'Source and target columns must have the same data type, there must be an index on the target columns and the referenced data must exist.' => 'داده مبدا و مقصد ستونها بایستی شبیه هم باشند.',
 
 	'Triggers' => 'تریگرها',
 	'Trigger has been dropped.' => 'تریگر حذف شد.',
@@ -246,7 +246,7 @@ Lang::$translations = array(
 
 	'Modify' => 'ویرایش', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'برای ویرایش بر روی مقدار ctrl+click کنید.',
-	'Use edit link to modify this value.' => 'از لینک ویرایش برای ویرایش این مقدار استفاده کنید.',
+	'Use the edit link to modify this value.' => 'از لینک ویرایش برای ویرایش این مقدار استفاده کنید.',
 
 	'Item%s has been inserted.' => '%s آیتم درج شد.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'آیتم حذف شد.',
@@ -259,7 +259,7 @@ Lang::$translations = array(
 	'Edit' => 'ویرایش',
 	'Insert' => 'درج',
 	'Save' => 'ذخیره',
-	'Save and continue edit' => 'ذخیره و ادامه ویرایش',
+	'Save and continue editing' => 'ذخیره و ادامه ویرایش',
 	'Save and insert next' => 'ذخیره و درج بعدی',
 	'Selected' => 'انتخاب شده',
 	'Clone' => 'تکثیر',
@@ -285,7 +285,7 @@ Lang::$translations = array(
 	'no' => 'خیر',
 
 	'File exists.' => 'فایل موجود است.', // general SQLite error in create, drop or rename database
-	'Please use one of the extensions %s.' => 'لطفا یکی از پسوندها را انتخاب نمائید %s.',
+	'Please use one of these file extensions: %s.' => 'لطفا یکی از پسوندها را انتخاب نمائید %s.',
 
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'ویرایش ساختار',

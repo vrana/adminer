@@ -237,7 +237,7 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 				echo "<pre><code class='jush-" . JUSH . "'>ROLLBACK -- Adminer</code></pre>\n"; // print it also with only_errors - the data was discarded
 			}
 			if ($_POST["only_errors"]) {
-				echo "<p class='message'>" . lang('%d query(s) executed OK.', $commands - count($errors));
+				echo "<p class='message'>" . lang('%d query(ies) executed OK.', $commands - count($errors));
 				echo " <span class='time'>(" . format_time($total_start) . ")</span>\n";
 			} elseif ($errors && $commands > 1) {
 				echo "<p class='error'>" . lang('Error in query') . ": " . implode("", $errors) . "\n";

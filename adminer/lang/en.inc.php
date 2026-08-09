@@ -12,7 +12,7 @@ Lang::$translations = array(
 	'%d item(s) have been affected.' => array('%d item has been affected.', '%d items have been affected.'),
 	'%d row(s) have been imported.' => array('%d row has been imported.', '%d rows have been imported.'),
 	'%d in total' => '%d in total',
-	'%d query(s) executed OK.' => array('%d query executed OK.', '%d queries executed OK.'),
+	'%d query(ies) executed OK.' => array('%d query executed OK.', '%d queries executed OK.'),
 );
 
 // run `php ../../lang.php en` to update this file

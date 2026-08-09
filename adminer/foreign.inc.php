@@ -31,7 +31,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 		$result
 	);
 	if (!$row["drop"]) {
-		$error = lang('Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.'); //! no partitioning
+		$error = lang('Source and target columns must have the same data type, there must be an index on the target columns and the referenced data must exist.'); //! no partitioning
 	}
 }
 

@@ -9,20 +9,20 @@ Lang::$translations = array(
 	'Permanent login' => 'Log masuk kekal',
 	'Login' => 'Log masuk',
 	'Logout' => 'Log keluar',
-	'Logged as: %s' => 'Log masuk sebagai: %s',
+	'Logged in as: %s' => 'Log masuk sebagai: %s',
 	'Logout successful.' => 'Log keluar berjaya.',
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Terima kasih kerana menggunakan Adminer, pertimbangkan untuk <a href="https://www.adminer.org/en/donation/">menderma</a>.',
+	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Terima kasih kerana menggunakan Adminer, pertimbangkan untuk <a href="https://www.adminer.org/en/donation/">menderma</a>.',
 	'Invalid credentials.' => 'Akses tidak sah.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'Terlalu banyak percubaan log masuk yang gagal, sila cuba lagi dalam masa %d minit.',
-	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Kata laluan utama telah luput. <a href="https://www.adminer.org/en/extension/"%s>Gunakan</a> cara %s untuk mengekalkannya.',
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Kata laluan utama telah luput. <a href="https://www.adminer.org/en/extension/"%s>Gunakan</a> cara %s untuk mengekalkannya.',
 	'Language' => 'Bahasa',
-	'Invalid CSRF token. Send the form again.' => 'Token CSRF tidak sah. Sila hantar borang sekali lagi.',
-	'If you did not send this request from Adminer then close this page.' => 'Jika anda tidak menghantar permintaan ini dari Adminer sila tutup halaman ini.',
+	'Invalid CSRF token. Submit the form again.' => 'Token CSRF tidak sah. Sila hantar borang sekali lagi.',
+	'If you did not send this request from Adminer, close this page.' => 'Jika anda tidak menghantar permintaan ini dari Adminer sila tutup halaman ini.',
 	'No extension' => 'Tiada sambungan',
 	'None of the supported PHP extensions (%s) are available.' => 'Sambungan PHP yang (%s) disokong tidak wujud.',
 	'Connecting to privileged ports is not allowed.' => 'Penyambungan ke port yang istimewa tidak dibenarkan.',
 	'Session support must be enabled.' => 'Sokongan sesi perlu diaktifkan.',
-	'Session expired, please login again.' => 'Sesi telah luput, sila log masuk kembali.',
+	'Session expired. Please log in again.' => 'Sesi telah luput, sila log masuk kembali.',
 	'%s version: %s through PHP extension %s' => 'Versi %s: %s melalui sambungan PHP %s',
 	'Refresh' => 'Segar kembali',
 
@@ -47,7 +47,7 @@ Lang::$translations = array(
 	'Status' => 'Status',
 
 	'SQL command' => 'Arahan SQL',
-	'%d query(s) executed OK.' => '%d query berjaya dilaksanakan.',
+	'%d query(ies) executed OK.' => '%d query berjaya dilaksanakan.',
 	'Query executed OK, %d row(s) affected.' => 'Query berjaya dilaksanakan, %d baris terjejas.',
 	'No commands to execute.' => 'Tiada arahan untuk dilaksanakan.',
 	'Error in query' => 'Ralat pada query',
@@ -68,8 +68,8 @@ Lang::$translations = array(
 	'File uploads are disabled.' => 'Muat naik fail dihalang.',
 	'Unable to upload a file.' => 'Muat naik fail gagal.',
 	'Maximum allowed file size is %sB.' => 'Saiz fail maksimum yang dibenarkan adalah %sB.',
-	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Data POST terlalu besar. Kecilkan data atau tingkatkan tetapan %s.',
-	'You can upload a big SQL file via FTP and import it from server.' => 'Anda boleh muat naik fail SQL yang besar melalui FTP dan import melalui pelayan.',
+	'The POST data is too large. Reduce the data or increase the %s configuration directive.' => 'Data POST terlalu besar. Kecilkan data atau tingkatkan tetapan %s.',
+	'You can upload a large SQL file via FTP and import it from the server.' => 'Anda boleh muat naik fail SQL yang besar melalui FTP dan import melalui pelayan.',
 	'You are offline.' => 'Anda sedang offline.',
 
 	'Export' => 'Eksport',
@@ -111,7 +111,7 @@ Lang::$translations = array(
 	'Repair' => 'Baiki',
 	'Truncate' => 'Memangkas',
 	'Tables have been truncated.' => 'Jadual telah dimangkaskan.',
-	'Move to other database' => 'Pindahkan ke pangkalan data yang lain',
+	'Move to another database' => 'Pindahkan ke pangkalan data yang lain',
 	'Move' => 'Pindah',
 	'Tables have been moved.' => 'Jadual telah dipindahkan.',
 	'Copy' => 'Salin',
@@ -208,7 +208,7 @@ Lang::$translations = array(
 	'Create foreign key' => 'Bina kunci asing', // Claude Opus 5
 	'ON DELETE' => 'ON DELETE',
 	'ON UPDATE' => 'ON UPDATE',
-	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Kolum sumber dan sasaran perlu mempunyai jenis data yang sama, indeks diperlukan pada kolum sasaran dan data yang dirujuk wujud.',
+	'Source and target columns must have the same data type, there must be an index on the target columns and the referenced data must exist.' => 'Kolum sumber dan sasaran perlu mempunyai jenis data yang sama, indeks diperlukan pada kolum sasaran dan data yang dirujuk wujud.',
 
 	'Triggers' => ' Pencetus',
 	'Trigger has been dropped.' => 'Pencetus telah dijatuhkan.',
@@ -252,7 +252,7 @@ Lang::$translations = array(
 
 	'Modify' => 'Pinda', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Ctrl+click pada nilai untuk meminda.',
-	'Use edit link to modify this value.' => 'Guna pautan ubah untuk meminda nilai ini.',
+	'Use the edit link to modify this value.' => 'Guna pautan ubah untuk meminda nilai ini.',
 
 	'Item%s has been inserted.' => 'Item%s telah dimasukkan.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Item telah dipadamkan.',
@@ -265,7 +265,7 @@ Lang::$translations = array(
 	'Edit' => 'Ubah',
 	'Insert' => 'Masukkan',
 	'Save' => 'Simpan',
-	'Save and continue edit' => 'Simpan dan sambung ubah',
+	'Save and continue editing' => 'Simpan dan sambung ubah',
 	'Save and insert next' => 'Simpan dan masukkan seterusnya',
 	'Selected' => 'Terpilih',
 	'Clone' => 'Klon',
@@ -291,7 +291,7 @@ Lang::$translations = array(
 	'no' => 'tidak',
 
 	'File exists.' => 'Fail wujud.', // general SQLite error in create, drop or rename database
-	'Please use one of the extensions %s.' => 'Sila guna salah satu sambungan %s.',
+	'Please use one of these file extensions: %s.' => 'Sila guna salah satu sambungan %s.',
 
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Ubah skema',

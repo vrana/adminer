@@ -119,13 +119,13 @@ Well-used ternary operators enhance readability, but they are sometimes overused
 ```php
 // Preferred
 $title = ($update
-    ? lang('Save and continue edit')
+    ? lang('Save and continue editing')
     : lang('Save and insert next')
 );
 
 // Less desirable
 if ($update) {
-    $title = lang('Save and continue edit');
+    $title = lang('Save and continue editing');
 } else { // If you change else to elseif in the future then $title may stay uninitialized
     $title = lang('Save and insert next');
 }

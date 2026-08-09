@@ -127,7 +127,7 @@ if (isset($_GET["sqlite"])) {
 
 		static function connect(string $server, string $username, string $password) {
 			if ($password != "") {
-				return lang('Database does not support password.');
+				return lang('The database does not support passwords.');
 			}
 			return parent::connect(":memory:", "", "");
 		}
@@ -416,7 +416,7 @@ if (isset($_GET["sqlite"])) {
 		// avoid creating PHP files on unsecured servers
 		$extensions = "db|sdb|sqlite";
 		if (!preg_match("~^[^\\0]*\\.($extensions)\$~", $name)) {
-			connection()->error = lang('Please use one of the extensions %s.', str_replace("|", ", ", $extensions));
+			connection()->error = lang('Please use one of these file extensions: %s.', str_replace("|", ", ", $extensions));
 			return false;
 		}
 		return true;

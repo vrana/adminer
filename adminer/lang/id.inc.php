@@ -9,15 +9,15 @@ Lang::$translations = array(
 	'Permanent login' => 'Masuk permanen',
 	'Login' => 'Masuk',
 	'Logout' => 'Keluar',
-	'Logged as: %s' => 'Masuk sebagai: %s',
+	'Logged in as: %s' => 'Masuk sebagai: %s',
 	'Logout successful.' => 'Berhasil keluar.',
 	'Invalid credentials.' => 'Akses tidak sah.',
 	'Language' => 'Bahasa',
-	'Invalid CSRF token. Send the form again.' => 'Token CSRF tidak sah. Kirim ulang formulir.',
+	'Invalid CSRF token. Submit the form again.' => 'Token CSRF tidak sah. Kirim ulang formulir.',
 	'No extension' => 'Ekstensi tidak ada',
 	'None of the supported PHP extensions (%s) are available.' => 'Ekstensi PHP yang didukung (%s) tidak ada.',
 	'Session support must be enabled.' => 'Dukungan sesi harus aktif.',
-	'Session expired, please login again.' => 'Sesi habis, silakan masuk lagi.',
+	'Session expired. Please log in again.' => 'Sesi habis, silakan masuk lagi.',
 	'%s version: %s through PHP extension %s' => 'Versi %s: %s dengan ekstensi PHP %s',
 	'Refresh' => 'Segarkan',
 
@@ -42,7 +42,7 @@ Lang::$translations = array(
 	'Status' => 'Status',
 
 	'SQL command' => 'Perintah SQL',
-	'%d query(s) executed OK.' => '%d kueri berhasil dijalankan.',
+	'%d query(ies) executed OK.' => '%d kueri berhasil dijalankan.',
 	'Query executed OK, %d row(s) affected.' => 'Kueri berhasil, %d baris terpengaruh.',
 	'No commands to execute.' => 'Tidak ada perintah untuk dijalankan.',
 	'Error in query' => 'Galat dalam kueri',
@@ -62,7 +62,7 @@ Lang::$translations = array(
 	'File uploads are disabled.' => 'Pengunggahan berkas dimatikan.',
 	'Unable to upload a file.' => 'Tidak dapat mengunggah berkas.',
 	'Maximum allowed file size is %sB.' => 'Besar berkas yang diizinkan adalah %sB.',
-	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Data POST terlalu besar. Kurangi data atau perbesar direktif konfigurasi %s.',
+	'The POST data is too large. Reduce the data or increase the %s configuration directive.' => 'Data POST terlalu besar. Kurangi data atau perbesar direktif konfigurasi %s.',
 
 	'Export' => 'Ekspor',
 	'Output' => 'Hasil',
@@ -101,7 +101,7 @@ Lang::$translations = array(
 	'Repair' => 'Perbaiki',
 	'Truncate' => 'Kosongkan',
 	'Tables have been truncated.' => 'Tabel berhasil dikosongkan.',
-	'Move to other database' => 'Pindahkan ke basis data lain',
+	'Move to another database' => 'Pindahkan ke basis data lain',
 	'Move' => 'Pindahkan',
 	'Tables have been moved.' => 'Tabel berhasil dipindahkan.',
 	'Copy' => 'Salin',
@@ -195,7 +195,7 @@ Lang::$translations = array(
 	'Create foreign key' => 'Buat kunci asing', // Claude Opus 5
 	'ON DELETE' => 'ON DELETE',
 	'ON UPDATE' => 'ON UPDATE',
-	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Kolom sumber dan sasaran harus memiliki jenis data yang sama. Kolom sasaran harus memiliki indeks dan data rujukan harus ada.',
+	'Source and target columns must have the same data type, there must be an index on the target columns and the referenced data must exist.' => 'Kolom sumber dan sasaran harus memiliki jenis data yang sama. Kolom sasaran harus memiliki indeks dan data rujukan harus ada.',
 
 	'Triggers' => 'Pemicu',
 	'Trigger has been dropped.' => 'Pemicu berhasil dihapus.',
@@ -232,7 +232,7 @@ Lang::$translations = array(
 	'Import' => 'Impor',
 	'%d row(s) have been imported.' => '%d baris berhasil diimpor.',
 
-	'Use edit link to modify this value.' => 'Gunakan pranala suntingan untuk mengubah nilai ini.', // in-place editing in select
+	'Use the edit link to modify this value.' => 'Gunakan pranala suntingan untuk mengubah nilai ini.', // in-place editing in select
 
 	'Item%s has been inserted.' => 'Entri%s berhasil disisipkan.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Entri berhasil dihapus.',
@@ -245,7 +245,7 @@ Lang::$translations = array(
 	'Edit' => 'Sunting',
 	'Insert' => 'Sisipkan',
 	'Save' => 'Simpan',
-	'Save and continue edit' => 'Simpan dan lanjut menyunting',
+	'Save and continue editing' => 'Simpan dan lanjut menyunting',
 	'Save and insert next' => 'Simpan dan sisipkan berikutnya',
 	'Clone' => 'Gandakan',
 	'Delete' => 'Hapus',
@@ -269,7 +269,7 @@ Lang::$translations = array(
 	'no' => 'no',
 
 	'File exists.' => 'Berkas sudah ada.', // general SQLite error in create, drop or rename database
-	'Please use one of the extensions %s.' => 'Harap gunakan salah satu ekstensi %s.',
+	'Please use one of these file extensions: %s.' => 'Harap gunakan salah satu ekstensi %s.',
 
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Ubah skema',
@@ -322,17 +322,17 @@ Lang::$translations = array(
 	'Checks' => 'Pemeriksaan', // Claude Fable 5
 	'Inherited by' => 'Diwarisi oleh', // Claude Fable 5
 	'hostname[:port] or :socket' => 'hostname[:port] atau :socket', // Claude Fable 5
-	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer tidak mendukung akses basis data tanpa sandi, <a href="https://www.adminer.org/en/password/"%s>informasi lebih lanjut</a>.', // Claude Fable 5
+	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer tidak mendukung akses basis data tanpa sandi, <a href="https://www.adminer.org/en/password/"%s>informasi lebih lanjut</a>.', // Claude Fable 5
 	'Default value' => 'Nilai bawaan', // Claude Fable 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'Terlalu banyak upaya masuk yang gagal, coba lagi dalam %d menit.', // Claude Fable 5
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Terima kasih telah menggunakan Adminer, pertimbangkan untuk <a href="https://www.adminer.org/en/donation/">berdonasi</a>.', // Claude Fable 5
-	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Sandi utama kedaluwarsa. <a href="https://www.adminer.org/en/extension/"%s>Implementasikan</a> metode %s agar permanen.', // Claude Fable 5
+	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Terima kasih telah menggunakan Adminer, pertimbangkan untuk <a href="https://www.adminer.org/en/donation/">berdonasi</a>.', // Claude Fable 5
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Sandi utama kedaluwarsa. <a href="https://www.adminer.org/en/extension/"%s>Implementasikan</a> metode %s agar permanen.', // Claude Fable 5
 	'The action will be performed after successful login with the same credentials.' => 'Tindakan akan dilakukan setelah berhasil masuk dengan kredensial yang sama.', // Claude Fable 5
 	'Invalid server.' => 'Server tidak valid.', // Claude Fable 5
 	'Connecting to privileged ports is not allowed.' => 'Koneksi ke port istimewa tidak diizinkan.', // Claude Fable 5
-	'There is a space in the input password which might be the cause.' => 'Ada spasi pada sandi yang dimasukkan yang mungkin menjadi penyebabnya.', // Claude Fable 5
-	'If you did not send this request from Adminer then close this page.' => 'Jika Anda tidak mengirim permintaan ini dari Adminer, tutup halaman ini.', // Claude Fable 5
-	'You can upload a big SQL file via FTP and import it from server.' => 'Anda dapat mengunggah berkas SQL besar melalui FTP dan mengimpornya dari server.', // Claude Fable 5
+	'There is a space in the entered password, which might be the cause.' => 'Ada spasi pada sandi yang dimasukkan yang mungkin menjadi penyebabnya.', // Claude Fable 5
+	'If you did not send this request from Adminer, close this page.' => 'Jika Anda tidak mengirim permintaan ini dari Adminer, tutup halaman ini.', // Claude Fable 5
+	'You can upload a large SQL file via FTP and import it from the server.' => 'Anda dapat mengunggah berkas SQL besar melalui FTP dan mengimpornya dari server.', // Claude Fable 5
 	'Size' => 'Ukuran', // Claude Fable 5
 	'Compute' => 'Hitung', // Claude Fable 5
 	'Loaded plugins' => 'Plugin yang dimuat', // Claude Fable 5
@@ -346,8 +346,8 @@ Lang::$translations = array(
 	'%s must <a%s>return an array</a>.' => '%s harus <a%s>mengembalikan array</a>.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Konfigurasikan</a> %s di %s.', // Claude Fable 5
 	'Every plugin must <a%s>be an object</a>.' => 'Setiap plugin harus <a%s>berupa objek</a>.', // Claude Opus 5
-	'Disable %s or enable %s or %s extensions.' => 'Nonaktifkan ekstensi %s atau aktifkan ekstensi %s atau %s.', // Claude Fable 5
-	'Database does not support password.' => 'Basis data tidak mendukung sandi.', // Claude Fable 5
+	'Disable %s or enable the %s or %s extension.' => 'Nonaktifkan ekstensi %s atau aktifkan ekstensi %s atau %s.', // Claude Fable 5
+	'The database does not support passwords.' => 'Basis data tidak mendukung sandi.', // Claude Fable 5
 );
 
 // run `php ../../lang.php id` to update this file

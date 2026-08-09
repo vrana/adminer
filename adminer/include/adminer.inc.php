@@ -181,7 +181,7 @@ class Adminer {
 	*/
 	function login(string $login, string $password) {
 		if ($password == "" || !password_required()) { // !password_required() - the server would accept any password
-			return lang('Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.', target_blank());
+			return lang('Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).', target_blank());
 		}
 		return true;
 	}

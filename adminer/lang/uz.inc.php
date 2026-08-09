@@ -9,27 +9,27 @@ Lang::$translations = array(
 	'Permanent login' => 'Doimiy kirish',
 	'Login' => 'Kirish',
 	'Logout' => 'Chiqish',
-	'Logged as: %s' => 'Siz kirgansiz: %s',
+	'Logged in as: %s' => 'Siz kirgansiz: %s',
 	'Logout successful.' => 'Muvaffaqiyatli chiqdingiz.',
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Adminer dasturidan foydalanganingiz uchun rahmat, <a href="https://www.adminer.org/en/donation/">xayriya qilishni</a> o\'ylab ko\'ring.',
+	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Adminer dasturidan foydalanganingiz uchun rahmat, <a href="https://www.adminer.org/en/donation/">xayriya qilishni</a> o\'ylab ko\'ring.',
 	'Loaded plugins' => 'Yuklangan plaginlar',
 	'%s must <a%s>return an array</a>.' => '%s <a%s>massiv qaytarishi</a> kerak.',
 	'<a%s>Configure</a> %s in %s.' => '%s ni %s ichida <a%s>sozlang</a>.',
 	'Invalid credentials.' => 'Noto\'g\'ri ma\'lumotlar.',
-	'There is a space in the input password which might be the cause.' => 'Kiritilgan parolda bo\'sh joy bor, bu sabab bo\'lishi mumkin.',
-	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer parolsiz ma\'lumotlar bazasiga kirishni qo\'llab-quvvatlamaydi, <a href="https://www.adminer.org/en/password/"%s>ko\'proq ma\'lumot</a>.',
-	'Database does not support password.' => 'Ma\'lumotlar bazasi parolni qo\'llab-quvvatlamaydi.',
+	'There is a space in the entered password, which might be the cause.' => 'Kiritilgan parolda bo\'sh joy bor, bu sabab bo\'lishi mumkin.',
+	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer parolsiz ma\'lumotlar bazasiga kirishni qo\'llab-quvvatlamaydi, <a href="https://www.adminer.org/en/password/"%s>ko\'proq ma\'lumot</a>.',
+	'The database does not support passwords.' => 'Ma\'lumotlar bazasi parolni qo\'llab-quvvatlamaydi.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'Juda ko\'p muvaffaqiyatsiz urinishlar, %d daqiqadan so\'ng qayta urining.',
-	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Asosiy parol muddati tugadi. Uni doimiy qilish uchun %s usulini <a href="https://www.adminer.org/en/extension/"%s>amalga oshiring</a>.',
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Asosiy parol muddati tugadi. Uni doimiy qilish uchun %s usulini <a href="https://www.adminer.org/en/extension/"%s>amalga oshiring</a>.',
 	'Language' => 'Til',
-	'Invalid CSRF token. Send the form again.' => 'Noto\'g\'ri CSRF belgisi. Shaklni qayta yuboring.',
-	'If you did not send this request from Adminer then close this page.' => 'Agar bu so\'rovni Adminerdan yuborgan bo\'lmasangiz, ushbu sahifani yoping.',
+	'Invalid CSRF token. Submit the form again.' => 'Noto\'g\'ri CSRF belgisi. Shaklni qayta yuboring.',
+	'If you did not send this request from Adminer, close this page.' => 'Agar bu so\'rovni Adminerdan yuborgan bo\'lmasangiz, ushbu sahifani yoping.',
 	'No extension' => 'Kengaytma yo\'q',
 	'None of the supported PHP extensions (%s) are available.' => 'Qo\'llab-quvvatlanadigan PHP kengaytmalarining (%s) hech biri mavjud emas.', // %s contains the list of the extensions, e.g. 'mysqli, PDO_MySQL'
 	'Connecting to privileged ports is not allowed.' => 'Imtiyozli portlarga ulanishga ruxsat berilmagan.',
-	'Disable %s or enable %s or %s extensions.' => '%s ni o\'chiring yoki %s yoki %s kengaytmalarini yoqing.',
+	'Disable %s or enable the %s or %s extension.' => '%s ni o\'chiring yoki %s yoki %s kengaytmalarini yoqing.',
 	'Session support must be enabled.' => 'Sessiya qo\'llab-quvvatlashi yoqilgan bo\'lishi kerak.',
-	'Session expired, please login again.' => 'Sessiya muddati tugadi, iltimos, qayta kiring.',
+	'Session expired. Please log in again.' => 'Sessiya muddati tugadi, iltimos, qayta kiring.',
 	'The action will be performed after successful login with the same credentials.' => 'Amal bir xil ma\'lumotlar bilan muvaffaqiyatli kirishdan so\'ng amalga oshiriladi.',
 	'%s version: %s through PHP extension %s' => '%s versiyasi: %s PHP kengaytmasi %s orqali',
 	'Refresh' => 'Yangilash',
@@ -55,7 +55,7 @@ Lang::$translations = array(
 	'Status' => 'Holat',
 
 	'SQL command' => 'SQL buyrug\'i',
-	'%d query(s) executed OK.' => array('%d so\'rov muvaffaqiyatli bajarildi.', '%d so\'rovlar muvaffaqiyatli bajarildi.'),
+	'%d query(ies) executed OK.' => array('%d so\'rov muvaffaqiyatli bajarildi.', '%d so\'rovlar muvaffaqiyatli bajarildi.'),
 	'Query executed OK, %d row(s) affected.' => array('So\'rov muvaffaqiyatli bajarildi, %d qator o\'zgartirildi.', 'So\'rov muvaffaqiyatli bajarildi, %d qatorlar o\'zgartirildi.'),
 	'No commands to execute.' => 'Bajariladigan buyruqlar yo\'q.',
 	'Error in query' => 'So\'rovda xatolik',
@@ -78,8 +78,8 @@ Lang::$translations = array(
 	'File uploads are disabled.' => 'Fayl yuklash o\'chirilgan.',
 	'Unable to upload a file.' => 'Faylni yuklab bo\'lmadi.',
 	'Maximum allowed file size is %sB.' => 'Maksimal ruxsat etilgan fayl hajmi %sB.',
-	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Juda katta POST ma\'lumotlari. Ma\'lumotlarni kamaytiring yoki %s konfiguratsiya direktivasini oshiring.',
-	'You can upload a big SQL file via FTP and import it from server.' => 'Katta SQL faylini FTP orqali yuklab, uni serverdan import qilishingiz mumkin.',
+	'The POST data is too large. Reduce the data or increase the %s configuration directive.' => 'Juda katta POST ma\'lumotlari. Ma\'lumotlarni kamaytiring yoki %s konfiguratsiya direktivasini oshiring.',
+	'You can upload a large SQL file via FTP and import it from the server.' => 'Katta SQL faylini FTP orqali yuklab, uni serverdan import qilishingiz mumkin.',
 	'You are offline.' => 'Siz oflayndasiz.',
 
 	'Export' => 'Eksport',
@@ -122,7 +122,7 @@ Lang::$translations = array(
 	'Repair' => 'Ta\'mirlash',
 	'Truncate' => 'Bo\'shatish',
 	'Tables have been truncated.' => 'Jadvallar bo\'shatildi.',
-	'Move to other database' => 'Boshqa ma\'lumotlar bazasiga ko\'chirish',
+	'Move to another database' => 'Boshqa ma\'lumotlar bazasiga ko\'chirish',
 	'Move' => 'Ko\'chirish',
 	'Tables have been moved.' => 'Jadvallar ko\'chirildi.',
 	'Copy' => 'Nusxalash',
@@ -220,7 +220,7 @@ Lang::$translations = array(
 	'Create foreign key' => 'Tashqi kalit yaratish', // Claude Opus 5
 	'ON DELETE' => 'O\'CHIRILGANDA',
 	'ON UPDATE' => 'YANGILANGANDA',
-	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Manba va maqsad ustunlari bir xil ma\'lumot turiga ega bo\'lishi kerak, maqsad ustunlarda indeks bo\'lishi kerak va havolalar qilingan ma\'lumotlar mavjud bo\'lishi kerak.',
+	'Source and target columns must have the same data type, there must be an index on the target columns and the referenced data must exist.' => 'Manba va maqsad ustunlari bir xil ma\'lumot turiga ega bo\'lishi kerak, maqsad ustunlarda indeks bo\'lishi kerak va havolalar qilingan ma\'lumotlar mavjud bo\'lishi kerak.',
 
 	'Triggers' => 'Triggerlar',
 	'Trigger has been dropped.' => 'Trigger o\'chirildi.',
@@ -264,7 +264,7 @@ Lang::$translations = array(
 
 	'Modify' => 'O\'zgartirish', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Qiymatni o\'zgartirish uchun Ctrl+bosing.',
-	'Use edit link to modify this value.' => 'Bu qiymatni o\'zgartirish uchun tahrir havolasidan foydalaning.',
+	'Use the edit link to modify this value.' => 'Bu qiymatni o\'zgartirish uchun tahrir havolasidan foydalaning.',
 
 	'Item%s has been inserted.' => 'Element%s kiritildi.', // %s can contain auto-increment value, e.g. ' 123'
 	'Item has been deleted.' => 'Element o\'chirildi.',
@@ -277,7 +277,7 @@ Lang::$translations = array(
 	'Edit' => 'Tahrirlash',
 	'Insert' => 'Kiritish',
 	'Save' => 'Saqlash',
-	'Save and continue edit' => 'Saqlash va tahrirlashni davom ettirish',
+	'Save and continue editing' => 'Saqlash va tahrirlashni davom ettirish',
 	'Save and insert next' => 'Saqlash va keyingisini kiritish',
 	'Selected' => 'Tanlangan',
 	'Clone' => 'Klonlash',
@@ -303,7 +303,7 @@ Lang::$translations = array(
 	'no' => 'yo\'q',
 
 	'File exists.' => 'Fayl mavjud.', // general SQLite error in create, drop or rename database
-	'Please use one of the extensions %s.' => 'Iltimos, kengaytmalardan birini %s foydalaning.',
+	'Please use one of these file extensions: %s.' => 'Iltimos, kengaytmalardan birini %s foydalaning.',
 
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Sxemani o\'zgartirish',

@@ -9,20 +9,20 @@ Lang::$translations = array(
 	'Permanent login' => 'Beni hatırla',
 	'Login' => 'Giriş',
 	'Logout' => 'Çıkış',
-	'Logged as: %s' => '%s olarak giriş yapıldı.',
+	'Logged in as: %s' => '%s olarak giriş yapıldı.',
 	'Logout successful.' => 'Oturum başarıyla sonlandı.',
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Adminer kullandığınız için teşekkür ederiz <a href="https://www.adminer.org/en/donation/">bağış yapmayı düşünün</a>.',
+	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Adminer kullandığınız için teşekkür ederiz <a href="https://www.adminer.org/en/donation/">bağış yapmayı düşünün</a>.',
 	'Invalid credentials.' => 'Geçersiz kimlik bilgileri.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Çok fazla oturum açma denemesi yapıldı.', '%d Dakika sonra tekrar deneyiniz.'),
-	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Ana şifrenin süresi doldu. Kalıcı olması için <a href="https://www.adminer.org/en/extension/"%s>%s medodunu</a> kullanın.',
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Ana şifrenin süresi doldu. Kalıcı olması için <a href="https://www.adminer.org/en/extension/"%s>%s medodunu</a> kullanın.',
 	'Language' => 'Dil',
-	'Invalid CSRF token. Send the form again.' => 'Geçersiz (CSRF) jetonu. Formu tekrar yolla.',
-	'If you did not send this request from Adminer then close this page.' => 'Bu isteği Adminer\'den göndermediyseniz bu sayfayı kapatın.',
+	'Invalid CSRF token. Submit the form again.' => 'Geçersiz (CSRF) jetonu. Formu tekrar yolla.',
+	'If you did not send this request from Adminer, close this page.' => 'Bu isteği Adminer\'den göndermediyseniz bu sayfayı kapatın.',
 	'No extension' => 'Uzantı yok',
 	'None of the supported PHP extensions (%s) are available.' => 'Desteklenen PHP eklentilerinden (%s) hiçbiri mevcut değil.',
 	'Connecting to privileged ports is not allowed.' => 'Ayrıcalıklı bağlantı noktalarına bağlanmaya izin verilmiyor.',
 	'Session support must be enabled.' => 'Oturum desteği etkin olmalıdır.',
-	'Session expired, please login again.' => 'Oturum süresi doldu, lütfen tekrar giriş yapın.',
+	'Session expired. Please log in again.' => 'Oturum süresi doldu, lütfen tekrar giriş yapın.',
 	'The action will be performed after successful login with the same credentials.' => 'İşlem, aynı kimlik bilgileriyle başarıyla oturum açıldıktan sonra gerçekleştirilecektir.',
 	'%s version: %s through PHP extension %s' => '%s sürüm: %s, %s PHP eklentisi ile',
 	'Refresh' => 'Tazele',
@@ -48,7 +48,7 @@ Lang::$translations = array(
 	'Status' => 'Durum',
 
 	'SQL command' => 'SQL komutu',
-	'%d query(s) executed OK.' => array('%d sorgu başarıyla çalıştırıldı.', '%d adet sorgu başarıyla çalıştırıldı.'),
+	'%d query(ies) executed OK.' => array('%d sorgu başarıyla çalıştırıldı.', '%d adet sorgu başarıyla çalıştırıldı.'),
 	'Query executed OK, %d row(s) affected.' => 'Sorgu başarıyla çalıştırıldı, %d adet kayıt etkilendi.',
 	'No commands to execute.' => 'Çalıştırılacak komut yok.',
 	'Error in query' => 'Sorguda hata',
@@ -70,8 +70,8 @@ Lang::$translations = array(
 	'File uploads are disabled.' => 'Dosya gönderimi etkin değil.',
 	'Unable to upload a file.' => 'Dosya gönderilemiyor.',
 	'Maximum allowed file size is %sB.' => 'İzin verilen dosya boyutu sınırı %sB.',
-	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Çok büyük POST verisi, veriyi azaltın ya da %s ayar yönergesini uygun olarak yapılandırın.',
-	'You can upload a big SQL file via FTP and import it from server.' => 'FTP yoluyla büyük bir SQL dosyası yükleyebilir ve sunucudan içe aktarabilirsiniz.',
+	'The POST data is too large. Reduce the data or increase the %s configuration directive.' => 'Çok büyük POST verisi, veriyi azaltın ya da %s ayar yönergesini uygun olarak yapılandırın.',
+	'You can upload a large SQL file via FTP and import it from the server.' => 'FTP yoluyla büyük bir SQL dosyası yükleyebilir ve sunucudan içe aktarabilirsiniz.',
 	'You are offline.' => 'Çevrimdışısınız.',
 	'Menu' => 'Menü', // Claude Opus 5
 
@@ -115,7 +115,7 @@ Lang::$translations = array(
 	'Repair' => 'Tamir Et',
 	'Truncate' => 'Boşalt',
 	'Tables have been truncated.' => 'Tablolar boşaltıldı.',
-	'Move to other database' => 'Başka veri tabanına taşı',
+	'Move to another database' => 'Başka veri tabanına taşı',
 	'Move' => 'Taşı',
 	'Tables have been moved.' => 'Tablolar taşındı.',
 	'Copy' => 'Kopyala',
@@ -214,7 +214,7 @@ Lang::$translations = array(
 	'Create foreign key' => 'Dış anahtar oluştur', // Claude Opus 5
 	'ON DELETE' => 'ON DELETE (Hedefteki Kayıt Silinirse)',
 	'ON UPDATE' => 'ON UPDATE (Hedefteki Kayıt Değiştirilirse)',
-	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Kaynak ve hedef kolonlar aynı veri türünde olmalı, hedef kolonlarda dizin bulunmalı ve başvurulan veri mevcut olmalı.',
+	'Source and target columns must have the same data type, there must be an index on the target columns and the referenced data must exist.' => 'Kaynak ve hedef kolonlar aynı veri türünde olmalı, hedef kolonlarda dizin bulunmalı ve başvurulan veri mevcut olmalı.',
 
 	'Triggers' => 'Tetikler',
 	'Trigger has been dropped.' => 'Tetik silindi.',
@@ -259,7 +259,7 @@ Lang::$translations = array(
 	'All rows on this page' => 'Bu sayfadaki tüm satırlar', // Claude Opus 5
 	'Modify' => 'Düzenle', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Bir değeri değiştirmek için üzerine Ctrl+tıklayın.',
-	'Use edit link to modify this value.' => 'Değeri değiştirmek için düzenleme bağlantısını kullanın.',
+	'Use the edit link to modify this value.' => 'Değeri değiştirmek için düzenleme bağlantısını kullanın.',
 
 	'Item%s has been inserted.' => 'Kayıt%s eklendi.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Kayıt silindi.',
@@ -272,7 +272,7 @@ Lang::$translations = array(
 	'Edit' => 'Düzenle',
 	'Insert' => 'Ekle',
 	'Save' => 'Kaydet',
-	'Save and continue edit' => 'Kaydet ve düzenlemeye devam et',
+	'Save and continue editing' => 'Kaydet ve düzenlemeye devam et',
 	'Save and insert next' => 'Kaydet ve sonrakini ekle',
 	'Selected' => 'Seçildi',
 	'Clone' => 'Kopyala',
@@ -298,7 +298,7 @@ Lang::$translations = array(
 	'no' => 'hayır',
 
 	'File exists.' => 'Dosya zaten mevcut.', // general SQLite error in create, drop or rename database
-	'Please use one of the extensions %s.' => '%s uzantılarından birini kullanın.',
+	'Please use one of these file extensions: %s.' => '%s uzantılarından birini kullanın.',
 
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Şemayı değiştir',
@@ -337,9 +337,9 @@ Lang::$translations = array(
 	'Checks' => 'Kontroller', // Claude Fable 5
 	'Inherited by' => 'Miras alan tablolar', // Claude Fable 5
 	'hostname[:port] or :socket' => 'hostname[:port] veya :socket', // Claude Fable 5
-	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer parolasız bir veri tabanına erişimi desteklemez, <a href="https://www.adminer.org/en/password/"%s>daha fazla bilgi</a>.', // Claude Fable 5
+	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer parolasız bir veri tabanına erişimi desteklemez, <a href="https://www.adminer.org/en/password/"%s>daha fazla bilgi</a>.', // Claude Fable 5
 	'Invalid server.' => 'Geçersiz sunucu.', // Claude Fable 5
-	'There is a space in the input password which might be the cause.' => 'Girilen parolada boşluk var, sorunun nedeni bu olabilir.', // Claude Fable 5
+	'There is a space in the entered password, which might be the cause.' => 'Girilen parolada boşluk var, sorunun nedeni bu olabilir.', // Claude Fable 5
 	'Loaded plugins' => 'Yüklenen eklentiler', // Claude Fable 5
 	'screenshot' => 'ekran görüntüsü', // Claude Fable 5
 	'Increase %s.' => '%s değerini artırın.', // Claude Fable 5
@@ -347,8 +347,8 @@ Lang::$translations = array(
 	'%s must <a%s>return an array</a>.' => '%s <a%s>bir dizi döndürmelidir</a>.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '%2$s ögesini %3$s içinde <a%1$s>yapılandırın</a>.', // Claude Fable 5
 	'Every plugin must <a%s>be an object</a>.' => 'Her eklenti <a%s>bir nesne olmalıdır</a>.', // Claude Opus 5
-	'Disable %s or enable %s or %s extensions.' => '%s eklentisini devre dışı bırakın veya %s ya da %s eklentilerini etkinleştirin.', // Claude Fable 5
-	'Database does not support password.' => 'Veri tabanı parolayı desteklemez.', // Claude Fable 5
+	'Disable %s or enable the %s or %s extension.' => '%s eklentisini devre dışı bırakın veya %s ya da %s eklentilerini etkinleştirin.', // Claude Fable 5
+	'The database does not support passwords.' => 'Veri tabanı parolayı desteklemez.', // Claude Fable 5
 );
 
 // run `php ../../lang.php tr` to update this file

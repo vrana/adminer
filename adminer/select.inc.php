@@ -279,7 +279,7 @@ if (!$columns && support("table")) {
 	foreach ((array) $_GET["where"] as $val) {
 		// the SQL operator passes the value to the database unescaped, GET is not protected by the CSRF token
 		if ($val["op"] == "SQL" && !in_array($_SERVER["HTTP_SEC_FETCH_SITE"], array("", "same-origin"))) {
-			echo "<p class='error'>" . lang('Invalid CSRF token. Send the form again.') . ' ' . lang('If you did not send this request from Adminer then close this page.') . "\n";
+			echo "<p class='error'>" . lang('Invalid CSRF token. Submit the form again.') . ' ' . lang('If you did not send this request from Adminer, close this page.') . "\n";
 			page_footer();
 			exit;
 		}
@@ -510,7 +510,7 @@ if (!$columns && support("table")) {
 							$long = strpos($html, "<i>…</i>");
 							echo ($update
 								? " data-text='" . ($long ? 2 : ($text ? 1 : 0)) . "'"
-									. ($editable ? "" : " data-warning='" . lang('Use edit link to modify this value.') . "'")
+									. ($editable ? "" : " data-warning='" . lang('Use the edit link to modify this value.') . "'")
 								: ""
 							) . ">$html";
 						}

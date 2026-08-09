@@ -9,15 +9,15 @@ Lang::$translations = array(
 	'Permanent login' => 'Трајна пријава',
 	'Login' => 'Пријава',
 	'Logout' => 'Одјава',
-	'Logged as: %s' => 'Пријави се као: %s',
+	'Logged in as: %s' => 'Пријави се као: %s',
 	'Logout successful.' => 'Успешна одјава.',
 	'Invalid credentials.' => 'Неважеће дозволе.',
 	'Language' => 'Језик',
-	'Invalid CSRF token. Send the form again.' => 'Неважећи CSRF код. Проследите поново форму.',
+	'Invalid CSRF token. Submit the form again.' => 'Неважећи CSRF код. Проследите поново форму.',
 	'No extension' => 'Без додатака',
 	'None of the supported PHP extensions (%s) are available.' => 'Ниједан од подржаних PHP додатака (%s) није доступан.',
 	'Session support must be enabled.' => 'Морате омогућити подршку за сесије.',
-	'Session expired, please login again.' => 'Ваша сесија је истекла, пријавите се поново.',
+	'Session expired. Please log in again.' => 'Ваша сесија је истекла, пријавите се поново.',
 	'%s version: %s through PHP extension %s' => '%s верзија: %s помоћу PHP додатка је %s',
 	'Refresh' => 'Освежи',
 
@@ -42,7 +42,7 @@ Lang::$translations = array(
 	'Status' => 'Статус',
 
 	'SQL command' => 'SQL команда',
-	'%d query(s) executed OK.' => array('%d упит је успешно извршен.', '%d упита су успешно извршена.', '%d упита је успешно извршено.'),
+	'%d query(ies) executed OK.' => array('%d упит је успешно извршен.', '%d упита су успешно извршена.', '%d упита је успешно извршено.'),
 	'Query executed OK, %d row(s) affected.' => array('Упит је успешно извршен, %d ред је погођен.', 'Упит је успешно извршен, %d реда су погођена.', 'Упит је успешно извршен, %d редова је погођено.'),
 	'No commands to execute.' => 'Без команди за извршавање.',
 	'Error in query' => 'Грешка у упиту',
@@ -62,7 +62,7 @@ Lang::$translations = array(
 	'File uploads are disabled.' => 'Онемогућено је слање датотека.',
 	'Unable to upload a file.' => 'Слање датотеке није успело.',
 	'Maximum allowed file size is %sB.' => 'Највећа дозвољена величина датотеке је %sB.',
-	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Превелики POST податак. Морате да смањите податак или повећајте вредност конфигурационе директиве %s.',
+	'The POST data is too large. Reduce the data or increase the %s configuration directive.' => 'Превелики POST податак. Морате да смањите податак или повећајте вредност конфигурационе директиве %s.',
 
 	'Export' => 'Извоз',
 	'Output' => 'Испис',
@@ -101,7 +101,7 @@ Lang::$translations = array(
 	'Repair' => 'Поправи',
 	'Truncate' => 'Испразни',
 	'Tables have been truncated.' => 'Табеле су испражњене.',
-	'Move to other database' => 'Премести у другу базу података',
+	'Move to another database' => 'Премести у другу базу података',
 	'Move' => 'Премести',
 	'Tables have been moved.' => 'Табеле су премешћене.',
 	'Copy' => 'Умножи',
@@ -194,7 +194,7 @@ Lang::$translations = array(
 	'Create foreign key' => 'Направи страни кључ', // Claude Opus 5
 	'ON DELETE' => 'ON DELETE (приликом брисања)',
 	'ON UPDATE' => 'ON UPDATE (приликом освежавања)',
-	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Изворне и циљне колоне морају бити истог типа, циљна колона мора бити индексирана и изворна табела мора садржати податке из циљне.',
+	'Source and target columns must have the same data type, there must be an index on the target columns and the referenced data must exist.' => 'Изворне и циљне колоне морају бити истог типа, циљна колона мора бити индексирана и изворна табела мора садржати податке из циљне.',
 
 	'Triggers' => 'Окидачи',
 	'Trigger has been dropped.' => 'Окидач је избрисан.',
@@ -234,7 +234,7 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('%d ред је увежен.', '%d реда су увежена.', '%d редова је увежено.'),
 
 	'Ctrl+click on a value to modify it.' => 'Ctrl+клик на вредност за измену.', // in-place editing in select
-	'Use edit link to modify this value.' => 'Користи везу за измену ове вредности.',
+	'Use the edit link to modify this value.' => 'Користи везу за измену ове вредности.',
 
 	'Item%s has been inserted.' => 'Ставка%s је додата.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Ставка је избрисана.',
@@ -247,7 +247,7 @@ Lang::$translations = array(
 	'Edit' => 'Измени',
 	'Insert' => 'Уметни',
 	'Save' => 'Сачувај',
-	'Save and continue edit' => 'Сачувај и настави уређење',
+	'Save and continue editing' => 'Сачувај и настави уређење',
 	'Save and insert next' => 'Сачувај и уметни следеће',
 	'Clone' => 'Дуплирај',
 	'Delete' => 'Избриши',
@@ -271,7 +271,7 @@ Lang::$translations = array(
 	'no' => 'не',
 
 	'File exists.' => 'Датотека већ постоји.', // general SQLite error in create, drop or rename database
-	'Please use one of the extensions %s.' => 'Молим користите један од наставака %s.',
+	'Please use one of these file extensions: %s.' => 'Молим користите један од наставака %s.',
 
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Уреди шему',
@@ -321,17 +321,17 @@ Lang::$translations = array(
 	'Checks' => 'Провере', // Claude Fable 5
 	'Inherited by' => 'Наслеђено од', // Claude Fable 5
 	'hostname[:port] or :socket' => 'hostname[:port] или :socket', // Claude Fable 5
-	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer не подржава приступ бази података без лозинке, <a href="https://www.adminer.org/en/password/"%s>више информација</a>.', // Claude Fable 5
+	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer не подржава приступ бази података без лозинке, <a href="https://www.adminer.org/en/password/"%s>више информација</a>.', // Claude Fable 5
 	'Default value' => 'Подразумевана вредност', // Claude Fable 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Превише неуспешних пријава, покушајте поново за %d минут.', 'Превише неуспешних пријава, покушајте поново за %d минута.', 'Превише неуспешних пријава, покушајте поново за %d минута.'), // Claude Fable 5
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Хвала што користите Adminer, размислите о <a href="https://www.adminer.org/en/donation/">донацији</a>.', // Claude Fable 5
-	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Главна лозинка је истекла. <a href="https://www.adminer.org/en/extension/"%s>Имплементирајте</a> методу %s да бисте је учинили трајном.', // Claude Fable 5
+	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Хвала што користите Adminer, размислите о <a href="https://www.adminer.org/en/donation/">донацији</a>.', // Claude Fable 5
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Главна лозинка је истекла. <a href="https://www.adminer.org/en/extension/"%s>Имплементирајте</a> методу %s да бисте је учинили трајном.', // Claude Fable 5
 	'The action will be performed after successful login with the same credentials.' => 'Радња ће бити извршена након успешне пријаве са истим подацима.', // Claude Fable 5
 	'Invalid server.' => 'Неважећи сервер.', // Claude Fable 5
 	'Connecting to privileged ports is not allowed.' => 'Повезивање на привилеговане портове није дозвољено.', // Claude Fable 5
-	'There is a space in the input password which might be the cause.' => 'У унетој лозинци постоји размак, што би могао бити узрок.', // Claude Fable 5
-	'If you did not send this request from Adminer then close this page.' => 'Ако нисте послали овај захтев из Adminer-а, затворите ову страницу.', // Claude Fable 5
-	'You can upload a big SQL file via FTP and import it from server.' => 'Велику SQL датотеку можете послати путем FTP-а и увести је са сервера.', // Claude Fable 5
+	'There is a space in the entered password, which might be the cause.' => 'У унетој лозинци постоји размак, што би могао бити узрок.', // Claude Fable 5
+	'If you did not send this request from Adminer, close this page.' => 'Ако нисте послали овај захтев из Adminer-а, затворите ову страницу.', // Claude Fable 5
+	'You can upload a large SQL file via FTP and import it from the server.' => 'Велику SQL датотеку можете послати путем FTP-а и увести је са сервера.', // Claude Fable 5
 	'Size' => 'Величина', // Claude Fable 5
 	'Compute' => 'Израчунај', // Claude Fable 5
 	'Loaded plugins' => 'Учитани додаци', // Claude Fable 5
@@ -344,8 +344,8 @@ Lang::$translations = array(
 	'%s must <a%s>return an array</a>.' => '%s мора да <a%s>врати низ</a>.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Конфигуришите</a> %s у %s.', // Claude Fable 5
 	'Every plugin must <a%s>be an object</a>.' => 'Сваки додатак мора да <a%s>буде објекат</a>.', // Claude Opus 5
-	'Disable %s or enable %s or %s extensions.' => 'Онемогућите екстензију %s или омогућите екстензије %s или %s.', // Claude Fable 5
-	'Database does not support password.' => 'База података не подржава лозинку.', // Claude Fable 5
+	'Disable %s or enable the %s or %s extension.' => 'Онемогућите екстензију %s или омогућите екстензије %s или %s.', // Claude Fable 5
+	'The database does not support passwords.' => 'База података не подржава лозинку.', // Claude Fable 5
 );
 
 // run `php ../../lang.php sr` to update this file

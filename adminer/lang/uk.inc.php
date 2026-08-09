@@ -9,15 +9,15 @@ Lang::$translations = array(
 	'Permanent login' => 'Пам\'ятати сесію',
 	'Login' => 'Увійти',
 	'Logout' => 'Вийти',
-	'Logged as: %s' => 'Ви увійшли як: %s',
+	'Logged in as: %s' => 'Ви увійшли як: %s',
 	'Logout successful.' => 'Ви вдало вийшли з системи.',
 	'Invalid credentials.' => 'Неправильні дані входу.',
 	'Language' => 'Мова',
-	'Invalid CSRF token. Send the form again.' => 'Недійсний CSRF токен. Надішліть форму ще раз.',
+	'Invalid CSRF token. Submit the form again.' => 'Недійсний CSRF токен. Надішліть форму ще раз.',
 	'No extension' => 'Нема розширень',
 	'None of the supported PHP extensions (%s) are available.' => 'Жодне з PHP-розширень (%s), що підтримуються, не доступне.',
 	'Session support must be enabled.' => 'Сесії повинні бути дозволені.',
-	'Session expired, please login again.' => 'Сесія закінчилась, будь ласка, увійдіть в систему знову.',
+	'Session expired. Please log in again.' => 'Сесія закінчилась, будь ласка, увійдіть в систему знову.',
 	'%s version: %s through PHP extension %s' => 'Версія %s: %s з PHP-розширенням %s',
 	'Refresh' => 'Оновити',
 
@@ -42,7 +42,7 @@ Lang::$translations = array(
 	'Status' => 'Статус',
 
 	'SQL command' => 'SQL запит',
-	'%d query(s) executed OK.' => array('%d запит виконано успішно.', '%d запити виконано успішно.', '%d запитів виконано успішно.'),
+	'%d query(ies) executed OK.' => array('%d запит виконано успішно.', '%d запити виконано успішно.', '%d запитів виконано успішно.'),
 	'Query executed OK, %d row(s) affected.' => array('Запит виконано успішно, змінено %d рядок.', 'Запит виконано успішно, змінено %d рядки.', 'Запит виконано успішно, змінено %d рядків.'),
 	'No commands to execute.' => 'Нема запитів до виконання.',
 	'Error in query' => 'Помилка в запиті',
@@ -62,7 +62,7 @@ Lang::$translations = array(
 	'File uploads are disabled.' => 'Завантаження файлів заборонене.',
 	'Unable to upload a file.' => 'Неможливо завантажити файл.',
 	'Maximum allowed file size is %sB.' => 'Максимально допустимий розмір файлу %sБ.',
-	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Занадто великий об\'єм POST-даних. Зменшіть об\'єм або збільшіть параметр директиви %s конфигурації.',
+	'The POST data is too large. Reduce the data or increase the %s configuration directive.' => 'Занадто великий об\'єм POST-даних. Зменшіть об\'єм або збільшіть параметр директиви %s конфигурації.',
 
 	'Export' => 'Експорт',
 	'Output' => 'Вихідні дані',
@@ -101,7 +101,7 @@ Lang::$translations = array(
 	'Repair' => 'Виправити',
 	'Truncate' => 'Очистити',
 	'Tables have been truncated.' => 'Таблиці було очищено.',
-	'Move to other database' => 'Перенести до іншої бази даних',
+	'Move to another database' => 'Перенести до іншої бази даних',
 	'Move' => 'Перенести',
 	'Tables have been moved.' => 'Таблиці було перенесено.',
 	'Copy' => 'копіювати',
@@ -195,7 +195,7 @@ Lang::$translations = array(
 	'Create foreign key' => 'Створити зовнішній ключ', // Claude Opus 5
 	'ON DELETE' => 'ПРИ ВИДАЛЕННІ',
 	'ON UPDATE' => 'ПРИ ЗМІНІ',
-	'Source and target columns must have the same data type, there must be an index on the target columns and referenced data must exist.' => 'Стовпці повинні мати той самий тип даних, цільові стовпці повинні бути проіндексовані і дані, на які посилаються повинні існувати.',
+	'Source and target columns must have the same data type, there must be an index on the target columns and the referenced data must exist.' => 'Стовпці повинні мати той самий тип даних, цільові стовпці повинні бути проіндексовані і дані, на які посилаються повинні існувати.',
 
 	'Triggers' => 'Тригери',
 	'Trigger has been dropped.' => 'Тригер було видалено.',
@@ -232,7 +232,7 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('%d рядок було імпортовано.', '%d рядки було імпортовано.', '%d рядків було імпортовано.'),
 
 	'Ctrl+click on a value to modify it.' => 'Ctrl+клікніть на значенні щоб змінити його.', // in-place editing in select
-	'Use edit link to modify this value.' => 'Використовуйте посилання щоб змінити це значення.',
+	'Use the edit link to modify this value.' => 'Використовуйте посилання щоб змінити це значення.',
 
 	'Item%s has been inserted.' => 'Запис%s було вставлено.', // %s can contain auto-increment value
 	'Item has been deleted.' => 'Запис було видалено.',
@@ -245,7 +245,7 @@ Lang::$translations = array(
 	'Edit' => 'Редагувати',
 	'Insert' => 'Вставити',
 	'Save' => 'Зберегти',
-	'Save and continue edit' => 'Зберегти і продовжити редагування',
+	'Save and continue editing' => 'Зберегти і продовжити редагування',
 	'Save and insert next' => 'Зберегти і вставити знову',
 	'Clone' => 'Клонувати',
 	'Delete' => 'Видалити',
@@ -269,7 +269,7 @@ Lang::$translations = array(
 	'no' => 'ні',
 
 	'File exists.' => 'Файл існує.', // general SQLite error in create, drop or rename database
-	'Please use one of the extensions %s.' => 'Будь ласка, використовуйте одне з розширень %s.',
+	'Please use one of these file extensions: %s.' => 'Будь ласка, використовуйте одне з розширень %s.',
 
 	// PostgreSQL and MS SQL schema support
 	'Alter schema' => 'Змінити схему',
@@ -308,18 +308,18 @@ Lang::$translations = array(
 	'%s queries are not supported.' => '%s-запити не підтримуються.',
 	'Warnings' => 'Попередження',
 	'Limit rows' => 'Обмеження рядків',
-	'Adminer does not support accessing a database without a password, <a href="https://www.adminer.org/en/password/"%s>more information</a>.' => 'Adminer не підтримує доступ до бази даних без пароля, <a href="https://www.adminer.org/en/password/"%s>більше інформації</a>.',
+	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer не підтримує доступ до бази даних без пароля, <a href="https://www.adminer.org/en/password/"%s>більше інформації</a>.',
 	'Default value' => 'Значення за замовчуванням',
 	'Full table scan' => 'Повне сканування таблиці',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Занадто багато невдалих спроб входу. Спробуйте знову через %d хвилину.', 'Занадто багато невдалих спроб входу. Спробуйте знову через %d хвилини.', 'Занадто багато невдалих спроб входу. Спробуйте знову через %d хвилин.'),
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Використовуйте <a%2$s>плагін</a> %1$s, якщо Adminer працює за зворотним проксі.', // Claude Opus 5
-	'Thanks for using Adminer, consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Дякуємо, що користуєтесь Adminer, подумайте про <a href="https://www.adminer.org/en/donation/">внесок</a>.',
-	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> %s method to make it permanent.' => 'Термін дії майстер пароля минув. <a href="https://www.adminer.org/en/extension/"%s>Реалізуйте</a> метод %s, щоб зробити його постійним.',
+	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Дякуємо, що користуєтесь Adminer, подумайте про <a href="https://www.adminer.org/en/donation/">внесок</a>.',
+	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Термін дії майстер пароля минув. <a href="https://www.adminer.org/en/extension/"%s>Реалізуйте</a> метод %s, щоб зробити його постійним.',
 	'The action will be performed after successful login with the same credentials.' => 'Дія буде виконуватися після успішного входу в систему з тими ж обліковими даними.',
 	'Connecting to privileged ports is not allowed.' => 'Підключення до привілейованих портів заборонено.',
-	'There is a space in the input password which might be the cause.' => 'У вхідному паролі є пробіл, який може бути причиною.',
-	'If you did not send this request from Adminer then close this page.' => 'Якщо ви не посилали цей запит з Adminer, закрийте цю сторінку.',
-	'You can upload a big SQL file via FTP and import it from server.' => 'Ви можете завантажити великий файл SQL через FTP та імпортувати його з сервера.',
+	'There is a space in the entered password, which might be the cause.' => 'У вхідному паролі є пробіл, який може бути причиною.',
+	'If you did not send this request from Adminer, close this page.' => 'Якщо ви не посилали цей запит з Adminer, закрийте цю сторінку.',
+	'You can upload a large SQL file via FTP and import it from the server.' => 'Ви можете завантажити великий файл SQL через FTP та імпортувати його з сервера.',
 	'Size' => 'Розмір',
 	'Compute' => 'Обчислити',
 	'You are offline.' => 'Ви офлайн.',
@@ -327,8 +327,8 @@ Lang::$translations = array(
 	'You have no privileges to update this table.' => 'Ви не маєте привілеїв для оновлення цієї таблиці.',
 	'Saving…' => 'Збереження…',
 	'Unknown error.' => 'Невідома помилка.',
-	'Database does not support password.' => 'База даних не підтримує пароль.',
-	'Disable %s or enable %s or %s extensions.' => 'Вимкніть %s або увімкніть розширення %s або %s.',
+	'The database does not support passwords.' => 'База даних не підтримує пароль.',
+	'Disable %s or enable the %s or %s extension.' => 'Вимкніть %s або увімкніть розширення %s або %s.',
 	'Check has been dropped.' => 'Перевірку видалено.',
 	'Check has been altered.' => 'Перевірка змінена.',
 	'Check has been created.' => 'Перевірку створено.',

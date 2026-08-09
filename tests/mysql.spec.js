@@ -28,7 +28,7 @@ test('Login', async () => {
 	await page.locator('[name="auth[password]"]').fill('ODBC');
 	await button(page, 'Login').click();
 	await expectExtension(page);
-	await expect(page.locator('body')).toContainText('Logged as');
+	await expect(page.locator('body')).toContainText('Logged in as');
 	await link(page, 'SQL command').click();
 	await goto(page, '/adminer/?username=ODBC&sql=DROP+DATABASE+IF+EXISTS+adminer_test');
 	await button(page, 'Execute').click();
