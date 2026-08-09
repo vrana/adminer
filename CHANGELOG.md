@@ -1,5 +1,7 @@
 ## Adminer dev
 - Use the same font in &lt;textarea> as in &lt;input>, keep monospace in the SQL command and JSON values
+### Plugins
+- Method dumpPrint() to print HTML code in the export form
 ### Internal
 - Check the code style also by Slevomat Coding Standard and the compiled files by PHPCompatibility (composer compat)
 - Enable the PHPStan strict rules which report no error

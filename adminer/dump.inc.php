@@ -223,6 +223,7 @@ echo "<tr><th>" . lang('Tables') . "<td>" . html_select('table_style', $table_st
 echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style, $row["data_style"]);
 ?>
 </table>
+<?php adminer()->dumpPrint(); ?>
 <p><input type='submit' value='<?php echo lang('Export'); ?>'>
 <?php echo input_token(); ?>
 

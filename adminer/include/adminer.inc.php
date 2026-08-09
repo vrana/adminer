@@ -866,6 +866,12 @@ class Adminer {
 		return (support("dump") ? array('sql' => 'SQL') : array()) + array('csv' => 'CSV,', 'csv;' => 'CSV;', 'tsv' => 'TSV');
 	}
 
+	/** Print HTML code in the export form
+	* @return void prints data
+	*/
+	function dumpPrint(): void {
+	}
+
 	/** Export database structure
 	* @return void prints data
 	*/
