@@ -181,7 +181,13 @@ if (isset($_GET["mssql"])) {
 
 				function attach(string $server, string $username, string $password): string {
 					list($host, $port) = host_port($server);
-					return $this->dsn("sqlsrv:Server=$host" . ($port ? ",$port" : ""), $username, $password);
+					// without SQLSRV_ATTR_DIRECT_QUERY, the queries run through sp_prepexec, which reverts SET IDENTITY_INSERT after each of them
+					return $this->dsn(
+						"sqlsrv:Server=$host" . ($port ? ",$port" : ""),
+						$username,
+						$password,
+						array(\PDO::SQLSRV_ATTR_DIRECT_QUERY => true)
+					);
 				}
 			}
 

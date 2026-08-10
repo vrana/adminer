@@ -6,6 +6,7 @@
 - Select: Search only the columns which can hold the searched value, convert the other types to text
 - Select: Modify or delete several rows in a transaction
 - Edit: Keep the JSON value entered by the user after an error, it was replaced by null if it was invalid
+- MS SQL: Fix importing a CSV file to a table with an identity column through PDO, it silently did nothing
 - Elasticsearch: Rename the database from elastic to data
 - Elasticsearch: Redirect to the only database
 - Elasticsearch: Print the executed commands in the messages
