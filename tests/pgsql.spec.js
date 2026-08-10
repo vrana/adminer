@@ -270,8 +270,8 @@ test('Search in tables with special types', async () => {
 	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public&sql=' + encodeURIComponent(sql));
 	await button(page, 'Execute').click();
 	await expect(page.locator('body')).toContainText('Query executed OK');
+	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public');
 	for (const [op, query] of [['LIKE %%', 'abc'], ['LIKE %%', '3'], ['=', 'abc3'], ['~', 'abc'], ['ILIKE %%', 'ABC']]) {
-		await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public');
 		await page.locator('[name="op"]').selectOption(op);
 		await page.locator('[name="query"]').fill(query);
 		await page.locator('[name="search"]').click();
@@ -280,7 +280,6 @@ test('Search in tables with special types', async () => {
 	}
 	// whether these values are found depends on the types of the driver, only the missing error is checked
 	for (const query of ['2020-01-03', '12:34:56', 'ěščř']) {
-		await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public');
 		await page.locator('[name="query"]').fill(query);
 		await page.locator('[name="search"]').click();
 		await expect(page.locator('.error')).toHaveCount(0);
