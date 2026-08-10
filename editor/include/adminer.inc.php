@@ -276,11 +276,15 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	*/
 	private function searchColumns(array $fields): array {
 		$return = array();
+		$table = $_GET["select"];
+		if ($table == "") {
+			return $return; // the search fields are printed only in select, not when searching in all tables
+		}
 		$i = 0;
 		foreach ($fields as $name => $field) {
 			if (
 				isset($field["privileges"]["where"]) && $this->fieldName($field) != "" // the same condition as for $search_columns in select.inc.php
-				&& ($field["type"] == "enum" || like_bool($field) || is_array($this->foreignKeyOptions($_GET["select"], $name)))
+				&& ($field["type"] == "enum" || like_bool($field) || is_array($this->foreignKeyOptions($table, $name)))
 			) {
 				$return[--$i] = $name;
 			}
