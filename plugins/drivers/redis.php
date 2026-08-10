@@ -129,7 +129,7 @@ if (isset($_GET["redis"])) {
 				$server .= ":6379";
 			}
 			list($host, $port) = host_port($server);
-			$this->fp = fsockopen($host, $port, $errno, $error);
+			$this->fp = @fsockopen($host, $port, $errno, $error);
 			if (!$this->fp) {
 				return $error;
 			}
