@@ -276,6 +276,14 @@ if (isset($_GET["mssql"])) {
 			return queries("BEGIN TRANSACTION");
 		}
 
+		function convertSearch(string $idf, array $val, array $field): string {
+			// these types support no comparison operator, not even LIKE, or accept no text value; the other types are converted implicitly
+			return (preg_match('~^(bit|n?text|xml|uniqueidentifier|sql_variant|hierarchyid|geography|geometry)$~', $field["type"])
+				? "CAST($idf AS nvarchar(max))"
+				: $idf
+			);
+		}
+
 		function quoteBinary(string $s): string {
 			return "0x" . bin2hex($s);
 		}

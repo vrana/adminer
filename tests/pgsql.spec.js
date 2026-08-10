@@ -278,6 +278,13 @@ test('Search in tables with special types', async () => {
 		await expect(page.locator('.error')).toHaveCount(0); // a column which can't be searched must be skipped, not reported
 		await expect(page.locator("li a[href*='select=types&where']")).toBeVisible(); // the list of the tables holding the value
 	}
+	// whether these values are found depends on the types of the driver, only the missing error is checked
+	for (const query of ['2020-01-03', '12:34:56', 'ěščř']) {
+		await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public');
+		await page.locator('[name="query"]').fill(query);
+		await page.locator('[name="search"]').click();
+		await expect(page.locator('.error')).toHaveCount(0);
+	}
 	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public&sql=' + encodeURIComponent('DROP TABLE types; DROP TYPE mood'));
 	await button(page, 'Execute').click();
 });

@@ -75,7 +75,7 @@ function int_type(): string {
 function number_type(): string {
 	// the type names are listed instead of matching substrings so that e.g. int4range, interval and point are not treated as numbers
 	// the outer parentheses are the delimiters if the expression is passed to preg_match() alone; the expression is used also by JavaScript
-	return '(^(' . int_type() . '|decimal|numeric|real|(binary_|half_|scaled_)?float\d?|(binary_)?double( precision)?|(small)?money)$)';
+	return '(^(' . int_type() . '|decimal|numeric|number|real|(binary_|half_|scaled_)?float\d?|(binary_)?double( precision)?|(small)?money)$)';
 }
 
 /** Get regular expression to match text types */
@@ -94,22 +94,26 @@ function is_searchable(array $field, array $val): bool {
 	}
 	$type = $field["type"];
 	$search = $val["val"];
-	// blobs are not listed, they are displayed as text; vector is anchored to not match the PostgreSQL tsvector
-	if (preg_match('~binary|bytea|raw|image|bfile|^bit|^vector$~', $type)) {
-		return false; // the value is displayed encoded, a substring of the encoding means nothing
+	// MySQL blobs are not listed, they are displayed as text; vector is anchored to not match the PostgreSQL tsvector
+	$binary = 'binary|bytea|raw|image|bfile|^vector$'
+		. (JUSH == "mssql" ? '|^timestamp$' : '|^bit') // MS SQL timestamp is a row version, its bit is a boolean displayed as 0 and 1
+		. (JUSH == "oracle" ? '|^blob|^long|rowid|xmltype' : '') // Oracle can compare none of its LOBs with a string
+	;
+	if (preg_match("~$binary~", $type)) {
+		return false; // the value is displayed encoded or it can't be compared with a string at all
 	}
 	if (preg_match(number_type(), $type)) {
 		$number = '-?\d+(\.\d+)?';
 		return (bool) preg_match('~^' . $number . (preg_match('~IN$~', $val["op"]) ? "( *, *$number)*" : '') . '$~', $search);
 	}
-	if (preg_match('~^(date|timestamp)~', $type)) {
+	if (preg_match('~^(small)?date|^timestamp~', $type)) {
 		return (bool) preg_match('~^\d+-\d+-\d+~', $search);
 	}
 	if (preg_match('~^time~', $type)) {
 		return (bool) preg_match('~^\d+:\d+~', $search);
 	}
-	if (preg_match('~^bool~', $type)) {
-		return (bool) preg_match('~^(t|f|true|false)$~i', $search);
+	if (preg_match('~^bool~', $type) || (JUSH == "mssql" && $type == "bit")) { // MS SQL has no boolean type, bit holds 0 and 1
+		return (bool) preg_match('~^(t|f|true|false|[01])$~i', $search);
 	}
 	return true; // unknown types are searched, the driver converts them to text
 }

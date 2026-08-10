@@ -211,6 +211,31 @@ test('Search in tables', async () => {
 	await expect(page.locator('body')).toContainText('Michael Jackson');
 });
 
+test('Search in tables with special types', async () => {
+	const sql = 'CREATE TABLE types (id integer PRIMARY KEY, b blob, n integer, d date, tm time, j json, t text);'
+		+ " INSERT INTO types VALUES (1, x'61626333', 3, '2020-01-03', '12:34:56', '{\"a\": 3}', 'abc3')";
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&sql=' + encodeURIComponent(sql));
+	await button(page, 'Execute').click();
+	await expect(page.locator('body')).toContainText('Query executed OK');
+	for (const [op, query] of [['LIKE %%', 'abc'], ['LIKE %%', '3'], ['=', 'abc3'], ['LIKE', '%bc%']]) {
+		await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite');
+		await page.locator('[name="op"]').selectOption(op);
+		await page.locator('[name="query"]').fill(query);
+		await page.locator('[name="search"]').click();
+		await expect(page.locator('.error')).toHaveCount(0); // a column which can't be searched must be skipped, not reported
+		await expect(page.locator("li a[href*='select=types&where']")).toBeVisible(); // the list of the tables holding the value
+	}
+	// whether these values are found depends on the types of the driver, only the missing error is checked
+	for (const query of ['2020-01-03', '12:34:56', 'ěščř']) {
+		await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite');
+		await page.locator('[name="query"]').fill(query);
+		await page.locator('[name="search"]').click();
+		await expect(page.locator('.error')).toHaveCount(0);
+	}
+	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&sql=' + encodeURIComponent('DROP TABLE types'));
+	await button(page, 'Execute').click();
+});
+
 test('Update', async () => {
 	await goto(page, '/adminer/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&edit=albums&where[id]=2');
 	await page.locator('[name="fields[title]"]').fill('Black or White');

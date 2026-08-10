@@ -201,6 +201,33 @@ test('Search in tables', async () => {
 	await expect(page.locator('body')).toContainText('Michael Jackson');
 });
 
+test('Search in tables with special types', async () => {
+	const sql = 'CREATE TABLE types (id int PRIMARY KEY, b bit, bin binary(4), tx text, ntx ntext, x xml,'
+		+ ' u uniqueidentifier, sd smalldatetime, g geography, t varchar(50));'
+		+ " INSERT INTO types VALUES (1, 1, 0x61626333, 'abc3', N'abc3', '<a>abc3</a>',"
+		+ " '00000000-0000-0000-0000-000000000003', '2020-01-03 12:34:00', geography::Point(3, 4, 4326), 'abc3')";
+	await goto(page, '/adminer/?mssql=&username=ODBC&db=adminer_test&ns=dbo&sql=' + encodeURIComponent(sql));
+	await button(page, 'Execute').click();
+	await expect(page.locator('body')).toContainText('Query executed OK');
+	for (const [op, query] of [['LIKE %%', 'abc'], ['LIKE %%', '3'], ['=', 'abc3']]) {
+		await goto(page, '/adminer/?mssql=&username=ODBC&db=adminer_test&ns=dbo');
+		await page.locator('[name="op"]').selectOption(op);
+		await page.locator('[name="query"]').fill(query);
+		await page.locator('[name="search"]').click();
+		await expect(page.locator('.error')).toHaveCount(0); // a column which can't be searched must be skipped, not reported
+		await expect(page.locator("li a[href*='select=types&where']")).toBeVisible(); // the list of the tables holding the value
+	}
+	// whether these values are found depends on the types of the driver, only the missing error is checked
+	for (const query of ['2020-01-03', '12:34:56', 'ěščř']) {
+		await goto(page, '/adminer/?mssql=&username=ODBC&db=adminer_test&ns=dbo');
+		await page.locator('[name="query"]').fill(query);
+		await page.locator('[name="search"]').click();
+		await expect(page.locator('.error')).toHaveCount(0);
+	}
+	await goto(page, '/adminer/?mssql=&username=ODBC&db=adminer_test&ns=dbo&sql=' + encodeURIComponent('DROP TABLE types'));
+	await button(page, 'Execute').click();
+});
+
 test('Update', async () => {
 	await goto(page, '/adminer/?mssql=&username=ODBC&db=adminer_test&ns=dbo&edit=albums&where[id]=2');
 	await page.locator('[name="fields[title]"]').fill('Black or White');
