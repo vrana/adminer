@@ -112,6 +112,7 @@ if ($_POST && !$error) {
 		if ($_POST["save"] || $_POST["delete"]) { // edit
 			$result = true;
 			$affected = 0;
+			$begin = false;
 			$set = array();
 			if (!$_POST["delete"]) {
 				foreach ($fields as $name => $val) {
@@ -139,6 +140,7 @@ if ($_POST && !$error) {
 						$affected += $result->num_rows;
 					}
 				} else {
+					$begin = count((array) $_POST["check"]) > 1 && driver()->begin();
 					foreach ((array) $_POST["check"] as $val) {
 						// where is not unique so OR can't be used
 						$where2 = "\nWHERE " . ($where ? implode(" AND ", $where) . " AND " : "") . where_check($val, $fields);
@@ -154,6 +156,9 @@ if ($_POST && !$error) {
 						}
 						$affected += connection()->affected_rows;
 					}
+					if ($begin && $result && !driver()->commit()) { // $result is not overwritten to keep the Result object for last_id()
+						$result = false;
+					}
 				}
 			}
 			$message = lang('%d item(s) have been affected.', $affected);
@@ -164,6 +169,9 @@ if ($_POST && !$error) {
 				}
 			}
 			queries_redirect(remove_from_uri($_POST["all"] && $_POST["delete"] ? "page|next" : ""), $message, $result);
+			if ($begin) {
+				driver()->rollback(); // after queries_redirect() to not overwrite error
+			}
 			if (!$_POST["delete"]) {
 				$post_fields = (array) $_POST["fields"];
 				edit_form($TABLE, array_intersect_key($fields, $post_fields), $post_fields, !$_POST["clone"], $error);
@@ -174,6 +182,7 @@ if ($_POST && !$error) {
 		} elseif (!$_POST["import"]) { // modify
 			$result = true;
 			$affected = 0;
+			$begin = count((array) $_POST["val"]) > 1 && driver()->begin();
 			foreach ((array) $_POST["val"] as $unique_idf => $row) {
 				$set = array();
 				foreach ($row as $key => $val) {
@@ -193,7 +202,13 @@ if ($_POST && !$error) {
 				}
 				$affected += connection()->affected_rows;
 			}
+			if ($begin) {
+				$result = $result && driver()->commit();
+			}
 			queries_redirect(remove_from_uri(), lang('%d item(s) have been affected.', $affected), $result);
+			if ($begin) {
+				driver()->rollback(); // after queries_redirect() to not overwrite error
+			}
 
 		} elseif (!is_string($file = get_file("csv_file", true))) {
 			$error = upload_error($file);

@@ -4,6 +4,7 @@
 - Database schema: Arrange the tables in a grid by their foreign keys instead of in one column
 - Database schema: Do not display the tables hidden by tableName() and the references to them
 - Select: Search only the columns which can hold the searched value, convert the other types to text
+- Select: Modify or delete several rows in a transaction
 - Elasticsearch: Rename the database from elastic to data
 - Elasticsearch: Redirect to the only database
 - Elasticsearch: Print the executed commands in the messages
