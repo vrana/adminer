@@ -38,10 +38,19 @@ $referenced = array(); // target_table => array(table => array(left => target_co
 /** @var array<string, mixed[][]> */
 $foreign_keys = array(); // table => foreign keys
 $all_fields = driver()->allFields();
+/** @var bool[] */
+$hidden = array(); // tables hidden by a plugin, their references are not displayed either
+$table_statuses = array();
 foreach (table_status('', true) as $table => $table_status) {
-	if (is_view($table_status)) {
-		continue;
+	if (!is_view($table_status)) {
+		if (adminer()->tableName($table_status) != "") {
+			$table_statuses[$table] = $table_status;
+		} else {
+			$hidden[$table] = true;
+		}
 	}
+}
+foreach ($table_statuses as $table => $table_status) {
 	$pos = 0;
 	$schema[$table]["fields"] = array();
 	foreach ($all_fields[$table] as $field) {
@@ -50,7 +59,7 @@ foreach (table_status('', true) as $table => $table_status) {
 		$schema[$table]["fields"][$field["field"]] = $field;
 	}
 	foreach (adminer()->foreignKeys($table) as $val) {
-		if (!$val["db"]) {
+		if (!$val["db"] && !$hidden[$val["table"]]) {
 			$foreign_keys[$table][] = $val;
 			$referenced[$val["table"]][$table] = array(); // the lefts are computed after the layout
 		}
