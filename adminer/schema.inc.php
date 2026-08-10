@@ -92,16 +92,17 @@ foreach ($columns as $name => $column) {
 foreach ($schema as $name => $table) {
 	$column = $columns[$name];
 	$grid[$column][] = $name;
-	$chars = strlen($name);
+	$text_width = .75 * strlen($name); // the table name is bold so its characters are wider than the columns
 	foreach ($table["fields"] as $field) {
-		$chars = max($chars, strlen($field["field"]));
+		$text_width = max($text_width, .65 * strlen($field["field"]));
 	}
 	// strlen() overestimates multi-byte names on purpose, a too narrow column would be overlapped by the reference lines
-	$widths[$column] = max(idx($widths, $column, 0), ceil(.7 * $chars) + 1); // whole em keeps the computed positions free of rounding errors
+	$widths[$column] = max(idx($widths, $column, 0), ceil($text_width) + 1); // whole em keeps the computed positions free of rounding errors
 }
 foreach ($foreign_keys as $name => $vals) {
 	foreach ($vals as $val) {
-		$gutter = min($columns[$name], idx($columns, $val["table"], $columns[$name]));
+		// the line is drawn right of the referencing table, or left of it if the referenced table is not in a column to the right
+		$gutter = $columns[$name] + (idx($columns, $val["table"], $columns[$name]) > $columns[$name] ? 1 : 0);
 		$gutters[$gutter] = idx($gutters, $gutter, 0) + 1;
 	}
 }
@@ -113,9 +114,12 @@ $column_left = 0;
 $prev_column = null;
 /** @var float[] */
 $table_left = array(); // table => left
+/** @var float[] */
+$table_width = array(); // table => width of its column
 foreach ($grid as $column => $tables) {
 	if ($prev_column !== null) {
-		$column_left = round($column_left + $widths[$prev_column] + 1 + idx($gutters, $column, 0) * .1, 1); // round() to not print the rounding errors of .1
+		// 1 em for the reference line, .7 em of space, round() to not print the rounding errors of .1
+		$column_left = round($column_left + $widths[$prev_column] + 1.7 + idx($gutters, $column, 0) * .1, 1);
 		// order the tables by the average position of the tables they are connected to
 		$order = array();
 		foreach ($tables as $name) {
@@ -137,6 +141,7 @@ foreach ($grid as $column => $tables) {
 		$pos = 1.25 * count($schema[$name]["fields"]);
 		$schema[$name]["pos"] = ($table_pos[$name] ?: array($top, $column_left)); // the saved position wins but the table still occupies its slot
 		$table_left[$name] = $schema[$name]["pos"][1];
+		$table_width[$name] = $widths[$column];
 		$top += 2.5 + $pos;
 		$height = max($height, $schema[$name]["pos"][0] + 2.5 + $pos);
 		$width = max($width, round($schema[$name]["pos"][1] + $widths[$column], 1));
@@ -147,16 +152,19 @@ foreach ($grid as $column => $tables) {
 	$prev_column = $column;
 }
 
-// draw the reference lines in the gutter left of the leftmost of the two tables
+// draw the reference lines 1 em right of the referencing table, the referenced table connects to them by its left edge
 /** @var array<numeric-string, bool> */
 $lefts = array();
 $base_lefts = array();
 foreach ($foreign_keys as $name => $vals) {
 	foreach ($vals as $val) {
-		$left = min($table_left[$name], idx($table_left, $val["table"], $table_left[$name])) - 1;
+		$target_left = idx($table_left, $val["table"], $table_left[$name]);
+		$source_right = $table_left[$name] + $table_width[$name];
+		$right = ($target_left - 1 > $source_right); // a self-reference or a dragged table can put the referenced table elsewhere, then draw the line left of both, as before 6.0.1
+		$left = ($right ? $source_right + 1 : min($table_left[$name], $target_left) - 1);
 		$base = idx($base_lefts, (string) $left, 0);
 		$base_lefts[(string) $left] = $base + 1;
-		$left = round($left - $base * .1, 1);
+		$left = round($right ? min($left + $base * .1, $target_left - 1) : $left - $base * .1, 1);
 		while ($lefts[(string) $left]) {
 			// find free $left
 			$left -= .0001;
@@ -178,7 +186,8 @@ document.onmouseup = event => schemaMouseup(event, '<?php echo js_escape(DB); ?>
 </script>
 <?php
 foreach ($schema as $name => $table) {
-	echo "<div class='table'" . on('mousedown', 'schemaMousedown') . " style='top: " . $table["pos"][0] . "em; left: " . $table["pos"][1] . "em;'>";
+	// the width is definite so that the browser doesn't have to measure the table to resolve the 100% of the references
+	echo "<div class='table'" . on('mousedown', 'schemaMousedown') . " style='top: " . $table["pos"][0] . "em; left: " . $table["pos"][1] . "em; width: " . $table_width[$name] . "em;'>";
 	echo '<a href="' . h(ME) . 'table=' . url_escape($name) . '"><b>' . h($name) . "</b></a>";
 
 	foreach ($table["fields"] as $field) {
@@ -191,11 +200,15 @@ foreach ($schema as $name => $table) {
 	foreach ((array) $table["references"] as $target_name => $refs) {
 		foreach ($refs as $left => $ref) {
 			$left1 = $left - $table["pos"][1];
+			// a positive $left1 means that the target is in a column to the right, then the line leaves this table on its right edge
+			// 100% is the width of the table which is not known here, calc() lets the browser compute it
+			$style = ($left1 > 0 ? "left: 100%; width: calc($left1" . "em - 100%)" : "left: $left1" . "em");
+			$width = ($left1 > 0 ? "100%" : (-$left1) . "em");
 			$i = 0;
 			foreach ($ref[0] as $source) {
-				echo "\n<div class='references' title='" . h($target_name) . "' id='refs$left-" . ($i++) . "' style='left: $left1"
-					. "em; top: " . $field_pos[$name][$source] . "em; padding-top: .5em;'>"
-					. "<div style='border-top: 1px solid gray; width: " . (-$left1) . "em;'></div></div>"
+				echo "\n<div class='references' title='" . h($target_name) . "' id='refs$left-" . ($i++) . "' style='$style"
+					. "; top: " . $field_pos[$name][$source] . "em; padding-top: .5em;'>"
+					. "<div style='border-top: 1px solid gray; width: $width;'></div></div>"
 				;
 			}
 		}

@@ -827,6 +827,25 @@ function schemaMousedown(event) {
 	}
 }
 
+/** Connect one end of a reference to the vertical line
+* @param {HTMLElement} div .references inside the table
+* @param {number} line position of the vertical line in em
+* @param {number} table position of the table in em
+*/
+function schemaRef(div, line, table) {
+	const left = line - table;
+	const inner = div.querySelector('div');
+	if (left > 0) { // the line is right of the table so the reference leaves it on its right edge, 100% is the width of the table
+		div.style.left = '100%';
+		div.style.width = 'calc(' + left + 'em - 100%)';
+		inner.style.width = '100%';
+	} else {
+		div.style.left = left + 'em';
+		div.style.width = '';
+		inner.style.width = -left + 'em';
+	}
+}
+
 /** Move object
 * @param {MouseEvent} event
 */
@@ -842,15 +861,17 @@ function schemaMousemove(event) {
 					continue;
 				}
 				const ref = (tablePos[div.title] || tablePosDefault[div.title] || [ div2.parentNode.offsetTop / em, div2.parentNode.offsetLeft / em ]);
-				let left1 = -1;
 				const id = div.id.replace(/^ref.(.+)-.+/, '$1');
+				let lineLeft = left - 1; // a self-reference, the line is left of the table
 				if (div.parentNode != div2.parentNode) {
-					left1 = Math.min(0, ref[1] - left) - 1;
-					div.style.left = left1 + 'em';
-					div.querySelector('div').style.width = -left1 + 'em';
-					const left2 = Math.min(0, left - ref[1]) - 1;
-					div2.style.left = left2 + 'em';
-					div2.querySelector('div').style.width = -left2 + 'em';
+					const refs = /^refs/.test(div.id); // refs is in the referencing table, refd in the referenced one
+					const source = (refs ? left : ref[1]);
+					const target = (refs ? ref[1] : left);
+					const width = (refs ? that : div2.parentNode).offsetWidth / em;
+					// 1 em right of the referencing table, unless the referenced table is not right of it - then left of both
+					lineLeft = (target - 1 > source + width ? source + width + 1 : Math.min(source, target) - 1);
+					schemaRef(div, lineLeft, left);
+					schemaRef(div2, lineLeft, ref[1]);
 				}
 				if (!lineSet[id]) {
 					const line = qs('[id="' + div.id.replace(/^....(.+)-.+$/, 'refl$1') + '"]');
@@ -860,7 +881,7 @@ function schemaMousemove(event) {
 						top2 += ref[0] - top;
 						line.querySelector('div').style.height = Math.abs(top1 - top2) + 'em';
 					}
-					line.style.left = (left + left1) + 'em';
+					line.style.left = lineLeft + 'em';
 					line.style.top = Math.min(top1, top2) + 'em';
 					lineSet[id] = true;
 				}

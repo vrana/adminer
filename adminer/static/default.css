@@ -109,7 +109,7 @@ td.check { text-align: right; } /* to display the checkboxes next to the data */
 #version, .plugins .update { color: red; }
 #version iframe { pointer-events: none; border: 0; width: 7ex; height: 1.25em; vertical-align: text-bottom; }
 #schema { margin-left: 60px; position: relative; user-select: none; -webkit-user-select: none; }
-#schema .table { border: 1px solid silver; padding: 0 2px; cursor: move; position: absolute; }
+#schema .table { border: 1px solid silver; padding: 0 2px; cursor: move; position: absolute; box-sizing: border-box; }
 #schema .references { position: absolute; }
 #help { position: absolute; border: 1px solid #999; background: var(--dim); padding: 5px; font-family: monospace; z-index: 1; }
 :target { background: var(--lit); }
