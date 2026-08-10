@@ -25,9 +25,10 @@ test('Login', async () => {
 	await page.locator('#username').fill('ODBC');
 	await page.locator('[name="auth[password]"]').fill('YOUR_PASSWORD_HERE');
 	await button(page, 'Login').click();
-	await expect(page.locator('body')).toContainText('JSON');
+	await expect(page.locator('#breadcrumb')).toContainText('OpenSearch'); // the login goes directly to the only database
+	await goto(page, '/adminer/elastic.php?elastic=localhost&username=ODBC&db=');
+	await expect(page.locator('body')).toContainText('JSON'); // the list of databases stays available at &db=
 	await goto(page, '/adminer/elastic.php?elastic=localhost&username=ODBC&db=data');
-	await expect(page.locator('#breadcrumb')).toContainText('OpenSearch');
 	if (await page.locator(interprets).count()) { // an index left by an interrupted run
 		await page.locator(interprets).click();
 		await page.locator('[name="drop"]').click();
