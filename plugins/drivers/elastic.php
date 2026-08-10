@@ -13,10 +13,18 @@ if (isset($_GET["elastic"])) {
 			private $url;
 			/** @var array[] */ private $cache = array(); // results of cachedQuery()
 
-			/**
+			/** Perform a request to the server
+			 * @param bool $log remember the command to print it in the message, use it for the commands modifying data
 			 * @return array|false
 			 */
-			function rootQuery($path, $content = null, $method = 'GET') {
+			function rootQuery($path, $content = null, $method = 'GET', $log = false) {
+				if ($log) {
+					if (!Queries::$start) {
+						Queries::$start = microtime(true);
+					}
+					// the same format as in Driver::select(), queries() is not used because it would append the SQL delimiter
+					Queries::$queries[] = "$method $path" . ($content !== null ? ": " . json_encode($content) : "");
+				}
 				list($file, $status, , $error) = get_url("$this->url/" . ltrim($path, '/'), stream_context_create(array(
 					'ssl' => $this->sslOptions(),
 					'http' => array(
@@ -228,7 +236,7 @@ if (isset($_GET["elastic"])) {
 			$search = $this->conn->rootQuery($query, ($data ?: null));
 
 			if ($print) {
-				echo adminer()->selectQuery("$query: " . json_encode($data), $start, !$search);
+				echo adminer()->selectQuery("GET $query: " . json_encode($data), $start, !$search);
 			}
 			if (empty($search)) {
 				return false;
@@ -331,7 +339,7 @@ if (isset($_GET["elastic"])) {
 				$id = trim($parts[1]);
 				$query = "$table/_update/$id?refresh=true"; // the redirect displays the data so they must be searchable
 				$this->conn->affected_rows = 0;
-				return $this->conn->rootQuery($query, array('doc' => $this->castRecord($table, $set)), 'POST');
+				return $this->conn->rootQuery($query, array('doc' => $this->castRecord($table, $set)), 'POST', true);
 			}
 
 			return false;
@@ -348,7 +356,7 @@ if (isset($_GET["elastic"])) {
 					unset($record[$key]);
 				}
 			}
-			$response = $this->conn->rootQuery("$query?refresh=true", $this->castRecord($type, $record), 'POST'); // the redirect displays the data so they must be searchable
+			$response = $this->conn->rootQuery("$query?refresh=true", $this->castRecord($type, $record), 'POST', true); // the redirect displays the data so they must be searchable
 			if ($response == false) {
 				return false;
 			}
@@ -376,7 +384,7 @@ if (isset($_GET["elastic"])) {
 
 			foreach ($ids as $id) {
 				$query = "$table/_doc/$id?refresh=true";
-				$response = $this->conn->rootQuery($query, null, 'DELETE');
+				$response = $this->conn->rootQuery($query, null, 'DELETE', true);
 				if (isset($response['result']) && $response['result'] == 'deleted') {
 					$this->conn->affected_rows++;
 				}
@@ -654,22 +662,22 @@ if (isset($_GET["elastic"])) {
 				connection()->error = 'Renaming indexes is not supported.';
 				return false;
 			}
-			return ($properties ? connection()->rootQuery(urlencode($name) . "/_mapping", $properties, 'POST') : true);
+			return ($properties ? connection()->rootQuery(urlencode($name) . "/_mapping", $properties, 'POST', true) : true);
 		}
-		return connection()->rootQuery(urlencode($name), array('mappings' => $properties), 'PUT');
+		return connection()->rootQuery(urlencode($name), array('mappings' => $properties), 'PUT', true);
 	}
 
 	function drop_views(array $tables): bool {
 		$return = connection()->rootQuery('_aliases', array('actions' => array_map(function ($table) {
 			return array('remove' => array('index' => '*', 'alias' => $table));
-		}, $tables)), 'POST');
+		}, $tables)), 'POST', true);
 		return $return && !$return['errors'];
 	}
 
 	function drop_tables(array $tables): bool {
 		$return = true;
 		foreach ($tables as $table) { //! convert to bulk api
-			$return = $return && connection()->rootQuery(urlencode($table), null, 'DELETE');
+			$return = $return && connection()->rootQuery(urlencode($table), null, 'DELETE', true);
 		}
 		return $return;
 	}
