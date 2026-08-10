@@ -271,7 +271,7 @@ if (!defined('Adminer\DRIVER')) {
 			return (preg_match("~binary~", $field["type"]) ? "<code class='jush-sql'>UNHEX</code>"
 				: ($field["type"] == "bit" ? doc_link(array('sql' => 'bit-value-literals.html'), "<code>b''</code>")
 				: ($field["type"] == "vector" ? "<code class='jush-sql'>" . ($this->conn->flavor == 'maria' ? "VEC_FromText" : "STRING_TO_VECTOR") . "</code>"
-				: (preg_match("~geometry|point|linestring|polygon~", $field["type"]) ? "<code class='jush-sql'>GeomFromText</code>"
+				: (preg_match("~geom|point|linestring|polygon~", $field["type"]) ? "<code class='jush-sql'>GeomFromText</code>"
 				: ""))));
 		}
 
@@ -314,10 +314,34 @@ if (!defined('Adminer\DRIVER')) {
 			}
 		}
 
+		/** Convert column to the value displayed in select
+		* @param string $idf escaped column name
+		* @param Field $field
+		* @return string empty if the value is displayed as it is stored
+		*/
+		function convertColumn(string $idf, array $field): string {
+			if (preg_match("~binary~", $field["type"])) {
+				return "HEX($idf)";
+			}
+			if ($field["type"] == "bit") {
+				return "BIN($idf + 0)"; // + 0 is required outside MySQLnd
+			}
+			if ($field["type"] == "vector") {
+				return ($this->conn->flavor == 'maria' ? "VEC_ToText" : "VECTOR_TO_STRING") . "($idf)";
+			}
+			if (preg_match("~geom|point|linestring|polygon~", $field["type"])) {
+				return (min_version(8) ? "ST_" : "") . "AsWKT($idf)";
+			}
+			return "";
+		}
+
 		function convertSearch(string $idf, array $val, array $field): string {
-			return (preg_match('~char|text|enum|set~', $field["type"]) && !preg_match("~^utf8~", $field["collation"]) && preg_match('~[\x80-\xFF]~', $val['val'])
-				? "CONVERT($idf USING " . charset($this->conn) . ")"
-				: $idf
+			// the searched value is compared with the value displayed in select
+			return ($this->convertColumn($idf, $field)
+				?: (preg_match('~' . text_type() . '~', $field["type"]) && !preg_match("~^utf8~", $field["collation"]) && preg_match('~[\x80-\xFF]~', $val['val'])
+					? "CONVERT($idf USING " . charset($this->conn) . ")"
+					: $idf
+				)
 			);
 		}
 
@@ -1082,21 +1106,10 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 
 	/** Convert field in select and edit
 	* @param Field $field
-	* @return string|void
+	* @return string empty if the value is displayed as it is stored
 	*/
-	function convert_field(array $field) {
-		if (preg_match("~binary~", $field["type"])) {
-			return "HEX(" . idf_escape($field["field"]) . ")";
-		}
-		if ($field["type"] == "bit") {
-			return "BIN(" . idf_escape($field["field"]) . " + 0)"; // + 0 is required outside MySQLnd
-		}
-		if ($field["type"] == "vector") {
-			return (connection()->flavor == 'maria' ? "VEC_ToText" : "VECTOR_TO_STRING") . "(" . idf_escape($field["field"]) . ")";
-		}
-		if (preg_match("~geometry|point|linestring|polygon~", $field["type"])) {
-			return (min_version(8) ? "ST_" : "") . "AsWKT(" . idf_escape($field["field"]) . ")";
-		}
+	function convert_field(array $field): string {
+		return driver()->convertColumn(idf_escape($field["field"]), $field);
 	}
 
 	/** Convert value in edit after applying functions back
@@ -1113,7 +1126,7 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 		if ($field["type"] == "vector") {
 			$return = (connection()->flavor == 'maria' ? "VEC_FromText" : "STRING_TO_VECTOR") . "($return)";
 		}
-		if (preg_match("~geometry|point|linestring|polygon~", $field["type"])) {
+		if (preg_match("~geom|point|linestring|polygon~", $field["type"])) {
 			$prefix = (min_version(8) ? "ST_" : "");
 			$return = $prefix . "GeomFromText($return, $prefix" . "SRID($field[field]))";
 		}

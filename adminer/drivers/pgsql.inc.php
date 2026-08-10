@@ -375,12 +375,15 @@ if (isset($_GET["pgsql"])) {
 		}
 
 		function convertSearch(string $idf, array $val, array $field): string {
-			$textTypes = "char|text";
-			if (strpos($val["op"], "LIKE") === false) {
-				$textTypes .= "|date|time(stamp)?|boolean|uuid|inet|cidr|macaddr|range|" . number_type();
-			}
-
-			return (preg_match("~$textTypes~", $field["type"]) ? $idf : "CAST($idf AS text)");
+			// comparing the text representation never fails, use the column as is only where the text would be compared differently
+			$pattern = preg_match('(LIKE|^!?~)', $val["op"]); // the parentheses are the delimiters because ~ is an operator
+			// the types are listed instead of matching substrings because a user type can be named e.g. enum and it supports no operator
+			$native = preg_match('~^(character( varying)?|text|citext|bpchar|name)$~', $field["type"])
+				|| (!$pattern && preg_match('~' . number_type() . '|^(date|time|timetz|timestamp|timestamptz|boolean)$~', $field["type"]));
+			return ($native && !preg_match('~\[]$~', $field["full_type"]) // an array has the type of its elements
+				? $idf
+				: "CAST($idf AS text)"
+			);
 		}
 
 		function quoteBinary(string $s): string {
@@ -575,6 +578,8 @@ AND relnamespace = " . driver()->nsOid . "
 		$aliases = array(
 			'timestamp without time zone' => 'timestamp',
 			'timestamp with time zone' => 'timestamptz',
+			'time without time zone' => 'time',
+			'time with time zone' => 'timetz',
 		);
 		foreach (
 			get_rows("SELECT

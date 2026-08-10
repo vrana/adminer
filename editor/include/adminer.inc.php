@@ -419,13 +419,15 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 				$where["op"] = ($field && ($field["type"] == "enum" || like_bool($field)) ? "" : "=");
 				$_GET["where"][$key] = $where; // used by the New item link in select.inc.php
 			}
+			// the search box in the database overview sends no operator
+			$where += array("col" => "", "op" => "", "val" => "");
 			$col = $where["col"];
 			$op = $where["op"];
 			$val = $where["val"];
 			if (($key >= 0 && $col != "") || $val != "") {
 				$conds = array();
 				foreach (($col != "" ? array($col => $fields[$col]) : $fields) as $name => $field) {
-					if ($col != "" || is_numeric($val) || !preg_match(number_type(), $field["type"])) {
+					if ($col != "" || is_searchable($field, $where)) {
 						$name = idf_escape($name);
 						if ($col != "" && $field["type"] == "enum") {
 							$in = array();
@@ -434,8 +436,9 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 							}
 							$conds[] = (in_array("null", $val) ? "$name IS NULL OR " : "") . ($in ? "$name IN (" . implode(", ", $in) . ")" : "0");
 						} else {
-							$text_type = preg_match('~char|text|enum|set~', $field["type"]);
-							$value = adminer()->processInput($field, (!$op && $text_type && preg_match('~^[^%]+$~', $val) ? "%$val%" : $val));
+							$text_type = preg_match('~' . text_type() . '~', $field["type"]);
+							// the searched value is compared with the value displayed in select, so it is not passed through unconvert_field()
+							$value = q(!$op && $text_type && preg_match('~^[^%]+$~', $val) ? "%$val%" : $val);
 							$conds[] = driver()->convertSearch($name, $where, $field) . ($value == "NULL" ? " IS" . ($op == ">=" ? " NOT" : "") . " $value"
 								: (in_array($op, adminer()->operators()) || $op == "=" ? " $op $value"
 								: ($text_type ? " LIKE $value"

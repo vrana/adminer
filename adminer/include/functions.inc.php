@@ -78,6 +78,50 @@ function number_type(): string {
 	return '(^(' . int_type() . '|decimal|numeric|real|(binary_|half_|scaled_)?float\d?|(binary_)?double( precision)?|(small)?money)$)';
 }
 
+/** Get regular expression to match text types */
+function text_type(): string {
+	return 'char|text|enum|set';
+}
+
+/** Get regular expression to match types whose value is displayed encoded */
+function binary_type(): string {
+	// blobs are not listed, they are displayed as text; bit is displayed as its binary representation
+	// vector is anchored to not match the PostgreSQL tsvector
+	return 'binary|bytea|raw|image|bfile|^bit|^vector$';
+}
+
+/** Check whether it makes sense to search the field for the value when searching in all columns
+* @param Field $field
+* @param array{op: string, val: string} $val
+*/
+function is_searchable(array $field, array $val): bool {
+	if (!isset($field["privileges"]["where"])) {
+		return false;
+	}
+	$type = $field["type"];
+	$search = $val["val"];
+	if (preg_match('~' . binary_type() . '~', $type)) {
+		return false; // a substring of the encoded value means nothing
+	}
+	if (preg_match("~[\x80-\xFF]~", $search)) {
+		return (bool) preg_match('~' . text_type() . '~', $type); // other types never hold non-ASCII characters
+	}
+	if (preg_match(number_type(), $type)) {
+		$number = '-?\d+(\.\d+)?';
+		return (bool) preg_match('~^' . $number . (preg_match('~IN$~', $val["op"]) ? "( *, *$number)*" : '') . '$~', $search);
+	}
+	if (preg_match('~^(date|timestamp)~', $type)) {
+		return (bool) preg_match('~^\d+-\d+-\d+~', $search);
+	}
+	if (preg_match('~^time~', $type)) {
+		return (bool) preg_match('~^\d+:\d+~', $search);
+	}
+	if (preg_match('~^bool~', $type)) {
+		return (bool) preg_match('~^(t|f|true|false)$~i', $search);
+	}
+	return true; // unknown types are searched, the driver converts them to text
+}
+
 /** Disable magic_quotes_gpc
 * @param mixed[] $values
 * @param bool $filter whether to leave values as is

@@ -224,6 +224,22 @@ function process_length(?string $length): string {
 	);
 }
 
+/** Create the list of values of the IN operator in select
+* @return string SQL expression in parentheses
+*/
+function process_in(string $val): string {
+	$enum_length = driver()->enumLength;
+	if (preg_match("~^\\s*\\(?\\s*$enum_length(?:\\s*,\\s*$enum_length)*+\\s*\\)?\\s*\$~", $val) && preg_match_all("~$enum_length~", $val, $matches)) {
+		return "(" . implode(", ", $matches[0]) . ")";
+	}
+	$return = array();
+	foreach (explode(",", $val) as $item) {
+		// the values are quoted also if they are numbers, an unquoted number can't be compared with a text column
+		$return[] = q(trim($item));
+	}
+	return "(" . implode(", ", $return) . ")";
+}
+
 /** Create SQL string from field type
 * @param FieldType $field
 */

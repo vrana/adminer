@@ -3,6 +3,7 @@
 - Create table: Print the success message in drivers not using SQL, e.g. Elasticsearch (regression from 6.0.0)
 - Database schema: Arrange the tables in a grid by their foreign keys instead of in one column
 - Database schema: Do not display the tables hidden by tableName() and the references to them
+- Select: Search only the columns which can hold the searched value, convert the other types to text
 - Elasticsearch: Rename the database from elastic to data
 - Elasticsearch: Redirect to the only database
 - Elasticsearch: Print the executed commands in the messages

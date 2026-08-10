@@ -242,6 +242,24 @@ test('Search in tables', async () => {
 	await expect(page.locator('body')).toContainText('Michael Jackson');
 });
 
+test('Search in tables with special types', async () => {
+	const sql = "CREATE TABLE types (id int PRIMARY KEY, b bit(3), bin binary(4), g point, j json, t text);"
+		+ " INSERT INTO types VALUES (1, b'101', 'abc3', ST_GeomFromText('POINT(3 4)'), '{\"a\": 3}', 'abc3')";
+	await goto(page, '/adminer/?username=ODBC&db=adminer_test&sql=' + encodeURIComponent(sql));
+	await button(page, 'Execute').click();
+	await expect(page.locator('body')).toContainText('Query executed OK');
+	for (const [op, query] of [['LIKE %%', 'abc'], ['LIKE %%', '3'], ['=', 'abc3'], ['REGEXP', 'abc']]) {
+		await goto(page, '/adminer/?username=ODBC&db=adminer_test');
+		await page.locator('[name="op"]').selectOption(op);
+		await page.locator('[name="query"]').fill(query);
+		await page.locator('[name="search"]').click();
+		await expect(page.locator('.error')).toHaveCount(0); // a column which can't be searched must be skipped, not reported
+		await expect(page.locator("li a[href*='select=types&where']")).toBeVisible(); // the list of the tables holding the value
+	}
+	await goto(page, '/adminer/?username=ODBC&db=adminer_test&sql=' + encodeURIComponent('DROP TABLE types'));
+	await button(page, 'Execute').click();
+});
+
 test('Update', async () => {
 	await goto(page, '/adminer/?username=ODBC&db=adminer_test&edit=albums&where[id]=2');
 	await page.locator('[name="fields[title]"]').fill('Black or White');

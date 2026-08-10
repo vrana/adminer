@@ -655,26 +655,19 @@ class Adminer {
 					$prefix = "";
 					$cond = " $val[op]";
 					if (preg_match('~IN$~', $val["op"])) {
-						$in = process_length($val["val"]);
-						$cond .= " " . ($in != "" ? $in : "(NULL)");
+						$cond .= " " . ($val["val"] != "" ? process_in($val["val"]) : "(NULL)");
 					} elseif ($val["op"] == "SQL") {
 						$cond = " $val[val]"; // SQL injection
 					} elseif (preg_match('~^(I?LIKE) %%$~', $val["op"], $match)) {
-						$cond = " $match[1] " . adminer()->processInput($field, "%$val[val]%");
+						// the searched value is compared with the value displayed in select, so it is not passed through unconvert_field()
+						$cond = " $match[1] " . q("%$val[val]%");
 					} elseif ($val["op"] == "FIND_IN_SET") {
 						$prefix = "$val[op](" . q($val["val"]) . ", ";
 						$cond = ")";
 					} elseif (!preg_match('~NULL$~', $val["op"])) {
-						$cond .= " " . adminer()->processInput($field, $val["val"]);
+						$cond .= " " . q($val["val"]);
 					}
-					if (
-						$col != "" || ( // find anywhere
-							isset($field["privileges"]["where"])
-							&& (preg_match('~^[-\d.' . (preg_match('~IN$~', $val["op"]) ? ',' : '') . ']+$~', $val["val"]) || !preg_match('~' . number_type() . '|bit~', $field["type"]))
-							&& (!preg_match("~[\x80-\xFF]~", $val["val"]) || preg_match('~char|text|enum|set~', $field["type"]))
-							&& (!preg_match('~date|timestamp~', $field["type"]) || preg_match('~^\d+-\d+-\d+~', $val["val"]))
-						)
-					) {
+					if ($col != "" || is_searchable($field, $val)) { // search anywhere
 						$conds[] = $prefix . driver()->convertSearch(idf_escape($name), $val, $field) . $cond;
 					}
 				}
