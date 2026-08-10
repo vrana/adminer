@@ -47,7 +47,7 @@ export default [
 				jush: false, jushLinks: false,
 				offlineMessage: false, thousandsSeparator: false, urlSeparators: false, // include/design.inc.php
 				indexColumns: false, // select.inc.php
-				tablePos: false, em: false, // schema.inc.php
+				tablePos: false, tablePosDefault: false, em: false, // schema.inc.php
 			}
 		},
 		rules: {

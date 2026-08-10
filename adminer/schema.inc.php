@@ -3,9 +3,26 @@ namespace Adminer;
 
 page_header(lang('Database schema'), "", array(), h(DB . ($_GET["ns"] ? ".$_GET[ns]" : "")));
 
+/** Get the column of a table, the referenced tables are placed right of the tables referencing them
+* @param array<string, mixed[]> $referenced target table => referencing tables
+* @param int[] $columns table => column, the computed columns are added to it
+*/
+function schema_column(string $table, array $referenced, array &$columns): int {
+	if (!isset($columns[$table])) {
+		$columns[$table] = 0; // stops the recursion in reference cycles
+		foreach ((array) idx($referenced, $table) as $name => $refs) {
+			if ($name != $table) { // a self-reference doesn't move the table
+				$columns[$table] = max($columns[$table], schema_column($name, $referenced, $columns) + 1);
+			}
+		}
+	}
+	return $columns[$table];
+}
+
 /** @var array{float, float}[] */
 $table_pos = array();
 $table_pos_js = array();
+$table_pos_default = array();
 /** @var float[][] */
 $field_pos = array(); // table => field => position
 $SCHEMA = ($_GET["schema"] ?: $_COOKIE["adminer_schema-" . str_replace(".", "_", DB)]); // $_COOKIE["adminer_schema"] was used before 3.2.0 //! ':' in table name
@@ -15,13 +32,11 @@ foreach ($matches as $i => $match) {
 	$table_pos_js[] = "\n\t'" . js_escape($match[1]) . "': [ $match[2], $match[3] ]";
 }
 
-$top = 0;
-$base_left = -1;
 /** @var array{fields:Field[], pos:array{float, float}, references:string[][][]}[] */
 $schema = array(); // table => array("fields" => array(name => field), "pos" => array(top, left), "references" => array(table => array(left => array(source, target))))
 $referenced = array(); // target_table => array(table => array(left => target_column))
-/** @var array<numeric-string, bool> */
-$lefts = array();
+/** @var array<string, mixed[][]> */
+$foreign_keys = array(); // table => foreign keys
 $all_fields = driver()->allFields();
 foreach (table_status('', true) as $table => $table_status) {
 	if (is_view($table_status)) {
@@ -34,32 +49,120 @@ foreach (table_status('', true) as $table => $table_status) {
 		$field_pos[$table][$field["field"]] = $pos;
 		$schema[$table]["fields"][$field["field"]] = $field;
 	}
-	$schema[$table]["pos"] = ($table_pos[$table] ?: array($top, 0));
 	foreach (adminer()->foreignKeys($table) as $val) {
 		if (!$val["db"]) {
-			$left = $base_left;
-			if (idx($table_pos[$table], 1) || idx($table_pos[$val["table"]], 1)) {
-				$left = min(idx($table_pos[$table], 1, 0), idx($table_pos[$val["table"]], 1, 0)) - 1;
-			} else {
-				$base_left -= .1;
-			}
-			while ($lefts[(string) $left]) {
-				// find free $left
-				$left -= .0001;
-			}
-			$schema[$table]["references"][$val["table"]][(string) $left] = array($val["source"], $val["target"]);
-			$referenced[$val["table"]][$table][(string) $left] = $val["target"];
-			$lefts[(string) $left] = true;
+			$foreign_keys[$table][] = $val;
+			$referenced[$val["table"]][$table] = array(); // the lefts are computed after the layout
 		}
 	}
-	$top = max($top, $schema[$table]["pos"][0] + 2.5 + $pos);
+}
+
+// arrange the tables in a grid, the columns are given by the foreign keys
+/** @var int[] */
+$columns = array(); // table => column
+$grid = array(); // column => tables
+/** @var float[] */
+$widths = array(); // column => width in em
+/** @var int[] */
+$gutters = array(); // column => number of reference lines left of the column
+foreach (array_keys($schema) as $name) {
+	schema_column($name, $referenced, $columns);
+}
+arsort($columns); // process the rightmost tables first, their columns are final when the tables referencing them are moved
+foreach ($columns as $name => $column) {
+	// move the table as far right as its references allow, a reference spanning several columns would be drawn over the tables in between
+	$min = null;
+	foreach ((array) idx($foreign_keys, $name) as $val) {
+		if ($val["table"] != $name && $schema[$val["table"]]) {
+			$min = ($min === null ? $columns[$val["table"]] : min($min, $columns[$val["table"]]));
+		}
+	}
+	$columns[$name] = max($column, (int) $min - 1);
+}
+foreach ($schema as $name => $table) {
+	$column = $columns[$name];
+	$grid[$column][] = $name;
+	$chars = strlen($name);
+	foreach ($table["fields"] as $field) {
+		$chars = max($chars, strlen($field["field"]));
+	}
+	// strlen() overestimates multi-byte names on purpose, a too narrow column would be overlapped by the reference lines
+	$widths[$column] = max(idx($widths, $column, 0), ceil(.7 * $chars) + 1); // whole em keeps the computed positions free of rounding errors
+}
+foreach ($foreign_keys as $name => $vals) {
+	foreach ($vals as $val) {
+		$gutter = min($columns[$name], idx($columns, $val["table"], $columns[$name]));
+		$gutters[$gutter] = idx($gutters, $gutter, 0) + 1;
+	}
+}
+ksort($grid);
+
+$height = 0;
+$width = 0;
+$column_left = 0;
+$prev_column = null;
+/** @var float[] */
+$table_left = array(); // table => left
+foreach ($grid as $column => $tables) {
+	if ($prev_column !== null) {
+		$column_left = round($column_left + $widths[$prev_column] + 1 + idx($gutters, $column, 0) * .1, 1); // round() to not print the rounding errors of .1
+		// order the tables by the average position of the tables they are connected to
+		$order = array();
+		foreach ($tables as $name) {
+			$sum = 0;
+			$count = 0;
+			foreach (array_merge(array_column((array) idx($foreign_keys, $name), "table"), array_keys((array) idx($referenced, $name))) as $name2) {
+				if ($schema[$name2] && $columns[$name2] < $column) {
+					$sum += $schema[$name2]["pos"][0];
+					$count++;
+				}
+			}
+			$order[$name] = ($count ? $sum / $count : $height); // tables without a placed neighbor go to the bottom
+		}
+		asort($order);
+		$tables = array_keys($order);
+	}
+	$top = 0;
+	foreach ($tables as $name) {
+		$pos = 1.25 * count($schema[$name]["fields"]);
+		$schema[$name]["pos"] = ($table_pos[$name] ?: array($top, $column_left)); // the saved position wins but the table still occupies its slot
+		$table_left[$name] = $schema[$name]["pos"][1];
+		$top += 2.5 + $pos;
+		$height = max($height, $schema[$name]["pos"][0] + 2.5 + $pos);
+		$width = max($width, round($schema[$name]["pos"][1] + $widths[$column], 1));
+		if (!$table_pos[$name]) {
+			$table_pos_default[] = "\n\t'" . js_escape($name) . "': [ " . $schema[$name]["pos"][0] . ", " . $schema[$name]["pos"][1] . " ]";
+		}
+	}
+	$prev_column = $column;
+}
+
+// draw the reference lines in the gutter left of the leftmost of the two tables
+/** @var array<numeric-string, bool> */
+$lefts = array();
+$base_lefts = array();
+foreach ($foreign_keys as $name => $vals) {
+	foreach ($vals as $val) {
+		$left = min($table_left[$name], idx($table_left, $val["table"], $table_left[$name])) - 1;
+		$base = idx($base_lefts, (string) $left, 0);
+		$base_lefts[(string) $left] = $base + 1;
+		$left = round($left - $base * .1, 1);
+		while ($lefts[(string) $left]) {
+			// find free $left
+			$left -= .0001;
+		}
+		$schema[$name]["references"][$val["table"]][(string) $left] = array($val["source"], $val["target"]);
+		$referenced[$val["table"]][$name][(string) $left] = $val["target"];
+		$lefts[(string) $left] = true;
+	}
 }
 
 ?>
-<div id="schema" style="height: <?php echo $top; ?>em;">
+<div id="schema" style="height: <?php echo $height; ?>em; width: <?php echo $width; ?>em;">
 <script<?php echo nonce(); ?>>
 const tablePos = {<?php echo implode(",", $table_pos_js) . "\n"; ?>};
-const em = qs('#schema').offsetHeight / <?php echo $top; ?>;
+const tablePosDefault = {<?php echo implode(",", $table_pos_default) . "\n"; ?>};
+const em = qs('#schema').offsetHeight / <?php echo $height; ?>;
 document.onmousemove = schemaMousemove;
 document.onmouseup = event => schemaMouseup(event, '<?php echo js_escape(DB); ?>');
 </script>
@@ -77,7 +180,7 @@ foreach ($schema as $name => $table) {
 
 	foreach ((array) $table["references"] as $target_name => $refs) {
 		foreach ($refs as $left => $ref) {
-			$left1 = $left - idx($table_pos[$name], 1);
+			$left1 = $left - $table["pos"][1];
 			$i = 0;
 			foreach ($ref[0] as $source) {
 				echo "\n<div class='references' title='" . h($target_name) . "' id='refs$left-" . ($i++) . "' style='left: $left1"
@@ -89,10 +192,10 @@ foreach ($schema as $name => $table) {
 	}
 
 	foreach ((array) $referenced[$name] as $target_name => $refs) {
-		foreach ($refs as $left => $columns) {
-			$left1 = $left - idx($table_pos[$name], 1);
+		foreach ($refs as $left => $targets) {
+			$left1 = $left - $table["pos"][1];
 			$i = 0;
-			foreach ($columns as $target) {
+			foreach ($targets as $target) {
 				echo "\n<div class='references arrow' title='" . h($target_name) . "' id='refd$left-" . ($i++) . "' style='left: $left1" . "em; top: " . $field_pos[$name][$target] . "em;'>"
 					. "<div style='height: .5em; border-bottom: 1px solid gray; width: " . (-$left1) . "em;'></div>"
 					. "</div>"
@@ -108,7 +211,7 @@ foreach ($schema as $name => $table) {
 	foreach ((array) $table["references"] as $target_name => $refs) {
 		if ($schema[$target_name]) { // otherwise table in another schema
 			foreach ($refs as $left => $ref) {
-				$min_pos = $top;
+				$min_pos = $height;
 				$max_pos = -10;
 				foreach ($ref[0] as $key => $source) {
 					$pos1 = $table["pos"][0] + $field_pos[$name][$source];

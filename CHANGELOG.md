@@ -1,6 +1,7 @@
 ## Adminer dev
 - Use the same font in &lt;textarea> as in &lt;input>, keep monospace in the SQL command and JSON values
 - Create table: Print the success message in drivers not using SQL, e.g. Elasticsearch (regression from 6.0.0)
+- Database schema: Arrange the tables in a grid by their foreign keys instead of in one column
 - Elasticsearch: Rename the database from elastic to data
 - OpenSearch: Add support via Elasticsearch driver
 ### Plugins

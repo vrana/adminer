@@ -813,7 +813,7 @@ function triggerChange(tableRe, table) {
 
 
 
-let that, x, y; // em and tablePos defined in schema.inc.php
+let that, x, y; // em, tablePos and tablePosDefault defined in schema.inc.php
 
 /** Get mouse position
 * @param {MouseEvent} event
@@ -838,7 +838,10 @@ function schemaMousemove(event) {
 		for (const div of qsa('div', that)) {
 			if (div.classList.contains('references')) {
 				const div2 = qs('[id="' + (/^refs/.test(div.id) ? 'refd' : 'refs') + div.id.slice(4) + '"]');
-				const ref = (tablePos[div.title] || [ div2.parentNode.offsetTop / em, 0 ]);
+				if (!div2) { // table in another schema
+					continue;
+				}
+				const ref = (tablePos[div.title] || tablePosDefault[div.title] || [ div2.parentNode.offsetTop / em, div2.parentNode.offsetLeft / em ]);
 				let left1 = -1;
 				const id = div.id.replace(/^ref.(.+)-.+/, '$1');
 				if (div.parentNode != div2.parentNode) {
