@@ -6,6 +6,7 @@
 - Elasticsearch: Rename the database from elastic to data
 - Elasticsearch: Redirect to the only database
 - OpenSearch: Add support via Elasticsearch driver
+- Redis: Redirect to the only table
 ### Plugins
 - Method dumpPrint() to print HTML code in the export form
 - New plugin: Link the plugins usable in each part of the interface

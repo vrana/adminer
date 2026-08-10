@@ -81,7 +81,7 @@ const urlSeparators = '" . js_escape(ini_get("arg_separator.input")) . "';");
 		} else {
 			echo "<a href='" . h($link . (DB != "" && support("single_db") ? "&db=" : "")) . "' accesskey='1' title='Alt+Shift+1'>$server</a> » ";
 			if ($_GET["ns"] != "" || (DB != "" && is_array($breadcrumb))) {
-				echo '<a href="' . h($link . "&db=" . url_escape(DB) . (support("scheme") ? "&ns=" : "")) . '">' . h(DB) . '</a> » ';
+				echo '<a href="' . h($link . "&db=" . url_escape(DB) . (support("scheme") ? "&ns=" : "") . (support("single_table") ? "&select=" : "")) . '">' . h(DB) . '</a> » ';
 			}
 			if (is_array($breadcrumb)) {
 				if ($_GET["ns"] != "") {

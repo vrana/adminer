@@ -8,6 +8,9 @@
 */
 class AdminerTablesFilter extends Adminer\Plugin {
 	function tablesPrint($tables) {
+		if (Adminer\support("single_table")) {
+			return; // there is nothing to filter
+		}
 		?>
 <script<?php echo Adminer\nonce(); ?>>
 let tablesFilterTimeout = null;

@@ -256,7 +256,10 @@ class Adminer {
 	function selectLinks(array $tableStatus, ?string $set = ""): void {
 		$name = $tableStatus["Name"];
 		echo '<p class="links">';
-		$links = array("select" => lang('Select data'));
+		$links = array();
+		if ($name != "") {
+			$links["select"] = lang('Select data');
+		}
 		if (support("table") || support("indexes")) {
 			$links["table"] = lang('Show structure');
 		}

@@ -492,6 +492,6 @@ if (isset($_GET["redis"])) {
 	}
 
 	function support($feature) {
-		return preg_match('~^(cursor|sql)$~', $feature);
+		return preg_match('~^(cursor|single_table|sql)$~', $feature);
 	}
 }

@@ -1,6 +1,14 @@
 <?php
 namespace Adminer;
 
+if (!isset($_GET["select"]) && support("single_table")) { // there is nothing to choose from, take the user to the only table
+	$tables = tables_list();
+	if ($tables) {
+		redirect(ME . (support("table") ? "table=" : "select=") . url_escape(key($tables)));
+	}
+}
+$me = ME . (isset($_GET["select"]) ? "select=&" : ""); // an empty select= is this page in a driver with a single table, ME doesn't carry it
+
 $tables_views = array_merge((array) $_POST["tables"], (array) $_POST["views"]);
 
 if ($tables_views && !$error && !$_POST["search"]) {
@@ -84,7 +92,7 @@ if (adminer()->homepage()) {
 			echo '<thead><tr class="wrap">';
 			echo '<td class="hover"><input id="check-all" type="checkbox" class="jsonly" title="' . lang('All') . '"' . on('click', 'formCheck', '^(tables|views)\[') . '>';
 			// without $order, the tables are sorted by name, except in SQLite which puts the sqlite_ tables last
-			echo '<th' . (!$order && JUSH != 'sqlite' ? " aria-sort='ascending'" : '') . '><a href="' . h(substr(ME, 0, -1)) . '">' . lang('Table') . '</a>';
+			echo '<th' . (!$order && JUSH != 'sqlite' ? " aria-sort='ascending'" : '') . '><a href="' . h(substr($me, 0, -1)) . '">' . lang('Table') . '</a>';
 			$columns = array("Engine" => array(lang('Engine') . doc_link(array('sql' => 'storage-engines.html'))));
 			if (collations()) {
 				$columns["Collation"] = array(lang('Collation') . doc_link(array('sql' => 'charset-charsets.html', 'mariadb' => 'supported-character-sets-and-collations/')));
@@ -122,7 +130,7 @@ if (adminer()->homepage()) {
 			$asc_columns = array('Engine', 'Collation', 'Comment'); // the other columns are sorted descending
 			foreach ($columns as $key => $column) {
 				echo "<th" . ($order == $key ? " aria-sort='" . (in_array($key, $asc_columns) ? "ascending" : "descending") . "'" : "")
-					. "><a href='" . h(ME) . "order=$key'>$column[0]</a>"
+					. "><a href='" . h($me) . "order=$key'>$column[0]</a>"
 				;
 			}
 			echo "<tbody>\n";
