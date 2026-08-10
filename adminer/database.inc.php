@@ -27,7 +27,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 			}
 			restart_session();
 			set_session("dbs", null);
-			queries_redirect(ME . "db=" . url_escape($last), lang('Database has been created.'), $success);
+			queries_redirect(preg_replace('~&db=[^&]*~', '', ME) . "db=" . url_escape($last), lang('Database has been created.'), $success);
 		}
 	} else {
 		// alter database

@@ -4,6 +4,7 @@
 - Database schema: Arrange the tables in a grid by their foreign keys instead of in one column
 - Database schema: Do not display the tables hidden by tableName() and the references to them
 - Elasticsearch: Rename the database from elastic to data
+- Elasticsearch: Redirect to the only database
 - OpenSearch: Add support via Elasticsearch driver
 ### Plugins
 - Method dumpPrint() to print HTML code in the export form

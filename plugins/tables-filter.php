@@ -55,8 +55,8 @@ function tablesFilterInput() {
 }
 
 sessionStorage && document.addEventListener('DOMContentLoaded', () => {
-	let db = qs('#dbs').querySelector('select');
-	db = db.options[db.selectedIndex].text;
+	let select = qs('#dbs') && qs('#dbs').querySelector('select'); // there is no select in drivers with a single database
+	let db = (select ? select.options[select.selectedIndex].text : '');
 	if (db == sessionStorage.getItem('adminer_tables_filter_db') && sessionStorage.getItem('adminer_tables_filter')){
 		qs('#filter-field').value = sessionStorage.getItem('adminer_tables_filter');
 		tablesFilter();

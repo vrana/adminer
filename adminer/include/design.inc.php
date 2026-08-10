@@ -79,7 +79,7 @@ const urlSeparators = '" . js_escape(ini_get("arg_separator.input")) . "';");
 		if ($breadcrumb === false) {
 			echo "$server\n";
 		} else {
-			echo "<a href='" . h($link) . "' accesskey='1' title='Alt+Shift+1'>$server</a> » ";
+			echo "<a href='" . h($link . (DB != "" && support("single_db") ? "&db=" : "")) . "' accesskey='1' title='Alt+Shift+1'>$server</a> » ";
 			if ($_GET["ns"] != "" || (DB != "" && is_array($breadcrumb))) {
 				echo '<a href="' . h($link . "&db=" . url_escape(DB) . (support("scheme") ? "&ns=" : "")) . '">' . h(DB) . '</a> » ';
 			}

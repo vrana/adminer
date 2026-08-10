@@ -27,6 +27,13 @@ if (
 		header("HTTP/1.1 404 Not Found");
 		page_header(lang('Database') . ": " . h(DB), lang('Invalid database.'), true);
 	} else {
+		if (!isset($_GET["db"]) && support("single_db")) { // there is nothing to choose from, take the user to the only database
+			$databases = adminer()->databases();
+			if ($databases) {
+				redirect(ME . "db=" . url_escape($databases[0]));
+			}
+		}
+
 		if ($_POST["db"] && !$error) {
 			queries_redirect(substr(ME, 0, -1), lang('Databases have been dropped.'), drop_databases($_POST["db"]));
 		}
@@ -68,7 +75,7 @@ if (
 
 			$databases = ($_GET["dbsize"] ? count_tables($databases) : array_flip($databases));
 			foreach ($databases as $db => $tables) {
-				$root = h(ME) . "db=" . url_escape($db);
+				$root = h(preg_replace('~&db=[^&]*~', '', ME)) . "db=" . url_escape($db); // ME contains an empty db= if the user got here from the only database
 				$id = h("Db-" . $db);
 				echo "<tr>" . (support("database") ? "<td class='hover'>" . checkbox("db[]", $db, in_array($db, (array) $_POST["db"]), "", "", "", $id) : "");
 				echo "<th><a href='$root' id='$id'>" . h($db) . "</a>";

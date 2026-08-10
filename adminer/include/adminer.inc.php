@@ -1207,6 +1207,9 @@ class Adminer {
 
 	/** Print databases list in menu */
 	function databasesPrint(string $missing): void {
+		if (support("single_db")) {
+			return; // there is nothing to choose from, the only database is available in the breadcrumb
+		}
 		$databases = adminer()->databases();
 		if (DB && $databases && !in_array(DB, $databases)) {
 			array_unshift($databases, DB);

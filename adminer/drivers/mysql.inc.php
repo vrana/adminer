@@ -1144,6 +1144,7 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 	* - routine - stored functions
 	* - scheme - schemas inside a database
 	* - sequence - sequences (PostgreSQL)
+	* - single_db - there is only one database so the user is taken to it and the database select is not printed (Elasticsearch)
 	* - sql - the SQL command page and running multiple queries
 	* - status - the Status page
 	* - table - tables have a fixed structure, other drivers just select all columns

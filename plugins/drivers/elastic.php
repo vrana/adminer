@@ -387,7 +387,7 @@ if (isset($_GET["elastic"])) {
 	}
 
 	function support($feature) {
-		return preg_match('~^(table|columns)$~', $feature);
+		return preg_match('~^(single_db|table|columns)$~', $feature);
 	}
 
 	function logged_user() {

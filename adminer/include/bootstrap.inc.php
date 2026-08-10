@@ -94,7 +94,8 @@ define(
 		. ($_GET["ext"] ? "ext=" . url_escape($_GET["ext"]) . '&' : '')
 		. (isset($_GET[DRIVER]) ? DRIVER . "=" . url_escape(SERVER) . '&' : '') // no parameter means the default driver at the default server
 		. (isset($_GET["username"]) ? "username=" . url_escape($_GET["username"]) . '&' : '')
-		. (DB != "" ? 'db=' . url_escape(DB) . '&' . (isset($_GET["ns"]) ? "ns=" . url_escape($_GET["ns"]) . "&" : "") : '')
+		// an empty db= means the list of databases in a driver with a single database, the same way as an empty ns= means the database overview
+		. (isset($_GET["db"]) ? 'db=' . url_escape(DB) . '&' . (isset($_GET["ns"]) ? "ns=" . url_escape($_GET["ns"]) . "&" : "") : '')
 );
 
 include "../adminer/include/design.inc.php";
