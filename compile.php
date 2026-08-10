@@ -354,13 +354,11 @@ $file = replace('echo script_src("static/editing.js");' . "\n", "", $file); // m
 if ($project != "editor") { // the Editor doesn't use jush
 	$file = replace_re('~\s+echo script_src\("\.\./externals/jush/modules/jush-(autocomplete-sql|textarea|txt|json)\.js", true\);~', '', $file); // merged into jush.js
 	// modules of bundled drivers are merged into jush.js, plugin drivers can ship their own module
-	if (!$vendor || Adminer\support("sql")) { // the module is printed in a block which is removed for drivers without SQL support
-		$file = replace_re(
-			'~(\t*)echo script_src\("\.\./externals/jush/modules/(jush-" \. JUSH \. "\.js)", true\);~',
-			'\1$jush_file = "adminer-plugins/\2";' . "\n" . '\1echo (file_exists($jush_file) ? script_src($jush_file, true) : "");',
-			$file
-		);
-	}
+	$file = replace_re(
+		'~echo \(file_exists\(__DIR__ \. "/\.\./\.\./externals/jush/modules/\$jush_file"\).*~',
+		'echo (file_exists("adminer-plugins/$jush_file") ? script_src("adminer-plugins/$jush_file", true) : "");',
+		$file
+	);
 	$file = replace_re('~echo .*/jush(-dark)?.css\'>.*~', '', $file); // merged into default.css or dark.css
 }
 if (function_exists('stripTypes')) {

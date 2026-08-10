@@ -1171,8 +1171,10 @@ class Adminer {
 		echo script_src("../externals/jush/modules/jush-textarea.js", true);
 		echo script_src("../externals/jush/modules/jush-txt.js", true);
 		echo script_src("../externals/jush/modules/jush-json.js", true);
+		// also drivers without SQL support can highlight their queries (e.g. Elasticsearch), some drivers have no module
+		$jush_file = "jush-" . JUSH . ".js";
+		echo (file_exists(__DIR__ . "/../../externals/jush/modules/$jush_file") ? script_src("../externals/jush/modules/$jush_file", true) : "");
 		if (support("sql")) {
-			echo script_src("../externals/jush/modules/jush-" . JUSH . ".js", true);
 			echo "<script" . nonce() . ">\n";
 			if ($tables) {
 				$links = array();

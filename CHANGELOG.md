@@ -5,6 +5,7 @@
 - Database schema: Do not display the tables hidden by tableName() and the references to them
 - Elasticsearch: Rename the database from elastic to data
 - Elasticsearch: Redirect to the only database
+- Elasticsearch: Highlight the printed queries
 - OpenSearch: Add support via Elasticsearch driver
 - Redis: Redirect to the only table
 ### Plugins
