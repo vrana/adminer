@@ -1192,13 +1192,10 @@ class Adminer {
 					echo "jushLinks.$val = jushLinks." . JUSH . ";\n";
 				}
 				if (isset($_GET["sql"]) || isset($_GET["trigger"]) || isset($_GET["check"])) {
-					$tablesColumns = array_fill_keys(array_keys($tables), array());
-					foreach (driver()->allFields() as $table => $fields) {
-						foreach ($fields as $field) {
-							$tablesColumns[$table][] = $field["field"];
-						}
-					}
-					echo "addEventListener('DOMContentLoaded', () => { autocompleter = jush.autocompleteSql('" . idf_escape("") . "', " . json_encode($tablesColumns) . "); });\n";
+					// a trigger cannot return a result set nor commit, a check constraint is an expression
+					$statements = (isset($_GET["trigger"]) ? array('INSERT INTO', 'UPDATE', 'DELETE FROM') : (isset($_GET["check"]) ? array() : null));
+					$autocomplete = Driver::jushAutocomplete($tables, $statements);
+					echo ($autocomplete ? "addEventListener('DOMContentLoaded', () => { autocompleter = $autocomplete; });\n" : "");
 				}
 			}
 			echo "</script>\n";

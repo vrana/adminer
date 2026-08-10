@@ -289,6 +289,10 @@ jush.tr.redis={quo:/"/,apo:/'/};jush.slugs.redis=name=>name.toLowerCase().replac
 JS;
 		}
 
+		static function jushAutocomplete(array $tables, ?array $statements): string {
+			return ""; // the commands are not SQL
+		}
+
 		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 			$next = $_GET["next"];
 			$_GET["next"] = ""; // there is no following page unless SCAN returns a cursor

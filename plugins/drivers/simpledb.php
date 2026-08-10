@@ -126,6 +126,10 @@ jush.tr.simpledb={sqlite_apo:/'/,sqlite_quo:/"/,bac:/`/};jush.build_links2('simp
 JS;
 		}
 
+		static function jushAutocomplete(array $tables, ?array $statements): string {
+			return ""; // the queries are only a select expression and the columns are not known
+		}
+
 		static function connect($server, $username, $password) {
 			if ($server != "" && !preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
 				return lang('Invalid server.');

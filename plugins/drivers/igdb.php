@@ -161,6 +161,10 @@ jush.tr.igdb={quo:/"/};jush.build_links2('igdb','https://api-docs.igdb.com/#$key
 JS;
 		}
 
+		static function jushAutocomplete(array $tables, ?array $statements): string {
+			return ""; // the queries are not SQL
+		}
+
 		private static function docsFilename(): string {
 			return get_temp_dir() . "/adminer-igdb-api.html";
 		}

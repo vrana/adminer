@@ -40,6 +40,20 @@ abstract class SqlDriver {
 		return "";
 	}
 
+	/** Get JavaScript expression creating the autocompleter of the query <textarea>, empty if the driver has none
+	* @param TableStatus[] $tables
+	* @param list<string>|null $statements statements offered at the beginning of a query, null for all
+	*/
+	static function jushAutocomplete(array $tables, ?array $statements): string {
+		$tablesColumns = array_fill_keys(array_keys($tables), array());
+		foreach (driver()->allFields() as $table => $fields) {
+			foreach ($fields as $field) {
+				$tablesColumns[$table][] = $field["field"];
+			}
+		}
+		return "jush.autocompleteSql('" . idf_escape("") . "', " . json_encode($tablesColumns) . ", " . json_encode($statements) . ")";
+	}
+
 	/** Connect to the database
 	* @return Db|string string for error
 	*/

@@ -1,5 +1,7 @@
 ## Adminer dev
 - Use the same font in &lt;textarea> as in &lt;input>, keep monospace in the SQL command and JSON values
+- Autocomplete: Disable in the drivers not using SQL, e.g. Redis
+- Autocomplete: Offer only the statements allowed in a trigger and no statement in a check constraint
 - Create table: Print the success message in drivers not using SQL, e.g. Elasticsearch (regression from 6.0.0)
 - Database schema: Arrange the tables in a grid by their foreign keys instead of in one column
 - Database schema: Do not display the tables hidden by tableName() and the references to them
@@ -16,6 +18,7 @@
 ### Plugins
 - Method dumpPrint() to print HTML code in the export form
 - Driver plugins: Bundle the syntax highlighter in the plugin file, adminer-plugins/jush-&lt;driver>.js is not loaded anymore
+- Driver plugins: Method jushAutocomplete() to disable or replace the autocomplete of the query &lt;textarea>
 - New plugin: Link the plugins usable in each part of the interface
 ### Internal
 - Tests: Cover the CSV import and export, pagination, modifying a value by Ctrl+click, the bulk table operations and the SQL file import in every driver
