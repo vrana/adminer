@@ -46,7 +46,7 @@ body.remote #menuopen { margin-top: 5px; }
 			$this->remote = !$this->isLocal($_SERVER["REMOTE_ADDR"])
 				|| $_SERVER["HTTP_X_FORWARDED_FOR"] != "" // the request passed through a proxy
 			;
-			if (!$this->remote && Adminer\connection()) { // credentials() can be useless before connecting
+			if (!$this->remote && class_exists('Adminer\Db') && Adminer\connection()) { // credentials() can be useless before connecting
 				$credentials = Adminer\adminer()->credentials();
 				$this->remote = !$this->isLocal(Adminer\first(Adminer\host_port($credentials[0])));
 			}
