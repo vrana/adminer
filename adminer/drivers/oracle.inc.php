@@ -159,6 +159,24 @@ if (isset($_GET["oracle"])) {
 			return true; // automatic start
 		}
 
+		function convertSearch(string $idf, array $val, array $field): string {
+			$type = $field["type"];
+			$pattern = strpos($val["op"], "LIKE") !== false;
+			if ($type == "xmltype") {
+				return "XMLSERIALIZE(CONTENT $idf AS VARCHAR2(4000))";
+			}
+			if ($type == "json") {
+				return "JSON_SERIALIZE($idf)"; // TO_CHAR() doesn't accept JSON
+			}
+			if (preg_match('~^(date|timestamp)~', $type)) {
+				return "TO_CHAR($idf, 'YYYY-MM-DD HH24:MI:SS')"; // the session format is not the searched one
+			}
+			if (preg_match('~char~', $type) || (preg_match('~clob~', $type) && $pattern)) {
+				return $idf; // LIKE works on a LOB, the comparison operators don't
+			}
+			return (!$pattern && preg_match(number_type(), $type) ? $idf : "TO_CHAR($idf)");
+		}
+
 		function quoteBinary(string $s): string {
 			return "HEXTORAW(" . q(bin2hex($s)) . ")"; //! the literal is limited to 4000 characters
 		}
@@ -282,6 +300,10 @@ ORDER BY 1") as $row
 			if ($length == ",") {
 				$length = $row["CHAR_COL_DECL_LENGTH"];
 			} //! int
+			$privileges = array("insert" => 1, "select" => 1, "update" => 1, "where" => 1, "order" => 1);
+			if ($row["DATA_TYPE_OWNER"] != "" && $type != "XMLTYPE") {
+				unset($privileges["where"]); // an object type, e.g. SDO_GEOMETRY, can't be compared with a string
+			}
 			$return[$row["COLUMN_NAME"]] = array(
 				"field" => $row["COLUMN_NAME"],
 				"full_type" => $type . ($length ? "($length)" : ""),
@@ -291,7 +313,7 @@ ORDER BY 1") as $row
 				"null" => ($row["NULLABLE"] == "Y"),
 				//! "auto_increment" => false,
 				//! "collation" => $row["CHARACTER_SET_NAME"],
-				"privileges" => array("insert" => 1, "select" => 1, "update" => 1, "where" => 1, "order" => 1),
+				"privileges" => $privileges,
 				//! "comment" => $row["Comment"],
 				//! "primary" => ($row["Key"] == "PRI"),
 			);

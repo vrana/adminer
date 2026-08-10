@@ -95,9 +95,10 @@ function is_searchable(array $field, array $val): bool {
 	$type = $field["type"];
 	$search = $val["val"];
 	// MySQL blobs are not listed, they are displayed as text; vector is anchored to not match the PostgreSQL tsvector
-	$binary = 'binary|bytea|raw|image|bfile|^vector$'
+	// binary is anchored to not match the Oracle binary_float and binary_double
+	$binary = 'binary$|bytea|raw|image|bfile|^vector$'
 		. (JUSH == "mssql" ? '|^timestamp$' : '|^bit') // MS SQL timestamp is a row version, its bit is a boolean displayed as 0 and 1
-		. (JUSH == "oracle" ? '|^blob|^long|rowid|xmltype' : '') // Oracle can compare none of its LOBs with a string
+		. (JUSH == "oracle" ? '|^blob|^long|rowid' : '') // Oracle can compare none of its binary LOBs with a string
 	;
 	if (preg_match("~$binary~", $type)) {
 		return false; // the value is displayed encoded or it can't be compared with a string at all
