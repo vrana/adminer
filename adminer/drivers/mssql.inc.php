@@ -584,10 +584,12 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 	function foreign_keys(string $table): array {
 		$return = array();
 		$on_actions = array("CASCADE", "NO ACTION", "SET NULL", "SET DEFAULT");
-		foreach (get_rows("EXEC sp_fkeys @fktable_name = " . q($table) . ", @fktable_owner = " . q(get_schema())) as $row) {
+		$schema = get_schema();
+		foreach (get_rows("EXEC sp_fkeys @fktable_name = " . q($table) . ", @fktable_owner = " . q($schema)) as $row) {
 			$foreign_key = &$return[$row["FK_NAME"]];
-			$foreign_key["db"] = $row["PKTABLE_QUALIFIER"];
-			$foreign_key["ns"] = $row["PKTABLE_OWNER"];
+			// sp_fkeys always returns the database and the schema, the other drivers leave them empty for the current ones
+			$foreign_key["db"] = ($row["PKTABLE_QUALIFIER"] == DB ? "" : $row["PKTABLE_QUALIFIER"]);
+			$foreign_key["ns"] = ($row["PKTABLE_OWNER"] == $schema ? "" : $row["PKTABLE_OWNER"]);
 			$foreign_key["table"] = $row["PKTABLE_NAME"];
 			$foreign_key["on_update"] = $on_actions[$row["UPDATE_RULE"]];
 			$foreign_key["on_delete"] = $on_actions[$row["DELETE_RULE"]];

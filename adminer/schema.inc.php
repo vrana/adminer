@@ -59,7 +59,8 @@ foreach ($table_statuses as $table => $table_status) {
 		$schema[$table]["fields"][$field["field"]] = $field;
 	}
 	foreach (adminer()->foreignKeys($table) as $val) {
-		if (!$val["db"] && !$hidden[$val["table"]]) {
+		// the target must be displayed too, otherwise the reference would be drawn as a line ending in nothing
+		if ($val["db"] == "" && $val["ns"] == "" && !$hidden[$val["table"]]) {
 			$foreign_keys[$table][] = $val;
 			$referenced[$val["table"]][$table] = array(); // the lefts are computed after the layout
 		}
