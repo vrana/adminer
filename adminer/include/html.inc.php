@@ -275,7 +275,8 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 		$function = "json";
 	}
 	$json = ($function == "json" || preg_match('~^jsonb?$~', $field["full_type"]));
-	if ($json && $value != '' && (JUSH != "pgsql" || $field["type"] != "json")) {
+	// don't re-format the string sent by the user, it would discard the invalid value when re-printing the form after an error
+	if ($json && $value != '' && (JUSH != "pgsql" || $field["type"] != "json") && (is_array($value) || !$_POST["save"])) {
 		// 128 - JSON_PRETTY_PRINT, 64 - JSON_UNESCAPED_SLASHES, 256 - JSON_UNESCAPED_UNICODE available since PHP 5.4
 		$value = json_encode(is_array($value) ? $value : json_decode($value), 128 | 64 | 256);
 	}
