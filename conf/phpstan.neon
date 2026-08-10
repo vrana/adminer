@@ -91,6 +91,7 @@ parameters:
 		- ../adminer/adminer-plugins*
 		- ../adminer/designs.php
 		- ../adminer/elastic.php
+		- ../adminer/plugins.php
 		- ../adminer/sqlite.php
 		- ../editor/example.php
 		- ../editor/sqlite.php

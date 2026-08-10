@@ -7,7 +7,7 @@ export default defineConfig({
 	outputDir: '../tests/results', // traces and screenshots of failed tests
 	workers: 1, // the tests share the adminer_test database and the single threaded PHP development server
 	reporter: 'list',
-	timeout: 15000, // the slowest test takes about 6 s
+	timeout: 30000, // the slowest tests (searching data in all tables, the bulk table operations) take about 15 s
 	expect: {timeout: 3000}, // Adminer prints the whole page at once, only JavaScript can change it later
 	use: {
 		baseURL: process.env.ADMINER_URL || 'http://127.0.0.1:8000',
@@ -17,6 +17,6 @@ export default defineConfig({
 	},
 	projects: [
 		{name: 'native'},
-		{name: 'pdo', metadata: {ext: 'pdo'}, testIgnore: ['**/elastic.spec.js', '**/screenshots.spec.js']},
+		{name: 'pdo', metadata: {ext: 'pdo'}, testIgnore: ['**/elastic.spec.js', '**/plugins.spec.js', '**/screenshots.spec.js']},
 	],
 });

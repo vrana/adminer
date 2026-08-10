@@ -204,6 +204,19 @@ test('Clone', async () => {
 	await expect(page.locator('body')).toContainText('Item 2 has been inserted.');
 });
 
+test('Pagination', async () => {
+	await goto(page, '/adminer/?server=localhost:3307&username=ODBC&db=adminer_test&select=albums&limit=1');
+	await expect(page.locator('body')).toContainText('Dangerous');
+	await expect(page.locator('body')).not.toContainText('Black and White');
+	await expect(page.locator('body')).toContainText('2 rows');
+	await link(page, 'Load more data').click(); // appends the next page by AJAX
+	await expect(page.locator('body')).toContainText('Black and White');
+	await goto(page, '/adminer/?server=localhost:3307&username=ODBC&db=adminer_test&select=albums&limit=1&page=last');
+	await expect(page.locator('body')).toContainText('Black and White');
+	await expect(page.locator('body')).not.toContainText('Dangerous');
+	await expect(page.locator("//fieldset[legend='Page']/b")).toHaveText('2'); // the current page, not a link
+});
+
 test('Select', async () => {
 	await goto(page, '/adminer/?server=localhost:3307&username=ODBC&db=adminer_test&select=albums');
 	await link(page, 'Search').click();
@@ -244,6 +257,19 @@ test('Update', async () => {
 	await expect(page.locator('body')).toContainText('Item has been updated.');
 });
 
+test('Modify', async () => {
+	// text_length=5 shortens the value, so that Ctrl+click has to load the original by AJAX
+	await goto(page, '/adminer/?server=localhost:3307&username=ODBC&db=adminer_test&select=albums&text_length=5');
+	const td = page.locator('td[id$="[title]"]').first();
+	await td.click({modifiers: ['Control']});
+	const input = td.locator('textarea'); // a shortened value is edited in a textarea, it can hold newlines
+	await expect(input).toHaveValue('Dangerous'); // the cell displays only 'Dange…'
+	await input.fill('Bad');
+	await page.locator('#save').click();
+	await expect(page.locator('body')).toContainText('1 item has been affected.');
+	await expect(page.locator('body')).toContainText('Bad');
+});
+
 test('Delete', async () => {
 	await goto(page, '/adminer/?server=localhost:3307&username=ODBC&db=adminer_test&select=albums');
 	await page.locator('input[name="check[]"][value="where[id]=2"]').click();
@@ -258,6 +284,94 @@ test('Truncate', async () => {
 	await expect(page.locator('[name="all"]')).toBeChecked();
 	await page.locator('[name="delete"]').click();
 	await expect(page.locator('body')).toContainText('No rows.');
+});
+
+test('Import and export CSV', async () => {
+	await goto(page, '/adminer/?server=localhost:3307&username=ODBC&db=adminer_test&select=albums');
+	await page.locator('a[href="#import"]').click(); // the file field is hidden until then
+	await page.locator('[name="csv_file"]').setInputFiles({
+		name: 'albums.csv',
+		mimeType: 'text/csv',
+		buffer: Buffer.from('id,interpret,title\r\n1,1,Bad\r\n2,1,"Off the Wall"\r\n'),
+	});
+	await page.locator('[name="separator"]').selectOption('csv');
+	await page.locator('[name="import"]').click();
+	await expect(page.locator('body')).toContainText('2 rows have been imported.');
+	await expect(page.locator('body')).toContainText('Off the Wall');
+	// the same primary key is updated, not inserted
+	await page.locator('a[href="#import"]').click();
+	await page.locator('[name="csv_file"]').setInputFiles({
+		name: 'albums.csv',
+		mimeType: 'text/csv',
+		buffer: Buffer.from('id,interpret,title\r\n2,1,Thriller\r\n'),
+	});
+	await page.locator('[name="import"]').click();
+	await expect(page.locator('body')).toContainText('1 row has been imported.');
+	await expect(page.locator('body')).toContainText('2 rows');
+	await expect(page.locator('body')).toContainText('Thriller');
+	await page.locator('a[href="#fieldset-export"]').click();
+	await page.locator('[name="output"]').selectOption('text');
+	await page.locator('[name="format"]').selectOption('csv');
+	await page.locator('[name="export"]').click();
+	await expect(page.locator('body')).toContainText('id,interpret,title');
+	await expect(page.locator('body')).toContainText('2,1,Thriller');
+});
+
+test('Bulk table operations', async () => {
+	await goto(page, '/adminer/?server=localhost:3307&username=ODBC&db=adminer_test&sql=' + encodeURIComponent(
+		'CREATE DATABASE adminer_test2; CREATE TABLE bulk_test (id int); CREATE TABLE bulk_test2 (id int);'
+		+ ' INSERT INTO bulk_test VALUES (1)'
+	));
+	await button(page, 'Execute').click();
+	await goto(page, '/adminer/?server=localhost:3307&username=ODBC&db=adminer_test');
+	// every operation redirects back to this page with the checkboxes cleared
+	for (const [name, label] of [['', 'Analyze'], ['optimize', 'Optimize'], ['check', 'Check'], ['repair', 'Repair']]) {
+		await page.locator('input[name="tables[]"][value="albums"]').check();
+		await (name ? page.locator('[name="' + name + '"]') : button(page, label)).click();
+		await expect(page.locator('.message')).toContainText('adminer_test.albums'); // one row per table
+	}
+	await page.locator('input[name="tables[]"][value="bulk_test"]').check();
+	await page.locator('[name="truncate"]').click();
+	await expect(page.locator('body')).toContainText('Tables have been truncated.');
+	await page.locator('input[name="tables[]"][value="bulk_test"]').check();
+	await page.locator('[name="target"]').selectOption('adminer_test2');
+	await page.locator('[name="copy"]').click();
+	await expect(page.locator('body')).toContainText('Tables have been copied.');
+	await page.locator('input[name="tables[]"][value="bulk_test2"]').check();
+	await page.locator('[name="target"]').selectOption('adminer_test2');
+	await page.locator('[name="move"]').click();
+	await expect(page.locator('body')).toContainText('Tables have been moved.');
+	await goto(page, '/adminer/?server=localhost:3307&username=ODBC&db=adminer_test2');
+	await expect(page.locator('body')).toContainText('bulk_test'); // the copied one
+	await expect(page.locator('body')).toContainText('bulk_test2'); // the moved one
+	await goto(page, '/adminer/?server=localhost:3307&username=ODBC&sql='
+		+ encodeURIComponent('DROP DATABASE adminer_test2'));
+	await button(page, 'Execute').click();
+	await expect(page.locator('body')).toContainText('Query executed OK');
+});
+
+test('SQL file import', async () => {
+	await goto(page, '/adminer/?server=localhost:3307&username=ODBC&db=adminer_test&import=');
+	await page.locator('[name="sql_file[]"]').setInputFiles({
+		name: 'test.sql',
+		mimeType: 'application/sql',
+		buffer: Buffer.from("INSERT INTO interprets (name) VALUES ('Karel Gott');\n"
+			+ "DELIMITER ;;\nCREATE PROCEDURE bulk_test_proc() BEGIN SELECT 1; END;;\nDELIMITER ;\n"
+			+ 'DROP PROCEDURE bulk_test_proc;\n'),
+	});
+	await button(page, 'Execute').click();
+	await expect(page.locator('body')).toContainText('3 queries executed OK.');
+	await goto(page, '/adminer/?server=localhost:3307&username=ODBC&db=adminer_test&sql='
+		+ encodeURIComponent('SELECT * FROM interprets'));
+	await page.locator('[name="limit"]').fill('10'); // without a limit, the export is done by JavaScript from the printed table
+	await button(page, 'Execute').click();
+	await page.locator('a[href="#export-1"]').click();
+	await page.locator('#export-1 [name="format"]').selectOption('csv');
+	await page.locator('#export-1 [name="export"]').click();
+	await expect(page.locator('body')).toContainText('Karel Gott');
+	await goto(page, '/adminer/?server=localhost:3307&username=ODBC&db=adminer_test&sql='
+		+ encodeURIComponent("DELETE FROM interprets WHERE name = 'Karel Gott'"));
+	await button(page, 'Execute').click();
 });
 
 test('Privileges', async () => {
@@ -302,6 +416,15 @@ test('Export', async () => {
 	await expect(page.locator('body')).toContainText('CREATE TRIGGER `albums_ai`');
 	await expect(page.locator('body')).toContainText('INSERT INTO `interprets`');
 	await expect(page.locator('body')).toContainText('VIEW `albums_interprets`');
+	// several tables in a non-SQL format are packed to a TAR archive built in a temporary file
+	await goto(page, '/adminer/?server=localhost:3307&username=ODBC&db=adminer_test&dump=');
+	await page.locator('input[name="output"][value="text"]').click();
+	await page.locator('input[name="format"][value="csv"]').click();
+	const [download] = await Promise.all([
+		page.waitForEvent('download'),
+		button(page, 'Export').click(),
+	]);
+	expect(download.suggestedFilename()).toBe('adminer_test.tar');
 });
 
 test('Events', async () => {
