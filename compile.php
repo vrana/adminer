@@ -217,6 +217,30 @@ function ini_bool() {
 	return true;
 }
 
+/** Copy the JUSH modules to the driver plugins, they are not compiled so they have to carry them inline */
+function update_jush_modules() {
+	global $vendor;
+	foreach (glob(__DIR__ . "/plugins/drivers/" . ($vendor ?: "*") . ".php") as $filename) {
+		$file = file_get_contents($filename);
+		preg_match('~static \$jush = "([^"]+)"~', $file, $match);
+		$module_file = __DIR__ . "/externals/jush/modules/jush-$match[1].js";
+		if (!file_exists($module_file)) {
+			continue; // the driver has no highlighter
+		}
+		$module = rtrim(file_get_contents($module_file), "\n");
+		$module = preg_replace('~</script~', '<\\/script', $module); // it would close the inline <script>
+		$module = (function_exists('jsShrink') ? jsShrink($module) : $module); // the same as the modules bundled in jush.js by file.inc.php
+		// the module holds $ and \ so it can be neither interpolated by a heredoc nor used as a replacement
+		$replaced = replace_re("~(static function jushModule\\(\\): string \\{\n\t+return <<<'JS'\n).*(\nJS;)~sU", function ($match) use ($module) {
+			return $match[1] . $module . $match[2];
+		}, $file);
+		if ($replaced != $file) {
+			file_put_contents($filename, $replaced);
+			fprintf(STDERR, "Updated the JUSH module in " . basename($filename) . "\n");
+		}
+	}
+}
+
 $project = "adminer";
 if ($_SERVER["argv"][1] == "editor") {
 	$project = "editor";
@@ -353,12 +377,7 @@ if ($_SESSION["lang"]) {
 $file = replace('echo script_src("static/editing.js");' . "\n", "", $file); // merged into functions.js
 if ($project != "editor") { // the Editor doesn't use jush
 	$file = replace_re('~\s+echo script_src\("\.\./externals/jush/modules/jush-(autocomplete-sql|textarea|txt|json)\.js", true\);~', '', $file); // merged into jush.js
-	// modules of bundled drivers are merged into jush.js, plugin drivers can ship their own module
-	$file = replace_re(
-		'~echo \(file_exists\(__DIR__ \. "/\.\./\.\./externals/jush/modules/\$jush_file"\).*~',
-		'echo (file_exists("adminer-plugins/$jush_file") ? script_src("adminer-plugins/$jush_file", true) : "");',
-		$file
-	);
+	$file = replace_re('~\s+echo \(!\$module && file_exists.*~', '', $file); // modules of bundled drivers are merged into jush.js, plugin drivers carry their own inline
 	$file = replace_re('~echo .*/jush(-dark)?.css\'>.*~', '', $file); // merged into default.css or dark.css
 }
 if (function_exists('stripTypes')) {
@@ -379,3 +398,7 @@ if (function_exists('phpShrink')) {
 $filename = $project . (preg_match('~-dev$~', Adminer\VERSION) ? "" : "-" . Adminer\VERSION) . ($vendor ? "-$vendor" : "") . ($_SESSION["lang"] ? "-$_SESSION[lang]" : "") . ".php";
 file_put_contents($filename, $file);
 echo "$filename created (" . strlen($file) . " B).\n";
+
+if ($project == "adminer" && !$_SESSION["lang"]) {
+	update_jush_modules();
+}

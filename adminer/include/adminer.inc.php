@@ -1165,8 +1165,11 @@ class Adminer {
 		echo script_src("../externals/jush/modules/jush-txt.js", true);
 		echo script_src("../externals/jush/modules/jush-json.js", true);
 		// also drivers without SQL support can highlight their queries (e.g. Elasticsearch), some drivers have no module
-		$jush_file = "jush-" . JUSH . ".js";
-		echo (file_exists(__DIR__ . "/../../externals/jush/modules/$jush_file") ? script_src("../externals/jush/modules/$jush_file", true) : "");
+		$module = Driver::jushModule(); // plugin drivers are not compiled so they carry their module inline
+		// this is matched by compile.php - the modules of the bundled drivers are merged into jush.js
+		echo (!$module && file_exists(__DIR__ . "/../../externals/jush/modules/jush-" . JUSH . ".js") ? script_src("../externals/jush/modules/jush-" . JUSH . ".js", true) : "");
+		// unlike jush.js the inline script is not deferred so it has to wait for it
+		echo ($module ? script("addEventListener('DOMContentLoaded', () => {\n$module\n});") : "");
 		if (support("sql")) {
 			echo "<script" . nonce() . ">\n";
 			if ($tables) {

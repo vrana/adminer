@@ -33,6 +33,13 @@ abstract class SqlDriver {
 	/** @var list<string> */ public $generated = array(); // allowed types of generated columns
 	/** @var string */ public $primary = ""; // name of the field identifying a row in drivers without a schema, they compute the fields from the data
 
+	/** Get the JUSH module of the driver; plugin drivers are not compiled so they carry it inline
+	* @return string JavaScript code, empty if the module is merged into jush.js
+	*/
+	static function jushModule(): string {
+		return "";
+	}
+
 	/** Connect to the database
 	* @return Db|string string for error
 	*/

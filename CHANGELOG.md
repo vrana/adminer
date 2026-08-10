@@ -14,6 +14,7 @@
 - Redis: Redirect to the only table
 ### Plugins
 - Method dumpPrint() to print HTML code in the export form
+- Driver plugins: Bundle the syntax highlighter in the plugin file, adminer-plugins/jush-&lt;driver>.js is not loaded anymore
 - New plugin: Link the plugins usable in each part of the interface
 ### Internal
 - Check the code style also by Slevomat Coding Standard and the compiled files by PHPCompatibility (composer compat)
