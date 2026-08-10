@@ -300,9 +300,9 @@ ORDER BY 1") as $row
 			if ($length == ",") {
 				$length = $row["CHAR_COL_DECL_LENGTH"];
 			} //! int
-			$privileges = array("insert" => 1, "select" => 1, "update" => 1, "where" => 1, "order" => 1);
-			if ($row["DATA_TYPE_OWNER"] != "" && $type != "XMLTYPE") {
-				unset($privileges["where"]); // an object type, e.g. SDO_GEOMETRY, can't be compared with a string
+			$privileges = array("insert" => 1, "select" => 1, "update" => 1, "order" => 1);
+			if ($row["DATA_TYPE_OWNER"] == "" || $type == "XMLTYPE") { // an object type, e.g. SDO_GEOMETRY, can't be compared with a string
+				$privileges["where"] = 1;
 			}
 			$return[$row["COLUMN_NAME"]] = array(
 				"field" => $row["COLUMN_NAME"],
