@@ -185,7 +185,7 @@ function edit_type(string $key, array $field, array $collations, array $foreign_
 		. " aria-labelledby='label-length'>";
 	echo "<td class='options'>";
 	echo ($collations
-		? "<input list='collations' name='" . h($key) . "[collation]'" . option_types($type, '(char|text|enum|set)$')
+		? "<input list='collations' name='" . h($key) . "[collation]'" . option_types($type, '(' . text_type() . ')$')
 			. " value='" . h($field["collation"]) . "' placeholder='(" . lang('collation') . ")'>"
 		: ''
 	);
@@ -247,7 +247,7 @@ function process_type(array $field, string $collate = "COLLATE"): string {
 	return " $field[type]"
 		. process_length($field["length"])
 		. (preg_match(number_type(), $field["type"]) && in_array($field["unsigned"], driver()->unsigned) ? " $field[unsigned]" : "")
-		. (preg_match('~char|text|enum|set~', $field["type"]) && $field["collation"] ? " $collate " . (JUSH == "mssql" ? $field["collation"] : q($field["collation"])) : "")
+		. (preg_match('~' . text_type() . '~', $field["type"]) && $field["collation"] ? " $collate " . (JUSH == "mssql" ? $field["collation"] : q($field["collation"])) : "")
 	;
 }
 

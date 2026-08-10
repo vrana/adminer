@@ -432,7 +432,7 @@ if (!$columns && support("table")) {
 				foreach ($unique_array as $key => $val) {
 					$field = (array) $fields[$key];
 					$is_binary = is_blob($field); // binary and varbinary are converted to hexadecimal so they are not shortened
-					if ((JUSH == "sql" || JUSH == "pgsql") && ($is_binary || preg_match('~char|text|enum|set~', $field["type"])) && strlen($val) > 64) {
+					if ((JUSH == "sql" || JUSH == "pgsql") && ($is_binary || preg_match('~' . text_type() . '~', $field["type"])) && strlen($val) > 64) {
 						$key = (strpos($key, '(') ? $key : idf_escape($key)); //! columns looking like functions
 						$key = "MD5(" . ($is_binary || JUSH != 'sql' || preg_match("~^utf8~", $field["collation"]) ? $key : "CONVERT($key USING " . charset(connection()) . ")") . ")";
 						$val = md5($is_binary ? (string) driver()->value($val, $field) : $val); // value() decodes bytea in PostgreSQL
