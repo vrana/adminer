@@ -68,12 +68,6 @@
 		</properties>
 		<exclude-pattern>adminer/lang/</exclude-pattern>
 		<exclude-pattern>plugins/foreign-system.php</exclude-pattern>
-		<exclude-pattern>plugins/drivers/</exclude-pattern><!-- the embedded JUSH modules are copied verbatim, jush-redis.js has one 5 kB line -->
-	</rule>
-
-	<rule ref="Squiz.PHP.Heredoc.NowdocNotAllowed">
-		<!-- The drivers carry their JUSH module inline, a nowdoc is the only form not mangling its $ and \. -->
-		<exclude-pattern>plugins/drivers/</exclude-pattern>
 	</rule>
 
 	<rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
