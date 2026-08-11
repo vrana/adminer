@@ -242,7 +242,8 @@ if (adminer()->homepage()) {
 				foreach ($routines as $row) {
 					$name = ($row["SPECIFIC_NAME"] == $row["ROUTINE_NAME"] ? "" : "&name=" . url_escape($row["ROUTINE_NAME"])); // not computed on the pages to be able to print the header first
 					echo '<tr>';
-					echo '<th><a href="' . h(ME . ($row["ROUTINE_TYPE"] != "PROCEDURE" ? 'callf=' : 'call=') . url_escape($row["SPECIFIC_NAME"]) . $name) . '">' . h($row["ROUTINE_NAME"]) . '</a>';
+					echo '<th><a href="' . h(ME . ($row["ROUTINE_TYPE"] != "PROCEDURE" ? 'callf=' : 'call=') . url_escape($row["SPECIFIC_NAME"]) . $name) . '" title="' . lang('Call') . '">'
+						. h($row["ROUTINE_NAME"]) . '</a>';
 					echo '<td>' . h($row["ROUTINE_TYPE"]);
 					echo '<td>' . h($row["DTD_IDENTIFIER"]);
 					echo '<td class="hover"><a href="' . h(ME . ($row["ROUTINE_TYPE"] != "PROCEDURE" ? 'function=' : 'procedure=') . url_escape($row["SPECIFIC_NAME"]) . $name) . '">'
