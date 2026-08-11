@@ -8,6 +8,7 @@
 - Select: Search only the columns which can hold the searched value, convert the other types to text (bug #1216)
 - Select: Modify or delete several rows in a transaction
 - Edit: Keep the JSON value entered by the user after an error, it was replaced by null if it was invalid
+- MariaDB 12: Support triggers for multiple events and for UPDATE OF (bug #1306)
 - PostgreSQL: Edit and delete rows identified by a column of a composite type (bug #1217)
 - MS SQL: Fix importing a CSV file to a table with an identity column through PDO, it silently did nothing
 - Elasticsearch: Rename the database from elastic to data

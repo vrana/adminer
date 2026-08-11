@@ -909,9 +909,10 @@ if (!defined('Adminer\DRIVER')) {
 			}
 			foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_\\"))) as $row) {
 				$trigger = $row["Trigger"];
+				list($event, $of) = trigger_event($row);
 				if (
 					!queries("CREATE TRIGGER " . ($target == DB ? idf_escape("copy_$trigger") : idf_escape($target) . "." . idf_escape($trigger))
-						. " $row[Timing] $row[Event] ON $name FOR EACH ROW\n$row[Statement];")
+						. " $row[Timing] $event" . ($of != "" ? " $of" : "") . " ON $name FOR EACH ROW\n$row[Statement];")
 				) {
 					return false;
 				}
@@ -930,6 +931,30 @@ if (!defined('Adminer\DRIVER')) {
 		return true;
 	}
 
+	/** Get the trigger events in the Adminer format
+	* @param string[] $row row of SHOW TRIGGERS
+	* @return array{string, string} [events, columns of UPDATE OF]
+	*/
+	function trigger_event(array $row): array {
+		$events = explode(",", $row["Event"]); // MariaDB 12 returns a comma separated list
+		$return = array();
+		foreach (array("DELETE", "INSERT", "UPDATE") as $event) { // UPDATE is the last one, only it can be followed by OF
+			if (in_array($event, $events)) {
+				$return[] = $event;
+			}
+		}
+		$return = implode(" OR ", $return);
+		// SHOW TRIGGERS doesn't return the columns of UPDATE OF, SHOW CREATE TRIGGER returns the original statement
+		if (
+			in_array("UPDATE", $events) && min_version('', '12.0.1')
+			&& preg_match('~\s(?:BEFORE|AFTER)\s+(.+?)\s+ON\s~is', get_val("SHOW CREATE TRIGGER " . idf_escape($row["Trigger"]), 2), $match)
+			&& preg_match('~\bOF\s+(.+)~is', $match[1], $of)
+		) {
+			return array("$return OF", $of[1]);
+		}
+		return array($return, "");
+	}
+
 	/** Get information about trigger
 	* @param string $name trigger name
 	* @return Trigger
@@ -939,7 +964,11 @@ if (!defined('Adminer\DRIVER')) {
 			return array();
 		}
 		$rows = get_rows("SHOW TRIGGERS WHERE `Trigger` = " . q($name));
-		return reset($rows);
+		$return = reset($rows);
+		if ($return) {
+			list($return["Event"], $return["Of"]) = trigger_event($return);
+		}
+		return $return;
 	}
 
 	/** Get defined triggers
@@ -948,7 +977,8 @@ if (!defined('Adminer\DRIVER')) {
 	function triggers(string $table): array {
 		$return = array();
 		foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_\\"))) as $row) {
-			$return[$row["Trigger"]] = array($row["Timing"], $row["Event"]);
+			list($event) = trigger_event($row);
+			$return[$row["Trigger"]] = array($row["Timing"], $event);
 		}
 		return $return;
 	}
@@ -959,7 +989,14 @@ if (!defined('Adminer\DRIVER')) {
 	function trigger_options(): array {
 		return array(
 			"Timing" => array("BEFORE", "AFTER"),
-			"Event" => array("INSERT", "UPDATE", "DELETE"),
+			"Event" => (min_version('', '12.0.1')
+				? array(
+					"INSERT", "UPDATE", "UPDATE OF", "DELETE",
+					"INSERT OR UPDATE", "INSERT OR UPDATE OF", "DELETE OR INSERT", "DELETE OR UPDATE", "DELETE OR UPDATE OF",
+					"DELETE OR INSERT OR UPDATE", "DELETE OR INSERT OR UPDATE OF",
+				)
+				: array("INSERT", "UPDATE", "DELETE")
+			),
 			"Type" => array("FOR EACH ROW"),
 		);
 	}
@@ -1078,7 +1115,8 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 	function trigger_sql(string $table): string {
 		$return = "";
 		foreach (get_rows("SHOW TRIGGERS LIKE " . q(addcslashes($table, "%_\\")), null, "-- ") as $row) {
-			$return .= "\nCREATE TRIGGER " . idf_escape($row["Trigger"]) . " $row[Timing] $row[Event] ON " . table($row["Table"]) . " FOR EACH ROW\n$row[Statement];;\n";
+			list($row["Event"], $row["Of"]) = trigger_event($row);
+			$return .= "\n" . create_trigger(" ON " . table($row["Table"]), $row + array("Type" => "FOR EACH ROW")) . ";\n"; // the second ; is the delimiter
 		}
 		return $return;
 	}
