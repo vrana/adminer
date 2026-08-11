@@ -5,7 +5,7 @@
 - Create table: Print the success message in drivers not using SQL, e.g. Elasticsearch (regression from 6.0.0)
 - Database schema: Arrange the tables in a grid by their foreign keys instead of in one column
 - Database schema: Do not display the tables hidden by tableName() and the references to them
-- Select: Search only the columns which can hold the searched value, convert the other types to text
+- Select: Search only the columns which can hold the searched value, convert the other types to text (bug #1216)
 - Select: Modify or delete several rows in a transaction
 - Edit: Keep the JSON value entered by the user after an error, it was replaced by null if it was invalid
 - MS SQL: Fix importing a CSV file to a table with an identity column through PDO, it silently did nothing
