@@ -328,7 +328,12 @@ if ($vendor) {
 			$file = replace_re('~(\t*)echo adminer\(\)->loginFormField\(\s*\'server\',.*?\);\n~s', "\\1echo input_hidden(\"auth[server]\", SERVER);\n", $file);
 		}
 	}
-	$file = replace_re('(;\s*../externals/jush/modules/jush-(?!autocomplete-sql\.|textarea\.|txt\.|json\.|' . preg_quote($vendor == "mysql" ? "sql" : $vendor) . '\.)[^.]+.js)', '', $file);
+	$file = replace_re('~;\s*\.\./externals/jush/modules/jush-(sql|pgsql|sqlite|mssql|oracle)\.js~', '', $file);
+	$jush = Adminer\Driver::$jush;
+	if (file_exists(__DIR__ . "/externals/jush/modules/jush-$jush.js")) {
+		// the list holds only the bundled drivers, add the module of the compiled driver back
+		$file = replace("../externals/jush/modules/jush-json.js'", "../externals/jush/modules/jush-json.js;\n../externals/jush/modules/jush-$jush.js'", $file);
+	}
 	$file = replace_re('~doc_link\(array\((.*)\)\)~sU', function ($match) use ($vendor) {
 		list(, $links) = $match;
 		$links = preg_replace("~'(?!(" . ($vendor == "mysql" ? "sql|mariadb" : $vendor) . ")')[^']*' => [^,]*,?~", '', $links);
