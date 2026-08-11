@@ -272,7 +272,12 @@ test('Composite type', async () => {
 	await page.locator('input[name="check[]"]').nth(1).click(); // (2,) - the composite comparison considers a NULL member equal to a NULL member
 	await page.locator('[name="delete"]').click();
 	await expect(page.locator('body')).toContainText('1 item has been affected.');
-	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public&sql=' + encodeURIComponent('DROP TABLE composites; DROP TYPE composite_key'));
+	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public');
+	await link(page, 'composite_key').click();
+	await page.locator('[name="name"]').fill('composite_id'); // renaming must not re-create the type used by the table
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('Type has been altered.');
+	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public&sql=' + encodeURIComponent('DROP TABLE composites; DROP TYPE composite_id'));
 	await button(page, 'Execute').click();
 });
 

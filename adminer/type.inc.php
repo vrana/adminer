@@ -45,7 +45,7 @@ $object = ($type["kind"] == 'd' ? "DOMAIN" : "TYPE"); // domains are created, al
 if ($_POST && !$error) {
 	$link = substr(ME, 0, -1);
 	$name = trim($row["name"]);
-	$as = trim($row["as"]);
+	$as = trim(str_replace("\r", "", $row["as"])); // the browser sends CRLF in <textarea>, type_definition() returns LF
 	// CREATE TYPE accepts AS ENUM (...), AS RANGE (...), AS (...) and (INPUT = ...), anything else after AS is a base type of a domain
 	$new_object = (preg_match('~^AS\s+(?!ENUM\b|RANGE\b|\()~i', $as) ? "DOMAIN" : "TYPE");
 	$message = lang('Type has been altered.');
