@@ -1,6 +1,25 @@
 <?php
 namespace Adminer;
 
+/** Issue grant or revoke commands
+* @param 'GRANT'|'REVOKE' $grant
+* @param list<string> $privileges
+* @return Result|bool
+*/
+function grant(string $grant, array $privileges, ?string $columns, string $on) {
+	if (!$privileges) {
+		return true;
+	}
+	if ($privileges == array("ALL PRIVILEGES", "GRANT OPTION")) {
+		// can't be granted or revoked together
+		return ($grant == "GRANT"
+			? queries("$grant ALL PRIVILEGES$on WITH GRANT OPTION")
+			: queries("$grant ALL PRIVILEGES$on") && queries("$grant GRANT OPTION$on")
+		);
+	}
+	return queries("$grant " . preg_replace('~(GRANT OPTION)\([^)]*\)~', '\1', implode("$columns, ", $privileges) . $columns) . $on);
+}
+
 $USER = $_GET["user"];
 $privileges = array("" => array("All privileges" => ""));
 foreach (get_rows("SHOW PRIVILEGES") as $row) {

@@ -1,6 +1,27 @@
 <?php
 namespace Adminer;
 
+/** Get referencable tables with single column primary key except self
+* @return array<string, Field> [$table_name => $field]
+*/
+function referencable_primary(string $self): array {
+	$return = array(); // table_name => field
+	foreach (table_status('', true) as $table_name => $table) {
+		if ($table_name != $self && fk_support($table)) {
+			foreach (fields($table_name) as $field) {
+				if ($field["primary"]) {
+					if ($return[$table_name]) { // multi column primary key
+						unset($return[$table_name]);
+						break;
+					}
+					$return[$table_name] = $field;
+				}
+			}
+		}
+	}
+	return $return;
+}
+
 $TABLE = $_GET["create"];
 $partition_by = driver()->partitionBy;
 $partitions_info = ($partition_by && $TABLE != "" ? driver()->partitionsInfo($TABLE) : array());

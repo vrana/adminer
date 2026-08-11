@@ -94,27 +94,6 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 	return $return;
 }
 
-/** Get referencable tables with single column primary key except self
-* @return array<string, Field> [$table_name => $field]
-*/
-function referencable_primary(string $self): array {
-	$return = array(); // table_name => field
-	foreach (table_status('', true) as $table_name => $table) {
-		if ($table_name != $self && fk_support($table)) {
-			foreach (fields($table_name) as $field) {
-				if ($field["primary"]) {
-					if ($return[$table_name]) { // multi column primary key
-						unset($return[$table_name]);
-						break;
-					}
-					$return[$table_name] = $field;
-				}
-			}
-		}
-	}
-	return $return;
-}
-
 /** Print SQL <textarea> tag
 * @param string|list<array{string}> $value
 */
@@ -293,24 +272,6 @@ function default_value(array $field): string {
 	);
 }
 
-/** Get type class to use in CSS
-* @return string|void class=''
-*/
-function type_class(string $type) {
-	foreach (
-		array(
-			'char' => 'text',
-			'date' => 'time|year',
-			'binary' => 'blob',
-			'enum' => 'set',
-		) as $key => $val
-	) {
-		if (preg_match("~$key|$val~", $type)) {
-			return " class='$key'";
-		}
-	}
-}
-
 /** Print table interior for fields editing
 * @param (Field|RoutineField)[] $fields
 * @param list<string> $collations
@@ -388,33 +349,6 @@ function process_fields(array &$fields): bool {
 		array_splice($fields, key($_POST["add"]), 0, array(array()));
 	}
 	return $_POST["add"] || $_POST["drop_col"];
-}
-
-/** Callback used in routine()
-* @param list<string> $match
-*/
-function normalize_enum(array $match): string {
-	$val = $match[0];
-	return "'" . str_replace("'", "''", addcslashes(stripcslashes(str_replace($val[0] . $val[0], $val[0], substr($val, 1, -1))), '\\')) . "'";
-}
-
-/** Issue grant or revoke commands
-* @param 'GRANT'|'REVOKE' $grant
-* @param list<string> $privileges
-* @return Result|bool
-*/
-function grant(string $grant, array $privileges, ?string $columns, string $on) {
-	if (!$privileges) {
-		return true;
-	}
-	if ($privileges == array("ALL PRIVILEGES", "GRANT OPTION")) {
-		// can't be granted or revoked together
-		return ($grant == "GRANT"
-			? queries("$grant ALL PRIVILEGES$on WITH GRANT OPTION")
-			: queries("$grant ALL PRIVILEGES$on") && queries("$grant GRANT OPTION$on")
-		);
-	}
-	return queries("$grant " . preg_replace('~(GRANT OPTION)\([^)]*\)~', '\1', implode("$columns, ", $privileges) . $columns) . $on);
 }
 
 /** Drop old object and create a new one

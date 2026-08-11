@@ -19,6 +19,24 @@ function schema_column(string $table, array $referenced, array &$columns): int {
 	return $columns[$table];
 }
 
+/** Get type class to use in CSS
+* @return string|void class=''
+*/
+function type_class(string $type) {
+	foreach (
+		array(
+			'char' => 'text',
+			'date' => 'time|year',
+			'binary' => 'blob',
+			'enum' => 'set',
+		) as $key => $val
+	) {
+		if (preg_match("~$key|$val~", $type)) {
+			return " class='$key'";
+		}
+	}
+}
+
 /** @var array{float, float}[] */
 $table_pos = array();
 $table_pos_js = array();

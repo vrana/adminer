@@ -722,12 +722,6 @@ function upload_error(?int $error): string {
 	return ($error ? lang('Unable to upload a file.') . ($max_size ? " " . lang('Maximum allowed file size is %sB.', $max_size) : "") : lang('File does not exist.'));
 }
 
-/** Create repeat pattern for preg */
-function repeat_pattern(string $pattern, int $length): string {
-	// fix for Compilation failed: number too big in {} quantifier
-	return str_repeat("$pattern{0,65535}", $length / 65535) . "$pattern{0," . ($length % 65535) . "}"; // can create {0,0} which is OK
-}
-
 /** Check whether the string is in UTF-8 */
 function is_utf8(?string $val): bool {
 	// don't print control chars except \t\r\n

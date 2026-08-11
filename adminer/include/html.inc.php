@@ -563,6 +563,12 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 	echo "</form>\n";
 }
 
+/** Create repeat pattern for preg */
+function repeat_pattern(string $pattern, int $length): string {
+	// fix for Compilation failed: number too big in {} quantifier
+	return str_repeat("$pattern{0,65535}", $length / 65535) . "$pattern{0," . ($length % 65535) . "}"; // can create {0,0} which is OK
+}
+
 /** Shorten UTF-8 string
 * @return string escaped string with appended ...
 */
