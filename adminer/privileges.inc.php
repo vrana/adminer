@@ -26,7 +26,9 @@ while ($row = $result->fetch_assoc()) {
 }
 
 if (!$grant || DB != "") {
-	echo "<tr><td><input name='user' autocapitalize='off'><td><input name='host' value='localhost' autocapitalize='off'><td><input type='submit' value='" . lang('Edit') . "'>\n";
+	echo "<tr><td><input name='user' autocapitalize='off'>";
+	echo "<td><input name='host' value='localhost' autocapitalize='off'>";
+	echo "<td class='hover'><input type='submit' value='" . lang('Edit') . "'>\n";
 }
 
 echo "</table>\n";

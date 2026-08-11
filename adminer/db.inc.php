@@ -296,7 +296,7 @@ if (adminer()->homepage()) {
 			$rows = get_rows("SHOW EVENTS");
 			if ($rows) {
 				echo "<table>\n";
-				echo "<thead><tr><th>" . lang('Name') . "<td>" . lang('Schedule') . "<td>" . lang('Start') . "<td>" . lang('End') . "<td><tbody>\n";
+				echo "<thead><tr><th>" . lang('Name') . "<td>" . lang('Schedule') . "<td>" . lang('Start') . "<td>" . lang('End') . "<td class='hover'><tbody>\n";
 				foreach ($rows as $row) {
 					echo "<tr>";
 					echo "<th>" . h($row["Name"]);
@@ -304,7 +304,7 @@ if (adminer()->homepage()) {
 						? lang('At given time') . "<td>" . h($row["Execute at"])
 						: lang('Every') . " " . h($row["Interval value"]) . " " . h($row["Interval field"]) . "<td>" . h($row["Starts"]));
 					echo "<td>" . h($row["Ends"]);
-					echo '<td><a href="' . h(ME) . 'event=' . url_escape($row["Name"]) . '">' . lang('Alter') . '</a>';
+					echo '<td class="hover"><a href="' . h(ME) . 'event=' . url_escape($row["Name"]) . '">' . lang('Alter') . '</a>';
 				}
 				echo "</table>\n";
 				$event_scheduler = get_val("SELECT @@event_scheduler");
