@@ -42,7 +42,7 @@ if (!$_POST && $TABLE != "") {
 	$row["name"] = $TABLE;
 	$row["materialized"] = ($orig_type != "VIEW");
 	if (!$error) {
-		$error = error();
+		$error = adminer()->error();
 	}
 }
 

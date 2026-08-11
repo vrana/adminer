@@ -762,6 +762,11 @@ class Adminer {
 		;
 	}
 
+	/** Get HTML of the last error message; the raw message is in connection()->error */
+	function error(): string {
+		return error(); // the function defined by the driver, not this method
+	}
+
 	/** Print before edit form
 	* @param Field[] $fields
 	* @param mixed $row

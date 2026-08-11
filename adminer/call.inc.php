@@ -44,7 +44,7 @@ if (!$error && $_POST) {
 	echo adminer()->selectQuery($query, $start, !$result);
 
 	if (!$result) {
-		echo "<p class='error'>" . error() . "\n";
+		echo "<p class='error'>" . adminer()->error() . "\n";
 	} else {
 		$connection2 = connect();
 		if ($connection2) {

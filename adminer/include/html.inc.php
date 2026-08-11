@@ -419,7 +419,7 @@ function search_tables(): void {
 				$print = "<a href='" . h(ME . "select=" . url_escape($table)
 					. "&where[0][op]=" . url_escape($_GET["where"][0]["op"])
 					. "&where[0][val]=" . url_escape($_GET["where"][0]["val"])) . "'>$name</a>";
-				echo "$sep<li>" . ($result ? $print : "<p class='error'>$print: " . error()) . "\n";
+				echo "$sep<li>" . ($result ? $print : "<p class='error'>$print: " . adminer()->error()) . "\n";
 				$sep = "";
 			}
 		}

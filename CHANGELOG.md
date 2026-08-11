@@ -16,6 +16,7 @@
 - OpenSearch: Add support via Elasticsearch driver
 - Redis: Redirect to the only table
 ### Plugins
+- Method error() to modify the printed database error messages (bug #1249)
 - Method dumpPrint() to print HTML code in the export form
 - Driver plugins: Bundle the syntax highlighter in the plugin file, adminer-plugins/jush-&lt;driver>.js is not loaded anymore
 - Driver plugins: Method jushAutocomplete() to disable or replace the autocomplete of the query &lt;textarea>

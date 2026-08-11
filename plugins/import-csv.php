@@ -101,7 +101,7 @@ class AdminerImportCsv extends Adminer\Plugin {
 		if (isset($tables[$table])) {
 			if ($exists == "drop") {
 				if (!Adminer\drop_tables(array($table))) {
-					echo $error_prefix . Adminer\error() . "\n";
+					echo $error_prefix . Adminer\adminer()->error() . "\n";
 					return false;
 				}
 			} else {
@@ -113,7 +113,7 @@ class AdminerImportCsv extends Adminer\Plugin {
 					}
 				}
 				if ($exists == "truncate" && !Adminer\truncate_tables(array($table))) {
-					echo $error_prefix . Adminer\error() . "\n";
+					echo $error_prefix . Adminer\adminer()->error() . "\n";
 					return false;
 				}
 			}
@@ -132,7 +132,7 @@ class AdminerImportCsv extends Adminer\Plugin {
 			}
 			$start = count(Adminer\Queries::$queries);
 			if (!Adminer\alter_table("", $table, $create, $primary, null, "", "", "", array())) {
-				echo $error_prefix . Adminer\error() . "\n";
+				echo $error_prefix . Adminer\adminer()->error() . "\n";
 				return false;
 			}
 			if (!$_POST["only_errors"]) {
@@ -175,7 +175,7 @@ class AdminerImportCsv extends Adminer\Plugin {
 			$failed = !Adminer\connection()->query($insert . implode(",\n", $values));
 		}
 		if ($failed) {
-			echo $error_prefix . Adminer\error() . "\n";
+			echo $error_prefix . Adminer\adminer()->error() . "\n";
 			Adminer\driver()->rollback();
 			return false;
 		}

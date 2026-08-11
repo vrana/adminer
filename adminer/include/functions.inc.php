@@ -313,7 +313,7 @@ function get_rows(string $query, ?Db $connection2 = null, string $error = "<p cl
 			$return[] = $row;
 		}
 	} elseif (!$result && !$connection2 && $error && (defined('Adminer\PAGE_HEADER') || $error == "-- ")) {
-		echo $error . error() . "\n";
+		echo $error . adminer()->error() . "\n";
 	}
 	return $return;
 }
@@ -592,7 +592,7 @@ function query_redirect(string $query, ?string $location, string $message, $redi
 	}
 	$sql = ($query ? adminer()->messageQuery($query, $time, $failed) : "");
 	if ($failed) {
-		adminer()->error .= error() . $sql . script("messagesPrint();") . "<br>";
+		adminer()->error .= adminer()->error() . $sql . script("messagesPrint();") . "<br>";
 		return false;
 	}
 	if ($redirect) {

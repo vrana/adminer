@@ -504,6 +504,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		return " <span class='time'>" . @date("H:i:s") . "</span><!--\n" . str_replace("--", "--><!-- ", $query) . "\n" . ($time ? "($time)\n" : "") . "-->";
 	}
 
+	function error(): string {
+		return error(); // the function defined by the driver, not this method
+	}
+
 	function editRowPrint(string $table, array $fields, $row, ?bool $update): void {
 	}
 

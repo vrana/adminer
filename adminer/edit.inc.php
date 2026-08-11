@@ -83,7 +83,7 @@ if ($where) {
 	if ($select) {
 		$result = driver()->select($TABLE, $select, array($where), $select, array(), (isset($_GET["select"]) ? 2 : 1));
 		if (!$result) {
-			$error = error();
+			$error = adminer()->error();
 		} else {
 			$row = $result->fetch_assoc();
 			if (!$row) { // MySQLi returns null

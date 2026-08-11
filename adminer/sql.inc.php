@@ -149,7 +149,7 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 
 								if (connection()->error) {
 									echo ($_POST["only_errors"] ? $print : "");
-									echo "<p class='error'>" . lang('Error in query') . (connection()->errno ? " (" . connection()->errno . ")" : "") . ": " . error() . "\n";
+									echo "<p class='error'>" . lang('Error in query') . (connection()->errno ? " (" . connection()->errno . ")" : "") . ": " . adminer()->error() . "\n";
 									$errors[] = " <a href='#sql-$commands'>$commands</a>";
 									if ($_POST["error_stops"]) {
 										break 2;

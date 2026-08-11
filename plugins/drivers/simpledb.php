@@ -288,7 +288,7 @@ if (isset($_GET["simpledb"])) {
 			$return[(string) $table] = 'table';
 		}
 		if (connection()->error && defined('Adminer\PAGE_HEADER')) {
-			echo "<p class='error'>" . error() . "\n";
+			echo "<p class='error'>" . adminer()->error() . "\n";
 		}
 		return $return;
 	}

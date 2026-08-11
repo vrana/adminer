@@ -273,7 +273,7 @@ if (isset($rights["insert"]) || !support("table")) {
 adminer()->selectLinks($table_status, $set);
 
 if (!$columns && support("table")) {
-	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "." : ": " . error()) . "\n";
+	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "." : ": " . adminer()->error()) . "\n";
 } else {
 	echo "<form action='' id='form'>\n";
 	echo "<div hidden>";
@@ -341,7 +341,7 @@ if (!$columns && support("table")) {
 	$result = driver()->select($TABLE, $select2, $where, $group2, $order, $limit, $page, true);
 
 	if (!is_object($result)) { // a query returning no result set can succeed, e.g. a multi-statement query in PostgreSQL
-		echo "<p class='error'>" . (error() ?: lang('Unknown error.')) . "\n";
+		echo "<p class='error'>" . (adminer()->error() ?: lang('Unknown error.')) . "\n";
 	} else {
 		if (JUSH == "mssql" && $page) {
 			$result->seek($limit * $page);
