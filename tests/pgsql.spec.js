@@ -254,6 +254,28 @@ test('Enum', async () => {
 	await expect(page.locator('body')).toContainText('deceased');
 });
 
+test('Composite type', async () => {
+	const sql = "CREATE TYPE composite_key AS (a int, b text);"
+		+ " CREATE TABLE composites (id composite_key PRIMARY KEY, val text);"
+		+ " INSERT INTO composites VALUES (ROW(1, 'x'), 'one'), (ROW(2, NULL), 'two')";
+	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public&sql=' + encodeURIComponent(sql));
+	await button(page, 'Execute').click();
+	await expect(page.locator('body')).toContainText('Query executed OK');
+	const select = '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public&select=composites&order[0]=id';
+	await goto(page, select);
+	await link(page, 'edit').click(); // the row is identified by the composite value, which has to be cast in the condition
+	await expect(page.locator('[name="fields[val]"]')).toHaveValue('one');
+	await page.locator('[name="fields[val]"]').fill('uno');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('Item has been updated.');
+	await goto(page, select);
+	await page.locator('input[name="check[]"]').nth(1).click(); // (2,) - the composite comparison considers a NULL member equal to a NULL member
+	await page.locator('[name="delete"]').click();
+	await expect(page.locator('body')).toContainText('1 item has been affected.');
+	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public&sql=' + encodeURIComponent('DROP TABLE composites; DROP TYPE composite_key'));
+	await button(page, 'Execute').click();
+});
+
 test('Explain', async () => {
 	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public&select=albums');
 	await link(page, 'Edit').click();

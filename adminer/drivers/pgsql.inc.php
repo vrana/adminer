@@ -588,10 +588,12 @@ AND relnamespace = " . driver()->nsOid . "
 	pg_get_expr(d.adbin, d.adrelid) AS default,
 	a.attnotnull::int,
 	i.indrelid AS primary,
+	t.typcategory,
 	col_description(a.attrelid, a.attnum) AS comment" . (min_version(10) ? ",
 	a.attidentity" . (min_version(12) ? ",
 	a.attgenerated" : "") : "") . "
 FROM pg_attribute a
+JOIN pg_type t ON t.oid = a.atttypid
 LEFT JOIN pg_attrdef d ON a.attrelid = d.adrelid AND a.attnum = d.adnum
 LEFT JOIN pg_index i ON a.attrelid = i.indrelid AND a.attnum = ANY(i.indkey) AND i.indisprimary
 WHERE a.attrelid = " . driver()->tableOid($table) . "
@@ -615,6 +617,7 @@ ORDER BY a.attnum") as $row
 				$row['default'] = 'GENERATED ' . ($row['attidentity'] == 'd' ? 'BY DEFAULT' : 'ALWAYS') . ' AS IDENTITY';
 			}
 			$row["generated"] = idx(array("s" => "STORED", "v" => "VIRTUAL"), $row["attgenerated"], "");
+			$row["composite"] = ($row["typcategory"] == "C"); // 'C' - a composite type, a domain over it or a table row type; an array of them is 'A'
 			$row["null"] = !$row["attnotnull"];
 			$row["auto_increment"] = $row['attidentity'] || preg_match('~^nextval\(~i', $row["default"])
 				|| preg_match('~^unique_rowid\(~', $row["default"]); // CockroachDB
@@ -1313,7 +1316,8 @@ FROM pg_range WHERE rngtypid = $id"));
 	}
 
 	function unconvert_field(array $field, string $return): string {
-		return $return;
+		// a literal compared with a composite value would be an anonymous record: input of anonymous composite types is not implemented
+		return ($field["composite"] ? "$return::$field[type]" : $return); // type is the result of format_type(), quoted and schema qualified if needed
 	}
 
 	function support(string $feature): bool {
