@@ -42,7 +42,6 @@
         "phpstan/phpstan-strict-rules": "2.0.12"
     },
     "config": {
-        "process-timeout": 0,
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
@@ -66,7 +65,10 @@
             "@php compile.php editor",
             "phpcs --standard=conf/phpcompat.xml"
         ],
-        "e2e": "npx playwright test --config conf/playwright.config.js",
+        "e2e": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx playwright test --config conf/playwright.config.js"
+        ],
         "compile": "@php compile.php",
         "clean": "@php -r \"array_map('unlink', array_merge(glob('adminer*.php'), glob('editor*.php')));\""
     },
