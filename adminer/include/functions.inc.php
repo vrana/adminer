@@ -648,12 +648,12 @@ function format_time(float $start): string {
 	return lang('%.3f s', max(0, microtime(true) - $start));
 }
 
-/** Get relative REQUEST_URI */
-function relative_uri(): string {
+/** Get URI relative to the current directory, REQUEST_URI by default */
+function relative_uri(string $uri = ''): string {
 	return preg_replace_callback('~^[^?]*~', function ($match) {
 		// ':' in the filename would make the relative URI look like an absolute one; not in the query string which may contain it verbatim
 		return str_replace(":", "%3A", $match[0]);
-	}, preg_replace('~^[^?]*/([^?]*)~', '\1', $_SERVER["REQUEST_URI"]));
+	}, preg_replace('~^[^?]*/([^?]*)~', '\1', ($uri ?: $_SERVER["REQUEST_URI"])));
 }
 
 /** Remove parameter from query string */

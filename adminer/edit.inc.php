@@ -17,7 +17,7 @@ foreach ($fields as $name => $field) {
 }
 
 if ($_POST && !$error && !isset($_GET["select"])) {
-	$location = $_POST["referer"];
+	$location = relative_uri((string) $_POST["referer"]); // the field is sent by the browser so it can point anywhere
 	if ($_POST["insert"]) { // continue edit or insert
 		//! it should redirect to Select if the values in ?where changed (handled only in JS)
 		$location = ($update ? null : $_SERVER["REQUEST_URI"]);
