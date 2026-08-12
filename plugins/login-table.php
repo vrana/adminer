@@ -3,7 +3,7 @@
 CREATE TABLE login (
 	id int NOT NULL AUTO_INCREMENT, -- optional
 	login varchar(30) NOT NULL, -- any length
-	password_sha1 char(40) NOT NULL,
+	password_hash varchar(255) NOT NULL, -- result of password_hash()
 	UNIQUE (login),
 	PRIMARY KEY (id)
 );
@@ -24,8 +24,8 @@ class AdminerLoginTable extends Adminer\Plugin {
 	}
 
 	function login($login, $password) {
-		return (bool) Adminer\get_val("SELECT COUNT(*) FROM " . Adminer\idf_escape($this->database) . ".login WHERE login = " . Adminer\q($login)
-			. " AND password_sha1 = " . Adminer\q(sha1($password)));
+		$hash = Adminer\get_val("SELECT password_hash FROM " . Adminer\idf_escape($this->database) . ".login WHERE login = " . Adminer\q($login));
+		return password_verify($password, (string) $hash);
 	}
 
 	protected $translations = array(
