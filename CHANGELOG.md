@@ -24,6 +24,7 @@
 - Elasticsearch: Highlight the printed queries
 - OpenSearch: Add support via Elasticsearch driver
 - Redis: Redirect to the only table
+- Editor: Do not access a database without a password, the same as Adminer
 ### Plugins
 - Method error() to modify the printed database error messages (bug #1249)
 - Method dumpPrint() to print HTML code in the export form
