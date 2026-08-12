@@ -2,6 +2,7 @@
 //! handle delete
 
 /** Edit fields ending with "_path" with <input type="file"> and link to the uploaded files from select
+* The uploaded file can have any extension by default, e.g. *.php can be a legitimate download, so disable executing scripts in the upload directory by PHP config "engine Off".
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
@@ -36,7 +37,7 @@ class AdminerFileUpload extends Adminer\Plugin {
 			}
 			//! unlink old
 			$filename = Adminer\rand_string() . $regs2[0];
-			if (!move_uploaded_file($_FILES["fields"]["tmp_name"][$name], $this->uploadPath . Adminer\friendly_url($table) . "/$regs[1]-$filename")) {
+			if (!move_uploaded_file($_FILES["fields"]["tmp_name"][$name], $this->uploadPath . Adminer\friendly_url($table) . "/" . Adminer\friendly_url($regs[1]) . "-$filename")) {
 				return false;
 			}
 			return Adminer\q($filename);
@@ -45,7 +46,7 @@ class AdminerFileUpload extends Adminer\Plugin {
 
 	function selectVal($val, &$link, $field, $original) {
 		if ($val != "" && preg_match('~(.*)_path$~', $field["field"], $regs)) {
-			$link = $this->displayPath . Adminer\friendly_url($_GET["select"]) . "/$regs[1]-$val";
+			$link = $this->displayPath . Adminer\friendly_url($_GET["select"]) . "/" . Adminer\friendly_url($regs[1]) . "-$val";
 		}
 	}
 
