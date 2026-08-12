@@ -88,7 +88,7 @@ function password_required(): bool {
 }
 
 $auth = $_POST["auth"];
-if ($auth) {
+if ($auth && verify_token()) { // the token is verified here because the login is processed before the general check
 	session_regenerate_id(); // defense against session fixation
 	$vendor = $auth["driver"];
 	$server = $auth["server"];
@@ -104,7 +104,7 @@ if ($auth) {
 		cookie("adminer_permanent", implode(" ", $permanent));
 	}
 	if (
-		count($_POST) == 1 // 1 - auth
+		!array_diff(array_keys($_POST), array("auth", "token")) // nothing else was posted, so there is no action to perform after the login
 		|| $vendor != DRIVER
 		|| $server != SERVER
 		|| $username !== $_GET["username"] // "0" == "00"
@@ -189,6 +189,7 @@ function auth_error(string $error, array &$permanent) {
 	if (hidden_fields($_POST, array("auth"))) { // expired session
 		echo "<p class='message'>" . lang('The action will be performed after successful login with the same credentials.') . "\n";
 	}
+	echo input_token(); // after hidden_fields() which can print the token of the expired session
 	echo "</div>\n";
 	adminer()->loginForm();
 	echo "</form>\n";
