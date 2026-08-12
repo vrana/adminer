@@ -128,6 +128,8 @@ function cookie(assign, days) {
 	document.cookie = assign
 		+ '; expires=' + date
 		+ '; path=' + location.pathname.replace(/[;,]/g, encodeURIComponent) // default path is without the trailing slash
+		+ (location.protocol == 'https:' ? '; secure' : '') // the same attributes as in the server-side cookie(), HttpOnly can't be used because this cookie is read by JavaScript
+		+ '; SameSite=lax'
 	;
 }
 
