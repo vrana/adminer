@@ -254,7 +254,8 @@ if ($_POST) {
 
 } elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
 	// posted form with no data means that post_max_size exceeded because Adminer always sends token at least
-	$error = lang('The POST data is too large. Reduce the data or increase the %s configuration directive.', "<b>post_max_size</b>'");
+	// this branch is not reached with display_startup_errors (on by default since PHP 8.0) because printing the PHP warning about it prevents starting the session
+	$error = lang('The POST data is too large. Reduce the data or increase the %s configuration directive.', "<b>post_max_size</b>");
 	if (isset($_GET["sql"])) {
 		$error .= ' ' . lang('You can upload a large SQL file via FTP and import it from the server.');
 	}
