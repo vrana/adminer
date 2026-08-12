@@ -104,7 +104,7 @@ class AdminerConfig extends Adminer\Plugin {
 			'Save' => '保存',
 		),
 		'hr' => array(
-			'' => 'Nikola Radovanović - cobisimo@gmail.com',
+			'' => 'Postavljanje opcija krajnjim korisnicima i njihovo spremanje u cookie', // Claude Opus 5
 			'Configuration saved.' => 'Konfiguracija je spremljena.',
 			'Configuration' => 'Konfiguracija',
 			'Only some plugins support configuration, e.g. %s.' => 'Samo neki dodaci podržavaju konfiguraciju, npr. %s.',
