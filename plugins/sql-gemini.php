@@ -22,7 +22,7 @@ class AdminerSqlGemini extends Adminer\Plugin {
 	}
 
 	function headers() {
-		if (isset($_POST["gemini"]) && !isset($_POST["query"])) {
+		if (isset($_POST["gemini"]) && !isset($_POST["query"]) && Adminer\verify_token()) {
 			$prompt = "I have a " . Adminer\get_driver(Adminer\DRIVER) . " database with this structure:\n\n";
 			foreach (Adminer\tables_list() as $table => $type) {
 				$prompt .= Adminer\create_sql($table, false, "CREATE") . ";\n\n";
@@ -67,7 +67,7 @@ geminiButton.onclick = () => {
 	ajax(
 		'',
 		req => setSqlareaValue(req.responseText),
-		'gemini=' + encodeURIComponent(geminiText.value)
+		'gemini=' + encodeURIComponent(geminiText.value) + '&token=<?php echo Adminer\get_token(); ?>'
 	);
 };
 
