@@ -463,7 +463,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 		return $return;
 	}
 
-	function information_schema(?string $db, string $schema = ""): bool {
+	function information_schema(string $db, string $schema = ""): bool {
 		return in_array($schema != "" ? $schema : get_schema(), array("INFORMATION_SCHEMA", "sys"));
 	}
 
