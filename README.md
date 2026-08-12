@@ -16,7 +16,7 @@
 If downloaded from Git then run: `git submodule update --init` (or `composer install`)
 
 - `adminer/index.php` - Run development version of Adminer
-- `editor/index.php` - Run development version of Adminer Editor
+- `editor/index.php` - Run development version of Adminer Editor, needs `adminer/` next to it
 - `editor/example.php` - Example customization
 - `compile.php` - Create a single file version
 - `lang.php` - Update translations

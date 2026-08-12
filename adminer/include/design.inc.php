@@ -25,7 +25,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 <meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title><?php echo $title_page; ?></title>
-<link rel="stylesheet" href="../adminer/static/default.css">
+<link rel="stylesheet" href="<?php echo DIR; ?>static/default.css">
 <?php
 
 	$css = adminer()->css();
@@ -40,17 +40,17 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	);
 	$media = " media='(prefers-color-scheme: dark)'";
 	if ($dark !== false) {
-		echo "<link rel='stylesheet'" . ($dark ? "" : $media) . " href='../adminer/static/dark.css'>\n";
+		echo "<link rel='stylesheet'" . ($dark ? "" : $media) . " href='" . DIR . "static/dark.css'>\n";
 	}
 	echo "<meta name='color-scheme' content='" . ($dark === null ? "light dark" : ($dark ? "dark" : "light")) . "'>\n";
 
 	// this is matched by compile.php
-	echo script_src("../adminer/static/functions.js");
+	echo script_src(DIR . "static/functions.js");
 	echo script_src("static/editing.js");
 	if (adminer()->head($dark)) {
 		echo "<link rel='icon' href='data:image/gif;base64,"
 			. "R0lGODlhEAAQAJEAAAQCBPz+/PwCBAROZCH5BAEAAAAALAAAAAAQABAAAAI2hI+pGO1rmghihiUdvUBnZ3XBQA7f05mOak1RWXrNq5nQWHMKvuoJ37BhVEEfYxQzHjWQ5qIAADs='>\n";
-		echo "<link rel='apple-touch-icon' href='../adminer/static/logo.png'>\n";
+		echo "<link rel='apple-touch-icon' href='" . DIR . "static/logo.png'>\n";
 	}
 	foreach ($css as $url => $mode) {
 		$attrs = ($mode == 'dark' && !$dark

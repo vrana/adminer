@@ -284,7 +284,7 @@ if (isset($_GET["redis"])) {
 
 		/** Get the JUSH module inlined in the released driver by the release script */
 		static function jushModule(): string {
-			return ""; // the repository and the source archive load externals/jush/modules/jush-redis.js
+			return ""; // the repository and the source archive load adminer/static/jush/modules/jush-redis.js
 		}
 
 		static function jushAutocomplete(array $tables, ?array $statements): string {

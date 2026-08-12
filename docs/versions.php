@@ -93,9 +93,9 @@ function create_jsmin() {
 /** Check out the submodule versions recorded in a tag */
 function update_submodules($tag) {
 	$paths = array();
-	foreach (array_keys(tree_gitlinks($tag)) as $name) {
+	foreach (tree_gitlinks($tag) as $name => $path) {
 		if (in_array($name, SUBMODULES)) {
-			$paths[] = "externals/$name";
+			$paths[] = $path;
 		}
 		// other submodules (jsmin-php, tinymce, ...) are not available, the compilation fails
 	}
@@ -105,12 +105,14 @@ function update_submodules($tag) {
 	}
 }
 
-/** Get array(submodule name => commit) recorded in externals/ of a tag */
+/** Get array(submodule name => path) recorded in a tag, the submodules moved from externals/ in 6.0.1
+* @return string[]
+*/
 function tree_gitlinks($tag) {
 	$return = array();
-	foreach (explode("\n", git(array("ls-tree", $tag, "--", "externals/"))) as $line) {
-		if (preg_match('~^160000 commit (\S+)\s+externals/(.+)$~', $line, $match)) {
-			$return[$match[2]] = $match[1];
+	foreach (explode("\n", git(array("ls-tree", "-r", $tag))) as $line) {
+		if (preg_match('~^160000 commit \S+\s+(.+)$~', $line, $match)) {
+			$return[basename($match[1])] = $match[1];
 		}
 	}
 	return $return;
@@ -166,23 +168,24 @@ function compile($tag, array $args, $compiler = "compile.php") {
 */
 function jush_size(array $gitlinks, $number) {
 	$return = 0;
-	if (!isset($gitlinks["jush"])) {
+	if (!isset($gitlinks["jush"])) { // this script doesn't include errors.inc.php silencing the warnings
 		return $return;
 	}
+	$jush = $gitlinks["jush"]; // externals/jush before 6.0.1, adminer/static/jush since
 	// merged into default.css and dark.css, jush-dark.css appeared in jush at the same time as Adminer started using it
-	$return += file_size("externals/jush/jush.css") + file_size("externals/jush/jush-dark.css");
-	if (!is_dir("externals/jush/modules")) { // jush before it was split to modules
-		return $return + file_size("externals/jush/jush.js");
+	$return += file_size("$jush/jush.css") + file_size("$jush/jush-dark.css");
+	if (!is_dir("$jush/modules")) { // jush before it was split to modules
+		return $return + file_size("$jush/jush.js");
 	}
 	$modules = array("jush.js", "jush-autocomplete-sql.js", "jush-json.js", "jush-mssql.js", "jush-oracle.js", "jush-pgsql.js", "jush-sql.js", "jush-sqlite.js", "jush-textarea.js", "jush-txt.js");
 	if (version_compare($number, "6", "<")) { // IGDB and SimpleDB are not highlighted since 6.0.0
 		$modules = array_merge($modules, array("jush-igdb.js", "jush-simpledb.js"));
 	}
 	foreach ($modules as $filename) {
-		if ($filename == "jush-json.js" && !file_exists("externals/jush/modules/$filename")) {
+		if ($filename == "jush-json.js" && !file_exists("$jush/modules/$filename")) {
 			$filename = "jush-js.js"; // JSON highlighting replaced the JS one
 		}
-		$return += file_size("externals/jush/modules/$filename");
+		$return += file_size("$jush/modules/$filename");
 	}
 	return $return;
 }

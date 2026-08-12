@@ -88,6 +88,7 @@ parameters:
 	scanFiles:
 		- ../compile.php # compile_file()
 	excludePaths:
+		- ../adminer/static/jush # submodule
 		- ../adminer/adminer-plugins*
 		- ../adminer/designs.php
 		- ../adminer/elastic.php

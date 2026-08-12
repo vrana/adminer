@@ -34,8 +34,8 @@ function merge(prepended) {
 
 export default [
 	// a config with only ignores is global; not globalIgnores() to not require the eslint package itself
-	// only externals/jush/modules/ is linted (it is compiled into adminer.php), the root jush.js and jush-api.js are generated; a negation can re-include only what the previous pattern ignored so each level needs its own pair
-	{ignores: ["externals/*", "!externals/jush/", "externals/jush/*", "!externals/jush/modules/", ".claude/", "tests/results/"]}, // .claude/ - Git worktrees created by Claude Code, tests/results/ - Playwright traces store the pages they captured
+	// only adminer/static/jush/modules/ is linted (it is compiled into adminer.php), the root jush.js and jush-api.js are generated; a negation can re-include only what the previous pattern ignored so each level needs its own pair
+	{ignores: ["conf/JsShrink/", "conf/PhpShrink/", "adminer/static/jush/*", "!adminer/static/jush/modules/", ".claude/", "tests/results/"]}, // .claude/ - Git worktrees created by Claude Code, tests/results/ - Playwright traces store the pages they captured
 	js.configs.recommended,
 	{
 		files: ["**/*.js"], // not this .mjs config
@@ -65,7 +65,7 @@ export default [
 		},
 	},
 	{
-		files: ["**/externals/jush/modules/jush.js"],
+		files: ["**/adminer/static/jush/modules/jush.js"],
 		rules: {"no-redeclare": ["error", {builtinGlobals: false}]}, // this file declares the jush global which is declared above for the files using it
 	},
 	// the files are concatenated during compilation and depend on each other

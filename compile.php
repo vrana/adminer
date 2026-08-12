@@ -3,8 +3,8 @@
 include __DIR__ . "/adminer/include/version.inc.php";
 include __DIR__ . "/adminer/include/errors.inc.php";
 include __DIR__ . "/adminer/include/compress.inc.php";
-include __DIR__ . "/externals/JsShrink/jsShrink.php";
-include __DIR__ . "/externals/PhpShrink/phpShrink.php";
+include __DIR__ . "/conf/JsShrink/jsShrink.php";
+include __DIR__ . "/conf/PhpShrink/phpShrink.php";
 
 function add_apo_slashes($s) {
 	return addcslashes($s, "\\'");
@@ -61,12 +61,13 @@ function lang_ids($match) {
 
 function put_file($match) {
 	global $project, $vendor;
-	if (preg_match('~LANG~', $match[2])) {
+	list(, , $dir, $filename) = $match; // DIR is the Adminer sources, the other paths are relative to the compiled project
+	if (preg_match('~LANG~', $filename)) {
 		return $match[0]; // processed later
 	}
-	$return = file_get_contents(__DIR__ . "/$project/$match[2]");
+	$return = file_get_contents(__DIR__ . "/" . ($dir ? "adminer" : $project) . "/$filename");
 	$return = replace_re('~namespace Adminer;\s*~', '', $return);
-	if ($vendor && preg_match('~/drivers/~', $match[2])) {
+	if ($vendor && preg_match('~drivers/~', $filename)) {
 		if ($vendor != "mysql") { // mysql.inc.php is not wrapped in a condition
 			$return = replace_re('~^if \(isset\(\$_GET\["' . $vendor . '"]\)\) \{(.*)^}~ms', '\1', $return);
 			// check function definition in drivers
@@ -109,7 +110,7 @@ function put_file($match) {
 			}
 		}
 	}
-	if (basename($match[2]) == "lang.inc.php" && $_SESSION["lang"]) {
+	if (basename($filename) == "lang.inc.php" && $_SESSION["lang"]) {
 		$return = replace_re('~// not used in a single language version from here.*~s', '', $return);
 		$return = replace_re('~(\$pos = (.+\n).+;)~sU', function ($match) {
 			return "\$pos = $match[2]\t\t\t: " . (preg_match("~'$_SESSION[lang]'.* \\? (.+)\n~U", $match[1], $match2) ? $match2[1] : "1") . "\n\t\t);";
@@ -283,15 +284,16 @@ if ($vendor) {
 		);
 	}
 }
-$file = replace_re('~\b(include|require) "([^"]*)";~', 'put_file', $file);
-$file = replace('include "../adminer/include/coverage.inc.php";', '', $file);
+$file = replace_re('~\b(include|require) (DIR \. )?"([^"]*)";~', 'put_file', $file);
+$file = replace('include DIR . "include/coverage.inc.php";', '', $file);
 if ($vendor) {
 	if (preg_match('~^/plugins/~', $driver_path)) {
-		$file = replace_re('((include "..)/adminer/drivers/mysql.inc.php)', "\\1$driver_path", $file);
+		$file = replace('include DIR . "drivers/mysql.inc.php"', 'include "..' . $driver_path . '"', $file); // the plugin driver is not in the Adminer sources
 	}
-	$file = replace_re('(include "../adminer/drivers/(?!' . preg_quote($vendor) . '\.).*\s*)', '', $file);
+	$file = replace_re('(include DIR \. "drivers/(?!' . preg_quote($vendor) . '\.).*\s*)', '', $file);
 }
-$file = replace_re('~\b(include|require) "([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
+$file = replace_re('~\b(include|require) (DIR \. )?"([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
+$file = replace_re('~define\(\'Adminer\\\\DIR\'.*\n~', '', $file); // the compiled file serves the static files itself
 
 // inline the checksums of official plugins, the plugins/ directory is not available next to the compiled file
 $checksums = "";
@@ -328,11 +330,11 @@ if ($vendor) {
 			$file = replace_re('~(\t*)echo adminer\(\)->loginFormField\(\s*\'server\',.*?\);\n~s', "\\1echo input_hidden(\"auth[server]\", SERVER);\n", $file);
 		}
 	}
-	$file = replace_re('~;\s*\.\./externals/jush/modules/jush-(sql|pgsql|sqlite|mssql|oracle)\.js~', '', $file);
+	$file = replace_re('~;\s*\.\./adminer/static/jush/modules/jush-(sql|pgsql|sqlite|mssql|oracle)\.js~', '', $file);
 	$jush = Adminer\Driver::$jush;
-	if (file_exists(__DIR__ . "/externals/jush/modules/jush-$jush.js")) {
+	if (file_exists(__DIR__ . "/adminer/static/jush/modules/jush-$jush.js")) {
 		// the list holds only the bundled drivers, add the module of the compiled driver back
-		$file = replace("../externals/jush/modules/jush-json.js'", "../externals/jush/modules/jush-json.js;\n../externals/jush/modules/jush-$jush.js'", $file);
+		$file = replace("../adminer/static/jush/modules/jush-json.js'", "../adminer/static/jush/modules/jush-json.js;\n../adminer/static/jush/modules/jush-$jush.js'", $file);
 	}
 	$file = replace_re('~doc_link\(array\((.*)\)\)~sU', function ($match) use ($vendor) {
 		list(, $links) = $match;
@@ -342,12 +344,12 @@ if ($vendor) {
 	//! strip doc_link() definition
 }
 if ($project == "editor") {
-	$file = replace_re('~;.\.\/externals/jush/jush(-dark)?\.css~', '', $file);
-	$file = replace_re('~compile_file\(\'\.\./(externals/jush/modules/jush\.js)[^)]+\)~', "''", $file);
+	$file = replace_re('~;\.\./adminer/static/jush/jush(-dark)?\.css~', '', $file);
+	$file = replace_re('~compile_file\(\'\.\./(adminer/static/jush/modules/jush\.js)[^)]+\)~', "''", $file);
 }
 // \s* after ( allows wrapping long lang() calls
 $file = replace_re("~(?<!>)lang\\(\\s*'((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
-$file = replace_re('~\b(include|require) "([^"]*" . LANG . ".inc.php)";~', 'put_file_lang', $file);
+$file = replace_re('~\b(include|require) DIR \. "[^"]*" \. LANG \. "\.inc\.php";~', 'put_file_lang', $file);
 $file = str_replace("\r", "", $file);
 if ($_SESSION["lang"]) {
 	// single language version
@@ -357,7 +359,7 @@ if ($_SESSION["lang"]) {
 }
 $file = replace('echo script_src("static/editing.js");' . "\n", "", $file); // merged into functions.js
 if ($project != "editor") { // the Editor doesn't use jush
-	$file = replace_re('~\s+echo script_src\("\.\./externals/jush/modules/jush-(autocomplete-sql|textarea|txt|json)\.js", true\);~', '', $file); // merged into jush.js
+	$file = replace_re('~\s+echo script_src\(DIR \. "static/jush/modules/jush-(autocomplete-sql|textarea|txt|json)\.js", true\);~', '', $file); // merged into jush.js
 	$file = replace_re('~\s+echo \(file_exists\(__DIR__.+jush-" \. JUSH \. "\.js", true\) : ""\);~', '', $file); // merged into jush.js or inlined in the driver
 	$file = replace_re('~echo .*/jush(-dark)?.css\'>.*~', '', $file); // merged into default.css or dark.css
 }
@@ -366,12 +368,12 @@ if (function_exists('stripTypes')) {
 }
 $file = replace_re("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", 'compile_file', $file); // integrate static files
 $replace = 'preg_replace("~\\\\\\\\?.*~", "", ME) . "?file=\1&version=' . Adminer\VERSION . '"';
-$file = replace_re('~\.\./adminer/static/(default\.css)~', '<?php echo h(' . $replace . '); ?>', $file);
-$file = replace_re('~"\.\./adminer/static/(functions\.js)"~', $replace, $file);
-$file = replace_re('~\.\./adminer/static/([^\'"]*)~', '" . h(' . $replace . ') . "', $file);
+$file = replace_re('~<\?php echo DIR; \?>static/(default\.css)~', '<?php echo h(' . $replace . '); ?>', $file);
+$file = replace_re('~DIR \. "static/(functions\.js)"~', $replace, $file);
 if ($project != "editor") { // the Editor doesn't use jush
-	$file = replace_re('~"\.\./externals/jush/modules/(jush\.js)"~', $replace, $file);
+	$file = replace_re('~DIR \. "static/jush/modules/(jush\.js)"~', $replace, $file); // before the general rule which would keep the path
 }
+$file = replace_re('~DIR \. "static/([^\'"]*)~', 'h(' . $replace . ') . "', $file);
 if (function_exists('phpShrink')) {
 	$file = phpShrink($file);
 }

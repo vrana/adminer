@@ -2,9 +2,9 @@
 namespace Adminer;
 
 // this is matched by compile.php
-include "../adminer/include/coverage.inc.php"; // must be first, the coverage doesn't cover the files compiled before it starts
-include "../adminer/include/version.inc.php";
-include "../adminer/include/errors.inc.php";
+include DIR . "include/coverage.inc.php"; // must be first, the coverage doesn't cover the files compiled before it starts
+include DIR . "include/version.inc.php";
+include DIR . "include/errors.inc.php";
 
 // disable filter.default
 $filter = !preg_match('~^(unsafe_raw)?$~', ini_get("filter.default"));
@@ -21,13 +21,13 @@ if (function_exists("mb_internal_encoding")) {
 	mb_internal_encoding("8bit");
 }
 
-include "../adminer/include/functions.inc.php";
-include "../adminer/include/decompress.inc.php";
-include "../adminer/include/html.inc.php";
+include DIR . "include/functions.inc.php";
+include DIR . "include/decompress.inc.php";
+include DIR . "include/html.inc.php";
 
 // used only in compiled file
 if (isset($_GET["file"])) {
-	include "../adminer/file.inc.php";
+	include DIR . "file.inc.php";
 }
 
 // Adminer doesn't use any global variables; they used to be declared here
@@ -62,18 +62,18 @@ if (function_exists('set_time_limit')) { // can be disabled
 }
 ini_set("precision", '16'); // 16 - IEEE 754 has 15.95 decimal digits for double
 
-include "../adminer/include/lang.inc.php";
-include "../adminer/lang/" . LANG . ".inc.php";
-include "../adminer/include/db.inc.php";
-include "../adminer/include/pdo.inc.php";
-include "../adminer/include/driver.inc.php";
-include "../adminer/drivers/pgsql.inc.php";
-include "../adminer/drivers/sqlite.inc.php";
-include "../adminer/drivers/mssql.inc.php";
-include "../adminer/drivers/oracle.inc.php";
+include DIR . "include/lang.inc.php";
+include DIR . "lang/" . LANG . ".inc.php";
+include DIR . "include/db.inc.php";
+include DIR . "include/pdo.inc.php";
+include DIR . "include/driver.inc.php";
+include DIR . "drivers/pgsql.inc.php";
+include DIR . "drivers/sqlite.inc.php";
+include DIR . "drivers/mssql.inc.php";
+include DIR . "drivers/oracle.inc.php";
 include "./include/adminer.inc.php";
-include "../adminer/include/plugins.inc.php";
-include "../adminer/include/plugin.inc.php";
+include DIR . "include/plugins.inc.php";
+include DIR . "include/plugin.inc.php";
 
 Adminer::$instance =
 	(function_exists('adminer_object') ? adminer_object() :
@@ -82,7 +82,7 @@ Adminer::$instance =
 ));
 
 // this is matched by compile.php
-include "../adminer/drivers/mysql.inc.php"; // must be included as last driver
+include DIR . "drivers/mysql.inc.php"; // must be included as last driver
 
 define('Adminer\JUSH', Driver::$jush);
 define('Adminer\SERVER', "" . $_GET[DRIVER]); // read from pgsql=localhost, '' means default server
@@ -98,9 +98,9 @@ define(
 		. (isset($_GET["db"]) ? 'db=' . url_escape(DB) . '&' . (isset($_GET["ns"]) ? "ns=" . url_escape($_GET["ns"]) . "&" : "") : '')
 );
 
-include "../adminer/include/design.inc.php";
-include "../adminer/include/xxtea.inc.php";
-include "../adminer/include/auth.inc.php";
+include DIR . "include/design.inc.php";
+include DIR . "include/xxtea.inc.php";
+include DIR . "include/auth.inc.php";
 include "./include/editing.inc.php";
 include "./include/connect.inc.php";
 

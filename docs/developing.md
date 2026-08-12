@@ -84,7 +84,7 @@ The `Plugins::__call` method calls all registered plugins until one of them retu
 Some hooks (`dumpFormat`, `dumpOutput`, `editRowPrint`, `editFunctions`, `config`) don't short-circuit but append the results of all plugins instead.
 The built-in `Adminer` class is registered as the last plugin, providing the default behavior.
 
-The syntax highlighter of a driver is loaded from `externals/jush/modules/jush-<driver>.js` in the repository and in the source archive, the same for the bundled drivers and for the plugins in [plugins/drivers/](/plugins/drivers/).
+The syntax highlighter of a driver is loaded from `adminer/static/jush/modules/jush-<driver>.js` in the repository and in the source archive, the same for the bundled drivers and for the plugins in [plugins/drivers/](/plugins/drivers/).
 A deployed driver plugin is a single file with no submodule next to it, so the released copy carries the module inline instead - minified by JsShrink and compressed, the same as the modules merged into `jush.js`.
 The release script fills in the `Driver::jushModule()` stub, which returns an empty string everywhere else, and the core prints the returned code in an inline `<script>` wrapped in `addEventListener('DOMContentLoaded', ...)` because `jush.js` is deferred and would otherwise run later.
 
@@ -286,6 +286,7 @@ Submodules simplify development - for example, I can add a feature to the syntax
 Adminer commits simply reference the current HEAD of the submodule, avoiding the need for frequent version releases, lock file updates, or other package management tasks.
 Because many developers expect Composer to bootstrap a checkout, `composer install` initializes the submodules too - it just runs `git submodule update --init --recursive` (also available as `composer submodules`).
 The dependencies are optional, so the command only prints a warning if it fails.
+Each submodule sits where it is used: the syntax highlighter in [adminer/static/jush/](/adminer/static/jush/) so that the `adminer/` directory is self-contained, the two minifiers used only by [compile.php](/compile.php) in [conf/](/conf/).
 
 Composer manages no runtime dependency but it does install the development tools - PHP_CS and PHPStan as `require-dev`, ESLint by npm.
 The Composer packages are pinned to exact versions because the lock file is not committed: the constraint in [composer.json](/composer.json) is what keeps every checkout and CI on the same build, so updating a linter is a deliberate commit.

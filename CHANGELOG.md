@@ -1,4 +1,5 @@
 ## Adminer dev
+- Run the development version from the adminer/ directory alone, copied anywhere and under any name
 - Use the same font in &lt;textarea> as in &lt;input>, keep monospace in the SQL command and JSON values
 - Autocomplete: Disable in the drivers not using SQL, e.g. Redis
 - Autocomplete: Offer only the statements allowed in a trigger and no statement in a check constraint
@@ -24,6 +25,7 @@
 - Driver plugins: Method jushAutocomplete() to disable or replace the autocomplete of the query &lt;textarea>
 - New plugin: Link the plugins usable in each part of the interface
 ### Internal
+- Move the submodules from externals/ to where they are used: adminer/static/jush, conf/JsShrink and conf/PhpShrink
 - Tests: Cover the CSV import and export, pagination, modifying a value by Ctrl+click, the bulk table operations and the SQL file import in every driver
 - Tests: Cover the bundled plugins by plugins.spec.js, which loads them from a fixed set in adminer/plugins.php
 - Check the code style also by Slevomat Coding Standard and the compiled files by PHPCompatibility (composer compat)

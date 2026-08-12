@@ -9,7 +9,8 @@
 
 namespace Adminer;
 
-include "../adminer/include/bootstrap.inc.php";
+define('Adminer\DIR', "../adminer/"); // path to the Adminer sources
+include DIR . "include/bootstrap.inc.php";
 add_driver(DRIVER, lang('Login'));
 
 if (isset($_GET["select"]) && ($_POST["edit"] || $_POST["clone"]) && !$_POST["save"]) {
@@ -17,11 +18,11 @@ if (isset($_GET["select"]) && ($_POST["edit"] || $_POST["clone"]) && !$_POST["sa
 }
 
 if (isset($_GET["download"])) {
-	include "../adminer/download.inc.php";
+	include DIR . "download.inc.php";
 } elseif (isset($_GET["edit"])) {
-	include "../adminer/edit.inc.php";
+	include DIR . "edit.inc.php";
 } elseif (isset($_GET["select"])) {
-	include "../adminer/select.inc.php";
+	include DIR . "select.inc.php";
 } elseif (isset($_GET["script"])) {
 	include "./script.inc.php";
 } else {

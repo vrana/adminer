@@ -10,7 +10,8 @@
 
 namespace Adminer;
 
-include "./include/bootstrap.inc.php";
+define('Adminer\DIR', "./"); // path to the Adminer sources, the Editor has them in a sibling directory
+include DIR . "include/bootstrap.inc.php";
 include "./include/tmpfile.inc.php";
 
 if ($_GET["select"] != "" && ($_POST["edit"] || $_POST["clone"]) && !$_POST["save"]) {

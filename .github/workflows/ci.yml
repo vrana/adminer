@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
         with:
-          submodules: recursive # ESLint checks externals/jush, otherwise it would silently find no files there
+          submodules: recursive # ESLint checks adminer/static/jush, otherwise it would silently find no files there
       - uses: php-actions/composer@v6
       - run: composer test
       - uses: actions/setup-node@v7

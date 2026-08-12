@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **First-time setup:**
 ```bash
-git submodule update --init --recursive   # Initialize submodules (jush, JsShrink, PhpShrink)
+git submodule update --init --recursive   # Initialize submodules (adminer/static/jush, conf/JsShrink, conf/PhpShrink)
 composer install                          # Does the same through the `submodules` script, plus PHPCS, PHPStan and the npm packages needed by ESLint
 ```
 
