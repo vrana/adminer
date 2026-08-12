@@ -2,7 +2,9 @@
 namespace Adminer;
 
 if ($_GET["script"] == "kill") {
-	connection()->query("KILL " . number($_POST["kill"]));
+	if (!$error) {
+		connection()->query("KILL " . number($_POST["kill"]));
+	}
 
 } elseif (list($table, $id, $name) = adminer()->_foreignColumn(column_foreign_keys($_GET["source"]), $_GET["field"])) { // complete
 	$limit = 11;

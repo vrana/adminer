@@ -1,5 +1,6 @@
 ## Adminer dev
 - Run the development version from the adminer/ directory alone, copied anywhere and under any name
+- Verify the CSRF token before killing a query timed out on the client
 - Use the same font in &lt;textarea> as in &lt;input>, keep monospace in the SQL command and JSON values
 - Autocomplete: Disable in the drivers not using SQL, e.g. Redis
 - Autocomplete: Offer only the statements allowed in a trigger and no statement in a check constraint

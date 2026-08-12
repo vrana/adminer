@@ -31,7 +31,9 @@ if ($_GET["script"] == "db") {
 	json_row("");
 
 } elseif ($_GET["script"] == "kill") {
-	connection()->query("KILL " . number($_POST["kill"]));
+	if (!$error) {
+		connection()->query("KILL " . number($_POST["kill"]));
+	}
 
 } else { // connect
 	foreach (count_tables(adminer()->databases(false)) as $db => $val) {
