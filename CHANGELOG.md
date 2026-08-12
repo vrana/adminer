@@ -28,6 +28,7 @@
 - Method error() to modify the printed database error messages (bug #1249)
 - Method dumpPrint() to print HTML code in the export form
 - Method editRowPrint() receives the query which got the edited row and the time it took
+- Plugin config: Save the settings by POST so that the CSRF token can be verified
 - Driver plugins: Driver::select() assigns the executed query to $this->query
 - Driver plugins: Bundle the syntax highlighter in the plugin file, adminer-plugins/jush-&lt;driver>.js is not loaded anymore
 - Driver plugins: Method jushAutocomplete() to disable or replace the autocomplete of the query &lt;textarea>

@@ -12,8 +12,8 @@ class AdminerConfig extends Adminer\Plugin {
 		static $called; // this function is called from page_header() and it also calls page_header()
 		if (isset($_GET["config"]) && !$called && Adminer\connection()) {
 			$called = true;
-			if ($_GET["config"]) { // using $_GET allows sharing links between devices but doesn't protect against same-site RF; CSRF is protected by SameSite cookies
-				Adminer\save_settings($_GET["config"], "adminer_config");
+			if ($_POST["config"] && Adminer\verify_token()) { // a GET form would allow sharing links between devices but any page could change the settings by a link
+				Adminer\save_settings($_POST["config"], "adminer_config");
 				Adminer\redirect(null, $this->lang('Configuration saved.'));
 			}
 			Adminer\page_header($this->lang('Configuration'));
@@ -25,14 +25,14 @@ class AdminerConfig extends Adminer\Plugin {
 					'<a href="https://github.com/vrana/adminer/blob/main/plugins/menu-links.php"' . Adminer\target_blank() . '>menu-links</a>'
 				) . "\n";
 			} else {
-				echo "<form action=''>\n";
-				Adminer\hidden_fields_get();
+				echo "<form action='' method='post'>\n";
 				echo "<table>\n";
 				foreach (array_reverse($config) as $title => $html) { // Plugins::$append actually prepends
 					echo "<tr><th>$title<td>$html\n";
 				}
 				echo "</table>\n";
 				echo "<p><input type='submit' value='" . $this->lang('Save') . "'>\n";
+				echo Adminer\input_token();
 				echo "</form>\n";
 			}
 			Adminer\page_footer('db');
