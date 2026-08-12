@@ -66,7 +66,7 @@ function check_invalid_login(array &$permanent): void {
 				" href='https://www.adminer.org/plugins/?version=" . VERSION . "'" . target_blank()
 			);
 		}
-		auth_error($error, $permanent);
+		auth_error($error, $permanent, false); // the credentials are not verified at all when the attempts are exhausted
 	}
 }
 
@@ -152,26 +152,23 @@ function unset_permanent(array &$permanent): void {
 * @param string[] $permanent
 * @return never
 */
-function auth_error(string $error, array &$permanent) {
+function auth_error(string $error, array &$permanent, bool $invalid_login = true) {
 	$session_name = session_name();
 	if (isset($_GET["username"])) {
 		header("HTTP/1.1 403 Forbidden"); // 401 requires sending WWW-Authenticate header
 		if (($_COOKIE[$session_name] || $_GET[$session_name]) && !$_SESSION["token"]) {
 			$error = lang('Session expired. Please log in again.');
-		} else {
+		} elseif ($invalid_login && ($password = get_password()) !== null) { // no credentials means no failed login, any page can send the visitor here by a cross-site request with ?username=
 			restart_session();
 			add_invalid_login();
-			$password = get_password();
-			if ($password !== null) {
-				if ($password === false) {
-					$error .= ($error ? '<br>' : '') . lang(
-						'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.',
-						target_blank(),
-						'<code>permanentLogin()</code>'
-					);
-				}
-				set_password(DRIVER, SERVER, $_GET["username"], null);
+			if ($password === false) {
+				$error .= ($error ? '<br>' : '') . lang(
+					'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.',
+					target_blank(),
+					'<code>permanentLogin()</code>'
+				);
 			}
+			set_password(DRIVER, SERVER, $_GET["username"], null);
 			unset_permanent($permanent);
 		}
 	}

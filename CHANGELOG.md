@@ -1,5 +1,6 @@
 ## Adminer dev
 - Run the development version from the adminer/ directory alone, copied anywhere and under any name
+- Do not count a request without credentials as an unsuccessful login
 - Verify the CSRF token also when logging in
 - Verify the CSRF token before killing a query timed out on the client
 - Send an error HTTP status on an invalid CSRF token and too large POST data
