@@ -249,12 +249,14 @@ if ($auth && $_POST["token"]) {
 /** @var string */ $error = ''; // HTML
 if ($_POST) {
 	if (!verify_token()) {
+		header("HTTP/1.1 403 Forbidden");
 		$error = lang('Invalid CSRF token. Submit the form again.') . ' ' . lang('If you did not send this request from Adminer, close this page.');
 	}
 
 } elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
 	// posted form with no data means that post_max_size exceeded because Adminer always sends token at least
 	// this branch is not reached with display_startup_errors (on by default since PHP 8.0) because printing the PHP warning about it prevents starting the session
+	header("HTTP/1.1 413 Content Too Large");
 	$error = lang('The POST data is too large. Reduce the data or increase the %s configuration directive.', "<b>post_max_size</b>");
 	if (isset($_GET["sql"])) {
 		$error .= ' ' . lang('You can upload a large SQL file via FTP and import it from the server.');
