@@ -59,6 +59,13 @@ abstract class SqlDriver {
 	* @return Db|string string for error
 	*/
 	static function connect(string $server, string $username, string $password) {
+		list($host, $port) = host_port($server);
+		if (preg_match('~[^-\w.:/]~', $host . $port)) {
+			return lang('Invalid server.');
+		}
+		if (preg_match('~^-?\d+~', $port, $match) && ($match[0] < 1024 || $match[0] > 65535)) { // is_numeric('80.') would still connect to port 80
+			return lang('Connecting to privileged ports is not allowed.');
+		}
 		$connection = new Db;
 		return ($connection->attach($server, $username, $password) ?: $connection);
 	}

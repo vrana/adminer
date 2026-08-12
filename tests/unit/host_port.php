@@ -32,7 +32,7 @@ $tests = array(
 	'other-host:/tmp/mysql.sock' => array('other-host:/tmp/mysql.sock', ''), // host with socket isn't supported
 	'localhost:2200e-2' => array('localhost:2200e-2', ''),
 	':' => array(':', ''),
-	// rejected by auth.inc.php
+	// rejected by driver.inc.php
 	'[a]b:80' => array('[a]b', '80'),
 	'https://[::1]:80' => array('https://[::1]:80', ''),
 	// rejected by elastic.php
