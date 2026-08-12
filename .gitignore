@@ -4,6 +4,7 @@
 /editor/adminer-dark.css
 /adminer*.php
 /editor*.php
+/drivers/
 /tests/screenshots/
 /tests/results/
 /vendor/

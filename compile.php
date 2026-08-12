@@ -218,6 +218,31 @@ function ini_bool() {
 	return true;
 }
 
+/** Inline the JUSH module in a driver plugin
+* @return string contents of the released driver
+*/
+function build_driver($filename) {
+	$file = file_get_contents($filename);
+	preg_match('~static \$jush = "([^"]+)"~', $file, $match);
+	$module_file = __DIR__ . "/adminer/static/jush/modules/jush-$match[1].js";
+	if (!file_exists($module_file)) {
+		return $file; // the driver has no highlighter
+	}
+	$module = file_get_contents($module_file);
+	return replace_re('~(static function jushModule\(\): string \{\s*return )"";[^\n]*~', function ($match) use ($module) {
+		return $match[1] . "<<<'JS'\n" . rtrim($module, "\n") . "\nJS;";
+	}, $file, 1);
+}
+
+if ($_SERVER["argv"][1] == "drivers") {
+	@mkdir("drivers");
+	foreach (glob(__DIR__ . "/plugins/drivers/*.php") as $filename) {
+		file_put_contents("drivers/" . basename($filename), build_driver($filename));
+	}
+	echo "drivers/ created (" . count(glob("drivers/*.php")) . " files).\n";
+	exit;
+}
+
 $project = "adminer";
 if ($_SERVER["argv"][1] == "editor") {
 	$project = "editor";
@@ -245,8 +270,8 @@ if (Adminer\idx(Adminer\langs(), $_SESSION["lang"])) {
 }
 
 if ($_SERVER["argv"][1]) {
-	echo "Usage: php compile.php [editor] [driver] [lang]\n";
-	echo "Purpose: Compile adminer[-driver][-lang].php or editor[-driver][-lang].php.\n";
+	echo "Usage: php compile.php [editor] [driver] [lang] | php compile.php drivers\n";
+	echo "Purpose: Compile adminer[-driver][-lang].php or editor[-driver][-lang].php, or build the driver plugins into drivers/.\n";
 	exit(1);
 }
 
@@ -297,12 +322,12 @@ $file = replace_re('~define\(\'Adminer\\\\DIR\'.*\n~', '', $file); // the compil
 
 // inline the checksums of official plugins, the plugins/ directory is not available next to the compiled file
 $checksums = "";
-foreach (array("plugins", "plugins/drivers") as $dir) {
-	foreach (glob(__DIR__ . "/$dir/*.php") as $filename) {
-		$checksums .= "\n\t\t\t'" . basename($filename, '.php') . "' => '" . Adminer\Plugins::checksum($filename) . "',";
-	}
+// the checksum of a driver has to be computed from the file which the user downloads, built by `compile.php drivers`
+$drivers = (glob("drivers/*.php") ?: glob(__DIR__ . "/plugins/drivers/*.php"));
+foreach (array_merge(glob(__DIR__ . "/plugins/*.php"), $drivers) as $filename) {
+	$checksums .= "\n\t\t\t'" . basename($filename, '.php') . "' => '" . Adminer\Plugins::checksum($filename) . "',";
 }
-$file = replace_re('~(function officialChecksums\(\): array \{\n).*?(\n\t\})~s', "\\1\t\treturn array($checksums\n\t\t);\\2", $file, 1);
+$file = replace_re('~(function officialChecksums\(\): array \{\n).*?(\n\t})~s', "\\1\t\treturn array($checksums\n\t\t);\\2", $file, 1);
 
 // inline the checksums of official designs, the designs/ directory is not available next to the compiled file
 $designs = "";

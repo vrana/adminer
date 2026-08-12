@@ -1178,8 +1178,8 @@ class Adminer {
 		echo script_src(DIR . "static/jush/modules/jush-json.js", true);
 		// this is matched by compile.php - the modules of the bundled drivers are merged into jush.js, some drivers have no module
 		echo (file_exists(__DIR__ . "/../static/jush/modules/jush-" . JUSH . ".js") ? script_src(DIR . "static/jush/modules/jush-" . JUSH . ".js", true) : "");
+		$module = preg_replace('~<(?=/script)~i', '<\\', Driver::jushModule()); // it would close the inline <script>
 		// a released driver plugin carries its module inline; unlike jush.js the inline script is not deferred so it has to wait for it
-		$module = Driver::jushModule();
 		echo ($module ? script("addEventListener('DOMContentLoaded', () => {\n$module\n});") : "");
 		if (support("sql")) {
 			echo "<script" . nonce() . ">\n";

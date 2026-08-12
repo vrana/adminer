@@ -70,7 +70,7 @@
             "npx playwright test --config conf/playwright.config.js"
         ],
         "compile": "@php compile.php",
-        "clean": "@php -r \"array_map('unlink', array_merge(glob('adminer*.php'), glob('editor*.php')));\""
+        "clean": "@php -r \"array_map('unlink', array_merge(glob('adminer*.php'), glob('editor*.php'), glob('drivers/*.php'))); @rmdir('drivers');\""
     },
     "scripts-descriptions": {
         "submodules": "Initializes the git submodules and installs the npm packages",
@@ -79,6 +79,6 @@
         "compat": "Compiles the single files and checks them for APIs missing in the oldest supported PHP",
         "e2e": "Runs the end-to-end tests by Playwright (see tests/README.md)",
         "compile": "Compiles Adminer with all drivers and languages into adminer.php",
-        "clean": "Removes the compiled adminer*.php and editor*.php"
+        "clean": "Removes the compiled adminer*.php, editor*.php and drivers/"
     }
 }

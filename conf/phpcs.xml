@@ -15,6 +15,7 @@
 	<exclude-pattern>/designs/</exclude-pattern>
 	<exclude-pattern>/tests/results/</exclude-pattern><!-- Playwright traces store the pages they captured -->
 	<exclude-pattern type="relative">^(adminer|editor)[-.]</exclude-pattern>
+	<exclude-pattern type="relative">^drivers/</exclude-pattern><!-- Built by compile.php, the sources are in plugins/drivers/ -->
 	<exclude-pattern>/adminer-plugins/</exclude-pattern><!-- Local plugins used by the dev server -->
 	<exclude-pattern>/adminer-plugins\.php</exclude-pattern>
 
