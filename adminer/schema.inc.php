@@ -143,7 +143,11 @@ foreach ($grid as $column => $tables) {
 		foreach ($tables as $name) {
 			$sum = 0;
 			$count = 0;
-			foreach (array_merge(array_column((array) idx($foreign_keys, $name), "table"), array_keys((array) idx($referenced, $name))) as $name2) {
+			$neighbors = array_keys((array) idx($referenced, $name));
+			foreach ((array) idx($foreign_keys, $name) as $val) {
+				$neighbors[] = $val["table"]; // array_column() is available since PHP 5.5
+			}
+			foreach ($neighbors as $name2) {
 				if ($schema[$name2] && $columns[$name2] < $column) {
 					$sum += $schema[$name2]["pos"][0];
 					$count++;
