@@ -30,6 +30,7 @@
 - Method editRowPrint() receives the query which got the edited row and the time it took
 - Plugin config: Save the settings by POST so that the CSRF token can be verified
 - Plugin file-upload: Do not let the column name escape the upload directory
+- Plugin slugify: Print only a numeric maxlength
 - Plugin sql-log: Write the log to the temp directory by default
 - Driver plugins: Driver::select() assigns the executed query to $this->query
 - Driver plugins: Bundle the syntax highlighter in the plugin file, adminer-plugins/jush-&lt;driver>.js is not loaded anymore

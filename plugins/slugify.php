@@ -47,8 +47,9 @@ function slugifyChange(slug, length) {
 		.slice(0, length || undefined); // no length means no truncation
 }", "");
 				}
-				return "<input value='" . Adminer\h($value) . "' data-maxlength='$field[length]' size='40'$attrs"
-					. Adminer\on('change', 'slugifyChange', $slug, $field["length"]) . ">" . $script;
+				$maxlength = (int) $field["length"]; // the length of enum and set is the list of the values
+				return "<input value='" . Adminer\h($value) . "'" . ($maxlength ? " data-maxlength='$maxlength'" : "") . " size='40'$attrs"
+					. Adminer\on('change', 'slugifyChange', $slug, $maxlength) . ">" . $script;
 			}
 		}
 	}
