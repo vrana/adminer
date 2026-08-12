@@ -448,8 +448,10 @@ function on_help_value(string $regexp = "", string $replacement = ""): string {
 /** Print edit data form
 * @param Field[] $fields
 * @param mixed $row
+* @param string $query query which got the row
+* @param string $time output of format_time()
 */
-function edit_form(string $table, array $fields, $row, ?bool $update, string $error = ''): void {
+function edit_form(string $table, array $fields, $row, ?bool $update, string $error = '', string $query = '', string $time = ''): void {
 	$table_name = adminer()->tableName(table_status1($table, true));
 	page_header(
 		($update ? lang('Edit') : lang('Insert')),
@@ -457,7 +459,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 		array("select" => array($table, $table_name)),
 		$table_name
 	);
-	adminer()->editRowPrint($table, $fields, $row, $update);
+	adminer()->editRowPrint($table, $fields, $row, $update, $query, $time);
 	if ($row === false) {
 		echo "<p class='error'>" . lang('No rows.') . "\n";
 		return;

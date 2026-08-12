@@ -294,6 +294,7 @@ if (isset($_GET["redis"])) {
 		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
 			$next = $_GET["next"];
 			$_GET["next"] = ""; // there is no following page unless SCAN returns a cursor
+			$this->query = "";
 			if (preg_match('~^key =~', $where[0])) {
 				$args = $this->whereKeys($where[0]);
 			} elseif ($limit) {
@@ -330,7 +331,10 @@ if (isset($_GET["redis"])) {
 				}
 				$values = array();
 				if (in_array('value', $columns)) {
-					$values = $this->conn->send(array_merge(array("MGET"), $args)); // MGET is not printed, it is an implementation detail of getting the values
+					// MGET is an implementation detail of getting the values, print it only if there was no SCAN or KEYS
+					$query = $this->query;
+					$values = $this->send(array_merge(array("MGET"), $args), $print && !$query);
+					$this->query = ($query ?: $this->query);
 					if ($values === false) {
 						return false;
 					}
@@ -347,15 +351,16 @@ if (isset($_GET["redis"])) {
 			return new Result($return);
 		}
 
-		/** Send a command and optionally print it
+		/** Send a command, remember it and optionally print it
 		* @param list<string|int> $args
 		* @return mixed
 		*/
 		private function send($args, $print) {
 			$start = microtime(true);
+			$this->query = format_command($args);
 			$return = $this->conn->send($args);
 			if ($print) {
-				echo adminer()->selectQuery(format_command($args), $start, $return === false);
+				echo adminer()->selectQuery($this->query, $start, $return === false);
 			}
 			return $return;
 		}

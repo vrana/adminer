@@ -32,6 +32,7 @@ abstract class SqlDriver {
 	/** @var string */ public $enumLength = "'(?:''|[^'\\\\]|\\\\.)*'"; // regular expression for parsing enum lengths
 	/** @var list<string> */ public $generated = array(); // allowed types of generated columns
 	/** @var string */ public $primary = ""; // name of the field identifying a row in drivers without a schema, they compute the fields from the data
+	/** @var string */ public $query = ""; // query executed by the last select(), the callers not printing it can print it later
 
 	/** Get the JUSH module of the driver; plugin drivers are not compiled so they carry it inline
 	* @return string JavaScript code, empty if the module is merged into jush.js
@@ -118,6 +119,7 @@ abstract class SqlDriver {
 				"\n"
 			);
 		}
+		$this->query = $query;
 		$start = microtime(true);
 		// export gets all rows and doesn't print the query so nothing runs another query (e.g. SHOW WARNINGS) before fetching them
 		$return = $this->conn->query($query, (!$limit && !$print ? 1 : 0)); // 1 - MYSQLI_USE_RESULT, unbuffered

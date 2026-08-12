@@ -68,6 +68,8 @@ if ($_POST && !$error && !isset($_GET["select"])) {
 }
 
 $row = null;
+$query = "";
+$time = "";
 if ($where) {
 	$select = array();
 	foreach ($fields as $name => $field) {
@@ -81,7 +83,10 @@ if ($where) {
 		$select = array("*");
 	}
 	if ($select) {
+		$start = microtime(true);
 		$result = driver()->select($TABLE, $select, array($where), $select, array(), (isset($_GET["select"]) ? 2 : 1));
+		$query = driver()->query;
+		$time = format_time($start);
 		if (!$result) {
 			$error = adminer()->error();
 		} else {
@@ -122,4 +127,4 @@ if ($_POST["save"]) {
 	$row = $post_fields + ($row ? $row : array());
 }
 
-edit_form($TABLE, $fields, $row, $update, $error);
+edit_form($TABLE, $fields, $row, $update, $error, $query, $time);

@@ -770,8 +770,15 @@ class Adminer {
 	/** Print before edit form
 	* @param Field[] $fields
 	* @param mixed $row
+	* @param string $query query which got the row
+	* @param string $time output of format_time()
 	*/
-	function editRowPrint(string $table, array $fields, $row, ?bool $update): void {
+	function editRowPrint(string $table, array $fields, $row, ?bool $update, string $query = '', string $time = ''): void {
+		// some drivers get the row without a query; the query selects a single row so there's no point in editing it
+		echo ($query != ""
+			? "<p><code class='jush-" . JUSH . "'>" . h(str_replace("\n", " ", $query)) . "</code> <span class='time'>($time)</span>\n"
+			: ""
+		);
 	}
 
 	/** Functions displayed in edit form

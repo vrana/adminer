@@ -240,8 +240,9 @@ if (isset($_GET["elastic"])) {
 			$start = microtime(true);
 			$search = $this->conn->rootQuery($query, ($data ?: null));
 
+			$this->query = "GET $query: " . json_encode($data);
 			if ($print) {
-				echo adminer()->selectQuery("GET $query: " . json_encode($data), $start, !$search);
+				echo adminer()->selectQuery($this->query, $start, !$search);
 			}
 			if (empty($search)) {
 				return false;

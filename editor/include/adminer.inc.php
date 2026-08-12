@@ -186,7 +186,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function selectQuery(string $query, float $start, bool $failed = false): string {
-		return "<!--\n" . str_replace("--", "--><!-- ", $query) . "\n(" . format_time($start) . ")\n-->\n";
+		return sql_comment($query, format_time($start));
 	}
 
 	function rowDescription(string $table): string {
@@ -501,14 +501,15 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function messageQuery(string $query, string $time, bool $failed = false): string {
-		return " <span class='time'>" . @date("H:i:s") . "</span><!--\n" . str_replace("--", "--><!-- ", $query) . "\n" . ($time ? "($time)\n" : "") . "-->";
+		return " <span class='time'>" . @date("H:i:s") . "</span>" . sql_comment($query, $time);
 	}
 
 	function error(): string {
 		return error(); // the function defined by the driver, not this method
 	}
 
-	function editRowPrint(string $table, array $fields, $row, ?bool $update): void {
+	function editRowPrint(string $table, array $fields, $row, ?bool $update, string $query = '', string $time = ''): void {
+		echo ($query != "" ? sql_comment($query, $time) : "");
 	}
 
 	function editFunctions(array $field): array {

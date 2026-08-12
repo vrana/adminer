@@ -316,8 +316,9 @@ if (isset($_GET["igdb"])) {
 				? $this->conn->request('multiquery', "query $table \"result\" { $realQuery };\nquery $table/count \"count\" { $common };")
 				: $this->conn->request(($method == 'GET' && $where ? "$table/" . reset($_GET["where"]) : $table), $realQuery, $method)
 			);
+			$this->query = "$method $table;\n$query";
 			if ($print) {
-				echo adminer()->selectQuery("$method $table;\n$query", $start);
+				echo adminer()->selectQuery($this->query, $start);
 			}
 			if ($return === false) {
 				return $return;
