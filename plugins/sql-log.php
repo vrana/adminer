@@ -10,7 +10,7 @@ class AdminerSqlLog extends Adminer\Plugin {
 	protected $filename;
 
 	/**
-	* @param string $filename defaults to "$database.sql"
+	* @param string $filename defaults to "adminer-$database.sql" in the temp directory
 	*/
 	function __construct($filename = "") {
 		$this->filename = $filename;
@@ -26,14 +26,16 @@ class AdminerSqlLog extends Adminer\Plugin {
 
 	private function log($query) {
 		if ($this->filename == "") {
-			$this->filename = urlencode(Adminer\adminer()->database() . ($_GET["ns"] != "" ? ".$_GET[ns]" : "")) . ".sql"; // no database goes to ".sql" to avoid collisions
+			// the directory of the script should not be writable by the web server at all and a relative name would create the log there, where anyone could download it
+			// no database goes to "adminer-.sql" to avoid collisions
+			$this->filename = Adminer\get_temp_dir() . "/adminer-" . urlencode(Adminer\adminer()->database() . ($_GET["ns"] != "" ? ".$_GET[ns]" : "")) . ".sql";
 		}
-		$fp = fopen($this->filename, "a");
-		flock($fp, LOCK_EX);
-		fwrite($fp, $query);
-		fwrite($fp, "\n\n");
-		flock($fp, LOCK_UN);
-		fclose($fp);
+		$fp = Adminer\file_open_lock($this->filename); // it also refuses a symlink and doesn't make the file readable by everyone
+		if ($fp) {
+			fseek($fp, 0, SEEK_END);
+			fwrite($fp, "$query\n\n");
+			Adminer\file_unlock($fp);
+		}
 	}
 
 	protected $translations = array(
