@@ -367,7 +367,7 @@ Newer syntax is not just unsupported in older browsers, it is a parse error, so 
 The bundled syntax highlighter [JUSH](https://github.com/vrana/jush) holds the same baseline.
 Newer built-ins (e.g. `Object.entries()`) fail only at runtime but are avoided too, and ESLint doesn't report them.
 
-Browser APIs are held to the same generation, roughly Safari 10, Chrome 54 and Firefox 50 - `append()` and `replaceWith()` set that floor and are not worth trading back for `appendChild()`.
+Browser APIs are held to the same generation (April 2018 or newer), roughly Safari 10, Chrome 54 and Firefox 50 - `append()` and `replaceWith()` set that floor and are not worth trading back for `appendChild()`.
 ESLint checks none of this, so newer APIs slip in easily: `classList.replace()` (Chrome 61) broke showing and hiding elements for three releases.
 Where a newer API has an older equivalent, use the older one instead of feature-detecting: the version check goes through `ajax()`, which sends `X-Requested-With` only to our own origin so the cross-origin request stays simple and needs no preflight.
 Feature-detect only when there is no alternative - the `insecure` class on `<html>` hides the copy icon when `navigator.clipboard` is missing, which covers both old browsers and insecure connections.
