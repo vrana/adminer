@@ -166,7 +166,7 @@ function get_lang_translations($lang) {
 	include __DIR__ . "/adminer/lang/$lang.inc.php";
 	$translation_ids = array_flip($lang_ids); // default translation
 	foreach (Adminer\Lang::$translations as $key => $val) {
-		if ($val !== null) {
+		if ($val !== null && isset($lang_ids[$key])) { // the message may be unused in this build
 			$translation_ids[$lang_ids[$key]] = implode("\t", (array) $val);
 		}
 	}
