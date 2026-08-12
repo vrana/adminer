@@ -16,6 +16,9 @@ class AdminerLoginOtp extends Adminer\Plugin {
 		$this->secret = $secret;
 		if ($_POST["auth"]) {
 			$_SESSION["otp"] = (string) $_POST["auth"]["otp"];
+			if (!$this->otpValid()) {
+				unset($_POST["auth"]["permanent"]); // the permanent login is created before verifying the OTP and it would skip it forever
+			}
 		}
 	}
 
@@ -30,17 +33,25 @@ class AdminerLoginOtp extends Adminer\Plugin {
 
 	function login($login, $password) {
 		if (isset($_SESSION["otp"])) {
-			$timeSlot = floor(time() / 30);
-			foreach (array(0, -1, 1) as $skew) {
-				if ($_SESSION["otp"] == $this->getOtp($timeSlot + $skew)) {
-					Adminer\restart_session();
-					unset($_SESSION["otp"]);
-					Adminer\stop_session();
-					return;
-				}
+			if ($this->otpValid()) {
+				Adminer\restart_session();
+				unset($_SESSION["otp"]);
+				Adminer\stop_session();
+				return;
 			}
 			return $this->lang('Invalid OTP.');
 		}
+	}
+
+	/** Check the OTP sent by the login form */
+	private function otpValid() {
+		$timeSlot = floor(time() / 30);
+		foreach (array(0, -1, 1) as $skew) {
+			if (isset($_SESSION["otp"]) && $_SESSION["otp"] == $this->getOtp($timeSlot + $skew)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	function getOtp($timeSlot) {
