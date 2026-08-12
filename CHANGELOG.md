@@ -4,6 +4,7 @@
 - Send the cookies set by JavaScript with the same attributes as the other cookies
 - Do not redirect outside Adminer after saving a row
 - Do not count a request without credentials as an unsuccessful login
+- Print the help as a text, not HTML
 - Verify the CSRF token also when logging in
 - Verify the CSRF token before killing a query timed out on the client
 - Send an error HTTP status on an invalid CSRF token and too large POST data

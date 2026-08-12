@@ -930,7 +930,7 @@ function helpMouseover(text, side, event) {
 	} else if (window.jush && (!helpIgnore || this != target)) {
 		helpOpen = 1;
 		const help = qs('#help');
-		help.innerHTML = text;
+		help.textContent = text;
 		jush.highlight_tag([ help ]);
 		alterClass(help, 'hidden');
 		const rect = target.getBoundingClientRect();
