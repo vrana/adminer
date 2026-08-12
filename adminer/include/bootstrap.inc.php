@@ -17,6 +17,9 @@ if ($filter || ini_get("filter.default_flags")) {
 	}
 }
 
+// Adminer sends only string cookies, an array would break the code reading them and the user couldn't get rid of it from inside Adminer
+$_COOKIE = array_filter($_COOKIE, 'is_scalar');
+
 if (function_exists("mb_internal_encoding")) {
 	mb_internal_encoding("8bit");
 }
