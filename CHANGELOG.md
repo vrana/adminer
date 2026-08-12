@@ -34,6 +34,7 @@
 - Plugin config: Save the settings by POST so that the CSRF token can be verified
 - Plugin file-upload: Do not let the column name escape the upload directory
 - Plugin login-otp: Do not create a permanent login without a valid OTP
+- Plugin login-reverse-proxy: Group the invalid logins also by the address of the proxy
 - Plugin login-table: Verify the password from column password_hash
 - Plugin slugify: Print only a numeric maxlength
 - Plugin sql-log: Write the log to the temp directory by default

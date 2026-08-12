@@ -9,7 +9,9 @@
 class AdminerLoginReverseProxy extends Adminer\Plugin {
 
 	function bruteForceKey() {
-		return preg_replace('~.*,\s*~', '', $_SERVER["HTTP_X_FORWARDED_FOR"]);
+		// the address of the proxy tells the proxies apart and is used alone if the header is missing, e.g. when the request doesn't come through the proxy
+		$forwarded_for = preg_replace('~.*,\s*~', '', strval($_SERVER["HTTP_X_FORWARDED_FOR"]));
+		return $_SERVER["REMOTE_ADDR"] . ($forwarded_for != "" ? ", $forwarded_for" : "");
 	}
 
 	protected $translations = array(
