@@ -28,7 +28,6 @@
 - Driver plugins: Driver::select() assigns the executed query to $this->query
 - Driver plugins: Bundle the syntax highlighter in the plugin file, adminer-plugins/jush-&lt;driver>.js is not loaded anymore
 - Driver plugins: Method jushAutocomplete() to disable or replace the autocomplete of the query &lt;textarea>
-- New plugin: Link the plugins usable in each part of the interface
 ### Internal
 - Move the submodules from externals/ to where they are used: adminer/static/jush, conf/JsShrink and conf/PhpShrink
 - Tests: Cover the CSV import and export, pagination, modifying a value by Ctrl+click, the bulk table operations and the SQL file import in every driver
