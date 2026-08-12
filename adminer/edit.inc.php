@@ -72,20 +72,27 @@ $query = "";
 $time = "";
 if ($where) {
 	$select = array();
+	$select_print = array("*"); // the columns are listed only because of the privileges, printing * is shorter
 	foreach ($fields as $name => $field) {
 		if (isset($field["privileges"]["select"])) {
 			$as = ($_POST["clone"] && $field["auto_increment"] ? "''" : convert_field($field));
-			$select[] = ($as ? "$as AS " : "") . idf_escape($name);
+			$column = ($as ? "$as AS " : "") . idf_escape($name);
+			$select[] = $column;
+			if ($as) {
+				$select_print[] = $column; // * doesn't cover the conversions
+			}
 		}
 	}
 	$row = array();
 	if (!support("table")) {
 		$select = array("*");
+		$select_print = $select;
 	}
 	if ($select) {
 		$start = microtime(true);
 		$result = driver()->select($TABLE, $select, array($where), $select, array(), (isset($_GET["select"]) ? 2 : 1));
-		$query = driver()->query;
+		// only the column list is replaced, a single column is contained also in the condition
+		$query = str_replace("SELECT " . implode(", ", $select), "SELECT " . implode(", ", $select_print), driver()->query);
 		$time = format_time($start);
 		if (!$result) {
 			$error = adminer()->error();
