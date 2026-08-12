@@ -44,7 +44,12 @@ ini_set("arg_separator.output", "&"); // some hosts set it to "&amp;" which woul
 if (!defined("SID")) {
 	session_cache_limiter(""); // to allow restarting session
 	session_name("adminer_sid"); // use specific session name to get own namespace
-	session_set_cookie_params(0, cookie_path(), "", HTTPS, true); // ini_set() may be disabled
+	// ini_set() may be disabled
+	if (PHP_VERSION_ID >= 70300) {
+		session_set_cookie_params(array('lifetime' => 0, 'path' => cookie_path(), 'domain' => '', 'secure' => HTTPS, 'httponly' => true, 'samesite' => 'lax'));
+	} else {
+		session_set_cookie_params(0, cookie_path() . "; SameSite=lax", "", HTTPS, true);
+	}
 	session_start();
 }
 

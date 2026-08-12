@@ -1,5 +1,6 @@
 ## Adminer dev
 - Run the development version from the adminer/ directory alone, copied anywhere and under any name
+- Send the session cookie with SameSite=lax, the browsers not defaulting to it sent it also cross-site
 - Send the cookies set by JavaScript with the same attributes as the other cookies
 - Do not redirect outside Adminer after saving a row
 - Do not count a request without credentials as an unsuccessful login
