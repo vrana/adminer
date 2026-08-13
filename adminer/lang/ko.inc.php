@@ -317,6 +317,12 @@ Lang::$translations = array(
 	'Every plugin must <a%s>be an object</a>.' => '모든 플러그인은 <a%s>객체여야 합니다</a>.', // Claude Opus 5
 	'Disable %s or enable the %s or %s extension.' => '%s 확장을 비활성화하거나 %s 또는 %s 확장을 활성화하세요.', // Claude Fable 5
 	'The database does not support passwords.' => '데이터베이스가 비밀번호를 지원하지 않습니다.', // Claude Fable 5
+	'The server accepts any password, so filling it in protects nothing.' => '서버가 어떤 비밀번호도 허용하므로 입력해도 아무것도 보호되지 않습니다.', // Claude Opus 5
+	'Require a password.' => '비밀번호 요구.', // Claude Opus 5
+	'Save %s next to Adminer to require the entered password:' => '입력한 비밀번호를 요구하려면 Adminer 옆에 %s 파일을 저장하세요:', // Claude Opus 5
+	'Save %s next to Adminer to require the password %s:' => '비밀번호 %2$s을(를) 요구하려면 Adminer 옆에 %1$s 파일을 저장하세요:', // Claude Opus 5
+	'More options' => '추가 옵션', // Claude Opus 5
+	'Require a password verified by Adminer' => 'Adminer가 확인하는 비밀번호를 요구합니다', // Claude Opus 5
 	'no' => '아니요', // Claude Fable 5
 );
 

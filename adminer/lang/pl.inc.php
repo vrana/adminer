@@ -18,6 +18,12 @@ Lang::$translations = array(
 	'There is a space in the entered password, which might be the cause.' => 'W haśle wejściowym znajduje się spacja, która może być przyczyną.',
 	'Adminer does not support accessing a database without a password.' => 'Adminer nie obsługuje dostępu do bazy danych bez hasła.',
 	'The database does not support passwords.' => 'Baza danych nie obsługuje hasła.',
+	'The server accepts any password, so filling it in protects nothing.' => 'Serwer akceptuje dowolne hasło, więc jego wpisanie niczego nie chroni.', // Claude Opus 5
+	'Require a password.' => 'Wymagaj hasła.', // Claude Opus 5
+	'Save %s next to Adminer to require the entered password:' => 'Zapisz %s obok Adminera, aby wymagane było wpisane hasło:', // Claude Opus 5
+	'Save %s next to Adminer to require the password %s:' => 'Zapisz %s obok Adminera, aby wymagane było hasło %s:', // Claude Opus 5
+	'More options' => 'Więcej możliwości', // Claude Opus 5
+	'Require a password verified by Adminer' => 'Wymaga hasła weryfikowanego przez Adminera', // Claude Opus 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Za dużo nieudanych prób logowania, spróbuj ponownie za %d minutę.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minuty.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minut.'),
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Jeśli Adminer działa za odwrotnym proxy, użyj <a%2$s>wtyczki</a> %1$s.', // Claude Opus 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Ważność hasła głównego wygasła. <a href="https://www.adminer.org/pl/extension/"%s>Zaimplementuj</a> własną metodę %s, aby ustawić je na stałe.',

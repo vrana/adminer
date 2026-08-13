@@ -316,6 +316,12 @@ Lang::$translations = array(
 	'Every plugin must <a%s>be an object</a>.' => 'Fiecare plugin trebuie să <a%s>fie un obiect</a>.', // Claude Opus 5
 	'Disable %s or enable the %s or %s extension.' => 'Dezactivați extensia %s sau activați extensiile %s sau %s.', // Claude Fable 5
 	'The database does not support passwords.' => 'Baza de date nu acceptă parolă.', // Claude Fable 5
+	'The server accepts any password, so filling it in protects nothing.' => 'Serverul acceptă orice parolă, așa că completarea ei nu protejează nimic.', // Claude Opus 5
+	'Require a password.' => 'Solicită o parolă.', // Claude Opus 5
+	'Save %s next to Adminer to require the entered password:' => 'Salvați %s lângă Adminer pentru a solicita parola introdusă:', // Claude Opus 5
+	'Save %s next to Adminer to require the password %s:' => 'Salvați %s lângă Adminer pentru a solicita parola %s:', // Claude Opus 5
+	'More options' => 'Mai multe opțiuni', // Claude Opus 5
+	'Require a password verified by Adminer' => 'Solicită o parolă verificată de Adminer', // Claude Opus 5
 	'yes' => 'da', // Claude Fable 5
 	'no' => 'nu', // Claude Fable 5
 );

@@ -16,6 +16,12 @@ Lang::$translations = array(
 	'There is a space in the entered password, which might be the cause.' => '您输入的密码中有一个空格，这可能是导致问题的原因。',
 	'Adminer does not support accessing a database without a password.' => 'Adminer默认不支持访问没有密码的数据库。',
 	'The database does not support passwords.' => '数据库不支持密码。',
+	'The server accepts any password, so filling it in protects nothing.' => '服务器接受任何密码，因此填写密码不能提供任何保护。', // Claude Opus 5
+	'Require a password.' => '要求密码。', // Claude Opus 5
+	'Save %s next to Adminer to require the entered password:' => '将 %s 保存在 Adminer 旁边，即可要求输入的密码：', // Claude Opus 5
+	'Save %s next to Adminer to require the password %s:' => '将 %1$s 保存在 Adminer 旁边，即可要求密码 %2$s：', // Claude Opus 5
+	'More options' => '更多选项', // Claude Opus 5
+	'Require a password verified by Adminer' => '要求由 Adminer 验证的密码', // Claude Opus 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => '登录失败次数过多，请 %d 分钟后重试。',
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => '如果 Adminer 运行在反向代理之后，请使用 %1$s <a%2$s>插件</a>。', // Claude Opus 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => '主密码已过期。<a href="https://www.adminer.org/en/extension/"%s>请扩展</a> %s 方法让它永久化。',

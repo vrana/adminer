@@ -318,6 +318,12 @@ Lang::$translations = array(
 	'Every plugin must <a%s>be an object</a>.' => 'Hver plugin må <a%s>være et objekt</a>.', // Claude Opus 5
 	'Disable %s or enable the %s or %s extension.' => 'Deaktiver %s eller aktiver utvidelsene %s eller %s.', // Claude Fable 5
 	'The database does not support passwords.' => 'Databasen støtter ikke passord.', // Claude Fable 5
+	'The server accepts any password, so filling it in protects nothing.' => 'Serveren godtar ethvert passord, så å fylle det ut beskytter ingenting.', // Claude Opus 5
+	'Require a password.' => 'Krev et passord.', // Claude Opus 5
+	'Save %s next to Adminer to require the entered password:' => 'Lagre %s ved siden av Adminer for å kreve det angitte passordet:', // Claude Opus 5
+	'Save %s next to Adminer to require the password %s:' => 'Lagre %s ved siden av Adminer for å kreve passordet %s:', // Claude Opus 5
+	'More options' => 'Flere muligheter', // Claude Opus 5
+	'Require a password verified by Adminer' => 'Krever et passord kontrollert av Adminer', // Claude Opus 5
 );
 
 // run `php ../../lang.php no` to update this file

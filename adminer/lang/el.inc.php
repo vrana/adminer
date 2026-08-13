@@ -349,6 +349,12 @@ Lang::$translations = array(
 	'Every plugin must <a%s>be an object</a>.' => 'Κάθε πρόσθετο πρέπει να <a%s>είναι αντικείμενο</a>.', // Claude Opus 5
 	'Disable %s or enable the %s or %s extension.' => 'Απενεργοποιήστε την επέκταση %s ή ενεργοποιήστε τις επεκτάσεις %s ή %s.', // Claude Fable 5
 	'The database does not support passwords.' => 'Η βάση δεδομένων δεν υποστηρίζει κωδικό.', // Claude Fable 5
+	'The server accepts any password, so filling it in protects nothing.' => 'Ο διακομιστής δέχεται οποιονδήποτε κωδικό, οπότε η συμπλήρωσή του δεν προστατεύει τίποτα.', // Claude Opus 5
+	'Require a password.' => 'Απαίτηση κωδικού.', // Claude Opus 5
+	'Save %s next to Adminer to require the entered password:' => 'Αποθηκεύστε το %s δίπλα στο Adminer για να απαιτείται ο κωδικός που εισαγάγατε:', // Claude Opus 5
+	'Save %s next to Adminer to require the password %s:' => 'Αποθηκεύστε το %s δίπλα στο Adminer για να απαιτείται ο κωδικός %s:', // Claude Opus 5
+	'More options' => 'Περισσότερες επιλογές', // Claude Opus 5
+	'Require a password verified by Adminer' => 'Απαιτεί κωδικό που ελέγχεται από το Adminer', // Claude Opus 5
 );
 
 // run `php ../../lang.php el` to update this file

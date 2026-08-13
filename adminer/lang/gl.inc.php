@@ -314,6 +314,12 @@ Lang::$translations = array(
 	'Every plugin must <a%s>be an object</a>.' => 'Cada plugin debe <a%s>ser un obxecto</a>.', // Claude Opus 5
 	'Disable %s or enable the %s or %s extension.' => 'Desactive %s ou active as extensións %s ou %s.', // Claude Fable 5
 	'The database does not support passwords.' => 'A base de datos non admite contrasinal.', // Claude Fable 5
+	'The server accepts any password, so filling it in protects nothing.' => 'O servidor acepta calquera contrasinal, así que cubrilo non protexe nada.', // Claude Opus 5
+	'Require a password.' => 'Requirir un contrasinal.', // Claude Opus 5
+	'Save %s next to Adminer to require the entered password:' => 'Garde %s xunto a Adminer para requirir o contrasinal introducido:', // Claude Opus 5
+	'Save %s next to Adminer to require the password %s:' => 'Garde %s xunto a Adminer para requirir o contrasinal %s:', // Claude Opus 5
+	'More options' => 'Máis opcións', // Claude Opus 5
+	'Require a password verified by Adminer' => 'Require un contrasinal verificado por Adminer', // Claude Opus 5
 );
 
 // run `php ../../lang.php gl` to update this file

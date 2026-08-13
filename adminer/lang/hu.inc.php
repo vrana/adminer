@@ -315,6 +315,12 @@ Lang::$translations = array(
 	'Every plugin must <a%s>be an object</a>.' => 'Minden bővítménynek <a%s>objektumnak kell lennie</a>.', // Claude Opus 5
 	'Disable %s or enable the %s or %s extension.' => 'Tiltsa le a(z) %s kiterjesztést, vagy engedélyezze a(z) %s vagy %s kiterjesztéseket.', // Claude Fable 5
 	'The database does not support passwords.' => 'Az adatbázis nem támogat jelszót.', // Claude Fable 5
+	'The server accepts any password, so filling it in protects nothing.' => 'A kiszolgáló bármilyen jelszót elfogad, így a kitöltése semmit sem véd.', // Claude Opus 5
+	'Require a password.' => 'Jelszó megkövetelése.', // Claude Opus 5
+	'Save %s next to Adminer to require the entered password:' => 'Mentse a(z) %s fájlt az Adminer mellé, hogy a megadott jelszó legyen szükséges:', // Claude Opus 5
+	'Save %s next to Adminer to require the password %s:' => 'Mentse a(z) %s fájlt az Adminer mellé, hogy a(z) %s jelszó legyen szükséges:', // Claude Opus 5
+	'More options' => 'További lehetőségek', // Claude Opus 5
+	'Require a password verified by Adminer' => 'Az Adminer által ellenőrzött jelszót követel meg', // Claude Opus 5
 	'yes' => 'igen', // Claude Fable 5
 	'no' => 'nem', // Claude Fable 5
 );

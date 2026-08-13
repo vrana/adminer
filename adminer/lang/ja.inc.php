@@ -16,6 +16,12 @@ Lang::$translations = array(
 	'There is a space in the entered password, which might be the cause.' => '入力されたパスワードに空白が含まれているので、それが原因かもしれません。',
 	'Adminer does not support accessing a database without a password.' => 'Adminer はパスワードのないデータベースへの接続には対応していません。',
 	'The database does not support passwords.' => 'データベースがパスワードに対応していません。',
+	'The server accepts any password, so filling it in protects nothing.' => 'サーバーはどんなパスワードでも受け入れるため、入力しても何も保護されません。', // Claude Opus 5
+	'Require a password.' => 'パスワードを要求する。', // Claude Opus 5
+	'Save %s next to Adminer to require the entered password:' => '入力したパスワードを要求するには、Adminer の隣に %s を保存してください:', // Claude Opus 5
+	'Save %s next to Adminer to require the password %s:' => 'パスワード %2$s を要求するには、Adminer の隣に %1$s を保存してください:', // Claude Opus 5
+	'More options' => 'その他の方法', // Claude Opus 5
+	'Require a password verified by Adminer' => 'Adminer が検証するパスワードを要求します', // Claude Opus 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'ログインの失敗数が多すぎます。%d分後に再試行してください。',
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Adminer がリバースプロキシの背後で動作している場合は %1$s <a%2$s>プラグイン</a>を使用してください。', // Claude Opus 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'マスタパスワードが期限切れになりました。<a href="https://www.adminer.org/en/extension/"%s>(実装例)</a> 無期限にするには %s 関数を用います。',

@@ -345,6 +345,12 @@ Lang::$translations = array(
 	'Every plugin must <a%s>be an object</a>.' => 'Mỗi plugin phải <a%s>là một đối tượng</a>.', // Claude Opus 5
 	'Disable %s or enable the %s or %s extension.' => 'Hãy tắt phần mở rộng %s hoặc bật phần mở rộng %s hoặc %s.', // Claude Fable 5
 	'The database does not support passwords.' => 'Cơ sở dữ liệu không hỗ trợ mật khẩu.', // Claude Fable 5
+	'The server accepts any password, so filling it in protects nothing.' => 'Máy chủ chấp nhận mọi mật khẩu, nên việc điền vào không bảo vệ được gì.', // Claude Opus 5
+	'Require a password.' => 'Yêu cầu mật khẩu.', // Claude Opus 5
+	'Save %s next to Adminer to require the entered password:' => 'Lưu %s cạnh Adminer để yêu cầu mật khẩu đã nhập:', // Claude Opus 5
+	'Save %s next to Adminer to require the password %s:' => 'Lưu %s cạnh Adminer để yêu cầu mật khẩu %s:', // Claude Opus 5
+	'More options' => 'Tùy chọn khác', // Claude Opus 5
+	'Require a password verified by Adminer' => 'Yêu cầu mật khẩu được Adminer xác minh', // Claude Opus 5
 );
 
 // run `php ../../lang.php vi` to update this file

@@ -277,6 +277,12 @@ Lang::$translations = array(
 	'There is a space in the entered password, which might be the cause.' => 'Hay un espacio en el password, lo cual puede ser la causa.',
 	'Adminer does not support accessing a database without a password.' => 'Adminer no soporta accesar una base de datos sin clave.',
 	'The database does not support passwords.' => 'La base de datos no soporta password.',
+	'The server accepts any password, so filling it in protects nothing.' => 'El servidor acepta cualquier contraseña, así que rellenarla no protege nada.', // Claude Opus 5
+	'Require a password.' => 'Requerir una contraseña.', // Claude Opus 5
+	'Save %s next to Adminer to require the entered password:' => 'Guarde %s junto a Adminer para requerir la contraseña introducida:', // Claude Opus 5
+	'Save %s next to Adminer to require the password %s:' => 'Guarde %s junto a Adminer para requerir la contraseña %s:', // Claude Opus 5
+	'More options' => 'Más opciones', // Claude Opus 5
+	'Require a password verified by Adminer' => 'Requiere una contraseña verificada por Adminer', // Claude Opus 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Demasiados intentos de acceso fallidos, intente nuevamente en %d minuto.', 'Demasiados intentos de acceso fallidos, intente nuevamente en %d minutos.'), // Claude Fable 5
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Use el <a%2$s>plugin</a> %1$s si Adminer se ejecuta detrás de un proxy inverso.', // Claude Opus 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Password maestro expirado. <a href="https://www.adminer.org/en/extension/"%s>Implemente</a> %s metodo para hacerlo permanente.',

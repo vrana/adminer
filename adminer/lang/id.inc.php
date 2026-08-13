@@ -348,6 +348,12 @@ Lang::$translations = array(
 	'Every plugin must <a%s>be an object</a>.' => 'Setiap plugin harus <a%s>berupa objek</a>.', // Claude Opus 5
 	'Disable %s or enable the %s or %s extension.' => 'Nonaktifkan ekstensi %s atau aktifkan ekstensi %s atau %s.', // Claude Fable 5
 	'The database does not support passwords.' => 'Basis data tidak mendukung sandi.', // Claude Fable 5
+	'The server accepts any password, so filling it in protects nothing.' => 'Server menerima sandi apa pun, sehingga mengisinya tidak melindungi apa-apa.', // Claude Opus 5
+	'Require a password.' => 'Wajibkan sandi.', // Claude Opus 5
+	'Save %s next to Adminer to require the entered password:' => 'Simpan %s di samping Adminer agar sandi yang dimasukkan diwajibkan:', // Claude Opus 5
+	'Save %s next to Adminer to require the password %s:' => 'Simpan %s di samping Adminer agar sandi %s diwajibkan:', // Claude Opus 5
+	'More options' => 'Opsi lainnya', // Claude Opus 5
+	'Require a password verified by Adminer' => 'Mewajibkan sandi yang diverifikasi oleh Adminer', // Claude Opus 5
 );
 
 // run `php ../../lang.php id` to update this file

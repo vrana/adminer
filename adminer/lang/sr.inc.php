@@ -346,6 +346,12 @@ Lang::$translations = array(
 	'Every plugin must <a%s>be an object</a>.' => 'Сваки додатак мора да <a%s>буде објекат</a>.', // Claude Opus 5
 	'Disable %s or enable the %s or %s extension.' => 'Онемогућите екстензију %s или омогућите екстензије %s или %s.', // Claude Fable 5
 	'The database does not support passwords.' => 'База података не подржава лозинку.', // Claude Fable 5
+	'The server accepts any password, so filling it in protects nothing.' => 'Сервер прихвата било коју лозинку, па њено уношење ништа не штити.', // Claude Opus 5
+	'Require a password.' => 'Захтевај лозинку.', // Claude Opus 5
+	'Save %s next to Adminer to require the entered password:' => 'Сачувајте %s поред Adminer-а да би се захтевала унета лозинка:', // Claude Opus 5
+	'Save %s next to Adminer to require the password %s:' => 'Сачувајте %s поред Adminer-а да би се захтевала лозинка %s:', // Claude Opus 5
+	'More options' => 'Више опција', // Claude Opus 5
+	'Require a password verified by Adminer' => 'Захтева лозинку коју проверава Adminer', // Claude Opus 5
 );
 
 // run `php ../../lang.php sr` to update this file

@@ -312,6 +312,12 @@ Lang::$translations = array(
 	'Every plugin must <a%s>be an object</a>.' => 'Cada connector ha de <a%s>ser un objecte</a>.', // Claude Opus 5
 	'Disable %s or enable the %s or %s extension.' => 'Desactiveu %s o activeu les extensions %s o %s.', // Claude Fable 5
 	'The database does not support passwords.' => 'La base de dades no admet contrasenya.', // Claude Fable 5
+	'The server accepts any password, so filling it in protects nothing.' => 'El servidor accepta qualsevol contrasenya, així que emplenar-la no protegeix res.', // Claude Opus 5
+	'Require a password.' => 'Requereix una contrasenya.', // Claude Opus 5
+	'Save %s next to Adminer to require the entered password:' => 'Deseu %s al costat d\'Adminer per requerir la contrasenya introduïda:', // Claude Opus 5
+	'Save %s next to Adminer to require the password %s:' => 'Deseu %s al costat d\'Adminer per requerir la contrasenya %s:', // Claude Opus 5
+	'More options' => 'Més opcions', // Claude Opus 5
+	'Require a password verified by Adminer' => 'Requereix una contrasenya verificada per Adminer', // Claude Opus 5
 	'yes' => 'sí', // Claude Fable 5
 	'no' => 'no', // Claude Fable 5
 );

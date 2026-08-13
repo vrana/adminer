@@ -349,6 +349,12 @@ Lang::$translations = array(
 	'Every plugin must <a%s>be an object</a>.' => 'Her eklenti <a%s>bir nesne olmalıdır</a>.', // Claude Opus 5
 	'Disable %s or enable the %s or %s extension.' => '%s eklentisini devre dışı bırakın veya %s ya da %s eklentilerini etkinleştirin.', // Claude Fable 5
 	'The database does not support passwords.' => 'Veri tabanı parolayı desteklemez.', // Claude Fable 5
+	'The server accepts any password, so filling it in protects nothing.' => 'Sunucu her parolayı kabul ediyor, bu yüzden parolayı doldurmak hiçbir şeyi korumaz.', // Claude Opus 5
+	'Require a password.' => 'Parola iste.', // Claude Opus 5
+	'Save %s next to Adminer to require the entered password:' => 'Girilen parolanın istenmesi için %s dosyasını Adminer\'ın yanına kaydedin:', // Claude Opus 5
+	'Save %s next to Adminer to require the password %s:' => '%2$s parolasının istenmesi için %1$s dosyasını Adminer\'ın yanına kaydedin:', // Claude Opus 5
+	'More options' => 'Diğer seçenekler', // Claude Opus 5
+	'Require a password verified by Adminer' => 'Adminer tarafından doğrulanan bir parola ister', // Claude Opus 5
 );
 
 // run `php ../../lang.php tr` to update this file

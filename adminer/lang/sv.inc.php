@@ -16,6 +16,12 @@ Lang::$translations = array(
 	'There is a space in the entered password, which might be the cause.' => 'Det finns ett mellanslag i lösenordet, vilket kan vara anledningen.',
 	'Adminer does not support accessing a database without a password.' => 'Adminer tillåter inte att ansluta till en databas utan lösenord.',
 	'The database does not support passwords.' => 'Databasen stödjer inte lösenord.',
+	'The server accepts any password, so filling it in protects nothing.' => 'Servern accepterar vilket lösenord som helst, så att fylla i det skyddar ingenting.', // Claude Opus 5
+	'Require a password.' => 'Kräv ett lösenord.', // Claude Opus 5
+	'Save %s next to Adminer to require the entered password:' => 'Spara %s bredvid Adminer för att kräva det angivna lösenordet:', // Claude Opus 5
+	'Save %s next to Adminer to require the password %s:' => 'Spara %s bredvid Adminer för att kräva lösenordet %s:', // Claude Opus 5
+	'More options' => 'Fler alternativ', // Claude Opus 5
+	'Require a password verified by Adminer' => 'Kräver ett lösenord som kontrolleras av Adminer', // Claude Opus 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('För många misslyckade inloggningar, försök igen om %d minut.', 'För många misslyckade inloggningar, försök igen om %d minuter.'),
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Använd <a%2$s>pluginet</a> %1$s om Adminer körs bakom en omvänd proxy.', // Claude Opus 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Huvudlösenordet har löpt ut. <a href="https://www.adminer.org/en/extension/"%s>Implementera</a> %s en metod för att göra det permanent.',
