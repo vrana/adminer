@@ -102,7 +102,7 @@ function require_password_link(?string $password): string {
 return array(
 	new Adminer\Password(<span class='jush-apo'>'" . password_hash($plugin_password, PASSWORD_DEFAULT) . "'</span>),
 );</code></pre>"
-		. "<p>" . lang('<a href="https://www.adminer.org/en/password/"%s>More options</a>', target_blank())
+		. "<p><a href='https://www.adminer.org/password/'" . target_blank() . ">" . lang('More options') . "</a>"
 		. "</div>"
 	;
 }

@@ -22,7 +22,7 @@ Lang::$translations = array(
 	'Require a password.' => 'Xx.',
 	'Save %s next to Adminer to require the entered password:' => 'Xx %s xx:',
 	'Save %s next to Adminer to require the password %s:' => 'Xx %s xx %s:',
-	'<a href="https://www.adminer.org/en/password/"%s>More options</a>' => '<a href="https://www.adminer.org/en/password/"%s>Xx</a>',
+	'More options' => 'Xx',
 	'Require a password verified by Adminer' => 'Xx',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Xx %d.', 'Xx %d.'),
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Xx %s <a%s>xx</a> xx.',

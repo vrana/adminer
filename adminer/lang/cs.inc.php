@@ -22,7 +22,7 @@ Lang::$translations = array(
 	'Require a password.' => 'Vyžadovat heslo.',
 	'Save %s next to Adminer to require the entered password:' => 'Uložte %s vedle Admineru, aby vyžadoval zadané heslo:',
 	'Save %s next to Adminer to require the password %s:' => 'Uložte %s vedle Admineru, aby vyžadoval heslo %s:',
-	'<a href="https://www.adminer.org/en/password/"%s>More options</a>' => '<a href="https://www.adminer.org/cs/password/"%s>Další možnosti</a>',
+	'More options' => 'Další možnosti',
 	'Require a password verified by Adminer' => 'Vyžaduje heslo ověřované Adminerem',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Příliš mnoho pokusů o přihlášení, zkuste to znovu za %d minutu.', 'Příliš mnoho pokusů o přihlášení, zkuste to znovu za %d minuty.', 'Příliš mnoho pokusů o přihlášení, zkuste to znovu za %d minut.'),
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Pokud Adminer běží za reverzní proxy, použijte <a%2$s>plugin</a> %1$s.',
