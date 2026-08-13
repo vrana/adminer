@@ -37,7 +37,7 @@ p { margin: .8em 20px 0 0; }
 img { vertical-align: middle; border: 0; }
 td img { max-width: 200px; max-height: 200px; }
 code { font-size: 110%; padding: 1px 2px; background: var(--dim); }
-pre { margin: 1em 0 0; }
+pre { margin: 1em 0 0; tab-size: 4; }
 td pre { margin: 0; }
 textarea { font-family: inherit; line-height: inherit; } /* browsers use monospace and line-height: normal by default */
 pre, .sqlarea, textarea[class*="jush-"] { font: 110%/1.25 monospace; } /* .sqlarea also without jush- for the highlight-prism plugin */
@@ -59,6 +59,7 @@ th:not(:hover) .column { display: none; }
 .wrap td { white-space: normal; }
 .error { color: red; background: #fee; }
 .error b { background: var(--bg); font-weight: normal; }
+.error pre code { background: var(--bg); }
 .message { color: green; background: #efe; }
 .message table { color: var(--fg); background: var(--bg); }
 .error, .message { padding: .5em .8em; margin: 1em 20px 0 0; }

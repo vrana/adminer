@@ -113,6 +113,7 @@ if (isset($_GET["simpledb"])) {
 	class Driver extends SqlDriver {
 		static $extensions = array("SimpleXML + allow_url_fopen");
 		static $jush = "simpledb";
+		static $passwords = false;
 
 		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "IS NOT NULL");
 		public $grouping = array("count");
@@ -132,10 +133,7 @@ if (isset($_GET["simpledb"])) {
 			if ($server != "" && !preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
 				return lang('Invalid server.');
 			}
-			if ($password != "") {
-				return lang('The database does not support passwords.');
-			}
-			return parent::connect($server, $username, $password);
+			return parent::connect($server, $username, $password); // the password is refused by Adminer::login()
 		}
 
 		private function chunkRequest($ids, $action, $params, $expand = array()) {

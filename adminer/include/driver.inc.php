@@ -16,6 +16,7 @@ abstract class SqlDriver {
 	/** @var string[] */ static $drivers = array(); // all available drivers
 	/** @var list<string> */ static $extensions = array(); // possible extensions in the current driver
 	/** @var string */ static $jush; // JUSH identifier
+	/** @var bool */ static $passwords = true; // false in databases without passwords, they can be protected only by a plugin
 
 	/** @var Db */ protected $conn;
 	/** @var int[][] */ protected $types = array(); // [$group => [$type => $maximum_unsigned_length, ...], ...]

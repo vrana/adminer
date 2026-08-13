@@ -181,10 +181,13 @@ class Adminer {
 	*/
 	function login(string $login, string $password) {
 		if ($password == "") {
-			return lang('Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).', target_blank());
+			return lang('Adminer does not support accessing a database without a password.') . require_password_link(null);
+		}
+		if (!Driver::$passwords) {
+			return lang('The database does not support passwords.') . require_password_link($password);
 		}
 		if (!password_required()) {
-			return lang('The server accepts any password so filling it in protects nothing (<a href="https://www.adminer.org/en/password/"%s>more information</a>).', target_blank());
+			return lang('The server accepts any password, so filling it in protects nothing.') . require_password_link($password);
 		}
 		return true;
 	}

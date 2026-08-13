@@ -87,6 +87,26 @@ function password_required(): bool {
 	return $return;
 }
 
+/** Get a link to instructions for protecting Adminer by a password
+* @param ?string $password null to generate a random password
+* @return string HTML code
+*/
+function require_password_link(?string $password): string {
+	$adminer_plugins = "<b>adminer-plugins.php</b>";
+	$plugin_password = ($password !== null ? $password : base64_encode(substr(hex2bin(rand_string()), 0, 12)));
+	return ' <a href="#password-less" class="toggle">' . lang('Require a password.') . '</a>'
+		. "<div id='password-less' class='hidden'><p>" . ($password !== null
+			? lang('Save %s next to Adminer to require the entered password:', $adminer_plugins)
+			: lang('Save %s next to Adminer to require the password %s:', $adminer_plugins, "<b>$plugin_password</b>")
+		) . "<pre><code class='jush'>&lt;?php
+return array(
+	new AdminerLoginPasswordLess(<span class='jush-apo'>'" . password_hash($plugin_password, PASSWORD_DEFAULT) . "'</span>),
+);</code></pre>"
+		. "<p>" . lang('<a href="https://www.adminer.org/en/password/"%s>More options</a>', target_blank())
+		. "</div>"
+	;
+}
+
 $auth = $_POST["auth"];
 if ($auth && verify_token()) { // the token is verified here because the login is processed before the general check
 	session_regenerate_id(); // defense against session fixation

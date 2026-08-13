@@ -111,6 +111,7 @@ if (isset($_GET["sqlite"])) {
 	class Driver extends SqlDriver {
 		static $extensions = array("SQLite3", "PDO_SQLite");
 		static $jush = "sqlite";
+		static $passwords = false;
 
 		protected $types = array(array("integer" => 0, "real" => 0, "numeric" => 0, "text" => 0, "blob" => 0));
 
@@ -126,10 +127,7 @@ if (isset($_GET["sqlite"])) {
 		public $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 
 		static function connect(string $server, string $username, string $password) {
-			if ($password != "") {
-				return lang('The database does not support passwords.');
-			}
-			return parent::connect(":memory:", "", "");
+			return parent::connect(":memory:", "", ""); // the password is refused by Adminer::login()
 		}
 
 		function __construct(Db $connection) {
