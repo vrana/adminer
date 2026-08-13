@@ -20,6 +20,7 @@
 - Edit: Print the query fetching the row, the same as in Select
 - MariaDB 12: Support triggers for multiple events and for UPDATE OF (bug #1306)
 - PostgreSQL: Edit and delete rows identified by a column of a composite type (bug #1217)
+- MS SQL: Display all result sets of a procedure, a message from the server stopped the iteration (bug #1180)
 - MS SQL: Fix importing a CSV file to a table with an identity column through PDO, it silently did nothing
 - Elasticsearch: Rename the database from elastic to data
 - Elasticsearch: Redirect to the only database

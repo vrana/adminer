@@ -27,6 +27,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function attach(string $server, string $username, string $password): string {
+				sqlsrv_configure("WarningsReturnAsErrors", 0); // a message from the server would stop sqlsrv_next_result(), e.g. between the result sets of sp_helpdb
 				$connection_info = array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8");
 				$ssl = adminer()->connectSsl();
 				if (isset($ssl["Encrypt"])) {
@@ -94,7 +95,16 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function next_result(): bool {
-				return $this->result ? !!sqlsrv_next_result($this->result) : false;
+				if (!$this->result) {
+					return false;
+				}
+				$return = sqlsrv_next_result($this->result);
+				if ($return === false) { // null is the end of the result sets, false is an error
+					$this->get_error();
+					$this->result = null; // report the error in the next iteration and stop there
+					return true;
+				}
+				return !!$return;
 			}
 		}
 
