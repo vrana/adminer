@@ -100,7 +100,7 @@ function require_password_link(?string $password): string {
 			: lang('Save %s next to Adminer to require the password %s:', $adminer_plugins, "<b>$plugin_password</b>")
 		) . "<pre><code class='jush'>&lt;?php
 return array(
-	new AdminerLoginPasswordLess(<span class='jush-apo'>'" . password_hash($plugin_password, PASSWORD_DEFAULT) . "'</span>),
+	new Adminer\Password(<span class='jush-apo'>'" . password_hash($plugin_password, PASSWORD_DEFAULT) . "'</span>),
 );</code></pre>"
 		. "<p>" . lang('<a href="https://www.adminer.org/en/password/"%s>More options</a>', target_blank())
 		. "</div>"

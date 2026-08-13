@@ -5,7 +5,7 @@
 - Do not redirect outside Adminer after saving a row
 - Do not count a request without credentials as an unsuccessful login
 - Report a server accepting any password by its own message instead of the one about a missing password (bug #1318)
-- Print the configuration of the login-password-less plugin when the database can be accessed without a password
+- Print the configuration of Adminer\Password when the database can be accessed without a password
 - Print the help as a text, not HTML
 - Verify the CSRF token also when logging in
 - Verify the CSRF token before killing a query timed out on the client
@@ -40,6 +40,7 @@
 - Plugin config: Save the settings by POST so that the CSRF token can be verified
 - Plugin file-upload: Do not let the column name escape the upload directory
 - Plugin login-otp: Do not create a permanent login without a valid OTP
+- Plugin login-password-less: Moved to Adminer as the Adminer\Password class, the plugin only extends it
 - Plugin login-reverse-proxy: Group the invalid logins also by the address of the proxy
 - Plugin login-servers: Allow server description with special characters (bug #1320)
 - Plugin login-table: Verify the password from column password_hash

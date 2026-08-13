@@ -90,7 +90,7 @@ The password policy is disabled because `ODBC` doesn't satisfy it.
 ## OpenSearch
 
 An OpenSearch server on the default `localhost:9200` without the security plugin, so that it needs no user and no certificate.
-The tests log in through [adminer/elastic.php](/adminer/elastic.php) with the password `YOUR_PASSWORD_HERE` of the login-password-less plugin, because Adminer refuses a server accepting any password.
+The tests log in through [adminer/elastic.php](/adminer/elastic.php) with the password `YOUR_PASSWORD_HERE` verified by `Adminer\Password`, because Adminer refuses a server accepting any password.
 They create and drop the index `interprets` themselves and leave the other indexes alone, e.g. `top_queries` of the query-insights plugin.
 
 The same driver serves Elasticsearch, which is not covered by the tests - only the system name in the breadcrumb differs.

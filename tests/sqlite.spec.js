@@ -25,7 +25,7 @@ test('Login', async () => {
 	await page.locator('[name="auth[password]"]').fill('YOUR_PASSWORD_HERE');
 	await button(page, 'Login').click();
 	await expectExtension(page);
-	await expect(page.locator('body')).toContainText('AdminerLoginPasswordLess');
+	await expect(page.locator('body')).toContainText('Adminer\\Password');
 	await link(page, 'Create database').click();
 	await page.locator('[name="name"]').fill('adminer_test');
 	await button(page, 'Save').click();

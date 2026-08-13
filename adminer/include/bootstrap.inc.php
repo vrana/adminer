@@ -82,6 +82,7 @@ include DIR . "drivers/oracle.inc.php";
 include "./include/adminer.inc.php";
 include DIR . "include/plugins.inc.php";
 include DIR . "include/plugin.inc.php";
+include DIR . "include/password.inc.php"; // can be used by adminer-plugins.php
 
 Adminer::$instance =
 	(function_exists('adminer_object') ? adminer_object() :
