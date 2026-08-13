@@ -4,6 +4,7 @@
 - Send the cookies set by JavaScript with the same attributes as the other cookies
 - Do not redirect outside Adminer after saving a row
 - Do not count a request without credentials as an unsuccessful login
+- Report a server accepting any password by its own message instead of the one about a missing password (bug #1318)
 - Print the help as a text, not HTML
 - Verify the CSRF token also when logging in
 - Verify the CSRF token before killing a query timed out on the client

@@ -17,6 +17,7 @@ Lang::$translations = array(
 	'Invalid credentials.' => 'Neplatné přihlašovací údaje.',
 	'There is a space in the entered password, which might be the cause.' => 'Problém může být, že je v zadaném hesle mezera.',
 	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer nepodporuje přístup k databázi bez hesla, <a href="https://www.adminer.org/cs/password/"%s>více informací</a>.',
+	'The server accepts any password so filling it in protects nothing (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Server přijímá jakékoliv heslo, takže jeho vyplnění nic nechrání, <a href="https://www.adminer.org/cs/password/"%s>více informací</a>.',
 	'The database does not support passwords.' => 'Databáze nepodporuje heslo.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Příliš mnoho pokusů o přihlášení, zkuste to znovu za %d minutu.', 'Příliš mnoho pokusů o přihlášení, zkuste to znovu za %d minuty.', 'Příliš mnoho pokusů o přihlášení, zkuste to znovu za %d minut.'),
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Pokud Adminer běží za reverzní proxy, použijte <a%2$s>plugin</a> %1$s.',

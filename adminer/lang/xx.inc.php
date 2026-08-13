@@ -17,6 +17,7 @@ Lang::$translations = array(
 	'Invalid credentials.' => 'Xx.',
 	'There is a space in the entered password, which might be the cause.' => 'Xx.',
 	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Xx, <a href="https://www.adminer.org/en/password/"%s>xx</a>.',
+	'The server accepts any password so filling it in protects nothing (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Xx, <a href="https://www.adminer.org/en/password/"%s>xx</a>.',
 	'The database does not support passwords.' => 'Xx.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Xx %d.', 'Xx %d.'),
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Xx %s <a%s>xx</a> xx.',
