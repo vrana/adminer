@@ -15,7 +15,7 @@ if (isset($_GET["mssql"])) {
 	if (extension_loaded("sqlsrv") && $_GET["ext"] != "pdo") {
 		class Db extends SqlDb {
 			public $extension = "sqlsrv";
-			private $link, $result;
+			private $link, $result, $warnings;
 
 			private function get_error(): void {
 				$this->error = "";
@@ -87,6 +87,7 @@ if (isset($_GET["mssql"])) {
 				if (!$result) {
 					return false;
 				}
+				$this->warnings = sqlsrv_errors(SQLSRV_ERR_WARNINGS); // sqlsrv_field_metadata() discards them
 				if (sqlsrv_field_metadata($result)) {
 					return new Result($result);
 				}
@@ -105,6 +106,17 @@ if (isset($_GET["mssql"])) {
 					return true;
 				}
 				return !!$return;
+			}
+
+			/** Get the messages printed by the current result set
+			* @return list<string>
+			*/
+			function warnings(): array {
+				$return = array();
+				foreach ((array) $this->warnings as $warning) {
+					$return[] = $warning["message"];
+				}
+				return $return;
 			}
 		}
 
@@ -175,6 +187,19 @@ if (isset($_GET["mssql"])) {
 
 			function lastInsertId() {
 				return $this->pdo->lastInsertId();
+			}
+
+			/** Get the messages printed by the current result set
+			* @return list<string>
+			*/
+			function warnings(): array {
+				/** @var PdoResult|bool */
+				$result = $this->multi;
+				if (!is_object($result)) {
+					return array();
+				}
+				$error = $result->errorInfo(); // the messages are reported as a warning of the statement
+				return array((string) $error[2]);
 			}
 		}
 
@@ -302,6 +327,17 @@ if (isset($_GET["mssql"])) {
 
 		function quoteBinary(string $s): string {
 			return "0x" . bin2hex($s);
+		}
+
+		function warnings() {
+			$return = array();
+			foreach ($this->conn->warnings() as $message) {
+				$message = trim(preg_replace('~^(\[[^]]+])+~', '', $message)); // the messages are prefixed by [Microsoft][ODBC Driver][SQL Server], sp_helpdb prints an empty one
+				if ($message != "") {
+					$return[] = $message;
+				}
+			}
+			return nl_br(h(implode("\n", $return)));
 		}
 
 		function tableHelp(string $name, bool $is_view = false) {
