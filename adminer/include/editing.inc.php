@@ -141,6 +141,14 @@ function json_row(string $key, $val = null, bool $escape = true): void {
 	}
 }
 
+/** Get the collations of all charsets in a single list
+* @return list<string>
+*/
+function flat_collations(): array {
+	$collations = collations();
+	return (is_array(reset($collations)) ? call_user_func_array('array_merge', array_values($collations)) : $collations);
+}
+
 /** Print table columns for type edit
 * @param Field $field
 * @param list<string> $collations
@@ -417,6 +425,21 @@ function q_dollar(string $string): string {
 	return $delimiter . $string . $delimiter;
 }
 
+/** Get the SQL keywords preceding the collation of a routine parameter */
+function routine_collate(?string $collation): string {
+	static $charsets = array();
+	if ($collation && !$charsets) {
+		foreach (collations() as $charset => $vals) {
+			// MariaDB collations usable with all charsets are grouped under an empty charset
+			foreach ((array) $vals as $val) {
+				$charsets[$val] = $charset;
+			}
+		}
+	}
+	// MySQL doesn't accept COLLATE alone in a routine parameter
+	return ($charsets[$collation] ? "CHARACTER SET " . q($charsets[$collation]) . " " : "") . "COLLATE";
+}
+
 /** Generate SQL query for creating routine
 * @param 'PROCEDURE'|'FUNCTION' $routine
 * @param Routine $row
@@ -427,14 +450,17 @@ function create_routine($routine, array $row): string {
 	ksort($fields); // enforce fields order
 	foreach ($fields as $field) {
 		if ($field["field"] != "") {
-			$set[] = (preg_match("~^(" . driver()->inout . ")\$~", $field["inout"]) ? "$field[inout] " : "") . idf_escape($field["field"]) . process_type($field, "CHARACTER SET");
+			$set[] = (preg_match("~^(" . driver()->inout . ")\$~", $field["inout"]) ? "$field[inout] " : "")
+				. idf_escape($field["field"])
+				. process_type($field, routine_collate($field["collation"]))
+			;
 		}
 	}
 	$definition = rtrim($row["definition"], ";");
 	return "CREATE $routine "
 		. idf_escape(trim($row["name"]))
 		. " (" . implode(", ", $set) . ")"
-		. ($routine == "FUNCTION" ? " RETURNS" . process_type($row["returns"], "CHARACTER SET") : "")
+		. ($routine == "FUNCTION" ? " RETURNS" . process_type($row["returns"], routine_collate($row["returns"]["collation"])) : "")
 		. ($row["language"] ? " LANGUAGE $row[language]" : "")
 		. (JUSH == "pgsql" ? " AS " . q_dollar("\n" . trim($definition) . "\n") : "\n$definition;")
 	;

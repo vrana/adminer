@@ -18,6 +18,7 @@
 - Select: Modify or delete several rows in a transaction
 - Edit: Keep the JSON value entered by the user after an error, it was replaced by null if it was invalid
 - Edit: Print the query fetching the row, the same as in Select
+- MySQL: Support collation of routine parameters and return values
 - MariaDB 12: Support triggers for multiple events and for UPDATE OF (bug #1306)
 - PostgreSQL: Edit and delete rows identified by a column of a composite type (bug #1217)
 - MS SQL: Display all result sets of a procedure, a message from the server stopped the iteration (bug #1180)

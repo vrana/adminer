@@ -181,10 +181,7 @@ if (!$_POST) {
 	}
 }
 
-$collations = collations();
-if (is_array(reset($collations))) {
-	$collations = call_user_func_array('array_merge', array_values($collations));
-}
+$collations = flat_collations();
 $engines = driver()->engines();
 // case of engine may differ
 foreach ($engines as $engine) {

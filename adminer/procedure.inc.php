@@ -53,8 +53,7 @@ if (!$_POST) {
 	}
 }
 
-$collations = get_vals("SHOW CHARACTER SET");
-sort($collations);
+$collations = (JUSH == "sql" ? flat_collations() : array()); // other drivers don't support collation in routine parameters
 $routine_languages = routine_languages();
 echo ($collations ? "<datalist id='collations'>" . optionlist($collations) . "</datalist>" : "");
 ?>

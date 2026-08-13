@@ -1006,7 +1006,7 @@ if (!defined('Adminer\DRIVER')) {
 	* @return Routine
 	*/
 	function routine(string $name, string $type): array {
-		$rows = get_rows("SELECT PARAMETER_NAME, DTD_IDENTIFIER, PARAMETER_MODE, CHARACTER_SET_NAME
+		$rows = get_rows("SELECT PARAMETER_NAME, DTD_IDENTIFIER, PARAMETER_MODE, COLLATION_NAME
 FROM information_schema.PARAMETERS
 WHERE SPECIFIC_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND SPECIFIC_NAME = " . q($name) . "
 ORDER BY ORDINAL_POSITION");
@@ -1022,7 +1022,7 @@ ORDER BY ORDINAL_POSITION");
 				"null" => true,
 				"full_type" => $full_type,
 				"inout" => ($type == "FUNCTION" ? "" : $row["PARAMETER_MODE"]), // FUNCTION parameters are always IN
-				"collation" => $row["CHARACTER_SET_NAME"],
+				"collation" => $row["COLLATION_NAME"],
 			);
 		}
 		$return = connection()->query("SELECT
