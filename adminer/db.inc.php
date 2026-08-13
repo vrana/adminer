@@ -60,7 +60,7 @@ if ($tables_views && !$error && !$_POST["search"]) {
 		}
 	}
 
-	queries_redirect($_SERVER["REQUEST_URI"], $message, $result);
+	queries_redirect(relative_uri(), $message, $result);
 }
 
 page_header(($_GET["ns"] == "" ? lang('Database') . ": " . h(DB) : lang('Schema') . ": " . h($_GET["ns"])), $error, true);

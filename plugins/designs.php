@@ -20,7 +20,7 @@ class AdminerDesigns extends Adminer\Plugin {
 		if (isset($_POST["design"]) && Adminer\verify_token()) {
 			Adminer\restart_session();
 			$_SESSION["design"] = $_POST["design"];
-			Adminer\redirect($_SERVER["REQUEST_URI"]);
+			Adminer\redirect(Adminer\relative_uri());
 		}
 	}
 
