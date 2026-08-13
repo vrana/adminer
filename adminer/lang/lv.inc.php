@@ -286,7 +286,7 @@ Lang::$translations = array(
 	'overwrite' => 'pārrakstīt',
 	'DB' => 'DB',
 	'Warnings' => 'Brīdinājumi',
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer neatbalsta pieeju bez paroles, <a href="https://www.adminer.org/en/password/"%s>vairāk informācijas šeit</a>.',
+	'Adminer does not support accessing a database without a password.' => 'Adminer neatbalsta pieeju bez paroles.',
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Paldies, ka izmantoji Adminer, vai vēlies veikt <a href="https://www.adminer.org/en/donation/">ziedojumu</a>.',
 	'The action will be performed after successful login with the same credentials.' => 'Darbība tiks pabeigta pēc derīgas pieteikšanās sistēmā.',
 	'Connecting to privileged ports is not allowed.' => 'Pieeja priviliģētiem portiem nav atļauta.',

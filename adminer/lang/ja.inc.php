@@ -14,7 +14,7 @@ Lang::$translations = array(
 	'<a%s>Configure</a> %s in %s.' => '%3$s の %2$s を<a%1$s>設定</a>してください。',
 	'Every plugin must <a%s>be an object</a>.' => 'すべてのプラグインは<a%s>オブジェクトである</a>必要があります。', // Claude Opus 5
 	'There is a space in the entered password, which might be the cause.' => '入力されたパスワードに空白が含まれているので、それが原因かもしれません。',
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer はパスワードのないデータベースへの接続には対応していません。(<a href="https://www.adminer.org/en/password/"%s>詳細</a>)',
+	'Adminer does not support accessing a database without a password.' => 'Adminer はパスワードのないデータベースへの接続には対応していません。',
 	'The database does not support passwords.' => 'データベースがパスワードに対応していません。',
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'ログインの失敗数が多すぎます。%d分後に再試行してください。',
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Adminer がリバースプロキシの背後で動作している場合は %1$s <a%2$s>プラグイン</a>を使用してください。', // Claude Opus 5

@@ -14,7 +14,7 @@ Lang::$translations = array(
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => '感谢使用Adminer，请考虑为我们<a href="https://www.adminer.org/en/donation/">捐款（英文页面）</a>。',
 	'Invalid credentials.' => '无效凭据。',
 	'There is a space in the entered password, which might be the cause.' => '您输入的密码中有一个空格，这可能是导致问题的原因。',
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer默认不支持访问没有密码的数据库，<a href="https://www.adminer.org/en/password/"%s>详情见这里</a>。',
+	'Adminer does not support accessing a database without a password.' => 'Adminer默认不支持访问没有密码的数据库。',
 	'The database does not support passwords.' => '数据库不支持密码。',
 	'Too many unsuccessful logins, try again in %d minute(s).' => '登录失败次数过多，请 %d 分钟后重试。',
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => '如果 Adminer 运行在反向代理之后，请使用 %1$s <a%2$s>插件</a>。', // Claude Opus 5

@@ -287,7 +287,7 @@ Lang::$translations = array(
 	'Checks' => 'Verificações', // Claude Fable 5
 	'Inherited by' => 'Herdada por', // Claude Fable 5
 	'hostname[:port] or :socket' => 'hostname[:port] ou :socket', // Claude Fable 5
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'O Adminer não suporta aceder a uma base de dados sem senha, <a href="https://www.adminer.org/en/password/"%s>mais informações</a>.', // Claude Fable 5
+	'Adminer does not support accessing a database without a password.' => 'O Adminer não suporta aceder a uma base de dados sem senha.', // Claude Fable 5
 	'Default value' => 'Valor predeterminado', // Claude Fable 5
 	'Full table scan' => 'Varrimento completo da tabela', // Claude Fable 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Demasiadas tentativas de início de sessão falhadas, tente novamente em %d minuto.', 'Demasiadas tentativas de início de sessão falhadas, tente novamente em %d minutos.'), // Claude Fable 5

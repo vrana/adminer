@@ -16,7 +16,6 @@ Lang::$translations = array(
 	'Invalid server.' => 'Neplatný server.',
 	'Invalid credentials.' => 'Neplatné přihlašovací údaje.',
 	'There is a space in the entered password, which might be the cause.' => 'Problém může být, že je v zadaném hesle mezera.',
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer nepodporuje přístup k databázi bez hesla, <a href="https://www.adminer.org/cs/password/"%s>více informací</a>.',
 	'Adminer does not support accessing a database without a password.' => 'Adminer nepodporuje přístup k databázi bez hesla.',
 	'The database does not support passwords.' => 'Databáze nepodporuje heslo.',
 	'The server accepts any password, so filling it in protects nothing.' => 'Server přijímá jakékoliv heslo, takže jeho vyplnění nic nechrání.',

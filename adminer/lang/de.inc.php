@@ -292,7 +292,7 @@ Lang::$translations = array(
 	'DB' => 'DB',
 	'%s queries are not supported.' => '%s Abfragen werden nicht unterstützt.',
 	'Warnings' => 'Warnungen',
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer unterstützt den Zugriff auf eine Datenbank ohne Passwort nicht, <a href="https://www.adminer.org/de/password/"%s>mehr Informationen</a>.',
+	'Adminer does not support accessing a database without a password.' => 'Adminer unterstützt den Zugriff auf eine Datenbank ohne Passwort nicht.',
 	'Full table scan' => 'Vollständige Überprüfung der Tabelle',
 	'The action will be performed after successful login with the same credentials.' => 'Die Aktion wird nach erfolgreicher Anmeldung mit denselben Anmeldedaten ausgeführt.',
 	'Connecting to privileged ports is not allowed.' => 'Die Verbindung zu privilegierten Ports ist nicht erlaubt.',

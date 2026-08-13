@@ -322,7 +322,7 @@ Lang::$translations = array(
 	'Checks' => 'Pemeriksaan', // Claude Fable 5
 	'Inherited by' => 'Diwarisi oleh', // Claude Fable 5
 	'hostname[:port] or :socket' => 'hostname[:port] atau :socket', // Claude Fable 5
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer tidak mendukung akses basis data tanpa sandi, <a href="https://www.adminer.org/en/password/"%s>informasi lebih lanjut</a>.', // Claude Fable 5
+	'Adminer does not support accessing a database without a password.' => 'Adminer tidak mendukung akses basis data tanpa sandi.', // Claude Fable 5
 	'Default value' => 'Nilai bawaan', // Claude Fable 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'Terlalu banyak upaya masuk yang gagal, coba lagi dalam %d menit.', // Claude Fable 5
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Terima kasih telah menggunakan Adminer, pertimbangkan untuk <a href="https://www.adminer.org/en/donation/">berdonasi</a>.', // Claude Fable 5

@@ -291,7 +291,7 @@ Lang::$translations = array(
 	'DB' => 'BD',
 	'%s queries are not supported.' => 'Requêtes %s ne sont pas supportées.',
 	'Warnings' => 'Avertissements',
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer ne supporte pas l\'accès aux bases de données sans mot de passe, <a href="https://www.adminer.org/en/password/"%s>plus d\'information</a>.',
+	'Adminer does not support accessing a database without a password.' => 'Adminer ne supporte pas l\'accès aux bases de données sans mot de passe.',
 	'The action will be performed after successful login with the same credentials.' => 'Cette action sera exécutée après s\'être connecté avec les mêmes données de connexion.',
 	'Connecting to privileged ports is not allowed.' => 'La connexion aux ports privilégiés n\'est pas autorisée.',
 	'There is a space in the entered password, which might be the cause.' => 'Il y a un espace dans le mot de passe entré qui pourrait en être la cause.',

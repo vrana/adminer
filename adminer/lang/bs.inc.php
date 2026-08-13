@@ -321,7 +321,7 @@ Lang::$translations = array(
 	'Checks' => 'Provjere', // Claude Fable 5
 	'Inherited by' => 'Naslijeđeno od', // Claude Fable 5
 	'hostname[:port] or :socket' => 'hostname[:port] ili :socket', // Claude Fable 5
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer ne podržava pristup bazi podataka bez lozinke, <a href="https://www.adminer.org/en/password/"%s>više informacija</a>.', // Claude Fable 5
+	'Adminer does not support accessing a database without a password.' => 'Adminer ne podržava pristup bazi podataka bez lozinke.', // Claude Fable 5
 	'Default value' => 'Zadana vrijednost', // Claude Fable 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Previše neuspješnih prijava, pokušajte ponovo za %d minutu.', 'Previše neuspješnih prijava, pokušajte ponovo za %d minute.', 'Previše neuspješnih prijava, pokušajte ponovo za %d minuta.'), // Claude Fable 5
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Hvala što koristite Adminer, razmislite o <a href="https://www.adminer.org/en/donation/">donaciji</a>.', // Claude Fable 5

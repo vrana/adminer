@@ -276,7 +276,7 @@ Lang::$translations = array(
 	'Warnings' => 'Attenzione',
 	'%d / ' => '%d / ',
 	'Limit rows' => 'Limite righe',
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer non supporta accesso a database senza password, <a href="https://www.adminer.org/it/password/"%s>piú informazioni</a>.',
+	'Adminer does not support accessing a database without a password.' => 'Adminer non supporta accesso a database senza password.',
 	'Default value' => 'Valore predefinito',
 	'Full table scan' => 'Analizza intera tabella',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Troppi tentativi infruttuosi di login, si prega di riprovare in %d minuto.', 'Troppi tentativi infruttuosi di login, si prega di riprovare in %d minuti.'),

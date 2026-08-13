@@ -276,7 +276,7 @@ Lang::$translations = array(
 	'Warnings' => 'Waarschuwingen',
 	'%d / ' => '%d / ',
 	'Limit rows' => 'Rijen beperken',
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer ondersteunt geen toegang tot databases zonder wachtwoord, <a href="https://www.adminer.org/en/password/"%s>meer informatie</a>.',
+	'Adminer does not support accessing a database without a password.' => 'Adminer ondersteunt geen toegang tot databases zonder wachtwoord.',
 	'Default value' => 'Standaardwaarde',
 	'Full table scan' => 'Full table scan',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Teveel foutieve aanmeldpogingen, probeer opnieuw binnen %d minuut.', 'Teveel foutieve aanmeldpogingen, probeer opnieuw binnen %d minuten.'),

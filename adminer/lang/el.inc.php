@@ -334,7 +334,7 @@ Lang::$translations = array(
 	'Checks' => 'Έλεγχοι', // Claude Fable 5
 	'Inherited by' => 'Κληρονομείται από', // Claude Fable 5
 	'hostname[:port] or :socket' => 'hostname[:port] ή :socket', // Claude Fable 5
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Το Adminer δεν υποστηρίζει πρόσβαση σε βάση δεδομένων χωρίς κωδικό, <a href="https://www.adminer.org/en/password/"%s>περισσότερες πληροφορίες</a>.', // Claude Fable 5
+	'Adminer does not support accessing a database without a password.' => 'Το Adminer δεν υποστηρίζει πρόσβαση σε βάση δεδομένων χωρίς κωδικό.', // Claude Fable 5
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Ευχαριστούμε που χρησιμοποιείτε το Adminer, σκεφτείτε να κάνετε μια <a href="https://www.adminer.org/en/donation/">δωρεά</a>.', // Claude Fable 5
 	'The action will be performed after successful login with the same credentials.' => 'Η ενέργεια θα εκτελεστεί μετά από επιτυχή σύνδεση με τα ίδια διαπιστευτήρια.', // Claude Fable 5
 	'Invalid server.' => 'Μη έγκυρος διακομιστής.', // Claude Fable 5

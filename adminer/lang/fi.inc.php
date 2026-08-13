@@ -324,7 +324,7 @@ Lang::$translations = array(
 	'DB' => 'TK',
 	'%s queries are not supported.' => '%s-komennolla tehtyjä kyselyjä ei tueta.',
 	'Warnings' => 'Varoitukset',
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer ei tue pääsyä tietokantaan ilman salasanaa, katso tarkemmin <a href="https://www.adminer.org/en/password/"%s>täältä</a>.',
+	'Adminer does not support accessing a database without a password.' => 'Adminer ei tue pääsyä tietokantaan ilman salasanaa.',
 	'The action will be performed after successful login with the same credentials.' => 'Toiminto suoritetaan sen jälkeen, kun on onnistuttu kirjautumaan samoilla käyttäjätunnuksilla uudestaan.',
 	'Connecting to privileged ports is not allowed.' => 'Yhteydet etuoikeutettuihin portteihin eivät ole sallittuja.',
 	'There is a space in the entered password, which might be the cause.' => 'Syynä voi olla syötetyssä salasanassa oleva välilyönti.',

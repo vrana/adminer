@@ -281,7 +281,7 @@ Lang::$translations = array(
 	'Limit rows' => 'पंक्तियाँ सीमित करें',
 	'Inherits from' => 'इनहेरिट करता है',
 	'Checks' => 'चेक्स',
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'एडमिनर बिना पासवर्ड के डेटाबेस एक्सेस करने का समर्थन नहीं करता, <a href="https://www.adminer.org/en/password/"%s>अधिक जानकारी</a>।',
+	'Adminer does not support accessing a database without a password.' => 'एडमिनर बिना पासवर्ड के डेटाबेस एक्सेस करने का समर्थन नहीं करता।',
 	'Default value' => 'डिफ़ॉल्ट मान',
 	'Full table scan' => 'पूरी टेबल स्कैन',
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'बहुत अधिक असफल लॉगिन प्रयास, %d मिनट बाद पुनः प्रयास करें।',

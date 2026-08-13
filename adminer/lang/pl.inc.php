@@ -16,7 +16,7 @@ Lang::$translations = array(
 	'Invalid server.' => 'Nieprawidłowy serwer.',
 	'Invalid credentials.' => 'Nieprawidłowe dane logowania.',
 	'There is a space in the entered password, which might be the cause.' => 'W haśle wejściowym znajduje się spacja, która może być przyczyną.',
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer nie obsługuje dostępu do bazy danych bez hasła, <a href="https://www.adminer.org/pl/password/"%s>więcej informacji</a>.',
+	'Adminer does not support accessing a database without a password.' => 'Adminer nie obsługuje dostępu do bazy danych bez hasła.',
 	'The database does not support passwords.' => 'Baza danych nie obsługuje hasła.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Za dużo nieudanych prób logowania, spróbuj ponownie za %d minutę.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minuty.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minut.'),
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Jeśli Adminer działa za odwrotnym proxy, użyj <a%2$s>wtyczki</a> %1$s.', // Claude Opus 5

@@ -288,7 +288,7 @@ Lang::$translations = array(
 	'Checks' => 'Verificări', // Claude Fable 5
 	'Inherited by' => 'Moștenit de', // Claude Fable 5
 	'hostname[:port] or :socket' => 'hostname[:port] sau :socket', // Claude Fable 5
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer nu acceptă accesul la o bază de date fără parolă, <a href="https://www.adminer.org/en/password/"%s>mai multe informații</a>.', // Claude Fable 5
+	'Adminer does not support accessing a database without a password.' => 'Adminer nu acceptă accesul la o bază de date fără parolă.', // Claude Fable 5
 	'Default value' => 'Valoare implicită', // Claude Fable 5
 	'Full table scan' => 'Scanare completă a tabelului', // Claude Fable 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Prea multe autentificări nereușite, încercați din nou peste %d minut.', 'Prea multe autentificări nereușite, încercați din nou peste %d minute.', 'Prea multe autentificări nereușite, încercați din nou peste %d de minute.'), // Claude Fable 5

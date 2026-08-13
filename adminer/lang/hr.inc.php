@@ -313,7 +313,7 @@ Lang::$translations = array(
 	'The database does not support passwords.' => 'Baza podataka ne podržava lozinku.',
 	'DB' => 'BP',
 	'hostname[:port] or :socket' => 'hostname[:port] ili :socket',
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer ne podržava pristup bazi podataka bez lozinke, <a href="https://www.adminer.org/en/password/"%s>više informacija</a>.',
+	'Adminer does not support accessing a database without a password.' => 'Adminer ne podržava pristup bazi podataka bez lozinke.',
 	'Warnings' => 'Upozorenja',
 	'Default value' => 'Zadana vrijednost',
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Hvala što koristite Adminer, razmislite o <a href="https://www.adminer.org/en/donation/">donaciji</a>.',

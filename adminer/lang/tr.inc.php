@@ -337,7 +337,7 @@ Lang::$translations = array(
 	'Checks' => 'Kontroller', // Claude Fable 5
 	'Inherited by' => 'Miras alan tablolar', // Claude Fable 5
 	'hostname[:port] or :socket' => 'hostname[:port] veya :socket', // Claude Fable 5
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer parolasız bir veri tabanına erişimi desteklemez, <a href="https://www.adminer.org/en/password/"%s>daha fazla bilgi</a>.', // Claude Fable 5
+	'Adminer does not support accessing a database without a password.' => 'Adminer parolasız bir veri tabanına erişimi desteklemez.', // Claude Fable 5
 	'Invalid server.' => 'Geçersiz sunucu.', // Claude Fable 5
 	'There is a space in the entered password, which might be the cause.' => 'Girilen parolada boşluk var, sorunun nedeni bu olabilir.', // Claude Fable 5
 	'Loaded plugins' => 'Yüklenen eklentiler', // Claude Fable 5

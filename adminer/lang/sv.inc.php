@@ -14,7 +14,7 @@ Lang::$translations = array(
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Tack för att du använder Adminer, vänligen fundera över att <a href="https://www.adminer.org/en/donation/">donera</a>.',
 	'Invalid credentials.' => 'Ogiltiga inloggningsuppgifter.',
 	'There is a space in the entered password, which might be the cause.' => 'Det finns ett mellanslag i lösenordet, vilket kan vara anledningen.',
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer tillåter inte att ansluta till en databas utan lösenord. <a href="https://www.adminer.org/en/password/"%s>Mer information</a>.',
+	'Adminer does not support accessing a database without a password.' => 'Adminer tillåter inte att ansluta till en databas utan lösenord.',
 	'The database does not support passwords.' => 'Databasen stödjer inte lösenord.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('För många misslyckade inloggningar, försök igen om %d minut.', 'För många misslyckade inloggningar, försök igen om %d minuter.'),
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Använd <a%2$s>pluginet</a> %1$s om Adminer körs bakom en omvänd proxy.', // Claude Opus 5

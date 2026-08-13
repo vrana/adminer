@@ -295,7 +295,7 @@ Lang::$translations = array(
 	'Checks' => '체크 제약 조건', // Claude Fable 5
 	'Inherited by' => '상속 대상', // Claude Fable 5
 	'hostname[:port] or :socket' => 'hostname[:port] 또는 :socket', // Claude Fable 5
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer는 비밀번호 없이 데이터베이스에 접근하는 것을 지원하지 않습니다(<a href="https://www.adminer.org/en/password/"%s>자세한 정보</a>).', // Claude Fable 5
+	'Adminer does not support accessing a database without a password.' => 'Adminer는 비밀번호 없이 데이터베이스에 접근하는 것을 지원하지 않습니다.', // Claude Fable 5
 	'Default value' => '기본값', // Claude Fable 5
 	'Full table scan' => '전체 테이블 스캔', // Claude Fable 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => '로그인 실패가 너무 많습니다. %d분 후에 다시 시도하세요.', // Claude Fable 5

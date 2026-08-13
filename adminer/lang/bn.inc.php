@@ -281,7 +281,7 @@ Lang::$translations = array(
 	'Limit rows' => 'সারি সীমিত করুন',
 	'Inherits from' => 'থেকে উত্তরাধিকারসূত্রে প্রাপ্ত',
 	'Checks' => 'চেকস',
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer পাসওয়ার্ড ছাড়া ডাটাবেস অ্যাক্সেস সমর্থন করে না, <a href="https://www.adminer.org/en/password/"%s>আরও তথ্য</a>।',
+	'Adminer does not support accessing a database without a password.' => 'Adminer পাসওয়ার্ড ছাড়া ডাটাবেস অ্যাক্সেস সমর্থন করে না।',
 	'Default value' => 'ডিফল্ট মান',
 	'Full table scan' => 'সম্পূর্ণ টেবিল স্ক্যান',
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'অনেকগুলি ব্যর্থ লগইন প্রচেষ্টা, %d মিনিট পরে আবার চেষ্টা করুন।',

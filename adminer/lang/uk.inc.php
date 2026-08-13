@@ -308,7 +308,7 @@ Lang::$translations = array(
 	'%s queries are not supported.' => '%s-запити не підтримуються.',
 	'Warnings' => 'Попередження',
 	'Limit rows' => 'Обмеження рядків',
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Adminer не підтримує доступ до бази даних без пароля, <a href="https://www.adminer.org/en/password/"%s>більше інформації</a>.',
+	'Adminer does not support accessing a database without a password.' => 'Adminer не підтримує доступ до бази даних без пароля.',
 	'Default value' => 'Значення за замовчуванням',
 	'Full table scan' => 'Повне сканування таблиці',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Занадто багато невдалих спроб входу. Спробуйте знову через %d хвилину.', 'Занадто багато невдалих спроб входу. Спробуйте знову через %d хвилини.', 'Занадто багато невдалих спроб входу. Спробуйте знову через %d хвилин.'),

@@ -288,7 +288,7 @@ Lang::$translations = array(
 	'Checks' => 'Ellenőrzések', // Claude Fable 5
 	'Inherited by' => 'Ezek öröklik', // Claude Fable 5
 	'hostname[:port] or :socket' => 'hostname[:port] vagy :socket', // Claude Fable 5
-	'Adminer does not support accessing a database without a password (<a href="https://www.adminer.org/en/password/"%s>more information</a>).' => 'Az Adminer nem támogatja a jelszó nélküli adatbázis-hozzáférést, <a href="https://www.adminer.org/en/password/"%s>további információ</a>.', // Claude Fable 5
+	'Adminer does not support accessing a database without a password.' => 'Az Adminer nem támogatja a jelszó nélküli adatbázis-hozzáférést.', // Claude Fable 5
 	'Default value' => 'Alapértelmezett érték', // Claude Fable 5
 	'Full table scan' => 'Teljes táblaolvasás', // Claude Fable 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'Túl sok sikertelen bejelentkezés, próbálja újra %d perc múlva.', // Claude Fable 5
