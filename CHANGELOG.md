@@ -1,4 +1,4 @@
-## Adminer dev
+## Adminer 6.0.1 (released 2026-08-14)
 - Run the development version from the adminer/ directory alone, copied anywhere and under any name
 - Send the session cookie with SameSite=lax, the browsers not defaulting to it sent it also cross-site
 - Send the cookies set by JavaScript with the same attributes as the other cookies
