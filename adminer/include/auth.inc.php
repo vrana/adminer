@@ -98,25 +98,34 @@ function require_password_link(?string $password): string {
 	}
 	$plugin_password = ($password !== null ? $password : base64_encode(substr(pack("H*", rand_string()), 0, 12))); // pack() instead of hex2bin() which is PHP 5.4
 	$hash = password_hash($plugin_password, PASSWORD_DEFAULT);
-	$filename = "<b>adminer-plugins.php</b>";
+	$filename = "adminer-plugins.php";
 	$exists = file_exists("adminer-plugins.php"); // we would overwrite it, it can also hold another sensitive information
 	if ($exists) {
 		$instructions = ($password !== null
-			? lang('Add this line to %s to require the entered password:', $filename)
-			: lang('Add this line to %s to require the password %s:', $filename, "<b>$plugin_password</b>")
+			? lang('Add this line to %s to require the entered password:', "<b>$filename</b>")
+			: lang('Add this line to %s to require the password %s:', "<b>$filename</b>", "<b>$plugin_password</b>")
 		);
 	} else {
+		$filename = "<button name='password_less' value='" . h($hash) . "' class='link'>$filename</button>"; // downloads the file, POST so that a crafted link can't offer the attacker's password
 		$instructions = ($password !== null
 			? lang('Save %s next to Adminer to require the entered password:', $filename)
 			: lang('Save %s next to Adminer to require the password %s:', $filename, "<b>$plugin_password</b>")
 		);
 	}
 	$line = "\tnew Adminer\\Password(<span class='jush-apo'>'" . h($hash) . "'</span>),";
-	return " <a href='#password-less' class='toggle'>" . lang('Require a password.') . "</a>
-<div id='password-less' class='hidden'><p>$instructions
+	$return = "<p>$instructions
 <pre><code class='jush'>" . ($exists ? $line : "&lt;?php\nreturn array(\n$line\n);") . "</code></pre>
 <p>$more_options
-</div>";
+";
+	return " <a href='#password-less' class='toggle'>" . lang('Require a password.') . "</a>
+<div id='password-less' class='hidden'>" . ($exists ? $return : "<form action='' method='post'>\n" . $return . input_token() . "</form>") . "</div>";
+}
+
+if (preg_match('~^[-\w$./]+$~', $_POST["password_less"]) && verify_token()) { // the file offered by require_password_link()
+	header("Content-Type: application/octet-stream");
+	header("Content-Disposition: attachment; filename=adminer-plugins.php");
+	echo "<?php\nreturn array(\n\tnew Adminer\\Password('$_POST[password_less]'),\n);\n";
+	exit;
 }
 
 $auth = $_POST["auth"];
