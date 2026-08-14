@@ -287,6 +287,7 @@ Lang::$translations = array(
 	'Lists' => 'Listeler',
 	'Network' => 'Ağ',
 	'Geometry' => 'Geometri',
+	'Ranges' => 'Aralıklar', // Claude Opus 5
 	'Relations' => 'İlişkiler',
 
 	'Editor' => 'Düzenleyici',

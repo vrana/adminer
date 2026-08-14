@@ -258,6 +258,7 @@ Lang::$translations = array(
 	'Lists' => 'Daftar',
 	'Network' => 'Jaringan',
 	'Geometry' => 'Geometri',
+	'Ranges' => 'Rentang', // Claude Opus 5
 	'Relations' => 'Relasi',
 
 	'Editor' => 'Editor',

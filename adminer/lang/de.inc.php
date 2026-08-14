@@ -249,6 +249,7 @@ Lang::$translations = array(
 	'empty' => 'leer',
 	'Network' => 'Netzwerk',
 	'Geometry' => 'Geometrie',
+	'Ranges' => 'Bereiche', // Claude Opus 5
 	'File exists.' => 'Datei existiert schon.',
 	'%d query(ies) executed OK.' => array('SQL-Abfrage erfolgreich ausgeführt.', '%d SQL-Abfragen erfolgreich ausgeführt.'),
 	'Show only errors' => 'Nur Fehler anzeigen',

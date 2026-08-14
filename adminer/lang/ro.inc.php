@@ -247,6 +247,7 @@ Lang::$translations = array(
 	'empty' => 'gol',
 	'Network' => 'Rețea',
 	'Geometry' => 'Geometrie',
+	'Ranges' => 'Intervale', // Claude Opus 5
 	'File exists.' => 'Fișierul există deja.',
 	'%d query(ies) executed OK.' => array('%d query executat.', '%d query-uri executate cu succes.', '%d de query-uri executate cu succes.'),
 	'Show only errors' => 'Arată doar greșeli',

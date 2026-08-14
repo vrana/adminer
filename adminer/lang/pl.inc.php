@@ -310,6 +310,7 @@ Lang::$translations = array(
 	'Lists' => 'Listy',
 	'Network' => 'Sieć',
 	'Geometry' => 'Geometria',
+	'Ranges' => 'Zakresy', // Claude Opus 5
 	'Relations' => 'Relacje',
 
 	'Editor' => 'Edytor',

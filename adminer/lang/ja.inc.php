@@ -286,6 +286,7 @@ Lang::$translations = array(
 	'empty' => '空',
 	'Network' => 'ネットワーク型',
 	'Geometry' => 'ジオメトリ型',
+	'Ranges' => '範囲', // Claude Opus 5
 	'File exists.' => 'ファイルが既に存在します。',
 	'Item%s has been inserted.' => '%sレコードを挿入しました。',
 	'now' => '現在の日時',

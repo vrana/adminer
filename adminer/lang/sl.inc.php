@@ -253,6 +253,7 @@ Lang::$translations = array(
 	'Lists' => 'Seznami',
 	'Network' => 'Mrežni',
 	'Geometry' => 'Geometrčni',
+	'Ranges' => 'Razponi', // Claude Opus 5
 	'Relations' => 'Relacijski',
 
 	'Editor' => 'Urejevalnik',

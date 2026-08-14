@@ -223,6 +223,7 @@ Lang::$translations = array(
 	'last' => 'utolsó',
 	'Network' => 'Hálózat',
 	'Geometry' => 'Geometria',
+	'Ranges' => 'Tartományok', // Claude Opus 5
 	'Databases have been dropped.' => 'Adatbázis eldobva.',
 	'File exists.' => 'A fájl létezik.',
 	'Use the edit link to modify this value.' => 'Használd a szerkesztés hivatkozást ezen érték módosításához.',

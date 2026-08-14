@@ -302,6 +302,7 @@ Lang::$translations = array(
 	'Lists' => '列表',
 	'Network' => '網路',
 	'Geometry' => '幾何',
+	'Ranges' => '範圍', // Claude Opus 5
 	'Relations' => '關聯',
 
 	'Editor' => '編輯器',

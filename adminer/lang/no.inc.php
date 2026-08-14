@@ -245,6 +245,7 @@ Lang::$translations = array(
 	'Lists' => 'Lister',
 	'Network' => 'Nettverk',
 	'Geometry' => 'Geometri',
+	'Ranges' => 'Intervaller', // Claude Opus 5
 	'Relations' => 'Relasjoner',
 	'Editor' => 'Redigering',
 	'$1-$3-$5' => '$6/$4 $1',

@@ -106,6 +106,7 @@ Lang::$translations = array(
 	'From server' => '서버에서 실행',
 	'Functions' => '함수',
 	'Geometry' => '기하 형',
+	'Ranges' => '범위', // Claude Opus 5
 	'Grant' => '권한 부여',
 	'Hashed' => 'Hashed',
 	'HH:MM:SS' => '시:분:초',

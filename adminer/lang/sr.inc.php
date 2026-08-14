@@ -260,6 +260,7 @@ Lang::$translations = array(
 	'Lists' => 'Листе',
 	'Network' => 'Мрежа',
 	'Geometry' => 'Геометрија',
+	'Ranges' => 'Опсези', // Claude Opus 5
 	'Relations' => 'Односи',
 
 	'Editor' => 'Уређивач',

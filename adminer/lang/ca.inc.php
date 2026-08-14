@@ -222,6 +222,7 @@ Lang::$translations = array(
 	'last' => 'darrera',
 	'Network' => 'Xarxa',
 	'Geometry' => 'Geometria',
+	'Ranges' => 'Intervals', // Claude Opus 5
 	'Databases have been dropped.' => 'S\'han suprimit les bases de dades.',
 	'File exists.' => 'El fitxer ja existeix.',
 	'Ctrl+click on a value to modify it.' => 'Fes un Ctrl+clic a un valor per modificar-lo.',

@@ -246,6 +246,7 @@ Lang::$translations = array(
 	'empty' => 'baleiro',
 	'Network' => 'Rede',
 	'Geometry' => 'Xeometría',
+	'Ranges' => 'Intervalos', // Claude Opus 5
 	'File exists.' => 'O ficheiro xa existe.',
 	'%d query(ies) executed OK.' => array('%d consulta executada correctamente.', '%d consultas executadas correctamente.'),
 	'Show only errors' => 'Amosar só erros',

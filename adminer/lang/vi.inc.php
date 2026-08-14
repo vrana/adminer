@@ -269,6 +269,7 @@ Lang::$translations = array(
 	'Lists' => 'Danh sách',
 	'Network' => 'Mạng',
 	'Geometry' => 'Toạ độ',
+	'Ranges' => 'Phạm vi', // Claude Opus 5
 	'Relations' => 'Quan hệ',
 
 	'Editor' => 'Biên tập',

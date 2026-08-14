@@ -280,6 +280,7 @@ Lang::$translations = array(
 	'Lists' => 'Списъци',
 	'Network' => 'Мрежа',
 	'Geometry' => 'Геометрия',
+	'Ranges' => 'Диапазони', // Claude Opus 5
 	'Relations' => 'Зависимости',
 
 	'Editor' => 'Редактор',

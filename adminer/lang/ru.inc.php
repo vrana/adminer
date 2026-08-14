@@ -247,6 +247,7 @@ Lang::$translations = array(
 	'empty' => 'пусто',
 	'Network' => 'Сеть',
 	'Geometry' => 'Геометрия',
+	'Ranges' => 'Диапазоны', // Claude Opus 5
 	'File exists.' => 'Файл уже существует.',
 	'%d query(ies) executed OK.' => array('%d запрос выполнен успешно.', '%d запроса выполнено успешно.', '%d запросов выполнено успешно.'),
 	'Show only errors' => 'Только ошибки',

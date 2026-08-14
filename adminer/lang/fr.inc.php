@@ -246,6 +246,7 @@ Lang::$translations = array(
 	'empty' => 'vide',
 	'Network' => 'Réseau',
 	'Geometry' => 'Géométrie',
+	'Ranges' => 'Plages', // Claude Opus 5
 	'File exists.' => 'Le fichier existe.',
 	'Item%s has been inserted.' => 'L\'élément%s a été inséré.',
 	'now' => 'maintenant',
