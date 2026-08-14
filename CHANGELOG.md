@@ -52,7 +52,8 @@
 ### Internal
 - Move the submodules from externals/ to where they are used: adminer/static/jush, conf/JsShrink and conf/PhpShrink
 - Tests: Cover the CSV import and export, pagination, modifying a value by Ctrl+click, the bulk table operations and the SQL file import in every driver
-- Tests: Cover the bundled plugins by plugins.spec.js, which loads them from a fixed set in adminer/plugins.php
+- Tests: Cover the bundled plugins by plugins.spec.js, which loads them from a fixed set in tests/plugins.php
+- Tests: Move the entry points to tests/, they are fixtures and not examples to deploy
 - Check the code style also by Slevomat Coding Standard and the compiled files by PHPCompatibility (composer compat)
 - Enable the PHPStan strict rules which report no error
 - Install PHPCS and PHPStan by composer install, like ESLint

@@ -10,7 +10,9 @@
 
 namespace Adminer;
 
-define('Adminer\DIR', "./"); // path to the Adminer sources, the Editor has them in a sibling directory
+if (!defined('Adminer\DIR')) { // the tests define it before including this file
+	define('Adminer\DIR', "./"); // path to the Adminer sources, the Editor has them in a sibling directory
+}
 include DIR . "include/bootstrap.inc.php";
 include "./include/tmpfile.inc.php";
 

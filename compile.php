@@ -318,7 +318,7 @@ if ($vendor) {
 	$file = replace_re('(include DIR \. "drivers/(?!' . preg_quote($vendor) . '\.).*\s*)', '', $file);
 }
 $file = replace_re('~\b(include|require) (DIR \. )?"([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
-$file = replace_re('~define\(\'Adminer\\\\DIR\'.*\n~', '', $file); // the compiled file serves the static files itself
+$file = replace_re('~(if \(!defined\(\'Adminer\\\\DIR\'\)\) \{.*\n\t)?define\(\'Adminer\\\\DIR\'.*\n(\}\n)?~', '', $file); // the compiled file serves the static files itself
 
 // inline the checksums of official plugins, the plugins/ directory is not available next to the compiled file
 $checksums = "";

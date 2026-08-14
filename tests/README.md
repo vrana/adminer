@@ -70,7 +70,7 @@ Run them by `cockroach sql --insecure --host=localhost:26257`.
 ## SQLite
 
 No server is needed.
-The tests log in through [adminer/sqlite.php](/adminer/sqlite.php), which accepts the password `YOUR_PASSWORD_HERE`, and create `adminer_test.sqlite` in [adminer/](/adminer/) - the driver resolves a relative filename against the directory of the script, so PHP must be able to write there.
+The tests log in through [tests/sqlite.php](/tests/sqlite.php), which accepts the password `YOUR_PASSWORD_HERE`, and create `adminer_test.sqlite` in [tests/](/tests/) - the driver resolves a relative filename against the directory of the script, so PHP must be able to write there.
 
 ## MS SQL
 
@@ -90,7 +90,7 @@ The password policy is disabled because `ODBC` doesn't satisfy it.
 ## OpenSearch
 
 An OpenSearch server on the default `localhost:9200` without the security plugin, so that it needs no user and no certificate.
-The tests log in through [adminer/elastic.php](/adminer/elastic.php) with the password `YOUR_PASSWORD_HERE` verified by `Adminer\Password`, because Adminer refuses a server accepting any password.
+The tests log in through [tests/elastic.php](/tests/elastic.php) with the password `YOUR_PASSWORD_HERE` verified by `Adminer\Password`, because Adminer refuses a server accepting any password.
 They create and drop the index `interprets` themselves and leave the other indexes alone, e.g. `top_queries` of the query-insights plugin.
 
 The same driver serves Elasticsearch, which is not covered by the tests - only the system name in the breadcrumb differs.
@@ -107,7 +107,7 @@ This driver is tested only with the `native` project because it doesn't use any 
 ## Plugins
 
 [plugins.spec.js](/tests/plugins.spec.js) covers the bundled plugins which no driver test can reach, above all the `dumpFormat` and `dumpOutput` hooks, which are aggregated across all plugins instead of stopping at the first one.
-It logs in through [adminer/plugins.php](/adminer/plugins.php), an entry point instantiating a fixed set of plugins - passing them to `Plugins` explicitly skips the autoload from `adminer-plugins/`, so the run doesn't depend on what is deployed there.
+It logs in through [tests/plugins.php](/tests/plugins.php), an entry point instantiating a fixed set of plugins - passing them to `Plugins` explicitly skips the autoload from `adminer-plugins/`, so the run doesn't depend on what is deployed there.
 It uses the MySQL server and the `adminer_test` database, creating the tables by SQL, and it runs only with the `native` project because the plugins don't depend on the extension.
 
 ## Screenshots

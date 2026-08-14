@@ -58,7 +58,7 @@ export function extension() {
 */
 export async function goto(page, url) {
 	const ext = extension();
-	if (ext && /^\/(adminer|editor)\//.test(url)) {
+	if (ext && /^\/(adminer|editor|tests)\//.test(url)) {
 		url += (url.includes('?') ? '&' : '?') + 'ext=' + ext;
 	}
 	await page.goto(url);
