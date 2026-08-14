@@ -350,6 +350,8 @@ Lang::$translations = array(
 	'Require a password.' => 'Захтевај лозинку.', // Claude Opus 5
 	'Save %s next to Adminer to require the entered password:' => 'Сачувајте %s поред Adminer-а да би се захтевала унета лозинка:', // Claude Opus 5
 	'Save %s next to Adminer to require the password %s:' => 'Сачувајте %s поред Adminer-а да би се захтевала лозинка %s:', // Claude Opus 5
+	'Add this line to %s to require the entered password:' => 'Додајте овај ред у %s да би се захтевала унета лозинка:', // Claude Opus 5
+	'Add this line to %s to require the password %s:' => 'Додајте овај ред у %s да би се захтевала лозинка %s:', // Claude Opus 5
 	'More options' => 'Више опција', // Claude Opus 5
 	'Require a password verified by Adminer' => 'Захтева лозинку коју проверава Adminer', // Claude Opus 5
 );

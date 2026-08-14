@@ -353,6 +353,8 @@ Lang::$translations = array(
 	'Require a password.' => 'Απαίτηση κωδικού.', // Claude Opus 5
 	'Save %s next to Adminer to require the entered password:' => 'Αποθηκεύστε το %s δίπλα στο Adminer για να απαιτείται ο κωδικός που εισαγάγατε:', // Claude Opus 5
 	'Save %s next to Adminer to require the password %s:' => 'Αποθηκεύστε το %s δίπλα στο Adminer για να απαιτείται ο κωδικός %s:', // Claude Opus 5
+	'Add this line to %s to require the entered password:' => 'Προσθέστε αυτή τη γραμμή στο %s για να απαιτείται ο κωδικός που εισαγάγατε:', // Claude Opus 5
+	'Add this line to %s to require the password %s:' => 'Προσθέστε αυτή τη γραμμή στο %s για να απαιτείται ο κωδικός %s:', // Claude Opus 5
 	'More options' => 'Περισσότερες επιλογές', // Claude Opus 5
 	'Require a password verified by Adminer' => 'Απαιτεί κωδικό που ελέγχεται από το Adminer', // Claude Opus 5
 );

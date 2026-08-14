@@ -349,6 +349,8 @@ Lang::$translations = array(
 	'Require a password.' => 'Yêu cầu mật khẩu.', // Claude Opus 5
 	'Save %s next to Adminer to require the entered password:' => 'Lưu %s cạnh Adminer để yêu cầu mật khẩu đã nhập:', // Claude Opus 5
 	'Save %s next to Adminer to require the password %s:' => 'Lưu %s cạnh Adminer để yêu cầu mật khẩu %s:', // Claude Opus 5
+	'Add this line to %s to require the entered password:' => 'Thêm dòng này vào %s để yêu cầu mật khẩu đã nhập:', // Claude Opus 5
+	'Add this line to %s to require the password %s:' => 'Thêm dòng này vào %s để yêu cầu mật khẩu %s:', // Claude Opus 5
 	'More options' => 'Tùy chọn khác', // Claude Opus 5
 	'Require a password verified by Adminer' => 'Yêu cầu mật khẩu được Adminer xác minh', // Claude Opus 5
 );

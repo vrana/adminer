@@ -318,6 +318,8 @@ Lang::$translations = array(
 	'Require a password.' => 'Requirir un contrasinal.', // Claude Opus 5
 	'Save %s next to Adminer to require the entered password:' => 'Garde %s xunto a Adminer para requirir o contrasinal introducido:', // Claude Opus 5
 	'Save %s next to Adminer to require the password %s:' => 'Garde %s xunto a Adminer para requirir o contrasinal %s:', // Claude Opus 5
+	'Add this line to %s to require the entered password:' => 'Engada esta liña a %s para requirir o contrasinal introducido:', // Claude Opus 5
+	'Add this line to %s to require the password %s:' => 'Engada esta liña a %s para requirir o contrasinal %s:', // Claude Opus 5
 	'More options' => 'Máis opcións', // Claude Opus 5
 	'Require a password verified by Adminer' => 'Require un contrasinal verificado por Adminer', // Claude Opus 5
 );

@@ -322,6 +322,8 @@ Lang::$translations = array(
 	'Require a password.' => 'Krev et passord.', // Claude Opus 5
 	'Save %s next to Adminer to require the entered password:' => 'Lagre %s ved siden av Adminer for å kreve det angitte passordet:', // Claude Opus 5
 	'Save %s next to Adminer to require the password %s:' => 'Lagre %s ved siden av Adminer for å kreve passordet %s:', // Claude Opus 5
+	'Add this line to %s to require the entered password:' => 'Legg til denne linjen i %s for å kreve det angitte passordet:', // Claude Opus 5
+	'Add this line to %s to require the password %s:' => 'Legg til denne linjen i %s for å kreve passordet %s:', // Claude Opus 5
 	'More options' => 'Flere muligheter', // Claude Opus 5
 	'Require a password verified by Adminer' => 'Krever et passord kontrollert av Adminer', // Claude Opus 5
 );

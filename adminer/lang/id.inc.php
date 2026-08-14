@@ -352,6 +352,8 @@ Lang::$translations = array(
 	'Require a password.' => 'Wajibkan sandi.', // Claude Opus 5
 	'Save %s next to Adminer to require the entered password:' => 'Simpan %s di samping Adminer agar sandi yang dimasukkan diwajibkan:', // Claude Opus 5
 	'Save %s next to Adminer to require the password %s:' => 'Simpan %s di samping Adminer agar sandi %s diwajibkan:', // Claude Opus 5
+	'Add this line to %s to require the entered password:' => 'Tambahkan baris ini ke %s agar sandi yang dimasukkan diwajibkan:', // Claude Opus 5
+	'Add this line to %s to require the password %s:' => 'Tambahkan baris ini ke %s agar sandi %s diwajibkan:', // Claude Opus 5
 	'More options' => 'Opsi lainnya', // Claude Opus 5
 	'Require a password verified by Adminer' => 'Mewajibkan sandi yang diverifikasi oleh Adminer', // Claude Opus 5
 );
