@@ -10,7 +10,7 @@ export default defineConfig({
 	timeout: 30000, // the slowest tests (searching data in all tables, the bulk table operations) take about 15 s
 	expect: {timeout: 3000}, // Adminer prints the whole page at once, only JavaScript can change it later
 	use: {
-		baseURL: process.env.ADMINER_URL || 'http://127.0.0.1:8000',
+		baseURL: process.env.ADMINER_URL || 'http://localhost:8000',
 		channel: 'chrome', // the installed browser, no download
 		actionTimeout: 5000, // an element which is hidden or missing fails fast instead of blocking until the test timeout; a click submitting a form also waits for the navigation
 		trace: 'retain-on-failure',

@@ -11,7 +11,7 @@ The tests are stored in `tests/*.spec.js`, one file per driver plus [plugins.spe
 - `composer e2e -- mysql --project=native` runs only the native extension - Composer passes options through only after `--`.
 
 Use `composer e2e -- --ui` to watch a test, `--headed --debug` to step through it; a failed run stores a trace in `tests/results/`, open it by `npx playwright show-trace`.
-A new test can be recorded by `npx playwright codegen http://127.0.0.1:8000/adminer/`.
+A new test can be recorded by `npx playwright codegen http://localhost:8000/adminer/`.
 The helpers in [adminer.js](/tests/adminer.js) cover what Adminer does repeatedly: `link()` and `button()` take the first match because Adminer prints some links in the menu as well, and `setValue()` fills a field which jush replaces by a highlighted editor.
 
 Each file logs in once and the tests inside it run in the order they are written, so a failing test stops the rest of the file.
@@ -23,7 +23,7 @@ Parallelism would help little: the drivers use different database servers but th
 
 ## Development Server
 
-The tests expect Adminer at <http://127.0.0.1:8000> (or at `ADMINER_URL`), served from the repository root by `php -S 127.0.0.1:8000`.
+The tests expect Adminer at <http://localhost:8000> (or at `ADMINER_URL`), served from the repository root by `php -S localhost:8000`.
 `display_errors` must be on, otherwise the tests never see the PHP errors they look for in the responses, and `file_uploads` must stay on (the default), otherwise the import tests find a disabled file field.
 The tests fill in the standard login form, so a plugin changing it breaks them - `AdminerLoginServers` for example replaces the server field by a list.
 
