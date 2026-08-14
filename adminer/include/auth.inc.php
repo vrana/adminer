@@ -112,9 +112,9 @@ function require_password_link(?string $password): string {
 			: lang('Save %s next to Adminer to require the password %s:', $filename, "<b>$plugin_password</b>")
 		);
 	}
-	$line = "\tnew Adminer\\Password(<span class='jush-apo'>'" . h($hash) . "'</span>),";
+	$line = "\t<a>new</a> Adminer\\Password(<span class='jush-apo'>'" . h($hash) . "'</span>),";
 	$return = "<p>$instructions
-<pre><code class='jush'>" . ($exists ? $line : "&lt;?php\nreturn array(\n$line\n);") . "</code></pre>
+<pre><code class='jush'>" . ($exists ? $line : "&lt;?php\n<a>return</a> <a>array</a>(\n$line\n);") . "</code></pre>
 <p>$more_options
 ";
 	return " <a href='#password-less' class='toggle'>" . lang('Require a password.') . "</a>
