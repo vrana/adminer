@@ -43,6 +43,7 @@ parameters:
 		- "~an unknown class OCI-?Lob~" # this looks like PHPStan bug
 		- "~^Variable \\$error might not be defined~" # declared in bootstrap.inc.php
 		- "~^Constant LANG not found~" # defined in lang.inc.php
+		- "~^Constant SESSION_NAME not found~" # defined in bootstrap.inc.php
 		- "~ an undefined \\w+ Adminer\\\\Db::~" # defined in that versions of Db
 		-
 			identifier: impureFunction.pure # stubs of functions that are impure in other drivers

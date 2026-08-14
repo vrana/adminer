@@ -795,6 +795,35 @@ function fileChange(count, countMessage, size, sizeMessage) {
 	}
 }
 
+/** Display the progress of the file upload
+* @param {string} url
+* @param {string} assign cookie identifying the session where PHP stores the progress - it uses the session name from php.ini which differs from Adminer's
+* @this HTMLFormElement
+*/
+function uploadProgress(url, assign) {
+	cookie(assign, 1);
+	const progress = qs('progress', this);
+	let started = false;
+	const poll = () => ajax(url, request => {
+		const data = JSON.parse(request.responseText);
+		if (!data.length) {
+			if (started) {
+				progress.value = 1;
+				progress.textContent = '100%';
+				cookie(assign, -1); // the session is no longer needed, don't keep its name taken
+				return;
+			}
+		} else if (data[1]) {
+			started = true;
+			alterClass(progress, 'hidden');
+			progress.value = data[0] / data[1];
+			progress.textContent = Math.floor(100 * data[0] / data[1]) + '%';
+		}
+		setTimeout(poll, 1000);
+	}, null, null); // null message - a failed poll would print an error and stop the polling
+	setTimeout(poll, 1000);
+}
+
 
 
 /** Handle changing trigger time or event

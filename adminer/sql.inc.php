@@ -249,10 +249,16 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 		echo "<p class='error'>" . upload_error($query) . "\n";
 	}
 }
+$upload_progress_name = ini_get("session.upload_progress.name");
+$upload_progress = (isset($_GET["import"]) && ini_bool("session.upload_progress.enabled") && $upload_progress_name ? rand_string() : "");
 ?>
 
 <form action="" method="post" enctype="multipart/form-data" id="form"<?php
-echo (isset($_GET["import"]) ? "" : on('submit', 'sqlSubmit', remove_from_uri("sql|limit|error_stops|only_errors|history")));
+if (!isset($_GET["import"])) {
+	echo on('submit', 'sqlSubmit', remove_from_uri("sql|limit|error_stops|only_errors|history"));
+} else {
+	echo ($upload_progress ? on('submit', 'uploadProgress', ME . "upload=$upload_progress", SESSION_NAME . "=$upload_progress") : "");
+}
 ?>>
 <?php
 $execute = "<input type='submit' value='" . lang('Execute') . "' title='Ctrl+Enter'>";
@@ -276,7 +282,10 @@ if (!isset($_GET["import"])) {
 } else {
 	$gz = (extension_loaded("zlib") ? "[.gz]" : "");
 	echo "<fieldset><legend>" . lang('File upload') . "</legend><div>";
+	// the field must precede the file field, https://www.php.net/session.upload-progress
+	echo ($upload_progress ? input_hidden($upload_progress_name, $upload_progress) : "");
 	echo "SQL$gz: " . file_input(" name='sql_file[]' multiple", "\n$execute");
+	echo ($upload_progress ? " <progress class='jsonly hidden' max='1' value='0'></progress>" : "");
 	echo "</div></fieldset>\n";
 	$importServerPath = adminer()->importServerPath();
 	if ($importServerPath) {
