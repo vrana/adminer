@@ -96,19 +96,27 @@ function require_password_link(?string $password): string {
 	if (!function_exists('password_hash')) { // PHP 5.5, the compiled file supports 5.3
 		return " $more_options";
 	}
-	$adminer_plugins = "<b>adminer-plugins.php</b>";
 	$plugin_password = ($password !== null ? $password : base64_encode(substr(pack("H*", rand_string()), 0, 12))); // pack() instead of hex2bin() which is PHP 5.4
-	return ' <a href="#password-less" class="toggle">' . lang('Require a password.') . '</a>'
-		. "<div id='password-less' class='hidden'><p>" . ($password !== null
-			? lang('Save %s next to Adminer to require the entered password:', $adminer_plugins)
-			: lang('Save %s next to Adminer to require the password %s:', $adminer_plugins, "<b>$plugin_password</b>")
-		) . "<pre><code class='jush'>&lt;?php
-return array(
-	new Adminer\Password(<span class='jush-apo'>'" . password_hash($plugin_password, PASSWORD_DEFAULT) . "'</span>),
-);</code></pre>"
-		. "<p>$more_options"
-		. "</div>"
-	;
+	$hash = password_hash($plugin_password, PASSWORD_DEFAULT);
+	$filename = "<b>adminer-plugins.php</b>";
+	$exists = file_exists("adminer-plugins.php"); // we would overwrite it, it can also hold another sensitive information
+	if ($exists) {
+		$instructions = ($password !== null
+			? lang('Add this line to %s to require the entered password:', $filename)
+			: lang('Add this line to %s to require the password %s:', $filename, "<b>$plugin_password</b>")
+		);
+	} else {
+		$instructions = ($password !== null
+			? lang('Save %s next to Adminer to require the entered password:', $filename)
+			: lang('Save %s next to Adminer to require the password %s:', $filename, "<b>$plugin_password</b>")
+		);
+	}
+	$line = "\tnew Adminer\\Password(<span class='jush-apo'>'" . h($hash) . "'</span>),";
+	return " <a href='#password-less' class='toggle'>" . lang('Require a password.') . "</a>
+<div id='password-less' class='hidden'><p>$instructions
+<pre><code class='jush'>" . ($exists ? $line : "&lt;?php\nreturn array(\n$line\n);") . "</code></pre>
+<p>$more_options
+</div>";
 }
 
 $auth = $_POST["auth"];
