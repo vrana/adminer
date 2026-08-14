@@ -24,6 +24,8 @@
 		<!-- Used only if PHP_VERSION_ID >= 70100. -->
 		<exclude name="PHPCompatibility.Constants.NewConstants.pgsql_notice_allFound"/>
 		<exclude name="PHPCompatibility.Constants.NewConstants.pgsql_notice_clearFound"/>
+		<!-- Used only if password_hash() exists. -->
+		<exclude name="PHPCompatibility.Constants.NewConstants.password_defaultFound"/>
 	</rule>
 	<rule ref="PHPCompatibility.FunctionUse.NewFunctionParameters">
 		<!-- Used only if PHP_VERSION_ID >= 70100. -->
@@ -35,6 +37,8 @@
 		<exclude name="PHPCompatibility.FunctionUse.NewFunctions.inflate_addFound"/>
 		<exclude name="PHPCompatibility.FunctionUse.NewFunctions.inflate_initFound"/>
 		<exclude name="PHPCompatibility.FunctionUse.NewFunctions.oci_set_call_timeoutFound"/>
+		<exclude name="PHPCompatibility.FunctionUse.NewFunctions.password_hashFound"/>
+		<exclude name="PHPCompatibility.FunctionUse.NewFunctions.password_verifyFound"/>
 		<exclude name="PHPCompatibility.FunctionUse.NewFunctions.pg_escape_literalFound"/>
 		<exclude name="PHPCompatibility.FunctionUse.NewFunctions.random_bytesFound"/>
 		<exclude name="PHPCompatibility.FunctionUse.NewFunctions.session_statusFound"/>

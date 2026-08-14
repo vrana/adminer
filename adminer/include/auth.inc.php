@@ -92,8 +92,12 @@ function password_required(): bool {
 * @return string HTML code
 */
 function require_password_link(?string $password): string {
+	$more_options = "<a href='https://www.adminer.org/password/'" . target_blank() . ">" . lang('More options') . "</a>";
+	if (!function_exists('password_hash')) { // PHP 5.5, the compiled file supports 5.3
+		return " $more_options";
+	}
 	$adminer_plugins = "<b>adminer-plugins.php</b>";
-	$plugin_password = ($password !== null ? $password : base64_encode(substr(hex2bin(rand_string()), 0, 12)));
+	$plugin_password = ($password !== null ? $password : base64_encode(substr(pack("H*", rand_string()), 0, 12))); // pack() instead of hex2bin() which is PHP 5.4
 	return ' <a href="#password-less" class="toggle">' . lang('Require a password.') . '</a>'
 		. "<div id='password-less' class='hidden'><p>" . ($password !== null
 			? lang('Save %s next to Adminer to require the entered password:', $adminer_plugins)
@@ -102,7 +106,7 @@ function require_password_link(?string $password): string {
 return array(
 	new Adminer\Password(<span class='jush-apo'>'" . password_hash($plugin_password, PASSWORD_DEFAULT) . "'</span>),
 );</code></pre>"
-		. "<p><a href='https://www.adminer.org/password/'" . target_blank() . ">" . lang('More options') . "</a>"
+		. "<p>$more_options"
 		. "</div>"
 	;
 }
