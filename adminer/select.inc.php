@@ -365,7 +365,7 @@ if (!$columns && support("table")) {
 			$max_rows = max_input_vars(count($rows[0]) + 1, 20); // 1 - the checkbox of each row, 20 - the other inputs
 			echo ($max_rows && count($rows) > $max_rows ? "<p class='error'>" . max_input_vars_error() . "\n" : "");
 		}
-		echo "<form action='' method='post' enctype='multipart/form-data'>\n";
+		echo "<form action='' method='post' enctype='multipart/form-data'" . on_upload_progress($upload_progress) . ">\n";
 
 		// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
 		if ($_GET["page"] != "last" && $limit && $group && $is_group && JUSH == "sql") {
@@ -653,9 +653,11 @@ if (!$columns && support("table")) {
 				echo "<p>";
 				echo "<a href='#import' class='toggle'>" . lang('Import') . "</a>";
 				echo "<span id='import'" . ($_POST["import"] ? "" : " class='hidden'") . ">: ";
+				echo ($upload_progress ? input_hidden(ini_get("session.upload_progress.name"), $upload_progress) : "");
 				echo file_input(" name='csv_file'", " "
 					. html_select("separator", array("csv" => "CSV,", "csv;" => "CSV;", "tsv" => "TSV"), $adminer_import["format"])
-					. " <input type='submit' name='import' value='" . lang('Import') . "'>")
+					. " <input type='submit' name='import' value='" . lang('Import') . "'>"
+					. ($upload_progress ? " <progress class='jsonly hidden' max='1' value='0'></progress>" : ""))
 				;
 				echo "</span>";
 			}

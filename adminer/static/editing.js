@@ -801,8 +801,12 @@ function fileChange(count, countMessage, size, sizeMessage) {
 * @this HTMLFormElement
 */
 function uploadProgress(url, assign) {
-	cookie(assign, 1);
 	const progress = qs('progress', this);
+	// the form can be submitted also without a file - by Run file in Import or by Save, Delete and Export in Select
+	if (!progress || !Array.from(qsa('input[type=file]', this)).some(input => input.value)) {
+		return;
+	}
+	cookie(assign, 1);
 	let started = false;
 	const poll = () => ajax(url, request => {
 		const data = JSON.parse(request.responseText);

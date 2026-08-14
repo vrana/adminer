@@ -217,6 +217,15 @@ function hidden_fields_get(): void {
 	echo input_hidden("username", $_GET["username"]);
 }
 
+/** Get an attribute displaying the progress of the file upload
+* @param string $upload_progress set to the key which the form must send in a field named by session.upload_progress.name before the file field, "" if the progress is not available
+*/
+function on_upload_progress(&$upload_progress): string {
+	$upload_progress = (ini_bool("session.upload_progress.enabled") && ini_get("session.upload_progress.name") ? rand_string() : "");
+	// PHP stores the progress in a session named by php.ini so uploadProgress() creates its cookie
+	return ($upload_progress ? on('submit', 'uploadProgress', ME . "upload=$upload_progress", SESSION_NAME . "=$upload_progress") : "");
+}
+
 /** Get <input type='file'>
 * @param string $attrs attributes including the leading space
 * @param string $rest HTML printed after the input, dropped together with it if the uploads are disabled
