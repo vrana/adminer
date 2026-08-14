@@ -216,13 +216,15 @@ if (isset($_GET["mssql"])) {
 
 				function attach(string $server, string $username, string $password): string {
 					list($host, $port) = host_port($server);
+					$dsn = "sqlsrv:Server=$host" . ($port ? ",$port" : "");
+					$ssl = adminer()->connectSsl();
+					foreach (array("Encrypt", "TrustServerCertificate") as $key) {
+						if (isset($ssl[$key])) {
+							$dsn .= ";$key=" . ($ssl[$key] ? 1 : 0); // the DSN accepts only 1 and 0
+						}
+					}
 					// without SQLSRV_ATTR_DIRECT_QUERY, the queries run through sp_prepexec, which reverts SET IDENTITY_INSERT after each of them
-					return $this->dsn(
-						"sqlsrv:Server=$host" . ($port ? ",$port" : ""),
-						$username,
-						$password,
-						array(\PDO::SQLSRV_ATTR_DIRECT_QUERY => true)
-					);
+					return $this->dsn($dsn, $username, $password, array(\PDO::SQLSRV_ATTR_DIRECT_QUERY => true));
 				}
 			}
 
