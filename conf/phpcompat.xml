@@ -46,6 +46,9 @@
 	<rule ref="PHPCompatibility.IniDirectives.NewIniDirectives">
 		<!-- ini_get() returns false in older PHP which max_input_vars() reads as no limit. -->
 		<exclude name="PHPCompatibility.IniDirectives.NewIniDirectives.max_input_varsFound"/>
+		<!-- ini_get() returns false in older PHP so the progress is never offered; upload.inc.php verifies the structure of the read value, an empty prefix would expose the rest of the session. -->
+		<exclude name="PHPCompatibility.IniDirectives.NewIniDirectives.session_upload_progress_nameFound"/>
+		<exclude name="PHPCompatibility.IniDirectives.NewIniDirectives.session_upload_progress_prefixFound"/>
 	</rule>
 	<rule ref="PHPCompatibility.Interfaces.NewInterfaces"/>
 	<rule ref="PHPCompatibility.Extensions.RemovedExtensions">
