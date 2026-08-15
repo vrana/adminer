@@ -1,0 +1,103 @@
+/* Adminer design cpanel */
+/* Mimics Jupiter, the default cPanel theme, so that Adminer opened from the Databases group does not look foreign.
+Values are taken from cPanel 11.136: styles/preload_styles.css for the tokens, @cpanel/jupiter-styles for the Bootstrap 5 components. */
+
+html {
+	--cp-page: #fafafa; /* --cp-body-bg */
+	--cp-surface: #fff; /* --cp-component-bg */
+	--cp-fg: #243746; /* --cp-body-color, --cp-gray-900 */
+	--cp-muted: #6d7983; /* --cp-gray-600 */
+	--cp-border: #c3c7cc; /* --cp-border-color, --cp-gray-300 */
+	--cp-border-light: #e5e7e9; /* --cp-gray-200 */
+	--cp-cap: #f2f3f4; /* --cp-card-cap-bg over the surface */
+	--cp-link: #003da6; /* --cp-link-color, --cp-primary */
+	--cp-link-hover: #003185; /* --cp-link-hover-color */
+	--cp-accent: #de5c2e; /* --cp-accent, --cp-graphic-color */
+	--cp-danger: #dc3545; /* --cp-danger */
+	--cp-alert-error: #d03f00; /* .alert-danger in css/cpanel_base.css */
+	--cp-alert-error-bg: #f2dede;
+	--cp-alert-success: #83b655; /* .alert-success */
+	--cp-alert-success-bg: #dff2d5;
+	--cp-radius: .25rem; /* --cp-border-radius */
+	--cp-focus: 0 0 0 .25rem rgba(0, 61, 166, .25); /* --cp-focus-ring-color */
+	--cp-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075); /* .card-raised */
+	--cp-strip: calc(2em + 10px); /* the bar above the cards: default.css's 2em plus #menu's margin, so that the two card headers line up */
+
+	/* the rest of static/default.css follows from these four */
+	--bg: var(--cp-surface);
+	--fg: var(--cp-fg);
+	--dim: var(--cp-cap);
+	--lit: var(--cp-border-light);
+}
+
+body { background: var(--cp-page); font: 95%/1.4 "Open Sans", system-ui, -apple-system, "Segoe UI", sans-serif; }
+a, a:visited, button.link { color: var(--cp-link); }
+a:link:hover, a:visited:hover, button.link:hover { color: var(--cp-link-hover); }
+
+/* .card with the .card-raised shadow */
+#menu, #content { background: var(--cp-surface); border: 1px solid var(--cp-border-light); border-radius: .125rem; box-shadow: var(--cp-shadow); }
+#menu { margin: 10px 0 0 10px; }
+#menu p, #logins, #tables { border-bottom-color: var(--cp-border-light); }
+#content { margin: var(--cp-strip) 20px 20px 21em; padding: 0 1rem 1rem; }
+p, table, .error, .message { margin-right: 0; }
+.footer { margin-right: -1rem; }
+
+/* .card-header */
+h1, h2 { color: var(--cp-fg); font-size: 1.25rem; font-weight: 600; padding: .5rem 1rem; background: var(--cp-cap); border-bottom: 1px solid var(--cp-border-light); border-radius: .125rem .125rem 0 0; }
+h2, .rtl h2 { margin: 0 -1rem 1rem; }
+h3 { font-size: 1.125rem; font-weight: 600; }
+#h1 { color: inherit; font-style: normal; }
+.version { color: var(--cp-muted); }
+#version, .plugins .update { color: var(--cp-danger); }
+
+/* chrome outside the cards */
+/* the full strip height, so that the breadcrumb sits in its middle like .logout and #lang do */
+#breadcrumb { background: none; color: var(--cp-muted); height: var(--cp-strip); line-height: var(--cp-strip); margin-left: 0; padding-left: 0; }
+.logout { background: none; box-shadow: none; right: 20px; }
+
+table, td, th, .column { border-color: var(--cp-border); }
+.odds tbody tr:nth-child(2n) { background: var(--cp-cap); }
+
+/* .form-control */
+input, select, textarea { border: 1px solid var(--cp-border); border-radius: var(--cp-radius); padding: .25rem .5rem; }
+input[type="checkbox"], input[type="radio"], input[type="file"] { border: 0; padding: 0; }
+[contenteditable].jush { border-color: var(--cp-border); border-radius: var(--cp-radius); } /* the editable <pre> of the SQL area, bordered by static/jush/jush.css */
+input:focus, select:focus, textarea:focus, [contenteditable].jush:focus { border-color: var(--cp-link); outline: 0; box-shadow: var(--cp-focus); }
+input:disabled, select:disabled, textarea:disabled { background: var(--cp-border-light); }
+/* the fixed widths in static/default.css are border-box, so the padding above would eat into the value */
+.size { width: calc(7ex + .75rem); }
+.type { width: calc(15ex + .75rem); }
+.options select, .options input { width: calc(20ex + .75rem); }
+
+/* .btn, solid .btn-primary for the highlighted default action */
+input[type="submit"], input[type="button"], button:not(.icon):not(.link) { padding: .25rem .75rem; border-color: var(--cp-link); background: var(--cp-surface); color: var(--cp-link); cursor: pointer; }
+input[type="submit"]:hover, input[type="button"]:hover, button:not(.icon):not(.link):hover { background: var(--cp-link); color: var(--cp-surface); }
+input.default { background: var(--cp-link); color: var(--cp-surface); box-shadow: none; }
+input.default:hover { background: var(--cp-link-hover); border-color: var(--cp-link-hover); }
+/* after the states above so that a disabled button never lights up */
+input[type="submit"]:disabled, input[type="button"]:disabled, button:not(.icon):not(.link):disabled { border-color: var(--cp-border); background: var(--cp-border-light); color: var(--cp-muted); cursor: not-allowed; }
+.icon { background-color: var(--cp-link); }
+.icon:hover { background-color: var(--cp-accent); }
+.icon:disabled, .icon:disabled:hover { background-color: var(--cp-muted); cursor: not-allowed; }
+
+/* .alert - without the icon they carry in the 41px inset box-shadow */
+.error, .message { color: var(--cp-fg); border: 1px solid; border-radius: .125rem; }
+/* the divider of #menu p in static/default.css outranks these and would leave the box without its bottom edge */
+#menu p.error, #menu p.message { margin: .8em 1em; padding: .5em .8em; }
+.error, #menu p.error { border-color: var(--cp-alert-error); background: var(--cp-alert-error-bg); }
+.message, #menu p.message { border-color: var(--cp-alert-success); background: var(--cp-alert-success-bg); }
+
+fieldset { border-color: var(--cp-border-light); border-radius: var(--cp-radius); }
+#help { border-color: var(--cp-border); background: var(--cp-surface); }
+#schema .table { border-color: var(--cp-border); }
+
+.rtl p, .rtl table, .rtl .error, .rtl .message { margin-left: 0; }
+.rtl #menu { margin: 10px 10px 0 0; }
+.rtl #content { margin: var(--cp-strip) 21em 20px 20px; padding: 0 1rem 1rem; }
+.rtl #breadcrumb { margin-right: 0; padding-right: 0; }
+.rtl .logout { left: 20px; right: auto; }
+
+@media all and (max-width: 800px) {
+	/* the menu floats above the content there, the card shadow is too subtle to separate it */
+	#menu { margin: 9px 0 0; box-shadow: 0 0 20px -3px rgba(0, 0, 0, .3); }
+}
