@@ -402,6 +402,12 @@ if (!defined('Adminer\DRIVER')) {
 			return $return;
 		}
 
+		/** @return string[] */
+		function checkConstraints(string $table): array {
+			$return = parent::checkConstraints($table);
+			return ($this->conn->flavor == 'maria' ? $return : array_map('stripslashes', $return)); // MySQL escapes the clause in information_schema once more than SHOW CREATE TABLE, MariaDB doesn't
+		}
+
 		function hasCStyleEscapes(): bool {
 			static $c_style;
 			if ($c_style === null) {
