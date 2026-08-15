@@ -100,4 +100,10 @@ fieldset { border-color: var(--cp-border-light); border-radius: var(--cp-radius)
 @media all and (max-width: 800px) {
 	/* the menu floats above the content there, the card shadow is too subtle to separate it */
 	#menu { margin: 9px 0 0; box-shadow: 0 0 20px -3px rgba(0, 0, 0, .3); }
+	/* the whole strip, so that the button lands in its middle next to the breadcrumb, and lined up with the card below it */
+	.js #menuopen { top: 0; height: var(--cp-strip); display: flex; align-items: center; left: 10px; }
+	.rtl.js #menuopen { right: 10px; }
+	/* the .rtl rules above are not in a media query, so they would keep the sidebar gutter here */
+	.rtl #content { margin-right: 10px; }
+	.rtl #menu { margin: 9px 0 0; }
 }
