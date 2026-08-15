@@ -6,19 +6,35 @@ $name = $_GET["name"];
 $row = $_POST;
 
 if ($row && !$error) {
+	$location = ME . "table=" . url_escape($TABLE);
+	$message_drop = lang('Check has been dropped.');
+	$message_alter = lang('Check has been altered.');
+	$message_create = lang('Check has been created.');
 	if (JUSH == "sqlite") {
-		$result = recreate_table($TABLE, $TABLE, array(), array(), array(), "", array(), "$name", ($row["drop"] ? "" : $row["clause"]));
+		queries_redirect(
+			$location,
+			($row["drop"] ? $message_drop : ($name != "" ? $message_alter : $message_create)),
+			recreate_table($TABLE, $TABLE, array(), array(), array(), "", array(), "$name", ($row["drop"] ? "" : $row["clause"]))
+		);
 	} else {
-		$result = ($name == "" || queries("ALTER TABLE " . table($TABLE) . " DROP CONSTRAINT " . idf_escape($name)));
-		if (!$row["drop"]) {
-			$result = queries("ALTER TABLE " . table($TABLE) . " ADD" . ($row["name"] != "" ? " CONSTRAINT " . idf_escape($row["name"]) : "") . " CHECK ($row[clause])"); //! SQL injection
-		}
+		// there's no ALTER CHECK so the constraint is dropped and created again, the old one must survive an invalid new one
+		$alter = "ALTER TABLE " . table($TABLE);
+		$check = " CHECK ($row[clause])"; //! SQL injection
+		$temp_name = "adminer_" . uniqid();
+		drop_create(
+			"$alter DROP CONSTRAINT " . idf_escape($name),
+			"$alter ADD" . ($row["name"] != "" ? " CONSTRAINT " . idf_escape($row["name"]) : "") . $check,
+			"$alter DROP CONSTRAINT " . idf_escape($row["name"]),
+			"$alter ADD CONSTRAINT " . idf_escape($temp_name) . $check,
+			"$alter DROP CONSTRAINT " . idf_escape($temp_name),
+			$location,
+			$message_drop,
+			$message_alter,
+			$message_create,
+			$name,
+			$row["name"]
+		);
 	}
-	queries_redirect(
-		ME . "table=" . url_escape($TABLE),
-		($row["drop"] ? lang('Check has been dropped.') : ($name != "" ? lang('Check has been altered.') : lang('Check has been created.'))),
-		$result
-	);
 }
 
 page_header(
