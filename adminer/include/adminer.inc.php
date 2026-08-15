@@ -144,6 +144,14 @@ class Adminer {
 		return $return;
 	}
 
+	/** Get URL of a static file served by the compiled Adminer
+	* @param string $file e.g. 'default.css'
+	* @return string URL
+	*/
+	function assetUrl(string $file): string {
+		return preg_replace('~\?.*~', '', ME) . "?file=$file&version=" . VERSION;
+	}
+
 	/** Print login form */
 	function loginForm(): void {
 		echo "<table class='layout'>\n";

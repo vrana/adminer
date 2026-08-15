@@ -103,6 +103,10 @@ class Adminer {
 		return $return;
 	}
 
+	function assetUrl(string $file): string {
+		return preg_replace('~\?.*~', '', ME) . "?file=$file&version=" . VERSION;
+	}
+
 	function loginForm(): void {
 		echo "<table class='layout'>\n";
 		echo adminer()->loginFormField('username', '<tr><th>' . lang('Username') . '<td>', input_hidden("auth[driver]", "server")
