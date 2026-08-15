@@ -1,8 +1,8 @@
 /* Adminer design adminer-border */
 /* Restore the border and background of the cells with the repeated links and row checkboxes. */
 td.hover, tr:hover td.hover, .js .checkable .checked td.hover { border-bottom-width: 1px; }
-td.hover:first-child { border-left-width: 1px; }
-td.hover:last-child { border-right-width: 1px; }
+td.hover:first-child { border-inline-start-width: 1px; }
+td.hover:last-child { border-inline-end-width: 1px; }
 table > :first-child > :first-child > td.hover { border-top-width: 1px; }
 tbody td.hover { background-color: transparent; }
 thead td.hover, thead tr:hover td.hover { background-color: var(--lit); }

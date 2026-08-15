@@ -21,8 +21,8 @@ h3 { font-weight: normal; font-size: 130%; margin: 1em 0 0; }
 form { margin: 0; }
 table { margin: 1em 20px 0 0; font-size: 90%; border-spacing: 0; border: 0; } /* collapsing paints the borders on the table, so on a sticky thead, Chrome loses top border and Firefox all borders: https://bugzilla.mozilla.org/show_bug.cgi?id=1727594 */
 table, td, th, .column { border-color: #999; border-style: solid; }
-td, th { border-width: 0 1px 1px 0; padding: .2em .3em; margin: 0; }
-td:first-child, th:first-child { border-left-width: 1px; }
+td, th { border-width: 0; border-block-end-width: 1px; border-inline-end-width: 1px; padding: .2em .3em; margin: 0; } /* logical so that the borders mirror in right-to-left languages */
+td:first-child, th:first-child { border-inline-start-width: 1px; }
 table > :first-child > :first-child > td, table > :first-child > :first-child > th { border-top-width: 1px; }
 td table { width: 100%; margin: 0; }
 th { background: var(--dim); text-align: left; }
@@ -31,8 +31,8 @@ thead th { text-align: center; padding: .2em .5em; }
 thead td, thead th { background: var(--lit); }
 tbody tr:hover td, tbody tr:hover th { background: var(--dim); }
 td.hover, tr:hover td.hover, .js .checkable .checked td.hover { background-color: var(--bg); border-bottom-width: 0; }
-td.hover:first-child { border-left-width: 0; }
-td.hover:last-child { border-right-width: 0; }
+td.hover:first-child { border-inline-start-width: 0; }
+td.hover:last-child { border-inline-end-width: 0; }
 table > :first-child > :first-child > td.hover { border-top-width: 0; }
 fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: .8em .5em 0 0; border: 1px solid #999; border-radius: 5px; }
 p { margin: .8em 20px 0 0; }
@@ -94,7 +94,7 @@ th:not(:hover) .column { display: none; }
 .links a { white-space: nowrap; margin-right: 20px; }
 .logout { margin-top: .5em; position: absolute; top: 0; right: 0; background-color: var(--bg); box-shadow: 0 0 5px 5px var(--bg); }
 .loadmore { margin-left: 1ex; }
-td.check { text-align: right; } /* to display the checkboxes next to the data */
+td.check { text-align: end; } /* to display the checkboxes next to the data */
 /* .edit used in designs */
 #foot:focus { outline: none; } /* focused by JS after opening the menu, never by the user */
 #menu { position: absolute; margin: 10px 0 0; top: 2em; left: 0; width: 19em; }
