@@ -97,8 +97,8 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 /** Print SQL <textarea> tag
 * @param string|list<array{string}> $value
 */
-function textarea(string $name, $value, int $rows = 10, int $cols = 80): void {
-	echo "<textarea name='" . h($name) . "' rows='$rows' cols='$cols' class='sqlarea jush-" . JUSH . "' spellcheck='false' wrap='off'>";
+function textarea(string $name, $value, int $rows = 10, int $cols = 80, string $jush = JUSH): void {
+	echo "<textarea name='" . h($name) . "' rows='$rows' cols='$cols' class='sqlarea jush-" . h($jush) . "' spellcheck='false' wrap='off'>";
 	if (is_array($value)) {
 		foreach ($value as $val) { // not implode() to save memory
 			echo h($val[0]) . "\n\n\n"; // $val == array($query, $time, $elapsed)
@@ -456,13 +456,15 @@ function create_routine($routine, array $row): string {
 			;
 		}
 	}
+	$language = $row["language"];
 	$definition = rtrim($row["definition"], ";");
+	$dollar_quote = (JUSH == "pgsql" || ($language && $language != "sql")); // PostgreSQL quotes the body in all languages, MySQL only in the external ones
 	return "CREATE $routine "
 		. idf_escape(trim($row["name"]))
 		. " (" . implode(", ", $set) . ")"
 		. ($routine == "FUNCTION" ? " RETURNS" . process_type($row["returns"], routine_collate($row["returns"]["collation"])) : "")
-		. ($row["language"] ? " LANGUAGE $row[language]" : "")
-		. (JUSH == "pgsql" ? " AS " . q_dollar("\n" . trim($definition) . "\n") : "\n$definition;")
+		. ($language ? " LANGUAGE $language" : "")
+		. ($dollar_quote ? " AS " . q_dollar("\n" . trim($definition) . "\n") : "\n$definition;")
 	;
 }
 

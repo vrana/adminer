@@ -1031,10 +1031,12 @@ ORDER BY ORDINAL_POSITION");
 				"collation" => $row["COLLATION_NAME"],
 			);
 		}
+		// the characteristics precede the body only in SQL routines, the definition of a JavaScript routine is just the body
+		$characteristics = "CONCAT(IF(IS_DETERMINISTIC = 'YES', 'DETERMINISTIC\\n', ''), IF(SQL_DATA_ACCESS != 'CONTAINS SQL', CONCAT(SQL_DATA_ACCESS, '\\n'), ''))";
 		$return = connection()->query("SELECT
 	ROUTINE_COMMENT comment,
-	CONCAT(IF(IS_DETERMINISTIC = 'YES', 'DETERMINISTIC\\n', ''), IF(SQL_DATA_ACCESS != 'CONTAINS SQL', CONCAT(SQL_DATA_ACCESS, '\\n'), ''), ROUTINE_DEFINITION) definition,
-	'SQL' language
+	CONCAT(IF(EXTERNAL_LANGUAGE = 'JAVASCRIPT', '', $characteristics), ROUTINE_DEFINITION) definition,
+	LOWER(EXTERNAL_LANGUAGE) language
 FROM information_schema.ROUTINES
 WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = " . q($name))->fetch_assoc();
 		if ($fields && $fields[0]['field'] == '') {
@@ -1052,11 +1054,14 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 		return get_rows("SELECT SPECIFIC_NAME, ROUTINE_NAME, ROUTINE_TYPE, DTD_IDENTIFIER FROM information_schema.ROUTINES WHERE ROUTINE_SCHEMA = DATABASE()");
 	}
 
-	/** Get list of available routine languages
-	* @return list<string>
+	/** Get available routine languages
+	* @return string[] language => syntax highlighting language of the definition
 	*/
 	function routine_languages(): array {
-		return array(); // "SQL" not required
+		return (min_version(9, 99) // JavaScript requires the MLE component available in MySQL Enterprise Edition and HeatWave, there's no way to detect it
+			? array("sql" => "sql", "javascript" => "js") // js - the module is not shipped so the definition stays unhighlighted
+			: array() // "SQL" is not required
+		);
 	}
 
 	/** Get routine signature

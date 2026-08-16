@@ -36,6 +36,7 @@ function syntaxHighlighting(version, vendor) {
 				if (/(^|\s)jush-/.test(tag.className)) {
 					const pre = jush.textarea(tag, autocompleter);
 					if (pre) {
+						tag.jushPre = pre;
 						setupSubmitHighlightInput(pre);
 						tag.onchange = () => {
 							pre.textContent = tag.value;
@@ -841,6 +842,23 @@ function triggerChange(tableRe, table) {
 		form['Trigger'].value = table + '_' + (selectValue(form['Timing'])[0] + formEvent[0]).toLowerCase();
 	}
 	alterClass(form['Of'], 'hidden', !/ OF/.test(formEvent));
+}
+
+
+
+/** Highlight the routine definition by the selected language
+* @param {Object} jushLangs routine language => syntax highlighting language
+* @this HTMLSelectElement
+*/
+function routineLanguage(jushLangs) {
+	const jushClass = 'jush-' + jushLangs[selectValue(this)];
+	const textarea = this.form['definition'];
+	textarea.className = textarea.className.replace(/jush-\S+/, jushClass);
+	const pre = textarea.jushPre;
+	if (pre) {
+		pre.className = pre.className.replace(/jush-\S+/, jushClass);
+		textarea.onchange(); // highlights the <pre> again, jush.textarea() reads the language from the <textarea>
+	}
 }
 
 

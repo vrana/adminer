@@ -978,7 +978,11 @@ ORDER BY SPECIFIC_NAME'); // 'e' - functions created by extensions
 	}
 
 	function routine_languages(): array {
-		return get_vals("SELECT LOWER(lanname) FROM pg_catalog.pg_language");
+		$return = array();
+		foreach (get_vals("SELECT LOWER(lanname) FROM pg_catalog.pg_language") as $language) {
+			$return[$language] = (preg_match('~sql$~', $language) ? "pgsql" : "txt"); // we don't ship the highlighters of the other languages, e.g. plperl or c
+		}
+		return $return;
 	}
 
 	function routine_id(string $name, array $row): string {

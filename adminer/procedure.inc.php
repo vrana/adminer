@@ -60,7 +60,9 @@ echo ($collations ? "<datalist id='collations'>" . optionlist($collations) . "</
 
 <form action="" method="post" id="form">
 <p><?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" data-maxlength="64" autocapitalize="off">
-<?php echo ($routine_languages ? "<label>" . lang('Language') . ": " . html_select("language", $routine_languages, $row["language"]) . "</label>\n" : ""); ?>
+<?php echo ($routine_languages ? "<label>" . lang('Language') . ": "
+	. html_select("language", array_keys($routine_languages), $row["language"], on('change', 'routineLanguage', $routine_languages))
+	. "</label>\n" : ""); ?>
 <input type='submit' value='<?php echo lang('Save'); ?>'>
 <div class="scrollable">
 <table id="edit-fields" class="nowrap">
@@ -74,7 +76,7 @@ if (isset($_GET["function"])) {
 </table>
 <?php echo script("editFields();"); ?>
 </div>
-<p><?php textarea("definition", $row["definition"], 20); ?>
+<p><?php textarea("definition", $row["definition"], 20, 80, ($routine_languages[$row["language"]] ?: JUSH)); ?>
 <p>
 <input type='submit' value='<?php echo lang('Save'); ?>'>
 <?php if ($PROCEDURE != "") { ?>
