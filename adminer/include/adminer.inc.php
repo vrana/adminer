@@ -1216,9 +1216,11 @@ class Adminer {
 				foreach (array("bac", "bra", "sqlite_quo", "mssql_bra") as $val) {
 					echo "jushLinks.$val = jushLinks." . JUSH . ";\n";
 				}
-				if (isset($_GET["sql"]) || isset($_GET["trigger"]) || isset($_GET["check"])) {
-					// a trigger cannot return a result set nor commit, a check constraint is an expression
-					$statements = (isset($_GET["trigger"]) ? array('INSERT INTO', 'UPDATE', 'DELETE FROM') : (isset($_GET["check"]) ? array() : null));
+				if (array_intersect_key($_GET, array_flip(array("sql", "check", "event", "procedure", "trigger", "view")))) { // the pages editing SQL in a <textarea>
+					// a trigger cannot return a result set nor commit, a check constraint is an expression, a view is a single SELECT
+					$statements = (isset($_GET["trigger"]) ? array('INSERT INTO', 'UPDATE', 'DELETE FROM')
+						: (isset($_GET["check"]) ? array()
+						: (isset($_GET["view"]) ? array('SELECT') : null)));
 					$autocomplete = Driver::jushAutocomplete($tables, $statements);
 					echo ($autocomplete ? "addEventListener('DOMContentLoaded', () => { autocompleter = $autocomplete; });\n" : "");
 				}
