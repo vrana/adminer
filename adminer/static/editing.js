@@ -6,8 +6,9 @@ let autocompleter; // set in adminer.inc.php
 /** Load syntax highlighting
 * @param {string} version first three characters of database system version
 * @param {string} [vendor]
+* @param {string} [jushSql] the language highlighting SQL in the current driver
 */
-function syntaxHighlighting(version, vendor) {
+function syntaxHighlighting(version, vendor, jushSql) {
 	addEventListener('DOMContentLoaded', () => {
 		if (window.jush) {
 			jush.create_links = 'target="_blank" rel="noreferrer noopener"';
@@ -34,7 +35,13 @@ function syntaxHighlighting(version, vendor) {
 			adminerHighlighter = els => jush.highlight_tag(els, 0);
 			for (const tag of qsa('textarea')) {
 				if (/(^|\s)jush-/.test(tag.className)) {
-					const pre = jush.textarea(tag, autocompleter);
+					let autocomplete = autocompleter;
+					if (autocomplete) {
+						// it completes SQL but routineLanguage() can switch the definition to another language, e.g. JavaScript in MySQL
+						autocomplete = (state, before, after) => (tag.classList.contains('jush-' + jushSql) ? autocompleter(state, before, after) : {});
+						autocomplete.openBy = autocompleter.openBy;
+					}
+					const pre = jush.textarea(tag, autocomplete);
 					if (pre) {
 						tag.jushPre = pre;
 						setupSubmitHighlightInput(pre);
