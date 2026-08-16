@@ -1,5 +1,6 @@
 ## Adminer dev
 - Do not drop the old check constraint when the new one cannot be created
+- RTL: Mirror the borders, alignment, margins and paddings
 - MySQL: Display the check constraint clause without the extra escaping added by information_schema
 ### Plugins
 - New method assetUrl() returning the URL of a static file in the compiled Adminer
