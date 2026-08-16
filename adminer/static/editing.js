@@ -715,15 +715,14 @@ function indexesChangeColumn(prefix) {
 * @this HTMLFormElement
 */
 function sqlSubmit(root) {
-	const action = root
-		+ '&sql=' + urlEscape(this['query'].value)
-		+ (this['limit'].value ? '&limit=' + +this['limit'].value : '')
+	const suffix = (this['limit'].value ? '&limit=' + +this['limit'].value : '')
 		+ (this['error_stops'].checked ? '&error_stops=1' : '')
-		+ (this['only_errors'].checked ? '&only_errors=1' : '')
-	;
-	if ((location.origin + location.pathname + action).length < 2000) { // reasonable minimum is 2048
-		this.action = action; // the action is read after the event handlers finish
-	}
+		+ (this['only_errors'].checked ? '&only_errors=1' : '');
+	const action = root + '&sql=' + urlEscape(this['query'].value) + suffix;
+	this.action = ((location.origin + location.pathname + action).length < 2000 // reasonable minimum is 2048
+		? action
+		: root + '&sql=' + suffix
+	);
 }
 
 /** Export the result table by JS without re-running the query
