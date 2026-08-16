@@ -64,6 +64,11 @@ echo ($collations ? "<datalist id='collations'>" . optionlist($collations) . "</
 	. html_select("language", array_keys($routine_languages), $row["language"], on('change', 'routineLanguage', $routine_languages))
 	. "</label>\n" : ""); ?>
 <input type='submit' value='<?php echo lang('Save'); ?>'>
+<?php echo doc_link(array(
+	'sql' => "create-procedure.html", // the same page documents CREATE FUNCTION
+	'mariadb' => ($routine == "FUNCTION" ? "create-function/" : "create-procedure/"),
+	'pgsql' => ($routine == "FUNCTION" ? "sql-createfunction.html" : "sql-createprocedure.html"),
+), "?"); ?>
 <div class="scrollable">
 <table id="edit-fields" class="nowrap">
 <?php
@@ -82,5 +87,34 @@ if (isset($_GET["function"])) {
 <?php if ($PROCEDURE != "") { ?>
 <input type='submit' name='drop' value='<?php echo lang('Drop'); ?>'<?php echo confirm(lang('Drop %s?', $PROCEDURE)); ?>>
 <?php } ?>
-<?php echo input_token(); ?>
+<?php
+$routine_options = routine_options($routine);
+if ($routine_options) {
+	$row["options"] = (array) $row["options"];
+	$options_visible = false;
+	foreach ($routine_options as $key => $values) {
+		$default = ($values ? reset($values) : "");
+		$row["options"][$key] = idx($row["options"], $key, $default);
+		if ($row["options"][$key] != $default) {
+			$options_visible = true; // expand the fieldset only if the routine has a non-default characteristic
+		}
+	}
+	print_fieldset("options", lang('Options'), $options_visible);
+	echo "<table class='layout'>\n";
+	foreach ($routine_options as $key => $values) {
+		$label = "label-option-$key";
+		$title = str_replace("_", " ", $key);
+		$select = array();
+		foreach ($values as $value) {
+			$select[$value] = (strpos($value, "$title ") === 0 ? substr($value, strlen($title) + 1) : $value); // don't repeat the header in the options, e.g. SQL SECURITY: DEFINER
+		}
+		echo "<tr><th id='$label'>$title<td>" . ($select
+			? html_select("options[$key]", $select, $row["options"][$key], "", $label)
+			: "<input name='options[$key]' value='" . h($row["options"][$key]) . "' aria-labelledby='$label' autocapitalize='off'>"
+		) . "\n";
+	}
+	echo "</table>\n</div></fieldset>\n";
+}
+echo input_token();
+?>
 </form>

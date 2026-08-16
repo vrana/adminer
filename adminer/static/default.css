@@ -25,6 +25,7 @@ td, th { border-width: 0; border-block-end-width: 1px; border-inline-end-width: 
 td:first-child, th:first-child { border-inline-start-width: 1px; }
 table > :first-child > :first-child > td, table > :first-child > :first-child > th { border-top-width: 1px; }
 td table { width: 100%; margin: 0; }
+fieldset table:first-child { margin: 0; } /* the fieldset has its own padding */
 th { background: var(--dim); text-align: start; }
 thead { position: sticky; top: 0; }
 thead th { text-align: center; padding: .2em .5em; }

@@ -478,6 +478,10 @@ test('Procedures', async () => {
 	await page.locator('[name="fields[1.1][length]"]').fill('50');
 	await setValue(page, 'definition', 'BEGIN\nSELECT id INTO @interpret FROM interprets WHERE name = interpret_name;\nIF @interpret IS NULL THEN\n    INSERT INTO interprets (name) VALUES (interpret_name);\n    SET @interpret = LAST_INSERT_ID();\nEND IF;\nINSERT INTO albums (interpret, title) VALUES (@interpret, album_title);\nEND');
 	await page.locator('[name="name"]').fill('insert_album');
+	await link(page, 'Options').click(); // the fieldset is hidden
+	await page.locator('[name="options[DETERMINISTIC]"]').selectOption({label: 'DETERMINISTIC'});
+	await page.locator('[name="options[SQL_DATA_ACCESS]"]').selectOption({label: 'MODIFIES SQL DATA'});
+	await page.locator('[name="options[COMMENT]"]').fill('Inserts an album');
 	await button(page, 'Save').click();
 	await expect(page.locator('body')).toContainText('Routine has been created.');
 	await link(page, 'insert_album').click();
@@ -487,6 +491,11 @@ test('Procedures', async () => {
 	await expect(page.locator('body')).toContainText('Routine has been called,');
 	await link(page, 'adminer_test').click();
 	await link(page, 'Alter').click();
+	await expect(page.locator('#fieldset-options')).toBeVisible(); // the characteristics are not default
+	await expect(page.locator('[name="options[DETERMINISTIC]"]')).toHaveValue('DETERMINISTIC');
+	await expect(page.locator('[name="options[SQL_DATA_ACCESS]"]')).toHaveValue('MODIFIES SQL DATA');
+	await expect(page.locator('[name="options[COMMENT]"]')).toHaveValue('Inserts an album');
+	await expect(page.locator('[name="definition"]')).not.toHaveValue(/^DETERMINISTIC/); // the characteristics are not in the body
 	await page.locator('[name="drop"]').click();
 	await expect(page.locator('body')).toContainText('Routine has been dropped.');
 });

@@ -483,6 +483,8 @@ test('Procedures', async () => {
 	await setValue(page, 'definition', 'SELECT id FROM interprets;');
 	await page.locator('[name="name"]').fill('insert_album');
 	await page.locator('[name="language"]').selectOption({label: 'sql'}); // submits the form
+	await link(page, 'Options').click(); // the fieldset is hidden
+	await page.locator('[name="options[SECURITY]"]').selectOption({label: 'DEFINER'});
 	await button(page, 'Save').click();
 	await expect(page.locator('body')).toContainText('Routine has been created.');
 	await link(page, 'insert_album').click();
@@ -492,6 +494,8 @@ test('Procedures', async () => {
 	await expect(page.locator('body')).toContainText('Routine has been called,');
 	await link(page, 'public').click();
 	await link(page, 'Alter').click();
+	await expect(page.locator('#fieldset-options')).toBeVisible(); // the characteristics are not default
+	await expect(page.locator('[name="options[SECURITY]"]')).toHaveValue('SECURITY DEFINER');
 	await page.locator('[name="drop"]').click();
 	await expect(page.locator('body')).toContainText('Routine has been dropped.');
 });

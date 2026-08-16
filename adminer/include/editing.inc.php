@@ -450,20 +450,35 @@ function create_routine($routine, array $row): string {
 	ksort($fields); // enforce fields order
 	foreach ($fields as $field) {
 		if ($field["field"] != "") {
-			$set[] = (preg_match("~^(" . driver()->inout . ")\$~", $field["inout"]) ? "$field[inout] " : "")
+			$set[] = "\n  " . (preg_match("~^(" . driver()->inout . ")\$~", $field["inout"]) ? "$field[inout] " : "")
 				. idf_escape($field["field"])
 				. process_type($field, routine_collate($field["collation"]))
 			;
 		}
 	}
+	$definer = "";
+	$options = array();
+	foreach (routine_options($routine) as $key => $values) {
+		$value = idx((array) $row["options"], $key, "");
+		if ($key == "DEFINER") { // DEFINER precedes the routine type, it is not a characteristic
+			$definer = ($value ? " $key=" . implode("@", array_map('Adminer\q', explode("@", $value, 2))) : "");
+		} elseif (!$values) {
+			if ($value != "") {
+				$options[] = "$key " . q($value);
+			}
+		} elseif ($value != reset($values) && in_array($value, $values)) { // print only the non-default characteristics, the value must be verified because it's not escaped
+			$options[] = $value;
+		}
+	}
 	$language = $row["language"];
 	$definition = rtrim($row["definition"], ";");
 	$dollar_quote = (JUSH == "pgsql" || ($language && $language != "sql")); // PostgreSQL quotes the body in all languages, MySQL only in the external ones
-	return "CREATE $routine "
+	return "CREATE$definer $routine "
 		. idf_escape(trim($row["name"]))
-		. " (" . implode(", ", $set) . ")"
-		. ($routine == "FUNCTION" ? " RETURNS" . process_type($row["returns"], routine_collate($row["returns"]["collation"])) : "")
+		. " (" . ($set ? implode(",", $set) . "\n" : "") . ")"
+		. ($routine == "FUNCTION" ? "\nRETURNS" . process_type($row["returns"], routine_collate($row["returns"]["collation"])) : "")
 		. ($language ? " LANGUAGE $language" : "")
+		. ($options ? "\n" . implode(" ", $options) : "")
 		. ($dollar_quote ? " AS " . q_dollar("\n" . trim($definition) . "\n") : "\n$definition;")
 	;
 }

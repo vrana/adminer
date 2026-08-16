@@ -955,10 +955,23 @@ ORDER BY event_manipulation DESC") as $row
 	}
 
 	function routine(string $name, string $type): array {
-		$rows = get_rows('SELECT routine_definition AS definition, LOWER(external_language) AS language, *
-FROM information_schema.routines
-WHERE routine_schema = current_schema() AND specific_name = ' . q($name));
+		$options = routine_options($type);
+		// the characteristics are not in information_schema, let the server compose the SQL clauses so that we don't depend on the boolean representation
+		$selects = array_intersect_key(array(
+			"VOLATILITY" => "CASE p.provolatile WHEN 'i' THEN 'IMMUTABLE' WHEN 's' THEN 'STABLE' ELSE 'VOLATILE' END",
+			"NULL_INPUT" => "CASE WHEN p.proisstrict THEN 'RETURNS NULL ON NULL INPUT' ELSE 'CALLED ON NULL INPUT' END",
+			"SECURITY" => "CASE WHEN p.prosecdef THEN 'SECURITY DEFINER' ELSE 'SECURITY INVOKER' END",
+			"PARALLEL" => "CASE p.proparallel WHEN 's' THEN 'PARALLEL SAFE' WHEN 'r' THEN 'PARALLEL RESTRICTED' ELSE 'PARALLEL UNSAFE' END",
+		), $options);
+		foreach ($selects as $key => $select) {
+			$selects[$key] = "$select AS \"$key\"";
+		}
+		$rows = get_rows('SELECT r.routine_definition AS definition, LOWER(r.external_language) AS language, ' . ($selects ? implode(', ', $selects) . ', ' : '') . 'r.*
+FROM information_schema.routines r
+LEFT JOIN pg_catalog.pg_proc p ON p.oid::text = substring(r.specific_name, \'[0-9]+$\')
+WHERE r.routine_schema = current_schema() AND r.specific_name = ' . q($name)); // LEFT JOIN - the characteristics fall back to the defaults if the OID cannot be found
 		$return = idx($rows, 0, array());
+		$return["options"] = array_intersect_key($return, $options);
 		$return["returns"] = array("type" => preg_replace('~^_(.*)~', '\1[]', "$return[type_udt_name]")); // _int4 - array of int4
 		$return["fields"] = get_rows("SELECT COALESCE(parameter_name, ordinal_position::text) AS field,
 	CASE data_type WHEN 'USER-DEFINED' THEN udt_name WHEN 'ARRAY' THEN substr(udt_name, 2) || '[]' ELSE data_type END AS type,
@@ -983,6 +996,21 @@ ORDER BY SPECIFIC_NAME'); // 'e' - functions created by extensions
 			$return[$language] = (preg_match('~sql$~', $language) ? "pgsql" : "txt"); // we don't ship the highlighters of the other languages, e.g. plperl or c
 		}
 		return $return;
+	}
+
+	function routine_options(string $routine): array {
+		// CockroachDB doesn't support PARALLEL and stores SECURITY DEFINER without reporting it in pg_proc.prosecdef, offering it would silently reset it
+		$cockroach = (connection()->flavor == 'cockroach');
+		$security = ($cockroach ? array() : array("SECURITY" => array("SECURITY INVOKER", "SECURITY DEFINER")));
+		if ($routine == "PROCEDURE") {
+			return $security; // a procedure accepts no other characteristic
+		}
+		return array(
+			"VOLATILITY" => array("VOLATILE", "STABLE", "IMMUTABLE"),
+			"NULL_INPUT" => array("CALLED ON NULL INPUT", "RETURNS NULL ON NULL INPUT"),
+		) + $security + ($cockroach ? array() : array(
+			"PARALLEL" => array("PARALLEL UNSAFE", "PARALLEL RESTRICTED", "PARALLEL SAFE"),
+		));
 	}
 
 	function routine_id(string $name, array $row): string {

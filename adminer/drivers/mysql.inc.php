@@ -1031,14 +1031,23 @@ ORDER BY ORDINAL_POSITION");
 				"collation" => $row["COLLATION_NAME"],
 			);
 		}
-		// the characteristics precede the body only in SQL routines, the definition of a JavaScript routine is just the body
-		$characteristics = "CONCAT(IF(IS_DETERMINISTIC = 'YES', 'DETERMINISTIC\\n', ''), IF(SQL_DATA_ACCESS != 'CONTAINS SQL', CONCAT(SQL_DATA_ACCESS, '\\n'), ''))";
-		$return = connection()->query("SELECT
+		$return = (array) connection()->query("SELECT
 	ROUTINE_COMMENT comment,
-	CONCAT(IF(EXTERNAL_LANGUAGE = 'JAVASCRIPT', '', $characteristics), ROUTINE_DEFINITION) definition,
-	LOWER(EXTERNAL_LANGUAGE) language
+	ROUTINE_DEFINITION definition,
+	LOWER(EXTERNAL_LANGUAGE) language,
+	IF(DEFINER = CURRENT_USER(), '', DEFINER) definer,
+	IF(IS_DETERMINISTIC = 'YES', 'DETERMINISTIC', 'NOT DETERMINISTIC') is_deterministic,
+	SQL_DATA_ACCESS data_access,
+	CONCAT('SQL SECURITY ', SECURITY_TYPE) security
 FROM information_schema.ROUTINES
-WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = " . q($name))->fetch_assoc();
+WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = " . q($name))->fetch_assoc(); // the aliases must not be reserved words, e.g. DETERMINISTIC is
+		$return['options'] = array(
+			"DEFINER" => $return['definer'], // empty for the logged user so that the routine can be created by anyone
+			"DETERMINISTIC" => $return['is_deterministic'],
+			"SQL_DATA_ACCESS" => $return['data_access'],
+			"SQL_SECURITY" => $return['security'],
+			"COMMENT" => $return['comment'],
+		);
 		if ($fields && $fields[0]['field'] == '') {
 			$return['returns'] = array_shift($fields);
 		}
@@ -1061,6 +1070,20 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 		return (min_version(9, 99) // JavaScript requires the MLE component available in MySQL Enterprise Edition and HeatWave, there's no way to detect it
 			? array("sql" => "sql", "javascript" => "js") // js - the module is not shipped so the definition stays unhighlighted
 			: array() // "SQL" is not required
+		);
+	}
+
+	/** Get available routine characteristics
+	* @param 'FUNCTION'|'PROCEDURE' $routine
+	* @return array<string, list<string>> SQL keyword => allowed clauses, the first one is the default; an empty list means a free text
+	*/
+	function routine_options(string $routine): array {
+		return array(
+			"DEFINER" => array(),
+			"DETERMINISTIC" => array("NOT DETERMINISTIC", "DETERMINISTIC"),
+			"SQL_DATA_ACCESS" => array("CONTAINS SQL", "NO SQL", "READS SQL DATA", "MODIFIES SQL DATA"),
+			"SQL_SECURITY" => array("SQL SECURITY DEFINER", "SQL SECURITY INVOKER"),
+			"COMMENT" => array(),
 		);
 	}
 

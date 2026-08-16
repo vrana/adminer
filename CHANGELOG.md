@@ -1,5 +1,6 @@
 ## Adminer dev
 - Do not drop the old check constraint when the new one cannot be created
+- Alter routine: Preserve all characteristics and edit them in a form instead of in the definition
 - Autocomplete: Offer also in the definition of a routine, an event and a view
 - RTL: Mirror the borders, alignment, margins and paddings
 - MySQL 9: Create routines with LANGUAGE JAVASCRIPT
