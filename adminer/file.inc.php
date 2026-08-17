@@ -34,6 +34,9 @@ if ($_GET["file"] == "default.css") {
 ../adminer/static/jush/modules/jush-sqlite.js;
 ../adminer/static/jush/modules/jush-mssql.js;
 ../adminer/static/jush/modules/jush-oracle.js', 'minify_js'));
+} elseif ($_GET["file"] == "worker.js") {
+	header("Content-Type: text/javascript; charset=utf-8");
+	echo decompress_string(compile_file('../adminer/static/worker.js', 'minify_js'));
 } elseif ($_GET["file"] == "logo.png") {
 	header("Content-Type: image/png");
 	echo compile_file('../adminer/static/logo.png');

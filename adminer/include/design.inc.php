@@ -101,6 +101,9 @@ const urlSeparators = '" . js_escape(ini_get("arg_separator.input")) . "';");
 	echo "<div id='ajaxstatus' role='status' class='jsonly'></div>\n";
 	restart_session();
 	page_messages($error);
+	if (!defined('Adminer\DIR')) { // only the compiled version serves the files itself, the development version leaves them to the web server
+		service_worker();
+	}
 	$databases = &get_session("dbs");
 	if (DB != "" && $databases && !in_array(DB, $databases, true)) {
 		$databases = null;
@@ -110,6 +113,30 @@ const urlSeparators = '" . js_escape(ini_get("arg_separator.input")) . "';");
 	// let the browser download the CSS and JS while we are running the queries for the page body
 	ob_flush();
 	flush();
+}
+
+/** Print the script maintaining the service worker caching the static files */
+function service_worker(): void {
+	$code = (has_passwords() // the worker belongs to all connections at once, so it is removed only after logging out of the last one; the login form must not register it back
+		? "navigator.serviceWorker.register('" . js_escape(preg_replace('~\?.*~', '', ME) . "?file=worker.js&version=" . VERSION) . "', {scope: location.pathname}).catch(() => {});"
+		: "navigator.serviceWorker.getRegistration().then(registration => registration && registration.unregister());
+	caches.keys().then(keys => keys.forEach(key => key.startsWith('adminer-') && caches.delete(key)));"
+	);
+	echo script("if (navigator.serviceWorker) {\n\t$code\n}");
+}
+
+/** Check whether any connection is logged in */
+function has_passwords(): bool {
+	foreach ((array) $_SESSION["pwds"] as $servers) {
+		foreach ($servers as $usernames) {
+			foreach ($usernames as $password) {
+				if ($password !== null) { // logging out sets the password to null, it doesn't remove the key
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
 
 /** Send HTTP headers */
