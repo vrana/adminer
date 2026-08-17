@@ -351,7 +351,7 @@ if ($vendor) {
 			$file
 		);
 		$file = replace(". script(\"fire(qs('#username').form['auth[driver]'], 'change');\")", "", $file);
-		if ($vendor == "sqlite") {
+		if ($vendor == "sqlite" || $vendor == "igdb") {
 			// SQLite doesn't use the server but the value must be preserved for the login form
 			$file = replace_re('~(\t*)echo adminer\(\)->loginFormField\(\s*\'server\',.*?\);\n~s', "\\1echo input_hidden(\"auth[server]\", SERVER);\n", $file);
 		}

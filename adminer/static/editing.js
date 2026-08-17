@@ -107,7 +107,7 @@ function copyCode(parent) {
 */
 function loginDriver() {
 	const trs = this.closest('table').rows;
-	const disabled = /sqlite/.test(selectValue(this));
+	const disabled = /sqlite|igdb/.test(selectValue(this));
 	alterClass(trs[1], 'hidden', disabled);	// 1 - row with server
 	qs('input', trs[1]).disabled = disabled;
 }
