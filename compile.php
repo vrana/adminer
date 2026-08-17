@@ -393,7 +393,7 @@ if (function_exists('stripTypes')) {
 	$file = stripTypes($file);
 }
 $file = replace_re("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", 'compile_file', $file); // integrate static files
-$replace = 'adminer()->assetUrl("\1")'; // the URL is built by Adminer::assetUrl() so that a plugin can point it elsewhere
+$replace = 'preg_replace("~\\\\\\\\?.*~", "", ME) . "?file=\1&version=' . Adminer\VERSION . '"';
 $file = replace_re('~<\?php echo DIR; \?>static/(default\.css)~', '<?php echo h(' . $replace . '); ?>', $file);
 $file = replace_re('~DIR \. "static/(functions\.js)"~', $replace, $file);
 if ($project != "editor") { // the Editor doesn't use jush
