@@ -3,8 +3,8 @@
 - Alter routine: Preserve all characteristics and edit them in a form instead of in the definition
 - Autocomplete: Offer also in the definition of a routine, an event and a view
 - RTL: Mirror the borders, alignment, margins and paddings
-- MySQL 9: Create routines with LANGUAGE JAVASCRIPT
 - MySQL: Display the check constraint clause without the extra escaping added by information_schema
+- MySQL 9: Create routines with LANGUAGE JAVASCRIPT
 - MS SQL: Get the base type of a column declared with a user-defined type
 ### Plugins
 - New method assetUrl() returning the URL of a static file in the compiled Adminer
