@@ -39,24 +39,25 @@ if (isset($_GET["clickhouse"])) {
 					$this->error = ($error ?: 'Unable to connect to the ClickHouse server.');
 					return false;
 				}
-				if ($status < 200 || $status >= 300) {
-					if (preg_match('~Code:\s*(\d+)~', $file, $match)) {
-						$this->errno = (int) $match[1];
-					} else {
-						$this->errno = (int) $status;
-					}
-					$this->error = trim($file);
-					if ($this->error === '') {
-						$this->error = "ClickHouse HTTP error $status.";
-					}
-					return false;
-				}
 
+				$exception = null;
 				foreach ($headers as $header) {
+					if (preg_match('~^X-ClickHouse-Exception-Code:\s*(\d+)~i', $header, $match)) { // ClickHouse sends this header in the errors created by itself
+						$exception = (int) $match[1];
+					}
 					// the header repeats with progress, the last one is final; it is missing for some commands
 					if (preg_match('~^X-ClickHouse-Summary:\s*(.+)~i', $header, $match)) {
 						$this->affected_rows = (int) idx((array) json_decode($match[1], true), 'written_rows', 0);
 					}
+				}
+
+				if ($status < 200 || $status >= 300) {
+					$this->errno = ($exception ?: (int) $status);
+					$this->error = ($exception === null // the response of a server which is not ClickHouse is never printed
+						? lang('Invalid server or credentials.') . " HTTP $status"
+						: (trim($file) ?: "ClickHouse HTTP error $status.")
+					);
+					return false;
 				}
 
 				if (trim($file) === '') {
