@@ -2,7 +2,7 @@
 namespace Adminer;
 
 $TABLE = $_GET["check"];
-$name = $_GET["name"];
+$name = "$_GET[name]"; // drop_create() and idf_escape() don't accept null
 $row = $_POST;
 
 if ($row && !$error) {
