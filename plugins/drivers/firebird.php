@@ -85,6 +85,11 @@ if (isset($_GET["firebird"])) {
 		static $jush = "firebird";
 
 		public $operators = array("=");
+
+		/** Get the JUSH module inlined in the released driver by the release script */
+		static function jushModule(): string {
+			return ""; // the repository and the source archive load adminer/static/jush/modules/jush-firebird.js
+		}
 	}
 
 

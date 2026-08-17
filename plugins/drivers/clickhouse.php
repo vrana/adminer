@@ -193,6 +193,11 @@ if (isset($_GET["clickhouse"])) {
 		);
 		public $generated = array("MATERIALIZED", "ALIAS", "EPHEMERAL");
 
+		/** Get the JUSH module inlined in the released driver by the release script */
+		static function jushModule(): string {
+			return ""; // the repository and the source archive load adminer/static/jush/modules/jush-clickhouse.js
+		}
+
 		static function connect($server, $username, $password) {
 			if (!preg_match('~^(https?://)?(\[[\da-f:.]+\]|[-\w.]+)(:\d+)?/?$~i', $server)) {
 				return lang('Invalid server.');
