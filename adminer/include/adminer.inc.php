@@ -1227,8 +1227,7 @@ class Adminer {
 			}
 			echo "</script>\n";
 		}
-		$version = (preg_match('~^\d\.?\d~', connection()->server_info, $match) ? $match[0] : "");
-		echo script("syntaxHighlighting('$version', '" . connection()->flavor . "', '" . JUSH . "');");
+		echo script("syntaxHighlighting('" . (preg_match('~^\d\.?\d~', connection()->server_info, $match) ? $match[0] : "") . "', '" . connection()->flavor . "');");
 	}
 
 	/** Print databases list in menu */
