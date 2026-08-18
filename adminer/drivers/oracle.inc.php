@@ -6,6 +6,13 @@ add_driver("oracle", "Oracle beta");
 if (isset($_GET["oracle"])) {
 	define('Adminer\DRIVER', "oracle");
 
+	/** Join the server name to the Easy Connect syntax: host:port/service
+	* @param Server $server
+	*/
+	function easy_connect(array $server): string {
+		return url_host($server["host"]) . ($server["port"] != "" ? ":$server[port]" : "") . $server["path"];
+	}
+
 	if (extension_loaded("oci8") && $_GET["ext"] != "pdo") {
 		class Db extends SqlDb {
 			public $extension = "oci8";
@@ -20,8 +27,8 @@ if (isset($_GET["oracle"])) {
 				$this->error = $error;
 			}
 
-			function attach(string $server, string $username, string $password): string {
-				$this->link = @oci_new_connect($username, $password, $server, "AL32UTF8");
+			function attach(array $server, string $username, string $password): string {
+				$this->link = @oci_new_connect($username, $password, easy_connect($server), "AL32UTF8");
 				if ($this->link) {
 					$this->server_info = oci_server_version($this->link);
 					return '';
@@ -111,8 +118,8 @@ if (isset($_GET["oracle"])) {
 			public $extension = "PDO_OCI";
 			public $_current_db;
 
-			function attach(string $server, string $username, string $password): string {
-				return $this->dsn("oci:dbname=//$server;charset=AL32UTF8", $username, $password);
+			function attach(array $server, string $username, string $password): string {
+				return $this->dsn("oci:dbname=//" . easy_connect($server) . ";charset=AL32UTF8", $username, $password);
 			}
 
 			function select_db(string $database) {
@@ -128,6 +135,8 @@ if (isset($_GET["oracle"])) {
 	class Driver extends SqlDriver {
 		static $extensions = array("OCI8", "PDO_OCI");
 		static $jush = "oracle";
+
+		static $serverPath = true; // the service name in the Easy Connect syntax
 
 		public $insertFunctions = array( //! no parentheses
 			"date" => "current_date",

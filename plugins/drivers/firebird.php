@@ -15,11 +15,10 @@ if (isset($_GET["firebird"])) {
 			public $extension = "Firebird", $_link;
 
 			function attach($server, $username, $password): string {
-				$this->_link = ibase_connect($server, $username, $password);
+				$host = $server["host"] . ($server["port"] != "" ? "/" . $server["port"] : "");
+				$this->_link = ibase_connect($host . ($server["path"] != "" ? ":" . $server["path"] : ""), $username, $password); // the ibase connection string is 'host/port:/path/to/your.gdb'
 				if ($this->_link) {
-					// ibase connection string is 'host/port:/path/to/your.gdb'
-					$url_parts = explode(':', $server);
-					$service_link = ibase_service_attach($url_parts[0], $username, $password);
+					$service_link = ibase_service_attach($host, $username, $password);
 					$this->server_info = ibase_server_info($service_link, IBASE_SVC_SERVER_VERSION);
 					return '';
 				}
@@ -84,6 +83,8 @@ if (isset($_GET["firebird"])) {
 	class Driver extends SqlDriver {
 		static $extensions = array("interbase");
 		static $jush = "firebird";
+
+		static $serverPath = true; // the path to the database file
 
 		public $operators = array("=");
 

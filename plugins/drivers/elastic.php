@@ -115,11 +115,9 @@ if (isset($_GET["elastic"])) {
 			}
 
 			function attach($server, $username, $password): string {
-				preg_match('~^(https?://)?(.*)~', $server, $match);
-				if (!strpos($match[2], ":")) {
-					$match[2] .= ":9200";
-				}
-				$this->url = ($match[1] ?: "http://") . urlencode($username) . ":" . urlencode($password) . "@$match[2]";
+				$this->url = ($server["scheme"] ?: "http") . "://" . urlencode($username) . ":" . urlencode($password)
+					. "@" . url_host($server["host"]) . ":" . ($server["port"] ?: 9200) . rtrim($server["path"], "/") // the path is used by a reverse proxy
+				;
 				$return = $this->rootQuery('');
 				if (!$return) {
 					return $this->error;
@@ -173,6 +171,9 @@ if (isset($_GET["elastic"])) {
 		static $extensions = array("json + allow_url_fopen");
 		static $jush = "elastic";
 
+		static $serverSchemes = array("http", "https");
+		static $serverPath = true;
+
 		public $insertFunctions = array("json");
 		public $operators = array("=", "must", "should", "must_not");
 
@@ -182,9 +183,6 @@ if (isset($_GET["elastic"])) {
 		}
 
 		static function connect($server, $username, $password) {
-			if (!preg_match('~^(https?://)?[-a-zA-Z\d.]+(:\d+)?$~', $server)) {
-				return lang('Invalid server.');
-			}
 			$connection = parent::connect($server, $username, $password); // servers accepting any password are refused by Adminer::login()
 			if (is_string($connection)) {
 				return $connection;

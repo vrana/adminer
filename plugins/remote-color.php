@@ -48,7 +48,8 @@ body.remote #menuopen { margin-top: 5px; }
 			;
 			if (!$this->remote && class_exists('Adminer\Db') && Adminer\connection()) { // credentials() can be useless before connecting
 				$credentials = Adminer\adminer()->credentials();
-				$this->remote = !$this->isLocal(Adminer\first(Adminer\host_port($credentials[0])));
+				$parts = Adminer\parse_server($credentials[0]);
+				$this->remote = !$this->isLocal($parts ? $parts["host"] : "");
 			}
 		}
 		return $this->remote;
@@ -56,7 +57,7 @@ body.remote #menuopen { margin-top: 5px; }
 
 	/** @return bool */
 	private function isLocal($host) {
-		$host = preg_replace('~^[-+.\w]+://~', '', strval($host)); // scheme is used by some plugin drivers
+		$host = strval($host);
 		return in_array(strtolower($host), $this->localHosts)
 			|| preg_match('~^(127\.|/)~', $host) // loopback, socket directory
 		;

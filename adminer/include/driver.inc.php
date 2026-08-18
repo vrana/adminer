@@ -18,6 +18,11 @@ abstract class SqlDriver {
 	/** @var string */ static $jush; // JUSH identifier
 	/** @var bool */ static $passwords = true; // false in databases without passwords, they can be protected only by a plugin
 
+	/** @var list<string> */ static $serverSchemes = array(); // URL schemes allowed in the server name
+	/** @var bool */ static $serverSocket = false; // the server name can specify a socket
+	/** @var bool */ static $serverPath = false; // the server name can contain a path
+	/** @var bool */ static $serverFile = false; // the server name is a path to a file, not an address
+
 	/** @var Db */ protected $conn;
 	/** @var int[][] */ protected $types = array(); // [$group => [$type => $maximum_unsigned_length, ...], ...]
 	/** @var string */ public $delimiter = ";"; // string separating queries, it is used also as a regular expression
@@ -60,15 +65,25 @@ abstract class SqlDriver {
 	* @return Db|string string for error
 	*/
 	static function connect(string $server, string $username, string $password) {
-		list($host, $port) = host_port($server);
-		if (preg_match('~[^-\w.:/]~', $host . $port)) {
-			return lang('Invalid server.');
-		}
-		if (preg_match('~^-?\d+~', $port, $match) && ($match[0] < 1024 || $match[0] > 65535)) { // is_numeric('80.') would still connect to port 80
-			return lang('Connecting to privileged ports is not allowed.');
+		if (static::$serverFile) {
+			$parts = server_parts(array("path" => $server)); // the driver verifies the file itself
+		} else {
+			$parts = parse_server($server);
+			if (
+				!$parts
+				|| ($parts["scheme"] && !in_array($parts["scheme"], static::$serverSchemes))
+				|| ($parts["socket"] && !static::$serverSocket)
+				|| ($parts["path"] && !static::$serverPath)
+				|| (substr($parts["host"], 0, 1) == "/" && !static::$serverSocket) // socket directory
+			) {
+				return lang('Invalid server.');
+			}
+			if ($parts["port"] != "" && ($parts["port"] < 1024 || $parts["port"] > 65535)) {
+				return lang('Connecting to privileged ports is not allowed.');
+			}
 		}
 		$connection = new Db;
-		return ($connection->attach($server, $username, $password) ?: $connection);
+		return ($connection->attach($parts, $username, $password) ?: $connection);
 	}
 
 	/** Create object for performing database operations */

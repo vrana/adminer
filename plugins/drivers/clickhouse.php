@@ -85,10 +85,9 @@ if (isset($_GET["clickhouse"])) {
 			}
 
 			function attach($server, $username, $password): string {
-				$this->url = rtrim((preg_match('~^https?://~i', $server) ? $server : "http://$server"), '/');
-				if (!preg_match('~:\d+$~', $this->url)) { // connect() allows no path so this can be only the port
-					$this->url .= (preg_match('~^https://~i', $this->url) ? ":8443" : ":8123");
-				}
+				$scheme = ($server["scheme"] ?: "http");
+				// the path is used by a reverse proxy
+				$this->url = "$scheme://" . url_host($server["host"]) . ":" . ($server["port"] ?: ($scheme == "https" ? 8443 : 8123)) . rtrim($server["path"], "/");
 				$this->authorization = base64_encode("$username:$password");
 				$return = $this->query('SELECT version()');
 				if (!$return) {
@@ -183,6 +182,9 @@ if (isset($_GET["clickhouse"])) {
 		static $extensions = array("allow_url_fopen");
 		static $jush = "clickhouse";
 
+		static $serverSchemes = array("http", "https");
+		static $serverPath = true;
+
 		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT ILIKE", "NOT IN", "IS NOT NULL", "SQL");
 		public $functions = array("length", "lower", "round", "toDate", "toDateTime", "toString", "upper");
 		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
@@ -196,13 +198,6 @@ if (isset($_GET["clickhouse"])) {
 		/** Get the JUSH module inlined in the released driver by the release script */
 		static function jushModule(): string {
 			return ""; // the repository and the source archive load adminer/static/jush/modules/jush-clickhouse.js
-		}
-
-		static function connect($server, $username, $password) {
-			if (!preg_match('~^(https?://)?(\[[\da-f:.]+\]|[-\w.]+)(:\d+)?/?$~i', $server)) {
-				return lang('Invalid server.');
-			}
-			return parent::connect($server, $username, $password);
 		}
 
 		function hasCStyleEscapes(): bool {

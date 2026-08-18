@@ -21,10 +21,11 @@ if (isset($_GET["pgsql"])) {
 				$this->error = $error;
 			}
 
-			function attach(string $server, string $username, string $password): string {
+			function attach(array $server, string $username, string $password): string {
 				$db = adminer()->database();
 				set_error_handler(array($this, '_error'));
-				list($host, $port) = host_port($server);
+				$port = $server["port"];
+				$host = ($server["host"] ?: $server["socket"]); // the socket is passed as the host directory
 				$this->string = "host='$host'" . ($port ? " port=$port" : "") . " user='" . addcslashes($username, "'\\") . "' password='" . addcslashes($password, "'\\") . "'";
 				$ssl = adminer()->connectSsl();
 				if (isset($ssl["mode"])) {
@@ -164,9 +165,10 @@ if (isset($_GET["pgsql"])) {
 			public $extension = "PDO_PgSQL";
 			public $timeout = 0;
 
-			function attach(string $server, string $username, string $password): string {
+			function attach(array $server, string $username, string $password): string {
 				$db = adminer()->database();
-				list($host, $port) = host_port($server);
+				$port = $server["port"];
+				$host = ($server["host"] ?: $server["socket"]); // the socket is passed as the host directory
 				//! client_encoding is supported since 9.1, but we can't yet use min_version here
 				$dsn = "pgsql:host='$host'" . ($port ? " port=$port" : "") . " client_encoding=utf8 dbname='" . ($db != "" ? addcslashes($db, "'\\") : "postgres") . "'";
 				$ssl = adminer()->connectSsl();
@@ -252,6 +254,8 @@ if (isset($_GET["pgsql"])) {
 	class Driver extends SqlDriver {
 		static $extensions = array("PgSQL", "PDO_PgSQL");
 		static $jush = "pgsql";
+
+		static $serverSocket = true; // the socket directory is used as the host
 
 		//! SQL - same-site CSRF
 		public $operators = array("=", "<", ">", "<=", ">=", "!=", "~", "~*", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT ILIKE", "NOT IN", "IS NOT NULL", "SQL");

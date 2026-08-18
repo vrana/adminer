@@ -1022,6 +1022,14 @@ function is_url(?string $string): bool {
 	return preg_match("~^((https?):)?//($domain?\\.)+$domain(:\\d+)?(/.*)?(\\?.*)?(#.*)?\$~i", $string); //! restrict path, query and fragment characters
 }
 
+/** Check whether the string is an IPv6 address */
+function is_ipv6(string $address): bool {
+	$group = '[\da-f]{1,4}';
+	$ipv4 = '\d{1,3}(\.\d{1,3}){3}'; // the last group can be written as IPv4
+	// some too long compressed forms are accepted, the point is to reject an address which a client could split to a host and a port
+	return (bool) preg_match("~^(($group:){7}$group|($group:){6}$ipv4|(($group:)*$group)?::(($group:)*($group|$ipv4))?)$~iD", $address);
+}
+
 /** Check if field should be shortened
 * @param array{type: string} $field
 */
@@ -1029,13 +1037,59 @@ function is_shortable(array $field): bool {
 	return !preg_match('~' . number_type() . '|date|time|year~', $field["type"]);
 }
 
-/** Split server into host and (port or socket)
-* @return array{0: string, 1: string}
+/** Get the host to be used in a URL, an IPv6 address is put in brackets */
+function url_host(string $host): string {
+	return (strpos($host, ":") !== false ? "[$host]" : $host);
+}
+
+/** Fill the missing parts of a server name
+* @param array<string, ?string> $parts
+* @return Server
 */
-function host_port(string $server) {
-	return (preg_match('~^(:([^:].*)|(\[(.+)\]|(([^:]+://)?[^:]+))(:(\d+))?)$~', $server, $match) // :/tmp/socket | ([IPv6] | host) :port
-		? array($match[4] . $match[5], $match[2] . $match[8])
-		: array($server, '')
+function server_parts(array $parts): array {
+	return array(
+		"scheme" => (string) $parts["scheme"],
+		"host" => (string) $parts["host"],
+		"port" => (string) $parts["port"],
+		"socket" => (string) $parts["socket"],
+		"path" => (string) $parts["path"],
+	);
+}
+
+/** Split server into scheme, host, port, socket and path
+* @return Server|null null for an invalid server
+*/
+function parse_server(string $server): ?array {
+	if ($server == "") {
+		return server_parts(array());
+	}
+	if ($server[0] == ":" && !is_ipv6($server)) { // :3307 | :/tmp/mysql.sock
+		$rest = substr($server, 1);
+		if (preg_match('~^\d+$~D', $rest)) {
+			return server_parts(array("port" => $rest));
+		}
+		return (preg_match('~^/[-\w.:/]*$~D', $rest) ? server_parts(array("socket" => $rest)) : null); // the socket can contain : e.g. /cloudsql/project:region:instance
+	}
+	$scheme = "";
+	if (preg_match('~^([-+.\w]+)://~', $server, $match)) {
+		$scheme = strtolower($match[1]);
+		$server = substr($server, strlen($match[0]));
+	}
+	if (preg_match('~^\[(.+)](:(\d+))?(/[-\w./]*)?$~D', $server, $match)) { // [IPv6]
+		return (is_ipv6($match[1])
+			? server_parts(array("scheme" => $scheme, "host" => $match[1], "port" => $match[3], "path" => $match[4]))
+			: null
+		);
+	}
+	if (is_ipv6($server)) { // ::1 | ssl://::1
+		return server_parts(array("scheme" => $scheme, "host" => $server));
+	}
+	if (preg_match('~^(/[-\w./]*)(:(\d+))?$~D', $server, $match)) { // /tmp - PostgreSQL socket directory
+		return server_parts(array("scheme" => $scheme, "host" => $match[1], "port" => $match[3]));
+	}
+	return (preg_match('~^([-\w.]*)(:(\d+))?(/[-\w./]*)?$~D', $server, $match) // host:port/path
+		? server_parts(array("scheme" => $scheme, "host" => $match[1], "port" => $match[3], "path" => $match[4]))
+		: null
 	);
 }
 

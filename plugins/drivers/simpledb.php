@@ -115,6 +115,8 @@ if (isset($_GET["simpledb"])) {
 		static $jush = "simpledb";
 		static $passwords = false;
 
+		static $serverSchemes = array("http", "https");
+
 		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "IS NOT NULL");
 		public $grouping = array("count");
 
@@ -127,13 +129,6 @@ if (isset($_GET["simpledb"])) {
 
 		static function jushAutocomplete(array $tables, ?array $statements): string {
 			return ""; // the queries are only a select expression and the columns are not known
-		}
-
-		static function connect($server, $username, $password) {
-			if ($server != "" && !preg_match('~^(https?://)?[-a-z\d.]+(:\d+)?$~', $server)) {
-				return lang('Invalid server.');
-			}
-			return parent::connect($server, $username, $password); // the password is refused by Adminer::login()
 		}
 
 		private function chunkRequest($ids, $action, $params, $expand = array()) {

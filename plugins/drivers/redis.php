@@ -122,14 +122,9 @@ if (isset($_GET["redis"])) {
 		private $fp;
 
 		function attach($server, $username, $password): string {
-			if ($server == "") {
-				$server = "127.0.0.1";
-			}
-			if (!strpos($server, ":")) {
-				$server .= ":6379";
-			}
-			list($host, $port) = host_port($server);
-			$this->fp = @fsockopen($host, $port, $errno, $error);
+			$scheme = $server["scheme"];
+			$host = ($scheme ? "$scheme://" : "") . ($server["host"] ?: "127.0.0.1");
+			$this->fp = @fsockopen($host, intval($server["port"] ?: 6379), $errno, $error);
 			if (!$this->fp) {
 				return $error;
 			}
@@ -278,6 +273,8 @@ if (isset($_GET["redis"])) {
 
 	class Driver extends SqlDriver {
 		static $jush = "redis";
+
+		static $serverSchemes = array("ssl", "tls");
 
 		public $delimiter = "\n"; // commands are separated by a newline as in redis-cli
 		public $operators = array("*");

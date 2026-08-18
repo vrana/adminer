@@ -115,6 +115,7 @@ parameters:
 	# noVariableVariables (1) - $$val is used to read the superglobals in bootstrap.inc.php
 
 	typeAliases:
+		Server: "array{scheme:string, host:string, port:string, socket:string, path:string}"
 		TableStatus: "array{Name:string, Engine?:?string, Comment?:string, Oid?:numeric-string, Rows?:?numeric-string, Collation?:string, Auto_increment?:?numeric-string, Data_length?:numeric-string, Index_length?:numeric-string, Data_free?:numeric-string, Create_options?:string, partition?:numeric-string, nspname?:string}"
 		Field: "array{field?:string, full_type:string, type:string, length?:?numeric-string, unsigned?:string, default?:string, null:bool, auto_increment:bool, collation?:string, privileges:int[], comment?:string, primary?:bool, generated?:string, composite?:bool, orig?:string, on_update?:string, on_delete?:string, default_constraint?: string}"
 		FieldType: "array{type:string, length:numeric-string, unsigned:string, collation:string}" # subset of RoutineField and Field

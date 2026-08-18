@@ -25,8 +25,7 @@ if (isset($_GET["imap"])) {
 			private $imap;
 
 			function attach($server, $username, $password): string {
-				list($host, $port) = host_port($server);
-				$this->mailbox = "{" . "$host:" . ($port ?: 993) . "/ssl}"; // Adminer disallows specifying privileged port in server name
+				$this->mailbox = "{" . "$server[host]:" . ($server["port"] ?: 993) . "/ssl}"; // Adminer disallows specifying privileged port in server name
 				$this->imap = @imap_open($this->mailbox, $username, $password, OP_HALFOPEN, 1);
 				return ($this->imap ? '' : imap_last_error());
 			}

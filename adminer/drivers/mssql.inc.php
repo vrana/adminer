@@ -26,7 +26,7 @@ if (isset($_GET["mssql"])) {
 				$this->error = rtrim($this->error);
 			}
 
-			function attach(string $server, string $username, string $password): string {
+			function attach(array $server, string $username, string $password): string {
 				sqlsrv_configure("WarningsReturnAsErrors", 0); // a message from the server would stop sqlsrv_next_result(), e.g. between the result sets of sp_helpdb
 				$connection_info = array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8");
 				$ssl = adminer()->connectSsl();
@@ -40,8 +40,8 @@ if (isset($_GET["mssql"])) {
 				if ($db != "") {
 					$connection_info["Database"] = $db;
 				}
-				list($host, $port) = host_port($server);
-				$this->link = @sqlsrv_connect($host . ($port ? ",$port" : ""), $connection_info);
+				$port = $server["port"];
+				$this->link = @sqlsrv_connect($server["host"] . ($port ? ",$port" : ""), $connection_info);
 				if ($this->link) {
 					$info = sqlsrv_server_info($this->link);
 					$this->server_info = $info['SQLServerVersion'];
@@ -214,9 +214,9 @@ if (isset($_GET["mssql"])) {
 			class Db extends MssqlDb {
 				public $extension = "PDO_SQLSRV";
 
-				function attach(string $server, string $username, string $password): string {
-					list($host, $port) = host_port($server);
-					$dsn = "sqlsrv:Server=$host" . ($port ? ",$port" : "");
+				function attach(array $server, string $username, string $password): string {
+					$port = $server["port"];
+					$dsn = "sqlsrv:Server=$server[host]" . ($port ? ",$port" : "");
 					$ssl = adminer()->connectSsl();
 					foreach (array("Encrypt", "TrustServerCertificate") as $key) {
 						if (isset($ssl[$key])) {
@@ -232,9 +232,10 @@ if (isset($_GET["mssql"])) {
 			class Db extends MssqlDb {
 				public $extension = "PDO_DBLIB";
 
-				function attach(string $server, string $username, string $password): string {
-					list($host, $port) = host_port($server);
-					return $this->dsn("dblib:charset=utf8;host=$host" . ($port ? (is_numeric($port) ? ";port=" : ";unix_socket=") . $port : ""), $username, $password);
+				function attach(array $server, string $username, string $password): string {
+					$port = $server["port"];
+					$socket = $server["socket"];
+					return $this->dsn("dblib:charset=utf8;host=$server[host]" . ($port != "" ? ";port=$port" : ($socket != "" ? ";unix_socket=$socket" : "")), $username, $password);
 				}
 			}
 		}
@@ -244,6 +245,8 @@ if (isset($_GET["mssql"])) {
 	class Driver extends SqlDriver {
 		static $extensions = array("SQLSRV", "PDO_SQLSRV", "PDO_DBLIB");
 		static $jush = "mssql";
+
+		static $serverSocket = true; // PDO_DBLIB
 
 		public $insertFunctions = array("date|time" => "getdate");
 		public $editFunctions = array(

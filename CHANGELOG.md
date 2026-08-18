@@ -1,4 +1,5 @@
 ## Adminer dev
+- Verify all parts of the server name before connecting (GHSA-rwxg-xph9-82cj, regression from 5.5.1)
 - Do not drop the old check constraint when the new one cannot be created
 - Alter routine: Preserve all characteristics and edit them in a form instead of in the definition
 - Autocomplete: Offer also in the definition of a routine, an event and a view
@@ -11,6 +12,8 @@
 - ClickHouse: Print only errors from ClickHouse (GHSA-77qq-q8fv-x45v, regression from 6.0.0)
 - ClickHouse: Highlight the queries
 - Firebird: Highlight the queries
+### Plugins
+- Db::attach() gets the server parsed to scheme, host, port, socket and path instead of the string
 
 ## Adminer 6.0.1 (released 2026-08-14)
 - Run the development version from the adminer/ directory alone, copied anywhere and under any name
