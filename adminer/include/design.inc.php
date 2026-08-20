@@ -101,9 +101,7 @@ const urlSeparators = '" . js_escape(ini_get("arg_separator.input")) . "';");
 	echo "<div id='ajaxstatus' role='status' class='jsonly'></div>\n";
 	restart_session();
 	page_messages($error);
-	if (!defined('Adminer\DIR')) { // only the compiled version serves the files itself, the development version leaves them to the web server
-		service_worker();
-	}
+	adminer()->serviceWorker();
 	$databases = &get_session("dbs");
 	if (DB != "" && $databases && !in_array(DB, $databases, true)) {
 		$databases = null;

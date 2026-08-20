@@ -110,6 +110,13 @@ class Adminer {
 		return true;
 	}
 
+	/** Print the script maintaining the service worker */
+	function serviceWorker(): void {
+		if (!defined('Adminer\DIR')) { // only the compiled version serves the files itself, the development version leaves them to the web server
+			service_worker();
+		}
+	}
+
 	/** Print HTML code inside <head>
 	* @param bool $dark dark CSS: false to disable, true to force, null to base on user preferences
 	* @return bool true to link favicon.ico

@@ -80,6 +80,12 @@ class Adminer {
 		return true;
 	}
 
+	function serviceWorker(): void {
+		if (!defined('Adminer\DIR')) {
+			service_worker();
+		}
+	}
+
 	function head(?bool $dark = null): bool {
 		return true;
 	}

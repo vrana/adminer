@@ -13,6 +13,7 @@
 - ClickHouse: Highlight the queries
 - Firebird: Highlight the queries
 ### Plugins
+- Method serviceWorker() to disable the service worker
 - Db::attach() gets the server parsed to scheme, host, port, socket and path instead of the string
 
 ## Adminer 6.0.1 (released 2026-08-14)
