@@ -15,6 +15,8 @@
 ### Plugins
 - Method serviceWorker() to disable the service worker
 - Db::attach() gets the server parsed to scheme, host, port, socket and path instead of the string
+### Internal
+- Mark the code used only in the compiled or only in the development version
 
 ## Adminer 6.0.1 (released 2026-08-14)
 - Run the development version from the adminer/ directory alone, copied anywhere and under any name

@@ -321,6 +321,16 @@ if ($vendor) {
 $file = replace_re('~\b(include|require) (DIR \. )?"([^"]*)";~', 'put_file', $file); // bootstrap.inc.php
 $file = replace_re('~(if \(!defined\(\'Adminer\\\\DIR\'\)\) \{.*\n\t)?define\(\'Adminer\\\\DIR\'.*\n(\}\n)?~', '', $file); // the compiled file serves the static files itself
 
+// the code used only in one of the versions is marked by a condition which is resolved here
+$dedent = function ($match) {
+	return preg_replace('~^\t~m', '', "$match[2]"); // the other replacements match the indentation of the source
+};
+$file = replace_re('~^(\t*)if \(!defined\(\'Adminer\\\\DIR\'\)\) \{[^\n]*\n(.*\n)\1\}\n~msU', $dedent, $file);
+$file = replace_re('~^(\t*)if \(defined\(\'Adminer\\\\DIR\'\)\) \{[^\n]*\n.*\n\1\}(?: else \{[^\n]*\n(.*\n)\1\})?\n~msU', $dedent, $file);
+if (strpos($file, "Adminer\\DIR") !== false) {
+	not_found("Adminer\\DIR"); // the condition must not survive compilation
+}
+
 // inline the checksums of official plugins, the plugins/ directory is not available next to the compiled file
 $checksums = "";
 // the checksum of a driver has to be computed from the file which the user downloads, built by `compile.php drivers`

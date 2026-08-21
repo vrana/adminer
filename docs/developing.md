@@ -408,6 +408,11 @@ It is registered only by the compiled version and unregistered after the last lo
 
 Includes in Adminer start with `./` to bypass `include_path`, which is unrelated to compilation.
 
+Code used only in one of the versions is marked by a condition on the `Adminer\DIR` constant, which the compiled file doesn't define.
+`if (!defined('Adminer\DIR'))` marks code used only in the compiled version, `if (defined('Adminer\DIR'))` code used only in the development version, and the `else` branch of `if (defined('Adminer\DIR'))` code used only in the compiled version next to its development counterpart.
+[compile.php](/compile.php) resolves these conditions instead of evaluating them at runtime, so they cost nothing in the compiled file, and it fails if any of them survives.
+[adminer/index.php](/adminer/index.php) uses `!defined('Adminer\DIR')` in its plain meaning, so that the tests can define the constant before including the file; `compile.php` removes that block before resolving the rest.
+
 Compilation also [shrinks](https://github.com/vrana/PhpShrink) PHP code by removing whitespace, comments, and shortening variable names.
 Compressed data is encoded to a 93-character alphabet (newline and printable ASCII except space, `'` and `\`), so it doesn't need escaping in single-quoted PHP strings.
 This makes the compiled file valid UTF-8 which also survives stripping trailing whitespace.
