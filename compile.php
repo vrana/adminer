@@ -62,9 +62,6 @@ function lang_ids($match) {
 function put_file($match) {
 	global $project, $vendor;
 	list(, , $dir, $filename) = $match; // DIR is the Adminer sources, the other paths are relative to the compiled project
-	if (preg_match('~LANG~', $filename)) {
-		return $match[0]; // processed later
-	}
 	$return = file_get_contents(__DIR__ . "/" . ($dir ? "adminer" : $project) . "/$filename");
 	$return = replace_re('~namespace Adminer;\s*~', '', $return);
 	if ($vendor && preg_match('~drivers/~', $filename)) {
@@ -121,44 +118,6 @@ function put_file($match) {
 	}
 	$tokens = token_get_all($return); // to find out the last token
 	return "?>\n$return" . (in_array($tokens[count($tokens) - 1][0], array(T_CLOSE_TAG, T_INLINE_HTML), true) ? "<?php" : "");
-}
-
-function put_file_lang($match) {
-	if ($_SESSION["lang"]) {
-		return "";
-	}
-	$return = "";
-	$dictionary = get_lang_translations("en"); // other languages are compressed against English, it saves 13% of their size
-	foreach (array_keys(Adminer\langs()) as $lang) {
-		$compressed = Adminer\compress_string(get_lang_translations($lang), ($lang != "en" ? $dictionary : ""));
-		$return .= '
-		case "' . $lang . '": return \'' . $compressed . '\';';
-	}
-	$translations_version = crc32($return);
-	return 'Lang::$translations = (array) $_SESSION["translations"];
-if ($_SESSION["translations_version"] != LANG . ' . $translations_version . ') {
-	Lang::$translations = array();
-	$_SESSION["translations_version"] = LANG . ' . $translations_version . ';
-}
-if (!Lang::$translations) {
-	Lang::$translations = get_translations(LANG);
-	$_SESSION["translations"] = Lang::$translations;
-}
-
-function get_compressed($lang) {
-	switch ($lang) {' . $return . '
-	}
-}
-
-function get_translations($lang) {
-	$dictionary = ($lang != "en" ? decompress_string(get_compressed("en")) : "");
-	$translations = array();
-	foreach (explode("\n", decompress_string(get_compressed($lang), $dictionary)) as $val) {
-		$translations[] = (strpos($val, "\t") ? explode("\t", $val) : $val);
-	}
-	return $translations;
-}
-';
 }
 
 /** Get translations of a language indexed by $lang_ids, joined by newlines */
@@ -385,13 +344,20 @@ if ($project == "editor") {
 }
 // \s* after ( allows wrapping long lang() calls
 $file = replace_re("~(?<!>)lang\\(\\s*'((?:[^\\\\']+|\\\\.)*)'([,)])~s", 'lang_ids', $file);
-$file = replace_re('~\b(include|require) DIR \. "[^"]*" \. LANG \. "\.inc\.php";~', 'put_file_lang', $file);
 $file = str_replace("\r", "", $file);
-if ($_SESSION["lang"]) {
-	// single language version
+if ($_SESSION["lang"]) { // single language version
 	$file = replace_re("~(<\\?php\\s*echo )?(?<!>)lang\\(\\s*'((?:[^\\\\']+|\\\\.)*)'([,)])(;\\s*\\?>)?~s", 'remove_lang', $file);
 	$file = replace("switch_lang();", "", $file);
 	$file = replace('<?php echo LANG; ?>', $_SESSION["lang"], $file);
+} else { // multi-language version
+	$cases = "";
+	$dictionary = get_lang_translations("en"); // other languages are compressed against English, it saves 13% of their size
+	foreach (array_keys(Adminer\langs()) as $lang) {
+		$cases .= "\n\t\tcase \"$lang\": return '" . Adminer\compress_string(get_lang_translations($lang), ($lang != "en" ? $dictionary : "")) . "';";
+	}
+	$file = replace_re('~(function get_compressed\(string \$lang\): string \{\n).*(\n})~sU', function ($match) use ($cases) {
+		return $match[1] . "\tswitch (\$lang) {" . $cases . "\n\t}\n\treturn \"\";" . $match[2];
+	}, $file, 1);
 }
 $file = replace('echo script_src("static/editing.js");' . "\n", "", $file); // merged into functions.js
 if ($project != "editor") { // the Editor doesn't use jush

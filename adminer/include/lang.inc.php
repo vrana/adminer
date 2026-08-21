@@ -148,5 +148,25 @@ if (idx(langs(), $_COOKIE["adminer_lang"])) {
 define('Adminer\LANG', $LANG);
 
 class Lang {
-	/** @var array<literal-string, string|list<string>> */ static array $translations;
+	/** @var array<literal-string|int, string|list<string>> */ static array $translations; // keyed by the English string, by a number in the compiled version
+}
+
+if (!defined('Adminer\DIR')) { // only in the compiled version, the development version includes the translations from lang/
+	/** Get the translations of a language compressed by compile.php */
+	function get_compressed(string $lang): string {
+		return ""; // compile.php replaces this by a switch over all languages
+	}
+
+	// inflating the translations is slow, keep them decompressed in the session
+	$translations_version = LANG . crc32(get_compressed(LANG)); // both switching the language and recompiling Adminer invalidate the cache
+	$translations = $_SESSION["translations"];
+	if (!is_string($translations) || $_SESSION["translations_version"] != $translations_version) {
+		$translations = decompress_string(get_compressed(LANG), (LANG != "en" ? decompress_string(get_compressed("en")) : "")); // the other languages use English as a preset dictionary
+		$_SESSION["translations"] = $translations;
+		$_SESSION["translations_version"] = $translations_version;
+	}
+	Lang::$translations = array();
+	foreach (explode("\n", $translations) as $val) {
+		Lang::$translations[] = (strpos($val, "\t") ? explode("\t", $val) : $val); // the plural forms are separated by tabs
+	}
 }

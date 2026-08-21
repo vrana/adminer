@@ -75,7 +75,9 @@ if (function_exists('set_time_limit')) { // can be disabled
 ini_set("precision", '16'); // 16 - IEEE 754 has 15.95 decimal digits for double
 
 include DIR . "include/lang.inc.php";
-include DIR . "lang/" . LANG . ".inc.php";
+if (defined('Adminer\DIR')) { // the compiled version has the translations inlined
+	include DIR . "lang/" . LANG . ".inc.php";
+}
 include DIR . "include/db.inc.php";
 include DIR . "include/pdo.inc.php";
 include DIR . "include/driver.inc.php";
