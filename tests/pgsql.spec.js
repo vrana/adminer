@@ -588,6 +588,29 @@ test('Partitioning', async () => {
 	await expect(page.locator('body')).toContainText('No tables.');
 });
 
+test('Partitioned rows', async () => {
+	const sql = "CREATE TABLE parts (id int, val text) PARTITION BY LIST (id);"
+		+ " CREATE TABLE parts_1 PARTITION OF parts FOR VALUES IN (1);"
+		+ " CREATE TABLE parts_2 PARTITION OF parts FOR VALUES IN (2);"
+		+ " INSERT INTO parts VALUES (1, 'one'), (2, 'two')"; // both rows are the first one in their partition, so they share the ctid
+	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public&sql=' + encodeURIComponent(sql));
+	await button(page, 'Execute').click();
+	await expect(page.locator('body')).toContainText('Query executed OK');
+	const select = '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public&select=parts&order[0]=id';
+	await goto(page, select);
+	await link(page, 'edit').click(); // the table has no unique key, so the row is identified by the ctid, which is unique only within a partition
+	await page.locator('[name="fields[val]"]').fill('uno');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('Item has been updated.');
+	await goto(page, select);
+	await expect(page.locator('body')).toContainText('two'); // the row in the other partition must keep its value
+	await page.locator('input[name="check[]"]').first().click();
+	await page.locator('[name="delete"]').click();
+	await expect(page.locator('body')).toContainText('1 item has been affected.');
+	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public&sql=' + encodeURIComponent('DROP TABLE parts'));
+	await button(page, 'Execute').click();
+});
+
 test('Variables', async () => {
 	await goto(page, '/adminer/?pgsql=&username=ODBC&variables=');
 	await expect(page.locator('body')).toContainText('autovacuum');
