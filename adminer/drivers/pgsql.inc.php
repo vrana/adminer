@@ -490,7 +490,7 @@ ORDER BY datname");
 	function limit1(string $table, string $query, string $where, string $separator = "\n"): string {
 		return (preg_match('~^INTO~', $query)
 			? limit($query, $where, 1, 0, $separator)
-			: " $query" . (is_view(table_status1($table)) ? $where : $separator . "WHERE ctid = (SELECT ctid FROM " . table($table) . $where . $separator . "LIMIT 1)")
+			: " $query" . (is_view(table_status1($table)) ? $where : $separator . "WHERE (tableoid, ctid) = (SELECT tableoid, ctid FROM " . table($table) . $where . $separator . "LIMIT 1)")
 		);
 	}
 
