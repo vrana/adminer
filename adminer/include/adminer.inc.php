@@ -122,9 +122,10 @@ class Adminer {
 	* @return bool true to link favicon.ico
 	*/
 	function head(?bool $dark = null): bool {
-		// this is matched by compile.php
-		echo "<link rel='stylesheet' href='" . DIR . "static/jush/jush.css'>\n";
-		echo ($dark !== false ? "<link rel='stylesheet'" . ($dark ? "" : " media='(prefers-color-scheme: dark)'") . " href='" . DIR . "static/jush/jush-dark.css'>\n" : "");
+		if (defined('Adminer\DIR')) { // the compiled version merges jush.css into default.css and jush-dark.css into dark.css
+			echo "<link rel='stylesheet' href='" . DIR . "static/jush/jush.css'>\n";
+			echo ($dark !== false ? "<link rel='stylesheet'" . ($dark ? "" : " media='(prefers-color-scheme: dark)'") . " href='" . DIR . "static/jush/jush-dark.css'>\n" : "");
+		}
 		return true;
 	}
 
@@ -1183,14 +1184,15 @@ class Adminer {
 	* @param TableStatus[] $tables
 	*/
 	function syntaxHighlighting(array $tables): void {
-		// this is matched by compile.php
 		echo script_src(DIR . "static/jush/modules/jush.js", true);
-		echo script_src(DIR . "static/jush/modules/jush-autocomplete-sql.js", true);
-		echo script_src(DIR . "static/jush/modules/jush-textarea.js", true);
-		echo script_src(DIR . "static/jush/modules/jush-txt.js", true);
-		echo script_src(DIR . "static/jush/modules/jush-json.js", true);
-		// this is matched by compile.php - the modules of the bundled drivers are merged into jush.js, some drivers have no module
-		echo (file_exists(__DIR__ . "/../static/jush/modules/jush-" . JUSH . ".js") ? script_src(DIR . "static/jush/modules/jush-" . JUSH . ".js", true) : "");
+		if (defined('Adminer\DIR')) { // the compiled version merges the other modules into jush.js
+			echo script_src(DIR . "static/jush/modules/jush-autocomplete-sql.js", true);
+			echo script_src(DIR . "static/jush/modules/jush-textarea.js", true);
+			echo script_src(DIR . "static/jush/modules/jush-txt.js", true);
+			echo script_src(DIR . "static/jush/modules/jush-json.js", true);
+			// the module of the bundled driver is merged into jush.js too, some drivers have no module
+			echo (file_exists(__DIR__ . "/../static/jush/modules/jush-" . JUSH . ".js") ? script_src(DIR . "static/jush/modules/jush-" . JUSH . ".js", true) : "");
+		}
 		$module = preg_replace('~<(?=/script)~i', '<\\', Driver::jushModule()); // it would close the inline <script>
 		// a released driver plugin carries its module inline; unlike jush.js the inline script is not deferred so it has to wait for it
 		echo ($module ? script("addEventListener('DOMContentLoaded', () => {\n$module\n});") : "");

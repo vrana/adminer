@@ -359,12 +359,6 @@ if ($_SESSION["lang"]) { // single language version
 		return $match[1] . "\tswitch (\$lang) {" . $cases . "\n\t}\n\treturn \"\";" . $match[2];
 	}, $file, 1);
 }
-$file = replace('echo script_src("static/editing.js");' . "\n", "", $file); // merged into functions.js
-if ($project != "editor") { // the Editor doesn't use jush
-	$file = replace_re('~\s+echo script_src\(DIR \. "static/jush/modules/jush-(autocomplete-sql|textarea|txt|json)\.js", true\);~', '', $file); // merged into jush.js
-	$file = replace_re('~\s+echo \(file_exists\(__DIR__.+jush-" \. JUSH \. "\.js", true\) : ""\);~', '', $file); // merged into jush.js or inlined in the driver
-	$file = replace_re('~echo .*/jush(-dark)?.css\'>.*~', '', $file); // merged into default.css or dark.css
-}
 if (function_exists('stripTypes')) {
 	$file = stripTypes($file);
 }
