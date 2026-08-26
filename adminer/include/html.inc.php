@@ -342,14 +342,16 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 			}
 			echo "<textarea$attrs>" . h($value) . '</textarea>';
 		} else {
-			// int(3) is only a display hint
 			$types = driver()->types();
-			$maxlength = (!preg_match('~int~', $field["type"]) && preg_match('~^(\d+)(,(\d+))?$~', $field["length"], $match)
-				? ((preg_match("~binary~", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0))
-				: ($types[$field["type"]] ? $types[$field["type"]] + ($field["unsigned"] ? 0 : 1) : 0)
-			);
-			if (JUSH == 'sql' && min_version(5.6) && preg_match('~time~', $field["type"])) {
-				$maxlength += 7; // microtime
+			$type_length = $types[$field["type"]];
+			if (preg_match('~date|time|year~', $field["type"])) {
+				// the length of a temporal type is the number of fractional seconds digits, not of characters
+				$fraction = (preg_match('~time~', $field["type"]) && preg_match('~^\d+$~', $field["length"]) ? $field["length"] + 1 : 0); // 1 - decimal point
+				$maxlength = ($type_length ? $type_length + $fraction : 0);
+			} elseif (!preg_match('~int~', $field["type"]) && preg_match('~^(\d+)(,(\d+))?$~', $field["length"], $match)) { // int(3) is only a display hint
+				$maxlength = (preg_match("~binary~", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0);
+			} else {
+				$maxlength = ($type_length ? $type_length + ($field["unsigned"] ? 0 : 1) : 0); // 1 - minus sign
 			}
 			// type='date' and type='time' display localized value which may be confusing, type='datetime' uses 'T' as date and time separator
 			echo "<input"
