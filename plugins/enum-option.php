@@ -11,18 +11,16 @@ class AdminerEnumOption extends Adminer\Plugin {
 	function editInput($table, $field, $attrs, $value) {
 		if ($field["type"] == "enum") {
 			$options = array();
-			$selected = "val-$value";
+			// the value is an array when re-printing the form after a failed save, false means the original value
+			$selected = (is_array($value)
+				? reset($value)
+				: ($value === false ? "orig" : ($value === null ? "null" : "val-$value"))
+			);
 			if (isset($_GET["select"])) {
 				$options["orig"] = $this->lang('original');
-				if ($value === null) {
-					$selected = "orig";
-				}
 			}
 			if ($field["null"]) {
 				$options["null"] = "NULL";
-				if ($value === null) {
-					$selected = "null";
-				}
 			}
 			preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
 			foreach ($matches[1] as $val) {

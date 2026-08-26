@@ -3,6 +3,7 @@
 - Do not drop the old check constraint when the new one cannot be created
 - Alter routine: Preserve all characteristics and edit them in a form instead of in the definition
 - Autocomplete: Offer also in the definition of a routine, an event and a view
+- Edit: Keep the enum value selected by the user after an error (regression from 5.4.0)
 - RTL: Mirror the borders, alignment, margins and paddings
 - Cache the assets of the compiled version in a service worker
 - MySQL: Display the check constraint clause without the extra escaping added by information_schema

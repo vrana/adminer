@@ -280,7 +280,13 @@ function enum_input(string $type, string $attrs, array $field, $value, string $e
 function input(array $field, $value, ?string $function, ?bool $autofocus = false, ?bool $update = false): void {
 	$name = h(bracket_escape($field["field"]));
 	echo "<td class='function'>";
-	if (is_array($value) && !$function) {
+	$enums = driver()->enumLength($field);
+	if ($enums) {
+		$field["type"] = "enum";
+		$field["length"] = $enums;
+	}
+	$options = ($field["type"] == "enum" || $field["type"] == "set"); // the value is an array of the selected options
+	if (is_array($value) && !$function && !$options) {
 		$function = "json";
 	}
 	$json = ($function == "json" || preg_match('~^jsonb?$~', $field["full_type"]));
@@ -295,12 +301,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 	}
 	// the form from Select can affect more rows so it must be possible to keep the original value of each of them
 	$functions = (isset($_GET["select"]) || $reset ? array("orig" => lang('original')) : array()) + adminer()->editFunctions($field);
-	$enums = driver()->enumLength($field);
-	if ($enums) {
-		$field["type"] = "enum";
-		$field["length"] = $enums;
-	}
-	$attrs = " name='fields[$name]" . ($field["type"] == "enum" || $field["type"] == "set" ? "[]" : "") . "'" . ($autofocus ? " autofocus" : "");
+	$attrs = " name='fields[$name]" . ($options ? "[]" : "") . "'" . ($autofocus ? " autofocus" : "");
 	echo driver()->unconvertFunction($field) . " ";
 	$table = $_GET["edit"] ?: $_GET["select"]; // $_GET["edit"] is not set when re-printing the form after a failed save from Select
 	if ($field["type"] == "enum") {
@@ -500,7 +501,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 			}
 			// $row is null in Insert and in the form from Select if it affects other than exactly one row, false then keeps the original value of each of them
 			$value = ($row !== null
-				? ($row[$name] != "" && JUSH == "sql" && preg_match("~enum|set~", $field["type"]) && is_array($row[$name])
+				? ($field["type"] == "set" && is_array($row[$name]) // enum keeps the array, its values are prefixed by "val-"
 					? implode(",", $row[$name])
 					: (is_bool($row[$name]) ? +$row[$name] : $row[$name])
 				)
