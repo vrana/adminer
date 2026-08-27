@@ -38,7 +38,7 @@
         "squizlabs/php_codesniffer": "4.0.4",
         "slevomat/coding-standard": "8.31.1",
         "phpcompatibility/php-compatibility": "dev-develop#299a472",
-        "phpstan/phpstan": "2.2.8",
+        "phpstan/phpstan": "2.2.9",
         "phpstan/phpstan-strict-rules": "2.0.12"
     },
     "config": {
