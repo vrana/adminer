@@ -94,7 +94,7 @@ th:not(:hover) .column { display: none; }
 .footer fieldset { margin-top: 0; }
 .links a { white-space: nowrap; margin-inline-end: 20px; }
 .logout { margin-top: .5em; position: absolute; top: 0; right: 0; background-color: var(--bg); box-shadow: 0 0 5px 5px var(--bg); }
-.loadmore { margin-inline-start: 1ex; }
+.loadmore { margin-inline-start: 1ex; display: inline-block; position: sticky; left: 10px; } /* sticky to stay on the screen when the page is scrolled horizontally by a wide table */
 td.check { text-align: end; } /* to display the checkboxes next to the data */
 /* .edit used in designs */
 #foot:focus { outline: none; } /* focused by JS after opening the menu, never by the user */
@@ -127,9 +127,10 @@ td.check { text-align: end; } /* to display the checkboxes next to the data */
 .icon-copy.copied { --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8l3.5 3.5L13 5' fill='none' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E"); }
 #schema .arrow { height: 1.25em; background: url(data:image/gif;base64,R0lGODlhCAAKAIAAAICAgP///yH5BAEAAAEALAAAAAAIAAoAAAIPBIJplrGLnpQRqtOy3rsAADs=) no-repeat right center; }
 
-/* the margins and paddings above are logical, only the offsets of the absolutely positioned elements have to be mirrored here */
+/* the margins and paddings above are logical, only the offsets of the positioned elements have to be mirrored here */
 .rtl .column { border-radius: 8px 0 0 8px; } /* border-start-end-radius is much newer than the other logical properties */
 .rtl .logout { left: 0; right: auto; }
+.rtl .loadmore { left: auto; right: 10px; }
 .rtl #breadcrumb { left: auto; right: 21em; }
 .rtl #lang, .rtl #menu { left: auto; right: 0; }
 .rtl pre, .rtl code { direction: ltr; }

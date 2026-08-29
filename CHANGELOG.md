@@ -5,6 +5,7 @@
 - Autocomplete: Offer also in the definition of a routine, an event and a view
 - Edit: Keep the enum value selected by the user after an error (regression from 5.4.0)
 - Edit: Do not highlight a valid date or time value as too long, e.g. in a datetime(3) column
+- Select: Keep "Load more data" on the screen when scrolling a wide table horizontally
 - RTL: Mirror the borders, alignment, margins and paddings
 - Cache the assets of the compiled version in a service worker
 - MySQL: Display the check constraint clause without the extra escaping added by information_schema
