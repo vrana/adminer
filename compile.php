@@ -253,7 +253,8 @@ $file = replace_re('~\*/~', "* @version " . Adminer\VERSION . "\n*/", $file, 1);
 if ($vendor) {
 	$_GET[$vendor] = true; // to load the driver
 	include_once __DIR__ . $driver_path;
-	Adminer\Db::$instance = (object) array('flavor' => '', 'server_info' => '99'); // used in support()
+	$db_class = (class_exists('Adminer\Db') ? 'Adminer\Db' : 'Adminer\SqlDb'); // Db is not declared if the driver requires an extension missing on this machine
+	$db_class::$instance = (object) array('flavor' => '', 'server_info' => '99'); // used in support()
 	foreach ($features as $key => $feature) {
 		if (!Adminer\support($feature)) {
 			if (!is_int($key)) {
