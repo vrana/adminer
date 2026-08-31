@@ -348,7 +348,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 				// the length of a temporal type is the number of fractional seconds digits, not of characters
 				$fraction = (preg_match('~time~', $field["type"]) && preg_match('~^\d+$~', $field["length"]) ? $field["length"] + 1 : 0); // 1 - decimal point
 				$maxlength = ($type_length ? $type_length + $fraction : 0);
-			} elseif (!preg_match('~int~', $field["type"]) && preg_match('~^(\d+)(,(\d+))?$~', $field["length"], $match)) { // int(3) is only a display hint
+			} elseif (!preg_match('~int|vector~', $field["type"]) && preg_match('~^(\d+)(,(\d+))?$~', $field["length"], $match)) { // int(3) and vector(3) don't limit the length of the value
 				$maxlength = (preg_match("~binary~", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0);
 			} else {
 				$maxlength = ($type_length ? $type_length + ($field["unsigned"] ? 0 : 1) : 0); // 1 - minus sign
