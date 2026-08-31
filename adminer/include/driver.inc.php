@@ -99,7 +99,7 @@ abstract class SqlDriver {
 	}
 
 	/** Get structured types
-	* @return list<string>[]|list<string> [$description => [$type, ...], ...]
+	* @return array<list<string>|string> [$description => [$type, ...], ...], a value which is not an array is a type without a description
 	*/
 	function structuredTypes(): array {
 		return array_map('array_keys', $this->types);

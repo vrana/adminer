@@ -12,6 +12,7 @@
 - MySQL 9: Create routines with LANGUAGE JAVASCRIPT
 - PostgreSQL: Edit and delete only the selected row of a partitioned table without a unique key, rows in the other partitions were affected too
 - MS SQL: Get the base type of a column declared with a user-defined type
+- MS SQL: Offer all the data types supported by the server, e.g. uniqueidentifier (bug #1327)
 - ClickHouse: Print only errors from ClickHouse (GHSA-77qq-q8fv-x45v, regression from 6.0.0)
 - ClickHouse: Highlight the queries
 - Firebird: Highlight the queries

@@ -260,6 +260,8 @@ if (isset($_GET["mssql"])) {
 		public $generated = array("PERSISTED", "VIRTUAL");
 		public $onActions = "NO ACTION|CASCADE|SET NULL|SET DEFAULT";
 
+		/** @var list<string> */ private $unknownTypes = array(); // types of the server which Adminer doesn't know, they are offered without a group
+
 		static function connect(string $server, string $username, string $password) {
 			if ($server == "") {
 				$server = "localhost:1433";
@@ -269,12 +271,43 @@ if (isset($_GET["mssql"])) {
 
 		function __construct(Db $connection) {
 			parent::__construct($connection);
-			$this->types = array( //! use sys.types
-				lang('Numbers') => array("tinyint" => 3, "smallint" => 5, "int" => 10, "bigint" => 20, "bit" => 1, "decimal" => 0, "real" => 12, "float" => 53, "smallmoney" => 10, "money" => 20),
+			$this->types = array(
+				lang('Numbers') => array(
+					"tinyint" => 3, "smallint" => 5, "int" => 10, "bigint" => 20, "bit" => 1, "decimal" => 0, "numeric" => 0,
+					"real" => 12, "float" => 53, "smallmoney" => 10, "money" => 20, "vector" => 0,
+				),
 				lang('Date and time') => array("date" => 10, "smalldatetime" => 19, "datetime" => 19, "datetime2" => 19, "time" => 8, "datetimeoffset" => 10),
-				lang('Strings') => array("char" => 8000, "varchar" => 8000, "text" => 2147483647, "nchar" => 4000, "nvarchar" => 4000, "ntext" => 1073741823),
+				lang('Strings') => array(
+					"char" => 8000, "varchar" => 8000, "text" => 2147483647, "nchar" => 4000, "nvarchar" => 4000, "ntext" => 1073741823,
+					"uniqueidentifier" => 36, "xml" => 2147483647, "json" => 2147483647, "sql_variant" => 8000, "hierarchyid" => 892,
+				),
 				lang('Binary') => array("binary" => 8000, "varbinary" => 8000, "image" => 2147483647),
+				lang('Geometry') => array("geometry" => 0, "geography" => 0),
 			);
+			$types = array_flip(get_vals("SELECT name FROM sys.types WHERE is_user_defined = 0 ORDER BY name"));
+			if ($types) {
+				foreach ($this->types as $group => $group_types) {
+					foreach ($group_types as $type => $length) {
+						if (isset($types[$type])) {
+							unset($types[$type]);
+						} else {
+							unset($this->types[$group][$type]);
+						}
+					}
+					if (!$this->types[$group]) {
+						unset($this->types[$group]);
+					}
+				}
+				$this->unknownTypes = array_keys($types);
+			}
+		}
+
+		function types(): array {
+			return parent::types() + array_fill_keys($this->unknownTypes, 0);
+		}
+
+		function structuredTypes(): array {
+			return array_merge(parent::structuredTypes(), $this->unknownTypes);
 		}
 
 		function insertUpdate(string $table, array $rows, array $primary) {
@@ -324,7 +357,7 @@ if (isset($_GET["mssql"])) {
 
 		function convertSearch(string $idf, array $val, array $field): string {
 			// these types support no comparison operator, not even LIKE, or accept no text value; the other types are converted implicitly
-			return (preg_match('~^(bit|n?text|xml|uniqueidentifier|sql_variant|hierarchyid|geography|geometry)$~', $field["type"])
+			return (preg_match('~^(bit|n?text|xml|json|vector|uniqueidentifier|sql_variant|hierarchyid|geography|geometry)$~', $field["type"])
 				? "CAST($idf AS nvarchar(max))"
 				: $idf
 			);
@@ -457,7 +490,10 @@ WHERE c.object_id = " . q($table_id)) as $row
 			$type = $row["type"];
 			$length = (preg_match("~char|binary~", $type)
 				? intval($row["max_length"]) / ($type[0] == 'n' ? 2 : 1)
-				: ($type == "decimal" ? "$row[precision],$row[scale]" : "")
+				: ($type == "decimal"
+					? "$row[precision],$row[scale]"
+					: ($type == "vector" ? (intval($row["max_length"]) - 8) / 4 : "") // a dimension takes 4 bytes, the header 8
+				)
 			);
 			$return[$row["name"]] = array(
 				"field" => $row["name"],
