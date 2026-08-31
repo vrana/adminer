@@ -24,17 +24,17 @@ if (isset($_GET["imap"])) {
 			private $mailbox;
 			private $imap;
 
-			function attach($server, $username, $password): string {
+			function attach(array $server, string $username, string $password): string {
 				$this->mailbox = "{" . "$server[host]:" . ($server["port"] ?: 993) . "/ssl}"; // Adminer disallows specifying privileged port in server name
 				$this->imap = @imap_open($this->mailbox, $username, $password, OP_HALFOPEN, 1);
 				return ($this->imap ? '' : imap_last_error());
 			}
 
-			function select_db($database) {
+			function select_db(string $database): bool {
 				return ($database == "mail");
 			}
 
-			function query($query, $unbuffered = false) {
+			function query(string $query, bool $unbuffered = false) {
 				if (preg_match('~DELETE FROM "(.+?)"~', $query)) {
 					preg_match_all('~"uid" = (\d+)~', $query, $matches);
 					return imap_delete($this->imap, implode(",", $matches[1]), FT_UID);
@@ -67,11 +67,11 @@ if (isset($_GET["imap"])) {
 				return false;
 			}
 
-			function quote($string): string {
+			function quote(string $string): string {
 				return $string;
 			}
 
-			function tables_list() {
+			function tables_list(): array {
 				static $return;
 				if ($return === null) {
 					$return = array();
@@ -82,7 +82,7 @@ if (isset($_GET["imap"])) {
 				return array_reverse($return);
 			}
 
-			function table_status($name, $fast) {
+			function table_status(string $name, bool $fast): array {
 				if ($fast) {
 					return array("Name" => $name);
 				}
@@ -96,15 +96,15 @@ if (isset($_GET["imap"])) {
 				);
 			}
 
-			function create($name) {
+			function create(string $name): bool {
 				return imap_createmailbox($this->imap, $this->mailbox . $name);
 			}
 
-			function drop($name) {
+			function drop(string $name): bool {
 				return imap_deletemailbox($this->imap, $this->mailbox . $name);
 			}
 
-			function expunge() {
+			function expunge(): bool {
 				return imap_expunge($this->imap);
 			}
 		}
@@ -114,7 +114,7 @@ if (isset($_GET["imap"])) {
 			private $result;
 			private $fields;
 
-			function __construct($result) {
+			function __construct(array $result) {
 				$this->result = $result;
 				$this->num_rows = count($result);
 				$this->fields = array_keys(idx($result, 0, array()));
@@ -145,29 +145,29 @@ if (isset($_GET["imap"])) {
 		public $insertFunctions = array("json");
 	}
 
-	function logged_user() {
+	function logged_user(): string {
 		return $_GET["username"];
 	}
 
-	function get_databases($flush) {
+	function get_databases(bool $flush): array {
 		return array("mail");
 	}
 
-	function collations() {
+	function collations(): array {
 		return array();
 	}
 
-	function db_collation($db, $collations) {
+	function db_collation(string $db, array $collations) {
 	}
 
-	function information_schema($db) {
+	function information_schema(string $db) {
 	}
 
-	function indexes($table, $connection2 = null) {
+	function indexes(string $table, ?Db $connection2 = null): array {
 		return array(array("type" => "PRIMARY", "columns" => array("uid")));
 	}
 
-	function fields($table) {
+	function fields(string $table): array {
 		$return = array();
 		foreach (
 			array( // taken from imap_fetch_overview
@@ -200,34 +200,34 @@ if (isset($_GET["imap"])) {
 		return $return;
 	}
 
-	function convert_field($field) {
+	function convert_field(array $field) {
 	}
 
-	function unconvert_field($field, $return) {
+	function unconvert_field(array $field, string $return): string {
 		return $return;
 	}
 
-	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
+	function limit(string $query, string $where, int $limit, int $offset = 0, string $separator = " "): string {
 		return " $query$where" . ($limit ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
-	function idf_escape($idf) {
+	function idf_escape(string $idf): string {
 		return '"' . str_replace('"', '""', $idf) . '"';
 	}
 
-	function table($idf) {
+	function table(string $idf): string {
 		return idf_escape($idf);
 	}
 
-	function foreign_keys($table) {
+	function foreign_keys(string $table): array {
 		return array();
 	}
 
-	function tables_list() {
+	function tables_list(): array {
 		return connection()->tables_list();
 	}
 
-	function table_status($name = "", $fast = false) {
+	function table_status(string $name = "", bool $fast = false): array {
 		$return = array();
 		foreach (($name != "" ? array($name => 1) : tables_list()) as $table => $type) {
 			$return[$table] = connection()->table_status($table, $fast);
@@ -235,30 +235,30 @@ if (isset($_GET["imap"])) {
 		return $return;
 	}
 
-	function count_tables($databases) {
+	function count_tables(array $databases): array {
 		return array(reset($databases) => count(tables_list()));
 	}
 
-	function error() {
+	function error(): string {
 		return h(connection()->error);
 	}
 
-	function is_view($table_status) {
+	function is_view(array $table_status): bool {
 		return false;
 	}
 
-	function found_rows($table_status, $where) {
+	function found_rows(array $table_status, array $where) {
 		return $table_status["Rows"];
 	}
 
-	function fk_support($table_status) {
+	function fk_support(array $table_status) {
 	}
 
-	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+	function alter_table(string $table, string $name, array $fields, array $foreign, ?string $comment, string $engine, string $collation, string $auto_increment, ?array $partitioning) {
 		return connection()->create($name);
 	}
 
-	function drop_tables($tables) {
+	function drop_tables(array $tables) {
 		$return = true;
 		foreach ($tables as $name) {
 			$return = $return && connection()->drop($name);
@@ -266,11 +266,11 @@ if (isset($_GET["imap"])) {
 		return $return;
 	}
 
-	function truncate_tables($tables) {
+	function truncate_tables(array $tables): bool {
 		return connection()->expunge();
 	}
 
-	function support($feature) {
+	function support(string $feature): bool {
 		return false;
 	}
 }

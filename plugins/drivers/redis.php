@@ -11,7 +11,7 @@ if (isset($_GET["redis"])) {
 	/** Split a command to arguments the same way as redis-cli does
 	* @return list<string>|false false for unbalanced quotes
 	*/
-	function parse_command($command) {
+	function parse_command(string $command) {
 		$escapes = array('n' => "\n", 'r' => "\r", 't' => "\t", 'a' => "\x07", 'b' => "\x08");
 		$length = strlen($command);
 		$args = array();
@@ -64,7 +64,7 @@ if (isset($_GET["redis"])) {
 	}
 
 	/** Escape an argument as a double quoted string in the redis-cli syntax */
-	function quote_arg($arg) {
+	function quote_arg(string $arg): string {
 		static $escapes, $escapes_binary;
 		if (!$escapes) {
 			// redis-cli doesn't understand octal escapes
@@ -79,7 +79,6 @@ if (isset($_GET["redis"])) {
 				$escapes_binary[chr($i)] = sprintf('\x%02x', $i);
 			}
 		}
-		$arg = (string) $arg;
 		// bytes >= 0x80 are escaped only outside UTF-8 where there's no readability to preserve
 		return '"' . strtr($arg, (is_utf8($arg) ? $escapes : $escapes_binary)) . '"';
 	}
@@ -87,7 +86,7 @@ if (isset($_GET["redis"])) {
 	/** Format arguments as a command in the redis-cli syntax
 	* @param list<string> $args
 	*/
-	function format_command($args) {
+	function format_command(array $args): string {
 		$return = array();
 		foreach ($args as $arg) {
 			$arg = (string) $arg;
@@ -109,7 +108,7 @@ if (isset($_GET["redis"])) {
 	}
 
 	/** Get a value escaped by escape_value(), keep it intact if it's not a single quoted string */
-	function unescape_value($val) {
+	function unescape_value(string $val): string {
 		if (!preg_match('~^".*"$~s', $val)) {
 			return $val;
 		}
@@ -121,7 +120,7 @@ if (isset($_GET["redis"])) {
 		public $extension = "socket";
 		private $fp;
 
-		function attach($server, $username, $password): string {
+		function attach(array $server, string $username, string $password): string {
 			$scheme = $server["scheme"];
 			$host = ($scheme ? "$scheme://" : "") . ($server["host"] ?: "127.0.0.1");
 			$this->fp = @fsockopen($host, intval($server["port"] ?: 6379), $errno, $error);
@@ -138,15 +137,15 @@ if (isset($_GET["redis"])) {
 			return '';
 		}
 
-		function select_db($database) {
+		function select_db(string $database) {
 			return $this->send(array("SELECT", $database));
 		}
 
-		function quote($string): string {
+		function quote(string $string): string {
 			return quote_arg(unescape_value($string)); // the values are used as arguments of the commands
 		}
 
-		function query($query, $unbuffered = false) {
+		function query(string $query, bool $unbuffered = false) {
 			$this->error = ''; // the error is checked after each command in SQL command
 			$args = parse_command($query);
 			if ($args === false) {
@@ -169,7 +168,7 @@ if (isset($_GET["redis"])) {
 			return new Result($rows);
 		}
 
-		function send($args) {
+		function send(array $args) {
 			return first($this->sendMulti(array($args)));
 		}
 
@@ -177,7 +176,7 @@ if (isset($_GET["redis"])) {
 		* @param list<list<string|int>> $commands
 		* @return list<mixed> replies in the order of the commands
 		*/
-		function sendMulti($commands) {
+		function sendMulti(array $commands): array {
 			$cmd = '';
 			foreach ($commands as $args) {
 				$cmd .= "*" . count($args) . "\r\n";
@@ -247,7 +246,7 @@ if (isset($_GET["redis"])) {
 		private $result;
 		private $fields;
 
-		function __construct($result) {
+		function __construct(array $result) {
 			$this->result = $result;
 			$this->num_rows = count($result);
 			$this->fields = array_keys(idx($result, 0, array()));
@@ -288,7 +287,7 @@ if (isset($_GET["redis"])) {
 			return ""; // the commands are not SQL
 		}
 
-		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
+		function select(string $table, array $select, array $where, array $group, array $order = array(), int $limit = 1, ?int $page = 0, bool $print = false) {
 			$next = $_GET["next"];
 			$_GET["next"] = ""; // there is no following page unless SCAN returns a cursor
 			$this->query = "";
@@ -352,7 +351,7 @@ if (isset($_GET["redis"])) {
 		* @param list<string|int> $args
 		* @return mixed
 		*/
-		private function send($args, $print) {
+		private function send(array $args, bool $print) {
 			$start = microtime(true);
 			$this->query = format_command($args);
 			$return = $this->conn->send($args);
@@ -374,11 +373,11 @@ if (isset($_GET["redis"])) {
 			return array(); // the parent implementation would send a SQL query
 		}
 
-		function insert($table, $set) {
+		function insert(string $table, array $set) {
 			return queries("SET " . implode(" ", $set)); // the values are quoted by quote()
 		}
 
-		function update($table, $set, $queryWhere, $limit = 0, $separator = "\n") {
+		function update(string $table, array $set, string $queryWhere, int $limit = 0, string $separator = "\n") {
 			$args = array();
 			$where = $this->where($queryWhere);
 			foreach ($where as $key) {
@@ -388,7 +387,7 @@ if (isset($_GET["redis"])) {
 			return !!queries("MSET " . implode(" ", $args)); // not the Result, Select would add its num_rows to the affected rows
 		}
 
-		function delete($table, $queryWhere, $limit = 0) {
+		function delete(string $table, string $queryWhere, int $limit = 0) {
 			$result = queries("DEL " . implode(" ", $this->where($queryWhere)));
 			if (!$result) {
 				return false;
@@ -400,7 +399,7 @@ if (isset($_GET["redis"])) {
 		/** Get the keys of a where condition as quoted arguments
 		* @return list<string>
 		*/
-		private function where($queryWhere) {
+		private function where(string $queryWhere): array {
 			preg_match_all('~key . ("(?:\\\\.|[^\\\\"])*+")~', $queryWhere, $matches);
 			return $matches[1];
 		}
@@ -408,34 +407,34 @@ if (isset($_GET["redis"])) {
 		/** Get the keys of a where condition
 		* @return list<string>
 		*/
-		private function whereKeys($queryWhere) {
+		private function whereKeys(string $queryWhere) {
 			return parse_command(implode(" ", $this->where($queryWhere)));
 		}
 	}
 
-	function logged_user() {
+	function logged_user(): string {
 		return $_GET["username"];
 	}
 
-	function get_databases($flush) {
+	function get_databases(bool $flush): array {
 		return array_map('strval', range(0, connection()->send(array("CONFIG", "GET", "databases"))[1] - 1));
 	}
 
-	function collations() {
+	function collations(): array {
 		return array();
 	}
 
-	function db_collation($db, $collations) {
+	function db_collation(string $db, array $collations) {
 	}
 
-	function information_schema($db) {
+	function information_schema(string $db) {
 	}
 
-	function indexes($table, $connection2 = null) {
+	function indexes(string $table, ?Db $connection2 = null): array {
 		return array(array('type' => 'PRIMARY', 'columns' => array('key')));
 	}
 
-	function fields($table) {
+	function fields(string $table): array {
 		return array(
 			"key" => array("field" => "key", "privileges" => array("select" => 1, "where" => 1, "insert" => 1)),
 			"type" => array("field" => "type", "privileges" => array("select" => 1)), // the type is determined by the command creating the key
@@ -443,58 +442,58 @@ if (isset($_GET["redis"])) {
 		);
 	}
 
-	function convert_field($field) {
+	function convert_field(array $field) {
 	}
 
-	function unconvert_field($field, $return) {
+	function unconvert_field(array $field, string $return): string {
 		return $return;
 	}
 
-	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
+	function limit(string $query, string $where, int $limit, int $offset = 0, string $separator = " "): string {
 		return $query;
 	}
 
-	function idf_escape($idf) {
+	function idf_escape(string $idf): string {
 		return $idf;
 	}
 
-	function table($idf) {
+	function table(string $idf): string {
 		return idf_escape($idf);
 	}
 
-	function foreign_keys($table) {
+	function foreign_keys(string $table): array {
 		return array();
 	}
 
-	function tables_list() {
+	function tables_list(): array {
 		return array('data' => 'table');
 	}
 
-	function table_status($name = "", $fast = false) {
+	function table_status(string $name = "", bool $fast = false): array {
 		return array('data' => array('Name' => 'data'));
 	}
 
-	function count_tables($databases) {
+	function count_tables(array $databases): array {
 		return array_fill_keys($databases, 1);
 	}
 
-	function error() {
+	function error(): string {
 		return h(connection()->error);
 	}
 
 	// SELECT is a Redis command so this is called from SQL command
-	function explain($connection, $query) {
+	function explain(Db $connection, string $query) {
 	}
 
-	function is_view($table_status) {
+	function is_view(array $table_status): bool {
 		return false;
 	}
 
-	function found_rows($table_status, $where) {
+	function found_rows(array $table_status, array $where) {
 		return null;
 	}
 
-	function fk_support($table_status) {
+	function fk_support(array $table_status): bool {
 		return false;
 	}
 
@@ -502,7 +501,7 @@ if (isset($_GET["redis"])) {
 		return '';
 	}
 
-	function support($feature) {
+	function support(string $feature): bool {
 		return preg_match('~^(cursor|single_table|sql)$~', $feature);
 	}
 }

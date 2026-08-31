@@ -19,17 +19,17 @@ if (isset($_GET["igdb"])) {
 		private $username;
 		private $password;
 
-		function attach($server, $username, $password): string {
+		function attach(array $server, string $username, string $password): string {
 			$this->username = $username;
 			$this->password = $password;
 			return '';
 		}
 
-		function select_db($database) {
+		function select_db(string $database): bool {
 			return ($database == "api");
 		}
 
-		function request($endpoint, $query, $method = 'POST') {
+		function request(string $endpoint, string $query, string $method = 'POST') {
 			$context = stream_context_create(array('http' => array(
 				'method' => $method,
 				'header' => array(
@@ -57,7 +57,7 @@ if (isset($_GET["igdb"])) {
 			return $return;
 		}
 
-		function query($query, $unbuffered = false) {
+		function query(string $query, bool $unbuffered = false) {
 			if (preg_match('~^SELECT COUNT\(\*\) FROM (\w+)( WHERE ((MATCH \(search\) AGAINST \((.+)\))|.+))?$~', $query, $match)) {
 				return new Result(array($match[1] == 'dumps' ? array('count' => 50) : $this->request("$match[1]/count", ($match[5] ? 'search "' . addcslashes($match[5], '\\"') . '";'
 					: ($match[3] ? 'where ' . str_replace(' AND ', ' & ', $match[3]) . ';'
@@ -93,7 +93,7 @@ if (isset($_GET["igdb"])) {
 			return $this->multi && next($this->multi->results);
 		}
 
-		function quote($string): string {
+		function quote(string $string): string {
 			return $string;
 		}
 	}
@@ -105,7 +105,7 @@ if (isset($_GET["igdb"])) {
 		private $result;
 		private $fields;
 
-		function __construct($result) {
+		function __construct(array $result) {
 			$keys = array();
 			foreach ($result as $i => $row) {
 				foreach ($row as $key => $val) {
@@ -167,7 +167,7 @@ if (isset($_GET["igdb"])) {
 			return get_temp_dir() . "/adminer-igdb-api.html";
 		}
 
-		static function connect($server, $username, $password) {
+		static function connect(string $server, string $username, string $password) {
 			if ($password == "") { // the API requires an access token, without this Adminer would refuse the driver as accepting any password
 				return lang('Invalid credentials.');
 			}
@@ -181,7 +181,7 @@ if (isset($_GET["igdb"])) {
 			return parent::connect($server, $username, $password);
 		}
 
-		function __construct($connection) {
+		function __construct(Db $connection) {
 			parent::__construct($connection);
 			libxml_use_internal_errors(true);
 			$dom = new \DOMDocument();
@@ -286,7 +286,7 @@ if (isset($_GET["igdb"])) {
 			);
 		}
 
-		function select($table, $select, $where, $group, $order = array(), $limit = 1, $page = 0, $print = false) {
+		function select(string $table, array $select, array $where, array $group, array $order = array(), int $limit = 1, ?int $page = 0, bool $print = false) {
 			$query = '';
 			$search = preg_match('~^MATCH \(search\) AGAINST \((.+)\)$~', $where[0], $match);
 			if ($search) {
@@ -333,7 +333,7 @@ if (isset($_GET["igdb"])) {
 			return new Result($return);
 		}
 
-		function insert($table, $set) {
+		function insert(string $table, array $set) {
 			$content = array();
 			foreach ($set as $key => $val) {
 				if ($key != 'endpoint') {
@@ -343,7 +343,7 @@ if (isset($_GET["igdb"])) {
 			return queries("POST $set[endpoint]/$table; " . implode('&', $content));
 		}
 
-		function delete($table, $queryWhere, $limit = 0) {
+		function delete(string $table, string $queryWhere, int $limit = 0) {
 			preg_match_all('~\bid = (\d+)~', $queryWhere, $matches);
 			$this->conn->affected_rows = 0;
 			foreach ($matches[1] as $id) {
@@ -361,34 +361,34 @@ if (isset($_GET["igdb"])) {
 			return true;
 		}
 
-		function value($val, $field): ?string {
-			return ($val && in_array($field['full_type'], array('Unix Time Stamp', 'datetime')) ? str_replace(' 00:00:00', '', gmdate('Y-m-d H:i:s', $val)) : $val);
+		function value(?string $val, array $field): ?string {
+			return ($val && in_array($field['full_type'], array('Unix Time Stamp', 'datetime')) ? str_replace(' 00:00:00', '', gmdate('Y-m-d H:i:s', (int) $val)) : $val);
 		}
 
-		function tableHelp($name, $is_view = false) {
+		function tableHelp(string $name, bool $is_view = false) {
 			return strtolower("https://api-docs.igdb.com/#" . array_search($name, $this->links));
 		}
 	}
 
-	function logged_user() {
+	function logged_user(): string {
 		return $_GET["username"];
 	}
 
-	function get_databases($flush) {
+	function get_databases(bool $flush): array {
 		return array("api");
 	}
 
-	function collations() {
+	function collations(): array {
 		return array();
 	}
 
-	function db_collation($db, $collations) {
+	function db_collation(string $db, array $collations) {
 	}
 
-	function information_schema($db) {
+	function information_schema(string $db) {
 	}
 
-	function indexes($table, $connection2 = null) {
+	function indexes(string $table, ?Db $connection2 = null): array {
 		$return = array(array('type' => 'PRIMARY', 'columns' => array($table == 'dumps' ? 'endpoint' : 'id')));
 		if (in_array($table, array('characters', 'collections', 'games', 'platforms', 'themes'))) { // https://api-docs.igdb.com/#search-1
 			$return[] = array("type" => "FULLTEXT", "columns" => array("search"));
@@ -396,7 +396,7 @@ if (isset($_GET["igdb"])) {
 		return $return;
 	}
 
-	function fields($table) {
+	function fields(string $table): array {
 		$return = array();
 		foreach (driver()->fields[$table] ?: array() as $key => $val) {
 			$type = strtolower(preg_replace('~ .*~', '', $val['full_type']));
@@ -409,26 +409,26 @@ if (isset($_GET["igdb"])) {
 		return $return;
 	}
 
-	function convert_field($field) {
+	function convert_field(array $field) {
 	}
 
-	function unconvert_field($field, $return) {
+	function unconvert_field(array $field, string $return): string {
 		return $return;
 	}
 
-	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
+	function limit(string $query, string $where, int $limit, int $offset = 0, string $separator = " "): string {
 		return $query;
 	}
 
-	function idf_escape($idf) {
+	function idf_escape(string $idf): string {
 		return $idf;
 	}
 
-	function table($idf) {
+	function table(string $idf): string {
 		return idf_escape($idf);
 	}
 
-	function foreign_keys($table) {
+	function foreign_keys(string $table): array {
 		$return = array();
 		foreach (driver()->foreignKeys[$table] ?: array() as $key => $val) {
 			$return[] = array(
@@ -440,32 +440,32 @@ if (isset($_GET["igdb"])) {
 		return $return;
 	}
 
-	function tables_list() {
+	function tables_list(): array {
 		return array_fill_keys(array_keys(table_status()), 'table');
 	}
 
-	function table_status($name = "", $fast = false) {
+	function table_status(string $name = "", bool $fast = false): array {
 		$tables = driver()->tables;
 		return ($name != '' ? ($tables[$name] ? array($name => $tables[$name]) : array()) : $tables);
 	}
 
-	function count_tables($databases) {
+	function count_tables(array $databases): array {
 		return array(reset($databases) => count(tables_list()));
 	}
 
-	function error() {
+	function error(): string {
 		return connection()->error;
 	}
 
-	function is_view($table_status) {
+	function is_view(array $table_status): bool {
 		return false;
 	}
 
-	function found_rows($table_status, $where) {
+	function found_rows(array $table_status, array $where) {
 		return driver()->foundRows;
 	}
 
-	function fk_support($table_status) {
+	function fk_support(array $table_status): bool {
 		return true;
 	}
 
@@ -474,7 +474,7 @@ if (isset($_GET["igdb"])) {
 		return (string) $row['id'];
 	}
 
-	function support($feature) {
+	function support(string $feature): bool {
 		return in_array($feature, array('columns', 'comment', 'sql', 'table'));
 	}
 }

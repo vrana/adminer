@@ -13,7 +13,7 @@ if (isset($_GET["clickhouse"])) {
 			private $url;
 			private $authorization;
 
-			function rootQuery($db, $query) {
+			function rootQuery(string $db, string $query) {
 				$this->error = '';
 				$this->errno = 0;
 				$this->affected_rows = 0;
@@ -76,7 +76,7 @@ if (isset($_GET["clickhouse"])) {
 				return new Result($return);
 			}
 
-			function query($query, $unbuffered = false) {
+			function query(string $query, bool $unbuffered = false) {
 				if (preg_match('~^\s*USE\s+(?:`((?:``|[^`])+)`|([A-Za-z_][A-Za-z0-9_]*))\s*;?\s*$~i', $query, $match)) {
 					$this->_db = str_replace("``", "`", ($match[1] !== '' ? $match[1] : $match[2]));
 					return true;
@@ -84,7 +84,7 @@ if (isset($_GET["clickhouse"])) {
 				return $this->rootQuery($this->_db, $query);
 			}
 
-			function attach($server, $username, $password): string {
+			function attach(array $server, string $username, string $password): string {
 				$scheme = ($server["scheme"] ?: "http");
 				// the path is used by a reverse proxy
 				$this->url = "$scheme://" . url_host($server["host"]) . ":" . ($server["port"] ?: ($scheme == "https" ? 8443 : 8123)) . rtrim($server["path"], "/");
@@ -98,12 +98,12 @@ if (isset($_GET["clickhouse"])) {
 				return '';
 			}
 
-			function select_db($database) {
+			function select_db(string $database): bool {
 				$this->_db = $database;
 				return true;
 			}
 
-			function quote($string): string {
+			function quote(string $string): string {
 				return "'" . strtr($string, array(
 					"\\" => "\\\\",
 					"'" => "\\'",
@@ -121,7 +121,7 @@ if (isset($_GET["clickhouse"])) {
 			public $num_rows, $columns, $meta;
 			private $rows = array(), $rowOffset = 0, $fieldOffset = 0;
 
-			function __construct($result) {
+			function __construct(array $result) {
 				$this->meta = (array) $result['meta'];
 				foreach ((array) $result['data'] as $item) {
 					$row = array();
@@ -140,7 +140,7 @@ if (isset($_GET["clickhouse"])) {
 				}, $this->meta); // array_column() is available since PHP 5.5
 			}
 
-			private function normalizeValue($value, $type) {
+			private function normalizeValue($value, string $type) {
 				// FixedString is NUL-padded to its declared width. The padding is
 				// storage detail rather than user data and breaks Adminer links and
 				// form controls if it is allowed through to the HTML response.
@@ -259,14 +259,14 @@ if (isset($_GET["clickhouse"])) {
 			return $return;
 		}
 
-		function delete($table, $queryWhere, $limit = 0) {
+		function delete(string $table, string $queryWhere, int $limit = 0) {
 			if ($queryWhere === '') {
 				$queryWhere = 'WHERE 1=1';
 			}
 			return queries("ALTER TABLE " . table($table) . " DELETE $queryWhere");
 		}
 
-		function update($table, array $set, $queryWhere, $limit = 0, $separator = "\n") {
+		function update(string $table, array $set, string $queryWhere, int $limit = 0, string $separator = "\n") {
 			$values = array();
 			foreach ($set as $key => $val) {
 				$values[] = "$key = $val";
@@ -275,7 +275,7 @@ if (isset($_GET["clickhouse"])) {
 			return queries("ALTER TABLE " . table($table) . " UPDATE $query$queryWhere");
 		}
 
-		function insert($table, array $set) {
+		function insert(string $table, array $set) {
 			if (!$set) {
 				$this->conn->error = 'ClickHouse does not support DEFAULT VALUES without an explicit column list.';
 				return false;
@@ -284,19 +284,19 @@ if (isset($_GET["clickhouse"])) {
 		}
 	}
 
-	function idf_escape($idf) {
+	function idf_escape(string $idf): string {
 		return "`" . str_replace("`", "``", $idf) . "`";
 	}
 
-	function table($idf) {
+	function table(string $idf): string {
 		return idf_escape($idf);
 	}
 
-	function clickhouse_qualified($database, $name) {
+	function clickhouse_qualified(string $database, string $name): string {
 		return idf_escape($database) . "." . idf_escape($name);
 	}
 
-	function clickhouse_type_info($fullType) {
+	function clickhouse_type_info(string $fullType): array {
 		$fullType = trim($fullType);
 		$type = $fullType;
 		$nullable = false;
@@ -310,14 +310,14 @@ if (isset($_GET["clickhouse"])) {
 		return array($type, '', $nullable);
 	}
 
-	function clickhouse_default_value($expression) {
+	function clickhouse_default_value(string $expression): string {
 		if (preg_match("~^'(.*)'$~s", $expression, $match)) {
 			return stripcslashes(str_replace("''", "'", $match[1]));
 		}
 		return $expression;
 	}
 
-	function clickhouse_field($row) {
+	function clickhouse_field(array $row): array {
 		list($type, $length, $nullable) = clickhouse_type_info($row['type']);
 		$defaultKind = strtoupper(trim($row['default_kind']));
 		$generated = (in_array($defaultKind, array("MATERIALIZED", "ALIAS", "EPHEMERAL"), true)
@@ -350,7 +350,7 @@ if (isset($_GET["clickhouse"])) {
 		);
 	}
 
-	function clickhouse_field_definition($parts) {
+	function clickhouse_field_definition(array $parts): string {
 		$name = $parts[0];
 		$type = trim($parts[1]);
 		if (isset($parts[2]) && trim($parts[2]) === "NULL" && strpos($type, 'Nullable(') !== 0) {
@@ -367,15 +367,15 @@ if (isset($_GET["clickhouse"])) {
 		return "$name $type$default$comment";
 	}
 
-	function explain($connection, $query) {
+	function explain(Db $connection, string $query) {
 		return $connection->query("EXPLAIN $query");
 	}
 
-	function found_rows($table_status, $where) {
+	function found_rows(array $table_status, array $where) {
 		return get_val("SELECT count() FROM " . table($table_status["Name"]) . ($where ? " WHERE " . implode(" AND ", $where) : ""));
 	}
 
-	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+	function alter_table(string $table, string $name, array $fields, array $foreign, ?string $comment, string $engine, string $collation, string $auto_increment, ?array $partitioning) {
 		if ($table === "") {
 			$definitions = array();
 			foreach ($fields as $field) {
@@ -456,19 +456,19 @@ if (isset($_GET["clickhouse"])) {
 		return $result;
 	}
 
-	function truncate_tables($tables) {
+	function truncate_tables(array $tables): bool {
 		return apply_queries("TRUNCATE TABLE", $tables);
 	}
 
-	function drop_views($views) {
+	function drop_views(array $views) {
 		return apply_queries("DROP VIEW", $views);
 	}
 
-	function drop_tables($tables) {
+	function drop_tables(array $tables) {
 		return apply_queries("DROP TABLE", $tables);
 	}
 
-	function get_databases($flush) {
+	function get_databases(bool $flush): array {
 		$return = get_session("dbs");
 		if ($flush || $return === null) {
 			$return = get_vals("SELECT name FROM system.databases ORDER BY name");
@@ -479,23 +479,23 @@ if (isset($_GET["clickhouse"])) {
 		return $return;
 	}
 
-	function limit($query, $where, $limit, $offset = 0, $separator = " ") {
+	function limit(string $query, string $where, int $limit, int $offset = 0, string $separator = " "): string {
 		return " $query$where" . ($limit ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
-	function limit1($table, $query, $where, $separator = "\n") {
+	function limit1(string $table, string $query, string $where, string $separator = "\n"): string {
 		return limit($query, $where, 1, 0, $separator);
 	}
 
-	function db_collation($db, $collations) {
+	function db_collation(string $db, array $collations) {
 		return null;
 	}
 
-	function logged_user() {
+	function logged_user(): string {
 		return get_val("SELECT currentUser()");
 	}
 
-	function tables_list() {
+	function tables_list(): array {
 		$result = get_rows(
 			"SELECT name, engine FROM system.tables WHERE database = " . q(connection()->_db) . " ORDER BY name"
 		);
@@ -506,7 +506,7 @@ if (isset($_GET["clickhouse"])) {
 		return $return;
 	}
 
-	function count_tables($databases) {
+	function count_tables(array $databases): array {
 		$return = array_fill_keys($databases, 0);
 		if (!$databases) {
 			return $return;
@@ -523,7 +523,7 @@ if (isset($_GET["clickhouse"])) {
 		return $return;
 	}
 
-	function table_status($name = "", $fast = false) {
+	function table_status(string $name = "", bool $fast = false): array {
 		$return = array();
 		$tables = get_rows(
 			"SELECT name, engine, total_rows, total_bytes, comment, sorting_key "
@@ -547,20 +547,20 @@ if (isset($_GET["clickhouse"])) {
 		return $return;
 	}
 
-	function is_view($table_status) {
+	function is_view(array $table_status): bool {
 		// Adminer's generic editor can safely replace ordinary views. Materialized
 		// views need ClickHouse-specific ENGINE/TO clauses, so expose them as tables.
 		return $table_status['Engine'] === 'View';
 	}
 
-	function fk_support($table_status) {
+	function fk_support(array $table_status): bool {
 		return false;
 	}
 
-	function convert_field($field) {
+	function convert_field(array $field) {
 	}
 
-	function unconvert_field($field, $return) {
+	function unconvert_field(array $field, string $return): string {
 		if ($return !== "NULL" && in_array($field['type'], array("Array", "Map", "Tuple"), true)) {
 			return "JSONExtract($return, " . q($field['full_type']) . ")";
 		}
@@ -570,7 +570,7 @@ if (isset($_GET["clickhouse"])) {
 		return $return;
 	}
 
-	function fields($table) {
+	function fields(string $table): array {
 		$return = array();
 		$result = get_rows(
 			"SELECT c.name, c.type, c.default_kind, c.default_expression, c.comment, "
@@ -587,7 +587,7 @@ if (isset($_GET["clickhouse"])) {
 		return $return;
 	}
 
-	function indexes($table, $connection2 = null) {
+	function indexes(string $table, ?Db $connection2 = null): array {
 		$conn = connection($connection2);
 		$return = array();
 		$rows = get_rows(
@@ -625,7 +625,7 @@ if (isset($_GET["clickhouse"])) {
 		return $return;
 	}
 
-	function clickhouse_index($type, $definition) {
+	function clickhouse_index(string $type, string $definition): array {
 		return array(
 			"type" => $type,
 			"columns" => array($definition),
@@ -636,17 +636,17 @@ if (isset($_GET["clickhouse"])) {
 		);
 	}
 
-	function alter_indexes($table, $alter) {
+	function alter_indexes(string $table, $alter) {
 		// the page is not linked anywhere, see Driver::supportsAlterIndex()
 		connection()->error = 'ClickHouse indexes cannot be altered by Adminer. Use the SQL command page.';
 		return false;
 	}
 
-	function foreign_keys($table) {
+	function foreign_keys(string $table): array {
 		return array();
 	}
 
-	function view($name) {
+	function view(string $name): array {
 		$create = get_val(
 			"SELECT create_table_query FROM system.tables WHERE database = " . q(connection()->_db)
 			. " AND name = " . q($name)
@@ -658,19 +658,19 @@ if (isset($_GET["clickhouse"])) {
 		return array("select" => "");
 	}
 
-	function collations() {
+	function collations(): array {
 		return array();
 	}
 
-	function information_schema($db) {
+	function information_schema(string $db): bool {
 		return in_array($db, array("system", "information_schema", "INFORMATION_SCHEMA"), true);
 	}
 
-	function error() {
+	function error(): string {
 		return h(connection()->error);
 	}
 
-	function create_database($db, $collation) {
+	function create_database(string $db, string $collation) {
 		$return = queries("CREATE DATABASE " . idf_escape($db));
 		if ($return) {
 			restart_session();
@@ -679,14 +679,14 @@ if (isset($_GET["clickhouse"])) {
 		return $return;
 	}
 
-	function drop_databases($databases) {
+	function drop_databases(array $databases): bool {
 		$return = apply_queries("DROP DATABASE", $databases, 'Adminer\idf_escape');
 		restart_session();
 		set_session("dbs", null);
 		return $return;
 	}
 
-	function rename_database($name, $collation) {
+	function rename_database(string $name, string $collation): bool {
 		$return = queries("RENAME DATABASE " . idf_escape(connection()->_db) . " TO " . idf_escape($name));
 		if ($return) {
 			connection()->_db = $name;
@@ -696,7 +696,7 @@ if (isset($_GET["clickhouse"])) {
 		return (bool) $return;
 	}
 
-	function move_tables($tables, $views, $target) {
+	function move_tables(array $tables, array $views, string $target): bool {
 		$source = connection()->_db;
 		foreach (array_merge($tables, $views) as $name) {
 			if (
@@ -711,7 +711,7 @@ if (isset($_GET["clickhouse"])) {
 		return true;
 	}
 
-	function copy_tables($tables, $views, $target) {
+	function copy_tables(array $tables, array $views, string $target): bool {
 		$source = connection()->_db;
 		$overwrite = !empty($_POST["overwrite"]);
 		foreach ($tables as $name) {
@@ -738,18 +738,18 @@ if (isset($_GET["clickhouse"])) {
 		return true;
 	}
 
-	function create_sql($table, $auto_increment, $style) {
+	function create_sql(string $table, ?bool $auto_increment, string $style): string {
 		return get_val(
 			"SELECT create_table_query FROM system.tables WHERE database = " . q(connection()->_db)
 			. " AND name = " . q($table)
 		);
 	}
 
-	function truncate_sql($table) {
+	function truncate_sql(string $table): string {
 		return "TRUNCATE TABLE " . table($table);
 	}
 
-	function use_sql($database, $style = "") {
+	function use_sql(string $database, string $style = ""): string {
 		$name = idf_escape($database);
 		$return = "";
 		if (preg_match('~CREATE~', $style)) {
@@ -761,20 +761,20 @@ if (isset($_GET["clickhouse"])) {
 		return $return . "USE $name";
 	}
 
-	function show_variables() {
+	function show_variables(): array {
 		return get_rows(
 			"SELECT name, value, changed, description FROM system.settings ORDER BY name"
 		);
 	}
 
-	function show_status() {
+	function show_status(): array {
 		return get_rows(
 			"SELECT metric AS name, toString(value) AS value, description "
 			. "FROM system.metrics ORDER BY metric"
 		);
 	}
 
-	function process_list() {
+	function process_list(): array {
 		return get_rows(
 			"SELECT query_id AS pid, user, address, elapsed, read_rows, read_bytes, "
 			. "written_rows, written_bytes, memory_usage, query "
@@ -782,11 +782,11 @@ if (isset($_GET["clickhouse"])) {
 		);
 	}
 
-	function kill_process($id) {
+	function kill_process(string $id) {
 		return queries("KILL QUERY WHERE query_id = " . q($id) . " SYNC");
 	}
 
-	function max_connections() {
+	function max_connections(): string {
 		$value = get_val("SELECT value FROM system.settings WHERE name = 'max_concurrent_queries'");
 		return ($value === false ? "0" : $value);
 	}
@@ -795,15 +795,15 @@ if (isset($_GET["clickhouse"])) {
 		return array();
 	}
 
-	function auto_increment() {
+	function auto_increment(): string {
 		return '';
 	}
 
-	function last_id($result) {
-		return 0; // ClickHouse doesn't have it
+	function last_id($result): string {
+		return '0'; // ClickHouse doesn't have it
 	}
 
-	function support($feature) {
+	function support(string $feature): bool {
 		return (bool) preg_match(
 			"~^(columns|comment|copy|database|drop_col|dump|indexes|kill|move_col|processlist|sql|status|table|variables|view)$~",
 			$feature

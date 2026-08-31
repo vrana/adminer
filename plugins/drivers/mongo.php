@@ -12,7 +12,7 @@ if (isset($_GET["mongo"])) {
 			/** @var \MongoDB\Driver\Manager */ public $_link;
 			public $_db, $_db_name;
 
-			function attach($server, $username, $password): string {
+			function attach(array $server, string $username, string $password): string {
 				$options = array();
 				if ($username . $password != "") {
 					$options["username"] = $username;
@@ -38,11 +38,11 @@ if (isset($_GET["mongo"])) {
 				return ($result ? '' : $this->error);
 			}
 
-			function executeCommand($command) {
+			function executeCommand(array $command) {
 				return $this->executeDbCommand($this->_db_name, $command);
 			}
 
-			function executeDbCommand($db, $command) {
+			function executeDbCommand(string $db, array $command) {
 				try {
 					return $this->_link->executeCommand($db, new \MongoDB\Driver\Command($command));
 				} catch (\Exception $e) {
@@ -51,7 +51,7 @@ if (isset($_GET["mongo"])) {
 				}
 			}
 
-			function executeBulkWrite($namespace, $bulk, $counter) {
+			function executeBulkWrite(string $namespace, \MongoDB\Driver\BulkWrite $bulk, string $counter): bool {
 				try {
 					$results = $this->_link->executeBulkWrite($namespace, $bulk);
 					$this->affected_rows = $results->$counter();
@@ -62,16 +62,16 @@ if (isset($_GET["mongo"])) {
 				}
 			}
 
-			function query($query, $unbuffered = false) {
+			function query(string $query, bool $unbuffered = false) {
 				return false;
 			}
 
-			function select_db($database) {
+			function select_db(string $database): bool {
 				$this->_db_name = $database;
 				return true;
 			}
 
-			function quote($string): string {
+			function quote(string $string): string {
 				return json_encode($string, 256); // 256 - JSON_UNESCAPED_UNICODE available since PHP 5.4
 			}
 		}
@@ -140,7 +140,7 @@ if (isset($_GET["mongo"])) {
 
 
 
-		function get_databases($flush) {
+		function get_databases(bool $flush): array {
 			$return = array();
 			foreach (connection()->executeCommand(array('listDatabases' => 1)) as $dbs) {
 				foreach ($dbs->databases as $db) {
@@ -150,12 +150,12 @@ if (isset($_GET["mongo"])) {
 			return $return;
 		}
 
-		function count_tables($databases) {
+		function count_tables(array $databases): array {
 			$return = array();
 			return $return;
 		}
 
-		function tables_list() {
+		function tables_list(): array {
 			$collections = array();
 			foreach (connection()->executeCommand(array('listCollections' => 1)) as $result) {
 				$collections[$result->name] = 'table';
@@ -163,11 +163,11 @@ if (isset($_GET["mongo"])) {
 			return $collections;
 		}
 
-		function drop_databases($databases) {
+		function drop_databases(array $databases): bool {
 			return false;
 		}
 
-		function indexes($table, $connection2 = null) {
+		function indexes(string $table, ?Db $connection2 = null): array {
 			$return = array();
 			foreach (connection()->executeCommand(array('listIndexes' => $table)) as $index) {
 				$descs = array();
@@ -186,7 +186,7 @@ if (isset($_GET["mongo"])) {
 			return $return;
 		}
 
-		function fields($table) {
+		function fields(string $table): array {
 			$driver = driver();
 			$fields = fields_from_edit();
 			if (!$fields) {
@@ -215,13 +215,13 @@ if (isset($_GET["mongo"])) {
 			return $fields;
 		}
 
-		function found_rows($table_status, $where) {
+		function found_rows(array $table_status, array $where) {
 			$where = where_to_query($where);
 			$toArray = connection()->executeCommand(array('count' => $table_status['Name'], 'query' => $where))->toArray();
 			return $toArray[0]->n;
 		}
 
-		function sql_query_where_parser($queryWhere) {
+		function sql_query_where_parser(string $queryWhere): array {
 			$queryWhere = preg_replace('~^\s*WHERE\s*~', "", $queryWhere);
 			while ($queryWhere[0] == "(") {
 				$queryWhere = preg_replace('~^\((.*)\)$~', "$1", $queryWhere);
@@ -253,7 +253,7 @@ if (isset($_GET["mongo"])) {
 			return (json_last_error() ? null : $return);
 		}
 
-		function where_to_query($whereAnd = array(), $whereOr = array()) {
+		function where_to_query(array $whereAnd = array(), array $whereOr = array()): array {
 			$data = array();
 			foreach (array('and' => $whereAnd, 'or' => $whereOr) as $type => $where) {
 				if (is_array($where)) {
@@ -344,14 +344,14 @@ if (isset($_GET["mongo"])) {
 
 		public $primary = "_id";
 
-		static function connect($server, $username, $password) {
+		static function connect(string $server, string $username, string $password) {
 			if ($server == "") {
 				$server = "localhost:27017";
 			}
 			return parent::connect($server, $username, $password);
 		}
 
-		function select($table, array $select, array $where, array $group, array $order = array(), $limit = 1, $page = 0, $print = false) {
+		function select(string $table, array $select, array $where, array $group, array $order = array(), int $limit = 1, ?int $page = 0, bool $print = false) {
 			$select = ($select == array("*")
 				? array()
 				: array_fill_keys($select, 1)
@@ -382,7 +382,7 @@ if (isset($_GET["mongo"])) {
 			}
 		}
 
-		function update($table, array $set, $queryWhere, $limit = 0, $separator = "\n") {
+		function update(string $table, array $set, string $queryWhere, int $limit = 0, string $separator = "\n") {
 			$db = $this->conn->_db_name;
 			$where = sql_query_where_parser($queryWhere);
 			$bulk = new \MongoDB\Driver\BulkWrite(array());
@@ -407,7 +407,7 @@ if (isset($_GET["mongo"])) {
 			return $this->conn->executeBulkWrite("$db.$table", $bulk, 'getModifiedCount');
 		}
 
-		function delete($table, $queryWhere, $limit = 0) {
+		function delete(string $table, string $queryWhere, int $limit = 0) {
 			$db = $this->conn->_db_name;
 			$where = sql_query_where_parser($queryWhere);
 			$bulk = new \MongoDB\Driver\BulkWrite(array());
@@ -415,7 +415,7 @@ if (isset($_GET["mongo"])) {
 			return $this->conn->executeBulkWrite("$db.$table", $bulk, 'getDeletedCount');
 		}
 
-		function insert($table, array $set) {
+		function insert(string $table, array $set) {
 			$db = $this->conn->_db_name;
 			$bulk = new \MongoDB\Driver\BulkWrite(array());
 			foreach ($set as $key => $value) {
@@ -436,15 +436,15 @@ if (isset($_GET["mongo"])) {
 
 
 
-	function table($idf) {
+	function table(string $idf): string {
 		return $idf;
 	}
 
-	function idf_escape($idf) {
+	function idf_escape(string $idf): string {
 		return $idf;
 	}
 
-	function table_status($name = "", $fast = false) {
+	function table_status(string $name = "", bool $fast = false): array {
 		$return = array();
 		foreach (($name != "" ? array($name => 1) : tables_list()) as $table => $type) {
 			$return[$table] = array("Name" => $table, "Engine" => "");
@@ -452,7 +452,7 @@ if (isset($_GET["mongo"])) {
 		return $return;
 	}
 
-	function create_database($db, $collation) {
+	function create_database(string $db, string $collation) {
 		return true;
 	}
 
@@ -460,20 +460,20 @@ if (isset($_GET["mongo"])) {
 		return connection()->last_id;
 	}
 
-	function error() {
+	function error(): string {
 		return h(connection()->error);
 	}
 
-	function collations() {
+	function collations(): array {
 		return array();
 	}
 
-	function logged_user() {
+	function logged_user(): string {
 		$credentials = adminer()->credentials();
 		return $credentials[1];
 	}
 
-	function alter_indexes($table, $alter) {
+	function alter_indexes(string $table, $alter) {
 		foreach ($alter as $val) {
 			list($type, $name, $set) = $val;
 			if ($set == "DROP") {
@@ -498,41 +498,41 @@ if (isset($_GET["mongo"])) {
 		return true;
 	}
 
-	function support($feature) {
+	function support(string $feature): bool {
 		return preg_match("~database|indexes|descidx~", $feature);
 	}
 
-	function db_collation($db, $collations) {
+	function db_collation(string $db, array $collations) {
 	}
 
-	function information_schema($db) {
+	function information_schema(string $db) {
 	}
 
-	function is_view($table_status) {
+	function is_view(array $table_status) {
 	}
 
-	function convert_field($field) {
+	function convert_field(array $field) {
 	}
 
-	function unconvert_field($field, $return) {
+	function unconvert_field(array $field, string $return): string {
 		return $return;
 	}
 
-	function foreign_keys($table) {
+	function foreign_keys(string $table): array {
 		return array();
 	}
 
-	function fk_support($table_status) {
+	function fk_support(array $table_status) {
 	}
 
-	function alter_table($table, $name, $fields, $foreign, $comment, $engine, $collation, $auto_increment, $partitioning) {
+	function alter_table(string $table, string $name, array $fields, array $foreign, ?string $comment, string $engine, string $collation, string $auto_increment, ?array $partitioning) {
 		if ($table == "") {
 			connection()->_db->createCollection($name);
 			return true;
 		}
 	}
 
-	function drop_tables($tables) {
+	function drop_tables(array $tables) {
 		foreach ($tables as $table) {
 			$response = connection()->_db->selectCollection($table)->drop();
 			if (!$response['ok']) {
@@ -542,7 +542,7 @@ if (isset($_GET["mongo"])) {
 		return true;
 	}
 
-	function truncate_tables($tables) {
+	function truncate_tables(array $tables): bool {
 		foreach ($tables as $table) {
 			$response = connection()->_db->selectCollection($table)->remove();
 			if (!$response['ok']) {
