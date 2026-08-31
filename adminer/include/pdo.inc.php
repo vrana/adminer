@@ -85,10 +85,14 @@ if (extension_loaded('pdo')) {
 
 		private function fetch_array(int $mode) {
 			$return = $this->fetch($mode);
-			return ($return ? array_map(array($this, 'unresource'), $return) : $return);
+			return ($return ? array_map(array($this, 'normalize'), $return) : $return);
 		}
 
-		private function unresource($val) {
+		/** Convert the value to the same representation as in the native extensions */
+		private function normalize($val) {
+			if (is_bool($val)) { // PDO_PgSQL returns booleans, the pgsql extension returns 't' and 'f'
+				return (JUSH == 'pgsql' ? ($val ? "t" : "f") : +$val);
+			}
 			return (is_resource($val) ? stream_get_contents($val) : $val);
 		}
 
