@@ -178,20 +178,21 @@ function ini_bool() {
 	return true;
 }
 
-/** Inline the JUSH module in a driver plugin
+/** Inline the JUSH module in a driver plugin and strip the type declarations unsupported by PHP 5
 * @return string contents of the released driver
 */
 function build_driver($filename) {
 	$file = file_get_contents($filename);
 	preg_match('~static \$jush = "([^"]+)"~', $file, $match);
 	$module_file = __DIR__ . "/adminer/static/jush/modules/jush-$match[1].js";
-	if (!file_exists($module_file)) {
-		return $file; // the driver has no highlighter
+	if (file_exists($module_file)) { // the other drivers have no highlighter
+		$module = file_get_contents($module_file);
+		$file = replace_re('~(static function jushModule\(\): string \{\s*return )"";[^\n]*~', function ($match) use ($module) {
+			return $match[1] . "<<<'JS'\n" . rtrim($module, "\n") . "\nJS;";
+		}, $file, 1);
 	}
-	$module = file_get_contents($module_file);
-	return replace_re('~(static function jushModule\(\): string \{\s*return )"";[^\n]*~', function ($match) use ($module) {
-		return $match[1] . "<<<'JS'\n" . rtrim($module, "\n") . "\nJS;";
-	}, $file, 1);
+	// the driver is loaded by the compiled Adminer which has the types stripped, a subclass can't declare a stripped parameter type
+	return (function_exists('stripTypes') ? stripTypes($file) : $file);
 }
 
 if ($_SERVER["argv"][1] == "drivers") {

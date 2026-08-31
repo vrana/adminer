@@ -15,6 +15,7 @@
 - ClickHouse: Print only errors from ClickHouse (GHSA-77qq-q8fv-x45v, regression from 6.0.0)
 - ClickHouse: Highlight the queries
 - Firebird: Highlight the queries
+- ClickHouse, IGDB, Redis, SimpleDB: Fix loading the driver in the compiled Adminer (bug #1325)
 ### Plugins
 - Method serviceWorker() to disable the service worker
 - Db::attach() gets the server parsed to scheme, host, port, socket and path instead of the string
