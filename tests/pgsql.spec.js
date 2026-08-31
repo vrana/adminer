@@ -428,10 +428,12 @@ test('SQL file import', async () => {
 		name: 'test.sql',
 		mimeType: 'application/sql',
 		buffer: Buffer.from("INSERT INTO interprets (name, surname) VALUES ('Karel', 'Gott');\n"
-			+ "DELIMITER ;;\nUPDATE interprets SET albums = 1 WHERE surname = 'Gott';;\nDELIMITER ;\n"),
+			+ "DELIMITER ;;\nUPDATE interprets SET albums = 1 WHERE surname = 'Gott';;\nDELIMITER ;\n"
+			+ '-- 2026-08-31 12:00:00 UTC\n'), // the comment printed by dumpFooter() must not be executed
 	});
 	await button(page, 'Execute').click();
 	await expect(page.locator('body')).toContainText('2 queries executed OK.');
+	await expect(page.locator('body')).not.toContainText('Error in query');
 	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public&sql='
 		+ encodeURIComponent('SELECT * FROM interprets'));
 	await page.locator('[name="limit"]').fill('10'); // without a limit, the export is done by JavaScript from the printed table

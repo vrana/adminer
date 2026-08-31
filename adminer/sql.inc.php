@@ -120,10 +120,21 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 						}
 
 					} else { // end of a query
-						$empty = false;
 						$q = substr($query, 0, $pos + ($copy ? 3 : 0)); // 3 - pass "\n\\." to PostgreSQL COPY
+						$query = substr($query, $offset);
+						$offset = 0;
+						if ($copy) { // the COPY delimiter is valid only for the single query
+							$delimiter = driver()->delimiter;
+							$copy = false;
+						}
+						$code = "<code class='jush-" . JUSH . "'>" . adminer()->sqlCommandQuery($q) . "</code>";
+						if (preg_match("~^$space*+\$~", $q) && !preg_match('~/\*M?!~', $q)) { // non-executable comment
+							echo ($_POST["only_errors"] ? "" : "<pre>$code</pre>\n");
+							continue;
+						}
+						$empty = false;
 						$commands++;
-						$print = "<pre id='sql-$commands'><code class='jush-" . JUSH . "'>" . adminer()->sqlCommandQuery($q) . "</code></pre>\n";
+						$print = "<pre id='sql-$commands'>$code</pre>\n";
 						if (JUSH == "sqlite" && preg_match("~^$space*+(ATTACH|VACUUM\\b.*\\bINTO)\\b~is", $q, $match) !== 0) {
 							// PHP doesn't support setting SQLITE_LIMIT_ATTACHED
 							echo $print;
@@ -214,13 +225,6 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 
 								$start = microtime(true);
 							} while (connection()->next_result());
-						}
-
-						$query = substr($query, $offset);
-						$offset = 0;
-						if ($copy) { // the COPY delimiter is valid only for the single query
-							$delimiter = driver()->delimiter;
-							$copy = false;
 						}
 					}
 
