@@ -442,12 +442,13 @@ WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V')
 			. ", 'table', " . q($table) . ", 'column', NULL)");
 		$return = array();
 		$table_id = get_val("SELECT object_id FROM sys.all_objects WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V') AND name = " . q($table));
+		// only a user-defined type is replaced by its base type, a system type is stored under the id of another one, e.g. vector under varbinary
 		foreach (
 			get_rows("SELECT c.max_length, c.precision, c.scale, c.name, c.is_nullable, c.is_identity, c.collation_name,
 	COALESCE(bt.name, t.name) type, d.definition [default], d.name default_constraint, i.is_primary_key
 FROM sys.all_columns c
 JOIN sys.types t ON c.user_type_id = t.user_type_id
-LEFT JOIN sys.types bt ON t.system_type_id = bt.user_type_id
+LEFT JOIN sys.types bt ON t.system_type_id = bt.user_type_id AND t.is_user_defined = 1
 LEFT JOIN sys.default_constraints d ON c.default_object_id = d.object_id
 LEFT JOIN sys.index_columns ic ON c.object_id = ic.object_id AND c.column_id = ic.column_id
 LEFT JOIN sys.indexes i ON ic.object_id = i.object_id AND ic.index_id = i.index_id
