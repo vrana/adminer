@@ -69,7 +69,7 @@ function put_file($match) {
 			$return = replace_re('~^if \(isset\(\$_GET\["' . $vendor . '"]\)\) \{(.*)^}~ms', '\1', $return);
 			// check function definition in drivers
 			preg_match_all(
-				'~\bfunction (?!alter_table|drop_tables|truncate_tables)([^(]+)~', // used for feature detection
+				'~\bfunction (?!alter_table|drop_tables|move_tables|truncate_tables)([^(]+)~', // used for feature detection
 				replace_re('~class Driver.*\n\t}~sU', '', file_get_contents(__DIR__ . "/adminer/drivers/mysql.inc.php")),
 				$matches
 			); //! respect context (extension, class)
@@ -103,6 +103,9 @@ function put_file($match) {
 			unset($functions["parse_type"], $functions["trigger_event"]); // helpers of the MySQL driver, not a part of the driver interface
 			if (strpos($return, "function slowQuery(")) {
 				unset($functions["connection_id"]); // slow_query() kills the query by its connection ID only if the driver can't limit the execution time itself
+			}
+			if (!strpos($return, "function alter_table(")) {
+				unset($functions["auto_increment"]); // it is used only in the form creating or altering a table
 			}
 			foreach ($functions as $val) {
 				if (!strpos($return, "$val(")) {
