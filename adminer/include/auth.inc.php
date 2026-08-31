@@ -224,7 +224,7 @@ function auth_error(string $error, array &$permanent, bool $invalid_login = true
 	page_header(lang('Login'), $error, null);
 	echo "<form action='' method='post'>\n";
 	echo "<div>";
-	if (hidden_fields($_POST, array("auth"))) { // expired session
+	if (hidden_fields($_POST, array("auth", "token"))) { // expired session
 		echo "<p class='message'>" . lang('The action will be performed after successful login with the same credentials.') . "\n";
 	}
 	echo input_token(); // after hidden_fields() which can print the token of the expired session
