@@ -7,7 +7,6 @@ $indexes = indexes($TABLE);
 $fields = fields($TABLE);
 $foreign_keys = column_foreign_keys($TABLE);
 $oid = $table_status["Oid"];
-$adminer_import = get_settings("adminer_import");
 
 $rights = array(); // privilege => 0
 $columns = array(); // selectable columns
@@ -210,38 +209,40 @@ if ($_POST && !$error) {
 				driver()->rollback(); // after queries_redirect() to not overwrite error
 			}
 
-		} elseif (!is_string($file = get_file("csv_file", true))) {
-			$error = upload_error($file);
-		} elseif (!preg_match('~~u', $file)) {
-			$error = lang('File must be in UTF-8 encoding.');
-		} else {
-			save_settings(array("output" => $adminer_import["output"], "format" => $_POST["separator"]), "adminer_import");
-			$cols = array_keys($fields);
-			$separator = ($_POST["separator"] == "csv" ? "," : ($_POST["separator"] == "tsv" ? "\t" : ";"));
-			$csv = parse_csv($file, $separator);
-			$affected = count($csv);
-			driver()->begin();
-			$rows = array();
-			foreach ($csv as $key => $values) {
-				if (!$key && !array_diff($values, $cols)) { //! doesn't work with column names containing ",\n
-					// first row corresponds to column names - use it for table structure
-					$cols = $values;
-					$affected--;
-				} else {
-					$set = array();
-					foreach ($values as $i => $col) {
-						$set[idf_escape($cols[$i])] = ($col == "" && $fields[$cols[$i]]["null"] ? "NULL" : q(csv_value($col)));
+		} else { // import
+			save_settings(array("format" => $_POST["separator"]), "adminer_import");
+			$file = get_file("csv_file", true);
+			if (!is_string($file)) {
+				$error = upload_error($file);
+			} elseif (!preg_match('~~u', $file)) {
+				$error = lang('File must be in UTF-8 encoding.');
+			} else {
+				$cols = array_keys($fields);
+				$separator = ($_POST["separator"] == "csv" ? "," : ($_POST["separator"] == "tsv" ? "\t" : ";"));
+				$csv = parse_csv($file, $separator);
+				$affected = count($csv);
+				driver()->begin();
+				$rows = array();
+				foreach ($csv as $key => $values) {
+					if (!$key && !array_diff($values, $cols)) { //! doesn't work with column names containing ",\n
+						// first row corresponds to column names - use it for table structure
+						$cols = $values;
+						$affected--;
+					} else {
+						$set = array();
+						foreach ($values as $i => $col) {
+							$set[idf_escape($cols[$i])] = ($col == "" && $fields[$cols[$i]]["null"] ? "NULL" : q(csv_value($col)));
+						}
+						$rows[] = $set;
 					}
-					$rows[] = $set;
 				}
+				$result = (!$rows || driver()->insertUpdate($TABLE, $rows, $primary));
+				if ($result) {
+					driver()->commit();
+				}
+				queries_redirect(remove_from_uri("page|next"), lang('%d row(s) have been imported.', $affected), $result);
+				driver()->rollback(); // after queries_redirect() to not overwrite error
 			}
-			$result = (!$rows || driver()->insertUpdate($TABLE, $rows, $primary));
-			if ($result) {
-				driver()->commit();
-			}
-			queries_redirect(remove_from_uri("page|next"), lang('%d row(s) have been imported.', $affected), $result);
-			driver()->rollback(); // after queries_redirect() to not overwrite error
-
 		}
 	}
 }
@@ -548,6 +549,8 @@ if (!$columns && support("table")) {
 		}
 
 		if (!is_ajax()) {
+			$adminer_import = get_settings("adminer_import");
+
 			if ($rows || $page || $has_next) { // $has_next - a cursor driver can return no rows on the first page
 				$exact_count = true;
 				if ($_GET["page"] != "last") {
