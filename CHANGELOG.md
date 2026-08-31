@@ -12,7 +12,7 @@
 - Cache the assets of the compiled version in a service worker
 - MySQL: Display the check constraint clause without the extra escaping added by information_schema
 - MySQL 9: Create routines with LANGUAGE JAVASCRIPT
-- PostgreSQL: Edit and delete only the selected row of a partitioned table without a unique key, rows in the other partitions were affected too
+- PostgreSQL: Do not edit and delete the selected row without a unique key in other partitions (bug #1326)
 - PostgreSQL PDO: Fix export of boolean values (bug #1330, regression from 5.4.4)
 - SQLite: Get the generated columns and collations also from a single-line CREATE TABLE
 - MS SQL: Get the base type of a column declared with a user-defined type
