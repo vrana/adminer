@@ -339,19 +339,22 @@ ORDER BY (m.name LIKE 'sqlite_%'), m.name, p.cid", $this->conn);
 				$return[$name]["auto_increment"] = true;
 			}
 		}
-		$idf = '(("[^"]*+")+|[a-z0-9_]+)';
-		preg_match_all('~' . $idf . '\s+text\s+COLLATE\s+(\'[^\']+\'|\S+)~i', $sql, $matches, PREG_SET_ORDER);
+		$idf = '[(,]\s*(("[^"]*+")+|[a-z0-9_]+)'; // column name at the beginning of a column definition
+		$rest = '(?:[^,()\']|\'[^\']*+\'|\([^)]*+\))*?'; // rest of the column definition, never crossing to the next column
+		preg_match_all('~' . $idf . '\s+text\b' . $rest . 'COLLATE\s+(\'[^\']+\'|[a-z0-9_]+)~i', $sql, $matches, PREG_SET_ORDER);
 		foreach ($matches as $match) {
 			$name = str_replace('""', '"', preg_replace('~^"|"$~', '', $match[1]));
 			if ($return[$name]) {
 				$return[$name]["collation"] = trim($match[3], "'");
 			}
 		}
-		preg_match_all('~' . $idf . '\s.*GENERATED ALWAYS AS \((.+)\) (STORED|VIRTUAL)~i', $sql, $matches, PREG_SET_ORDER);
+		preg_match_all('~' . $idf . '\s' . $rest . 'GENERATED\s+ALWAYS\s+AS\s*\((.+?)\)\s+(STORED|VIRTUAL)~i', $sql, $matches, PREG_SET_ORDER);
 		foreach ($matches as $match) {
 			$name = str_replace('""', '"', preg_replace('~^"|"$~', '', $match[1]));
-			$return[$name]["default"] = $match[3];
-			$return[$name]["generated"] = strtoupper($match[4]);
+			if ($return[$name]) {
+				$return[$name]["default"] = $match[3];
+				$return[$name]["generated"] = strtoupper($match[4]);
+			}
 		}
 		return $return;
 	}
