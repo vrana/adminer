@@ -2,6 +2,7 @@
 - Verify all parts of the server name before connecting (GHSA-rwxg-xph9-82cj, regression from 5.5.1)
 - Do not drop the old check constraint when the new one cannot be created
 - Alter routine: Preserve all characteristics and edit them in a form instead of in the definition
+- Autocomplete: Get the columns of the database faster (bug #1328)
 - Autocomplete: Offer also in the definition of a routine, an event and a view
 - Edit: Keep the enum value selected by the user after an error (regression from 5.4.0)
 - Edit: Do not highlight a valid date or time value as too long, e.g. in a datetime(3) column

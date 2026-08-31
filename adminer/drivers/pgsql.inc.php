@@ -440,6 +440,25 @@ if (isset($_GET["pgsql"])) {
 			return "(SELECT oid FROM pg_class WHERE relnamespace = $this->nsOid AND relname = " . q($table) . " AND relkind IN ('r', 'm', 'v', 'f', 'p'))";
 		}
 
+		function allFields(): array {
+			// information_schema is slow here, it reads the constraints of the whole database and checks the privileges of every row
+			$return = array();
+			$rows = get_rows("SELECT c.relname AS tab, a.attname AS field, a.attnotnull::int,
+	format_type(a.atttypid, a.atttypmod) AS full_type, i.indrelid AS primary
+FROM pg_class c
+JOIN pg_attribute a ON a.attrelid = c.oid AND a.attnum > 0 AND NOT a.attisdropped
+LEFT JOIN pg_index i ON i.indrelid = c.oid AND i.indisprimary AND a.attnum = ANY(i.indkey)
+WHERE c.relnamespace = $this->nsOid
+AND c.relkind IN ('r', 'm', 'v', 'f', 'p')
+ORDER BY c.relname, a.attnum", $this->conn);
+			foreach ($rows as $row) {
+				parse_full_type($row);
+				$row["null"] = !$row["attnotnull"];
+				$return[$row["tab"]][] = $row;
+			}
+			return $return;
+		}
+
 		function indexAlgorithms(array $tableStatus): array {
 			static $return = array();
 			if (!$return) {
@@ -577,14 +596,31 @@ AND relnamespace = " . driver()->nsOid . "
 		return true;
 	}
 
-	function fields(string $table): array {
-		$return = array();
-		$aliases = array(
+	/** Compute 'type' and 'length' from 'full_type' returned by format_type() and normalize 'full_type'
+	* @param mixed[] $row modified in place
+	*/
+	function parse_full_type(array &$row): void {
+		static $aliases = array(
 			'timestamp without time zone' => 'timestamp',
 			'timestamp with time zone' => 'timestamptz',
 			'time without time zone' => 'time',
 			'time with time zone' => 'timetz',
 		);
+		preg_match('~([^([]+)(\((.*)\))?([a-z ]+)?((\[[0-9]*])*)$~', $row["full_type"], $match);
+		list(, $type, $length, $row["length"], $addon, $array) = $match;
+		$row["length"] .= $array;
+		$check_type = $type . $addon;
+		if (isset($aliases[$check_type])) {
+			$row["type"] = $aliases[$check_type];
+			$row["full_type"] = $row["type"] . $length . $array;
+		} else {
+			$row["type"] = $type;
+			$row["full_type"] = $row["type"] . $length . $addon . $array;
+		}
+	}
+
+	function fields(string $table): array {
+		$return = array();
 		foreach (
 			get_rows("SELECT
 	a.attname AS field,
@@ -606,17 +642,7 @@ AND a.attnum > 0
 ORDER BY a.attnum") as $row
 		) {
 			//! collation
-			preg_match('~([^([]+)(\((.*)\))?([a-z ]+)?((\[[0-9]*])*)$~', $row["full_type"], $match);
-			list(, $type, $length, $row["length"], $addon, $array) = $match;
-			$row["length"] .= $array;
-			$check_type = $type . $addon;
-			if (isset($aliases[$check_type])) {
-				$row["type"] = $aliases[$check_type];
-				$row["full_type"] = $row["type"] . $length . $array;
-			} else {
-				$row["type"] = $type;
-				$row["full_type"] = $row["type"] . $length . $addon . $array;
-			}
+			parse_full_type($row);
 			if (in_array($row['attidentity'], array('a', 'd'))) {
 				$row['default'] = 'GENERATED ' . ($row['attidentity'] == 'd' ? 'BY DEFAULT' : 'ALWAYS') . ' AS IDENTITY';
 			}

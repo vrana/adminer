@@ -193,6 +193,27 @@ if (isset($_GET["oracle"])) {
 		function hasCStyleEscapes(): bool {
 			return true;
 		}
+
+		function allFields(): array {
+			$return = array();
+			$view = views_table("view_name");
+			$rows = get_rows('SELECT c.table_name "tab", c.column_name "field", c.data_type "type", c.nullable "nullable",
+	c.data_precision "precision", c.data_scale "scale", c.char_col_decl_length "char_length"
+FROM all_tab_columns c
+WHERE c.table_name IN (
+	SELECT table_name FROM all_tables WHERE tablespace_name = ' . q(DB) . where_owner(" AND ") . "
+	UNION SELECT view_name FROM $view
+)" . where_owner(" AND ", "c.owner") . '
+ORDER BY c.table_name, c.column_id', $this->conn);
+			foreach ($rows as $row) {
+				$length = "$row[precision],$row[scale]";
+				$row["length"] = ($length == "," ? $row["char_length"] : $length); //! int
+				$row["type"] = strtolower($row["type"]);
+				$row["null"] = ($row["nullable"] == "Y");
+				$return[$row["tab"]][] = $row;
+			}
+			return $return;
+		}
 	}
 
 

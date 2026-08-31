@@ -92,6 +92,16 @@ if (isset($_GET["firebird"])) {
 		static function jushModule(): string {
 			return ""; // the repository and the source archive load adminer/static/jush/modules/jush-firebird.js
 		}
+
+		function allFields(): array {
+			$return = array();
+			foreach (tables_list() as $table => $type) {
+				foreach (fields($table) as $field) {
+					$return[$table][] = $field;
+				}
+			}
+			return $return;
+		}
 	}
 
 

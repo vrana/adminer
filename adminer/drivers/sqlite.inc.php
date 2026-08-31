@@ -187,9 +187,21 @@ if (isset($_GET["sqlite"])) {
 
 		function allFields(): array {
 			$return = array();
-			foreach (tables_list() as $table => $type) {
-				foreach (fields($table) as $field) {
-					$return[$table][] = $field;
+			if (min_version(3.16)) { // table-valued pragma functions, they get all columns in a single query
+				$rows = get_rows('SELECT m.name AS tab, p.name AS field, p.type, p."notnull", p.pk AS ' . idf_escape("primary") . "
+FROM sqlite_master m, pragma_table_" . (min_version(3.31) ? "x" : "") . "info(m.name) p
+WHERE m.type IN ('table', 'view')
+ORDER BY (m.name LIKE 'sqlite_%'), m.name, p.cid", $this->conn);
+				foreach ($rows as $row) {
+					$row["type"] = type_affinity($row["type"]);
+					$row["null"] = !$row["notnull"];
+					$return[$row["tab"]][] = $row;
+				}
+			} else {
+				foreach (tables_list() as $table => $type) {
+					foreach (fields($table) as $field) {
+						$return[$table][] = $field;
+					}
 				}
 			}
 			return $return;
@@ -291,6 +303,18 @@ if (isset($_GET["sqlite"])) {
 		return !get_val("SELECT sqlite_compileoption_used('OMIT_FOREIGN_KEY')");
 	}
 
+	/** Get the type affinity of a declared column type */
+	function type_affinity(string $type): string {
+		$type = strtolower($type);
+		return (preg_match('~int~i', $type) ? "integer"
+			: (preg_match('~char|clob|text~i', $type) ? "text"
+			: (preg_match('~blob~i', $type) ? "blob"
+			: (preg_match('~real|floa|doub~i', $type) ? "real"
+			: (preg_match('~any~i', $type) ? "any"
+			: "numeric"
+		)))));
+	}
+
 	function fields(string $table): array {
 		$return = array();
 		$sql = get_val("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table));
@@ -304,13 +328,7 @@ if (isset($_GET["sqlite"])) {
 			$default = $row["dflt_value"];
 			$return[$name] = array(
 				"field" => $name,
-				"type" => (preg_match('~int~i', $type) ? "integer"
-					: (preg_match('~char|clob|text~i', $type) ? "text"
-					: (preg_match('~blob~i', $type) ? "blob"
-					: (preg_match('~real|floa|doub~i', $type) ? "real"
-					: (preg_match('~any~i', $type) ? "any"
-					: "numeric"
-				))))),
+				"type" => type_affinity($type),
 				"full_type" => $type,
 				"default" => (preg_match("~^'(.*)'$~", $default, $match) ? str_replace("''", "'", $match[1]) : ($default == "NULL" ? null : $default)),
 				"null" => !$row["notnull"],
