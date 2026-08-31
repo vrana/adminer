@@ -211,6 +211,10 @@ if (isset($_GET["imap"])) {
 		return " $query$where" . ($limit ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
+	function limit1(string $table, string $query, string $where, string $separator = "\n"): string {
+		return limit($query, $where, 1, 0, $separator);
+	}
+
 	function idf_escape(string $idf): string {
 		return '"' . str_replace('"', '""', $idf) . '"';
 	}
@@ -245,6 +249,9 @@ if (isset($_GET["imap"])) {
 
 	function is_view(array $table_status): bool {
 		return false;
+	}
+
+	function last_id($result) {
 	}
 
 	function found_rows(array $table_status, array $where) {

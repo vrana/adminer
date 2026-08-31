@@ -248,6 +248,15 @@ ORDER BY RDB$INDEX_SEGMENTS.RDB$FIELD_POSITION';
 		return h(connection()->error);
 	}
 
+	function last_id($result) {
+	}
+
+	function explain(Db $connection, string $query) {
+	}
+
+	function found_rows(array $table_status, array $where) {
+	}
+
 	function types(): array {
 		return array();
 	}
@@ -260,6 +269,6 @@ ORDER BY RDB$INDEX_SEGMENTS.RDB$FIELD_POSITION';
 	}
 
 	function support(string $feature): bool {
-		return preg_match("~^(columns|sql|status|table)$~", $feature);
+		return preg_match("~^(columns|sql|table)$~", $feature);
 	}
 }

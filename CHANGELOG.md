@@ -16,6 +16,8 @@
 - ClickHouse: Highlight the queries
 - Firebird: Highlight the queries
 - ClickHouse, IGDB, Redis, SimpleDB: Fix loading the driver in the compiled Adminer (bug #1325)
+- Elasticsearch, Firebird, IGDB, IMAP, MongoDB, Redis, SimpleDB: Fix a fatal error on the pages calling a function missing in the driver
+- Firebird: Remove the status page, the driver cannot provide it
 ### Plugins
 - Method serviceWorker() to disable the service worker
 - Db::attach() gets the server parsed to scheme, host, port, socket and path instead of the string

@@ -444,6 +444,14 @@ if (isset($_GET["mongo"])) {
 		return $idf;
 	}
 
+	function limit(string $query, string $where, int $limit, int $offset = 0, string $separator = " "): string {
+		return " $query$where" . ($limit ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
+	}
+
+	function limit1(string $table, string $query, string $where, string $separator = "\n"): string {
+		return limit($query, $where, 1, 0, $separator);
+	}
+
 	function table_status(string $name = "", bool $fast = false): array {
 		$return = array();
 		foreach (($name != "" ? array($name => 1) : tables_list()) as $table => $type) {
@@ -454,6 +462,10 @@ if (isset($_GET["mongo"])) {
 
 	function create_database(string $db, string $collation) {
 		return true;
+	}
+
+	function rename_database(string $name, string $collation): bool {
+		return false;
 	}
 
 	function last_id($result) {

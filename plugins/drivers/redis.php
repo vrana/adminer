@@ -453,6 +453,10 @@ if (isset($_GET["redis"])) {
 		return $query;
 	}
 
+	function limit1(string $table, string $query, string $where, string $separator = "\n"): string {
+		return limit($query, $where, 1, 0, $separator);
+	}
+
 	function idf_escape(string $idf): string {
 		return $idf;
 	}

@@ -346,11 +346,19 @@ if (isset($_GET["simpledb"])) {
 		return " $query$where" . ($limit ? $separator . "LIMIT $limit" : "");
 	}
 
+	function limit1(string $table, string $query, string $where, string $separator = "\n"): string {
+		return limit($query, $where, 1, 0, $separator);
+	}
+
 	function convert_field(array $field) {
 	}
 
 	function unconvert_field(array $field, string $return): string {
 		return $return;
+	}
+
+	function is_view(array $table_status): bool {
+		return false;
 	}
 
 	function fk_support(array $table_status) {

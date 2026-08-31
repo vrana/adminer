@@ -412,6 +412,10 @@ if (isset($_GET["elastic"])) {
 		return " $query$where" . ($limit ? $separator . "LIMIT $limit" . ($offset ? " OFFSET $offset" : "") : "");
 	}
 
+	function limit1(string $table, string $query, string $where, string $separator = "\n"): string {
+		return limit($query, $where, 1, 0, $separator);
+	}
+
 	function collations(): array {
 		return array();
 	}

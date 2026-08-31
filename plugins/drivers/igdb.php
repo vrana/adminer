@@ -420,6 +420,10 @@ if (isset($_GET["igdb"])) {
 		return $query;
 	}
 
+	function limit1(string $table, string $query, string $where, string $separator = "\n"): string {
+		return limit($query, $where, 1, 0, $separator);
+	}
+
 	function idf_escape(string $idf): string {
 		return $idf;
 	}
@@ -455,6 +459,9 @@ if (isset($_GET["igdb"])) {
 
 	function error(): string {
 		return connection()->error;
+	}
+
+	function explain(Db $connection, string $query) {
 	}
 
 	function is_view(array $table_status): bool {
