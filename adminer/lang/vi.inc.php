@@ -326,6 +326,7 @@ Lang::$translations = array(
 	'Inherits from' => 'Kế thừa từ', // Claude Fable 5
 	'Checks' => 'Kiểm tra', // Claude Fable 5
 	'Inherited by' => 'Được kế thừa bởi', // Claude Fable 5
+	'Shadow tables' => 'Bảng bóng', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] hoặc :socket', // Claude Fable 5
 	'Adminer does not support accessing a database without a password.' => 'Adminer không hỗ trợ truy cập cơ sở dữ liệu không có mật khẩu.', // Claude Fable 5
 	'Default value' => 'Giá trị mặc định', // Claude Fable 5

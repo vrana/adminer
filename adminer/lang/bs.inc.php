@@ -321,6 +321,7 @@ Lang::$translations = array(
 	'Inherits from' => 'Nasljeđuje od', // Claude Fable 5
 	'Checks' => 'Provjere', // Claude Fable 5
 	'Inherited by' => 'Naslijeđeno od', // Claude Fable 5
+	'Shadow tables' => 'Sjenovite tabele', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] ili :socket', // Claude Fable 5
 	'Adminer does not support accessing a database without a password.' => 'Adminer ne podržava pristup bazi podataka bez lozinke.', // Claude Fable 5
 	'Default value' => 'Zadana vrijednost', // Claude Fable 5

@@ -299,6 +299,7 @@ Lang::$translations = array(
 	'Inherits from' => 'Herda de', // Claude Fable 5
 	'Checks' => 'Comprobacións', // Claude Fable 5
 	'Inherited by' => 'Herdada por', // Claude Fable 5
+	'Shadow tables' => 'Táboas sombra', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] ou :socket', // Claude Fable 5
 	'Adminer does not support accessing a database without a password.' => 'Adminer non permite acceder a unha base de datos sen contrasinal.', // Claude Fable 5
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Grazas por usar Adminer, considere <a href="https://www.adminer.org/en/donation/">facer unha doazón</a>.', // Claude Fable 5

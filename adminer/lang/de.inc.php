@@ -324,6 +324,7 @@ Lang::$translations = array(
 	'Condition' => 'Bedingung', // Claude Fable 5
 	'Inherits from' => 'Erbt von', // Claude Fable 5
 	'Inherited by' => 'Vererbt an', // Claude Fable 5
+	'Shadow tables' => 'Schattentabellen', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] oder :socket', // Claude Fable 5
 	'Invalid server.' => 'Ungültiger Server.', // Claude Fable 5
 	'Increase %s.' => 'Erhöhen Sie %s.', // Claude Fable 5

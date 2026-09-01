@@ -319,6 +319,7 @@ Lang::$translations = array(
 	'Condition' => 'Podmienka', // Claude Fable 5
 	'Inherits from' => 'Zdedená z', // Claude Fable 5
 	'Inherited by' => 'Zdedené', // Claude Fable 5
+	'Shadow tables' => 'Tieňové tabuľky', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] alebo :socket', // Claude Fable 5
 	'Invalid server.' => 'Neplatný server.', // Claude Fable 5
 	'Loaded plugins' => 'Načítané pluginy', // Claude Fable 5

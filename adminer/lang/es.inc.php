@@ -318,6 +318,7 @@ Lang::$translations = array(
 	'Limit rows' => 'Límite de registros', // Claude Fable 5
 	'Inherits from' => 'Hereda de', // Claude Fable 5
 	'Inherited by' => 'Heredada por', // Claude Fable 5
+	'Shadow tables' => 'Tablas sombra', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] o :socket', // Claude Fable 5
 	'Default value' => 'Valor predeterminado', // Claude Fable 5
 	'Full table scan' => 'Escaneo completo de la tabla', // Claude Fable 5

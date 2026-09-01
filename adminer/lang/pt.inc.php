@@ -287,6 +287,7 @@ Lang::$translations = array(
 	'Inherits from' => 'Herda de', // Claude Fable 5
 	'Checks' => 'Verificações', // Claude Fable 5
 	'Inherited by' => 'Herdada por', // Claude Fable 5
+	'Shadow tables' => 'Tabelas sombra', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] ou :socket', // Claude Fable 5
 	'Adminer does not support accessing a database without a password.' => 'O Adminer não suporta aceder a uma base de dados sem senha.', // Claude Fable 5
 	'Default value' => 'Valor predeterminado', // Claude Fable 5

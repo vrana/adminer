@@ -355,6 +355,7 @@ Lang::$translations = array(
 	'Inherits from' => 'Nasljeđuje od',
 	'Checks' => 'Provjere',
 	'Inherited by' => 'Nasljeđeno od',
+	'Shadow tables' => 'Sjenovite tablice', // Claude Opus 5
 	'Invalid server.' => 'Neispravan poslužitelj.', // Claude Fable 5
 );
 

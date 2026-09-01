@@ -295,6 +295,7 @@ Lang::$translations = array(
 	'Inherits from' => 'Arver fra', // Claude Fable 5
 	'Checks' => 'Kontroller', // Claude Fable 5
 	'Inherited by' => 'Arves av', // Claude Fable 5
+	'Shadow tables' => 'Skyggetabeller', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] eller :socket', // Claude Fable 5
 	'Adminer does not support accessing a database without a password.' => 'Adminer støtter ikke tilgang til en database uten passord.', // Claude Fable 5
 	'Default value' => 'Standardverdi', // Claude Fable 5

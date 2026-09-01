@@ -337,6 +337,7 @@ Lang::$translations = array(
 	'Inherits from' => 'Miras aldığı tablolar', // Claude Fable 5
 	'Checks' => 'Kontroller', // Claude Fable 5
 	'Inherited by' => 'Miras alan tablolar', // Claude Fable 5
+	'Shadow tables' => 'Gölge tablolar', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] veya :socket', // Claude Fable 5
 	'Adminer does not support accessing a database without a password.' => 'Adminer parolasız bir veri tabanına erişimi desteklemez.', // Claude Fable 5
 	'Invalid server.' => 'Geçersiz sunucu.', // Claude Fable 5

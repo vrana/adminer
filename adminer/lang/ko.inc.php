@@ -295,6 +295,7 @@ Lang::$translations = array(
 	'Inherits from' => '상속 원본', // Claude Fable 5
 	'Checks' => '체크 제약 조건', // Claude Fable 5
 	'Inherited by' => '상속 대상', // Claude Fable 5
+	'Shadow tables' => '섀도우 테이블', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] 또는 :socket', // Claude Fable 5
 	'Adminer does not support accessing a database without a password.' => 'Adminer는 비밀번호 없이 데이터베이스에 접근하는 것을 지원하지 않습니다.', // Claude Fable 5
 	'Default value' => '기본값', // Claude Fable 5

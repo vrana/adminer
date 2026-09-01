@@ -204,6 +204,7 @@ Lang::$translations = array(
 	'Values' => 'Wartości',
 	'Inherits from' => 'Dziedziczy po',
 	'Inherited by' => 'Odziedziczone przez',
+	'Shadow tables' => 'Tabele cienia', // Claude Opus 5
 
 	'View' => 'Perspektywa',
 	'Materialized view' => 'Zmaterializowana perspektywa',

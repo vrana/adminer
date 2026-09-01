@@ -323,6 +323,7 @@ Lang::$translations = array(
 	'Condition' => 'Условие', // Claude Fable 5
 	'Inherits from' => 'Наследует от', // Claude Fable 5
 	'Inherited by' => 'Наследуется таблицами', // Claude Fable 5
+	'Shadow tables' => 'Теневые таблицы', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] или :socket', // Claude Fable 5
 	'Invalid server.' => 'Неправильный сервер.', // Claude Fable 5
 	'screenshot' => 'скриншот', // Claude Fable 5

@@ -288,6 +288,7 @@ Lang::$translations = array(
 	'Inherits from' => 'Ettől örököl', // Claude Fable 5
 	'Checks' => 'Ellenőrzések', // Claude Fable 5
 	'Inherited by' => 'Ezek öröklik', // Claude Fable 5
+	'Shadow tables' => 'Árnyéktáblák', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] vagy :socket', // Claude Fable 5
 	'Adminer does not support accessing a database without a password.' => 'Az Adminer nem támogatja a jelszó nélküli adatbázis-hozzáférést.', // Claude Fable 5
 	'Default value' => 'Alapértelmezett érték', // Claude Fable 5

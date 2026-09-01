@@ -351,6 +351,7 @@ Lang::$translations = array(
 	'Inherits from' => '繼承自', // Claude Fable 5
 	'Checks' => '檢查約束', // Claude Fable 5
 	'Inherited by' => '被繼承', // Claude Fable 5
+	'Shadow tables' => '影子資料表', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] 或 :socket', // Claude Fable 5
 	'Invalid server.' => '無效的伺服器。', // Claude Fable 5
 	'Loaded plugins' => '已載入的外掛', // Claude Fable 5

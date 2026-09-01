@@ -351,6 +351,7 @@ Lang::$translations = array(
 	'Inherits from' => 'Perii taulusta', // Claude Fable 5
 	'Checks' => 'Tarkistukset', // Claude Fable 5
 	'Inherited by' => 'Periytyy tauluihin', // Claude Fable 5
+	'Shadow tables' => 'Varjotaulut', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] tai :socket', // Claude Fable 5
 	'Invalid server.' => 'Virheellinen palvelin.', // Claude Fable 5
 	'Loaded plugins' => 'Ladatut lisäosat', // Claude Fable 5

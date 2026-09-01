@@ -334,6 +334,7 @@ Lang::$translations = array(
 	'Inherits from' => 'Наследява от', // Claude Fable 5
 	'Checks' => 'Проверки', // Claude Fable 5
 	'Inherited by' => 'Наследява се от', // Claude Fable 5
+	'Shadow tables' => 'Сенчести таблици', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] или :socket', // Claude Fable 5
 	'Adminer does not support accessing a database without a password.' => 'Adminer не поддържа достъп до база данни без парола.', // Claude Fable 5
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Благодарим ви, че използвате Adminer, помислете за <a href="https://www.adminer.org/en/donation/">дарение</a>.', // Claude Fable 5

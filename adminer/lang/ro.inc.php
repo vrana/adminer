@@ -288,6 +288,7 @@ Lang::$translations = array(
 	'Inherits from' => 'Moștenește de la', // Claude Fable 5
 	'Checks' => 'Verificări', // Claude Fable 5
 	'Inherited by' => 'Moștenit de', // Claude Fable 5
+	'Shadow tables' => 'Tabele umbră', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] sau :socket', // Claude Fable 5
 	'Adminer does not support accessing a database without a password.' => 'Adminer nu acceptă accesul la o bază de date fără parolă.', // Claude Fable 5
 	'Default value' => 'Valoare implicită', // Claude Fable 5

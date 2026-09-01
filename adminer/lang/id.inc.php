@@ -322,6 +322,7 @@ Lang::$translations = array(
 	'Inherits from' => 'Mewarisi dari', // Claude Fable 5
 	'Checks' => 'Pemeriksaan', // Claude Fable 5
 	'Inherited by' => 'Diwarisi oleh', // Claude Fable 5
+	'Shadow tables' => 'Tabel bayangan', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] atau :socket', // Claude Fable 5
 	'Adminer does not support accessing a database without a password.' => 'Adminer tidak mendukung akses basis data tanpa sandi.', // Claude Fable 5
 	'Default value' => 'Nilai bawaan', // Claude Fable 5

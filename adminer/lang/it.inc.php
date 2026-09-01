@@ -318,6 +318,7 @@ Lang::$translations = array(
 	'Inherits from' => 'Eredita da', // Claude Fable 5
 	'Checks' => 'Controlli', // Claude Fable 5
 	'Inherited by' => 'Ereditata da', // Claude Fable 5
+	'Shadow tables' => 'Tabelle ombra', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] o :socket', // Claude Fable 5
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Grazie per aver usato Adminer, considera una <a href="https://www.adminer.org/en/donation/">donazione</a>.', // Claude Fable 5
 	'Invalid server.' => 'Server non valido.', // Claude Fable 5
