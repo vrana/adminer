@@ -533,21 +533,19 @@ if (!defined('Adminer\DRIVER')) {
 	*/
 	function table_status(string $name = "", bool $fast = false): array {
 		$return = array();
-		// MySQL repeats the error of a table which cannot be opened in the Comment of all the following tables
-		$comments = ($fast || $name != "" || connection()->flavor == 'maria'
-			? array()
-			: get_key_vals("SELECT TABLE_NAME, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()")
-		);
-		foreach (
-			get_rows(
-				$fast
-				? "SELECT TABLE_NAME AS Name, ENGINE AS Engine, TABLE_COMMENT AS Comment FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() "
-					. ($name != "" ? "AND TABLE_NAME = " . q($name) : "ORDER BY Name")
-				: "SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "")
-			) as $row
-		) {
+		$select = "TABLE_NAME AS Name, TABLE_COMMENT AS Comment FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() "
+			. ($name != "" ? "AND TABLE_NAME = " . q($name) : "ORDER BY Name");
+		// MySQL returns an error instead of the Comment of a table which cannot be opened and repeats it in all the following tables
+		$comments = ($fast || connection()->flavor == 'maria' ? array() : get_key_vals("SELECT $select"));
+		$previous = null;
+		foreach (get_rows($fast ? "SELECT ENGINE AS Engine, $select" : "SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "")) as $row) {
 			if ($comments) {
-				$row["Comment"] = idx($comments, $row["Name"], "");
+				$comment = idx($comments, $row["Name"], "");
+				if ($row["Comment"] !== $comment && $row["Comment"] !== $previous) { // an error instead of the comment, the following tables only repeat it
+					$row["Error"] = $row["Comment"];
+				}
+				$previous = $row["Comment"];
+				$row["Comment"] = $comment;
 			}
 			if ($row["Engine"] == "InnoDB") {
 				// ignore internal comment, unnecessary since MySQL 5.1.21

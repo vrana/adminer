@@ -66,6 +66,7 @@ th:not(:hover) .column { display: none; }
 .message { color: green; background: #efe; }
 .message table { color: var(--fg); background: var(--bg); }
 .error, .message { padding: .5em .8em; margin: 1em 0 0; margin-inline-end: 20px; }
+td .error { padding: 1px; margin: 0; }
 .char { color: #007F00; }
 .date { color: #7F007F; }
 .enum { color: #007F7F; }

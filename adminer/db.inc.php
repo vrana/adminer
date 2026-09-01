@@ -172,7 +172,7 @@ if (adminer()->homepage()) {
 						$id = " id='$key-" . h($name) . "'";
 						echo ($column[1]
 							? "<td align='right'><a href='" . h(ME . "$column[1]=") . url_escape($name) . "'$id title='$column[2]'>" . format_status($status, $key) . "</a>"
-							: "<td$id>" . h(idx($status, $key, '?'))
+							: "<td$id>" . h(idx($status, $key, '?')) . ($key == "Comment" && $status["Error"] ? " <span class='error'>" . h($status["Error"]) . "</span>" : "")
 						);
 					}
 					$tables++;

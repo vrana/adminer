@@ -12,6 +12,7 @@
 - Cache the assets of the compiled version in a service worker
 - MySQL: Display the check constraint clause without the extra escaping added by information_schema
 - MySQL: Do not repeat the error of an unreadable table in the comments of the following tables
+- MySQL: Display the error of an unreadable table next to its comment
 - MySQL 9: Create routines with LANGUAGE JAVASCRIPT
 - MySQL 26.7: Link the documentation of the used version
 - PostgreSQL: Do not edit and delete the selected row without a unique key in other partitions (bug #1326)
