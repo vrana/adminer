@@ -15,6 +15,7 @@
 - PostgreSQL: Do not edit and delete the selected row without a unique key in other partitions (bug #1326)
 - PostgreSQL PDO: Fix export of boolean values (bug #1330, regression from 5.4.4)
 - SQLite: Get the generated columns and collations also from a single-line CREATE TABLE
+- SQLite: Support FTS5
 - MS SQL: Get the base type of a column declared with a user-defined type
 - MS SQL: Offer all the data types supported by the server, e.g. uniqueidentifier (bug #1327)
 - ClickHouse: Print only errors from ClickHouse (GHSA-77qq-q8fv-x45v, regression from 6.0.0)
@@ -26,6 +27,8 @@
 ### Plugins
 - Method serviceWorker() to disable the service worker
 - Db::attach() gets the server parsed to scheme, host, port, socket and path instead of the string
+- Methods Driver::supportsAlterTable(), Driver::shadowTables(), Driver::fulltextSql() and property Driver::$fulltextOperator
+- TableStatus key 'partition' renamed to 'dependent', it marks also the tables belonging to another table
 ### Internal
 - Mark the code used only in the compiled or only in the development version
 

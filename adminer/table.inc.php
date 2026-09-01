@@ -61,7 +61,7 @@ if (support("indexes") && driver()->supportsIndex($table_status)) {
 	echo "</div>\n";
 }
 
-if (!is_view($table_status)) {
+if (!is_view($table_status) && driver()->supportsAlterTable($table_status)) {
 	if (fk_support($table_status)) {
 		echo "<div>\n";
 		echo "<h3 id='foreign-keys'>" . lang('Foreign keys') . "</h3>\n";
@@ -113,7 +113,7 @@ if (!is_view($table_status)) {
 	}
 }
 
-if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
+if (support(is_view($table_status) ? "view_trigger" : "trigger") && driver()->supportsAlterTable($table_status)) {
 	echo "<div>\n";
 	echo "<h3 id='triggers'>" . lang('Triggers') . "</h3>\n";
 	$triggers = triggers($TABLE);
@@ -127,6 +127,12 @@ if (support(is_view($table_status) ? "view_trigger" : "trigger")) {
 	}
 	echo '<p class="links hover"><a href="' . h(ME) . 'trigger=' . url_escape($TABLE) . '">' . lang('Create trigger') . "</a>\n";
 	echo "</div>\n";
+}
+
+$shadow = driver()->shadowTables($TABLE);
+if ($shadow) {
+	echo "<h3 id='shadow-tables'>" . lang('Shadow tables') . "</h3>\n";
+	tables_links($shadow);
 }
 
 $inherited = driver()->inheritedTables($TABLE);

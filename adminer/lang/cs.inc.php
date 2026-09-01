@@ -203,6 +203,7 @@ Lang::$translations = array(
 	'Values' => 'Hodnoty',
 	'Inherits from' => 'Zděděná z',
 	'Inherited by' => 'Zděděné',
+	'Shadow tables' => 'Stínové tabulky',
 
 	'View' => 'Pohled',
 	'Materialized view' => 'Materializovaný pohled',

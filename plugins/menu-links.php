@@ -55,7 +55,7 @@ li:hover .hover, p:hover .hover, div:hover > .hover, .hover.active, tr:hover td.
 		foreach ($tables as $table => $status) {
 			$table = "$table"; // do not highlight "0" as active everywhere
 			$name = Adminer\adminer()->tableName($status);
-			if ($name != "" && !$status["partition"]) {
+			if ($name != "" && !$status["dependent"]) {
 				echo '<li>';
 				if ($both) {
 					echo '<a href="' . Adminer\h(Adminer\ME) . 'select=' . Adminer\url_escape($table) . '"'

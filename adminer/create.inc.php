@@ -41,6 +41,7 @@ if ($TABLE != "") {
 		$error = lang('No tables.');
 	}
 }
+$alterable = ($TABLE == "" || driver()->supportsAlterTable($table_status)); // e.g. a virtual table can be only renamed and dropped
 
 $row = $_POST;
 $row["fields"] = (array) $row["fields"];
@@ -204,10 +205,10 @@ if ($max_columns) {
 <?php
 if (support("columns") || $TABLE == "") {
 	echo lang('Table name') . ": <input name='name'" . ($TABLE == "" && !$_POST ? " autofocus" : "") . " data-maxlength='64' value='" . h($row["name"]) . "' autocapitalize='off'>\n";
-	echo ($engines
+	echo (!$alterable ? h($table_status["Engine"]) . "\n" : ($engines
 		? html_select("Engine", array("" => "(" . lang('engine') . ")") + $engines, $row["Engine"], on('change', 'helpClose') . on_help_value()) . "\n"
 		: ""
-	);
+	));
 	if ($collations) {
 		echo "<datalist id='collations'>" . optionlist($collations) . "</datalist>\n";
 		echo (preg_match("~sqlite|mssql~", JUSH) ? "" : "<input list='collations' name='Collation' value='" . h($row["Collation"]) . "' placeholder='(" . lang('collation') . ")'>\n");
@@ -215,7 +216,7 @@ if (support("columns") || $TABLE == "") {
 	echo "<input type='submit' value='" . lang('Save') . "'>\n";
 }
 
-if (support("columns")) {
+if (support("columns") && $alterable) {
 	echo "<div class='scrollable'>\n";
 	echo "<table id='edit-fields' class='nowrap'>\n";
 	edit_fields($row["fields"], $collations, "TABLE", $foreign_keys);

@@ -30,6 +30,7 @@ abstract class SqlDriver {
 	/** @var string[] */ public $editFunctions = array(); // ["$type|$type2" => "$function/$function2"] functions used in edit only
 	/** @var list<string> */ public $unsigned = array(); // number variants
 	/** @var list<string> */ public $operators = array(); // operators used in select
+	/** @var string */ public $fulltextOperator = "AGAINST"; // printed in the fulltext search box
 	/** @var list<string> */ public $functions = array(); // functions used in select
 	/** @var list<string> */ public $grouping = array(); // grouping functions used in select
 	/** @var string */ public $onActions = "RESTRICT|NO ACTION|CASCADE|SET NULL|SET DEFAULT"; // used in foreign_keys()
@@ -338,6 +339,13 @@ abstract class SqlDriver {
 		return true;
 	}
 
+	/** Check whether the table definition can be altered
+	* @param TableStatus $tableStatus
+	*/
+	function supportsAlterTable(array $tableStatus): bool {
+		return true;
+	}
+
 	/** Return list of supported index algorithms, first one is default
 	 * @param TableStatus $tableStatus
 	 * @return list<string>
@@ -351,6 +359,22 @@ abstract class SqlDriver {
 	*/
 	function indexOpclasses(): array {
 		return array();
+	}
+
+	/** Get tables used internally by a table
+	* @return list<array{table: string, ns: string}>
+	*/
+	function shadowTables(string $table): array {
+		return array();
+	}
+
+	/** Get a condition for a fulltext search
+	* @param string $name index name
+	* @param Index $index
+	*/
+	function fulltextSql(string $name, array $index, string $query, bool $boolean): string {
+		return "MATCH (" . implode(", ", array_map('Adminer\idf_escape', $index["columns"])) . ") AGAINST ("
+			. q($query) . ($boolean ? " IN BOOLEAN MODE" : "") . ")";
 	}
 
 	/** Get defined check constraints

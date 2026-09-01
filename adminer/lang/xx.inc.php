@@ -204,6 +204,7 @@ Lang::$translations = array(
 	'Values' => 'Xx',
 	'Inherits from' => 'Xx',
 	'Inherited by' => 'Xx',
+	'Shadow tables' => 'Xx',
 
 	'View' => 'Xx',
 	'Materialized view' => 'Xx',

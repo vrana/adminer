@@ -286,11 +286,15 @@ if (isset($_GET["igdb"])) {
 			);
 		}
 
+		function fulltextSql(string $name, array $index, string $query, bool $boolean): string {
+			return 'search "' . addcslashes($query, '\\"') . '"';
+		}
+
 		function select(string $table, array $select, array $where, array $group, array $order = array(), int $limit = 1, ?int $page = 0, bool $print = false) {
 			$query = '';
-			$search = preg_match('~^MATCH \(search\) AGAINST \((.+)\)$~', $where[0], $match);
+			$search = preg_match('~^search "~', $where[0]); // the condition built by fulltextSql()
 			if ($search) {
-				$query = 'search "' . addcslashes($match[1], '\\"') . "\";\n";
+				$query = "$where[0];\n";
 				unset($where[0]);
 			}
 			foreach ($where as $i => $val) {

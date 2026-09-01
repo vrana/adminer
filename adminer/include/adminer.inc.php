@@ -511,7 +511,7 @@ class Adminer {
 		print_fieldset("search", lang('Search'), $where);
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
-				echo "<div>(<i>" . implode("</i>, <i>", array_map('Adminer\h', $index["columns"])) . "</i>) AGAINST";
+				echo "<div>(<i>" . implode("</i>, <i>", array_map('Adminer\h', $index["columns"])) . "</i>) " . h(driver()->fulltextOperator);
 				echo " <input type='search' name='fulltext[$i]' value='" . h(idx($_GET["fulltext"], $i)) . "' data-default=''" . on('input', 'selectFieldChange') . ">";
 				echo (JUSH == 'sql' ? checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL") : '');
 				echo "</div>\n";
@@ -650,8 +650,7 @@ class Adminer {
 		$return = array();
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT" && idx($_GET["fulltext"], $i) != "") {
-				$return[] = "MATCH (" . implode(", ", array_map('Adminer\idf_escape', $index["columns"])) . ") AGAINST ("
-					. q($_GET["fulltext"][$i]) . (isset($_GET["boolean"][$i]) ? " IN BOOLEAN MODE" : "") . ")";
+				$return[] = driver()->fulltextSql($i, $index, $_GET["fulltext"][$i], isset($_GET["boolean"][$i]));
 			}
 		}
 		$operators = adminer()->operators();
@@ -1281,7 +1280,7 @@ class Adminer {
 		foreach ($tables as $table => $status) {
 			$table = "$table"; // do not highlight "0" as active everywhere
 			$name = adminer()->tableName($status);
-			if ($name != "" && !$status["partition"]) {
+			if ($name != "" && !$status["dependent"]) {
 				echo '<li><a href="' . h(ME) . 'select=' . url_escape($table) . '"'
 					. bold($_GET["select"] == $table || $_GET["edit"] == $table, "select hover")
 					. " title='" . lang('Select data') . "'>" . lang('select') . "</a> "

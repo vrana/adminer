@@ -567,7 +567,7 @@ ORDER BY 1";
 	" . (min_version(12) ? "''" : "CASE WHEN relhasoids THEN 'oid' ELSE '' END") . " AS \"Oid\",
 	reltuples AS \"Rows\",
 	" . ($sequences ? "seq.last_value" : "NULL") . " AS \"Auto_increment\",
-	" . (min_version(10) ? "relispartition::int AS partition," : "") . "
+	" . (min_version(10) ? "relispartition::int AS dependent," : "") . "
 	current_schema() AS nspname
 FROM pg_class c
 " . ($sequences ? "LEFT JOIN (
