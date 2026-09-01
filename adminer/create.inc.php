@@ -63,7 +63,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 		$orig_field = reset($orig_fields);
 		$after = " FIRST";
 
-		foreach ($row["fields"] as $key => $field) {
+		foreach ($row["fields"] as $field) {
 			$foreign_key = $foreign_keys[$field["type"]];
 			$type_field = ($foreign_key !== null ? $referencable_primary[$foreign_key] : $field); //! can collide with user defined type
 			if ($field["field"] != "") {
