@@ -78,7 +78,6 @@ parameters:
 		- identifier: booleanOr.rightAlwaysTrue
 		- identifier: ternary.alwaysTrue
 		- identifier: if.alwaysTrue
-		- identifier: isset.offset
 		- identifier: deadCode.unreachable
 		- "~Function Adminer\\\\get_driver\\(\\) never returns null~"
 

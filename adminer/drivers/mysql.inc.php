@@ -533,6 +533,11 @@ if (!defined('Adminer\DRIVER')) {
 	*/
 	function table_status(string $name = "", bool $fast = false): array {
 		$return = array();
+		// MySQL repeats the error of a table which cannot be opened in the Comment of all the following tables
+		$comments = ($fast || $name != "" || connection()->flavor == 'maria'
+			? array()
+			: get_key_vals("SELECT TABLE_NAME, TABLE_COMMENT FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE()")
+		);
 		foreach (
 			get_rows(
 				$fast
@@ -541,6 +546,9 @@ if (!defined('Adminer\DRIVER')) {
 				: "SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "")
 			) as $row
 		) {
+			if ($comments) {
+				$row["Comment"] = idx($comments, $row["Name"], "");
+			}
 			if ($row["Engine"] == "InnoDB") {
 				// ignore internal comment, unnecessary since MySQL 5.1.21
 				$row["Comment"] = preg_replace('~(?:(.+); )?InnoDB free: .*~', '\1', $row["Comment"]);
