@@ -687,6 +687,7 @@ function functionChange() {
 				const text = document.createElement('input');
 				text.name = input.name;
 				text.value = selectValue(input);
+				text.size = 40;
 				text.origElement = input;
 				input.replaceWith(text);
 				setupSubmitHighlightInput(text);
