@@ -15,6 +15,7 @@
 - MySQL: Display the error of an unreadable table next to its comment
 - MySQL 9: Create routines with LANGUAGE JAVASCRIPT
 - MySQL 26.7: Link the documentation of the used version
+- MariaDB: Display an unreadable table as a table with the error instead of as a view
 - PostgreSQL: Do not edit and delete the selected row without a unique key in other partitions (bug #1326)
 - PostgreSQL PDO: Fix export of boolean values (bug #1330, regression from 5.4.4)
 - SQLite: Get the generated columns and collations also from a single-line CREATE TABLE

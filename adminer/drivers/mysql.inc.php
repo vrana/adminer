@@ -533,19 +533,23 @@ if (!defined('Adminer\DRIVER')) {
 	*/
 	function table_status(string $name = "", bool $fast = false): array {
 		$return = array();
-		$select = "TABLE_NAME AS Name, TABLE_COMMENT AS Comment FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() "
+		$query = "SELECT ENGINE AS Engine, TABLE_NAME AS Name, TABLE_COMMENT AS Comment FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() "
 			. ($name != "" ? "AND TABLE_NAME = " . q($name) : "ORDER BY Name");
-		// MySQL returns an error instead of the Comment of a table which cannot be opened and repeats it in all the following tables
-		$comments = ($fast || connection()->flavor == 'maria' ? array() : get_key_vals("SELECT $select"));
+		// the servers return an error instead of the Comment of a table which cannot be opened, MySQL repeats it also in all the following tables
+		$schema = array();
+		foreach (($fast ? array() : get_rows($query)) as $row) {
+			$schema[$row["Name"]] = $row;
+		}
 		$previous = null;
-		foreach (get_rows($fast ? "SELECT ENGINE AS Engine, $select" : "SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "")) as $row) {
-			if ($comments) {
-				$comment = idx($comments, $row["Name"], "");
-				if ($row["Comment"] !== $comment && $row["Comment"] !== $previous) { // an error instead of the comment, the following tables only repeat it
+		foreach (get_rows($fast ? $query : "SHOW TABLE STATUS" . ($name != "" ? " LIKE " . q(addcslashes($name, "%_\\")) : "")) as $row) {
+			$original = idx($schema, $row["Name"]);
+			if ($original) {
+				if ($row["Comment"] !== $original["Comment"] && $row["Comment"] !== $previous) { // an error instead of the comment, the following tables only repeat it
 					$row["Error"] = $row["Comment"];
 				}
 				$previous = $row["Comment"];
-				$row["Comment"] = $comment;
+				$row["Comment"] = $original["Comment"];
+				$row["Engine"] = $original["Engine"]; // MariaDB returns NULL for a table which cannot be opened, unlike information_schema
 			}
 			if ($row["Engine"] == "InnoDB") {
 				// ignore internal comment, unnecessary since MySQL 5.1.21
