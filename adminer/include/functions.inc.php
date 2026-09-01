@@ -185,7 +185,14 @@ function doc_version(): string {
 	// MySQL uses calendar versioning since 26.7 so the URL needs both the year and the month
 	// the two most significant digits give the documented version of PostgreSQL (18, 9.6) and MS SQL (16)
 	$regexp = (JUSH == 'sql' ? '~^\d+\.\d+~' : '~^\d\.?\d~');
-	return (preg_match($regexp, $server_info, $match) ? $match[0] : "");
+	$version = (preg_match($regexp, $server_info, $match) ? $match[0] : "");
+	if (JUSH == 'mssql') {
+		// MS SQL identifies the versions by monikers: https://learn.microsoft.com/en-us/sql/sql-server/versioning-system-monikers-ui-sql-server
+		// Azure SQL Database reports the version of SQL Server 2014 which is not documented anymore, SQL Server 2017 is the oldest documented version
+		//! SERVERPROPERTY('EngineEdition') would distinguish Managed Instance (azuresqldb-mi-current), Synapse (azure-sqldw-latest) and Fabric (fabric-sqldb) but it costs an extra query
+		return ($version >= 15 ? "sql-server-ver$version" : ($version == 12 ? "azuresqldb-current" : "sql-server-2017"));
+	}
+	return $version;
 }
 
 /** Get connection charset */

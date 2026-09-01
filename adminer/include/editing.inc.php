@@ -540,7 +540,7 @@ function doc_link(array $paths, string $text = "<sup>?</sup>"): string {
 		$urls['sql'] = "https://mariadb.com/kb/en/";
 		$paths['sql'] = (isset($paths['mariadb']) ? $paths['mariadb'] : str_replace(".html", "/", $paths['sql']));
 	}
-	return ($paths[JUSH] ? "<a href='" . h($urls[JUSH] . $paths[JUSH] . (JUSH == 'mssql' ? "?view=sql-server-ver$version" : "")) . "'" . target_blank() . ">$text</a>" : "");
+	return ($paths[JUSH] ? "<a href='" . h($urls[JUSH] . $paths[JUSH] . (JUSH == 'mssql' ? "?view=$version" : "")) . "'" . target_blank() . ">$text</a>" : "");
 }
 
 /** Compute size of database
