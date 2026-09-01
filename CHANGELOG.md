@@ -12,6 +12,7 @@
 - Cache the assets of the compiled version in a service worker
 - MySQL: Display the check constraint clause without the extra escaping added by information_schema
 - MySQL 9: Create routines with LANGUAGE JAVASCRIPT
+- MySQL 26.7: Link the documentation of the used version
 - PostgreSQL: Do not edit and delete the selected row without a unique key in other partitions (bug #1326)
 - PostgreSQL PDO: Fix export of boolean values (bug #1330, regression from 5.4.4)
 - SQLite: Get the generated columns and collations also from a single-line CREATE TABLE

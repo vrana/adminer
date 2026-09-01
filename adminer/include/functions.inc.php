@@ -175,6 +175,19 @@ function min_version($version, $maria_db = "", ?Db $connection2 = null): bool {
 	return $version && version_compare($server_info, $version) >= 0;
 }
 
+/** Get the version of the database system as used in its documentation URLs */
+function doc_version(): string {
+	$server_info = connection()->server_info;
+	if (JUSH == 'oracle') {
+		// the ctx parameter joins the first two numbers of e.g. "Oracle Database 19c ... Version 19.3.0.0.0", PDO reports the version alone
+		return (preg_match('~(?:.* |^)(\d+)\.(\d+)\.\d+\.\d+\.\d+~s', $server_info, $match) ? $match[1] . $match[2] : "");
+	}
+	// MySQL uses calendar versioning since 26.7 so the URL needs both the year and the month
+	// the two most significant digits give the documented version of PostgreSQL (18, 9.6) and MS SQL (16)
+	$regexp = (JUSH == 'sql' ? '~^\d+\.\d+~' : '~^\d\.?\d~');
+	return (preg_match($regexp, $server_info, $match) ? $match[0] : "");
+}
+
 /** Get connection charset */
 function charset(Db $connection): string {
 	return (min_version("5.5.3", 0, $connection) ? "utf8mb4" : "utf8"); // SHOW CHARSET would require an extra query

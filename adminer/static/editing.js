@@ -4,7 +4,7 @@
 let autocompleter; // set in adminer.inc.php
 
 /** Load syntax highlighting
-* @param {string} version first three characters of database system version
+* @param {string} version version of the database system as used in its documentation URLs
 * @param {string} [vendor]
 */
 function syntaxHighlighting(version, vendor) {
