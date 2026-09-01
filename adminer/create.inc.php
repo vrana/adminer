@@ -7,7 +7,7 @@ namespace Adminer;
 function referencable_primary(string $self): array {
 	$return = array(); // table_name => field
 	foreach (table_status('', true) as $table_name => $table) {
-		if ($table_name != $self && fk_support($table)) {
+		if ($table_name != $self && !$table["dependent"] && fk_support($table)) {
 			foreach (fields($table_name) as $field) {
 				if ($field["primary"]) {
 					if ($return[$table_name]) { // multi column primary key

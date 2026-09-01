@@ -233,7 +233,8 @@ if (isset($_GET["sqlite"])) {
 				$rows = get_rows('SELECT m.name AS tab, p.name AS field, p.type, p."notnull", p.pk AS ' . idf_escape("primary") . "
 FROM sqlite_master m, pragma_table_" . (min_version(3.31) ? "x" : "") . "info(m.name) p
 WHERE m.type IN ('table', 'view')" . (min_version(3.31) ? "
-AND p.hidden != 1" : "") . "
+AND p.hidden != 1" : "") . (min_version(3.37) ? "
+AND m.name NOT IN (SELECT name FROM pragma_table_list WHERE type = 'shadow')" : "") . "
 ORDER BY (m.name LIKE 'sqlite_%'), m.name, p.cid", $this->conn);
 				foreach ($rows as $row) {
 					$row["type"] = type_affinity($row["type"]);

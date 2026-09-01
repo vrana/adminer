@@ -449,7 +449,8 @@ FROM pg_class c
 JOIN pg_attribute a ON a.attrelid = c.oid AND a.attnum > 0 AND NOT a.attisdropped
 LEFT JOIN pg_index i ON i.indrelid = c.oid AND i.indisprimary AND a.attnum = ANY(i.indkey)
 WHERE c.relnamespace = $this->nsOid
-AND c.relkind IN ('r', 'm', 'v', 'f', 'p')
+AND c.relkind IN ('r', 'm', 'v', 'f', 'p')" . (min_version(10) ? "
+AND NOT c.relispartition" : "") . "
 ORDER BY c.relname, a.attnum", $this->conn);
 			foreach ($rows as $row) {
 				parse_full_type($row);

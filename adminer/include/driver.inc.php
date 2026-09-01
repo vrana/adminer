@@ -53,7 +53,12 @@ abstract class SqlDriver {
 	* @param list<string>|null $statements statements offered at the beginning of a query, null for all
 	*/
 	static function jushAutocomplete(array $tables, ?array $statements): string {
-		$tablesColumns = array_fill_keys(array_keys($tables), array());
+		$tablesColumns = array();
+		foreach ($tables as $table => $status) {
+			if (!$status["dependent"]) {
+				$tablesColumns[$table] = array();
+			}
+		}
 		foreach (driver()->allFields() as $table => $fields) {
 			foreach ($fields as $field) {
 				$tablesColumns[$table][] = $field["field"];

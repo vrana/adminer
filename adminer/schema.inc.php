@@ -61,7 +61,7 @@ $hidden = array(); // tables hidden by a plugin, their references are not displa
 $table_statuses = array();
 foreach (table_status('', true) as $table => $table_status) {
 	if (!is_view($table_status)) {
-		if (adminer()->tableName($table_status) != "") {
+		if (adminer()->tableName($table_status) != "" && !$table_status["dependent"]) {
 			$table_statuses[$table] = $table_status;
 		} else {
 			$hidden[$table] = true;

@@ -28,7 +28,12 @@ class AdminerHighlightCodemirror extends Adminer\Plugin {
 		echo Adminer\script_src("$this->root/addon/runmode/runmode$this->minified.js", true);
 		echo Adminer\script_src("$this->root/addon/hint/show-hint$this->minified.js", true);
 		echo Adminer\script_src("$this->root/mode/javascript/javascript$this->minified.js", true);
-		$tables = array_fill_keys(array_keys($tableStatuses), array());
+		$tables = array();
+		foreach ($tableStatuses as $table => $status) {
+			if (!$status["dependent"]) {
+				$tables[$table] = array();
+			}
+		}
 		if (Adminer\support("sql")) {
 			echo Adminer\script_src("$this->root/mode/sql/sql$this->minified.js", true);
 			echo Adminer\script_src("$this->root/addon/hint/sql-hint$this->minified.js", true);
