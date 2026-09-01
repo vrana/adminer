@@ -689,6 +689,7 @@ function functionChange() {
 				text.value = selectValue(input);
 				text.origElement = input;
 				input.replaceWith(text);
+				setupSubmitHighlightInput(text);
 				input = text;
 			}
 		} else if (input.origElement) { // revive the original element (keeps its type, e.g. number for +)
