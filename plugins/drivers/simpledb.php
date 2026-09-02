@@ -117,10 +117,13 @@ if (isset($_GET["simpledb"])) {
 
 		static $serverSchemes = array("http", "https");
 
-		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "IS NOT NULL");
 		public $grouping = array("count");
 
 		public $primary = "itemName()";
+
+		function operators(?array $tableStatus): array {
+			return array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "IS NOT NULL");
+		}
 
 		/** Get the JUSH module inlined in the released driver by the release script */
 		static function jushModule(): string {

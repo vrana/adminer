@@ -86,7 +86,9 @@ if (isset($_GET["firebird"])) {
 
 		static $serverPath = true; // the path to the database file
 
-		public $operators = array("=");
+		function operators(?array $tableStatus): array {
+			return array("=");
+		}
 
 		/** Get the JUSH module inlined in the released driver by the release script */
 		static function jushModule(): string {

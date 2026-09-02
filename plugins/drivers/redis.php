@@ -276,7 +276,10 @@ if (isset($_GET["redis"])) {
 		static $serverSchemes = array("ssl", "tls");
 
 		public $delimiter = "\n"; // commands are separated by a newline as in redis-cli
-		public $operators = array("*");
+
+		function operators(?array $tableStatus): array {
+			return array("*");
+		}
 
 		/** Get the JUSH module inlined in the released driver by the release script */
 		static function jushModule(): string {

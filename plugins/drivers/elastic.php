@@ -173,7 +173,10 @@ if (isset($_GET["elastic"])) {
 		static $serverPath = true;
 
 		public $insertFunctions = array("json");
-		public $operators = array("=", "must", "should", "must_not");
+
+		function operators(?array $tableStatus): array {
+			return array("=", "must", "should", "must_not");
+		}
 
 		/** Get the JUSH module inlined in the released driver by the release script */
 		static function jushModule(): string {

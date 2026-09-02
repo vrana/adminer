@@ -185,7 +185,6 @@ if (isset($_GET["clickhouse"])) {
 		static $serverSchemes = array("http", "https");
 		static $serverPath = true;
 
-		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT ILIKE", "NOT IN", "IS NOT NULL", "SQL");
 		public $functions = array("length", "lower", "round", "toDate", "toDateTime", "toString", "upper");
 		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 		public $insertFunctions = array("Date|DateTime" => "now");
@@ -194,6 +193,10 @@ if (isset($_GET["clickhouse"])) {
 			"String|FixedString" => "concat",
 		);
 		public $generated = array("MATERIALIZED", "ALIAS", "EPHEMERAL");
+
+		function operators(?array $tableStatus): array {
+			return array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT ILIKE", "NOT IN", "IS NOT NULL", "SQL");
+		}
 
 		/** Get the JUSH module inlined in the released driver by the release script */
 		static function jushModule(): string {

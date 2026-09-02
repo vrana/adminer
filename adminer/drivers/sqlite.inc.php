@@ -124,10 +124,18 @@ if (isset($_GET["sqlite"])) {
 			"text" => "||",
 		);
 
-		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL"); // REGEXP can be user defined function
 		public $fulltextOperator = "MATCH";
 		public $functions = array("hex", "length", "lower", "round", "unixepoch", "upper");
 		public $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
+
+		function operators(?array $tableStatus): array {
+			$return = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // REGEXP can be user defined function
+			if (preg_match('~^fts\d+$~i', (string) idx($tableStatus, "Engine"))) { // table_status() puts the module of a virtual table in Engine
+				$return[] = "MATCH"; // FTS accepts it on a single column and on the whole table
+			}
+			$return[] = "SQL";
+			return $return;
+		}
 
 		static function connect(string $server, string $username, string $password) {
 			return parent::connect(":memory:", "", ""); // the password is refused by Adminer::login()

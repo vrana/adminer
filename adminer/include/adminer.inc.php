@@ -65,10 +65,11 @@ class Adminer {
 	}
 
 	/** Operators used in select
+	* @param ?TableStatus $tableStatus null in the search through all tables
 	* @return list<string> operators
 	*/
-	function operators(): array {
-		return driver()->operators;
+	function operators(?array $tableStatus = null): array {
+		return driver()->operators($tableStatus);
 	}
 
 	/** Get list of schemas
@@ -506,8 +507,9 @@ class Adminer {
 	* @param list<string> $where result of selectSearchProcess()
 	* @param string[] $columns selectable columns
 	* @param Index[] $indexes
+	* @param ?TableStatus $tableStatus
 	*/
-	function selectSearchPrint(array $where, array $columns, array $indexes): void {
+	function selectSearchPrint(array $where, array $columns, array $indexes, ?array $tableStatus = null): void {
 		print_fieldset("search", lang('Search'), $where);
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
@@ -517,7 +519,7 @@ class Adminer {
 				echo "</div>\n";
 			}
 		}
-		$operators = adminer()->operators();
+		$operators = adminer()->operators($tableStatus);
 		foreach (array_merge((array) $_GET["where"], array(array())) as $i => $val) {
 			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $operators))) {
 				echo "<div>" . select_input(
@@ -644,16 +646,17 @@ class Adminer {
 	/** Process search box in select
 	* @param Field[] $fields
 	* @param Index[] $indexes
+	* @param ?TableStatus $tableStatus
 	* @return list<string> expressions to join by AND
 	*/
-	function selectSearchProcess(array $fields, array $indexes): array {
+	function selectSearchProcess(array $fields, array $indexes, ?array $tableStatus = null): array {
 		$return = array();
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT" && idx($_GET["fulltext"], $i) != "") {
 				$return[] = driver()->fulltextSql($i, $index, $_GET["fulltext"][$i], isset($_GET["boolean"][$i]));
 			}
 		}
-		$operators = adminer()->operators();
+		$operators = adminer()->operators($tableStatus);
 		foreach ((array) $_GET["where"] as $key => $val) {
 			// the form doesn't send the fields holding the default value, the first operator is preselected by the browser
 			$val += array("col" => "", "op" => first($operators), "val" => "");

@@ -320,29 +320,31 @@ if (isset($_GET["mongo"])) {
 
 		public $insertFunctions = array("json");
 
-		public $operators = array(
-			"=",
-			"!=",
-			">",
-			"<",
-			">=",
-			"<=",
-			"regex",
-			"(f)=",
-			"(f)!=",
-			"(f)>",
-			"(f)<",
-			"(f)>=",
-			"(f)<=",
-			"(date)=",
-			"(date)!=",
-			"(date)>",
-			"(date)<",
-			"(date)>=",
-			"(date)<=",
-		);
-
 		public $primary = "_id";
+
+		function operators(?array $tableStatus): array {
+			return array(
+				"=",
+				"!=",
+				">",
+				"<",
+				">=",
+				"<=",
+				"regex",
+				"(f)=",
+				"(f)!=",
+				"(f)>",
+				"(f)<",
+				"(f)>=",
+				"(f)<=",
+				"(date)=",
+				"(date)!=",
+				"(date)>",
+				"(date)<",
+				"(date)>=",
+				"(date)<=",
+			);
+		}
 
 		static function connect(string $server, string $username, string $password) {
 			if ($server == "") {

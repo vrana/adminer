@@ -36,6 +36,7 @@
 - Db::attach() gets the server parsed to scheme, host, port, socket and path instead of the string
 - Methods Driver::supportsAlterTable(), Driver::shadowTables(), Driver::fulltextSql() and property Driver::$fulltextOperator
 - TableStatus key 'partition' renamed to 'dependent', it marks also the tables belonging to another table
+- Property Driver::$operators replaced by method Driver::operators()
 ### Internal
 - Mark the code used only in the compiled or only in the development version
 

@@ -146,13 +146,15 @@ if (isset($_GET["igdb"])) {
 		static $jush = "igdb";
 
 		public $delimiter = ";;";
-		public $operators = array("=", "<", ">", "<=", ">=", "!=", "~");
-
 		public $tables = array();
 		public $links = array();
 		public $fields = array();
 		public $foreignKeys = array();
 		public $foundRows = null;
+
+		function operators(?array $tableStatus): array {
+			return array("=", "<", ">", "<=", ">=", "!=", "~");
+		}
 
 		/** Get the JUSH module inlined in the released driver by the release script */
 		static function jushModule(): string {

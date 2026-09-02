@@ -148,9 +148,12 @@ if (isset($_GET["oracle"])) {
 			"char|clob" => "||",
 		);
 
-		public $operators = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
 		public $functions = array("length", "lower", "round", "upper");
 		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
+
+		function operators(?array $tableStatus): array {
+			return array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
+		}
 
 		function __construct(Db $connection) {
 			parent::__construct($connection);

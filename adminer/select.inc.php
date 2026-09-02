@@ -35,7 +35,7 @@ list($select, $group) = adminer()->selectColumnsProcess($columns, $indexes);
 $select = array_unique($select);
 $group = array_unique($group);
 $is_group = count($group) < count($select);
-$where = adminer()->selectSearchProcess($fields, $indexes);
+$where = adminer()->selectSearchProcess($fields, $indexes, $table_status);
 $order = adminer()->selectOrderProcess($fields, $indexes);
 $limit = adminer()->selectLimitProcess();
 
@@ -283,7 +283,7 @@ if (!$columns && support("table")) {
 	echo input_hidden("select", $TABLE);
 	echo "</div>\n";
 	adminer()->selectColumnsPrint($select, $columns);
-	adminer()->selectSearchPrint($where, $search_columns, $indexes);
+	adminer()->selectSearchPrint($where, $search_columns, $indexes, $table_status);
 	adminer()->selectOrderPrint($order, $order_columns, $indexes);
 	adminer()->selectLimitPrint($limit);
 	if ($text_length !== null) {

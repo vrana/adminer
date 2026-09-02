@@ -29,7 +29,6 @@ abstract class SqlDriver {
 	/** @var string[] */ public $insertFunctions = array(); // ["$type|$type2" => "$function/$function2"] functions used in edit and insert
 	/** @var string[] */ public $editFunctions = array(); // ["$type|$type2" => "$function/$function2"] functions used in edit only
 	/** @var list<string> */ public $unsigned = array(); // number variants
-	/** @var list<string> */ public $operators = array(); // operators used in select
 	/** @var string */ public $fulltextOperator = "AGAINST"; // printed in the fulltext search box
 	/** @var list<string> */ public $functions = array(); // functions used in select
 	/** @var list<string> */ public $grouping = array(); // grouping functions used in select
@@ -249,6 +248,14 @@ abstract class SqlDriver {
 	* @return string|void null if the driver doesn't support query timeouts
 	*/
 	function slowQuery(string $query, int $timeout) {
+	}
+
+	/** Get operators usable in select
+	* @param ?TableStatus $tableStatus null in the search through all tables
+	* @return list<string> a list for a single table must be a superset of the general one
+	*/
+	function operators(?array $tableStatus): array {
+		return array();
 	}
 
 	/** Convert column to be searchable

@@ -47,7 +47,7 @@ class Adminer {
 		return null; // drivers ask for the database also before connecting
 	}
 
-	function operators(): array {
+	function operators(?array $tableStatus = null): array {
 		return array("<=", ">=");
 	}
 
@@ -307,7 +307,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		return $return;
 	}
 
-	function selectSearchPrint(array $where, array $columns, array $indexes): void {
+	function selectSearchPrint(array $where, array $columns, array $indexes, ?array $tableStatus = null): void {
 		$where = (array) $_GET["where"];
 		echo '<fieldset id="fieldset-search"><legend>' . lang('Search') . "</legend><div>\n";
 		$fields = fields($_GET["select"]);
@@ -335,14 +335,14 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		foreach ($where as $key => $val) {
 			if ($key >= 0 && ($val["col"] == "" || $columns[$val["col"]]) && "$val[col]$val[val]" != "") {
 				echo "<div><select name='where[$i][col]' data-default=''><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, $val["col"], true) . "</select>";
-				echo html_select("where[$i][op]", array(-1 => "") + adminer()->operators(), $val["op"], " data-default=''");
+				echo html_select("where[$i][op]", array(-1 => "") + adminer()->operators($tableStatus), $val["op"], " data-default=''");
 				echo "<input type='search' name='where[$i][val]' value='" . h($val["val"]) . "' data-default=''"
 					. on('keydown', 'selectSearchKeydown') . on('search', 'selectSearchSearch') . "></div>\n";
 				$i++;
 			}
 		}
 		echo "<div><select name='where[$i][col]' data-default=''" . on('change', 'selectAddRow') . "><option value=''>(" . lang('anywhere') . ")" . optionlist($columns, null, true) . "</select>";
-		echo html_select("where[$i][op]", array(-1 => "") + adminer()->operators(), null, " data-default=''");
+		echo html_select("where[$i][op]", array(-1 => "") + adminer()->operators($tableStatus), null, " data-default=''");
 		echo "<input type='search' name='where[$i][val]' data-default=''"
 			. on('change', 'selectFirstChange') . on('keydown', 'selectSearchKeydown') . on('search', 'selectSearchSearch') . "></div>\n";
 		echo "</div></fieldset>\n";
@@ -404,7 +404,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		return array(array(), array());
 	}
 
-	function selectSearchProcess(array $fields, array $indexes): array {
+	function selectSearchProcess(array $fields, array $indexes, ?array $tableStatus = null): array {
 		$return = array();
 		$search_columns = $this->searchColumns($fields);
 		// the columns with their own search field are identified by their position, redirect the links using their name
@@ -455,7 +455,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 							// the searched value is compared with the value displayed in select, so it is not passed through unconvert_field()
 							$value = q(!$op && $text_type && preg_match('~^[^%]+$~', $val) ? "%$val%" : $val);
 							$conds[] = driver()->convertSearch($name, $where, $field) . ($value == "NULL" ? " IS" . ($op == ">=" ? " NOT" : "") . " $value"
-								: (in_array($op, adminer()->operators()) || $op == "=" ? " $op $value"
+								: (in_array($op, adminer()->operators($tableStatus)) || $op == "=" ? " $op $value"
 								: ($text_type ? " LIKE $value"
 								: " IN (" . ($value[0] == "'" ? str_replace(",", "', '", $value) : $value) . ")"
 							)));
