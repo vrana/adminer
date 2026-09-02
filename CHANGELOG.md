@@ -19,7 +19,7 @@
 - PostgreSQL: Do not edit and delete the selected row without a unique key in other partitions (bug #1326)
 - PostgreSQL PDO: Fix export of boolean values (bug #1330, regression from 5.4.4)
 - SQLite: Get the generated columns and collations also from a single-line CREATE TABLE
-- SQLite: Support FTS5
+- SQLite: Support FTS5 and other virtual tables
 - MS SQL: Get the base type of a column declared with a user-defined type
 - MS SQL: Offer all the data types supported by the server, e.g. uniqueidentifier (bug #1327)
 - MS SQL: Add the database Check button
