@@ -186,13 +186,9 @@ if (isset($_GET["sqlite"])) {
 		function shadowTables(string $table): array {
 			$return = array();
 			if (min_version(3.37)) {
-				$tables = get_key_vals("SELECT name, type FROM pragma_table_list WHERE schema = 'main' AND type IN ('virtual', 'shadow') ORDER BY name");
-				foreach ($tables as $name => $type) {
+				foreach (get_vals("SELECT name FROM pragma_table_list WHERE schema = 'main' AND type = 'shadow' ORDER BY name") as $name) {
 					// a shadow table is named after the virtual table using it and a single word, e.g. posts_fts_data
-					if (
-						$type == 'shadow' && preg_match('~^(.*)_[^_]*$~', $name, $match)
-						&& $tables[$match[1]] == 'virtual' && ($table == "" || $match[1] == $table)
-					) {
+					if (preg_match('(^' . preg_quote($table) . '_[^_]*$)', $name)) {
 						$return[] = array("table" => $name, "ns" => "");
 					}
 				}
@@ -201,7 +197,7 @@ if (isset($_GET["sqlite"])) {
 		}
 
 		function fulltextSql(string $name, array $index, string $query, bool $boolean): string {
-			return idf_escape($name) . " MATCH " . q($query); // the index is named after the FTS5 table
+			return idf_escape($name) . " MATCH " . q($query); // the index is named after the FTS table
 		}
 
 		function insertUpdate(string $table, array $rows, array $primary) {
@@ -376,7 +372,7 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 		if (!preg_match('~^sqlite(_temp)?_(master|schema)$~', $table)) {
 			$privileges += array("insert" => 1, "update" => 1);
 		}
-		$fts = preg_match('~^fts5$~i', virtual_module($sql)); // FTS5 declares the columns without a type but stores strings
+		$fts = preg_match('~^fts\d+$~i', virtual_module($sql)); // FTS declares the columns without a type but stores strings
 		foreach (get_rows("PRAGMA table_" . (min_version(3.31) ? "x" : "") . "info(" . table($table) . ")") as $row) {
 			if ($row["hidden"] == 1) { // the columns of a virtual table usable only in a condition; generated columns have 2 and 3
 				continue;
@@ -421,7 +417,7 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 		$connection2 = connection($connection2);
 		$return = array();
 		$sql = get_val("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table), 0, $connection2);
-		if (preg_match('~^fts5$~i', virtual_module($sql))) {
+		if (preg_match('~^fts\d+$~i', virtual_module($sql))) {
 			// the index is named after the table because the column of this name searches all columns at once
 			return array($table => array("type" => "FULLTEXT", "columns" => array_keys(fields($table)), "lengths" => array(), "descs" => array()));
 		}
@@ -829,7 +825,7 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 	function create_sql(string $table, ?bool $auto_increment, string $style): string {
 		$return = get_val("SELECT sql FROM sqlite_master WHERE type IN ('table', 'view') AND name = " . q($table));
 		foreach (indexes($table) as $name => $index) {
-			if ($name == '' || $index['type'] == 'FULLTEXT') { // FULLTEXT is the pseudo-index of an FTS5 table, it is a part of CREATE VIRTUAL TABLE
+			if ($name == '' || $index['type'] == 'FULLTEXT') { // FULLTEXT is the pseudo-index of an FTS table, it is a part of CREATE VIRTUAL TABLE
 				continue;
 			}
 			$return .= ";\n\n" . index_sql($table, $index['type'], $name, "(" . implode(", ", array_map('Adminer\idf_escape', $index['columns'])) . ")");
