@@ -58,6 +58,7 @@
         "test": [
             "@php tests/unit/compress.php",
             "@php tests/unit/parse_server.php",
+            "@php tests/unit/shorten.php",
             "@php tests/unit/url.php"
         ],
         "compat": [

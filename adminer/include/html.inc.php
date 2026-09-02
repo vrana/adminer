@@ -590,7 +590,10 @@ function shorten_utf8(string $string, int $length = 80, string $suffix = ""): st
 	if (!preg_match("(^(" . repeat_pattern("[\t\r\n -\x{10FFFF}]", $length) . ")($)?)u", $string, $match)) { // ~s causes trash in $match[2] under some PHP versions, (.|\n) is slow
 		preg_match("(^(" . repeat_pattern("[\t\r\n -~]", $length) . ")($)?)", $string, $match);
 	}
-	return h($match[1]) . $suffix . (isset($match[2]) ? "" : "<i>…</i>");
+	return (isset($match[2])
+		? h($match[1]) . $suffix // the whole string fits
+		: h(preg_replace('~\n[^\n]*\z~', "\n", $match[1])) . "$suffix<i>…</i>" // in a multi-line text, the ellipsis stands for the whole last line
+	);
 }
 
 /** Get button with icon */
