@@ -327,7 +327,8 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 			) as $row
 		) {
 			if ($row["Engine"] == "table") {
-				$suffix = preg_replace('~.*\)~s', '', $row["sql"]); // table options are after the last parenthesis
+				$sql = preg_replace('~(?:\s|--[^\n]*|/\*.*?\*/)+$~s', '', $row["sql"]); // the definition can end with a comment
+				$suffix = preg_replace('~.*\)~s', '', $sql); // table options are after the last parenthesis
 				$row["Engine"] = virtual_module($row["sql"]) ?: (implode(", ", array_filter(array(
 					(preg_match('~\bSTRICT\b~i', $suffix) ? "STRICT" : 0),
 					(preg_match('~\bWITHOUT\s+ROWID\b~i', $suffix) ? "WITHOUT ROWID" : 0),
