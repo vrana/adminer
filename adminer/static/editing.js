@@ -25,6 +25,9 @@ function syntaxHighlighting(version, vendor) {
 					if (vendor != 'cockroach') {
 						obj[key] = obj[key].replace('/docs/current', '/docs/' + version); // PostgreSQL
 					}
+					if (/^\d\d$/.test(version)) { // Oracle publishes only 18 and later at this address
+						obj[key] = obj[key].replace('/oracle-database/19/', '/oracle-database/' + version + '/');
+					}
 				}
 			}
 			if (window.jushLinks) {

@@ -180,7 +180,10 @@ function doc_version(): string {
 	$server_info = connection()->server_info;
 	if (JUSH == 'oracle') {
 		// the ctx parameter joins the first two numbers of e.g. "Oracle Database 19c ... Version 19.3.0.0.0", PDO reports the version alone
-		return (preg_match('~(?:.* |^)(\d+)\.(\d+)\.\d+\.\d+\.\d+~s', $server_info, $match) ? $match[1] . $match[2] : "");
+		// Oracle names the releases by the year since 18 and takes the major number alone there: ctx=db122 but ctx=db19
+		return (preg_match('~(?:.* |^)(\d+)\.(\d+)\.\d+\.\d+\.\d+~s', $server_info, $match)
+			? $match[1] . ($match[1] >= 18 ? "" : $match[2])
+			: "");
 	}
 	// MySQL uses calendar versioning since 26.7 so the URL needs both the year and the month
 	// the two most significant digits give the documented version of PostgreSQL (18, 9.6) and MS SQL (16)
