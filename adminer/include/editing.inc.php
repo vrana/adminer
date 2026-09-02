@@ -526,11 +526,11 @@ function tar_file(string $filename, $tmp_file): void {
 function doc_version(): string {
 	$server_info = connection()->server_info;
 	if (JUSH == 'oracle') {
-		// the ctx parameter joins the first two numbers of e.g. "Oracle Database 19c ... Version 19.3.0.0.0", PDO reports the version alone
-		// Oracle names the releases by the year since 18 and takes the major number alone there: ctx=db122 but ctx=db19
-		return (preg_match('~(?:.* |^)(\d+)\.(\d+)\.\d+\.\d+\.\d+~s', $server_info, $match)
-			? $match[1] . ($match[1] >= 18 ? "" : $match[2])
-			: "");
+		// the version is the major number of e.g. "Oracle Database 19c ... Version 19.3.0.0.0", PDO reports the version alone
+		// Oracle names the releases by the year since 18 and publishes only those under it; 12.2 and older
+		// have a layout of their own, so they get the oldest documentation JUSH links
+		preg_match('~(?:.* |^)(\d+)\.\d+\.\d+\.\d+\.\d+~s', $server_info, $match);
+		return (($match[1] ?? 0) >= 18 ? $match[1] : "19");
 	}
 	// MySQL uses calendar versioning since 26.7 so the URL needs both the year and the month
 	// the two most significant digits give the documented version of PostgreSQL (18, 9.6) and MS SQL (16)
@@ -557,7 +557,7 @@ function doc_link(array $paths, string $text = "<sup>?</sup>"): string {
 		'sqlite' => "https://www.sqlite.org/",
 		'pgsql' => "https://www.postgresql.org/docs/" . (connection()->flavor == 'cockroach' ? "current" : $version) . "/",
 		'mssql' => "https://learn.microsoft.com/en-us/sql/",
-		'oracle' => "https://www.oracle.com/pls/topic/lookup?ctx=db$version&id=",
+		'oracle' => "https://docs.oracle.com/en/database/oracle/oracle-database/$version/",
 	);
 	if (connection()->flavor == 'maria') {
 		$urls['sql'] = "https://mariadb.com/kb/en/";

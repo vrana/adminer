@@ -29,7 +29,7 @@ foreach (adminer()->processList() as $i => $row) {
 			echo "<th>$key" . doc_link(array(
 				'sql' => "show-processlist.html#processlist_" . strtolower($key),
 				'pgsql' => "monitoring-stats.html#PG-STAT-ACTIVITY-VIEW",
-				'oracle' => "REFRN30223",
+				'oracle' => "refrn/V-SESSION.html",
 			));
 		}
 		echo "<tbody>\n";

@@ -25,7 +25,7 @@ function syntaxHighlighting(version, vendor) {
 					if (vendor != 'cockroach') {
 						obj[key] = obj[key].replace('/docs/current', '/docs/' + version); // PostgreSQL
 					}
-					if (/^\d\d$/.test(version)) { // Oracle publishes only 18 and later at this address
+					if (/^\d\d$/.test(version)) { // the version of another system would make up a directory Oracle doesn't have
 						obj[key] = obj[key].replace('/oracle-database/19/', '/oracle-database/' + version + '/');
 					}
 				}

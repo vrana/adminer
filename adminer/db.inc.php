@@ -105,7 +105,7 @@ if (adminer()->homepage()) {
 			}
 			if (function_exists('Adminer\alter_table')) {
 				$columns["Data_length"] = array(
-					lang('Data Length') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT', 'oracle' => 'REFRN20286')),
+					lang('Data Length') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-admin.html#FUNCTIONS-ADMIN-DBOBJECT', 'oracle' => 'refrn/ALL_TABLES.html')),
 					"create",
 					lang('Alter table'),
 				);
@@ -126,7 +126,7 @@ if (adminer()->homepage()) {
 				);
 			}
 			$columns["Rows"] = array(
-				lang('Rows') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'catalog-pg-class.html#CATALOG-PG-CLASS', 'oracle' => 'REFRN20286')),
+				lang('Rows') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'catalog-pg-class.html#CATALOG-PG-CLASS', 'oracle' => 'refrn/ALL_TABLES.html')),
 				"select",
 				lang('Select data'),
 			);

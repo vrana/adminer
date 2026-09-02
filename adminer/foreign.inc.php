@@ -116,7 +116,7 @@ foreach ($row["source"] as $key => $val) {
 	'mariadb' => "foreign-keys/",
 	'pgsql' => "sql-createtable.html#SQL-CREATETABLE-PARMS-REFERENCES",
 	'mssql' => "t-sql/statements/create-table-transact-sql",
-	'oracle' => "SQLRF01111",
+	'oracle' => "sqlrf/constraint.html",
 )); ?>
 <p>
 <input type='submit' value='<?php echo lang('Save'); ?>'>
