@@ -22,6 +22,7 @@
 - SQLite: Support FTS5
 - MS SQL: Get the base type of a column declared with a user-defined type
 - MS SQL: Offer all the data types supported by the server, e.g. uniqueidentifier (bug #1327)
+- MS SQL: Add the database Check button
 - MS SQL: Link the documentation of the used version
 - ClickHouse: Print only errors from ClickHouse (GHSA-77qq-q8fv-x45v, regression from 6.0.0)
 - ClickHouse: Highlight the queries

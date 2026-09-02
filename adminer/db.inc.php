@@ -43,6 +43,12 @@ if ($tables_views && !$error && !$_POST["search"]) {
 				$message .= "<b>" . h($table) . "</b>: " . h($row["integrity_check"]) . "<br>";
 			}
 		}
+	} elseif (JUSH == "mssql" && $_POST["check"]) {
+		foreach ((array) $_POST["tables"] as $table) {
+			foreach (get_rows("DBCC CHECKTABLE (" . q(table($table)) . ") WITH TABLERESULTS") as $row) {
+				$message .= "<b>" . h($table) . "</b>: " . h($row["MessageText"]) . "<br>";
+			}
+		}
 	} elseif (JUSH != "sql") {
 		$result = (JUSH == "sqlite"
 			? queries("VACUUM")
@@ -199,11 +205,12 @@ if (adminer()->homepage()) {
 				$optimize = "<input type='submit' name='optimize' value='" . lang('Optimize') . "'" . on_help(JUSH == "sql" ? "OPTIMIZE TABLE" : "VACUUM ANALYZE") . "> ";
 				$print = (JUSH == "sqlite" ? $vacuum . "<input type='submit' name='check' value='" . lang('Check') . "'" . on_help("PRAGMA integrity_check") . "> "
 				: (JUSH == "pgsql" ? $vacuum . $optimize
+				: (JUSH == "mssql" ? "<input type='submit' name='check' value='" . lang('Check') . "'" . on_help("DBCC CHECKTABLE") . "> "
 				: (JUSH == "sql" ? "<input type='submit' value='" . lang('Analyze') . "'" . on_help("ANALYZE TABLE") . "> "
 					. $optimize
 					. "<input type='submit' name='check' value='" . lang('Check') . "'" . on_help("CHECK TABLE") . "> "
 					. "<input type='submit' name='repair' value='" . lang('Repair') . "'" . on_help("REPAIR TABLE") . "> "
-				: "")))
+				: ""))))
 				. (function_exists('Adminer\truncate_tables')
 					? "<input type='submit' name='truncate' value='" . lang('Truncate') . "'" . confirm()
 						. on_help(JUSH == "sqlite" ? "DELETE" : "TRUNCATE" . (JUSH == "pgsql" ? "" : " TABLE")) . "> "
