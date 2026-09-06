@@ -170,12 +170,14 @@ function trCheck(el) {
 * @param {string|number} number
 * @return {string}
 * @uses numberFormat
+* @uses numberDigits
 */
 function formatNumber(number) {
 	const match = /^#+([^#0]+)(?:(#+)\1)?(#*0)$/.exec(numberFormat); // CLDR pattern: separator, group repeated to the left, rightmost group
 	const size = match[3].length;
 	// \B doesn't match after the sign
-	return (number + '').replace(RegExp('\\B(?=(\\d{' + ((match[2] || '').length || size) + '})*\\d{' + size + '}$)', 'g'), match[1]);
+	return (number + '').replace(RegExp('\\B(?=(\\d{' + ((match[2] || '').length || size) + '})*\\d{' + size + '}$)', 'g'), match[1])
+		.replace(/\d/g, digit => numberDigits[digit]);
 }
 
 /** Fill number of selected items

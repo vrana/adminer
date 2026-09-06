@@ -2,7 +2,7 @@
 - Verify all parts of the server name before connecting (GHSA-rwxg-xph9-82cj, regression from 5.5.1)
 - Do not drop the old check constraint when the new one cannot be created
 - Replace the whole last line by the ellipsis when shortening a multi-line text, e.g. a long SQL command
-- Group the digits of numbers according to the conventions of the used language
+- Format numbers according to the conventions of the used language
 - Alter routine: Preserve all characteristics and edit them in a form instead of in the definition
 - Autocomplete: Get the columns of the database faster (bug #1328)
 - Autocomplete: Offer also in the definition of a routine, an event and a view

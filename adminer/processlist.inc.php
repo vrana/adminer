@@ -55,7 +55,7 @@ foreach (adminer()->processList() as $i => $row) {
 <?php
 echo script("copyCode(qsl('table'));");
 if (support("kill")) {
-	echo ($i + 1) . "/" . lang('%d in total', max_connections());
+	echo format_number($i + 1) . "/" . lang('%d in total', max_connections());
 	echo "<p><input type='submit' value='" . lang('Kill') . "'>\n";
 }
 echo input_token();

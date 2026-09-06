@@ -37,7 +37,7 @@ if ($_GET["script"] == "db") {
 
 } else { // connect
 	foreach (count_tables(adminer()->databases(false)) as $db => $val) {
-		json_row("tables-$db", $val);
+		json_row("tables-$db", format_number($val));
 		json_row("size-$db", db_size($db));
 	}
 	json_row("");
