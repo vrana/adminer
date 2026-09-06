@@ -106,7 +106,7 @@ Lang::$translations = array(
 
 	'Permanent link' => 'Doimiy havola', // link to current database schema layout
 
-	',' => ' ', // thousands separator - must contain single byte
+	'#,##0' => '# ##0',
 	'0123456789' => '0123456789',
 	'Engine' => 'Dvigatel',
 	'Collation' => 'Kodlash',

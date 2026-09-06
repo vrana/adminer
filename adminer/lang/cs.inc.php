@@ -116,7 +116,7 @@ Lang::$translations = array(
 
 	'Permanent link' => 'Trvalý odkaz', // link to current database schema layout
 
-	',' => ' ', // thousands separator - must contain single byte
+	'#,##0' => '# ##0',
 	'0123456789' => '0123456789',
 	'Engine' => 'Úložiště',
 	'Collation' => 'Porovnávání',

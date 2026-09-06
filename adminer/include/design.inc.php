@@ -66,7 +66,7 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	// the event handlers and the <html> classes are registered by functions.js
 	echo script((isset($_COOKIE["adminer_version"]) || !adminer()->verifyVersion() ? "" : "onload = partial(verifyVersion, '" . VERSION . "');\n") . "
 const offlineMessage = '" . js_escape(lang('You are offline.')) . "';
-const thousandsSeparator = '" . js_escape(lang(',')) . "';
+const numberFormat = '" . js_escape(lang('#,##0')) . "';
 const urlSeparators = '" . js_escape(ini_get("arg_separator.input")) . "';");
 	echo "<div id='help' class='jush-" . JUSH . " jsonly hidden'" . on('mouseover', 'helpKeep') . on('mouseout', 'helpMouseout') . "></div>\n";
 	echo "<div id='content'>\n";

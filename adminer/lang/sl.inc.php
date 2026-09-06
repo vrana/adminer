@@ -83,7 +83,7 @@ Lang::$translations = array(
 	'Create database' => 'Ustvari bazo',
 	'Database schema' => 'Shema baze',
 
-	',' => ' ', // thousands separator - must contain single byte
+	'#,##0' => '# ##0',
 	'0123456789' => '0123456789',
 	'Engine' => 'Pogon',
 	'Collation' => 'Zbiranje',

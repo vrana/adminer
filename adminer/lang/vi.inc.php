@@ -89,7 +89,7 @@ Lang::$translations = array(
 
 	'Permanent link' => 'Liên kết cố định', // link to current database schema layout
 
-	',' => ',', // thousands separator - must contain single byte
+	'#,##0' => '#.##0', // Claude Opus 5
 	'0123456789' => '0123456789',
 	'Engine' => 'Cơ chế lưu trữ',
 	'Collation' => 'Bộ mã',

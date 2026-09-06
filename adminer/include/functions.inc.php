@@ -732,7 +732,11 @@ function is_utf8(?string $val): bool {
 * @param float|numeric-string $val
 */
 function format_number($val): string {
-	return strtr(number_format($val, 0, ".", lang(',')), preg_split('~~u', lang('0123456789'), -1, PREG_SPLIT_NO_EMPTY));
+	preg_match('~^#+([^#0]+)(?:(#+)\1)?(#*0)$~u', lang('#,##0'), $match); // CLDR pattern: separator, group repeated to the left, rightmost group
+	$size = strlen($match[3]);
+	$return = number_format($val, 0, ".", ""); // multi-byte separator supported since PHP 5.4
+	$return = preg_replace('~\B(?=(\d{' . (strlen($match[2]) ?: $size) . '})*\d{' . $size . '}$)~', $match[1], $return); // \B doesn't match after the sign
+	return strtr($return, preg_split('~~u', lang('0123456789'), -1, PREG_SPLIT_NO_EMPTY));
 }
 
 /** Format a numeric value of table status

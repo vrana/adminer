@@ -388,6 +388,9 @@ Translations are updated via [lang.php](/lang.php), which also checks for style 
 Plurals are stored as arrays, with selection logic handled in [lang.inc.php](/adminer/include/lang.inc.php).
 A translation may contain HTML only if the English string does.
 
+Some keys are not messages but localization data: `'#,##0'` describes the digit grouping, `'0123456789'` the digits, `'$1-$3-$5'` and `'[yyyy]-mm-dd'` the date format in Editor.
+The grouping uses the CLDR number pattern without the decimals, so `'#,##,##0'` formats 1234567 as 12,34,567.
+
 Some translations are machine-translated by an AI model.
 They are marked with a trailing comment naming the model, e.g. `'Condition' => 'Bedingung', // Claude Fable 5`.
 Human translators are supposed to verify such translations and remove the comment.

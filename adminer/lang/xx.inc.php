@@ -117,7 +117,7 @@ Lang::$translations = array(
 
 	'Permanent link' => 'Xx', // link to current database schema layout
 
-	',' => 'x', // thousands separator - must contain single byte
+	'#,##0' => '#x##0', // digit grouping in the CLDR number pattern without the decimals, '#,##,##0' formats 1234567 as 12,34,567
 	'0123456789' => 'xxxxxxxxxx',
 	'Engine' => 'Xx',
 	'Collation' => 'Xx',

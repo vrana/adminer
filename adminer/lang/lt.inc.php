@@ -86,7 +86,7 @@ Lang::$translations = array(
 
 	'Permanent link' => 'Pastovi nuoroda', // link to current database schema layout
 
-	',' => ' ', // thousands separator - must contain single byte
+	'#,##0' => '# ##0',
 	'0123456789' => '0123456789',
 	'Engine' => 'Variklis',
 	'Collation' => 'Lyginimas',

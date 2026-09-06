@@ -99,7 +99,7 @@ Lang::$translations = array(
 
 	'Permanent link' => 'Kalıcı bağlantı', // link to current database schema layout
 
-	',' => ' ', // thousands separator - must contain single byte
+	'#,##0' => '#.##0', // Claude Opus 5
 	'0123456789' => '0123456789',
 	'Engine' => 'Motor',
 	'Collation' => 'Karşılaştırma',

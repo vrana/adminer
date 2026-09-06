@@ -113,7 +113,7 @@ Lang::$translations = array(
 
 	'Permanent link' => '永久連結', // link to current database schema layout
 
-	',' => ',', // thousands separator - must contain single byte
+	'#,##0' => '#,##0',
 	'0123456789' => '0123456789',
 	'Engine' => '引擎',
 	'Collation' => '校對',

@@ -166,13 +166,24 @@ function trCheck(el) {
 	fire(el.form && el.form['all'], 'click'); // the element named all counts the selected items, its handler is registered by a data attribute
 }
 
+/** Group digits in a number
+* @param {string|number} number
+* @return {string}
+* @uses numberFormat
+*/
+function formatNumber(number) {
+	const match = /^#+([^#0]+)(?:(#+)\1)?(#*0)$/.exec(numberFormat); // CLDR pattern: separator, group repeated to the left, rightmost group
+	const size = match[3].length;
+	// \B doesn't match after the sign
+	return (number + '').replace(RegExp('\\B(?=(\\d{' + ((match[2] || '').length || size) + '})*\\d{' + size + '}$)', 'g'), match[1]);
+}
+
 /** Fill number of selected items
 * @param {string} id
 * @param {string|number} count
-* @uses thousandsSeparator
 */
 function selectCount(id, count) {
-	setHtml(id, (count === '' ? '' : '(' + (count + '').replace(/\B(?=(\d{3})+$)/g, thousandsSeparator) + ')'));
+	setHtml(id, (count === '' ? '' : '(' + formatNumber(count) + ')'));
 	const el = qs('#' + id);
 	if (el) {
 		for (const input of qsa('input[type=submit]', el.parentNode.parentNode)) {
