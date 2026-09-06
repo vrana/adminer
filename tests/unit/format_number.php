@@ -5,11 +5,14 @@ namespace Adminer;
 require __DIR__ . "/../../adminer/include/errors.inc.php";
 require __DIR__ . "/../../adminer/include/functions.inc.php";
 
-// Test format_number().
+// Test format_number() and its JavaScript counterpart formatNumber().
+// The JavaScript checks are skipped if Node.js is not available.
 // Prints found errors, prints nothing and exits with 0 if everything is OK.
 
 $errors = 0;
 $translations = array();
+/** @var list<array{string, string, string, string}> format, digits, value, expected result */
+$cases = array();
 
 /** Get the translation from $translations instead of from adminer/lang/ */
 function lang(string $idf): string {
@@ -25,11 +28,55 @@ function set_format(string $format, string $digits = '0123456789'): void {
 
 /** @param float|numeric-string $val */
 function check($val, string $expected): void {
-	global $errors;
+	global $errors, $translations, $cases;
 	$formatted = format_number($val);
 	if ($formatted !== $expected) {
 		echo "Value " . json_encode($val) . " formats to " . json_encode($formatted) . " instead of " . json_encode($expected) . "\n";
 		$errors++;
+	}
+	if ($val == (int) $val) { // formatNumber() gets the number of selected items, it doesn't round like number_format()
+		$cases[] = array($translations['#,##0'], $translations['0123456789'], (string) $val, $expected);
+	}
+}
+
+/** Verify that formatNumber() in adminer/static/functions.js returns the same as format_number()
+* @param list<array{string, string, string, string}> $cases
+*/
+function check_js(array $cases): void {
+	global $errors;
+	if (!preg_match('~^v\d~', (string) shell_exec("node --version 2>&1"))) {
+		fwrite(STDERR, "Skipped the JavaScript checks, Node.js is not available.\n");
+		return;
+	}
+	$js = file_get_contents(__DIR__ . "/../../adminer/static/functions.js");
+	if (!preg_match('~/\*\* Group digits.*?\n}\n~s', $js, $match)) {
+		echo "formatNumber() not found in functions.js\n";
+		$errors++;
+		return;
+	}
+	$file = tempnam(sys_get_temp_dir(), "adminer");
+	// the function reads the globals printed by design.inc.php
+	file_put_contents($file, "let numberFormat, numberDigits;\n$match[0]
+const results = " . json_encode($cases) . ".map(function (case_) {
+	numberFormat = case_[0];
+	numberDigits = case_[1];
+	return formatNumber(case_[2]);
+});
+process.stdout.write(JSON.stringify(results));
+");
+	$output = shell_exec("node " . escapeshellarg($file) . " 2>&1");
+	unlink($file);
+	$results = json_decode((string) $output, true);
+	if (!is_array($results)) {
+		echo "Node.js failed: " . trim((string) $output) . "\n";
+		$errors++;
+		return;
+	}
+	foreach ($cases as $key => $case) {
+		if ($results[$key] !== $case[3]) {
+			echo "JavaScript: value " . json_encode($case[2]) . " formats to " . json_encode($results[$key]) . " instead of " . json_encode($case[3]) . "\n";
+			$errors++;
+		}
 	}
 }
 
@@ -66,5 +113,7 @@ check(1234567, "123 4567");
 // the digits are transliterated after grouping
 set_format('#,##,##0', '०१२३४५६७८९');
 check(1234567, "१२,३४,५६७");
+
+check_js($cases);
 
 exit($errors ? 1 : 0);
