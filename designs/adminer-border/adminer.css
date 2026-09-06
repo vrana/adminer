@@ -8,3 +8,9 @@ tbody td.hover { background-color: transparent; }
 thead td.hover, thead tr:hover td.hover { background-color: var(--lit); }
 tbody tr:hover td.hover { background-color: var(--dim); }
 .js .checkable .checked td.hover { background-color: var(--lit); }
+
+@media (prefers-color-scheme: dark) {
+	tbody tr:hover td.hover { background-color: #133553; }
+	.js .checkable .checked td.hover { background-color: #1a5178; }
+	.js .checkable .checked:hover td.hover { background-color: #15486c; }
+}
