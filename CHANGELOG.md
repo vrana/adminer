@@ -30,6 +30,7 @@
 - Oracle: Link the documentation of the used version
 - ClickHouse: Print only errors from ClickHouse (GHSA-77qq-q8fv-x45v, regression from 6.0.0)
 - ClickHouse: Highlight the queries
+- Elasticsearch: Print only errors from Elasticsearch (GHSA-q8h3-4cx4-prgm, regression from 4.16.0)
 - Firebird: Highlight the queries
 - ClickHouse, IGDB, Redis, SimpleDB: Fix loading the driver in the compiled Adminer (bug #1325)
 - Elasticsearch, Firebird, IGDB, IMAP, MongoDB, Redis, SimpleDB: Fix a fatal error on the pages calling a function missing in the driver

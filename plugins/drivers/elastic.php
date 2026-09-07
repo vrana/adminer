@@ -50,12 +50,14 @@ if (isset($_GET["elastic"])) {
 				}
 
 				if ($status[0] != 2) {
-					if (isset($return['error']['root_cause'][0]['type'])) {
+					if (isset($return['error']['root_cause'][0]['type'])) { // Elasticsearch and OpenSearch describe the errors created by themselves in this structure
 						$this->error = $return['error']['root_cause'][0]['type'] . ": " . $return['error']['root_cause'][0]['reason'];
-					} elseif (isset($return['status']) && isset($return['error']) && is_string($return['error'])) {
+					} elseif ($this->server_info && isset($return['error']) && is_string($return['error'])) {
+						// the REST layer reports some errors as a plain string, which any other server can send too, so print it only once the server identified itself in attach()
 						$this->error = $return['error'];
+					} else {
+						$this->error = lang('Invalid server or credentials.') . " HTTP $status";
 					}
-
 					return false;
 				}
 
