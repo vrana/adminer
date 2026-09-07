@@ -1,4 +1,4 @@
-## Adminer dev
+## Adminer 6.0.2 (released 2026-09-07)
 - Verify all parts of the server name before connecting (GHSA-rwxg-xph9-82cj, regression from 5.5.1)
 - Sanitize the connection id returned by the server (GHSA-7c5h-q78c-fpxx, XSS)
 - Do not drop the old check constraint when the new one cannot be created
