@@ -527,13 +527,11 @@ function doc_version(): string {
 	$server_info = connection()->server_info;
 	if (JUSH == 'oracle') {
 		// the version is the major number of e.g. "Oracle Database 19c ... Version 19.3.0.0.0", PDO reports the version alone
-		// Oracle names the releases by the year since 18 and publishes only those under it; 12.2 and older
-		// have a layout of their own, so they get the oldest documentation JUSH links
+		// Oracle names the releases by the year since 18 and publishes only those under it; 12.2 and older have a layout of their own, so they get the oldest documentation JUSH links
 		preg_match('~(?:.* |^)(\d+)\.\d+\.\d+\.\d+\.\d+~s', $server_info, $match);
-		return (($match[1] ?? 0) >= 18 ? $match[1] : "19");
+		return ($match[1] >= 18 ? $match[1] : "19");
 	}
-	// MySQL uses calendar versioning since 26.7 so the URL needs both the year and the month
-	// the two most significant digits give the documented version of PostgreSQL (18, 9.6) and MS SQL (16)
+	// MySQL uses calendar versioning since 26.7 so the URL needs both the year and the month the two most significant digits give the documented version of PostgreSQL (18, 9.6) and MS SQL (16)
 	$regexp = (JUSH == 'sql' ? '~^\d+\.\d+~' : '~^\d\.?\d~');
 	$version = (preg_match($regexp, $server_info, $match) ? $match[0] : "");
 	if (JUSH == 'mssql') {
