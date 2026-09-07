@@ -46,7 +46,8 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 
 	echo script_src(DIR . "static/functions.js");
 	if (defined('Adminer\DIR')) { // the compiled version merges editing.js into functions.js
-		echo script_src("static/editing.js");
+		// Editor has its own version of the file in its own directory, which is the working directory of every entry point
+		echo script_src(str_replace("adminer/", basename(getcwd()) . "/", DIR) . "static/editing.js");
 	}
 	if (adminer()->head($dark)) {
 		echo "<link rel='icon' href='data:image/gif;base64,"
