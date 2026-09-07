@@ -1120,7 +1120,7 @@ function slow_query(string $query): array {
 	if (!$slow_query && support("kill")) {
 		$connection2 = connect();
 		if ($connection2 && ($db == "" || $connection2->select_db($db))) {
-			$kill = get_val(connection_id(), 0, $connection2); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
+			$kill = number(get_val(connection_id(), 0, $connection2)); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
 			echo script("const timeout = setTimeout(() => { ajax('" . js_escape(ME) . "script=kill', function () {}, 'kill=$kill&token=" . get_token() . "'); }, 1000 * $timeout);");
 		}
 	}

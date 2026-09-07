@@ -1,5 +1,6 @@
 ## Adminer dev
 - Verify all parts of the server name before connecting (GHSA-rwxg-xph9-82cj, regression from 5.5.1)
+- Sanitize the connection id returned by the server (GHSA-7c5h-q78c-fpxx, XSS)
 - Do not drop the old check constraint when the new one cannot be created
 - Replace the whole last line by the ellipsis when shortening a multi-line text, e.g. a long SQL command
 - Format numbers according to the conventions of the used language
