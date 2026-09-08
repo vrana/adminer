@@ -13,11 +13,13 @@ namespace Adminer;
 * @return string[] $orgtables
 */
 function print_select_result($result, ?Db $connection2 = null, array $orgtables = array(), &$limit = 0, &$edit = false): array {
-	$links = array(); // colno => orgtable - create links from these columns
-	$indexes = array(); // orgtable => array(column => colno) - primary keys
-	$columns = array(); // orgtable => array(column => ) - not selected columns in primary key
-	$key_tables = array(); // orgtable => table - alias holding the primary key, null if more aliases hold a part of it
-	$editable = array(); // colno => array(orgtable, orgname, table, is_text) - columns which can be modified
+	// the same table can be joined more than once so everything is keyed by the alias, not by the original table
+	$links = array(); // colno => alias - create links from these columns
+	$indexes = array(); // alias => array(column => colno) - primary keys
+	$columns = array(); // alias => array(column => ) - not selected columns in primary key
+	$tables = array(); // alias => orgtable
+	$primary = array(); // orgtable => array(column => ) - primary key of each table, the aliases share it
+	$editable = array(); // colno => array(alias, orgname, is_text) - columns which can be modified
 	$blobs = array(); // colno => bool - display bytes for blobs
 	$types = array(); // colno => type - display char in <code>
 	$return = array(); // table => orgtable - mapping to use in EXPLAIN
@@ -41,29 +43,32 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 				if ($orgtables && JUSH == "sql") { // MySQL EXPLAIN
 					$links[$j] = ($name == "table" ? "table=" : ($name == "possible_keys" ? "indexes=" : null));
 				} elseif ($orgtable != "") {
+					$alias = ($table != "" ? $table : $orgtable); // the drivers not reporting the alias can't tell the aliases apart
 					if ($table != "") {
 						$return[$table] = $orgtable;
 					}
-					if (!isset($indexes[$orgtable])) {
-						// find primary key in each table
-						$indexes[$orgtable] = array();
-						foreach (indexes($orgtable, $connection2) as $index) {
-							if ($index["type"] == "PRIMARY") {
-								$indexes[$orgtable] = array_flip($index["columns"]);
-								break;
+					if (!isset($indexes[$alias])) {
+						if (!isset($primary[$orgtable])) {
+							// find primary key in each table
+							$primary[$orgtable] = array();
+							foreach (indexes($orgtable, $connection2) as $index) {
+								if ($index["type"] == "PRIMARY") {
+									$primary[$orgtable] = array_flip($index["columns"]);
+									break;
+								}
 							}
 						}
-						$columns[$orgtable] = $indexes[$orgtable];
+						$tables[$alias] = $orgtable;
+						$indexes[$alias] = $primary[$orgtable];
+						$columns[$alias] = $primary[$orgtable];
 					}
-					if (isset($columns[$orgtable][$orgname])) {
-						unset($columns[$orgtable][$orgname]);
-						$indexes[$orgtable][$orgname] = $j;
-						$links[$j] = $orgtable;
-						// the identifier would mix the rows if the key columns came from different aliases of the same table
-						$key_tables[$orgtable] = (array_key_exists($orgtable, $key_tables) && $key_tables[$orgtable] !== $table ? null : $table);
+					if (isset($columns[$alias][$orgname])) {
+						unset($columns[$alias][$orgname]);
+						$indexes[$alias][$orgname] = $j;
+						$links[$j] = $alias;
 					} elseif ($modify && isset($field->orgname) && $field->db == DB && !is_blob(array("type" => $type_name))) {
 						// the value can be identified only by the drivers reporting the original names, in practice only MySQLi
-						$editable[$j] = array($orgtable, $orgname, $table, preg_match('~text|json|lob~', $type_name));
+						$editable[$j] = array($alias, $orgname, preg_match('~text|json|lob~', $type_name));
 					}
 				}
 				if ($field->charsetnr == 63) { // 63 - binary
@@ -78,16 +83,15 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 				;
 			}
 			foreach ($editable as $j => $cell) {
-				// the row is identifiable only if the whole primary key of the same alias is selected
-				if ($columns[$cell[0]] || idx($key_tables, $cell[0]) !== $cell[2]) {
+				if ($columns[$cell[0]]) { // the row is identifiable only if the whole primary key is selected
 					unset($editable[$j]);
 				}
 			}
 			echo "<tbody>\n";
 		}
-		$idfs = array(); // orgtable => identifier of the row in it, null if a key column is NULL
-		foreach ($indexes as $orgtable => $index) {
-			if ($index && !$columns[$orgtable]) {
+		$idfs = array(); // alias => identifier of the row in it, null if a key column is NULL
+		foreach ($indexes as $alias => $index) {
+			if ($index && !$columns[$alias]) {
 				$idf = "";
 				foreach ($index as $col => $j) {
 					if ($row[$j] === null) { // NULL is ambiguous
@@ -96,7 +100,7 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 					}
 					$idf .= "&where[" . url_escape(bracket_escape($col)) . "]=" . url_escape($row[$j]);
 				}
-				$idfs[$orgtable] = $idf;
+				$idfs[$alias] = $idf;
 			}
 		}
 		echo "<tr>";
@@ -107,7 +111,7 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 					$table = $row[array_search("table=", $links)];
 					$link = ME . $links[$key] . url_escape($orgtables[$table] != "" ? $orgtables[$table] : $table);
 				} elseif (idx($idfs, $links[$key]) !== null) {
-					$link = ME . "edit=" . url_escape($links[$key]) . $idfs[$links[$key]];
+					$link = ME . "edit=" . url_escape($tables[$links[$key]]) . $idfs[$links[$key]];
 				}
 			}
 			$attrs = "";
@@ -115,8 +119,8 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 			if ($cell && idx($idfs, $cell[0]) !== null && is_utf8($val)) {
 				$edit = true;
 				// the same value can be displayed in more rows so it is identified by an attribute instead of by an ID
-				$attrs = " data-name='" . h("val[" . bracket_escape($cell[0]) . "][" . bracket_escape(substr($idfs[$cell[0]], 1)) . "][" . bracket_escape($cell[1]) . "]")
-					. "' data-text='" . ($cell[3] ? 1 : 0) . "'";
+				$attrs = " data-name='" . h("val[" . bracket_escape($tables[$cell[0]]) . "][" . bracket_escape(substr($idfs[$cell[0]], 1)) . "][" . bracket_escape($cell[1]) . "]")
+					. "' data-text='" . ($cell[2] ? 1 : 0) . "'";
 			}
 			$field = array(
 				'type' => ($blobs[$key] ? 'blob' : ($types[$key] == 254 ? 'char' : '')),
