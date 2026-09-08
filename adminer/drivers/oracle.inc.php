@@ -228,7 +228,7 @@ if (isset($_GET["oracle"])) {
 			$rows = get_rows('SELECT c.table_name "tab", c.column_name "field", c.data_type "type", c.nullable "nullable",
 	c.data_precision "precision", c.data_scale "scale", c.char_col_decl_length "char_length"
 FROM all_tab_columns c
-WHERE ' . where_owner('', "c.owner") . '
+WHERE ' . where_owner("c.owner") . '
 ORDER BY c.table_name, c.column_id', $this->conn);
 			foreach ($rows as $row) {
 				$length = "$row[precision],$row[scale]";
@@ -276,18 +276,18 @@ ORDER BY c.table_name, c.column_id', $this->conn);
 		return get_val("SELECT USER FROM DUAL");
 	}
 
-	function where_owner(string $prefix, string $owner = "owner"): string {
-		return "$prefix$owner = " . q(DB); // an empty DB matches no object
+	function where_owner(string $owner = "owner"): string {
+		return "$owner = " . q(DB); // an empty DB matches no object
 	}
 
 	function views_table(string $columns): string {
-		return "(SELECT $columns FROM all_views WHERE " . where_owner('') . ")";
+		return "(SELECT $columns FROM all_views WHERE " . where_owner() . ")";
 	}
 
 	// all_objects is much faster than all_tables, which digs into segments and statistics (hundreds of ms on an idle XE)
 	// a materialized view has a container table of the same name so including 'TABLE' and 'VIEW' matches all_tables UNION all_views
 	function objects_table(): string {
-		return "(SELECT object_name, DECODE(object_type, 'VIEW', 'view', 'table') object_type FROM all_objects WHERE " . where_owner('') . " AND object_type IN ('TABLE', 'VIEW'))";
+		return "(SELECT object_name, DECODE(object_type, 'VIEW', 'view', 'table') object_type FROM all_objects WHERE " . where_owner() . " AND object_type IN ('TABLE', 'VIEW'))";
 	}
 
 	function tables_list(): array {
@@ -312,8 +312,6 @@ ORDER BY c.table_name, c.column_id', $this->conn);
 			}
 			return $return;
 		}
-		$view = views_table("view_name");
-		$owner = where_owner('', "t.owner");
 		foreach (
 			// sizes are available only for segments of the current user
 			get_rows('SELECT t.table_name "Name", \'table\' "Engine", s.bytes "Data_length", i.bytes "Index_length", t.num_rows "Rows"
@@ -321,8 +319,8 @@ FROM all_tables t
 LEFT JOIN (SELECT segment_name, SUM(bytes) bytes FROM user_segments WHERE segment_type LIKE \'TABLE%\' GROUP BY segment_name) s ON s.segment_name = t.table_name
 LEFT JOIN (SELECT i.table_name, SUM(s.bytes) bytes FROM user_indexes i
 	JOIN user_segments s ON s.segment_name = i.index_name AND s.segment_type LIKE \'INDEX%\' GROUP BY i.table_name) i ON i.table_name = t.table_name
-WHERE ' . $owner . "
-UNION SELECT view_name, 'view', 0, 0, 0 FROM $view
+WHERE ' . where_owner("t.owner") . "
+UNION SELECT view_name, 'view', 0, 0, 0 FROM " . views_table("view_name") . "
 ORDER BY 1") as $row
 		) {
 			$return[$row["Name"]] = $row;
@@ -340,8 +338,7 @@ ORDER BY 1") as $row
 
 	function fields(string $table): array {
 		$return = array();
-		$owner = where_owner(" AND ");
-		foreach (get_rows("SELECT * FROM all_tab_columns WHERE table_name = " . q($table) . "$owner ORDER BY column_id") as $row) {
+		foreach (get_rows("SELECT * FROM all_tab_columns WHERE table_name = " . q($table) . " AND " . where_owner() . " ORDER BY column_id") as $row) {
 			$type = $row["DATA_TYPE"];
 			$length = "$row[DATA_PRECISION],$row[DATA_SCALE]";
 			if ($length == ",") {
@@ -385,7 +382,7 @@ ORDER BY 1") as $row
 			get_rows('SELECT c.constraint_name "name", c.constraint_type "type", c.r_owner "r_owner", c.r_constraint_name "r_constraint", c.delete_rule "delete_rule", cc.column_name "column"
 FROM all_constraints c
 JOIN all_cons_columns cc ON cc.owner = c.owner AND cc.constraint_name = c.constraint_name
-WHERE c.constraint_type IN (\'P\', \'U\', \'R\')' . where_owner(" AND ", "c.owner") . " AND c.table_name = " . q($table) . '
+WHERE c.constraint_type IN (\'P\', \'U\', \'R\') AND ' . where_owner("c.owner") . " AND c.table_name = " . q($table) . '
 ORDER BY cc.position', $connection2) as $row
 		) {
 			$name = $row["name"];
@@ -404,12 +401,11 @@ ORDER BY cc.position', $connection2) as $row
 		foreach (table_constraints($table, $connection2) as $name => $constraint) {
 			$constraints[$name] = $constraint["type"];
 		}
-		$owner = where_owner(" AND ", "aic.table_owner");
 		foreach (
 			get_rows("SELECT aic.*, atc.data_default
 FROM all_ind_columns aic
 LEFT JOIN all_tab_cols atc ON aic.column_name = atc.column_name AND aic.table_name = atc.table_name AND aic.index_owner = atc.owner
-WHERE aic.table_name = " . q($table) . "$owner
+WHERE aic.table_name = " . q($table) . " AND " . where_owner("aic.table_owner") . "
 ORDER BY aic.column_position", $connection2) as $row
 		) {
 			$index_name = $row["INDEX_NAME"];
@@ -430,8 +426,7 @@ ORDER BY aic.column_position", $connection2) as $row
 	}
 
 	function view(string $name): array {
-		$view = views_table("view_name, text");
-		$rows = get_rows('SELECT text "select" FROM ' . $view . ' WHERE view_name = ' . q($name));
+		$rows = get_rows('SELECT text "select" FROM ' . views_table("view_name, text") . ' WHERE view_name = ' . q($name));
 		return reset($rows);
 	}
 
@@ -555,7 +550,8 @@ ORDER BY aic.column_position", $connection2) as $row
 			return array();
 		}
 		$rows = get_rows('SELECT trigger_name "Trigger", trigger_type "Type", triggering_event "Event", trigger_body "Statement"
-FROM all_triggers WHERE trigger_name = ' . q($name) . where_owner(" AND "));
+FROM all_triggers
+WHERE trigger_name = ' . q($name) . " AND " . where_owner());
 		$return = reset($rows);
 		if ($return) {
 			$type = $return["Type"]; // e.g. 'BEFORE STATEMENT', 'AFTER EACH ROW', 'INSTEAD OF', 'COMPOUND'
@@ -567,7 +563,7 @@ FROM all_triggers WHERE trigger_name = ' . q($name) . where_owner(" AND "));
 
 	function triggers(string $table): array {
 		$return = array();
-		foreach (get_rows("SELECT trigger_name, trigger_type, triggering_event FROM all_triggers WHERE table_name = " . q($table) . where_owner(" AND ")) as $row) {
+		foreach (get_rows("SELECT trigger_name, trigger_type, triggering_event FROM all_triggers WHERE table_name = " . q($table) . " AND " . where_owner()) as $row) {
 			$return[$row["TRIGGER_NAME"]] = array(preg_replace('~ (STATEMENT|EACH ROW)$~', '', $row["TRIGGER_TYPE"]), $row["TRIGGERING_EVENT"]);
 		}
 		return $return;
@@ -657,6 +653,6 @@ ORDER BY PROCESS
 	}
 
 	function support(string $feature): bool {
-		return preg_match('~^(columns|database|drop_col|fast_status|indexes|descidx|processlist|sql|status|table|trigger|variables|view|view_trigger)$~', $feature); //!
+		return preg_match('~^(columns|database|drop_col|fast_status|indexes|descidx|processlist|sql|status|table|trigger|variables|view|view_trigger)$~', $feature);
 	}
 }
