@@ -414,13 +414,13 @@ class Adminer {
 		echo "<div class='scrollable'>\n";
 		echo "<table class='nowrap odds'>\n";
 		echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . (support("comment") ? "<td>" . lang('Comment') : "") . "<tbody>\n";
-		$structured_types = driver()->structuredTypes();
+		$user_types = (support("type") ? types() : array()); // not structuredTypes() - the types created by extensions are offered in the type dropdown but the type page doesn't manage them
 		foreach ($fields as $field) {
 			echo "<tr><th>" . h($field["field"]);
 			$type = h($field["full_type"]);
 			$collation = h($field["collation"]);
 			echo "<td><span title='$collation'>"
-				. (in_array($type, (array) $structured_types[lang('User types')])
+				. (in_array($type, $user_types)
 					? "<a href='" . h(ME . 'type=' . url_escape($type)) . "'>$type</a>"
 					: $type . ($collation && isset($tableStatus["Collation"]) && $collation != $tableStatus["Collation"] ? " $collation" : ""))
 				. "</span>"

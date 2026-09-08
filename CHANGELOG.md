@@ -1,5 +1,6 @@
 ## Adminer dev
 - PostgreSQL: Display and edit PostGIS geometries as EWKT (bug SF-615)
+- PostgreSQL: Do not link the types created by extensions from the table structure
 - Oracle: The driver is no longer beta
 - Oracle: Use schemas as databases instead of tablespaces (bug SF-204, SF-212, SF-238)
 - Oracle: Create and drop databases (bug SF-246)
