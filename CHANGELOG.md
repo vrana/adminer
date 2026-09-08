@@ -1,5 +1,5 @@
 ## Adminer dev
-- Oracle: Use schemas as databases instead of tablespaces (bug SF-204, bug SF-212, bug SF-238)
+- Oracle: Use schemas as databases instead of tablespaces (bug SF-204, SF-212, SF-238)
 - Oracle: Create and drop databases (bug SF-246)
 - Oracle: Fix creating a column with a default value
 - Oracle: Fix the default value displayed with the quotes around it
@@ -629,7 +629,7 @@
 - PostgreSQL 8+: Fix exporting table constraints
 - SQLite: Show all supported pragmas in Variables
 - MS SQL: Allow altering table in non-default schema (bug SF-405)
-- MS SQL: Fix default values (bug SF-732, bug SF-733)
+- MS SQL: Fix default values (bug SF-732, SF-733)
 - MS SQL: Fix length of nvarchar columns
 - Editor PDO: Select value of foreign key in edit (bug SF-847)
 - Mobile devices: Use device width
@@ -843,7 +843,7 @@
 - Make maxlength in all fields a soft limit
 - Make tables horizontally scrollable
 - MySQL: Support foreign keys created with ANSI quotes (bug SF-620)
-- MySQL: Recognize ON UPDATE current_timestamp() (bug SF-632, bug SF-638)
+- MySQL: Recognize ON UPDATE current_timestamp() (bug SF-632, SF-638)
 - MySQL: Descending indexes in MySQL 8 (bug SF-643)
 - PostgreSQL: Quote array values in export (bug SF-621)
 - PostgreSQL: Export DESC indexes (bug SF-639)
