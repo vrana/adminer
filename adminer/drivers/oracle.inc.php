@@ -305,7 +305,8 @@ ORDER BY c.table_name, c.column_id', $this->conn);
 	function table_status(string $name = "", bool $fast = false): array {
 		$return = array();
 		$search = q($name);
-		if ($fast) {
+		if ($fast || $name != "") {
+			// sizes and rows are displayed only in the list of all tables; compiling the user_segments query costs ~750 ms after an instance restart
 			foreach (get_rows('SELECT object_name "Name", object_type "Engine" FROM ' . objects_table() . ($name != "" ? " WHERE object_name = $search" : "") . ' ORDER BY 1') as $row) {
 				$return[$row["Name"]] = $row;
 			}
@@ -320,8 +321,8 @@ FROM all_tables t
 LEFT JOIN (SELECT segment_name, SUM(bytes) bytes FROM user_segments WHERE segment_type LIKE \'TABLE%\' GROUP BY segment_name) s ON s.segment_name = t.table_name
 LEFT JOIN (SELECT i.table_name, SUM(s.bytes) bytes FROM user_indexes i
 	JOIN user_segments s ON s.segment_name = i.index_name AND s.segment_type LIKE \'INDEX%\' GROUP BY i.table_name) i ON i.table_name = t.table_name
-WHERE ' . $owner . ($name != "" ? " AND t.table_name = $search" : "") . "
-UNION SELECT view_name, 'view', 0, 0, 0 FROM $view" . ($name != "" ? " WHERE view_name = $search" : "") . "
+WHERE ' . $owner . "
+UNION SELECT view_name, 'view', 0, 0, 0 FROM $view
 ORDER BY 1") as $row
 		) {
 			$return[$row["Name"]] = $row;
@@ -374,25 +375,57 @@ ORDER BY 1") as $row
 		return $return;
 	}
 
+	/** Get the primary, unique and referential constraints of the table with their columns in position order
+	* @return array<string, array{type: string, columns: list<string>, r_owner: string, r_constraint: string, delete_rule: string}>
+	*/
+	function table_constraints(string $table, ?Db $connection2 = null): array {
+		// one statement shape for both indexes() and foreign_keys() - every statement over all_constraints takes ~0.5 s to compile after a restart of the server
+		$return = array();
+		foreach (
+			get_rows('SELECT c.constraint_name "name", c.constraint_type "type", c.r_owner "r_owner", c.r_constraint_name "r_constraint", c.delete_rule "delete_rule", cc.column_name "column"
+FROM all_constraints c
+JOIN all_cons_columns cc ON cc.owner = c.owner AND cc.constraint_name = c.constraint_name
+WHERE c.constraint_type IN (\'P\', \'U\', \'R\')' . where_owner(" AND ", "c.owner") . " AND c.table_name = " . q($table) . '
+ORDER BY cc.position', $connection2) as $row
+		) {
+			$name = $row["name"];
+			$return[$name]["type"] = $row["type"];
+			$return[$name]["r_owner"] = $row["r_owner"];
+			$return[$name]["r_constraint"] = $row["r_constraint"];
+			$return[$name]["delete_rule"] = $row["delete_rule"];
+			$return[$name]["columns"][] = $row["column"];
+		}
+		return $return;
+	}
+
 	function indexes(string $table, ?Db $connection2 = null): array {
 		$return = array();
+		$constraints = array();
+		foreach (table_constraints($table, $connection2) as $name => $constraint) {
+			$constraints[$name] = $constraint["type"];
+		}
 		$owner = where_owner(" AND ", "aic.table_owner");
 		foreach (
-			get_rows("SELECT aic.*, ac.constraint_type, atc.data_default
+			get_rows("SELECT aic.*, atc.data_default
 FROM all_ind_columns aic
-LEFT JOIN all_constraints ac ON aic.index_name = ac.constraint_name AND aic.table_name = ac.table_name AND aic.index_owner = ac.owner
 LEFT JOIN all_tab_cols atc ON aic.column_name = atc.column_name AND aic.table_name = atc.table_name AND aic.index_owner = atc.owner
 WHERE aic.table_name = " . q($table) . "$owner
-ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row
+ORDER BY aic.column_position", $connection2) as $row
 		) {
 			$index_name = $row["INDEX_NAME"];
 			$column_name = $row["DATA_DEFAULT"];
 			$column_name = ($column_name ? trim($column_name, '"') : $row["COLUMN_NAME"]); // trim - possibly wrapped in quotes but never contains quotes inside
-			$return[$index_name]["type"] = ($row["CONSTRAINT_TYPE"] == "P" ? "PRIMARY" : ($row["CONSTRAINT_TYPE"] == "U" ? "UNIQUE" : "INDEX"));
+			$type = idx($constraints, $index_name);
+			$return[$index_name]["type"] = ($type == "P" ? "PRIMARY" : ($type == "U" ? "UNIQUE" : "INDEX"));
 			$return[$index_name]["columns"][] = $column_name;
 			$return[$index_name]["lengths"][] = ($row["CHAR_LENGTH"] && $row["CHAR_LENGTH"] != $row["COLUMN_LENGTH"] ? $row["CHAR_LENGTH"] : null);
 			$return[$index_name]["descs"][] = ($row["DESCEND"] && $row["DESCEND"] == "DESC" ? '1' : null);
 		}
+		uasort($return, function ($a, $b) {
+			// the constraint indexes first as the removed ORDER BY ac.constraint_type did, the callers pick the first usable index
+			$order = array("PRIMARY" => 0, "UNIQUE" => 1, "INDEX" => 2);
+			return $order[$a["type"]] - $order[$b["type"]];
+		});
 		return $return;
 	}
 
@@ -487,28 +520,32 @@ ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row
 
 	function foreign_keys(string $table): array {
 		$return = array();
-		// joining also by owner is much faster and doesn't mix up same-named constraints of other schemas
-		$query = "SELECT c_list.CONSTRAINT_NAME as NAME,
-c_src.COLUMN_NAME as SRC_COLUMN,
-c_dest.OWNER as DEST_DB,
-c_dest.TABLE_NAME as DEST_TABLE,
-c_dest.COLUMN_NAME as DEST_COLUMN,
-c_list.DELETE_RULE as ON_DELETE
-FROM ALL_CONSTRAINTS c_list, ALL_CONS_COLUMNS c_src, ALL_CONS_COLUMNS c_dest
-WHERE c_src.OWNER = c_list.OWNER AND c_src.CONSTRAINT_NAME = c_list.CONSTRAINT_NAME
-AND c_dest.OWNER = c_list.R_OWNER AND c_dest.CONSTRAINT_NAME = c_list.R_CONSTRAINT_NAME
-AND c_list.CONSTRAINT_TYPE = 'R'
-" . where_owner("AND ", "c_list.OWNER") . "
-AND c_src.TABLE_NAME = " . q($table);
-		foreach (get_rows($query) as $row) {
-			$return[$row['NAME']] = array(
-				"db" => $row['DEST_DB'],
-				"table" => $row['DEST_TABLE'],
-				"source" => array($row['SRC_COLUMN']),
-				"target" => array($row['DEST_COLUMN']),
-				"on_delete" => $row['ON_DELETE'],
-				"on_update" => null,
-			);
+		$targets = array();
+		foreach (table_constraints($table) as $name => $constraint) {
+			if ($constraint["type"] == "R") {
+				$return[$name] = array(
+					"source" => $constraint["columns"],
+					"target" => array(),
+					"on_delete" => $constraint["delete_rule"],
+					"on_update" => null,
+				);
+				$targets[$name] = array($constraint["r_owner"], $constraint["r_constraint"]);
+			}
+		}
+		if ($targets) {
+			$where = array();
+			foreach ($targets as $target) {
+				$where[] = "(owner = " . q($target[0]) . " AND constraint_name = " . q($target[1]) . ")";
+			}
+			foreach (get_rows("SELECT owner, constraint_name, table_name, column_name FROM all_cons_columns WHERE " . implode(" OR ", array_unique($where)) . " ORDER BY position") as $row) {
+				foreach ($targets as $name => $target) {
+					if ($target == array($row["OWNER"], $row["CONSTRAINT_NAME"])) {
+						$return[$name]["db"] = $row["OWNER"];
+						$return[$name]["table"] = $row["TABLE_NAME"];
+						$return[$name]["target"][] = $row["COLUMN_NAME"];
+					}
+				}
+			}
 		}
 		return $return;
 	}

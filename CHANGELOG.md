@@ -7,6 +7,7 @@
 - Oracle: Display, create, alter and drop triggers (bug SF-385)
 - Oracle: Display and edit geometries as well-known text instead of empty (bug SF-610, SF-615)
 - Oracle: Accept and display dates in the ISO format (bug SF-770)
+- Oracle: Fix foreign keys over multiple columns, only the last column was displayed
 - Oracle: Fix creating a column with a default value
 - Oracle: Fix the default value displayed with the quotes around it
 ### Internal
