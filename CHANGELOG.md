@@ -5,6 +5,7 @@
 - Oracle: Fix the default value displayed with the quotes around it
 ### Internal
 - Test Oracle
+- Distribute the tests in the release archive (bug #1332)
 
 ## Adminer 6.0.2 (released 2026-09-07)
 - Verify all parts of the server name before connecting (GHSA-rwxg-xph9-82cj, regression from 5.5.1)

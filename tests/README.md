@@ -1,6 +1,7 @@
 # Tests
 
 The end-to-end tests in this directory connect to a database server of the tested driver, all of them using the database `adminer_test` - the screenshots and OpenSearch, which has no databases, are the exceptions.
+The [unit tests](#unit-tests) need nothing but the PHP CLI.
 
 ## Running
 
@@ -140,3 +141,12 @@ GRANT ALL PRIVILEGES ON adminer_demo.* TO 'adminer'@'localhost';
 ```
 
 No plugin may be deployed because it would show in the pictures.
+
+## Unit Tests
+
+The unit tests in `tests/unit/*.php` check the functions which need no database server:
+
+- `composer test` runs all of them.
+- `php tests/unit/url.php` runs a single one, they are standalone scripts requiring nothing but the PHP CLI.
+
+They print the errors found, so they print nothing and exit with 0 when everything is OK.
