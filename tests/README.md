@@ -87,6 +87,22 @@ ALTER ROLE db_owner ADD MEMBER ODBC;
 
 The password policy is disabled because `ODBC` doesn't satisfy it.
 
+## Oracle
+
+Oracle Database Express Edition listening on the default port, the tests type `localhost:1521/XEPDB1` in the server field - the service name of the pluggable database is a part of the Easy Connect syntax.
+A database is an Oracle schema, so the first test drops and recreates `adminer_test` through Adminer itself, which needs a user able to create and drop other users:
+
+```sql
+CREATE USER ODBC IDENTIFIED BY ODBC;
+GRANT DBA TO ODBC;
+```
+
+`DBA` is the counterpart of the privileges granted in the other drivers - it also covers the `V$` views read by the process list, the variables and the status.
+
+Only the `native` project is run, the `pdo` one skips this file in [conf/playwright.config.js](/conf/playwright.config.js).
+On Windows, a PHP process with `pdo_oci` loaded makes the processes it spawns exit with an access violation if they load `sqlsrv`, which breaks every Composer script, so the extension can't be enabled in `php.ini`.
+Testing `PDO_OCI` means removing the file from `testIgnore` and running the tests against a server started with `php -d extension=php_pdo_oci.dll -S localhost:8000`.
+
 ## OpenSearch
 
 An OpenSearch server on the default `localhost:9200` without the security plugin, so that it needs no user and no certificate.
