@@ -17,6 +17,6 @@ export default defineConfig({
 	},
 	projects: [
 		{name: 'native'},
-		{name: 'pdo', metadata: {ext: 'pdo'}, testIgnore: ['**/elastic.spec.js', '**/oracle.spec.js', '**/plugins.spec.js', '**/screenshots.spec.js']}, // pdo_oci is not enabled by default, see ../tests/README.md
+		{name: 'pdo', metadata: {ext: 'pdo'}, testIgnore: ['**/elastic.spec.js', '**/plugins.spec.js', '**/screenshots.spec.js']},
 	],
 });

@@ -27,7 +27,7 @@ The tests expect Adminer at <http://localhost:8000> (or at `ADMINER_URL`), serve
 `display_errors` must be on, otherwise the tests never see the PHP errors they look for in the responses, and `file_uploads` must stay on (the default), otherwise the import tests find a disabled file field.
 The tests fill in the standard login form, so a plugin changing it breaks them - `AdminerLoginServers` for example replaces the server field by a list.
 
-The `native` and `pdo` projects run the same tests with both extensions of the driver, so PHP needs `mysqli` and `pdo_mysql`, `pgsql` and `pdo_pgsql`, `sqlite3` and `pdo_sqlite`, `sqlsrv` and `pdo_sqlsrv`.
+The `native` and `pdo` projects run the same tests with both extensions of the driver, so PHP needs `mysqli` and `pdo_mysql`, `pgsql` and `pdo_pgsql`, `sqlite3` and `pdo_sqlite`, `sqlsrv` and `pdo_sqlsrv`, `oci8` and `pdo_oci`.
 
 ## MySQL
 
@@ -98,10 +98,6 @@ GRANT DBA TO ODBC;
 ```
 
 `DBA` is the counterpart of the privileges granted in the other drivers - it also covers the `V$` views read by the process list, the variables and the status.
-
-Only the `native` project is run, the `pdo` one skips this file in [conf/playwright.config.js](/conf/playwright.config.js).
-On Windows, a PHP process with `pdo_oci` loaded makes the processes it spawns exit with an access violation if they load `sqlsrv`, which breaks every Composer script, so the extension can't be enabled in `php.ini`.
-Testing `PDO_OCI` means removing the file from `testIgnore` and running the tests against a server started with `php -d extension=php_pdo_oci.dll -S localhost:8000`.
 
 ## OpenSearch
 
