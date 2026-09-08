@@ -1,6 +1,7 @@
 ## Adminer dev
 - Oracle: Use schemas as databases instead of tablespaces (bug SF-204, SF-212, SF-238)
 - Oracle: Create and drop databases (bug SF-246)
+- Oracle: Display and edit geometries as well-known text instead of empty (bug SF-610, SF-615)
 - Oracle: Fix creating a column with a default value
 - Oracle: Fix the default value displayed with the quotes around it
 ### Internal

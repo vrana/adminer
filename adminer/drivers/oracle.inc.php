@@ -158,6 +158,7 @@ if (isset($_GET["oracle"])) {
 				lang('Date and time') => array("date" => 10, "timestamp" => 29, "interval year" => 12, "interval day" => 28), //! year(), day() to second()
 				lang('Strings') => array("char" => 2000, "varchar2" => 4000, "nchar" => 2000, "nvarchar2" => 4000, "clob" => 4294967295, "nclob" => 4294967295),
 				lang('Binary') => array("raw" => 2000, "long raw" => 2147483648, "blob" => 4294967295, "bfile" => 4294967296),
+				lang('Geometry') => array("sdo_geometry" => 0),
 			);
 		}
 
@@ -191,6 +192,23 @@ if (isset($_GET["oracle"])) {
 
 		function hasCStyleEscapes(): bool {
 			return true;
+		}
+
+		function select(string $table, array $select, array $where, array $group, array $order = array(), int $limit = 1, ?int $page = 0, bool $print = false) {
+			// fetching a row with a raw object column fails (ORA-00932) so unlike in MySQL, the conversions appended next to * don't help - * must be expanded to convert the objects in SQL
+			if (in_array("*", $select)) {
+				$convert = array();
+				$found = false;
+				foreach (fields($table) as $name => $field) {
+					$as = convert_field($field);
+					$found = ($found || $as);
+					$convert[] = ($as ? "$as AS " : "") . idf_escape($name);
+				}
+				if ($found) {
+					$select = $convert; // also drops the appended conversions, their aliases would collide in the subquery added by limit()
+				}
+			}
+			return parent::select($table, $select, $where, $group, $order, $limit, $page, $print);
 		}
 
 		function allFields(): array {
@@ -544,10 +562,13 @@ ORDER BY PROCESS
 	}
 
 	function convert_field(array $field) {
+		if ($field["type"] == "sdo_geometry") {
+			return "SDO_UTIL.TO_WKTGEOMETRY(" . idf_escape($field["field"]) . ")";
+		}
 	}
 
 	function unconvert_field(array $field, string $return): string {
-		return $return;
+		return ($field["type"] == "sdo_geometry" ? "SDO_UTIL.FROM_WKTGEOMETRY($return)" : $return);
 	}
 
 	function support(string $feature): bool {
