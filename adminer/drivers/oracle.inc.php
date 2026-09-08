@@ -67,10 +67,7 @@ if (isset($_GET["oracle"])) {
 			}
 
 			function timeout(int $ms): bool {
-				return (function_exists('oci_set_call_timeout')
-					? oci_set_call_timeout($this->link, $ms) // available since PHP 7.2.13
-					: false
-				);
+				return function_exists('oci_set_call_timeout') && oci_set_call_timeout($this->link, $ms); // available since PHP 7.2.13
 			}
 		}
 
@@ -635,8 +632,8 @@ WHERE trigger_name = ' . q($name) . " AND " . where_owner());
 	sql.sql_text AS "sql_text",
 	sess.machine AS "machine",
 	sess.port AS "port"
-FROM v$session sess LEFT OUTER JOIN v$sql sql
-ON sql.sql_id = sess.sql_id
+FROM v$session sess
+LEFT JOIN v$sql sql ON sql.sql_id = sess.sql_id
 WHERE sess.type = \'USER\'
 ORDER BY PROCESS
 ');
