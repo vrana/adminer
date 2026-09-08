@@ -1378,6 +1378,11 @@ FROM pg_range WHERE rngtypid = $id"));
 	}
 
 	function convert_field(array $field) {
+		// a PostGIS geometry displays as hex encoded WKB; EWKT keeps the SRID unlike ST_AsText() and is accepted back by the geometry input, so unconvert_field() is not needed
+		// the type is matched only unqualified - a qualified type means the extension is outside search_path where ST_AsEWKT() would not resolve either
+		if (preg_match('~^(geometry|geography)$~', $field["type"]) && strpos($field["full_type"], "[") === false) {
+			return "ST_AsEWKT(" . idf_escape($field["field"]) . ")";
+		}
 	}
 
 	function unconvert_field(array $field, string $return): string {
