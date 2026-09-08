@@ -24,7 +24,7 @@ test.afterAll(async () => {
 test('Login', async () => {
 	await goto(page, '/adminer/');
 	await page.locator('[name="lang"]').selectOption({label: 'English'}); // submits the form
-	await page.locator('[name="auth[driver]"]').selectOption({label: 'Oracle beta'});
+	await page.locator('[name="auth[driver]"]').selectOption({label: 'Oracle'});
 	await page.locator('[name="auth[server]"]').fill(server);
 	await page.locator('#username').fill('ODBC');
 	await page.locator('[name="auth[password]"]').fill('ODBC');

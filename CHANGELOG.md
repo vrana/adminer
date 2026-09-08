@@ -1,4 +1,5 @@
 ## Adminer dev
+- Oracle: The driver is no longer beta
 - Oracle: Use schemas as databases instead of tablespaces (bug SF-204, SF-212, SF-238)
 - Oracle: Create and drop databases (bug SF-246)
 - Oracle: Display, create, alter and drop triggers (bug SF-385)

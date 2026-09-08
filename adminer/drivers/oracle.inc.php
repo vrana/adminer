@@ -1,7 +1,7 @@
 <?php
 namespace Adminer;
 
-add_driver("oracle", "Oracle beta");
+add_driver("oracle", "Oracle");
 
 if (isset($_GET["oracle"])) {
 	define('Adminer\DRIVER', "oracle");
