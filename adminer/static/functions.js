@@ -533,12 +533,12 @@ function submitKeydown(button, event) {
 	}
 	if (isCtrl(event) && event.key == 'Enter' && target.matches('select, textarea, input')) {
 		target.blur();
-		if (target.form[button]) {
-			target.form[button].click();
-		} else {
-			if (fire(target.form, 'submit')) { // submit() doesn't dispatch the event
-				target.form.submit();
-			}
+		// click the button highlighted as the default one to send its name and to run its onclick handler
+		const submit = (button ? target.form[button] : findDefaultSubmit(target));
+		if (submit) {
+			submit.click();
+		} else if (fire(target.form, 'submit')) { // submit() doesn't dispatch the event
+			target.form.submit();
 		}
 		target.focus();
 		return false;
