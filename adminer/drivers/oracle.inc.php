@@ -16,7 +16,6 @@ if (isset($_GET["oracle"])) {
 	if (extension_loaded("oci8") && $_GET["ext"] != "pdo") {
 		class Db extends SqlDb {
 			public $extension = "oci8";
-			public $_current_db;
 			private $link;
 
 			function _error($errno, $error) {
@@ -42,8 +41,7 @@ if (isset($_GET["oracle"])) {
 			}
 
 			function select_db(string $database) {
-				$this->_current_db = $database;
-				return true;
+				return $this->query("ALTER SESSION SET CURRENT_SCHEMA = " . idf_escape($database));
 			}
 
 			function query(string $query, bool $unbuffered = false) {
@@ -116,15 +114,13 @@ if (isset($_GET["oracle"])) {
 	} elseif (extension_loaded("pdo_oci")) {
 		class Db extends PdoDb {
 			public $extension = "PDO_OCI";
-			public $_current_db;
 
 			function attach(array $server, string $username, string $password): string {
 				return $this->dsn("oci:dbname=//" . easy_connect($server) . ";charset=AL32UTF8", $username, $password);
 			}
 
 			function select_db(string $database) {
-				$this->_current_db = $database;
-				return true;
+				return $this->query("ALTER SESSION SET CURRENT_SCHEMA = " . idf_escape($database));
 			}
 		}
 
@@ -204,7 +200,7 @@ if (isset($_GET["oracle"])) {
 	c.data_precision "precision", c.data_scale "scale", c.char_col_decl_length "char_length"
 FROM all_tab_columns c
 WHERE c.table_name IN (
-	SELECT table_name FROM all_tables WHERE tablespace_name = ' . q(DB) . where_owner(" AND ") . "
+	SELECT table_name FROM all_tables WHERE ' . where_owner('') . "
 	UNION SELECT view_name FROM $view
 )" . where_owner(" AND ", "c.owner") . '
 ORDER BY c.table_name, c.column_id', $this->conn);
@@ -230,13 +226,9 @@ ORDER BY c.table_name, c.column_id', $this->conn);
 	}
 
 	function get_databases(bool $flush): array {
-		return get_vals(
-			"SELECT DISTINCT tablespace_name FROM (
-SELECT tablespace_name FROM user_tablespaces
-UNION SELECT tablespace_name FROM all_tables WHERE tablespace_name IS NOT NULL
-)
-ORDER BY 1"
-		);
+		// oracle_maintained skips the internal schemas, the column is available since Oracle 12.1
+		$return = get_vals("SELECT username FROM all_users WHERE oracle_maintained = 'N' ORDER BY 1");
+		return ($return ?: get_vals("SELECT username FROM all_users ORDER BY 1"));
 	}
 
 	function limit(string $query, string $where, int $limit, int $offset = 0, string $separator = " "): string {
@@ -251,45 +243,34 @@ ORDER BY 1"
 	}
 
 	function db_collation(string $db, array $collations): string {
-		return get_val("SELECT value FROM nls_database_parameters WHERE parameter = 'NLS_CHARACTERSET'"); //! respect $db
+		return get_val("SELECT value FROM nls_database_parameters WHERE parameter = 'NLS_CHARACTERSET'"); // the character set is common to all schemas
 	}
 
 	function logged_user(): string {
 		return get_val("SELECT USER FROM DUAL");
 	}
 
-	function get_current_db(): string {
-		$db = connection()->_current_db ?: DB;
-		connection()->_current_db = null;
-		return $db;
-	}
-
 	function where_owner(string $prefix, string $owner = "owner"): string {
-		if (!$_GET["ns"]) {
-			return '';
-		}
-		return "$prefix$owner = sys_context('USERENV', 'CURRENT_SCHEMA')";
+		return "$prefix$owner = " . q(DB); // an empty DB matches no object
 	}
 
 	function views_table(string $columns): string {
-		$owner = where_owner('');
-		return "(SELECT $columns FROM all_views WHERE " . ($owner ?: "rownum < 0") . ")";
+		return "(SELECT $columns FROM all_views WHERE " . where_owner('') . ")";
 	}
 
 	function tables_list(): array {
 		$view = views_table("view_name");
-		$owner = where_owner(" AND ");
 		return get_key_vals(
-			"SELECT table_name, 'table' FROM all_tables WHERE tablespace_name = " . q(DB) . "$owner
+			"SELECT table_name, 'table' FROM all_tables WHERE " . where_owner('') . "
 UNION SELECT view_name, 'view' FROM $view
 ORDER BY 1"
-		); //! views don't have schema
+		);
 	}
 
 	function count_tables(array $databases): array {
 		$return = array();
 		foreach ($databases as $db) {
-			$return[$db] = get_val("SELECT COUNT(*) FROM all_tables WHERE tablespace_name = " . q($db));
+			$return[$db] = get_val("SELECT COUNT(*) FROM all_tables WHERE owner = " . q($db));
 		}
 		return $return;
 	}
@@ -297,9 +278,8 @@ ORDER BY 1"
 	function table_status(string $name = "", bool $fast = false): array {
 		$return = array();
 		$search = q($name);
-		$db = get_current_db();
 		$view = views_table("view_name");
-		$owner = where_owner(" AND ", "t.owner");
+		$owner = where_owner('', "t.owner");
 		foreach (
 			// sizes are available only for segments of the current user
 			get_rows('SELECT t.table_name "Name", \'table\' "Engine", s.bytes "Data_length", i.bytes "Index_length", t.num_rows "Rows"
@@ -307,7 +287,7 @@ FROM all_tables t
 LEFT JOIN (SELECT segment_name, SUM(bytes) bytes FROM user_segments WHERE segment_type LIKE \'TABLE%\' GROUP BY segment_name) s ON s.segment_name = t.table_name
 LEFT JOIN (SELECT i.table_name, SUM(s.bytes) bytes FROM user_indexes i
 	JOIN user_segments s ON s.segment_name = i.index_name AND s.segment_type LIKE \'INDEX%\' GROUP BY i.table_name) i ON i.table_name = t.table_name
-WHERE t.tablespace_name = ' . q($db) . $owner . ($name != "" ? " AND t.table_name = $search" : "") . "
+WHERE ' . $owner . ($name != "" ? " AND t.table_name = $search" : "") . "
 UNION SELECT view_name, 'view', 0, 0, 0 FROM $view" . ($name != "" ? " WHERE view_name = $search" : "") . "
 ORDER BY 1") as $row
 		) {
@@ -394,8 +374,7 @@ ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row
 	}
 
 	function information_schema(string $db, string $schema = ""): bool {
-		//! SYS and SYSTEM are read-only too but get_schema() returns the session user
-		return ($schema != "" ? $schema : get_schema()) == "INFORMATION_SCHEMA";
+		return ($schema != "" ? $schema : $db) == "INFORMATION_SCHEMA"; //! SYS and SYSTEM are read-only too
 	}
 
 	function error(): string {
@@ -515,17 +494,35 @@ AND c_src.TABLE_NAME = " . q($table);
 		return "0"; //!
 	}
 
+	function create_database(string $db, string $collation) {
+		// a schema-only account, available since Oracle 18c; the quota is charged to the owner so the new schema needs it
+		$return = queries("CREATE USER " . idf_escape($db) . " NO AUTHENTICATION");
+		return ($return ? queries("GRANT UNLIMITED TABLESPACE TO " . idf_escape($db)) : $return);
+	}
+
+	function drop_databases(array $databases): bool {
+		$return = true;
+		foreach ($databases as $db) {
+			$return = !!queries("DROP USER " . idf_escape($db) . " CASCADE") && $return;
+		}
+		return $return;
+	}
+
+	function rename_database(string $name, string $collation): bool {
+		return !!queries("ALTER USER " . idf_escape(DB) . " RENAME TO " . idf_escape($name)); // Oracle reports ORA-03001: unimplemented feature
+	}
+
+	// a schema is the same thing as a database here, these are used by the pages not respecting support("scheme")
 	function schemas(): array {
-		$return = get_vals("SELECT DISTINCT owner FROM dba_segments WHERE owner IN (SELECT username FROM dba_users WHERE default_tablespace NOT IN ('SYSTEM','SYSAUX')) ORDER BY 1");
-		return ($return ?: get_vals("SELECT DISTINCT owner FROM all_tables WHERE tablespace_name = " . q(DB) . " ORDER BY 1"));
+		return get_databases(false);
 	}
 
 	function get_schema(): string {
-		return get_val("SELECT sys_context('USERENV', 'SESSION_USER') FROM dual");
+		return DB;
 	}
 
 	function set_schema(string $schema, ?Db $connection2 = null): bool {
-		return !!connection($connection2)->query("ALTER SESSION SET CURRENT_SCHEMA = " . idf_escape($schema));
+		return !!connection($connection2)->select_db($schema);
 	}
 
 	function show_variables(): array {
@@ -567,6 +564,6 @@ ORDER BY PROCESS
 	}
 
 	function support(string $feature): bool {
-		return preg_match('~^(columns|database|drop_col|fast_status|indexes|descidx|processlist|scheme|sql|status|table|variables|view)$~', $feature); //!
+		return preg_match('~^(columns|database|drop_col|fast_status|indexes|descidx|processlist|sql|status|table|variables|view)$~', $feature); //!
 	}
 }

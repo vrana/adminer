@@ -1,4 +1,6 @@
 ## Adminer dev
+- Oracle: Use schemas as databases instead of tablespaces (bug SF-204, bug SF-212, bug SF-238)
+- Oracle: Create and drop databases (bug SF-246)
 - Oracle: Fix creating a column with a default value
 - Oracle: Fix the default value displayed with the quotes around it
 
