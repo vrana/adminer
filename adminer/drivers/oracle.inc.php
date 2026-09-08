@@ -224,14 +224,11 @@ if (isset($_GET["oracle"])) {
 
 		function allFields(): array {
 			$return = array();
-			$view = views_table("view_name");
+			// no filter to tables and views - it only excludes rare clusters and slows the query down threefold
 			$rows = get_rows('SELECT c.table_name "tab", c.column_name "field", c.data_type "type", c.nullable "nullable",
 	c.data_precision "precision", c.data_scale "scale", c.char_col_decl_length "char_length"
 FROM all_tab_columns c
-WHERE c.table_name IN (
-	SELECT table_name FROM all_tables WHERE ' . where_owner('') . "
-	UNION SELECT view_name FROM $view
-)" . where_owner(" AND ", "c.owner") . '
+WHERE ' . where_owner('', "c.owner") . '
 ORDER BY c.table_name, c.column_id', $this->conn);
 			foreach ($rows as $row) {
 				$length = "$row[precision],$row[scale]";
@@ -287,19 +284,20 @@ ORDER BY c.table_name, c.column_id', $this->conn);
 		return "(SELECT $columns FROM all_views WHERE " . where_owner('') . ")";
 	}
 
+	// all_objects is much faster than all_tables, which digs into segments and statistics (hundreds of ms on an idle XE)
+	// a materialized view has a container table of the same name so including 'TABLE' and 'VIEW' matches all_tables UNION all_views
+	function objects_table(): string {
+		return "(SELECT object_name, DECODE(object_type, 'VIEW', 'view', 'table') object_type FROM all_objects WHERE " . where_owner('') . " AND object_type IN ('TABLE', 'VIEW'))";
+	}
+
 	function tables_list(): array {
-		$view = views_table("view_name");
-		return get_key_vals(
-			"SELECT table_name, 'table' FROM all_tables WHERE " . where_owner('') . "
-UNION SELECT view_name, 'view' FROM $view
-ORDER BY 1"
-		);
+		return get_key_vals("SELECT * FROM " . objects_table() . " ORDER BY 1");
 	}
 
 	function count_tables(array $databases): array {
 		$return = array();
 		foreach ($databases as $db) {
-			$return[$db] = get_val("SELECT COUNT(*) FROM all_tables WHERE owner = " . q($db));
+			$return[$db] = get_val("SELECT COUNT(*) FROM all_objects WHERE object_type IN ('TABLE', 'VIEW') AND owner = " . q($db));
 		}
 		return $return;
 	}
@@ -307,6 +305,12 @@ ORDER BY 1"
 	function table_status(string $name = "", bool $fast = false): array {
 		$return = array();
 		$search = q($name);
+		if ($fast) {
+			foreach (get_rows('SELECT object_name "Name", object_type "Engine" FROM ' . objects_table() . ($name != "" ? " WHERE object_name = $search" : "") . ' ORDER BY 1') as $row) {
+				$return[$row["Name"]] = $row;
+			}
+			return $return;
+		}
 		$view = views_table("view_name");
 		$owner = where_owner('', "t.owner");
 		foreach (
@@ -483,6 +487,7 @@ ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row
 
 	function foreign_keys(string $table): array {
 		$return = array();
+		// joining also by owner is much faster and doesn't mix up same-named constraints of other schemas
 		$query = "SELECT c_list.CONSTRAINT_NAME as NAME,
 c_src.COLUMN_NAME as SRC_COLUMN,
 c_dest.OWNER as DEST_DB,
@@ -490,9 +495,10 @@ c_dest.TABLE_NAME as DEST_TABLE,
 c_dest.COLUMN_NAME as DEST_COLUMN,
 c_list.DELETE_RULE as ON_DELETE
 FROM ALL_CONSTRAINTS c_list, ALL_CONS_COLUMNS c_src, ALL_CONS_COLUMNS c_dest
-WHERE c_list.CONSTRAINT_NAME = c_src.CONSTRAINT_NAME
-AND c_list.R_CONSTRAINT_NAME = c_dest.CONSTRAINT_NAME
+WHERE c_src.OWNER = c_list.OWNER AND c_src.CONSTRAINT_NAME = c_list.CONSTRAINT_NAME
+AND c_dest.OWNER = c_list.R_OWNER AND c_dest.CONSTRAINT_NAME = c_list.R_CONSTRAINT_NAME
 AND c_list.CONSTRAINT_TYPE = 'R'
+" . where_owner("AND ", "c_list.OWNER") . "
 AND c_src.TABLE_NAME = " . q($table);
 		foreach (get_rows($query) as $row) {
 			$return[$row['NAME']] = array(
