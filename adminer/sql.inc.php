@@ -14,6 +14,81 @@ if (!$error && $_POST["export"]) {
 	exit;
 }
 
+if (!$error && $_POST["val"]) { // modified by Ctrl+click in the result, the button name is not sent by the implicit submission
+	$affected = 0;
+	$success = true;
+	$cells = array(); // data-name => HTML of the stored value
+	$rows_count = 0;
+	foreach ($_POST["val"] as $rows) {
+		$rows_count += count($rows);
+	}
+	$begin = $rows_count > 1 && driver()->begin();
+	foreach ($_POST["val"] as $table_idf => $rows) {
+		$table = bracket_escape($table_idf, true); // true - back
+		$fields = fields($table);
+		$table_indexes = indexes($table);
+		foreach ($rows as $idf => $row) {
+			parse_str(bracket_escape($idf, true), $where); // true - back
+			$unique = array();
+			foreach ($where["where"] as $key => $val) {
+				$unique[bracket_escape($key, true)] = $val; // true - back
+			}
+			// the condition must identify a single row, otherwise the UPDATE would affect the other ones
+			if (!$fields || $where["null"] || array_diff_key($unique, $fields) || !unique_array($unique, $table_indexes)) {
+				$success = false;
+				break 2;
+			}
+			$set = array();
+			$select = array(); // column identifier in the request => column name
+			foreach ($row as $key_idf => $val) {
+				$key = bracket_escape($key_idf, true); // true - back
+				$field = idx($fields, $key);
+				if (!$field) { // the column is offered only if it exists so this is a forged request
+					$success = false;
+					break 3;
+				}
+				// a generated column and a missing privilege are reported by the database
+				$set[idf_escape($key)] = (preg_match('~char|text~', $field["type"]) || $val != "" ? adminer()->processInput($field, $val) : "NULL");
+				$select[$key_idf] = $key;
+			}
+			$query_where = where($where, $fields);
+			if (!driver()->update($table, $set, "\nWHERE $query_where")) { // no limit, the condition is unique
+				$success = false;
+				break 2;
+			}
+			$affected += connection()->affected_rows;
+			// read the values back, the database can silently modify them, e.g. a date or a too long string
+			$columns = array();
+			foreach ($select as $key) {
+				$columns[] = idf_escape($key);
+			}
+			$updated = driver()->select($table, $columns, array($query_where), $columns);
+			$new_row = ($updated ? $updated->fetch_row() : array());
+			$j = 0;
+			foreach ($select as $key_idf => $key) {
+				$field = $fields[$key];
+				// the same stub as in print_select_result()
+				$stub = array('type' => (is_blob($field) ? 'blob' : (preg_match('~^(char|binary|enum|set)$~', $field["type"]) ? 'char' : '')));
+				$cells["val[$table_idf][$idf][$key_idf]"] = select_value(idx($new_row, $j++), "", $stub, null);
+			}
+		}
+	}
+	if ($begin && $success) {
+		$success = driver()->commit();
+	}
+	queries_redirect(null, lang('%d item(s) have been affected.', $affected), $success);
+	if ($begin && !$success) {
+		driver()->rollback(); // after queries_redirect() to not overwrite error
+	}
+	// the values are sent only by sqlSave() so the response is always processed by JavaScript
+	page_headers();
+	page_messages($error);
+	foreach ($cells as $name => $val) {
+		echo "<div data-name='" . h($name) . "' hidden>$val</div>\n";
+	}
+	exit;
+}
+
 restart_session();
 $history_all = &get_session("queries");
 $history = &$history_all[DB];
@@ -184,14 +259,24 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 									if (is_object($result)) {
 										$limit = $_POST["limit"];
 										$num_rows = $limit;
-										$orgtables = print_select_result($result, $connection2, array(), $num_rows);
-										if (!$_POST["only_errors"]) {
+										$edit = !$_POST["only_errors"]; // the values can be modified only if the Save button is printed
+										if ($edit) {
+											// the result must be inside the form to send the modified values
 											echo "<form action='' method='post'>\n";
+										}
+										$orgtables = print_select_result($result, $connection2, array(), $num_rows, $edit);
+										if (!$_POST["only_errors"]) {
 											$num_rows = max($result->num_rows, $num_rows); // native num_rows holds the count before LIMIT
 											echo "<p class='sql-footer'>" . ($num_rows ? ($limit && $num_rows > $limit ? lang('%d / ', $limit) : "") . lang('%d row(s)', $num_rows) : "");
 											echo $time;
 											if ($connection2 && preg_match("~^($space|\\()*+SELECT\\b~i", $q) && ($explain = explain($connection2, $q))) {
 												echo ", <a href='#$explain_id' class='toggle'>Explain</a>";
+											}
+											if ($edit) { // at least one value can be modified
+												// the button must precede the export button, the implicit submission uses the first one
+												echo ", <input type='submit' name='save' value='" . lang('Save') . "' class='jsonly' disabled"
+													. " title='" . lang('Ctrl+click on a value to modify it.') . "'" . on('click', 'sqlSave', lang('Saving…')) . ">"
+												;
 											}
 											$id = "export-$commands";
 											echo ", <a href='#$id' class='toggle'>" . lang('Export') . "</a><span id='$id' class='hidden'>: "

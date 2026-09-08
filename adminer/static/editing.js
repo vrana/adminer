@@ -741,8 +741,7 @@ function sqlExport(event) {
 	if (!/^(csv|csv;|tsv)$/.test(format) || !/^(text|file)$/.test(output)) {
 		return true;
 	}
-	const div = form.previousElementSibling;
-	const table = (div && div.classList.contains('scrollable') ? qs('table', div) : null);
+	const table = qs('.scrollable table', form);
 	if (!table) {
 		return true;
 	}
@@ -780,6 +779,30 @@ function sqlExport(event) {
 	} else {
 		location.href = url;
 	}
+	return false;
+}
+
+/** Save the values modified by Ctrl+click in the result of the SQL command
+* @param {string} message
+* @return {boolean} false
+* @this HTMLInputElement submit button
+*/
+function sqlSave(message) {
+	const button = this;
+	const form = button.form;
+	ajax(form.action, request => {
+		const response = document.createElement('div');
+		response.innerHTML = request.responseText;
+		for (const el of qsa('[data-name]', response)) {
+			// a join can display the same row more than once, refresh all its cells
+			for (const td of qsa('[data-name="' + el.dataset.name.replace(/[\\"]/g, '\\$&') + '"]')) {
+				td.innerHTML = el.innerHTML;
+			}
+			el.remove();
+		}
+		button.disabled = !qs('.error', response); // an error can be fixed and saved again
+		ajaxStatus(response.innerHTML);
+	}, formData(form, button), message);
 	return false;
 }
 

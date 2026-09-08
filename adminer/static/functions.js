@@ -821,15 +821,23 @@ function ajaxForm(message) {
 		data = '';
 	}
 	ajax(url, request => {
-		const ajaxstatus = qs('#ajaxstatus');
-		setHtml('ajaxstatus', request.responseText);
-		if (qs('.message', ajaxstatus)) { // success
+		if (qs('.message', ajaxStatus(request.responseText))) { // success
 			editChanged = null;
 		}
-		adminerHighlighter(qsa('code', ajaxstatus));
-		messagesPrint(ajaxstatus);
 	}, data, message);
 	return false;
+}
+
+/** Display the response of an AJAX request in the status area
+* @param {string} html
+* @return {HTMLElement} the status area
+*/
+function ajaxStatus(html) {
+	const ajaxstatus = qs('#ajaxstatus');
+	setHtml('ajaxstatus', html);
+	adminerHighlighter(qsa('code', ajaxstatus));
+	messagesPrint(ajaxstatus);
+	return ajaxstatus;
 }
 
 
@@ -847,6 +855,9 @@ function selectClick(event, text, warning) {
 	if (!isCtrl(event) || (td.firstElementChild && td.firstElementChild.matches('input, textarea')) || target.matches('a')) {
 		return;
 	}
+	const form = td.closest('form');
+	// the same row can be displayed more than once in the result of the SQL command so the cells have no unique ID there
+	const name = td.dataset.name || td.id;
 	if (warning) {
 		alert(warning);
 		return true;
@@ -875,22 +886,22 @@ function selectClick(event, text, warning) {
 	}
 	td.innerHTML = '';
 	td.append(input);
-	const save = qs('#save');
+	const save = (form && form['save']) || qs('#save'); // each result of the SQL command has its own button
 	if (save) { // missing if a plugin returns false from selectCommandPrint()
 		save.disabled = false;
 	}
 	setupSubmitHighlight(td);
 	input.focus();
 	if (text == 2) { // long text
-		return ajax(location.href + '&' + urlEscape(td.id) + '=', request => {
+		return ajax(location.href + '&' + urlEscape(name) + '=', request => {
 			if (request.responseText) {
 				input.value = request.responseText;
-				input.name = td.id;
+				input.name = name;
 			}
 		});
 	}
 	input.value = value;
-	input.name = td.id;
+	input.name = name;
 	input.selectionStart = pos;
 	input.selectionEnd = pos;
 	return true;

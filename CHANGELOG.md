@@ -1,4 +1,5 @@
 ## Adminer dev
+- SQL command: Modify the values in the result by Ctrl+click (bug #1333)
 - PostgreSQL: Display and edit PostGIS geometries as EWKT (bug SF-615)
 - PostgreSQL: Do not link the types created by extensions from the table structure
 - Oracle: The driver is no longer beta

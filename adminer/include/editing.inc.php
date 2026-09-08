@@ -8,30 +8,41 @@ namespace Adminer;
 * @param string[] $orgtables
 * @param int|numeric-string $limit
 * @param-out int $limit the number of printed rows
+* @param bool $edit allow modifying the values by Ctrl+click, the caller must print the result inside a form
+* @param-out bool $edit whether at least one value can be modified
 * @return string[] $orgtables
 */
-function print_select_result($result, ?Db $connection2 = null, array $orgtables = array(), &$limit = 0): array {
+function print_select_result($result, ?Db $connection2 = null, array $orgtables = array(), &$limit = 0, &$edit = false): array {
 	$links = array(); // colno => orgtable - create links from these columns
 	$indexes = array(); // orgtable => array(column => colno) - primary keys
 	$columns = array(); // orgtable => array(column => ) - not selected columns in primary key
+	$key_tables = array(); // orgtable => table - alias holding the primary key, null if more aliases hold a part of it
+	$editable = array(); // colno => array(orgtable, orgname, table, is_text) - columns which can be modified
 	$blobs = array(); // colno => bool - display bytes for blobs
 	$types = array(); // colno => type - display char in <code>
 	$return = array(); // table => orgtable - mapping to use in EXPLAIN
+	$modify = $edit; // $edit is used also for the output value
+	$edit = false;
 	for ($i=0; (!$limit || $i < $limit) && ($row = $result->fetch_row()); $i++) {
 		if (!$i) {
 			echo "<div class='scrollable'>\n";
-			echo "<table class='nowrap odds'>\n";
+			echo "<table class='nowrap odds'" . ($modify
+				? on('click', 'tableClick') . on('dblclick', 'tableClick') . on('keydown', 'editingKeydown')
+				: ""
+			) . ">\n";
 			echo "<thead><tr>";
 			for ($j=0; $j < count($row); $j++) {
 				$field = $result->fetch_field();
 				$name = $field->name;
+				$table = (isset($field->table) ? $field->table : "");
 				$orgtable = (isset($field->orgtable) ? $field->orgtable : "");
 				$orgname = (isset($field->orgname) ? $field->orgname : $name);
+				$type_name = driver()->typeName($field);
 				if ($orgtables && JUSH == "sql") { // MySQL EXPLAIN
 					$links[$j] = ($name == "table" ? "table=" : ($name == "possible_keys" ? "indexes=" : null));
 				} elseif ($orgtable != "") {
-					if (isset($field->table)) {
-						$return[$field->table] = $orgtable;
+					if ($table != "") {
+						$return[$table] = $orgtable;
 					}
 					if (!isset($indexes[$orgtable])) {
 						// find primary key in each table
@@ -48,45 +59,71 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 						unset($columns[$orgtable][$orgname]);
 						$indexes[$orgtable][$orgname] = $j;
 						$links[$j] = $orgtable;
+						// the identifier would mix the rows if the key columns came from different aliases of the same table
+						$key_tables[$orgtable] = (array_key_exists($orgtable, $key_tables) && $key_tables[$orgtable] !== $table ? null : $table);
+					} elseif ($modify && isset($field->orgname) && $field->db == DB && !is_blob(array("type" => $type_name))) {
+						// the value can be identified only by the drivers reporting the original names, in practice only MySQLi
+						$editable[$j] = array($orgtable, $orgname, $table, preg_match('~text|json|lob~', $type_name));
 					}
 				}
 				if ($field->charsetnr == 63) { // 63 - binary
 					$blobs[$j] = true;
 				}
 				$types[$j] = $field->type;
-				echo "<th title='" . h(trim(($orgtable != "" ? "$orgtable.$orgname" : ($field->name != $orgname ? $orgname : "")) . " " . driver()->typeName($field))) . "'>" . h($name)
+				echo "<th title='" . h(trim(($orgtable != "" ? "$orgtable.$orgname" : ($field->name != $orgname ? $orgname : "")) . " " . $type_name)) . "'>" . h($name)
 					. ($orgtables ? doc_link(array(
 						'sql' => "explain-output.html#explain_" . strtolower($name),
 						'mariadb' => "explain/#the-columns-in-explain-select",
 					)) : "")
 				;
 			}
+			foreach ($editable as $j => $cell) {
+				// the row is identifiable only if the whole primary key of the same alias is selected
+				if ($columns[$cell[0]] || idx($key_tables, $cell[0]) !== $cell[2]) {
+					unset($editable[$j]);
+				}
+			}
 			echo "<tbody>\n";
+		}
+		$idfs = array(); // orgtable => identifier of the row in it, null if a key column is NULL
+		foreach ($indexes as $orgtable => $index) {
+			if ($index && !$columns[$orgtable]) {
+				$idf = "";
+				foreach ($index as $col => $j) {
+					if ($row[$j] === null) { // NULL is ambiguous
+						$idf = null;
+						break;
+					}
+					$idf .= "&where[" . url_escape(bracket_escape($col)) . "]=" . url_escape($row[$j]);
+				}
+				$idfs[$orgtable] = $idf;
+			}
 		}
 		echo "<tr>";
 		foreach ($row as $key => $val) {
 			$link = "";
-			if (isset($links[$key]) && !$columns[$links[$key]]) {
+			if (isset($links[$key])) {
 				if ($orgtables && JUSH == "sql") { // MySQL EXPLAIN
 					$table = $row[array_search("table=", $links)];
 					$link = ME . $links[$key] . url_escape($orgtables[$table] != "" ? $orgtables[$table] : $table);
-				} else {
-					$link = ME . "edit=" . url_escape($links[$key]);
-					foreach ($indexes[$links[$key]] as $col => $j) {
-						if ($row[$j] === null) {
-							$link = "";
-							break;
-						}
-						$link .= "&where[" . url_escape(bracket_escape($col)) . "]=" . url_escape($row[$j]);
-					}
+				} elseif (idx($idfs, $links[$key]) !== null) {
+					$link = ME . "edit=" . url_escape($links[$key]) . $idfs[$links[$key]];
 				}
+			}
+			$attrs = "";
+			$cell = idx($editable, $key);
+			if ($cell && idx($idfs, $cell[0]) !== null && is_utf8($val)) {
+				$edit = true;
+				// the same value can be displayed in more rows so it is identified by an attribute instead of by an ID
+				$attrs = " data-name='" . h("val[" . bracket_escape($cell[0]) . "][" . bracket_escape(substr($idfs[$cell[0]], 1)) . "][" . bracket_escape($cell[1]) . "]")
+					. "' data-text='" . ($cell[3] ? 1 : 0) . "'";
 			}
 			$field = array(
 				'type' => ($blobs[$key] ? 'blob' : ($types[$key] == 254 ? 'char' : '')),
 			);
 			$val = select_value($val, $link, $field, null);
 			// https://dev.mysql.com/doc/dev/mysql-server/latest/field__types_8h.html
-			echo "<td" . ($types[$key] <= 9 || $types[$key] == 246 ? " class='number'" : "") . ">$val";
+			echo "<td" . ($types[$key] <= 9 || $types[$key] == 246 ? " class='number'" : "") . "$attrs>$val";
 		}
 	}
 	$limit = $i;
