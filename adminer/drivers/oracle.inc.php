@@ -333,6 +333,13 @@ ORDER BY 1") as $row
 			if ($length == ",") {
 				$length = $row["CHAR_COL_DECL_LENGTH"];
 			} //! int
+			$default = $row["DATA_DEFAULT"];
+			if ($default !== null) {
+				$default = rtrim($default); // Oracle pads the default by a space
+				if (preg_match("~^'(.*)'\$~s", $default, $match)) {
+					$default = str_replace("''", "'", $match[1]); // a string is stored as a quoted literal
+				}
+			}
 			$privileges = array("insert" => 1, "select" => 1, "update" => 1, "order" => 1);
 			if ($row["DATA_TYPE_OWNER"] == "" || $type == "XMLTYPE") { // an object type, e.g. SDO_GEOMETRY, can't be compared with a string
 				$privileges["where"] = 1;
@@ -342,7 +349,7 @@ ORDER BY 1") as $row
 				"full_type" => $type . ($length ? "($length)" : ""),
 				"type" => strtolower($type),
 				"length" => $length,
-				"default" => $row["DATA_DEFAULT"],
+				"default" => $default,
 				"null" => ($row["NULLABLE"] == "Y"),
 				//! "auto_increment" => false,
 				//! "collation" => $row["CHARACTER_SET_NAME"],
@@ -423,6 +430,7 @@ ORDER BY ac.constraint_type, aic.column_position", $connection2) as $row
 				}
 			}
 			if ($val) {
+				list($val[2], $val[3]) = array($val[3], $val[2]); // Oracle expects DEFAULT before NOT NULL
 				$alter[] = ($table != "" ? ($field[0] != "" ? "MODIFY (" : "ADD (") : "  ") . implode($val) . ($table != "" ? ")" : ""); //! error with name change only
 			} else {
 				$drop[] = idf_escape($field[0]);

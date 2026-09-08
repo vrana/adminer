@@ -1,4 +1,6 @@
 ## Adminer dev
+- Oracle: Fix creating a column with a default value
+- Oracle: Fix the default value displayed with the quotes around it
 
 ## Adminer 6.0.2 (released 2026-09-07)
 - Verify all parts of the server name before connecting (GHSA-rwxg-xph9-82cj, regression from 5.5.1)
