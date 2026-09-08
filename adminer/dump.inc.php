@@ -230,7 +230,7 @@ echo "<tr><th>" . lang('Data') . "<td>" . html_select('data_style', $data_style,
 <table<?php echo on('click', 'dumpClick'); ?>>
 <?php
 $prefixes = array();
-if ($_GET["ns"] === "") {
+if ($_GET["ns"] === "" && support("scheme")) { // a driver without schemas has none to list even with an empty ns in the URL
 	echo "<thead><tr><th style='text-align: left;'>";
 	echo "<label class='block'><input type='checkbox' id='check-schemas' checked class='jsonly' title='" . lang('All') . "'"
 		. on('click', 'formCheck', '^schemas\[') . ">" . lang('Schema') . "</label>";
