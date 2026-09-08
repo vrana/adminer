@@ -512,19 +512,6 @@ AND c_src.TABLE_NAME = " . q($table);
 		return !!queries("ALTER USER " . idf_escape(DB) . " RENAME TO " . idf_escape($name)); // Oracle reports ORA-03001: unimplemented feature
 	}
 
-	// a schema is the same thing as a database here, these are used by the pages not respecting support("scheme")
-	function schemas(): array {
-		return get_databases(false);
-	}
-
-	function get_schema(): string {
-		return DB;
-	}
-
-	function set_schema(string $schema, ?Db $connection2 = null): bool {
-		return !!connection($connection2)->select_db($schema);
-	}
-
 	function show_variables(): array {
 		return get_rows('SELECT name, display_value FROM v$parameter');
 	}
