@@ -186,7 +186,7 @@
 - PostgreSQL: Show composite, domain and range types next to enums
 - PostgreSQL: Alter and rename user defined types
 - PostgreSQL: Add values to an enum type without re-creating it
-- PostgreSQL: Export all user defined types, fix exporting enum values containing an apostrophe
+- PostgreSQL: Export all user defined types, fix exporting enum values containing an apostrophe (bug SF-587)
 - PostgreSQL: Drop all tables at once in export so that foreign keys, views and types don't prevent the drop
 - PostgreSQL: Drop the selected tables at once so that foreign keys don't prevent the drop
 - PostgreSQL: Export materialized views with their indexes, they were exported as plain views
