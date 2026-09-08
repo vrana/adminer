@@ -151,6 +151,17 @@ if (isset($_GET["oracle"])) {
 			return array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL", "SQL");
 		}
 
+		static function connect(string $server, string $username, string $password) {
+			$connection = parent::connect($server, $username, $password);
+			if (is_object($connection)) {
+				// the ISO date and time formats sent by the edit form and import
+				$connection->query("ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD HH24:MI:SS'"
+					. " NLS_TIMESTAMP_FORMAT = 'YYYY-MM-DD HH24:MI:SS.FF'"
+					. " NLS_TIMESTAMP_TZ_FORMAT = 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'");
+			}
+			return $connection;
+		}
+
 		function __construct(Db $connection) {
 			parent::__construct($connection);
 			$this->types = array(
