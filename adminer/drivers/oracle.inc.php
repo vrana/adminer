@@ -154,8 +154,8 @@ if (isset($_GET["oracle"])) {
 		static function connect(string $server, string $username, string $password) {
 			$connection = parent::connect($server, $username, $password);
 			if (is_object($connection)) {
-				// the ISO date and time formats sent by the edit form and import
-				$connection->query("ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD HH24:MI:SS'"
+				$connection->query("ALTER SESSION SET CURSOR_SHARING = FORCE" // convert the literals to binds so that a dictionary query compiled for one table is reused for the others
+					. " NLS_DATE_FORMAT = 'YYYY-MM-DD HH24:MI:SS'" // the ISO date and time formats sent by the edit form and import
 					. " NLS_TIMESTAMP_FORMAT = 'YYYY-MM-DD HH24:MI:SS.FF'"
 					. " NLS_TIMESTAMP_TZ_FORMAT = 'YYYY-MM-DD HH24:MI:SS.FF TZH:TZM'");
 			}
