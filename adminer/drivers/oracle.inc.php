@@ -496,6 +496,37 @@ AND c_src.TABLE_NAME = " . q($table);
 		return $return;
 	}
 
+	function trigger(string $name, string $table): array {
+		if ($name == "") {
+			return array();
+		}
+		$rows = get_rows('SELECT trigger_name "Trigger", trigger_type "Type", triggering_event "Event", trigger_body "Statement"
+FROM all_triggers WHERE trigger_name = ' . q($name) . where_owner(" AND "));
+		$return = reset($rows);
+		if ($return) {
+			$type = $return["Type"]; // e.g. 'BEFORE STATEMENT', 'AFTER EACH ROW', 'INSTEAD OF', 'COMPOUND'
+			$return["Timing"] = (preg_match('~^(BEFORE|AFTER|INSTEAD OF)~', $type, $match) ? $match[1] : $type);
+			$return["Type"] = (preg_match('~EACH ROW~', $type) || $type == "INSTEAD OF" ? "FOR EACH ROW" : "");
+		}
+		return ($return ?: array());
+	}
+
+	function triggers(string $table): array {
+		$return = array();
+		foreach (get_rows("SELECT trigger_name, trigger_type, triggering_event FROM all_triggers WHERE table_name = " . q($table) . where_owner(" AND ")) as $row) {
+			$return[$row["TRIGGER_NAME"]] = array(preg_replace('~ (STATEMENT|EACH ROW)$~', '', $row["TRIGGER_TYPE"]), $row["TRIGGERING_EVENT"]);
+		}
+		return $return;
+	}
+
+	function trigger_options(): array {
+		return array(
+			"Timing" => array("BEFORE", "AFTER", "INSTEAD OF"),
+			"Event" => array("INSERT", "UPDATE", "DELETE", "INSERT OR UPDATE", "INSERT OR DELETE", "UPDATE OR DELETE", "INSERT OR UPDATE OR DELETE"), //! UPDATE OF columns
+			"Type" => array("FOR EACH ROW", ""), // a statement level trigger has no clause
+		);
+	}
+
 	function truncate_tables(array $tables): bool {
 		return apply_queries("TRUNCATE TABLE", $tables);
 	}
@@ -572,6 +603,6 @@ ORDER BY PROCESS
 	}
 
 	function support(string $feature): bool {
-		return preg_match('~^(columns|database|drop_col|fast_status|indexes|descidx|processlist|sql|status|table|variables|view)$~', $feature); //!
+		return preg_match('~^(columns|database|drop_col|fast_status|indexes|descidx|processlist|sql|status|table|trigger|variables|view|view_trigger)$~', $feature); //!
 	}
 }
