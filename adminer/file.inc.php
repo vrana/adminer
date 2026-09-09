@@ -37,8 +37,8 @@ if ($_GET["file"] == "default.css") {
 } elseif ($_GET["file"] == "worker.js") {
 	header("Content-Type: text/javascript; charset=utf-8");
 	echo decompress_string(compile_file('../adminer/static/worker.js', 'minify_js'));
-} elseif ($_GET["file"] == "logo.png") {
-	header("Content-Type: image/png");
-	echo compile_file('../adminer/static/logo.png');
+} elseif ($_GET["file"] == "logo.svg") {
+	header("Content-Type: image/svg+xml");
+	echo decompress_string(compile_file('../adminer/static/logo.svg', 'minify_svg'));
 }
 exit;

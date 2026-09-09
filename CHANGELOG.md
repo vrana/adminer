@@ -1,6 +1,7 @@
 ## Adminer dev
 - Press the button highlighted as default when sending the form by Ctrl+Enter
 - Display the message on the screen when AJAX-saving
+- Install Adminer as an application
 - SQL command: Modify the values in the result by Ctrl+click (bug #1333)
 - SQL command: Fix the edit links of a table joined more than once, only the first alias was linked and a composite key could mix the aliases
 - SQL command: Display the values in the result according to their type in all drivers
@@ -19,6 +20,7 @@
 - Oracle: Fix the default value displayed with the quotes around it
 ### Plugins
 - Driver plugins: Result::fetch_field() reports the type name in native_type instead of the MySQL number in type and charsetnr
+- Method manifest() to customize or disable the web app manifest
 ### Internal
 - Test Oracle
 - Distribute the tests in the release archive (bug #1332)

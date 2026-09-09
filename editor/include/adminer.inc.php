@@ -7,7 +7,7 @@ class Adminer {
 	/** @var array<string, string[]|string> */ private array $values = array(); // [table => options or one description]
 
 	function name(): string {
-		return "<a href='https://www.adminer.org/editor/'" . target_blank() . " id='h1'><img src='" . DIR . "static/logo.png' width='24' height='24' alt='' id='logo'>" . lang('Editor') . "</a>";
+		return "<a href='https://www.adminer.org/editor/'" . target_blank() . " id='h1'><img src='" . DIR . "static/logo.svg' width='24' height='24' alt='' id='logo'>" . lang('Editor') . "</a>";
 	}
 
 	//! driver, ns
@@ -84,6 +84,21 @@ class Adminer {
 		if (!defined('Adminer\DIR')) {
 			service_worker();
 		}
+	}
+
+	/** @return mixed[] */
+	function manifest(): array {
+		$host = $_SERVER["HTTP_HOST"] ?: $_SERVER["SERVER_NAME"];
+		$self = preg_replace('~\?.*~', '', ME) ?: '.';
+		return array(
+			'name' => "Adminer Editor" . ($host != "" ? " - $host" : ""),
+			'short_name' => 'Adminer Editor',
+			'description' => lang('Data editing in a single PHP file'),
+			'start_url' => $self,
+			'scope' => $self,
+			'display' => 'minimal-ui',
+			'icons' => array(array('src' => DIR . "static/logo.svg", 'sizes' => 'any', 'type' => 'image/svg+xml')),
+		);
 	}
 
 	function head(?bool $dark = null): bool {

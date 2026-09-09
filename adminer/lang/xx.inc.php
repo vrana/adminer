@@ -92,6 +92,7 @@ Lang::$translations = array(
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Xx.',
 	'You are offline.' => 'Xx.',
 	'Menu' => 'Xx',
+	'Database management in a single PHP file' => 'Xx',
 
 	'Export' => 'Xx',
 	'Output' => 'Xx',
@@ -315,6 +316,7 @@ Lang::$translations = array(
 	'Relations' => 'Xx',
 
 	'Editor' => 'Xx',
+	'Data editing in a single PHP file' => 'Xx',
 	'$1-$3-$5' => 'xx', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'[yyyy]-mm-dd' => 'xx', // hint for date format - use language equivalents for day, month and year shortcuts
 	'HH:MM:SS' => 'Xx', // hint for time format - use language equivalents for hour, minute and second shortcuts

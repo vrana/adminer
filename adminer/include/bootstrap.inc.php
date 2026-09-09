@@ -113,6 +113,10 @@ define(
 		. (isset($_GET["db"]) ? 'db=' . url_escape(DB) . '&' . (isset($_GET["ns"]) ? "ns=" . url_escape($_GET["ns"]) . "&" : "") : '')
 );
 
+if (isset($_GET["manifest"])) {
+	include DIR . "manifest.inc.php";
+}
+
 include DIR . "include/design.inc.php";
 include DIR . "include/xxtea.inc.php";
 include DIR . "include/auth.inc.php";

@@ -52,7 +52,11 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	if (adminer()->head($dark)) {
 		echo "<link rel='icon' href='data:image/gif;base64,"
 			. "R0lGODlhEAAQAJEAAAQCBPz+/PwCBAROZCH5BAEAAAAALAAAAAAQABAAAAI2hI+pGO1rmghihiUdvUBnZ3XBQA7f05mOak1RWXrNq5nQWHMKvuoJ37BhVEEfYxQzHjWQ5qIAADs='>\n";
-		echo "<link rel='apple-touch-icon' href='" . DIR . "static/logo.png'>\n";
+		echo "<link rel='apple-touch-icon' href='" . DIR . "static/logo.svg'>\n";
+	}
+	if (adminer()->manifest()) {
+		// crossorigin sends the cookies so that the manifest is in the selected language, the URL is without parameters to be the same on all pages
+		echo "<link rel='manifest' href='" . h(preg_replace('~\?.*~', '', ME) . "?manifest=") . "' crossorigin='use-credentials'>\n";
 	}
 	foreach ($css as $url => $mode) {
 		$attrs = ($mode == 'dark' && !$dark

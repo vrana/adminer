@@ -148,6 +148,10 @@ function minify_css($file) {
 	return Adminer\compress_string(preg_replace('~\s*([:;{},])\s*~', '\1', preg_replace('~/\*.*?\*/\s*~s', '', $file)));
 }
 
+function minify_svg($file) {
+	return Adminer\compress_string(preg_replace('~<!--.*?-->|\s+(?=<)~s', '', $file));
+}
+
 function minify_js($file) {
 	$file = preg_replace_callback("~'use strict';~", function ($match) {
 		static $count = 0;
@@ -374,6 +378,7 @@ $file = replace_re("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", 'compile_fil
 $replace = 'preg_replace("~\\\\\\\\?.*~", "", ME) . "?file=\1&version=' . Adminer\VERSION . '"';
 $file = replace_re('~<\?php echo DIR; \?>static/(default\.css)~', '<?php echo h(' . $replace . '); ?>', $file);
 $file = replace_re('~DIR \. "static/(functions\.js)"~', $replace, $file);
+$file = replace_re('~\'src\' => DIR \. "static/(logo\.svg)"~', "'src' => $replace", $file); // the URL is used in JSON, not in HTML, so it must not be escaped by h()
 if ($project != "editor") { // the Editor doesn't use jush
 	$file = replace_re('~DIR \. "static/jush/modules/(jush\.js)"~', $replace, $file); // before the general rule which would keep the path
 }

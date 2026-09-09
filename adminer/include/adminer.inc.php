@@ -12,7 +12,7 @@ class Adminer {
 	* @return string HTML code
 	*/
 	function name(): string {
-		return "<a href='https://www.adminer.org/'" . target_blank() . " id='h1'><img src='" . DIR . "static/logo.png' width='24' height='24' alt='' id='logo'>Adminer</a>";
+		return "<a href='https://www.adminer.org/'" . target_blank() . " id='h1'><img src='" . DIR . "static/logo.svg' width='24' height='24' alt='' id='logo'>Adminer</a>";
 	}
 
 	/** Connection parameters
@@ -116,6 +116,24 @@ class Adminer {
 		if (!defined('Adminer\DIR')) { // only the compiled version serves the files itself, the development version leaves them to the web server
 			service_worker();
 		}
+	}
+
+	/** Get the web app manifest allowing to install Adminer as an application, empty array to not offer it
+	* @return mixed[]
+	*/
+	function manifest(): array {
+		$host = $_SERVER["HTTP_HOST"] ?: $_SERVER["SERVER_NAME"]; // HTTP_HOST is not sent by HTTP/1.0 clients
+		// relative to the manifest served by Adminer itself; ME holds no filename if Adminer is the directory index
+		$self = preg_replace('~\?.*~', '', ME) ?: '.';
+		return array(
+			'name' => "Adminer" . ($host != "" ? " - $host" : ""), // the host distinguishes the applications installed from several servers
+			'short_name' => 'Adminer',
+			'description' => lang('Database management in a single PHP file'),
+			'start_url' => $self,
+			'scope' => $self, // the same as the scope of the service worker; the default would be the whole directory
+			'display' => 'minimal-ui', // to keep the Back button which Adminer relies on
+			'icons' => array(array('src' => DIR . "static/logo.svg", 'sizes' => 'any', 'type' => 'image/svg+xml')), // https://crbug.com/40925759
+		);
 	}
 
 	/** Print HTML code inside <head>
