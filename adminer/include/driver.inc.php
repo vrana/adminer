@@ -280,7 +280,7 @@ abstract class SqlDriver {
 	}
 
 	/** Get type name of a result column in the same vocabulary as Field::type
-	* @param \stdClass $field result of Result::fetch_field()
+	* @param ResultField $field result of Result::fetch_field()
 	* @return string "" if unknown
 	*/
 	function typeName(\stdClass $field): string {

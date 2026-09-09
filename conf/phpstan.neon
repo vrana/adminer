@@ -125,3 +125,4 @@ parameters:
 		Routine: "array{name?:string, fields:list<RoutineField>, comment:string, returns?:FieldType, definition:string, language?:string, options?:array<string, string>}"
 		Partitions: "array{partition_by?:string, partition?:string, partitions?:numeric-string, partition_names?:list<string>, partition_values?:list<string>}"
 		BackwardKey: "array{name:string, keys:string[][]}"
+		ResultField: "stdClass&object{name:string, native_type?:string, table?:string, orgtable?:string, orgname?:string, db?:string}"

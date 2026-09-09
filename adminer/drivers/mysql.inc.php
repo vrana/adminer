@@ -140,7 +140,7 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			/** Fetch next field
-			* @return \stdClass properties: name, native_type (the type name used by the database); optionally: table, orgtable, orgname, db
+			* @return ResultField native_type is the type name used by the database
 			*/
 			function fetch_field(): \stdClass {
 				$return = mysql_fetch_field($this->result, $this->offset++); // offset required under certain conditions
