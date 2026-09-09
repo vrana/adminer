@@ -558,7 +558,7 @@ function bodyKeydown(event) {
 	}
 }
 
-/** Toggle visibility by .toggle links, close the menu, open form to a new window on Ctrl+click or Shift+click
+/** Toggle visibility by .toggle links, keep the AJAX message on the screen, close the menu, open form to a new window on Ctrl+click or Shift+click
 * @param {MouseEvent} event
 */
 function bodyClick(event) {
@@ -568,6 +568,9 @@ function bodyClick(event) {
 	if (toggler) {
 		toggle(toggler.getAttribute('href').slice(1));
 		event.preventDefault();
+	}
+	if (target.closest && target.closest('#ajaxstatus')) { // the user works with the message, keep it on the screen
+		clearTimeout(stickyTimeout);
 	}
 	if ((isCtrl(event) || event.shiftKey) && target.type == 'submit' && target.matches('input')) { // type - the target can be a text node without matches()
 		target.form.target = '_blank';
@@ -762,9 +765,8 @@ function fieldChange() {
 */
 function ajax(url, callback, data, message) {
 	const request = new XMLHttpRequest();
-	const ajaxStatus = qs('#ajaxstatus');
 	// empty the live region instead of hiding it, display: none would remove it from the accessibility tree
-	ajaxStatus.innerHTML = (message ? '<div class="message">' + message + '</div>' : '');
+	ajaxStatus(message ? '<div class="message">' + message + '</div>' : '');
 	request.open((data ? 'POST' : 'GET'), url);
 	if (data) {
 		request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
@@ -777,7 +779,7 @@ function ajax(url, callback, data, message) {
 			if (/^2/.test(request.status)) {
 				callback(request);
 			} else if (message !== null) {
-				ajaxStatus.innerHTML = (request.status ? request.responseText : '<div class="error">' + offlineMessage + '</div>');
+				ajaxStatus(request.status ? request.responseText : '<div class="error">' + offlineMessage + '</div>');
 			}
 		}
 	};
@@ -828,6 +830,8 @@ function ajaxForm(message) {
 	return false;
 }
 
+let stickyTimeout;
+
 /** Display the response of an AJAX request in the status area
 * @param {string} html
 * @return {HTMLElement} the status area
@@ -837,6 +841,9 @@ function ajaxStatus(html) {
 	setHtml('ajaxstatus', html);
 	adminerHighlighter(qsa('code', ajaxstatus));
 	messagesPrint(ajaxstatus);
+	alterClass(ajaxstatus, 'sticky', html); // display the message also in a scrolled page but release it soon to not cover the content
+	clearTimeout(stickyTimeout);
+	stickyTimeout = setTimeout(() => alterClass(ajaxstatus, 'sticky'), 5000);
 	return ajaxstatus;
 }
 

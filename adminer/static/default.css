@@ -109,6 +109,9 @@ td.check { text-align: end; } /* to display the checkboxes next to the data */
 #lang { position: absolute; top: -2.6em; left: 0; padding: .3em 1em; }
 #menuopen { display: none; }
 #breadcrumb { white-space: nowrap; position: absolute; top: 0; left: 21em; background: var(--dim); height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0; margin-inline-start: -18px; }
+#ajaxstatus { width: fit-content; } /* shrink-to-fit so that the sticky message can move when the page is scrolled horizontally */
+#ajaxstatus > :first-child { margin-top: 0; } /* the margin would be a transparent gap above the sticky message */
+#ajaxstatus.sticky { position: sticky; top: 0; left: 0; z-index: 1; max-height: 40vh; overflow: auto; } /* z-index to cover the sticky thead, max-height to not cover the whole screen by a long error */
 #logo { vertical-align: baseline; margin-bottom: -3px; }
 #h1 { color: #777; text-decoration: none; font-style: italic; }
 #version, .plugins .update { color: red; }
@@ -132,6 +135,7 @@ td.check { text-align: end; } /* to display the checkboxes next to the data */
 .rtl .column { border-radius: 8px 0 0 8px; } /* border-start-end-radius is much newer than the other logical properties */
 .rtl .logout { left: 0; right: auto; }
 .rtl .loadmore { left: auto; right: 10px; }
+.rtl #ajaxstatus.sticky { left: auto; right: 0; }
 .rtl #breadcrumb { left: auto; right: 21em; }
 .rtl #lang, .rtl #menu { left: auto; right: 0; }
 .rtl pre, .rtl code { direction: ltr; }
