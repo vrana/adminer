@@ -518,7 +518,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get logged user */
 	function logged_user(): string {
-		return get_val("SELECT USER()");
+		return get_val("SELECT CURRENT_USER()"); // the account matched by the connection, it is used in DEFINER if the clause is omitted
 	}
 
 	/** Get tables list

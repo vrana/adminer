@@ -517,9 +517,10 @@ function create_routine($routine, array $row): string {
 	;
 }
 
-/** Remove current user definer from SQL command */
+/** Remove the definer of the logged user from a CREATE command */
 function remove_definer(string $query): string {
-	return preg_replace('~^([A-Z =]+) DEFINER=`' . preg_replace('~@(.*)~', '`@`(%|\1)', logged_user()) . '`~', '\1', $query); //! proper escaping of user
+	$definer = implode("@", array_map('Adminer\idf_escape', explode("@", logged_user(), 2))); // the same rule as in routine(), the definer of another account must be preserved
+	return preg_replace('(^([A-Z =]+) DEFINER=' . preg_quote($definer) . ')', '\1', $query);
 }
 
 /** Format foreign key to use in SQL query

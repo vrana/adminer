@@ -4,6 +4,8 @@
 - SQL command: Modify the values in the result by Ctrl+click (bug #1333)
 - SQL command: Fix the edit links of a table joined more than once, only the first alias was linked and a composite key could mix the aliases
 - SQL command: Display the values in the result according to their type in all drivers
+- MySQL: Remove the definer of an exported view or event only if it is the current account, the same as in routines
+- MySQL: Display the account matched by the connection as the logged user
 - PostgreSQL: Display and edit PostGIS geometries as EWKT (bug SF-615)
 - PostgreSQL: Do not link the types created by extensions from the table structure
 - Oracle: The driver is no longer beta
