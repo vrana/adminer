@@ -262,6 +262,7 @@ Lang::$translations = array(
 	'Relations' => 'Зв\'язки',
 
 	'Editor' => 'Редактор',
+	'Data editing in a single PHP file' => 'Редагування даних в одному PHP-файлі', // Claude Opus 5
 	'$1-$3-$5' => '$5.$3.$1', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'[yyyy]-mm-dd' => 'дд.мм.[рррр]', // hint for date format - use language equivalents for day, month and year shortcuts
 	'HH:MM:SS' => 'ГГ:ХХ:СС', // hint for time format - use language equivalents for hour, minute and second shortcuts
@@ -325,6 +326,7 @@ Lang::$translations = array(
 	'Compute' => 'Обчислити',
 	'You are offline.' => 'Ви офлайн.',
 	'Menu' => 'Меню', // Claude Opus 5
+	'Database management in a single PHP file' => 'Керування базою даних в одному PHP-файлі', // Claude Opus 5
 	'You have no privileges to update this table.' => 'Ви не маєте привілеїв для оновлення цієї таблиці.',
 	'Saving…' => 'Збереження…',
 	'Unknown error.' => 'Невідома помилка.',

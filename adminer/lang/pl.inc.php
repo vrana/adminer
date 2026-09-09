@@ -92,6 +92,7 @@ Lang::$translations = array(
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Większe pliki SQL możesz wgrać na serwer poprzez FTP przed zaimportowaniem.',
 	'You are offline.' => 'Jesteś offline.',
 	'Menu' => 'Menu', // Claude Opus 5
+	'Database management in a single PHP file' => 'Zarządzanie bazą danych w jednym pliku PHP',
 
 	'Export' => 'Eksportuj',
 	'Output' => 'Rezultat',
@@ -315,6 +316,7 @@ Lang::$translations = array(
 	'Relations' => 'Relacje',
 
 	'Editor' => 'Edytor',
+	'Data editing in a single PHP file' => 'Edycja danych w jednym pliku PHP', // Claude Opus 5
 	'$1-$3-$5' => '$6.$4.$1', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'[yyyy]-mm-dd' => 'd.m.[rrrr]', // hint for date format - use language equivalents for day, month and year shortcuts
 	'HH:MM:SS' => 'HH:MM:SS', // hint for time format - use language equivalents for hour, minute and second shortcuts
