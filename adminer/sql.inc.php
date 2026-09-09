@@ -68,7 +68,7 @@ if (!$error && $_POST["val"]) { // modified by Ctrl+click in the result, the but
 			foreach ($select as $key_idf => $key) {
 				$field = $fields[$key];
 				// the same stub as in print_select_result()
-				$stub = array('type' => (is_blob($field) ? 'blob' : (preg_match('~^(char|binary|enum|set)$~', $field["type"]) ? 'char' : '')));
+				$stub = array('type' => (preg_match('~binary~', $field["type"]) ? 'blob' : $field["type"]));
 				$cells["val[$table_idf][$idf][$key_idf]"] = select_value(idx($new_row, $j++), "", $stub, null);
 			}
 		}

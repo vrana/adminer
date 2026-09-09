@@ -101,9 +101,7 @@ if (isset($_GET["oracle"])) {
 				$return = new \stdClass;
 				$return->name = oci_field_name($this->result, $column);
 				$type = oci_field_type($this->result, $column);
-				$return->native_type = $type;
-				$return->type = $type; //! map to MySQL numbers
-				$return->charsetnr = (preg_match("~raw|blob|bfile~", $type) ? 63 : 0); // 63 - binary
+				$return->native_type = idx(array(100 => "binary_float", "binary_double"), $type, $type); // oci_field_type() returns the code instead of the name for these
 				return $return;
 			}
 		}
@@ -196,6 +194,10 @@ if (isset($_GET["oracle"])) {
 
 		function quoteBinary(string $s): string {
 			return "HEXTORAW(" . q(bin2hex($s)) . ")"; //! the literal is limited to 4000 characters
+		}
+
+		function typeName(\stdClass $field): string {
+			return strtolower(parent::typeName($field)); // OCI8 and PDO_OCI report the type names in upper case
 		}
 
 		function hasCStyleEscapes(): bool {

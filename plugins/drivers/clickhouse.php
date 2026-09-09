@@ -166,8 +166,7 @@ if (isset($_GET["clickhouse"])) {
 				$return = new \stdClass;
 				if ($column < count($this->columns)) {
 					$return->name = $this->meta[$column]['name'];
-					$return->type = $this->meta[$column]['type'];
-					$return->charsetnr = 0;
+					$return->native_type = $this->meta[$column]['type'];
 				}
 				return $return;
 			}

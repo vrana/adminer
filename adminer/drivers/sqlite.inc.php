@@ -59,12 +59,9 @@ if (isset($_GET["sqlite"])) {
 			function fetch_field(): \stdClass {
 				$types = array(1 => "integer", "real", "text", "blob", "null"); // SQLITE3_INTEGER, SQLITE3_FLOAT, SQLITE3_TEXT, SQLITE3_BLOB, SQLITE3_NULL
 				$column = $this->offset++;
-				$type = $this->result->columnType($column);
 				return (object) array(
 					"name" => $this->result->columnName($column),
-					"type" => ($type == SQLITE3_TEXT ? 15 : 0),
-					"native_type" => $types[$type],
-					"charsetnr" => ($type == SQLITE3_BLOB ? 63 : 0), // 63 - binary
+					"native_type" => $types[$this->result->columnType($column)],
 				);
 			}
 		}
@@ -157,6 +154,12 @@ if (isset($_GET["sqlite"])) {
 
 		function quoteBinary(string $s): string {
 			return "x" . q(bin2hex($s));
+		}
+
+		function typeName(\stdClass $field): string {
+			// PDO_SQLite reports the declared type of the column in sqlite:decl_type, the expressions only the PHP type of the value
+			$return = strtolower(idx((array) $field, 'sqlite:decl_type', parent::typeName($field)));
+			return idx(array("string" => "text", "double" => "real"), $return, $return);
 		}
 
 		function engines(): array {

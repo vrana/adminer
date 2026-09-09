@@ -103,7 +103,7 @@ if (isset($_GET["simpledb"])) {
 
 			function fetch_field(): \stdClass {
 				$keys = array_keys($this->rows[0]);
-				return (object) array('name' => $keys[$this->offset++], 'type' => 15, 'charsetnr' => 0);
+				return (object) array('name' => $keys[$this->offset++]);
 			}
 		}
 	}

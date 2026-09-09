@@ -279,11 +279,12 @@ abstract class SqlDriver {
 		return q($s);
 	}
 
-	/** Get type name of a result column
+	/** Get type name of a result column in the same vocabulary as Field::type
 	* @param \stdClass $field result of Result::fetch_field()
 	* @return string "" if unknown
 	*/
 	function typeName(\stdClass $field): string {
+		// the drivers whose extensions report something else override this method
 		return (isset($field->native_type) ? $field->native_type : "");
 	}
 

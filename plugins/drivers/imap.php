@@ -134,7 +134,7 @@ if (isset($_GET["imap"])) {
 			function fetch_field(): \stdClass {
 				$field = current($this->fields);
 				next($this->fields);
-				return (object) ($field != '' ? array('name' => $field, 'type' => 15, 'charsetnr' => 0) : array());
+				return (object) ($field != '' ? array('name' => $field) : array());
 			}
 		}
 	}

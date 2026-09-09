@@ -137,7 +137,7 @@ if (isset($_GET["igdb"])) {
 		function fetch_field(): \stdClass {
 			$field = current($this->fields);
 			next($this->fields);
-			return (object) ($field != '' ? array('name' => $field, 'type' => 15, 'charsetnr' => 0, 'orgtable' => $this->table) : array());
+			return (object) ($field != '' ? array('name' => $field, 'orgtable' => $this->table) : array());
 		}
 	}
 

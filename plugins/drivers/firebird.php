@@ -67,11 +67,14 @@ if (isset($_GET["firebird"])) {
 			}
 
 			function fetch_field(): \stdClass {
+				$types = array(
+					'TEXT' => 'char', 'VARYING' => 'varchar', 'SHORT' => 'smallint', 'LONG' => 'integer', 'INT64' => 'bigint',
+					'FLOAT' => 'float', 'DOUBLE' => 'double precision', 'BLOB' => 'blob', 'DATE' => 'date', 'TIME' => 'time', 'TIMESTAMP' => 'timestamp',
+				);
 				$field = ibase_field_info($this->result, $this->offset++);
 				return (object) array(
 					'name' => $field['name'],
-					'type' => $field['type'], //! map to MySQL numbers
-					'charsetnr' => 0,
+					'native_type' => idx($types, $field['type'], ''),
 				);
 			}
 		}

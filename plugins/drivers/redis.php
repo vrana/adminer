@@ -266,7 +266,7 @@ if (isset($_GET["redis"])) {
 		function fetch_field(): \stdClass {
 			$field = current($this->fields);
 			next($this->fields);
-			return (object) array('name' => $field, 'type' => 15, 'charsetnr' => 0);
+			return (object) array('name' => $field);
 		}
 	}
 

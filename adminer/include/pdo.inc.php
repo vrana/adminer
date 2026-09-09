@@ -97,11 +97,7 @@ if (extension_loaded('pdo')) {
 		}
 
 		function fetch_field(): \stdClass {
-			$row = (object) $this->getColumnMeta($this->_offset++);
-			$type = $row->pdo_type;
-			$row->type = ($type == \PDO::PARAM_INT ? 0 : 15);
-			$row->charsetnr = ($type == \PDO::PARAM_LOB || (isset($row->flags) && in_array("blob", (array) $row->flags)) ? 63 : 0);
-			return $row;
+			return (object) $this->getColumnMeta($this->_offset++); // the drivers report the type in native_type, PDO_SQLSRV in sqlsrv:decl_type
 		}
 
 		function seek($offset) {

@@ -152,10 +152,7 @@ if (isset($_GET["pgsql"])) {
 				$return = new \stdClass;
 				$return->orgtable = pg_field_table($this->result, $column);
 				$return->name = pg_field_name($this->result, $column);
-				$type = pg_field_type($this->result, $column);
-				$return->native_type = $type;
-				$return->type = (preg_match(number_type(), $type) ? 0 : 15);
-				$return->charsetnr = ($type == "bytea" ? 63 : 0); // 63 - binary
+				$return->native_type = pg_field_type($this->result, $column);
 				return $return;
 			}
 		}

@@ -78,14 +78,14 @@ if (isset($_GET["mongo"])) {
 
 		class Result {
 			public $num_rows;
-			private $rows = array(), $offset = 0, $charset = array();
+			private $rows = array(), $offset = 0, $types = array();
 
 			function __construct($result) {
 				foreach ($result as $item) {
 					$row = array();
 					foreach ($item as $key => $val) {
 						if (is_a($val, 'MongoDB\BSON\Binary')) {
-							$this->charset[$key] = 63;
+							$this->types[$key] = 'blob'; // 'binary' is not recognized by is_blob()
 						}
 						$row[$key] =
 							(is_a($val, 'MongoDB\BSON\ObjectID') ? 'MongoDB\BSON\ObjectID("' . "$val\")" :
@@ -132,8 +132,7 @@ if (isset($_GET["mongo"])) {
 				$name = $keys[$this->offset++];
 				return (object) array(
 					'name' => $name,
-					'type' => 15,
-					'charsetnr' => $this->charset[$name],
+					'native_type' => $this->types[$name],
 				);
 			}
 		}

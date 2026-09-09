@@ -266,6 +266,9 @@ It is dynamically typed, `x'...'` is a value and not a type specific literal, so
 `select_value()` shows the display side of the same distinction.
 It calls `value()`, then replaces a value failing `is_utf8()` by `"\0"` so that it can't break the page, and `selectVal()` prints the number of bytes instead.
 
+A column of a result of a query written by the user has no `Field`, so [print_select_result()](/adminer/include/editing.inc.php) asks the same questions through `Driver::typeName()`.
+`Result::fetch_field()` reports the name used by the database in `native_type` and a driver overrides `typeName()` when its extensions report something else - MySQLi the type numbers of the protocol, PDO the names of its own dialect.
+
 ## Minimalism
 
 Adminer is minimalist in every aspect - if something is unnecessary, it should not be included.

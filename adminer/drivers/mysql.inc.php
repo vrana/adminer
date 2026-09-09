@@ -140,12 +140,12 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			/** Fetch next field
-			* @return \stdClass properties: name, type (0 number, 15 varchar, 254 char), charsetnr (63 binary); optionally: table, orgtable, orgname
+			* @return \stdClass properties: name, native_type (the type name used by the database); optionally: table, orgtable, orgname, db
 			*/
 			function fetch_field(): \stdClass {
 				$return = mysql_fetch_field($this->result, $this->offset++); // offset required under certain conditions
 				$return->orgtable = $return->table;
-				$return->charsetnr = ($return->blob ? 63 : 0);
+				$return->native_type = idx(array("string" => "varchar", "real" => "double"), $return->type, $return->type); // the other names match the MySQL types
 				return $return;
 			}
 		}
@@ -356,15 +356,25 @@ if (!defined('Adminer\DRIVER')) {
 		}
 
 		function typeName(\stdClass $field): string {
-			// https://dev.mysql.com/doc/dev/mysql-server/latest/field__types_8h.html
+			$name = parent::typeName($field);
+			if ($name != "") {
+				// PDO_MySQL reports the internal names in upper case, it can't tell text from blob, varchar from varbinary and char from binary
+				$types = array(
+					"TINY" => "tinyint", "SHORT" => "smallint", "LONG" => "int", "INT24" => "mediumint", "LONGLONG" => "bigint",
+					"NEWDECIMAL" => "decimal", "VAR_STRING" => "varchar", "STRING" => "char",
+				);
+				return idx($types, $name, strtolower($name));
+			}
+			// MySQLi reports the numbers used in the protocol, https://dev.mysql.com/doc/dev/mysql-server/latest/field__types_8h.html
 			$types = array(
-				"decimal", "tinyint", "smallint", "int", "float", "double", 7 => "timestamp",
-				"bigint", "mediumint", "date", "time", "datetime", "year", 15 => "varchar", "bit",
-				242 => "vector", 245 => "json", "decimal", "enum", "set",
-				"tinytext", "mediumtext", "longtext", "text", "varchar", "char", "geometry",
+				"decimal", "tinyint", "smallint", "int", "float", "double",
+				7 => "timestamp", "bigint", "mediumint", "date", "time", "datetime", "year",
+				15 => "varchar", "bit",
+				242 => "vector",
+				245 => "json", "decimal", "enum", "set", "tinytext", "mediumtext", "longtext", "text", "varchar", "char", "geometry",
 			);
 			$return = idx($types, $field->type, "");
-			return parent::typeName($field) ?: ($field->charsetnr == 63 // 63 - binary
+			return ($field->charsetnr == 63 // 63 - binary
 				? str_replace(array("text", "varchar", "char"), array("blob", "varbinary", "binary"), $return)
 				: $return
 			);

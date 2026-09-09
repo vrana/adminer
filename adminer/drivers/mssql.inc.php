@@ -151,12 +151,19 @@ if (isset($_GET["mssql"])) {
 				if (!$this->fields) {
 					$this->fields = sqlsrv_field_metadata($this->result);
 				}
+				// ODBC type codes, https://learn.microsoft.com/sql/odbc/reference/appendixes/sql-data-types
+				$types = array(
+					-155 => "datetimeoffset", "time",
+					-152 => "xml", "varbinary", "sql_variant", // -151 - geometry, geography and hierarchyid are returned as binary
+					-11 => "uniqueidentifier", "ntext", "nvarchar", "nchar", "bit", "tinyint", "bigint", "image", "varbinary", "binary", "text",
+					1 => "char", "numeric", "decimal", "int", "smallint", "float", "real", "float",
+					12 => "varchar",
+					91 => "date", "time", "datetime",
+				);
 				$field = $this->fields[$this->offset++];
 				$return = new \stdClass;
 				$return->name = $field["Name"];
-				$return->type = ($field["Type"] == 1 ? 254 : 15);
-				//! $return->native_type: http://msdn.microsoft.com/en-us/library/cc296197.aspx
-				$return->charsetnr = (in_array($field["Type"], array(-2, -3, -4)) ? 63 : 0); // SQL_BINARY, SQL_VARBINARY, SQL_LONGVARBINARY
+				$return->native_type = idx($types, $field["Type"], "");
 				return $return;
 			}
 
@@ -311,6 +318,11 @@ if (isset($_GET["mssql"])) {
 
 		function structuredTypes(): array {
 			return array_merge(parent::structuredTypes(), $this->unknownTypes);
+		}
+
+		function typeName(\stdClass $field): string {
+			// PDO_SQLSRV reports the MS SQL type in sqlsrv:decl_type, its native_type is always "string"
+			return idx((array) $field, 'sqlsrv:decl_type', parent::typeName($field));
 		}
 
 		function insertUpdate(string $table, array $rows, array $primary) {

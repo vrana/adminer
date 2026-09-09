@@ -20,8 +20,7 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 	$tables = array(); // alias => orgtable
 	$primary = array(); // orgtable => array(column => ) - primary key of each table, the aliases share it
 	$editable = array(); // colno => array(alias, orgname, is_text) - columns which can be modified
-	$blobs = array(); // colno => bool - display bytes for blobs
-	$types = array(); // colno => type - display char in <code>
+	$types = array(); // colno => type name - used to display the value
 	$return = array(); // table => orgtable - mapping to use in EXPLAIN
 	$modify = $edit; // $edit is used also for the output value
 	$edit = false;
@@ -71,10 +70,7 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 						$editable[$j] = array($alias, $orgname, preg_match('~text|json|lob~', $type_name));
 					}
 				}
-				if ($field->charsetnr == 63) { // 63 - binary
-					$blobs[$j] = true;
-				}
-				$types[$j] = $field->type;
+				$types[$j] = $type_name;
 				echo "<th title='" . h(trim(($orgtable != "" ? "$orgtable.$orgname" : ($field->name != $orgname ? $orgname : "")) . " " . $type_name)) . "'>" . h($name)
 					. ($orgtables ? doc_link(array(
 						'sql' => "explain-output.html#explain_" . strtolower($name),
@@ -122,12 +118,9 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 				$attrs = " data-name='" . h("val[" . bracket_escape($tables[$cell[0]]) . "][" . bracket_escape(substr($idfs[$cell[0]], 1)) . "][" . bracket_escape($cell[1]) . "]")
 					. "' data-text='" . ($cell[2] ? 1 : 0) . "'";
 			}
-			$field = array(
-				'type' => ($blobs[$key] ? 'blob' : ($types[$key] == 254 ? 'char' : '')),
-			);
-			$val = select_value($val, $link, $field, null);
-			// https://dev.mysql.com/doc/dev/mysql-server/latest/field__types_8h.html
-			echo "<td" . ($types[$key] <= 9 || $types[$key] == 246 ? " class='number'" : "") . "$attrs>$val";
+			// the binary values are not converted to hexadecimal as in select
+			$val = select_value($val, $link, array('type' => (preg_match('~binary~', $types[$key]) ? 'blob' : $types[$key])), null);
+			echo "<td" . (preg_match(number_type(), $types[$key]) ? " class='number'" : "") . "$attrs>$val";
 		}
 	}
 	$limit = $i;

@@ -3,6 +3,7 @@
 - Display the message on the screen when AJAX-saving
 - SQL command: Modify the values in the result by Ctrl+click (bug #1333)
 - SQL command: Fix the edit links of a table joined more than once, only the first alias was linked and a composite key could mix the aliases
+- SQL command: Display the values in the result according to their type in all drivers
 - PostgreSQL: Display and edit PostGIS geometries as EWKT (bug SF-615)
 - PostgreSQL: Do not link the types created by extensions from the table structure
 - Oracle: The driver is no longer beta
@@ -14,6 +15,8 @@
 - Oracle: Fix foreign keys over multiple columns, only the last column was displayed
 - Oracle: Fix creating a column with a default value
 - Oracle: Fix the default value displayed with the quotes around it
+### Plugins
+- Driver plugins: Result::fetch_field() reports the type name in native_type instead of the MySQL number in type and charsetnr
 ### Internal
 - Test Oracle
 - Distribute the tests in the release archive (bug #1332)
