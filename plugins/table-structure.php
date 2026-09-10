@@ -46,6 +46,10 @@ class AdminerTableStructure extends Adminer\Plugin {
 			'Collation' => 'Porovnávání',
 			'Comment' => 'Komentář',
 			'Auto Increment' => 'Auto Increment',
+			'Nullable' => 'Nullable',
+			'Default' => 'Výchozí',
+			'Yes' => 'Ano',
+			'No' => 'Ne',
 		),
 		'de' => array(
 			'' => 'Erweiterte Ausgabe der Tabellenstruktur',
