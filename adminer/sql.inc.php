@@ -52,7 +52,7 @@ if (!$error && $_POST["val"]) { // modified by Ctrl+click in the result, the but
 				$select[$key_idf] = $key;
 			}
 			$query_where = where($where, $fields);
-			if (!driver()->update($table, $set, "\nWHERE $query_where")) { // no limit, the condition is unique
+			if (!driver()->update($table, $set, " WHERE $query_where", 0, " ")) { // no limit, the condition is unique
 				$success = false;
 				break 2;
 			}
