@@ -9,9 +9,10 @@ if (!$plugins) {
 
 unset($_COOKIE["adminer_lang"]);
 $_SESSION["lang"] = $_SERVER["argv"][1]; // Adminer functions read language from session
-if (isset($_SESSION["lang"])) {
+if (isset($_SESSION["lang"]) && $_SESSION["lang"] != "stats") {
 	if (isset($_SERVER["argv"][2]) || !file_exists(__DIR__ . "/adminer/lang/$_SESSION[lang].inc.php")) {
 		echo "Usage: php lang.php [no-plugins] [lang]\nPurpose: Update adminer/lang/*.inc.php from source code messages.\n";
+		echo "Usage: php lang.php stats\nPurpose: Update the table in adminer/lang/README.md.\n";
 		exit(1);
 	}
 }
@@ -24,19 +25,29 @@ foreach (glob(__DIR__ . "/{adminer,adminer/include,adminer/drivers,editor,editor
 	}
 }
 
+$plugins_messages = array();
+foreach (glob(__DIR__ . "/plugins/*.php") as $filename) {
+	$file = file_get_contents($filename);
+	if (preg_match('~extends Adminer\\\\Plugin~', $file)) {
+		preg_match_all("~\\\$this->lang\\(\\s*('(?:[^\\\\']+|\\\\.)*')\\s*([),])~", $file, $matches);
+		$plugins_messages[$filename] = array("''" => "") + array_combine($matches[1], $matches[2]);
+	}
+}
+
+if ($_SESSION["lang"] == "stats") {
+	update_stats($messages_all, $plugins_messages);
+	exit;
+}
+
 foreach (glob(__DIR__ . "/adminer/lang/" . ($_SESSION["lang"] ?: "*") . ".inc.php") as $filename) {
 	$lang = basename($filename, ".inc.php");
 	update_translations($lang, $messages_all, $filename, '~(\$translations = array\(\n)(.*\n)(?=\);)~sU');
 	if ($plugins && $lang != "xx") {
-		foreach (glob(__DIR__ . "/plugins/*.php") as $filename) {
+		foreach ($plugins_messages as $filename => $messages) {
 			$file = file_get_contents($filename);
-			if (preg_match('~extends Adminer\\\\Plugin~', $file)) {
-				preg_match_all("~\\\$this->lang\\(\\s*('(?:[^\\\\']+|\\\\.)*')\\s*([),])~", $file, $matches);
-				$messages = array("''" => "") + array_combine($matches[1], $matches[2]);
-				$file = preg_replace("~(\\\$translations = array\\((?!.*'$lang').*?)\t\\);~s", "\\1\t\t'$lang' => array(\n\t\t),\n\t);", $file);
-				file_put_contents($filename, $file);
-				update_translations($lang, $messages, $filename, "~(\\\$translations = array\\(.*'$lang' => array\\(\n)(.*)(?=^\t\t\\),)~msU", "\t\t\t");
-			}
+			$file = preg_replace("~(\\\$translations = array\\((?!.*'$lang').*?)\t\\);~s", "\\1\t\t'$lang' => array(\n\t\t),\n\t);", $file);
+			file_put_contents($filename, $file);
+			update_translations($lang, $messages, $filename, "~(\\\$translations = array\\(.*'$lang' => array\\(\n)(.*)(?=^\t\t\\),)~msU", "\t\t\t");
 		}
 	}
 }
@@ -91,6 +102,56 @@ function update_translations($lang, $messages, $filename, $pattern, $tabs = "\t"
 		file_put_contents($filename, $s);
 		echo "$filename:" . (substr_count($s, "\n", 0, $start) + 1) . ":Updated.\n";
 	}
+}
+
+/** Update the table of reviewed translations in adminer/lang/README.md
+* @param array<string, string> $messages_all
+* @param array<string, array<string, string>> $plugins_messages
+*/
+function update_stats($messages_all, $plugins_messages) {
+	$entry = "~^\t*('(?:[^\\\\']+|\\\\.)*') => (?!null\\b).*?( // Claude .*)?$~m"; // the comment marks a machine translation
+	$stats = array();
+	foreach (glob(__DIR__ . "/adminer/lang/*.inc.php") as $filename) {
+		$lang = basename($filename, ".inc.php");
+		if ($lang != "en" && $lang != "xx") {
+			$stats[$lang] = array(0, 0, 0); // reviewed, machine, reviewed in plugins
+			preg_match_all($entry, file_get_contents($filename), $matches, PREG_SET_ORDER);
+			foreach ($matches as $match) {
+				if (isset($messages_all[$match[1]])) {
+					$stats[$lang][isset($match[2]) ? 1 : 0]++;
+				}
+			}
+		}
+	}
+	$plugins_total = 0;
+	foreach ($plugins_messages as $filename => $messages) {
+		$plugins_total += count($messages);
+		preg_match('~\$translations = array\((.*?)^\t\);~ms', file_get_contents($filename), $match);
+		$blocks = preg_split("~^\t\t'([a-z-]+)' => array\\(~m", $match[1], -1, PREG_SPLIT_DELIM_CAPTURE); // language followed by its translations
+		for ($i = 1; $i < count($blocks); $i += 2) {
+			preg_match_all($entry, $blocks[$i + 1], $matches, PREG_SET_ORDER);
+			foreach ($matches as $match) {
+				if (isset($messages[$match[1]], $stats[$blocks[$i]]) && !isset($match[2])) {
+					$stats[$blocks[$i]][2]++;
+				}
+			}
+		}
+	}
+	uksort($stats, function ($a, $b) use ($stats) {
+		return array($stats[$b][0], $stats[$b][2], $a) <=> array($stats[$a][0], $stats[$a][2], $b);
+	});
+	preg_match_all("~^\t\t'([a-z-]+)' => '(.*?)',~m", file_get_contents(__DIR__ . "/adminer/include/lang.inc.php"), $matches);
+	$names = array_combine($matches[1], $matches[2]);
+	$total = count($messages_all);
+	$s = "| | Language | Reviewed | To review | Missing | Plugins | |\n|---|---|--:|--:|--:|--:|---|\n";
+	foreach ($stats as $lang => list($reviewed, $machine, $plugins)) {
+		$percent = floor(100 * $reviewed / $total); // not rounded to not display 100% with anything left
+		$s .= "| " . ($percent >= 90 ? "🟩" : ($percent >= 85 ? "🟨" : ($percent >= 80 ? "🟧" : "🟥")))
+			. " | [$names[$lang]]($lang.inc.php) | $percent% | " . ($machine ?: "") . " | " . (($total - $reviewed - $machine) ?: "")
+			. " | " . floor(100 * $plugins / $plugins_total) . "% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/$lang.inc.php.atom) |\n";
+	}
+	$filename = __DIR__ . "/adminer/lang/README.md";
+	file_put_contents($filename, preg_replace('~\n\|.*~s', '', file_get_contents($filename)) . "\n$s");
 }
 
 /** Check that printf placeholders in the translation match the English original
