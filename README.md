@@ -26,5 +26,7 @@ If downloaded from Git then run: `git submodule update --init` (or `composer ins
 
 Adminer is also available as an [official Docker image](https://hub.docker.com/_/adminer), and can be deployed with one click on [Easypanel](https://easypanel.io/) using its [official Adminer template](https://easypanel.io/templates/adminer).
 
+![Adminer deployed on Easypanel](docs/easypanel_deployed.png)
+
 ## Plugins
 There are several plugins distributed with Adminer, as well as many user-contributed plugins listed on the [Adminer Plugins page](https://www.adminer.org/plugins/).
