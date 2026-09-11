@@ -14,10 +14,11 @@ if ($_POST && !$error) {
 		array_intersect_key($_POST + $default, array_flip(array("output", "format", "db_style", "table_style", "data_style")) + $default),
 		"adminer_export"
 	);
+	$all = (DB == "" || $_GET["ns"] === ""); // all tables of the selected databases or schemas, set_schema() changes $_GET["ns"]
 	$tables = array_flip((array) $_POST["tables"]) + array_flip((array) $_POST["data"]);
 	$ext = dump_headers(
 		(count($tables) == 1 ? key($tables) : DB),
-		(DB == "" || $_GET["ns"] === "" || count($tables) > 1)
+		($all || count($tables) > 1)
 	);
 	$is_sql = preg_match('~sql~', $_POST["format"]);
 
@@ -63,10 +64,10 @@ SET foreign_key_checks = 0;
 				$exported = array(); // tables and views whose structure is exported
 				$data_tables = array(); // tables and views whose data is exported
 				foreach ($statuses as $name => $table_status) {
-					if (DB == "" || $_GET["ns"] === "" || in_array($name, (array) $_POST["tables"])) {
+					if ($all || in_array($name, (array) $_POST["tables"])) {
 						$exported[$name] = $table_status;
 					}
-					if (DB == "" || $_GET["ns"] === "" || in_array($name, (array) $_POST["data"])) {
+					if ($all || in_array($name, (array) $_POST["data"])) {
 						$data_tables[$name] = $table_status;
 					}
 				}
