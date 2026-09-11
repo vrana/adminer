@@ -49,6 +49,7 @@ A driver announces which features it supports by `support()`, called with one of
 - `drop_col` - dropping a column
 - `dump` - export in the SQL format
 - `event` - scheduled events (MySQL)
+- `extension` - installed extensions (PostgreSQL)
 - `fast_status` - table_status() is cheap so the table list is printed at once instead of by a background request
 - `indexes` - listing and altering indexes
 - `kill` - killing a process or a slow query
