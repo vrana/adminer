@@ -59,7 +59,8 @@ function update_translations($lang, $messages, $filename, $pattern, $tabs = "\t"
 	$s = preg_replace_callback($pattern, function ($match) use ($lang, $messages, $filename, $file, $tabs, &$start) {
 		$prefix = $match[1][0];
 		$start = $match[2][1];
-		preg_match_all("~^(\\s*(?:// [^'].*\\s+)?)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => (.*?[^,\n])),?( // .*)?$~m", $match[2][0], $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
+		// a trailing //! is a TODO, e.g. about a regional variant
+		preg_match_all("~^(\\s*(?:// [^'].*\\s+)?)(?:// )?(('(?:[^\\\\']+|\\\\.)*') => (.*?[^,\n])),?( //!? .*)?$~m", $match[2][0], $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE);
 		$s = "";
 		$fullstop = ($lang == 'bn' || $lang == 'hi' ? '।' : (preg_match('~^(ja|zh)~', $lang) ? '。' : ($lang == 'he' ? '[^.]' : '\.')));
 		foreach ($matches as $match) {
