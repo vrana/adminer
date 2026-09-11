@@ -731,7 +731,12 @@ ORDER BY conkey, conname") as $row
 
 	function information_schema(string $db, string $schema = ""): bool {
 		// pg_temp_* holds the session's temporary tables so it is writable
-		return in_array($schema != "" ? $schema : get_schema(), array("information_schema", "pg_catalog", "pg_toast"));
+		$system = array("information_schema", "pg_catalog", "pg_toast");
+		if (connection()->flavor == 'cockroach') {
+			$system[] = "crdb_internal";
+			$system[] = "pg_extension";
+		}
+		return in_array($schema != "" ? $schema : get_schema(), $system);
 	}
 
 	function error(): string {

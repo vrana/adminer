@@ -12,6 +12,7 @@
 - PostgreSQL: Export: Qualify all names by the schema or set the schema by a new option
 - PostgreSQL: Export check constraints when exporting more schemas at once
 - CockroachDB: Export: Omit WITH (oids = false)
+- CockroachDB: Treat crdb_internal and pg_extension as read-only system schemas, e.g. do not export them
 - MS SQL: Export: Create the schema by a new option
 - MS SQL: Fix exporting more schemas at once
 - Oracle: The driver is no longer beta
