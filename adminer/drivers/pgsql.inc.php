@@ -1313,7 +1313,7 @@ WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary !=
 		//! parse pg_class.relpartbound to create PARTITION OF
 		//! don't insert partitioned data twice
 
-		$return .= "\nWITH (oids = " . ($status['Oid'] ? 'true' : 'false') . ");";
+		$return .= (min_version(12) ? "" : "\nWITH (oids = " . ($status['Oid'] ? 'true' : 'false') . ")") . ";";
 		$return .= implode($sequences_owned);
 
 		// comments for table & fields
