@@ -251,7 +251,7 @@ include __DIR__ . "/adminer/include/pdo.inc.php";
 include __DIR__ . "/adminer/include/driver.inc.php";
 include __DIR__ . "/adminer/include/plugins.inc.php"; // for Plugins::checksum()
 $features = array(
-	"check", "call" => "routine", "dump", "event", "privileges", "procedure" => "routine", "processlist", "routine",
+	"check", "call" => "routine", "dump", "event", "extension", "privileges", "procedure" => "routine", "processlist", "routine",
 	"scheme", "sequence", "sql", "status", "trigger", "type", "user" => "privileges", "variables", "view",
 );
 $lang_ids = array(); // global variable simplifies usage in a callback function
@@ -322,6 +322,8 @@ $file = replace_re('~(function official_design_checksums\(\): array \{\n).*?(\n\
 if ($vendor) {
 	foreach ($features as $feature) {
 		if (!Adminer\support($feature)) {
+			// the elseif branch first, the pattern of the if branch matches inside its condition too
+			$file = preg_replace("((\t*)" . preg_quote('} elseif (support("' . $feature . '")') . ".*?\n\\1\\})s", '\1}', $file);
 			$file = preg_replace("((\t*)" . preg_quote('if (support("' . $feature . '")') . ".*?\n\\1\\}( else)?)s", '', $file);
 		}
 	}
