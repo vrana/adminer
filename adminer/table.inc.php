@@ -69,7 +69,7 @@ if (!is_view($table_status) && driver()->supportsAlterTable($table_status)) {
 		$foreign_keys = foreign_keys($TABLE);
 		if ($foreign_keys) {
 			echo "<table>\n";
-			echo "<thead><tr><th>" . lang('Source') . "<td>" . lang('Target') . "<td>" . lang('ON DELETE') . "<td>" . lang('ON UPDATE') . "<td class='hover'><tbody>\n";
+			echo "<thead><tr><th>" . lang('Source') . "<th>" . lang('Target') . "<th>" . lang('ON DELETE') . "<th>" . lang('ON UPDATE') . "<td class='hover'><tbody>\n";
 			foreach ($foreign_keys as $name => $foreign_key) {
 				echo "<tr title='" . h($name) . "'>";
 				echo "<th><i>" . implode("</i>, <i>", array_map('Adminer\h', $foreign_key["source"])) . "</i>";

@@ -141,7 +141,7 @@ if (support("partial_indexes")) {
 	echo "<th id='label-condition'$idxopts>" . lang('Condition');
 }
 ?>
-<th><noscript><?php echo icon("plus", "add[0]", "+", lang('Add next')); ?></noscript>
+<td><noscript><?php echo icon("plus", "add[0]", "+", lang('Add next')); ?></noscript>
 <tbody>
 <?php
 if ($primary) {

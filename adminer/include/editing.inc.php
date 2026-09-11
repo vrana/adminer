@@ -327,12 +327,12 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 	echo "<thead><tr>\n";
 	echo ($type == "PROCEDURE" ? "<td>" : "");
 	echo "<th id='label-name'>" . ($type == "TABLE" ? lang('Column name') : lang('Parameter name'));
-	echo "<td id='label-type'>" . lang('Type') . "<textarea id='enum-edit' rows='4' cols='12' wrap='off' hidden></textarea>" . script("qs('#enum-edit').onblur = editingLengthBlur;");
-	echo "<td id='label-length'>" . lang('Length');
-	echo "<td>" . lang('Options'); // no label required, options have their own label
+	echo "<th id='label-type'>" . lang('Type') . "<textarea id='enum-edit' rows='4' cols='12' wrap='off' hidden></textarea>" . script("qs('#enum-edit').onblur = editingLengthBlur;");
+	echo "<th id='label-length'>" . lang('Length');
+	echo "<th>" . lang('Options'); // no label required, options have their own label
 	if ($type == "TABLE") {
-		echo "<td id='label-null'>NULL\n";
-		echo "<td><input type='radio' name='auto_increment_col' value=''><abbr id='label-ai' title='" . lang('Auto Increment') . "'>AI</abbr>";
+		echo "<th id='label-null'>NULL\n";
+		echo "<th><input type='radio' name='auto_increment_col' value=''><abbr id='label-ai' title='" . lang('Auto Increment') . "'>AI</abbr>";
 		echo doc_link(array(
 			'sql' => "example-auto-increment.html",
 			'mariadb' => "auto_increment/",
@@ -340,8 +340,8 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 			'pgsql' => "datatype-numeric.html#DATATYPE-SERIAL",
 			'mssql' => "t-sql/statements/create-table-transact-sql-identity-property",
 		));
-		echo "<td id='label-default'$default_class>" . lang('Default value');
-		echo (support("comment") ? "<td id='label-comment'$comment_class>" . lang('Comment') : "");
+		echo "<th id='label-default'$default_class>" . lang('Default value');
+		echo (support("comment") ? "<th id='label-comment'$comment_class>" . lang('Comment') : "");
 	}
 	$last_col = !support("move_col"); // the column can be added only to the end
 	echo "<td>" . icon("plus", "add[" . ($last_col ? count($fields) : 0) . "]", "+", lang('Add next'), ($last_col ? on('click', 'editingAddLastRow') : ""));

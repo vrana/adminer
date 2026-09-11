@@ -14,7 +14,7 @@ if (adminer()->homepage()) {
 	echo '<thead><tr class="wrap">';
 	echo '<td class="hover"><input id="check-all" type="checkbox" class="jsonly"' . on('click', 'formCheck', '^tables\[') . '>';
 	echo '<th>' . lang('Table');
-	echo '<td>' . lang('Rows');
+	echo '<th>' . lang('Rows');
 	echo "<tbody>\n";
 
 	foreach (table_status() as $table => $row) {

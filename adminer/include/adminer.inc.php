@@ -254,16 +254,15 @@ class Adminer {
 		}
 		// routine comments usually hold documentation, e.g. in the MySQL sys schema
 		/** Format string as table row */
-		$pre_tr = function (string $s): string {
-			return preg_replace('~^~m', '<tr>', preg_replace('~\|~', '<td>', preg_replace('~\|$~m', "", rtrim($s))));
+		$pre_tr = function (string $s, string $cell = 'td'): string {
+			return preg_replace('~^~m', '<tr>', preg_replace('~\|~', "<$cell>", preg_replace('~\|$~m', "", rtrim($s))));
 		};
 		$table = '(\+--[-+]+\+\n)';
 		$row = '(\| .* \|\n)';
 		return "<pre>\n" . preg_replace_callback(
 			"~^$table?$row$table?($row*)$table?~m",
 			function ($match) use ($pre_tr) {
-				$first_row = $pre_tr($match[2]);
-				return "<table>\n" . ($match[1] ? "<thead>$first_row<tbody>\n" : $first_row) . $pre_tr($match[4]) . "\n</table>";
+				return "<table>\n" . ($match[1] ? "<thead>" . $pre_tr($match[2], 'th') . "<tbody>\n" : $pre_tr($match[2])) . $pre_tr($match[4]) . "\n</table>";
 			},
 			preg_replace(
 				'~(\n(    -|mysql)&gt; )(.+)~',
@@ -450,7 +449,7 @@ class Adminer {
 	function tableStructurePrint(array $fields, ?array $tableStatus = null): void {
 		echo "<div class='scrollable'>\n";
 		echo "<table class='nowrap odds'>\n";
-		echo "<thead><tr><th>" . lang('Column') . "<td>" . lang('Type') . (support("comment") ? "<td>" . lang('Comment') : "") . "<tbody>\n";
+		echo "<thead><tr><th>" . lang('Column') . "<th>" . lang('Type') . (support("comment") ? "<th>" . lang('Comment') : "") . "<tbody>\n";
 		$user_types = (support("type") ? types() : array()); // not structuredTypes() - the types created by extensions are offered in the type dropdown but the type page doesn't manage them
 		foreach ($fields as $field) {
 			echo "<tr><th>" . h($field["field"]);

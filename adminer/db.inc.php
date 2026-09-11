@@ -245,7 +245,7 @@ if (adminer()->homepage()) {
 			$routines = routines();
 			if ($routines) {
 				echo "<table class='odds'>\n";
-				echo '<thead><tr><th>' . lang('Name') . '<td>' . lang('Type') . '<td>' . lang('Return type') . "<td class='hover'><tbody>\n";
+				echo '<thead><tr><th>' . lang('Name') . '<th>' . lang('Type') . '<th>' . lang('Return type') . "<td class='hover'><tbody>\n";
 				foreach ($routines as $row) {
 					$name = ($row["SPECIFIC_NAME"] == $row["ROUTINE_NAME"] ? "" : "&name=" . url_escape($row["ROUTINE_NAME"])); // not computed on the pages to be able to print the header first
 					echo '<tr>';
@@ -304,7 +304,7 @@ if (adminer()->homepage()) {
 			$rows = get_rows("SHOW EVENTS");
 			if ($rows) {
 				echo "<table>\n";
-				echo "<thead><tr><th>" . lang('Name') . "<td>" . lang('Schedule') . "<td>" . lang('Start') . "<td>" . lang('End') . "<td class='hover'><tbody>\n";
+				echo "<thead><tr><th>" . lang('Name') . "<th>" . lang('Schedule') . "<th>" . lang('Start') . "<th>" . lang('End') . "<td class='hover'><tbody>\n";
 				foreach ($rows as $row) {
 					echo "<tr>";
 					echo "<th>" . h($row["Name"]);
@@ -332,7 +332,7 @@ ORDER BY e.extname"); // not extnamespace::regnamespace which needs PostgreSQL 9
 			echo "<div>\n";
 			echo "<h3 id='extensions'>" . lang('Extensions') . "</h3>\n";
 			echo "<table class='odds'>\n";
-			echo "<thead><tr><th>" . lang('Name') . "<td>" . lang('Version') . "<td>" . lang('Schema') . "<td>" . lang('Comment') . "<tbody>\n";
+			echo "<thead><tr><th>" . lang('Name') . "<th>" . lang('Version') . "<th>" . lang('Schema') . "<th>" . lang('Comment') . "<tbody>\n";
 			foreach ($extensions as $row) {
 				echo "<tr><th><code class='jush-pgsqlext'>" . h($row["extname"]) . "</code>"; // JUSH links the contrib modules to the documentation and the rest to PGXN
 				echo "<td>" . h($row["extversion"]);

@@ -555,7 +555,7 @@ function editingLengthBlur() {
 */
 function columnShow(checked, column) {
 	for (const tr of qsa('tr', qs('#edit-fields'))) {
-		alterClass(qsa('td', tr)[column], 'hidden', !checked);
+		alterClass(tr.cells[column], 'hidden', !checked);
 	}
 }
 
@@ -612,7 +612,7 @@ function partitionNameChange() {
 */
 function editingCommentsClick(focus) {
 	const comment = this.form['Comment'];
-	columnShow(this.checked, 6);
+	columnShow(this.checked, 7);
 	alterClass(comment, 'hidden', !this.checked);
 	if (focus && this.checked) {
 		comment.focus();
