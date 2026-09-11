@@ -253,8 +253,7 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 									if ($warnings) {
 										$time .= ", <a href='#$warnings_id' class='toggle'>" . lang('Warnings') . "</a>";
 									}
-									$explain = null;
-									$orgtables = null;
+									$explain = "";
 									$explain_id = "explain-$commands";
 									if (is_object($result)) {
 										$limit = $_POST["limit"];
@@ -269,7 +268,7 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 											$num_rows = max($result->num_rows, $num_rows); // native num_rows holds the count before LIMIT
 											echo "<p class='sql-footer'>" . ($num_rows ? ($limit && $num_rows > $limit ? lang('%d / ', $limit) : "") . lang('%d row(s)', $num_rows) : "");
 											echo $time;
-											if ($connection2 && preg_match("~^($space|\\()*+SELECT\\b~i", $q) && ($explain = explain($connection2, $q))) {
+											if ($connection2 && preg_match("~^($space|\\()*+SELECT\\b~i", $q) && ($explain = adminer()->explain($connection2, $q, $orgtables)) != "") {
 												echo ", <a href='#$explain_id' class='toggle'>Explain</a>";
 											}
 											if ($edit) { // at least one value can be modified
@@ -301,11 +300,7 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 										}
 									}
 									echo ($warnings ? "<div id='$warnings_id' class='hidden'>\n$warnings</div>\n" : "");
-									if ($explain) {
-										echo "<div id='$explain_id' class='hidden explain'>\n";
-										print_select_result($explain, $connection2, $orgtables);
-										echo "</div>\n";
-									}
+									echo ($explain != "" ? "<div id='$explain_id' class='hidden explain'>\n$explain</div>\n" : "");
 								}
 
 								$start = microtime(true);

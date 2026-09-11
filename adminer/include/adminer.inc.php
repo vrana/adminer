@@ -373,6 +373,20 @@ class Adminer {
 	function sqlPrintAfter(): void {
 	}
 
+	/** Get EXPLAIN of a SELECT in SQL command
+	* @param string[] $orgtables table => orgtable from the result of $query
+	* @return string HTML
+	*/
+	function explain(Db $connection, string $query, array $orgtables): string {
+		$result = explain($connection, $query);
+		if (!$result) {
+			return "";
+		}
+		ob_start();
+		print_select_result($result, $connection, $orgtables);
+		return ob_get_clean();
+	}
+
 	/** Description of a row in a table
 	* @return string SQL expression, empty string for no description
 	*/
