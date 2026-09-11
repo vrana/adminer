@@ -167,6 +167,7 @@ Lang::$translations = array(
 	'Values' => 'Nilai',
 
 	'View' => 'Tampilan',
+	'Materialized view' => 'Tampilan termaterialisasi', // Claude Opus 5
 	'View has been dropped.' => 'Tampilan berhasil dihapus.',
 	'View has been altered.' => 'Tampilan berhasil diubah.',
 	'View has been created.' => 'Tampilan berhasil dibuat.',
@@ -262,6 +263,7 @@ Lang::$translations = array(
 	'Relations' => 'Relasi',
 
 	'Editor' => 'Editor',
+	'Data editing in a single PHP file' => 'Penyuntingan data dalam satu berkas PHP', // Claude Opus 5
 	'$1-$3-$5' => '$1-$3-$5', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'[yyyy]-mm-dd' => '[yyyy]-mm-dd', // hint for date format - use language equivalents for day, month and year shortcuts
 	'HH:MM:SS' => 'HH:MM:SS', // hint for time format - use language equivalents for hour, minute and second shortcuts
@@ -327,6 +329,7 @@ Lang::$translations = array(
 	'Adminer does not support accessing a database without a password.' => 'Adminer tidak mendukung akses basis data tanpa sandi.', // Claude Fable 5
 	'Default value' => 'Nilai bawaan', // Claude Fable 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'Terlalu banyak upaya masuk yang gagal, coba lagi dalam %d menit.', // Claude Fable 5
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Gunakan <a%2$s>plugin</a> %1$s jika Adminer berjalan di belakang reverse proxy.', // Claude Opus 5
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Terima kasih telah menggunakan Adminer, pertimbangkan untuk <a href="https://www.adminer.org/en/donation/">berdonasi</a>.', // Claude Fable 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Sandi utama kedaluwarsa. <a href="https://www.adminer.org/en/extension/"%s>Implementasikan</a> metode %s agar permanen.', // Claude Fable 5
 	'The action will be performed after successful login with the same credentials.' => 'Tindakan akan dilakukan setelah berhasil masuk dengan kredensial yang sama.', // Claude Fable 5
@@ -341,6 +344,7 @@ Lang::$translations = array(
 	'screenshot' => 'tangkapan layar', // Claude Fable 5
 	'You are offline.' => 'Anda sedang luring.', // Claude Fable 5
 	'Menu' => 'Menu', // Claude Opus 5
+	'Database management in a single PHP file' => 'Manajemen basis data dalam satu berkas PHP', // Claude Opus 5
 	'Increase %s.' => 'Naikkan %s.', // Claude Fable 5
 	'You have no privileges to update this table.' => 'Anda tidak memiliki hak istimewa untuk memperbarui tabel ini.', // Claude Fable 5
 	'Saving…' => 'Menyimpan…', // Claude Fable 5

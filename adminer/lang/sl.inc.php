@@ -132,6 +132,7 @@ Lang::$translations = array(
 
 	'Tables' => 'Tabele',
 	'Tables and views' => 'Tabele in pogledi',
+	'All' => 'Vse', // Claude Opus 5
 	'Table' => 'Tabela',
 	'No tables.' => 'Ni tabel.',
 	'Alter table' => 'Spremeni tabelo',
@@ -257,6 +258,7 @@ Lang::$translations = array(
 	'Relations' => 'Relacijski',
 
 	'Editor' => 'Urejevalnik',
+	'Data editing in a single PHP file' => 'Urejanje podatkov v eni sami datoteki PHP', // Claude Opus 5
 	'$1-$3-$5' => '$6.$4.$1', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'[yyyy]-mm-dd' => 'd.m.[rrrr]', // hint for date format - use language equivalents for day, month and year shortcuts
 	'now' => 'zdaj',
@@ -304,6 +306,7 @@ Lang::$translations = array(
 	'Condition' => 'Pogoj', // Claude Fable 5
 	'Permanent link' => 'Trajna povezava', // Claude Fable 5
 	'File must be in UTF-8 encoding.' => 'Datoteka mora biti v kodiranju UTF-8.', // Claude Fable 5
+	'All rows on this page' => 'Vse vrstice na tej strani', // Claude Opus 5
 	'Modify' => 'Spremeni', // Claude Fable 5
 	'Load more data' => 'Naloži več podatkov', // Claude Fable 5
 	'Loading…' => 'Nalaganje…', // Claude Fable 5
@@ -322,6 +325,7 @@ Lang::$translations = array(
 	'Default value' => 'Privzeta vrednost', // Claude Fable 5
 	'Full table scan' => 'Pregled celotne tabele', // Claude Fable 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Preveč neuspešnih prijav, poskusite znova čez %d minuto.', 'Preveč neuspešnih prijav, poskusite znova čez %d minuti.', 'Preveč neuspešnih prijav, poskusite znova čez %d minute.', 'Preveč neuspešnih prijav, poskusite znova čez %d minut.'), // Claude Fable 5
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Uporabite <a%2$s>vtičnik</a> %1$s, če Adminer teče za obratnim proxyjem.', // Claude Opus 5
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Hvala, ker uporabljate Adminer, razmislite o <a href="https://www.adminer.org/en/donation/">donaciji</a>.', // Claude Fable 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Glavno geslo je poteklo. <a href="https://www.adminer.org/en/extension/"%s>Implementirajte</a> metodo %s, da postane trajno.', // Claude Fable 5
 	'The action will be performed after successful login with the same credentials.' => 'Dejanje bo izvedeno po uspešni prijavi z istimi poverilnicami.', // Claude Fable 5
@@ -335,6 +339,8 @@ Lang::$translations = array(
 	'Loaded plugins' => 'Naloženi vtičniki', // Claude Fable 5
 	'screenshot' => 'posnetek zaslona', // Claude Fable 5
 	'You are offline.' => 'Ste brez povezave.', // Claude Fable 5
+	'Menu' => 'Meni', // Claude Opus 5
+	'Database management in a single PHP file' => 'Upravljanje baz podatkov v eni sami datoteki PHP', // Claude Opus 5
 	'Increase %s.' => 'Povečajte %s.', // Claude Fable 5
 	'You have no privileges to update this table.' => 'Nimate pravic za posodabljanje te tabele.', // Claude Fable 5
 	'Saving…' => 'Shranjevanje…', // Claude Fable 5

@@ -13,6 +13,7 @@ Lang::$translations = array(
 	'Logout successful.' => 'Излизането е успешно.',
 	'Invalid credentials.' => 'Невалидни потребителски данни.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Прекалено много неуспешни опити за вход, опитайте пак след %d минута.', 'Прекалено много неуспешни опити за вход, опитайте пак след %d минути.'),
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Използвайте <a%2$s>плъгина</a> %1$s, ако Adminer работи зад обратно прокси.', // Claude Opus 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Главната парола вече е невалидна. <a href="https://www.adminer.org/en/extension/"%s>Изберете</a> %s метод, за да я направите постоянна.',
 	'Language' => 'Език',
 	'Invalid CSRF token. Submit the form again.' => 'Невалиден шифроващ ключ. Попълнете и изпратете формуляра отново.',
@@ -69,6 +70,7 @@ Lang::$translations = array(
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Можете да прикачите голям SQL файл чрез FTP и да го импортирате от сървъра.',
 	'You are offline.' => 'Вие сте офлайн.',
 	'Menu' => 'Меню', // Claude Opus 5
+	'Database management in a single PHP file' => 'Управление на бази данни в един PHP файл', // Claude Opus 5
 
 	'Export' => 'Експорт',
 	'Output' => 'Резултат',
@@ -284,6 +286,7 @@ Lang::$translations = array(
 	'Relations' => 'Зависимости',
 
 	'Editor' => 'Редактор',
+	'Data editing in a single PHP file' => 'Редактиране на данни в един PHP файл', // Claude Opus 5
 	'$1-$3-$5' => '$1-$3-$5', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'[yyyy]-mm-dd' => '[гггг]-мм-дд', // hint for date format - use language equivalents for day, month and year shortcuts
 	'HH:MM:SS' => 'ЧЧ:ММ:СС', // hint for time format - use language equivalents for hour, minute and second shortcuts

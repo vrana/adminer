@@ -13,6 +13,7 @@ Lang::$translations = array(
 	'Logout successful.' => 'Đã thoát xong.',
 	'Invalid credentials.' => 'Tài khoản sai.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'Bạn gõ sai tài khoản quá nhiều lần, hãy thử lại sau %d phút nữa.',
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Hãy dùng <a%2$s>plugin</a> %1$s nếu Adminer chạy phía sau một reverse proxy.', // Claude Opus 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Mật khẩu chính đã hết hạn. <a href="https://www.adminer.org/en/extension/"%s>Triển khai</a> phương thức %s để giữ cố định.', // Claude Fable 5
 	'Language' => 'Ngôn ngữ',
 	'Invalid CSRF token. Submit the form again.' => 'Mã kiểm tra CSRF sai, hãy nhập lại biểu mẫu.',
@@ -138,6 +139,7 @@ Lang::$translations = array(
 
 	'Tables' => 'Các bảng',
 	'Tables and views' => 'Bảng và khung nhìn',
+	'All' => 'Tất cả', // Claude Opus 5
 	'Table' => 'Bảng',
 	'No tables.' => 'Không có bảng nào.',
 	'Alter table' => 'Sửa bảng',
@@ -238,6 +240,7 @@ Lang::$translations = array(
 	'Import' => 'Nhập khẩu',
 	'%d row(s) have been imported.' => 'Đã nhập %d dòng dữ liệu.',
 	'File must be in UTF-8 encoding.' => 'Tệp phải mã hoá bằng chuẩn UTF-8.',
+	'All rows on this page' => 'Tất cả các dòng trên trang này', // Claude Opus 5
 
 	'Modify' => 'Sửa', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Nhấn Ctrl và bấm vào giá trị để sửa.',
@@ -273,6 +276,7 @@ Lang::$translations = array(
 	'Relations' => 'Quan hệ',
 
 	'Editor' => 'Biên tập',
+	'Data editing in a single PHP file' => 'Chỉnh sửa dữ liệu trong một tệp PHP duy nhất', // Claude Opus 5
 	'$1-$3-$5' => '$1-$3-$5', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'[yyyy]-mm-dd' => '[yyyy]-mm-dd', // hint for date format - use language equivalents for day, month and year shortcuts
 	'HH:MM:SS' => 'HH:MM:SS', // hint for time format - use language equivalents for hour, minute and second shortcuts
@@ -339,6 +343,8 @@ Lang::$translations = array(
 	'Loaded plugins' => 'Các plugin đã nạp', // Claude Fable 5
 	'screenshot' => 'ảnh chụp màn hình', // Claude Fable 5
 	'You are offline.' => 'Bạn đang ngoại tuyến.', // Claude Fable 5
+	'Menu' => 'Menu', // Claude Opus 5
+	'Database management in a single PHP file' => 'Quản lý cơ sở dữ liệu trong một tệp PHP duy nhất', // Claude Opus 5
 	'Increase %s.' => 'Hãy tăng %s.', // Claude Fable 5
 	'Saving…' => 'Đang lưu…', // Claude Fable 5
 	'Unknown error.' => 'Lỗi không xác định.', // Claude Fable 5

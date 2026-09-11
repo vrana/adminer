@@ -13,6 +13,7 @@ Lang::$translations = array(
 	'Logout successful.' => 'Αποσυνδεθήκατε με επιτυχία.',
 	'Invalid credentials.' => 'Εσφαλμένα Διαπιστευτήρια.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Επανειλημμένες ανεπιτυχείς προσπάθειες σύνδεσης, δοκιμάστε ξανά σε %d λεπτό.', 'Επανειλημμένες ανεπιτυχείς προσπάθειες σύνδεσης, δοκιμάστε ξανά σε %d λεπτά.'),
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Χρησιμοποιήστε το <a%2$s>πρόσθετο</a> %1$s αν το Adminer εκτελείται πίσω από αντίστροφο διακομιστή μεσολάβησης.', // Claude Opus 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Έληξε ο Κύριος Κωδικός. <a href="https://www.adminer.org/en/extension/"%s>Ενεργοποιήστε</a> τη μέθοδο %s για να τον κάνετε μόνιμο.',
 	'Language' => 'Γλώσσα',
 	'Invalid CSRF token. Submit the form again.' => 'Άκυρο κουπόνι CSRF. Στείλτε τη φόρμα ξανά.',
@@ -69,6 +70,7 @@ Lang::$translations = array(
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Μπορείτε να μεταφορτώσετε ένα μεγάλο αρχείο SQL μέσω FTP και να το εισάγετε από το διακομιστή.',
 	'You are offline.' => 'Βρίσκεστε εκτός σύνδεσης.',
 	'Menu' => 'Μενού', // Claude Opus 5
+	'Database management in a single PHP file' => 'Διαχείριση βάσεων δεδομένων σε ένα μόνο αρχείο PHP', // Claude Opus 5
 
 	'Export' => 'Εξαγωγή',
 	'Output' => 'Αποτέλεσμα',
@@ -284,6 +286,7 @@ Lang::$translations = array(
 	'Relations' => 'Συσχετήσεις',
 
 	'Editor' => 'Επεξεργαστής',
+	'Data editing in a single PHP file' => 'Επεξεργασία δεδομένων σε ένα μόνο αρχείο PHP', // Claude Opus 5
 	'$1-$3-$5' => '$5/$3/$1', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'[yyyy]-mm-dd' => 'ηη/μμ/[εεεε]', // hint for date format - use language equivalents for day, month and year shortcuts
 	'HH:MM:SS' => 'ΩΩ:ΛΛ:ΔΔ', // hint for time format - use language equivalents for hour, minute and second shortcuts

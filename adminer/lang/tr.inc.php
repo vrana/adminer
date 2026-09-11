@@ -14,6 +14,7 @@ Lang::$translations = array(
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Adminer kullandığınız için teşekkür ederiz <a href="https://www.adminer.org/en/donation/">bağış yapmayı düşünün</a>.',
 	'Invalid credentials.' => 'Geçersiz kimlik bilgileri.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Çok fazla oturum açma denemesi yapıldı.', '%d Dakika sonra tekrar deneyiniz.'),
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Adminer bir ters proxy arkasında çalışıyorsa %s <a%s>eklentisini</a> kullanın.', // Claude Opus 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Ana şifrenin süresi doldu. Kalıcı olması için <a href="https://www.adminer.org/en/extension/"%s>%s medodunu</a> kullanın.',
 	'Language' => 'Dil',
 	'Invalid CSRF token. Submit the form again.' => 'Geçersiz (CSRF) jetonu. Formu tekrar yolla.',
@@ -74,6 +75,7 @@ Lang::$translations = array(
 	'You can upload a large SQL file via FTP and import it from the server.' => 'FTP yoluyla büyük bir SQL dosyası yükleyebilir ve sunucudan içe aktarabilirsiniz.',
 	'You are offline.' => 'Çevrimdışısınız.',
 	'Menu' => 'Menü', // Claude Opus 5
+	'Database management in a single PHP file' => 'Tek bir PHP dosyasında veri tabanı yönetimi', // Claude Opus 5
 
 	'Export' => 'Dışarı Aktar',
 	'Output' => 'Çıktı',
@@ -291,6 +293,7 @@ Lang::$translations = array(
 	'Relations' => 'İlişkiler',
 
 	'Editor' => 'Düzenleyici',
+	'Data editing in a single PHP file' => 'Tek bir PHP dosyasında veri düzenleme', // Claude Opus 5
 	'$1-$3-$5' => '$6.$4.$1', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'[yyyy]-mm-dd' => 'g.a.[yyyy]', // hint for date format - use language equivalents for day, month and year shortcuts
 	'HH:MM:SS' => 'SS:DD:ss', // hint for time format - use language equivalents for hour, minute and second shortcuts

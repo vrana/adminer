@@ -215,6 +215,7 @@ Lang::$translations = array(
 	'Maximum allowed file size is %sB.' => 'A maximális fájlméret %s B.',
 	'Clear' => 'Törlés',
 	'Editor' => 'Szerkesztő',
+	'Data editing in a single PHP file' => 'Adatszerkesztés egyetlen PHP-fájlban', // Claude Opus 5
 	'Webserver file %s' => 'Webszerver fájl %s',
 	'File does not exist.' => 'A fájl nem létezik.',
 	'Permanent login' => 'Emlékezz rám',
@@ -294,6 +295,7 @@ Lang::$translations = array(
 	'Default value' => 'Alapértelmezett érték', // Claude Fable 5
 	'Full table scan' => 'Teljes táblaolvasás', // Claude Fable 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'Túl sok sikertelen bejelentkezés, próbálja újra %d perc múlva.', // Claude Fable 5
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Használja a(z) %s <a%s>bővítményt</a>, ha az Adminer fordított proxy mögött fut.', // Claude Opus 5
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Köszönjük, hogy az Adminert használja, fontolja meg az <a href="https://www.adminer.org/en/donation/">adományozást</a>.', // Claude Fable 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'A mesterjelszó lejárt. <a href="https://www.adminer.org/en/extension/"%s>Implementálja</a> a(z) %s metódust, hogy állandó legyen.', // Claude Fable 5
 	'The action will be performed after successful login with the same credentials.' => 'A művelet az azonos hitelesítő adatokkal történő sikeres bejelentkezés után hajtódik végre.', // Claude Fable 5
@@ -308,6 +310,7 @@ Lang::$translations = array(
 	'screenshot' => 'képernyőkép', // Claude Fable 5
 	'You are offline.' => 'Ön offline állapotban van.', // Claude Fable 5
 	'Menu' => 'Menü', // Claude Opus 5
+	'Database management in a single PHP file' => 'Adatbázis-kezelés egyetlen PHP-fájlban', // Claude Opus 5
 	'Increase %s.' => 'Növelje a(z) %s értékét.', // Claude Fable 5
 	'You have no privileges to update this table.' => 'Nincs jogosultsága a tábla frissítéséhez.', // Claude Fable 5
 	'Saving…' => 'Mentés…', // Claude Fable 5

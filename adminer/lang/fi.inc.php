@@ -13,6 +13,7 @@ Lang::$translations = array(
 	'Logout successful.' => 'Uloskirjautuminen onnistui.',
 	'Invalid credentials.' => 'Virheelliset kirjautumistiedot.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'Liian monta epäonnistunutta sisäänkirjautumisyritystä, kokeile uudestaan %d minuutin kuluttua.',
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Käytä <a%2$s>lisäosaa</a> %1$s, jos Adminer toimii käänteisen välityspalvelimen takana.', // Claude Opus 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Master-salasana ei ole enää voimassa. <a href="https://www.adminer.org/en/extension/"%s>Toteuta</a> %s-metodi sen tekemiseksi pysyväksi.',
 	'Language' => 'Kieli',
 	'Invalid CSRF token. Submit the form again.' => 'Virheellinen CSRF-vastamerkki. Lähetä lomake uudelleen.',
@@ -69,6 +70,7 @@ Lang::$translations = array(
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Voit ladata suuren SQL-tiedoston FTP:n kautta ja tuoda sen sitten palvelimelta.',
 	'You are offline.' => 'Olet offline-tilassa.',
 	'Menu' => 'Valikko', // Claude Opus 5
+	'Database management in a single PHP file' => 'Tietokannan hallinta yhdessä PHP-tiedostossa', // Claude Opus 5
 
 	'Export' => 'Vienti',
 	'Output' => 'Tulos',
@@ -284,6 +286,7 @@ Lang::$translations = array(
 	'Relations' => 'Suhteet',
 
 	'Editor' => 'Editori',
+	'Data editing in a single PHP file' => 'Tietojen muokkaus yhdessä PHP-tiedostossa', // Claude Opus 5
 	'$1-$3-$5' => '$5.$3.$1', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'[yyyy]-mm-dd' => 'pp.kk.[vvvv]', // hint for date format - use language equivalents for day, month and year shortcuts
 	'HH:MM:SS' => 'HH:MM:SS', // hint for time format - use language equivalents for hour, minute and second shortcuts
@@ -355,6 +358,7 @@ Lang::$translations = array(
 	'hostname[:port] or :socket' => 'hostname[:port] tai :socket', // Claude Fable 5
 	'Invalid server.' => 'Virheellinen palvelin.', // Claude Fable 5
 	'Loaded plugins' => 'Ladatut lisäosat', // Claude Fable 5
+	'%s must <a%s>return an array</a>.' => 'Tiedoston %s täytyy <a%s>palauttaa taulukko</a>.', // Claude Opus 5
 	'screenshot' => 'kuvakaappaus', // Claude Fable 5
 	'Increase %s.' => 'Kasvata %s.', // Claude Fable 5
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Määritä</a> %s tiedostossa %s.', // Claude Fable 5
