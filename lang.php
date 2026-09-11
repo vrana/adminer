@@ -146,6 +146,7 @@ function update_stats($messages_all, $plugins_messages) {
 		return array($stats[$b][0], $stats[$b][1], $stats[$b][2], $order[$a]) <=> array($stats[$a][0], $stats[$a][1], $stats[$a][2], $order[$b]);
 	});
 	$total = count($messages_all);
+	$stats = array('en' => array($total, 0, $plugins_total)) + $stats; // the source language first
 	$s = "| | Language | Reviewed | To review | Missing | Plugins | |\n|---|---|--:|--:|--:|--:|---|\n";
 	foreach ($stats as $lang => list($reviewed, $machine, $plugins)) {
 		$percent = floor(100 * $reviewed / $total); // not rounded to not display 100% with anything left
