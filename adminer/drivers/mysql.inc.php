@@ -1280,6 +1280,7 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 	* - move_tables() - moving the selected tables to another database
 	* - truncate_all_sql() - the export truncates all tables by a single command (PostgreSQL)
 	* - truncate_tables() - truncating the selected tables
+	* - use_schema_sql() - the export creates and selects the schema (PostgreSQL, MS SQL)
 	* @param literal-string $feature
 	*/
 	function support(string $feature): bool {

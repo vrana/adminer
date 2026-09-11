@@ -508,7 +508,7 @@ function create_routine($routine, array $row): string {
 	$definition = rtrim($row["definition"], ";");
 	$dollar_quote = (JUSH == "pgsql" || ($language && $language != "sql")); // PostgreSQL quotes the body in all languages, MySQL only in the external ones
 	return "CREATE$definer $routine "
-		. idf_escape(trim($row["name"]))
+		. table(trim($row["name"]))
 		. " (" . ($set ? implode(",", $set) . "\n" : "") . ")"
 		. ($routine == "FUNCTION" ? "\nRETURNS" . process_type($row["returns"], routine_collate($row["returns"]["collation"])) : "")
 		. ($language ? " LANGUAGE $language" : "")

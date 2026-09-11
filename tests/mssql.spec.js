@@ -362,7 +362,9 @@ test('Export', async () => {
 	await page.locator('[name="format"]').first().click();
 	await page.locator('[name="table_style"]').selectOption({label: 'DROP+CREATE'});
 	await page.locator('[name="data_style"]').selectOption({label: 'INSERT'});
+	await page.locator('[name="schema_style"]').selectOption({label: 'CREATE'});
 	await button(page, 'Export').click();
+	await expect(page.locator('body')).toContainText("IF SCHEMA_ID('dbo') IS NULL EXEC('CREATE SCHEMA [dbo]')");
 	await expect(page.locator('body')).toContainText('CREATE TABLE [dbo].[interprets]');
 	await expect(page.locator('body')).toContainText('INSERT INTO [dbo].[interprets]');
 	await expect(page.locator('body')).toContainText('VIEW [dbo].[albums_interprets]');

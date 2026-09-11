@@ -497,7 +497,8 @@ ORDER BY c.relname, a.attnum", $this->conn);
 	}
 
 	function table(string $idf): string {
-		return idf_escape($idf);
+		// the export qualifies the names unless it selects the schema by search_path which the other pages use
+		return ($_POST["schema_style"] === "" && $_GET["ns"] != "" ? idf_escape($_GET["ns"]) . "." : "") . idf_escape($idf);
 	}
 
 	function get_databases(bool $flush): array {
@@ -566,9 +567,8 @@ ORDER BY 1";
 	obj_description(c.oid, 'pg_class') AS \"Comment\",
 	" . (min_version(12) ? "''" : "CASE WHEN relhasoids THEN 'oid' ELSE '' END") . " AS \"Oid\",
 	reltuples AS \"Rows\",
-	" . ($sequences ? "seq.last_value" : "NULL") . " AS \"Auto_increment\",
-	" . (min_version(10) ? "relispartition::int AS dependent," : "") . "
-	current_schema() AS nspname
+	" . ($sequences ? "seq.last_value" : "NULL") . " AS \"Auto_increment\"" . (min_version(10) ? ",
+	relispartition::int AS dependent" : "") . "
 FROM pg_class c
 " . ($sequences ? "LEFT JOIN (
 	SELECT d.refobjid, max(s.last_value) AS last_value
@@ -903,7 +903,7 @@ ORDER BY conkey, conname") as $row
 		$return = array("MATERIALIZED VIEW" => array(), "VIEW" => array(), "TABLE" => array()); // views are dropped first, they can depend on the tables
 		foreach ($tables as $name => $table_status) {
 			//! foreign tables have Engine 'table' but they need DROP FOREIGN TABLE
-			$return[strtoupper($table_status["Engine"])][] = idf_escape($table_status["nspname"]) . "." . table($name);
+			$return[strtoupper($table_status["Engine"])][] = table($name);
 		}
 		return array_filter($return);
 	}
@@ -1168,6 +1168,7 @@ FROM pg_range WHERE rngtypid = $id"));
 	}
 
 	function set_schema(string $schema, ?Db $connection2 = null): bool {
+		$_GET["ns"] = $schema;
 		$return = connection($connection2)->query("SET search_path TO " . idf_escape($schema));
 		driver()->setUserTypes(types(true)); //! get types from current_schemas('t')
 		return !!$return;
@@ -1190,14 +1191,15 @@ FROM pg_range WHERE rngtypid = $id"));
 	function foreign_keys_sql(string $table): string {
 		$return = "";
 
-		$status = table_status1($table);
-		$ns = idf_escape($status['nspname']);
 		$fkeys = foreign_keys($table);
 		ksort($fkeys);
 
 		foreach ($fkeys as $fkey_name => $fkey) {
-			$return .= "ALTER TABLE ONLY $ns." . idf_escape($status['Name']) . " ADD CONSTRAINT " . idf_escape($fkey_name) . " "
-				. preg_replace('~( REFERENCES )([^(.]+\()~', "\\1$ns.\\2", $fkey["definition"]) . ";\n";
+			// the definition names the target table in another schema with the schema
+			$return .= "ALTER TABLE ONLY " . table($table) . " ADD CONSTRAINT " . idf_escape($fkey_name) . " "
+				. preg_replace_callback('~( REFERENCES )([^(.]+)\(~', function (array $match): string {
+					return $match[1] . table(idf_unescape($match[2])) . "(";
+				}, $fkey["definition"]) . ";\n";
 		}
 
 		return ($return ? "$return\n" : $return);
@@ -1209,9 +1211,13 @@ FROM pg_range WHERE rngtypid = $id"));
 	*/
 	function indexes_sql(string $table, string $primary = ""): string {
 		$return = "";
-		$query = "SELECT indexdef FROM pg_catalog.pg_indexes WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary != "" ? " AND indexname != " . q($primary) : "");
+		// pg_get_indexdef() always qualifies the table by the schema, quote_ident() quotes the same way
+		$query = "SELECT indexdef, quote_ident(schemaname) || '.' || quote_ident(tablename) AS qualified, quote_ident(current_database()) AS db
+FROM pg_catalog.pg_indexes
+WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary != "" ? " AND indexname != " . q($primary) : "");
 		foreach (get_rows($query, null, "-- ") as $row) {
-			$return .= "\n\n$row[indexdef];";
+			// CockroachDB qualifies also by the database, the leading space matches also ON ONLY in a partitioned table
+			$return .= "\n\n" . str_replace(array(" $row[db].$row[qualified] USING ", " $row[qualified] USING "), " " . table($table) . " USING ", $row["indexdef"]) . ";";
 		}
 		return $return;
 	}
@@ -1223,11 +1229,10 @@ FROM pg_range WHERE rngtypid = $id"));
 		$sequence_values = array(); // sequences whose value is restored after the table is created
 
 		$status = table_status1($table);
-		$ns = idf_escape($status['nspname']);
 		if (is_view($status)) {
 			$view = view($table);
 			// Engine is 'view' or 'materialized view', only a materialized view can have indexes
-			$create = "CREATE " . strtoupper($status["Engine"]) . " $ns." . idf_escape($table) . " AS " . rtrim($view["select"], ";") . ";";
+			$create = "CREATE " . strtoupper($status["Engine"]) . " " . table($table) . " AS " . rtrim($view["select"], ";") . ";";
 			return rtrim($create . indexes_sql($table), ';');
 		}
 		$fields = fields($table);
@@ -1236,20 +1241,22 @@ FROM pg_range WHERE rngtypid = $id"));
 			return "";
 		}
 
-		$return = "CREATE TABLE $ns." . idf_escape($status['Name']) . " (\n    ";
-		$table_literal = q("$ns." . idf_escape($status['Name'])); // the table name as expected by pg_get_serial_sequence()
+		$return = "CREATE TABLE " . table($status['Name']) . " (\n    ";
+		$table_literal = q(table($status['Name'])); // the table name as expected by pg_get_serial_sequence()
 
 		// fields' definitions
 		foreach ($fields as $field) {
 			$serial_sequence = "";
 			if ($field['default'] == "nextval('$status[Name]_$field[field]_seq')") {
-				$serial_sequence = "$ns." . idf_escape("$status[Name]_$field[field]_seq"); // the serial type re-creates it under the same name
+				$serial_sequence = table("$status[Name]_$field[field]_seq"); // the serial type re-creates it under the same name
 				$field['default'] = null;
 				$field['full_type'] = preg_replace('~int(eger)?~', 'serial', $field['full_type']);
 			}
 
 			$part = idf_escape($field['field']) . ' ' . $field['full_type']
-				. preg_replace('~(nextval\(\')([^.\']+\')~', '\1' . str_replace("'", "''", $status['nspname']) . '.\2', default_value($field))
+				. preg_replace_callback('~(nextval\(\')([^.\']+)\'~', function (array $match): string {
+					return $match[1] . str_replace("'", "''", table(idf_unescape($match[2]))) . "'"; // a sequence in another schema contains the dot
+				}, default_value($field))
 				. ($field['null'] ? "" : " NOT NULL");
 			$return_parts[] = $part;
 
@@ -1260,21 +1267,24 @@ FROM pg_range WHERE rngtypid = $id"));
 					? "SELECT *, cache_size AS cache_value FROM pg_sequences WHERE schemaname = current_schema() AND sequencename = " . q(idf_unescape($sequence_name))
 					: "SELECT * FROM $sequence_name"
 				), null, "-- "));
-				$sequences[] = ($style == "DROP+CREATE" ? "DROP SEQUENCE IF EXISTS $ns.$sequence_name;\n" : "")
-					. "CREATE SEQUENCE $ns.$sequence_name INCREMENT $sq[increment_by] MINVALUE $sq[min_value] MAXVALUE $sq[max_value]"
+				$sequence = table(idf_unescape($sequence_name));
+				$sequences[] = ($style == "DROP+CREATE" ? "DROP SEQUENCE IF EXISTS $sequence;\n" : "")
+					. "CREATE SEQUENCE $sequence INCREMENT $sq[increment_by] MINVALUE $sq[min_value] MAXVALUE $sq[max_value]"
 					. " CACHE $sq[cache_value];"
 				;
 				if (get_val("SELECT pg_get_serial_sequence($table_literal, " . q($field['field']) . ")")) {
 					// the sequence is owned by the column but CREATE SEQUENCE can't say it before the table is created
-					$sequences_owned[] = "\n\nALTER SEQUENCE $ns.$sequence_name OWNED BY $ns." . idf_escape($status['Name']) . "." . idf_escape($field['field']) . ";";
+					$sequences_owned[] = "\n\nALTER SEQUENCE $sequence OWNED BY " . table($status['Name']) . "." . idf_escape($field['field']) . ";";
 				}
 				if ($auto_increment) {
-					$sequence_values[] = "$ns.$sequence_name";
+					$sequence_values[] = $sequence;
 				}
 			} elseif ($auto_increment && $field['auto_increment']) {
 				// the sequence of a serial or identity column is created by CREATE TABLE
 				// a column can own more sequences than the one in its default so pg_get_serial_sequence() is used only without a default
-				$sequence_values[] = ($serial_sequence ?: get_val("SELECT pg_get_serial_sequence($table_literal, " . q($field['field']) . ")"));
+				// pg_get_serial_sequence() always qualifies the name, regclass qualifies it only outside search_path which is the exported schema
+				$sequence = ($serial_sequence ? "" : get_val("SELECT pg_get_serial_sequence($table_literal, " . q($field['field']) . ")::regclass"));
+				$sequence_values[] = ($sequence ? table(idf_unescape($sequence)) : $serial_sequence);
 			}
 		}
 
@@ -1308,12 +1318,12 @@ FROM pg_range WHERE rngtypid = $id"));
 
 		// comments for table & fields
 		if ($status['Comment']) {
-			$return .= "\n\nCOMMENT ON TABLE $ns." . idf_escape($status['Name']) . " IS " . q($status['Comment']) . ";";
+			$return .= "\n\nCOMMENT ON TABLE " . table($status['Name']) . " IS " . q($status['Comment']) . ";";
 		}
 
 		foreach ($fields as $field_name => $field) {
 			if ($field['comment']) {
-				$return .= "\n\nCOMMENT ON COLUMN $ns." . idf_escape($status['Name']) . "." . idf_escape($field_name) . " IS " . q($field['comment']) . ";";
+				$return .= "\n\nCOMMENT ON COLUMN " . table($status['Name']) . "." . idf_escape($field_name) . " IS " . q($field['comment']) . ";";
 			}
 		}
 
@@ -1348,7 +1358,7 @@ FROM pg_range WHERE rngtypid = $id"));
 		foreach (triggers($table) as $trg_id => $trg) {
 			$trigger = trigger($trg_id, $status['Name']);
 			$return .= "\nCREATE TRIGGER " . idf_escape($trigger['Trigger']) . " $trigger[Timing] $trigger[Event] ON "
-				. idf_escape($status["nspname"]) . "." . idf_escape($status['Name']) . " $trigger[Type] $trigger[Statement];;\n";
+				. table($status['Name']) . " $trigger[Type] $trigger[Statement];;\n";
 		}
 		return $return;
 	}
@@ -1364,6 +1374,21 @@ FROM pg_range WHERE rngtypid = $id"));
 			$return .= "CREATE DATABASE $name;\n"; //! get info from pg_database
 		}
 		return "$return\\connect $name";
+	}
+
+	/** Get SQL commands creating and selecting the exported schema
+	* @param 'USE'|'DROP+CREATE'|'CREATE' $style
+	*/
+	function use_schema_sql(string $schema, string $style): string {
+		$name = idf_escape($schema);
+		$return = "";
+		if (preg_match('~CREATE~', $style)) {
+			if ($style == "DROP+CREATE") {
+				$return = "DROP SCHEMA IF EXISTS $name CASCADE;\n";
+			}
+			$return .= "CREATE SCHEMA IF NOT EXISTS $name;\n"; // a new database contains the public schema
+		}
+		return $return . "SET search_path TO $name";
 	}
 
 	function show_variables(): array {

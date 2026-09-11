@@ -842,6 +842,17 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)) as $row
 		return "USE " . idf_escape($database);
 	}
 
+	/** Get SQL commands creating the exported schema
+	* @param 'DROP+CREATE'|'CREATE' $style
+	*/
+	function use_schema_sql(string $schema, string $style): string {
+		// there is nothing like search_path to select the schema, the names are qualified
+		// CREATE SCHEMA must be the only command in a batch and it has no IF NOT EXISTS, dbo exists always
+		$name = idf_escape($schema);
+		return ($style == "DROP+CREATE" ? "DROP SCHEMA IF EXISTS $name;\n" : "")
+			. "IF SCHEMA_ID(" . q($schema) . ") IS NULL EXEC(" . q("CREATE SCHEMA $name") . ")";
+	}
+
 	function trigger_sql(string $table): string {
 		$return = "";
 		foreach (triggers($table) as $name => $trigger) {

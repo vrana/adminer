@@ -9,6 +9,9 @@
 - MySQL: Display the account matched by the connection as the logged user
 - PostgreSQL: Display and edit PostGIS geometries as EWKT (bug SF-615)
 - PostgreSQL: Do not link the types created by extensions from the table structure
+- PostgreSQL: Export: Qualify all names by the schema or set the schema by a new option
+- PostgreSQL: Export check constraints when exporting more schemas at once
+- MS SQL: Export: Create the schema by a new option
 - MS SQL: Fix exporting more schemas at once
 - Oracle: The driver is no longer beta
 - Oracle: Use schemas as databases instead of tablespaces (bug SF-204, SF-212, SF-238)

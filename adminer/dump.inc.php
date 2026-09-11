@@ -11,7 +11,7 @@ if ($_POST && !$error) {
 		}
 	}
 	save_settings(
-		array_intersect_key($_POST + $default, array_flip(array("output", "format", "db_style", "table_style", "data_style")) + $default),
+		array_intersect_key($_POST + $default, array_flip(array("output", "format", "db_style", "schema_style", "table_style", "data_style")) + $default),
 		"adminer_export"
 	);
 	$all = (DB == "" || $_GET["ns"] === ""); // all tables of the selected databases or schemas, set_schema() changes $_GET["ns"]
@@ -59,6 +59,9 @@ SET foreign_key_checks = 0;
 					}
 					set_schema($schema);
 				}
+				if ($is_sql && $_POST["schema_style"] && function_exists('Adminer\use_schema_sql')) {
+					echo use_schema_sql($_GET["ns"], $_POST["schema_style"]) . ";\n\n";
+				}
 
 				$statuses = ($_POST["table_style"] || $_POST["data_style"] ? table_status('', true) : array());
 				$exported = array(); // tables and views whose structure is exported
@@ -91,13 +94,12 @@ SET foreign_key_checks = 0;
 
 					if ($_POST["types"]) {
 						//! types are exported in alphabetical order, not in the order of their dependencies
-						//! CREATE TYPE is not schema qualified so the same name in two schemas collides
 						foreach (types() as $id => $type) {
 							$definition = type_definition($id);
 							$object = ($definition["kind"] == 'd' ? "DOMAIN" : "TYPE");
 							if ($definition["definition"]) {
-								$out .= ($style != 'DROP+CREATE' ? "DROP $object IF EXISTS " . idf_escape($type) . ";;\n" : "")
-									. "CREATE $object " . idf_escape($type) . " $definition[definition];\n\n";
+								$out .= ($style != 'DROP+CREATE' ? "DROP $object IF EXISTS " . table($type) . ";;\n" : "")
+									. "CREATE $object " . table($type) . " $definition[definition];\n\n";
 							} else {
 								$out .= "-- Could not export type $type\n\n";
 							}
@@ -110,7 +112,7 @@ SET foreign_key_checks = 0;
 							$routine = $row["ROUTINE_TYPE"];
 							$create = create_routine($routine, array("name" => $name) + routine($row["SPECIFIC_NAME"], $routine));
 							set_utf8mb4($create);
-							$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . idf_escape($name) . ";;\n" : "") . "$create;\n\n";
+							$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . table($name) . ";;\n" : "") . "$create;\n\n";
 						}
 					}
 
@@ -196,6 +198,7 @@ page_header(lang('Export'), $error, ($_GET["export"] != "" ? array("table" => $_
 <table class="layout">
 <?php
 $db_style = array('', 'USE', 'DROP+CREATE', 'CREATE');
+$schema_style = (JUSH == "mssql" ? array('', 'DROP+CREATE', 'CREATE') : $db_style); // MS SQL has nothing like search_path
 $table_style = array('', 'DROP+CREATE', 'CREATE');
 $data_style = array('', 'TRUNCATE+INSERT', 'INSERT');
 if (JUSH == "sql") { //! use insertUpdate() in all drivers
@@ -203,7 +206,7 @@ if (JUSH == "sql") { //! use insertUpdate() in all drivers
 }
 $row = get_settings("adminer_export");
 if (!$row) {
-	$row = array("output" => "text", "format" => "sql", "db_style" => (DB != "" ? "" : "CREATE"), "table_style" => "DROP+CREATE", "data_style" => "INSERT");
+	$row = array("output" => "text", "format" => "sql", "db_style" => (DB != "" ? "" : "CREATE"), "schema_style" => "", "table_style" => "DROP+CREATE", "data_style" => "INSERT");
 }
 
 echo "<tr><th>" . lang('Output') . "<td>" . html_radios("output", adminer()->dumpOutput(), $row["output"]) . "\n";
@@ -215,6 +218,8 @@ echo (JUSH == "sqlite" ? "" : "<tr><th>" . lang('Database') . "<td>" . html_sele
 	. (support("routine") ? checkbox("routines", 1, $row["routines"], lang('Routines')) : "")
 	. (support("event") ? checkbox("events", 1, $row["events"], lang('Events')) : "")
 );
+
+echo (function_exists('Adminer\use_schema_sql') ? "<tr><th>" . lang('Schema') . "<td>" . html_select('schema_style', $schema_style, $row["schema_style"]) : "");
 
 echo "<tr><th>" . lang('Tables') . "<td>" . html_select('table_style', $table_style, $row["table_style"])
 	. checkbox("auto_increment", 1, $row["auto_increment"], lang('Auto Increment'))

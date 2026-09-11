@@ -365,10 +365,20 @@ test('Export', async () => {
 	await page.locator('[name="format"]').first().click();
 	await page.locator('[name="table_style"]').selectOption({label: 'DROP+CREATE'});
 	await page.locator('[name="data_style"]').selectOption({label: 'INSERT'});
+	await page.locator('[name="schema_style"]').selectOption({index: 0});
 	await button(page, 'Export').click();
 	await expect(page.locator('body')).toContainText('CREATE TABLE "public"."interprets"');
-	await expect(page.locator('body')).toContainText('INSERT INTO "interprets"');
+	await expect(page.locator('body')).toContainText('ON "public"."interprets" USING btree'); // CockroachDB qualifies also by the database
+	await expect(page.locator('body')).toContainText('INSERT INTO "public"."interprets"');
 	await expect(page.locator('body')).toContainText('VIEW "public"."albums_interprets"');
+	// the schema selected by search_path instead of qualifying the names
+	await goto(page, '/adminer/?pgsql=localhost:26257&username=ODBC&db=adminer_test&ns=public&dump=');
+	await page.locator('[name="schema_style"]').selectOption({label: 'USE'});
+	await button(page, 'Export').click();
+	await expect(page.locator('body')).toContainText('SET search_path TO "public"');
+	await expect(page.locator('body')).toContainText('CREATE TABLE "interprets"');
+	await expect(page.locator('body')).toContainText('ON "interprets" USING btree');
+	await expect(page.locator('body')).toContainText('INSERT INTO "interprets"');
 	// several tables in a non-SQL format are packed to a TAR archive built in a temporary file
 	await goto(page, '/adminer/?pgsql=localhost:26257&username=ODBC&db=adminer_test&ns=public&dump=');
 	await page.locator('input[name="output"][value="text"]').click();
