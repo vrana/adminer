@@ -18,16 +18,16 @@ Lang::$translations = array(
 	'There is a space in the entered password, which might be the cause.' => 'W haśle wejściowym znajduje się spacja, która może być przyczyną.',
 	'Adminer does not support accessing a database without a password.' => 'Adminer nie obsługuje dostępu do bazy danych bez hasła.',
 	'The database does not support passwords.' => 'Baza danych nie obsługuje hasła.',
-	'The server accepts any password, so filling it in protects nothing.' => 'Serwer akceptuje dowolne hasło, więc jego wpisanie niczego nie chroni.', // Claude Opus 5
-	'Require a password.' => 'Wymagaj hasła.', // Claude Opus 5
-	'Save %s next to Adminer to require the entered password:' => 'Zapisz %s obok Adminera, aby wymagane było wpisane hasło:', // Claude Opus 5
-	'Save %s next to Adminer to require the password %s:' => 'Zapisz %s obok Adminera, aby wymagane było hasło %s:', // Claude Opus 5
-	'Add this line to %s to require the entered password:' => 'Dodaj tę linię do %s, aby wymagane było wpisane hasło:', // Claude Opus 5
-	'Add this line to %s to require the password %s:' => 'Dodaj tę linię do %s, aby wymagane było hasło %s:', // Claude Opus 5
-	'More options' => 'Więcej możliwości', // Claude Opus 5
-	'Require a password verified by Adminer' => 'Wymaga hasła weryfikowanego przez Adminera', // Claude Opus 5
+	'The server accepts any password, so filling it in protects nothing.' => 'Serwer akceptuje dowolne hasło, więc jego wpisanie niczego nie chroni.',
+	'Require a password.' => 'Wymagaj hasła.',
+	'Save %s next to Adminer to require the entered password:' => 'Zapisz %s obok Adminera, aby wymagane było wpisane hasło:',
+	'Save %s next to Adminer to require the password %s:' => 'Zapisz %s obok Adminera, aby wymagane było hasło %s:',
+	'Add this line to %s to require the entered password:' => 'Dodaj tę linię do %s, aby wymagane było wpisane hasło:',
+	'Add this line to %s to require the password %s:' => 'Dodaj tę linię do %s, aby wymagane było hasło %s:',
+	'More options' => 'Więcej opcji',
+	'Require a password verified by Adminer' => 'Wymagaj hasła weryfikowanego przez Adminera',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Za dużo nieudanych prób logowania, spróbuj ponownie za %d minutę.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minuty.', 'Za dużo nieudanych prób logowania, spróbuj ponownie za %d minut.'),
-	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Jeśli Adminer działa za odwrotnym proxy, użyj <a%2$s>wtyczki</a> %1$s.', // Claude Opus 5
+	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Jeśli Adminer działa za odwrotnym proxy, użyj <a%2$s>wtyczki</a> %1$s.',
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Ważność hasła głównego wygasła. <a href="https://www.adminer.org/pl/extension/"%s>Zaimplementuj</a> własną metodę %s, aby ustawić je na stałe.',
 	'Language' => 'Język',
 	'Invalid CSRF token. Submit the form again.' => 'Nieprawidłowy token CSRF. Spróbuj wysłać formularz ponownie.',
@@ -91,7 +91,7 @@ Lang::$translations = array(
 	'The POST data is too large. Reduce the data or increase the %s configuration directive.' => 'Przesłano zbyt dużo danych. Zmniejsz objętość danych lub zwiększ zmienną konfiguracyjną %s.',
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Większe pliki SQL możesz wgrać na serwer poprzez FTP przed zaimportowaniem.',
 	'You are offline.' => 'Jesteś offline.',
-	'Menu' => 'Menu', // Claude Opus 5
+	'Menu' => 'Menu',
 	'Database management in a single PHP file' => 'Zarządzanie bazą danych w jednym pliku PHP',
 
 	'Export' => 'Eksportuj',
@@ -169,7 +169,7 @@ Lang::$translations = array(
 
 	'Tables' => 'Tabele',
 	'Tables and views' => 'Tabele i perspektywy',
-	'All' => 'Wszystko', // Claude Opus 5
+	'All' => 'Wszystko',
 	'Table' => 'Tabela',
 	'No tables.' => 'Brak tabel.',
 	'Alter table' => 'Zmień tabelę',
@@ -205,7 +205,7 @@ Lang::$translations = array(
 	'Values' => 'Wartości',
 	'Inherits from' => 'Dziedziczy po',
 	'Inherited by' => 'Odziedziczone przez',
-	'Shadow tables' => 'Tabele cienia', // Claude Opus 5
+	'Shadow tables' => 'Tabele cienia',
 
 	'View' => 'Perspektywa',
 	'Materialized view' => 'Zmaterializowana perspektywa',
@@ -221,7 +221,7 @@ Lang::$translations = array(
 	'Add next' => 'Dodaj następny',
 	'Index Type' => 'Typ indeksu',
 	'length' => 'długość',
-	'operator class' => 'klasa operatorów', // Claude Fable 5
+	'operator class' => 'klasa operatorów',
 	'Algorithm' => 'Algorytm',
 	'Condition' => 'Warunek',
 
@@ -235,8 +235,8 @@ Lang::$translations = array(
 	'Target' => 'Cel',
 	'Add column' => 'Dodaj kolumnę',
 	'Alter' => 'Zmień',
-	'Alter foreign key' => 'Zmień klucz obcy', // Claude Opus 5
-	'Create foreign key' => 'Utwórz klucz obcy', // Claude Opus 5
+	'Alter foreign key' => 'Zmień klucz obcy',
+	'Create foreign key' => 'Utwórz klucz obcy',
 	'ON DELETE' => 'W przypadku usunięcia',
 	'ON UPDATE' => 'W przypadku zmiany',
 	'Source and target columns must have the same data type, there must be an index on the target columns and the referenced data must exist.' => 'Źródłowa i docelowa kolumna muszą być tego samego typu, powinien istnieć indeks na docelowej kolumnie oraz muszą istnieć dane referencyjne.',
@@ -281,7 +281,7 @@ Lang::$translations = array(
 	'%d row(s) have been imported.' => array('%d rekord został zaimportowany.', '%d rekordy zostały zaimportowane.', '%d rekordów zostało zaimportowanych.'),
 	'File must be in UTF-8 encoding.' => 'Kodowanie pliku musi być ustawione na UTF-8.',
 
-	'All rows on this page' => 'Wszystkie wiersze na tej stronie', // Claude Opus 5
+	'All rows on this page' => 'Wszystkie wiersze na tej stronie',
 	'Modify' => 'Zmień', // in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Ctrl+kliknij wartość, aby ją edytować.',
 	'Use the edit link to modify this value.' => 'Użyj linku edycji, aby zmienić tę wartość.',
@@ -312,11 +312,11 @@ Lang::$translations = array(
 	'Lists' => 'Listy',
 	'Network' => 'Sieć',
 	'Geometry' => 'Geometria',
-	'Ranges' => 'Zakresy', // Claude Opus 5
+	'Ranges' => 'Zakresy',
 	'Relations' => 'Relacje',
 
 	'Editor' => 'Edytor',
-	'Data editing in a single PHP file' => 'Edycja danych w jednym pliku PHP', // Claude Opus 5
+	'Data editing in a single PHP file' => 'Edycja danych w jednym pliku PHP',
 	'$1-$3-$5' => '$6.$4.$1', // date format in Editor: $1 yyyy, $2 yy, $3 mm, $4 m, $5 dd, $6 d
 	'[yyyy]-mm-dd' => 'd.m.[rrrr]', // hint for date format - use language equivalents for day, month and year shortcuts
 	'HH:MM:SS' => 'HH:MM:SS', // hint for time format - use language equivalents for hour, minute and second shortcuts
@@ -349,7 +349,7 @@ Lang::$translations = array(
 	'Create type' => 'Utwórz typ',
 	'Type has been dropped.' => 'Typ został usunięty.',
 	'Type has been created.' => 'Typ został utworzony.',
-	'Type has been altered.' => 'Typ został zmieniony.', // Claude Opus 5
+	'Type has been altered.' => 'Typ został zmieniony.',
 	'Alter type' => 'Zmień typ',
 
 	// Table check constraints
@@ -363,7 +363,7 @@ Lang::$translations = array(
 	'Loaded plugins' => 'Wczytane wtyczki',
 	'%s must <a%s>return an array</a>.' => '%s musi <a%s>zwrócić tablicę</a>.',
 	'<a%s>Configure</a> %s in %s.' => '<a%s>Skonfiguruj</a> %s w %s.',
-	'Every plugin must <a%s>be an object</a>.' => 'Każda wtyczka musi <a%s>być obiektem</a>.', // Claude Opus 5
+	'Every plugin must <a%s>be an object</a>.' => 'Każda wtyczka musi <a%s>być obiektem</a>.',
 	'screenshot' => 'zrzut ekranu',
 );
 
