@@ -27,6 +27,10 @@ class Adminer {
 		return $_SERVER["REMOTE_ADDR"];
 	}
 
+	function verifyLoginToken(): bool {
+		return true;
+	}
+
 	function serverName(?string $server): string {
 		return '';
 	}

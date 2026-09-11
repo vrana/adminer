@@ -129,7 +129,7 @@ if (preg_match('~^[-\w$./]+$~', $_POST["password_less"]) && verify_token()) { //
 }
 
 $auth = $_POST["auth"];
-if ($auth && verify_token()) { // the token is verified here because the login is processed before the general check
+if ($auth && (!adminer()->verifyLoginToken() || verify_token())) { // the token is verified here because the login is processed before the general check
 	session_regenerate_id(); // defense against session fixation
 	$vendor = $auth["driver"];
 	$server = $auth["server"];

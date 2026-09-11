@@ -21,6 +21,7 @@
 ### Plugins
 - Driver plugins: Result::fetch_field() reports the type name in native_type instead of the MySQL number in type and charsetnr
 - Method manifest() to customize or disable the web app manifest
+- Method verifyLoginToken() to accept the login form of another website
 ### Internal
 - Test Oracle
 - Distribute the tests in the release archive (bug #1332)

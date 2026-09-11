@@ -40,6 +40,11 @@ class Adminer {
 		return $_SERVER["REMOTE_ADDR"];
 	}
 
+	/** Decide whether to require the CSRF token when logging in, a form on another website doesn't have it */
+	function verifyLoginToken(): bool {
+		return true;
+	}
+
 	/** Get server name displayed in breadcrumbs
 	* @return string HTML code or null
 	*/
