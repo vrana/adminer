@@ -334,7 +334,7 @@ ORDER BY e.extname"); // not extnamespace::regnamespace which needs PostgreSQL 9
 			echo "<table class='odds'>\n";
 			echo "<thead><tr><th>" . lang('Name') . "<td>" . lang('Version') . "<td>" . lang('Schema') . "<td>" . lang('Comment') . "<tbody>\n";
 			foreach ($extensions as $row) {
-				echo "<tr><th>" . h($row["extname"]);
+				echo "<tr><th><code class='jush-pgsqlext'>" . h($row["extname"]) . "</code>"; // JUSH links the contrib modules to the documentation and the rest to PGXN
 				echo "<td>" . h($row["extversion"]);
 				echo "<td><a href='" . h(substr(ME, 0, -1) . url_escape($row["nspname"])) . "'>" . h($row["nspname"]) . "</a>"; // ME ends with ns=& on this page
 				echo "<td>" . h($row["comment"]);
