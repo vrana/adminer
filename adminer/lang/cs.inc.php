@@ -352,6 +352,10 @@ Lang::$translations = array(
 	'Type has been altered.' => 'Typ byl změněn.',
 	'Alter type' => 'Pozměnit typ',
 
+	// PostgreSQL extensions
+	'Extensions' => 'Rozšíření',
+	'Version' => 'Verze',
+
 	// Table check constraints
 	'Checks' => 'Kontroly',
 	'Create check' => 'Vytvořit kontrolu',

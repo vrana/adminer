@@ -323,5 +323,25 @@ if (adminer()->homepage()) {
 			echo '<p class="links hover"><a href="' . h(ME) . 'event=">' . lang('Create event') . "</a>\n";
 			echo "</div>\n";
 		}
+	} elseif (support("extension")) { // an extension belongs to the database, it only has its objects in a schema
+		$extensions = get_rows("SELECT e.extname, e.extversion, n.nspname, obj_description(e.oid, 'pg_extension') AS comment
+FROM pg_extension e
+JOIN pg_namespace n ON n.oid = e.extnamespace
+ORDER BY e.extname"); // not extnamespace::regnamespace which needs PostgreSQL 9.5
+		if ($extensions) {
+			echo "<div>\n";
+			echo "<h3 id='extensions'>" . lang('Extensions') . "</h3>\n";
+			echo "<table class='odds'>\n";
+			echo "<thead><tr><th>" . lang('Name') . "<td>" . lang('Version') . "<td>" . lang('Schema') . "<td>" . lang('Comment') . "<tbody>\n";
+			foreach ($extensions as $row) {
+				echo "<tr><th>" . h($row["extname"]);
+				echo "<td>" . h($row["extversion"]);
+				echo "<td><a href='" . h(substr(ME, 0, -1) . url_escape($row["nspname"])) . "'>" . h($row["nspname"]) . "</a>"; // ME ends with ns=& on this page
+				echo "<td>" . h($row["comment"]);
+				echo "\n";
+			}
+			echo "</table>\n";
+			echo "</div>\n";
+		}
 	}
 }

@@ -1423,6 +1423,7 @@ WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary !=
 			. (min_version(9.3) ? '|materializedview' : '')
 			. (min_version(11) ? '|procedure' : '')
 			. (connection()->flavor == 'cockroach' ? '' : '|deferrable') // https://github.com/cockroachdb/cockroach/issues/31632
+			. (connection()->flavor == 'cockroach' || !min_version(9.1) ? '' : '|extension') // CockroachDB has no real rows in pg_extension
 			. (connection()->flavor == 'cockroach' ? '' : '|processlist') // https://github.com/cockroachdb/cockroach/issues/24745
 			. ')$~', $feature)
 		;

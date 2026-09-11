@@ -352,6 +352,10 @@ Lang::$translations = array(
 	'Type has been altered.' => 'Xx.',
 	'Alter type' => 'Xx',
 
+	// PostgreSQL extensions
+	'Extensions' => 'Xx',
+	'Version' => 'Xx',
+
 	// Table check constraints
 	'Checks' => 'Xx',
 	'Create check' => 'Xx',

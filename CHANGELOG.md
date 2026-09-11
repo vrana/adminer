@@ -11,6 +11,7 @@
 - PostgreSQL: Do not link the types created by extensions from the table structure
 - PostgreSQL: Export: Qualify all names by the schema or set the schema by a new option
 - PostgreSQL: Export check constraints when exporting more schemas at once
+- PostgreSQL: Display the installed extensions on the database page
 - CockroachDB: Export: Omit WITH (oids = false)
 - CockroachDB: Treat crdb_internal and pg_extension as read-only system schemas, e.g. do not export them
 - MS SQL: Export: Create the schema by a new option
