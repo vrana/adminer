@@ -138,7 +138,8 @@ function update_stats($messages_all, $plugins_messages) {
 		}
 	}
 	uksort($stats, function ($a, $b) use ($stats) {
-		return array($stats[$b][0], $stats[$b][2], $a) <=> array($stats[$a][0], $stats[$a][2], $b);
+		// more machine translations with the same number of reviewed means fewer missing, a machine translation is better than none
+		return array($stats[$b][0], $stats[$b][1], $stats[$b][2], $a) <=> array($stats[$a][0], $stats[$a][1], $stats[$a][2], $b);
 	});
 	preg_match_all("~^\t\t'([a-z-]+)' => '(.*?)',~m", file_get_contents(__DIR__ . "/adminer/include/lang.inc.php"), $matches);
 	$names = array_combine($matches[1], $matches[2]);
