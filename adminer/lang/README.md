@@ -23,6 +23,7 @@ Reviewed means translated by a human: 🟩 at least 90%, 🟨 85%, 🟧 80%, �
 | 🟩 | [Bahasa Melayu](ms.inc.php) | 100% |  |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ms.inc.php.atom) |
 | 🟩 | [Català](ca.inc.php) | 100% |  |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ca.inc.php.atom) |
 | 🟩 | [Nederlands](nl.inc.php) | 100% |  |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/nl.inc.php.atom) |
+| 🟩 | [Slovenčina](sk.inc.php) | 100% |  |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/sk.inc.php.atom) |
 | 🟩 | [Polski](pl.inc.php) | 93% | 20 |  | 60% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/pl.inc.php.atom) |
 | 🟩 | [Hrvatski](hr.inc.php) | 93% | 22 |  | 70% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/hr.inc.php.atom) |
 | 🟩 | [日本語](ja.inc.php) | 92% | 24 |  | 64% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ja.inc.php.atom) |
@@ -31,7 +32,6 @@ Reviewed means translated by a human: 🟩 at least 90%, 🟨 85%, 🟧 80%, �
 | 🟩 | [Deutsch](de.inc.php) | 91% | 29 |  | 65% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/de.inc.php.atom) |
 | 🟩 | [Oʻzbekcha](uz.inc.php) | 90% | 2 | 28 | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/uz.inc.php.atom) |
 | 🟩 | [Українська](uk.inc.php) | 90% | 31 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/uk.inc.php.atom) |
-| 🟩 | [Slovenčina](sk.inc.php) | 90% | 32 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/sk.inc.php.atom) |
 | 🟩 | [Русский](ru.inc.php) | 90% | 32 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ru.inc.php.atom) |
 | 🟨 | [Suomi](fi.inc.php) | 87% | 40 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/fi.inc.php.atom) |
 | 🟨 | [Svenska](sv.inc.php) | 87% | 40 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/sv.inc.php.atom) |
