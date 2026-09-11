@@ -302,6 +302,8 @@ Lang::$translations = array(
 	'Type has been created.' => 'Tip je kreiran.',
 	'Type has been altered.' => 'Tip je izmijenjen.', // Claude Opus 5
 	'Alter type' => 'Izmijeni tip',
+	'Extensions' => 'Proširenja', // Claude Opus 5
+	'Version' => 'Verzija', // Claude Opus 5
 
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Previše neuspješnih pokušaja prijave, pokušajte ponovo za %d minutu.', 'Previše neuspješnih pokušaja prijave, pokušajte ponovo za %d minute.', 'Previše neuspješnih pokušaja prijave, pokušajte ponovo za %d minuta.'), // MS SQL login
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Koristite <a%2$s>dodatak</a> %1$s ako Adminer radi iza obrnutog proxyja.', // Claude Opus 5

@@ -352,6 +352,10 @@ Lang::$translations = array(
 	'Type has been altered.' => 'Typ został zmieniony.',
 	'Alter type' => 'Zmień typ',
 
+	// PostgreSQL extensions
+	'Extensions' => 'Rozszerzenia', // Claude Opus 5
+	'Version' => 'Wersja', // Claude Opus 5
+
 	// Table check constraints
 	'Checks' => 'Kontrole',
 	'Create check' => 'Utwórz kontrolę',

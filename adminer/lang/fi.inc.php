@@ -321,6 +321,8 @@ Lang::$translations = array(
 	'Type has been created.' => 'Tyyppi luotiin.',
 	'Type has been altered.' => 'Tyyppiä muutettiin.', // Claude Opus 5
 	'Alter type' => 'Muuta tyyppiä',
+	'Extensions' => 'Laajennukset', // Claude Opus 5
+	'Version' => 'Versio', // Claude Opus 5
 
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Kiitos, kun käytät Admineriä, voit <a href="https://www.adminer.org/en/donation/">tehdä lahjoituksen tästä</a>.',
 	'Drop %s?' => 'Poistetaanko %s?',
