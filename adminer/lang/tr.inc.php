@@ -9,7 +9,7 @@ Lang::$translations = array(
 	'Permanent login' => 'Beni hatırla',
 	'Login' => 'Giriş',
 	'Logout' => 'Çıkış',
-	'Logged in as: %s' => '%s olarak giriş yapıldı.',
+	'Logged in as: %s' => '%s olarak giriş yapıldı',
 	'Logout successful.' => 'Oturum başarıyla sonlandı.',
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Adminer kullandığınız için teşekkür ederiz <a href="https://www.adminer.org/en/donation/">bağış yapmayı düşünün</a>.',
 	'Invalid credentials.' => 'Geçersiz kimlik bilgileri.',
