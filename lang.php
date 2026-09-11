@@ -138,12 +138,13 @@ function update_stats($messages_all, $plugins_messages) {
 			}
 		}
 	}
-	uksort($stats, function ($a, $b) use ($stats) {
-		// more machine translations with the same number of reviewed means fewer missing, a machine translation is better than none
-		return array($stats[$b][0], $stats[$b][1], $stats[$b][2], $a) <=> array($stats[$a][0], $stats[$a][1], $stats[$a][2], $b);
-	});
 	preg_match_all("~^\t\t'([a-z-]+)' => '(.*?)',~m", file_get_contents(__DIR__ . "/adminer/include/lang.inc.php"), $matches);
 	$names = array_combine($matches[1], $matches[2]);
+	$order = array_flip($matches[1]);
+	uksort($stats, function ($a, $b) use ($stats, $order) {
+		// more machine translations with the same number of reviewed means fewer missing, a machine translation is better than none; the last ties are broken by the order in langs()
+		return array($stats[$b][0], $stats[$b][1], $stats[$b][2], $order[$a]) <=> array($stats[$a][0], $stats[$a][1], $stats[$a][2], $order[$b]);
+	});
 	$total = count($messages_all);
 	$s = "| | Language | Reviewed | To review | Missing | Plugins | |\n|---|---|--:|--:|--:|--:|---|\n";
 	foreach ($stats as $lang => list($reviewed, $machine, $plugins)) {
