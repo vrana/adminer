@@ -156,9 +156,6 @@ input.required {
 td.nowrap {
     white-space: pre;
 }
-.wrap td {
-    white-space: normal;
-}
 .error {
     color: red;
     background: #fee;

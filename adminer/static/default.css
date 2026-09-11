@@ -59,7 +59,6 @@ input.required, input.maxlength, textarea.maxlength { box-shadow: 1px 1px 1px re
 .column { position: absolute; background: var(--lit); padding: .27em 0 .33em; padding-inline-end: 1ex; margin-top: -.37em; border-width: 1px; border-inline-start-width: 0; border-radius: 0 8px 8px 0; }
 th:not(:hover) .column { display: none; }
 .nowrap td, .nowrap th, td.nowrap, p.nowrap { white-space: pre; }
-.wrap td { white-space: normal; }
 .error { color: red; background: #fee; }
 .error b { background: var(--bg); font-weight: normal; }
 .error pre code { background: var(--bg); }

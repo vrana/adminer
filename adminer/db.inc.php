@@ -95,7 +95,7 @@ if (adminer()->homepage()) {
 			}
 			echo "<div class='scrollable'>\n";
 			echo "<table class='nowrap checkable odds'" . on('click', 'tableClick') . on('dblclick', 'tableClick') . ">\n";
-			echo '<thead><tr class="wrap">';
+			echo '<thead><tr>';
 			echo '<td class="hover"><input id="check-all" type="checkbox" class="jsonly" title="' . lang('All') . '"' . on('click', 'formCheck', '^(tables|views)\[') . '>';
 			// without $order, the tables are sorted by name, except in SQLite which puts the sqlite_ tables last
 			echo '<th' . (!$order && JUSH != 'sqlite' ? " aria-sort='ascending'" : '') . '><a href="' . h(substr($me, 0, -1)) . '">' . lang('Table') . '</a>';
