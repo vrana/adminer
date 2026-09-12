@@ -4,7 +4,7 @@ namespace Adminer;
 $TABLE = $_GET["table"];
 $fields = fields($TABLE);
 if (!$fields) {
-	$error = adminer()->error() ?: lang('No tables.');
+	$error = adminer()->error();
 }
 $table_status = table_status1($TABLE);
 $name = adminer()->tableName($table_status);
@@ -13,7 +13,10 @@ $error = $error ?: h($table_status["Error"]); // the servers return an error ins
 page_header(
 	($fields && is_view($table_status) ? $table_status['Engine'] == 'materialized view' ? lang('Materialized view') : lang('View') : lang('Table'))
 		. ": " . ($name != "" ? $name : h($TABLE)),
-	$error
+	$error,
+	array(),
+	"",
+	!$fields
 );
 
 $rights = array();

@@ -252,7 +252,7 @@ if (is_ajax()) {
 	page_headers();
 	ob_start();
 } else {
-	page_header(lang('Select') . ": $table_name", $error);
+	page_header(lang('Select') . ": $table_name", $error, array(), "", (!$fields && support("table")));
 }
 
 $set = null;
@@ -274,7 +274,7 @@ if (isset($rights["insert"]) || !support("table")) {
 adminer()->selectLinks($table_status, $set);
 
 if (!$columns && support("table")) {
-	echo "<p class='error'>" . lang('Unable to select the table') . ($fields ? "." : ": " . adminer()->error()) . "\n";
+	echo "<p class='error'>" . lang('Unable to select the table') . ".\n";
 } else {
 	echo "<form action='' id='form'>\n";
 	echo "<div hidden>";
