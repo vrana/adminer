@@ -223,24 +223,27 @@ abstract class SqlDriver {
 	}
 
 	/** Begin transaction
-	* @return Result|bool
+	* @return bool
 	*/
 	function begin() {
-		return queries("BEGIN");
+		remember_query("BEGIN");
+		return $this->conn->begin();
 	}
 
 	/** Commit transaction
-	* @return Result|bool
+	* @return bool
 	*/
 	function commit() {
-		return queries("COMMIT");
+		remember_query("COMMIT");
+		return $this->conn->commit();
 	}
 
 	/** Rollback transaction
-	* @return Result|bool
+	* @return bool
 	*/
 	function rollback() {
-		return queries("ROLLBACK");
+		remember_query("ROLLBACK");
+		return $this->conn->rollback();
 	}
 
 	/** Return query with a timeout

@@ -22,6 +22,7 @@
 - MS SQL: Fix the length of a varchar(max) column
 - MS SQL: Fix the default value written with the 'N' prefix
 - MS SQL PDO: Prefix Unicode strings with 'N'
+- MS SQL, Oracle: Fix transactions, e.g. a failed import or modification of more rows
 - Oracle: The driver is no longer beta
 - Oracle: Use schemas as databases instead of tablespaces (bug SF-204, SF-212, SF-238)
 - Oracle: Create and drop databases (bug SF-246)
@@ -33,6 +34,7 @@
 - Oracle: Fix the default value displayed with the quotes around it
 ### Plugins
 - Driver plugins: Result::fetch_field() reports the type name in native_type instead of the MySQL number in type and charsetnr
+- Driver plugins: Db::begin(), commit() and rollback() to use the transaction API of the extension
 - Method manifest() to customize or disable the web app manifest
 - Method verifyLoginToken() to accept the login form of another website
 - Method explain() to customize EXPLAIN in SQL command

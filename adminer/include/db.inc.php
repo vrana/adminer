@@ -60,4 +60,19 @@ abstract class SqlDb {
 	function inTransaction(): bool {
 		return false;
 	}
+
+	/** Begin transaction, the extensions with a transaction API use it */
+	function begin(): bool {
+		return !!$this->query("BEGIN");
+	}
+
+	/** Commit transaction */
+	function commit(): bool {
+		return !!$this->query("COMMIT");
+	}
+
+	/** Rollback transaction, it is called also without a transaction */
+	function rollback(): bool {
+		return !!$this->query("ROLLBACK");
+	}
 }

@@ -616,15 +616,22 @@ class Queries {
 	static float $start = 0;
 }
 
+/** Remember query to print it by queries_redirect()
+* @param string $query end with ';' to use DELIMITER
+*/
+function remember_query(string $query): void {
+	if (!Queries::$start) {
+		Queries::$start = microtime(true);
+	}
+	Queries::$queries[] = (driver()->delimiter != ';' ? $query : (preg_match('~;$~', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query) . ";");
+}
+
 /** Execute and remember query
 * @param string $query end with ';' to use DELIMITER
 * @return Result|bool
 */
 function queries(string $query) {
-	if (!Queries::$start) {
-		Queries::$start = microtime(true);
-	}
-	Queries::$queries[] = (driver()->delimiter != ';' ? $query : (preg_match('~;$~', $query) ? "DELIMITER ;;\n$query;\nDELIMITER " : $query) . ";");
+	remember_query($query);
 	return connection()->query($query);
 }
 

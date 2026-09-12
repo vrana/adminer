@@ -15,7 +15,7 @@ if (isset($_GET["mssql"])) {
 	if (extension_loaded("sqlsrv") && $_GET["ext"] != "pdo") {
 		class Db extends SqlDb {
 			public $extension = "sqlsrv";
-			private $link, $result, $warnings;
+			private $link, $result, $warnings, $transaction = false;
 
 			private function get_error(): void {
 				$this->error = "";
@@ -116,6 +116,36 @@ if (isset($_GET["mssql"])) {
 					$return[] = $warning["message"];
 				}
 				return $return;
+			}
+
+			function inTransaction(): bool {
+				return $this->transaction;
+			}
+
+			function begin(): bool {
+				$this->transaction = sqlsrv_begin_transaction($this->link); // BEGIN TRANSACTION sent as a separate query is rolled back at the end of its batch under MARS enabled by default
+				if (!$this->transaction) {
+					$this->get_error();
+				}
+				return $this->transaction;
+			}
+
+			function commit(): bool {
+				if ($this->transaction && !sqlsrv_commit($this->link)) { // the API refuses to commit a transaction not started by it
+					$this->get_error();
+					return false;
+				}
+				$this->transaction = false;
+				return true;
+			}
+
+			function rollback(): bool {
+				if ($this->transaction && !sqlsrv_rollback($this->link)) {
+					$this->get_error();
+					return false;
+				}
+				$this->transaction = false;
+				return true;
 			}
 		}
 
@@ -371,7 +401,8 @@ if (isset($_GET["mssql"])) {
 		}
 
 		function begin() {
-			return queries("BEGIN TRANSACTION");
+			remember_query("BEGIN TRANSACTION");
+			return $this->conn->begin();
 		}
 
 		function convertSearch(string $idf, array $val, array $field): string {

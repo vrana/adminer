@@ -16,7 +16,7 @@ if (isset($_GET["oracle"])) {
 	if (extension_loaded("oci8") && $_GET["ext"] != "pdo") {
 		class Db extends SqlDb {
 			public $extension = "oci8";
-			private $link;
+			private $link, $transaction = false;
 
 			function _error($errno, $error) {
 				if (ini_bool("html_errors")) {
@@ -54,7 +54,7 @@ if (isset($_GET["oracle"])) {
 					return false;
 				}
 				set_error_handler(array($this, '_error'));
-				$return = @oci_execute($result);
+				$return = @oci_execute($result, ($this->transaction ? OCI_NO_AUTO_COMMIT : OCI_COMMIT_ON_SUCCESS));
 				restore_error_handler();
 				if ($return) {
 					if (oci_num_fields($result)) {
@@ -68,6 +68,34 @@ if (isset($_GET["oracle"])) {
 
 			function timeout(int $ms): bool {
 				return function_exists('oci_set_call_timeout') && oci_set_call_timeout($this->link, $ms); // available since PHP 7.2.13
+			}
+
+			function inTransaction(): bool {
+				return $this->transaction;
+			}
+
+			function begin(): bool {
+				$this->transaction = true; // the first command starts the transaction, oci_execute() only must not commit it
+				return true;
+			}
+
+			function commit(): bool {
+				return $this->end_transaction(@oci_commit($this->link));
+			}
+
+			function rollback(): bool {
+				return $this->end_transaction(@oci_rollback($this->link)); // succeeds also without a transaction
+			}
+
+			/** Store the error of commit or rollback */
+			private function end_transaction(bool $return): bool {
+				$this->transaction = false; // a failed commit rolls the transaction back
+				if (!$return) {
+					$error = oci_error($this->link);
+					$this->errno = $error["code"];
+					$this->error = $error["message"];
+				}
+				return $return;
 			}
 		}
 
@@ -171,7 +199,7 @@ if (isset($_GET["oracle"])) {
 		//! support empty $set in insert()
 
 		function begin() {
-			return true; // automatic start
+			return $this->conn->begin(); // there is no command starting a transaction to print
 		}
 
 		function convertSearch(string $idf, array $val, array $field): string {
