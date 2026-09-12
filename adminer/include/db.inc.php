@@ -4,7 +4,7 @@ namespace Adminer;
 // this could be interface when "Db extends \mysqli" can have compatible type declarations (PHP 7)
 // interfaces can include properties only since PHP 8.4
 abstract class SqlDb {
-	/** @var Db */ static $instance;
+	/** @var ?Db */ static $instance;
 	/** @var bool */ static $untrusted = false; // queries contain a fragment sent by the user, drivers should not allow multiple commands and modifying data in them
 
 	/** @var string */ public $extension; // extension name

@@ -5,7 +5,7 @@ namespace Adminer;
 
 /** Default Adminer plugin; it should call methods via adminer()->f() instead of $this->f() to give chance to other plugins */
 class Adminer {
-	/** @var Adminer|Plugins */ static $instance;
+	/** @var Adminer|Plugins|null */ static $instance;
 	/** @visibility protected(set) */ public string $error = ''; // HTML
 
 	/** Name in title and navigation

@@ -29,7 +29,7 @@ if (isset($_GET["mssql"])) {
 			function attach(array $server, string $username, string $password): string {
 				sqlsrv_configure("WarningsReturnAsErrors", 0); // a message from the server would stop sqlsrv_next_result(), e.g. between the result sets of sp_helpdb
 				$connection_info = array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8");
-				if (isset($_GET["sql"]) && self::$instance === null) {
+				if (isset($_GET["sql"]) && !self::$instance) {
 					$connection_info["MultipleActiveResultSets"] = false; // MARS rolls back BEGIN TRANSACTION after each command, other pages and explain() need it
 				}
 				$ssl = adminer()->connectSsl();
@@ -263,7 +263,7 @@ if (isset($_GET["mssql"])) {
 				function attach(array $server, string $username, string $password): string {
 					$port = $server["port"];
 					$dsn = "sqlsrv:Server=$server[host]" . ($port ? ",$port" : "")
-						. (isset($_GET["sql"]) && self::$instance === null ? ";MultipleActiveResultSets=0" : ""); // the same as in SQLSRV
+						. (isset($_GET["sql"]) && !self::$instance ? ";MultipleActiveResultSets=0" : ""); // the same as in SQLSRV
 					$ssl = adminer()->connectSsl();
 					foreach (array("Encrypt", "TrustServerCertificate") as $key) {
 						if (isset($ssl[$key])) {

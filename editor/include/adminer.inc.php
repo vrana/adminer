@@ -2,7 +2,7 @@
 namespace Adminer;
 
 class Adminer {
-	/** @var Adminer|Plugins */ static $instance;
+	/** @var Adminer|Plugins|null */ static $instance;
 	/** @visibility protected(set) */ public string $error = ''; // HTML
 	/** @var array<string, string[]|string> */ private array $values = array(); // [table => options or one description]
 
