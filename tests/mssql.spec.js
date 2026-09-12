@@ -408,6 +408,7 @@ test('Procedures', async () => {
 	await button(page, 'Save').click(); // CREATE OR ALTER, the routine is not renamed
 	await expect(page.locator('body')).toContainText('Routine has been altered.');
 	await link(page, 'Alter').click();
+	await expect(page.locator('[name="definition"]')).toHaveValue('SELECT @interpret_name AS name; SET @albums = @interpret_name;');
 	await page.locator('[name="drop"]').click();
 	await expect(page.locator('body')).toContainText('Routine has been dropped.');
 });

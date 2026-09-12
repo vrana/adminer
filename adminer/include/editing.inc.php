@@ -448,7 +448,7 @@ function create_trigger(string $on, array $row): string {
 	return "CREATE TRIGGER "
 		. idf_escape($row["Trigger"])
 		. (JUSH == "mssql" ? $on . $timing_event : $timing_event . $on)
-		. rtrim(" $row[Type]\n$row[Statement]", ";")
+		. preg_replace('~[\s;]+$~', '', " $row[Type]\n$row[Statement]")
 		. ";"
 	;
 }
@@ -510,7 +510,7 @@ function create_routine($routine, array $row): string {
 		}
 	}
 	$language = $row["language"];
-	$definition = rtrim($row["definition"], ";");
+	$definition = preg_replace('~[\s;]+$~', '', $row["definition"]);
 	$dollar_quote = (JUSH == "pgsql" || ($language && $language != "sql")); // PostgreSQL quotes the body in all languages, MySQL only in the external ones
 	$parameters = ($set ? implode(",", $set) . "\n" : "");
 	return "CREATE$definer $routine "
