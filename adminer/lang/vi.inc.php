@@ -342,6 +342,7 @@ Lang::$translations = array(
 	'Connecting to privileged ports is not allowed.' => 'Không được phép kết nối đến các cổng đặc quyền.', // Claude Fable 5
 	'There is a space in the entered password, which might be the cause.' => 'Có một dấu cách trong mật khẩu đã nhập, đó có thể là nguyên nhân.', // Claude Fable 5
 	'If you did not send this request from Adminer, close this page.' => 'Nếu bạn không gửi yêu cầu này từ Adminer thì hãy đóng trang này.', // Claude Fable 5
+	'Not found.' => 'Không tìm thấy.', // Claude Opus 5
 	'Loaded plugins' => 'Các plugin đã nạp', // Claude Fable 5
 	'screenshot' => 'ảnh chụp màn hình', // Claude Fable 5
 	'You are offline.' => 'Bạn đang ngoại tuyến.', // Claude Fable 5

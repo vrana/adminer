@@ -310,6 +310,7 @@ Lang::$translations = array(
 	'Connecting to privileged ports is not allowed.' => 'Forbindelse til privilegerede porte er ikke tilladt.', // Claude Fable 5
 	'There is a space in the entered password, which might be the cause.' => 'Der er et mellemrum i det indtastede kodeord, hvilket kan være årsagen.', // Claude Fable 5
 	'If you did not send this request from Adminer, close this page.' => 'Hvis du ikke har sendt denne forespørgsel fra Adminer, så luk denne side.', // Claude Fable 5
+	'Not found.' => 'Ikke fundet.', // Claude Opus 5
 	'Size' => 'Størrelse', // Claude Fable 5
 	'Compute' => 'Beregn', // Claude Fable 5
 	'Loaded plugins' => 'Indlæste plugins', // Claude Fable 5

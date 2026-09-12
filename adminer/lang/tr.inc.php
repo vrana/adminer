@@ -19,6 +19,7 @@ Lang::$translations = array(
 	'Language' => 'Dil',
 	'Invalid CSRF token. Submit the form again.' => 'Geçersiz (CSRF) jetonu. Formu tekrar yolla.',
 	'If you did not send this request from Adminer, close this page.' => 'Bu isteği Adminer\'den göndermediyseniz bu sayfayı kapatın.',
+	'Not found.' => 'Bulunamadı.', // Claude Opus 5
 	'No extension' => 'Uzantı yok',
 	'None of the supported PHP extensions (%s) are available.' => 'Desteklenen PHP eklentilerinden (%s) hiçbiri mevcut değil.',
 	'Connecting to privileged ports is not allowed.' => 'Ayrıcalıklı bağlantı noktalarına bağlanmaya izin verilmiyor.',

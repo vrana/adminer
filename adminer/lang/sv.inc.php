@@ -30,6 +30,7 @@ Lang::$translations = array(
 	'Language' => 'Språk',
 	'Invalid CSRF token. Submit the form again.' => 'Ogiltig CSRF-token. Skicka formuläret igen.',
 	'If you did not send this request from Adminer, close this page.' => 'Om du inte skickade en förfrågan från Adminer så kan du stänga den här sidan.',
+	'Not found.' => 'Hittades inte.', // Claude Opus 5
 	'No extension' => 'Inget tillägg',
 	'None of the supported PHP extensions (%s) are available.' => 'Inga av de PHP-tilläggen som stöds (%s) är tillgängliga.',
 	'Connecting to privileged ports is not allowed.' => 'Anslutning till privilegierade portar är inte tillåtet.',

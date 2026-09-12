@@ -313,6 +313,7 @@ Lang::$translations = array(
 	'Connecting to privileged ports is not allowed.' => '권한이 필요한 포트로의 연결은 허용되지 않습니다.', // Claude Fable 5
 	'There is a space in the entered password, which might be the cause.' => '입력한 비밀번호에 공백이 있는데, 이것이 원인일 수 있습니다.', // Claude Fable 5
 	'If you did not send this request from Adminer, close this page.' => '이 요청을 Adminer에서 보낸 것이 아니라면 이 페이지를 닫으세요.', // Claude Fable 5
+	'Not found.' => '찾을 수 없습니다.', // Claude Opus 5
 	'Loaded plugins' => '불러온 플러그인', // Claude Fable 5
 	'screenshot' => '스크린샷', // Claude Fable 5
 	'Increase %s.' => '%s 값을 늘리세요.', // Claude Fable 5

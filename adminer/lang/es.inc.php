@@ -294,6 +294,7 @@ Lang::$translations = array(
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Use el <a%2$s>plugin</a> %1$s si Adminer se ejecuta detrás de un proxy inverso.',
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Password maestro expirado. <a href="https://www.adminer.org/en/extension/"%s>Implemente</a> %s metodo para hacerlo permanente.',
 	'If you did not send this request from Adminer, close this page.' => 'Si no envió esta solicitud desde Adminer, cierre esta página.',
+	'Not found.' => 'No encontrado.', // Claude Opus 5
 	'Connecting to privileged ports is not allowed.' => 'Conexiones a puertos privilegiados no son permitidas.',
 	'Disable %s or enable the %s or %s extension.' => 'Desactivar %s o activar %s o %s extensiones.',
 	'The action will be performed after successful login with the same credentials.' => 'La operacion sera ejecutada despues de ingresar nuevamente con las mismas credenciales.',

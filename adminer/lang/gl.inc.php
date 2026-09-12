@@ -281,6 +281,7 @@ Lang::$translations = array(
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Use o <a%2$s>plugin</a> %1$s se Adminer se executa detrás dun proxy inverso.', // Claude Opus 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'O contrasinal principal caducou. <a href="https://www.adminer.org/en/extension/"%s>Implementa</a> o método %s para facelo permanente.',
 	'If you did not send this request from Adminer, close this page.' => 'Se non enviaches esta petición dende o Adminer entón pecha esta páxina.',
+	'Not found.' => 'Non atopado.', // Claude Opus 5
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Podes subir un ficheiro SQL de gran tamaño vía FTP e importalo dende o servidor.',
 	'Size' => 'Tamaño',
 	'Compute' => 'Calcular',

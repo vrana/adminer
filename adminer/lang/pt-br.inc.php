@@ -304,6 +304,7 @@ Lang::$translations = array(
 	'Connecting to privileged ports is not allowed.' => 'Não é permitido conectar a portas privilegiadas.', // Claude Fable 5
 	'There is a space in the entered password, which might be the cause.' => 'Há um espaço na senha digitada que pode ser a causa.', // Claude Fable 5
 	'If you did not send this request from Adminer, close this page.' => 'Se você não enviou esta requisição pelo Adminer, feche esta página.', // Claude Fable 5
+	'Not found.' => 'Não encontrado.', // Claude Opus 5
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Você pode enviar um arquivo SQL grande via FTP e importá-lo do servidor.', // Claude Fable 5
 	'Size' => 'Tamanho', // Claude Fable 5
 	'Compute' => 'Calcular', // Claude Fable 5

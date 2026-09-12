@@ -339,6 +339,7 @@ Lang::$translations = array(
 	'Connecting to privileged ports is not allowed.' => 'Koneksi ke port istimewa tidak diizinkan.', // Claude Fable 5
 	'There is a space in the entered password, which might be the cause.' => 'Ada spasi pada sandi yang dimasukkan yang mungkin menjadi penyebabnya.', // Claude Fable 5
 	'If you did not send this request from Adminer, close this page.' => 'Jika Anda tidak mengirim permintaan ini dari Adminer, tutup halaman ini.', // Claude Fable 5
+	'Not found.' => 'Tidak ditemukan.', // Claude Opus 5
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Anda dapat mengunggah berkas SQL besar melalui FTP dan mengimpornya dari server.', // Claude Fable 5
 	'Size' => 'Ukuran', // Claude Fable 5
 	'Compute' => 'Hitung', // Claude Fable 5

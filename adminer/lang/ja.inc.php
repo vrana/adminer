@@ -97,6 +97,7 @@ Lang::$translations = array(
 	'Unable to select the table' => 'テーブルを選択できません',
 	'Invalid CSRF token. Submit the form again.' => '不正なCSRFトークンです。フォームを再送信してください。',
 	'If you did not send this request from Adminer, close this page.' => 'Adminerからのリクエストでない場合はこのページを閉じてください。',
+	'Not found.' => '見つかりません。', // Claude Opus 5
 	'Comment' => 'コメント',
 	'Default values' => '既定値',
 	'%d byte(s)' => '%d バイト',

@@ -30,6 +30,7 @@ Lang::$translations = array(
 	'Language' => '语言',
 	'Invalid CSRF token. Submit the form again.' => '无效 CSRF 令牌。请重新发送表单。',
 	'If you did not send this request from Adminer, close this page.' => '如果您并没有从Adminer发送请求，请关闭此页面。',
+	'Not found.' => '未找到。', // Claude Opus 5
 	'No extension' => '没有扩展',
 	'None of the supported PHP extensions (%s) are available.' => '没有支持的 PHP 扩展可用（%s）。',
 	'Connecting to privileged ports is not allowed.' => '不允许连接到特权端口。',

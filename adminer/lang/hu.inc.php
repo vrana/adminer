@@ -305,6 +305,7 @@ Lang::$translations = array(
 	'Connecting to privileged ports is not allowed.' => 'A privilegizált portokhoz való csatlakozás nem engedélyezett.', // Claude Fable 5
 	'There is a space in the entered password, which might be the cause.' => 'A megadott jelszóban szóköz található, ami az ok lehet.', // Claude Fable 5
 	'If you did not send this request from Adminer, close this page.' => 'Ha nem az Adminerből küldte ezt a kérést, zárja be ezt az oldalt.', // Claude Fable 5
+	'Not found.' => 'Nem található.', // Claude Opus 5
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Nagy SQL fájlt FTP-n keresztül is feltölthet, és a szerverről importálhatja.', // Claude Fable 5
 	'Size' => 'Méret', // Claude Fable 5
 	'Compute' => 'Kiszámítás', // Claude Fable 5

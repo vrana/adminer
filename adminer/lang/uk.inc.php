@@ -323,6 +323,7 @@ Lang::$translations = array(
 	'Connecting to privileged ports is not allowed.' => 'Підключення до привілейованих портів заборонено.',
 	'There is a space in the entered password, which might be the cause.' => 'У вхідному паролі є пробіл, який може бути причиною.',
 	'If you did not send this request from Adminer, close this page.' => 'Якщо ви не посилали цей запит з Adminer, закрийте цю сторінку.',
+	'Not found.' => 'Не знайдено.', // Claude Opus 5
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Ви можете завантажити великий файл SQL через FTP та імпортувати його з сервера.',
 	'Size' => 'Розмір',
 	'Compute' => 'Обчислити',

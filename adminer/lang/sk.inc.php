@@ -291,6 +291,7 @@ Lang::$translations = array(
 	'Connecting to privileged ports is not allowed.' => 'Pripojenie k privilegovaným portom nie je povolené.',
 	'There is a space in the entered password, which might be the cause.' => 'V zadanom hesle je medzera, ktorá môže byť príčinou.',
 	'If you did not send this request from Adminer, close this page.' => 'Pokiaľ ste tento požiadavok neodoslali z Adminera, zatvorte túto stránku.',
+	'Not found.' => 'Nenájdené.', // Claude Opus 5
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Veľký SQL súbor môžete nahrať pomocou FTP a importovať ho zo servera.',
 	'Size' => 'Veľkosť',
 	'Compute' => 'Spočítať',

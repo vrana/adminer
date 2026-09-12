@@ -305,6 +305,7 @@ Lang::$translations = array(
 	'Connecting to privileged ports is not allowed.' => 'Conectarea la porturi privilegiate nu este permisă.', // Claude Fable 5
 	'There is a space in the entered password, which might be the cause.' => 'Există un spațiu în parola introdusă, care ar putea fi cauza.', // Claude Fable 5
 	'If you did not send this request from Adminer, close this page.' => 'Dacă nu ați trimis această cerere din Adminer, închideți această pagină.', // Claude Fable 5
+	'Not found.' => 'Nu a fost găsit.', // Claude Opus 5
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Puteți încărca un fișier SQL mare prin FTP și să îl importați de pe server.', // Claude Fable 5
 	'Size' => 'Mărime', // Claude Fable 5
 	'Compute' => 'Calculează', // Claude Fable 5

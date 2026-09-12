@@ -18,6 +18,7 @@ Lang::$translations = array(
 	'Language' => 'Език',
 	'Invalid CSRF token. Submit the form again.' => 'Невалиден шифроващ ключ. Попълнете и изпратете формуляра отново.',
 	'If you did not send this request from Adminer, close this page.' => 'Ако не сте изпратили тази заявка през Adminer, затворете тази страница.',
+	'Not found.' => 'Не е намерено.', // Claude Opus 5
 	'No extension' => 'Няма разширение',
 	'None of the supported PHP extensions (%s) are available.' => 'Никое от поддържаните PHP разширения (%s) не е налично.',
 	'Session support must be enabled.' => 'Поддръжката на сесии трябва да е разрешена.',

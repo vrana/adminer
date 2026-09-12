@@ -32,6 +32,7 @@ Lang::$translations = array(
 	'Language' => 'Język',
 	'Invalid CSRF token. Submit the form again.' => 'Nieprawidłowy token CSRF. Spróbuj wysłać formularz ponownie.',
 	'If you did not send this request from Adminer, close this page.' => 'Jeżeli nie wywołałeś tej strony z Adminera, zamknij to okno.',
+	'Not found.' => 'Nie znaleziono.', // Claude Opus 5
 	'No extension' => 'Brak rozszerzenia',
 	'None of the supported PHP extensions (%s) are available.' => 'Żadne z rozszerzeń PHP umożliwiających połączenie się z bazą danych (%s) nie jest dostępne.',
 	'Connecting to privileged ports is not allowed.' => 'Łączenie do portów uprzywilejowanych jest niedozwolone.',

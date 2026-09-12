@@ -288,6 +288,7 @@ Lang::$translations = array(
 	'Limit rows' => 'Limiter les lignes',
 	'Default value' => 'Valeur par défaut',
 	'If you did not send this request from Adminer, close this page.' => 'Si vous n\'avez pas envoyé cette requête depuis Adminer, alors fermez cette page.',
+	'Not found.' => 'Introuvable.', // Claude Opus 5
 	'You are offline.' => 'Vous êtes hors ligne.',
 	'Menu' => 'Menu',
 	'Database management in a single PHP file' => 'Gestion de base de données dans un seul fichier PHP',

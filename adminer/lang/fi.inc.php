@@ -18,6 +18,7 @@ Lang::$translations = array(
 	'Language' => 'Kieli',
 	'Invalid CSRF token. Submit the form again.' => 'Virheellinen CSRF-vastamerkki. Lähetä lomake uudelleen.',
 	'If you did not send this request from Adminer, close this page.' => 'Jollet lähettänyt tämä pyyntö Adminerista, sulje tämä sivu.',
+	'Not found.' => 'Ei löytynyt.', // Claude Opus 5
 	'No extension' => 'Ei laajennusta',
 	'None of the supported PHP extensions (%s) are available.' => 'Mitään tuetuista PHP-laajennuksista (%s) ei ole käytettävissä.',
 	'Session support must be enabled.' => 'Istuntotuki on oltava päällä.',

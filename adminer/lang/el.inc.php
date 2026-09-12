@@ -18,6 +18,7 @@ Lang::$translations = array(
 	'Language' => 'Γλώσσα',
 	'Invalid CSRF token. Submit the form again.' => 'Άκυρο κουπόνι CSRF. Στείλτε τη φόρμα ξανά.',
 	'If you did not send this request from Adminer, close this page.' => 'Αν δε στείλατε αυτό το αίτημα από το Adminer, τότε κλείστε αυτή τη σελίδα.',
+	'Not found.' => 'Δεν βρέθηκε.', // Claude Opus 5
 	'No extension' => 'Καμία Επέκταση',
 	'None of the supported PHP extensions (%s) are available.' => 'Καμία από τις υποστηριζόμενες επεκτάσεις PHP (%s) δεν είναι διαθέσιμη.',
 	'Session support must be enabled.' => 'Πρέπει να είναι ενεργοποιημένη η υποστήριξη συνεδριών.',

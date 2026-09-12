@@ -336,6 +336,7 @@ Lang::$translations = array(
 	'Connecting to privileged ports is not allowed.' => 'Spajanje na privilegirane portove nije dopušteno.',
 	'There is a space in the entered password, which might be the cause.' => 'U unesenoj lozinci postoji razmak koji bi mogao biti uzrok problema.',
 	'If you did not send this request from Adminer, close this page.' => 'Ako ovaj zahtjev niste poslali iz Adminera, zatvorite ovu stranicu.',
+	'Not found.' => 'Nije pronađeno.', // Claude Opus 5
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Veliku SQL datoteku možete prenijeti putem FTP-a i uvesti je s poslužitelja.',
 	'Size' => 'Veličina',
 	'Compute' => 'Izračunaj',

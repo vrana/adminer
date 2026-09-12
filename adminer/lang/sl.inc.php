@@ -335,6 +335,7 @@ Lang::$translations = array(
 	'Connecting to privileged ports is not allowed.' => 'Povezovanje na privilegirana vrata ni dovoljeno.', // Claude Fable 5
 	'There is a space in the entered password, which might be the cause.' => 'V vnesenem geslu je presledek, kar je lahko vzrok.', // Claude Fable 5
 	'If you did not send this request from Adminer, close this page.' => 'Če te zahteve niste poslali iz Adminerja, zaprite to stran.', // Claude Fable 5
+	'Not found.' => 'Ni najdeno.', // Claude Opus 5
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Veliko datoteko SQL lahko naložite prek FTP-ja in jo uvozite s strežnika.', // Claude Fable 5
 	'Size' => 'Velikost', // Claude Fable 5
 	'Compute' => 'Izračunaj', // Claude Fable 5

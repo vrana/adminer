@@ -310,6 +310,7 @@ Lang::$translations = array(
 	'Connecting to privileged ports is not allowed.' => 'Tilkobling til privilegerte porter er ikke tillatt.',
 	'There is a space in the entered password, which might be the cause.' => 'Det er et mellomrom i det angitte passordet, noe som kan være årsaken.',
 	'If you did not send this request from Adminer, close this page.' => 'Hvis du ikke sendte denne forespørselen fra Adminer, lukk denne siden.',
+	'Not found.' => 'Ikke funnet.', // Claude Opus 5
 	'Size' => 'Størrelse',
 	'Compute' => 'Beregn',
 	'Loaded plugins' => 'Innlastede plugins',
