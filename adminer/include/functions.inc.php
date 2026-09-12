@@ -738,6 +738,11 @@ function is_utf8(?string $val): bool {
 	return (preg_match('~~u', $val) && !preg_match('~[\0-\x8\xB\xC\xE-\x1F]~', $val));
 }
 
+/** Get the number of characters in a UTF-8 string */
+function utf8_length(string $val): int {
+	return strlen(preg_replace('~[\x80-\xBF]~', '', $val)); // the continuation bytes of a multi-byte character
+}
+
 /** Format decimal number
 * @param float|numeric-string $val
 */

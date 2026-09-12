@@ -52,7 +52,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function quote(string $string): string {
-				$unicode = strlen($string) != strlen(utf8_decode($string));
+				$unicode = strlen($string) != utf8_length($string);
 				return ($unicode ? "N" : "") . "'" . str_replace("'", "''", $string) . "'";
 			}
 
