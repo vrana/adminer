@@ -13,7 +13,8 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 		}
 	}
 
-	$old_id = routine_id($PROCEDURE, routine($_GET["procedure"], $routine));
+	$old_routine = routine($_GET["procedure"], $routine);
+	$old_id = ($old_routine ? routine_id($PROCEDURE, $old_routine) : ""); // there's no old routine when creating one
 	$new_id = routine_id($row["name"], $row);
 	$create = create_routine($routine, $row);
 	$location = substr(ME, 0, -1);

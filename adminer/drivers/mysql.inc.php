@@ -1061,7 +1061,7 @@ ORDER BY ORDINAL_POSITION");
 				"collation" => $row["COLLATION_NAME"],
 			);
 		}
-		$return = (array) connection()->query("SELECT
+		$return = connection()->query("SELECT
 	ROUTINE_COMMENT comment,
 	ROUTINE_DEFINITION definition,
 	LOWER(EXTERNAL_LANGUAGE) language,
