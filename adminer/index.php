@@ -13,6 +13,12 @@ namespace Adminer;
 if (!defined('Adminer\DIR')) { // the tests define it before including this file
 	define('Adminer\DIR', "./"); // path to the Adminer sources, the Editor has them in a sibling directory
 }
+if (isset($_GET["status"])) {
+	$_GET["variables"] = $_GET["status"];
+}
+if (isset($_GET["import"])) {
+	$_GET["sql"] = $_GET["import"];
+}
 include DIR . "include/bootstrap.inc.php";
 include "./include/tmpfile.inc.php";
 

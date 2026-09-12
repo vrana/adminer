@@ -1,13 +1,6 @@
 <?php
 namespace Adminer;
 
-if (isset($_GET["status"])) {
-	$_GET["variables"] = $_GET["status"];
-}
-if (isset($_GET["import"])) {
-	$_GET["sql"] = $_GET["import"];
-}
-
 if (DB == "" && isset($_GET["ns"])) {	// menu form for changing DB preserves ns which leads to this combination
 	redirect(remove_from_uri('ns'));
 }
