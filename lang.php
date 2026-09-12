@@ -150,7 +150,7 @@ function update_stats($messages_all, $plugins_messages) {
 	$s = "| | Language | Reviewed | To review | Missing | Plugins | |\n|---|---|--:|--:|--:|--:|---|\n";
 	foreach ($stats as $lang => list($reviewed, $machine, $plugins)) {
 		$percent = floor(100 * $reviewed / $total); // not rounded to not display 100% with anything left
-		$s .= "| " . ($percent >= 90 ? "🟩" : ($percent >= 85 ? "🟨" : ($percent >= 80 ? "🟧" : "🟥")))
+		$s .= "| " . ($percent >= 95 ? "🟩" : ($percent >= 85 ? "🟨" : "🟥"))
 			. " | [$names[$lang]]($lang.inc.php) | $percent% | " . ($machine ?: "") . " | " . (($total - $reviewed - $machine) ?: "")
 			. " | " . floor(100 * $plugins / $plugins_total) . "% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/$lang.inc.php.atom) |\n";
 	}
