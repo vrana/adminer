@@ -2,6 +2,7 @@
 - Press the button highlighted as default when sending the form by Ctrl+Enter
 - Display the message on the screen when AJAX-saving
 - Install Adminer as an application
+- Report an object which doesn't exist instead of printing an empty form
 - Select: Handle columns with a name looking like a function, e.g. NOW()
 - Select: Don't link COUNT(*) if a function is applied to a grouped column
 - SQL command: Modify the values in the result by Ctrl+click (bug #1333)

@@ -791,6 +791,9 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 			get_val("SELECT sql FROM sqlite_master WHERE type = 'trigger' AND name = " . q($name)),
 			$match
 		);
+		if (!$match) {
+			return array();
+		}
 		$of = $match[3];
 		return array(
 			"Timing" => strtoupper($match[1]),

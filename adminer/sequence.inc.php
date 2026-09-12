@@ -18,7 +18,18 @@ if ($_POST && !$error) {
 	}
 }
 
-page_header($SEQUENCE != "" ? lang('Alter sequence') . ": " . h($SEQUENCE) : lang('Create sequence'), $error);
+// not information_schema.sequences which omits the sequences of identity columns, the same as in db.inc.php
+$not_found = (!$_POST && $SEQUENCE != ""
+	&& !get_val("SELECT relname FROM pg_class WHERE relkind = 'S' AND relnamespace = " . driver()->nsOid . " AND relname = " . q($SEQUENCE))
+);
+
+page_header(
+	($SEQUENCE != "" ? lang('Alter sequence') . ": " . h($SEQUENCE) : lang('Create sequence')),
+	$error,
+	array(),
+	"",
+	$not_found
+);
 
 if (!$row) {
 	$row["name"] = $SEQUENCE;

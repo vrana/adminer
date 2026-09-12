@@ -35,11 +35,19 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 	}
 }
 
+$not_found = false;
+if (!$_POST && $name != "") {
+	$foreign_keys = foreign_keys($TABLE);
+	$row = idx($foreign_keys, $name, array());
+	$not_found = !$row;
+}
+
 page_header(
 	($name != "" ? lang('Alter foreign key') : lang('Create foreign key')),
 	$error,
 	array("table" => $TABLE),
-	h($name != "" ? $name : $TABLE)
+	h($name != "" ? $name : $TABLE),
+	$not_found
 );
 
 if ($_POST) {
@@ -50,8 +58,6 @@ if ($_POST) {
 		$row["source"][] = "";
 	}
 } elseif ($name != "") {
-	$foreign_keys = foreign_keys($TABLE);
-	$row = $foreign_keys[$name];
 	$row["source"][] = "";
 } else {
 	$row["table"] = $TABLE;

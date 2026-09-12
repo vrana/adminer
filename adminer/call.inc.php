@@ -2,10 +2,11 @@
 namespace Adminer;
 
 $PROCEDURE = ($_GET["name"] ?: $_GET["call"]);
-page_header(lang('Call') . ": " . h($PROCEDURE), $error);
-
 $routine_type = (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE");
 $routine = routine($_GET["call"], $routine_type);
+
+page_header(lang('Call') . ": " . h($PROCEDURE), $error, array(), "", !$routine);
+
 $in = array();
 $out = array();
 foreach ($routine["fields"] as $i => $field) {

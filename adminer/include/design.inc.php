@@ -5,8 +5,13 @@ namespace Adminer;
 * @param string $title used in title, breadcrumb and heading, should be HTML escaped
 * @param mixed $breadcrumb ["key" => "link", "key2" => ["link", "desc"]], null for nothing, false for driver only, true for driver and server
 * @param string $title2 used after colon in title and heading, should be HTML escaped
+* @param bool $not_found the object in the URL doesn't exist - print only the error and finish the page
 */
-function page_header(string $title, string $error = "", $breadcrumb = array(), string $title2 = ""): void {
+function page_header(string $title, string $error = "", $breadcrumb = array(), string $title2 = "", bool $not_found = false): void {
+	if ($not_found) {
+		header("HTTP/1.1 404 Not Found");
+		$error = ($error ?: lang('Not found.')); // the error of the driver is more specific
+	}
 	page_headers();
 	if (is_ajax() && $error) {
 		page_messages($error);
@@ -118,6 +123,10 @@ const urlSeparators = '" . js_escape(ini_get("arg_separator.input")) . "';");
 	// let the browser download the CSS and JS while we are running the queries for the page body
 	ob_flush();
 	flush();
+	if ($not_found) {
+		page_footer();
+		exit;
+	}
 }
 
 /** Print the script maintaining the service worker caching the static files */

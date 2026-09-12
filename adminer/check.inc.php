@@ -37,17 +37,20 @@ if ($row && !$error) {
 	}
 }
 
+$not_found = false;
+if (!$row) {
+	$checks = driver()->checkConstraints($TABLE);
+	$not_found = ($name != "" && !$checks[$name]);
+	$row = array("name" => $name, "clause" => $checks[$name]);
+}
+
 page_header(
 	($name != "" ? lang('Alter check') : lang('Create check')),
 	$error,
 	array("table" => $TABLE),
-	h($name != "" ? $name : $TABLE)
+	h($name != "" ? $name : $TABLE),
+	$not_found
 );
-
-if (!$row) {
-	$checks = driver()->checkConstraints($TABLE);
-	$row = array("name" => $name, "clause" => $checks[$name]);
-}
 ?>
 
 <form action="" method="post">

@@ -1005,7 +1005,10 @@ ORDER BY event_manipulation DESC") as $row
 FROM information_schema.routines r
 LEFT JOIN pg_catalog.pg_proc p ON p.oid::text = substring(r.specific_name, \'[0-9]+$\')
 WHERE r.routine_schema = current_schema() AND r.specific_name = ' . q($name)); // LEFT JOIN - the characteristics fall back to the defaults if the OID cannot be found
-		$return = idx($rows, 0, array());
+		if (!$rows) {
+			return array();
+		}
+		$return = $rows[0];
 		$return["options"] = array_intersect_key($return, $options);
 		$return["returns"] = array("type" => preg_replace('~^_(.*)~', '\1[]', "$return[type_udt_name]")); // _int4 - array of int4
 		$return["fields"] = get_rows("SELECT COALESCE(parameter_name, ordinal_position::text) AS field,

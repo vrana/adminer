@@ -426,7 +426,7 @@ ORDER BY aic.column_position", $connection2) as $row
 
 	function view(string $name): array {
 		$rows = get_rows('SELECT text "select" FROM ' . views_table("view_name, text") . ' WHERE view_name = ' . q($name));
-		return reset($rows);
+		return ($rows ? $rows[0] : array());
 	}
 
 	function collations(): array {

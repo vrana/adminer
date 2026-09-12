@@ -32,6 +32,7 @@ Lang::$translations = array(
 	'Language' => 'Jazyk',
 	'Invalid CSRF token. Submit the form again.' => 'Neplatný token CSRF. Odešlete formulář znovu.',
 	'If you did not send this request from Adminer, close this page.' => 'Pokud jste tento požadavek neposlali z Admineru, tak tuto stránku zavřete.',
+	'Not found.' => 'Nenalezeno.',
 	'No extension' => 'Žádné rozšíření',
 	'None of the supported PHP extensions (%s) are available.' => 'Není dostupné žádné z podporovaných PHP rozšíření (%s).',
 	'Connecting to privileged ports is not allowed.' => 'Připojování k privilegovaným portům není povoleno.',

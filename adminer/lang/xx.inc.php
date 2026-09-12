@@ -32,6 +32,7 @@ Lang::$translations = array(
 	'Language' => 'Xx',
 	'Invalid CSRF token. Submit the form again.' => 'Xx.',
 	'If you did not send this request from Adminer, close this page.' => 'Xx.',
+	'Not found.' => 'Xx.',
 	'No extension' => 'Xx',
 	'None of the supported PHP extensions (%s) are available.' => 'Xx (%s).', // %s contains the list of the extensions, e.g. 'mysqli, PDO_MySQL'
 	'Connecting to privileged ports is not allowed.' => 'Xx.',

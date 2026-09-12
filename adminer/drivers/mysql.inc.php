@@ -993,7 +993,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get information about trigger
 	* @param string $name trigger name
-	* @return Trigger
+	* @return Trigger empty if the trigger doesn't exist
 	*/
 	function trigger(string $name, string $table): array {
 		if ($name == "") {
@@ -1039,7 +1039,7 @@ if (!defined('Adminer\DRIVER')) {
 
 	/** Get information about stored routine
 	* @param 'FUNCTION'|'PROCEDURE' $type
-	* @return Routine
+	* @return Routine|array{} empty if the routine doesn't exist
 	*/
 	function routine(string $name, string $type): array {
 		$rows = get_rows("SELECT PARAMETER_NAME, DTD_IDENTIFIER, PARAMETER_MODE, COLLATION_NAME
@@ -1071,6 +1071,9 @@ ORDER BY ORDINAL_POSITION");
 	CONCAT('SQL SECURITY ', SECURITY_TYPE) security
 FROM information_schema.ROUTINES
 WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = " . q($name))->fetch_assoc(); // the aliases must not be reserved words, e.g. DETERMINISTIC is
+		if (!$return) {
+			return array();
+		}
 		$return['options'] = array(
 			"DEFINER" => $return['definer'], // empty for the logged user so that the routine can be created by anyone
 			"DETERMINISTIC" => $return['is_deterministic'],

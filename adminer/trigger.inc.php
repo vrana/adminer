@@ -4,7 +4,9 @@ namespace Adminer;
 $TABLE = $_GET["trigger"];
 $name = "$_GET[name]";
 $trigger_options = trigger_options();
-$row = trigger($name, $TABLE) + array("Trigger" => $TABLE . "_bi");
+$row = trigger($name, $TABLE);
+$not_found = ($name != "" && !$row);
+$row += array("Trigger" => $TABLE . "_bi");
 
 if ($_POST) {
 	if (!$error && in_array($_POST["Timing"], $trigger_options["Timing"]) && in_array($_POST["Event"], $trigger_options["Event"]) && in_array($_POST["Type"], $trigger_options["Type"])) {
@@ -35,7 +37,8 @@ page_header(
 	($name != "" ? lang('Alter trigger') : lang('Create trigger')),
 	$error,
 	array("table" => $TABLE),
-	h($name != "" ? $name : $TABLE)
+	h($name != "" ? $name : $TABLE),
+	$not_found
 );
 
 $trigger_change = on('change', 'triggerChange', "^" . preg_quote($TABLE, "/") . "_[ba][iud]$", $TABLE);

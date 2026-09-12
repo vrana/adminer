@@ -39,18 +39,20 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 	}
 }
 
+$not_found = false;
+if (!$_POST && $PROCEDURE != "") {
+	$row = routine($_GET["procedure"], $routine);
+	$not_found = !$row;
+	$row["name"] = $PROCEDURE;
+}
+
 page_header(($PROCEDURE != ""
 	? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . h($PROCEDURE)
 	: (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))
-), $error);
+), $error, array(), "", $not_found);
 
-if (!$_POST) {
-	if ($PROCEDURE == "") {
-		$row["language"] = "sql";
-	} else {
-		$row = routine($_GET["procedure"], $routine);
-		$row["name"] = $PROCEDURE;
-	}
+if (!$_POST && $PROCEDURE == "") {
+	$row["language"] = "sql";
 }
 
 $collations = (JUSH == "sql" ? flat_collations() : array()); // other drivers don't support collation in routine parameters

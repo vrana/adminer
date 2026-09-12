@@ -37,8 +37,10 @@ if ($_POST && !$error) {
 	}
 }
 
+$not_found = false;
 if (!$_POST && $TABLE != "") {
 	$row = view($TABLE);
+	$not_found = !$row["select"]; // an existing view always has a definition
 	$row["name"] = $TABLE;
 	$row["materialized"] = ($orig_type != "VIEW");
 	if (!$error) {
@@ -46,7 +48,13 @@ if (!$_POST && $TABLE != "") {
 	}
 }
 
-page_header(($TABLE != "" ? lang('Alter view') : lang('Create view')), $error, array("table" => $TABLE), h($TABLE));
+page_header(
+	($TABLE != "" ? lang('Alter view') : lang('Create view')),
+	$error,
+	array("table" => $TABLE),
+	h($TABLE),
+	$not_found
+);
 ?>
 
 <form action="" method="post">
