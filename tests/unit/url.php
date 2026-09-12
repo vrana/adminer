@@ -102,7 +102,9 @@ if (url_escape("&") !== "%26" || url_escape("\xC3\xA9") !== "%C3%A9") {
 
 // select.inc.php embeds the row identifier in the val[] parameter name
 // the name is escaped by bracket_escape() and then by the browser, PHP decodes it once and then parses the brackets
-$unique_idf = "&where[" . url_escape(bracket_escape("a=b[c]")) . "]=" . url_escape("x&y z");
+$unique_idf = "&where[" . url_escape(bracket_escape("a=b[c]")) . "]=" . url_escape("x&y z")
+	// a condition with a function is indexed, the column is a value there
+	. "&fun[0]=md5&col[0]=" . url_escape("a=b[c]") . "&val[0]=" . url_escape("x&y z");
 $idf = bracket_escape($unique_idf);
 parse_str(urlencode("val[$idf][col]") . "=3", $parsed);
 if (idx(idx(idx($parsed, "val"), $idf), "col") !== "3") {
@@ -111,6 +113,10 @@ if (idx(idx(idx($parsed, "val"), $idf), "col") !== "3") {
 parse_str(bracket_escape($idf, true), $parsed); // true - back; where_check() without a driver
 if (bracket_escape(key((array) idx($parsed, "where")), true) !== "a=b[c]" || first((array) idx($parsed, "where")) !== "x&y z") {
 	error("The row identifier doesn't convert back to a condition: " . json_encode($parsed));
+}
+// the column of an indexed condition is not escaped by bracket_escape() because it is a value
+if (idx(idx($parsed, "fun"), 0) !== "md5" || idx(idx($parsed, "col"), 0) !== "a=b[c]" || idx(idx($parsed, "val"), 0) !== "x&y z") {
+	error("The indexed condition doesn't convert back: " . json_encode($parsed));
 }
 
 // relative_uri() must escape ':' only in the path

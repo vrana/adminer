@@ -338,23 +338,27 @@ function unique_array(?array $row, array $indexes) {
 	}
 }
 
-/** Escape column key used in where() */
-function escape_key(string $key): string {
-	if (preg_match('(^([\w(]+)(' . str_replace("_", ".*", preg_quote(idf_escape("_"))) . ')([ \w)]+)$)', $key, $match)) { //! columns looking like functions
-		return $match[1] . idf_escape(idf_unescape($match[2])) . $match[3]; //! SQL injection
+/** Apply a function sent in the URL to a column identifier, ignore an unsupported function
+* @param string $column escaped column identifier
+* @param Field $field
+*/
+function where_function(?string $fun, string $column, array $field): string {
+	if ($fun == "md5") { // used for values too long for the URL
+		// PHP hashes the value in the connection charset
+		return "MD5(" . (is_blob($field) || JUSH != 'sql' || preg_match("~^utf8~", $field["collation"]) ? $column : "CONVERT($column USING " . charset(connection()) . ")") . ")";
 	}
-	return idf_escape($key);
+	return (in_array($fun, driver()->functions) || in_array($fun, driver()->grouping) ? apply_sql_function($fun, $column) : $column);
 }
 
 /** Create SQL condition from parsed query string
-* @param array{where:string[], null:list<string>} $where parsed query string
+* @param array{where:string[], null:list<string>, fun:string[], col:string[], val:string[]} $where parsed query string
 * @param Field[] $fields
 */
 function where(array $where, array $fields = array()): string {
 	$return = array();
 	foreach ((array) $where["where"] as $key => $val) {
 		$key = bracket_escape($key, true); // true - back
-		$column = escape_key($key);
+		$column = idf_escape($key);
 		$field = idx($fields, $key, array());
 		$field_type = $field["type"];
 		$is_binary = $field && (is_blob($field) || preg_match('~binary~', $field_type));
@@ -371,7 +375,14 @@ function where(array $where, array $fields = array()): string {
 		}
 	}
 	foreach ((array) $where["null"] as $key) {
-		$return[] = escape_key($key) . " IS NULL";
+		$return[] = idf_escape($key) . " IS NULL";
+	}
+	// a condition with a function is indexed, the same column can be selected with two functions
+	foreach ((array) $where["col"] as $i => $col) {
+		$val = idx($where["val"], $i); // null if the value is NULL, the function is applied to the column in both cases
+		$return[] = where_function(idx($where["fun"], $i), idf_escape($col), idx($fields, $col, array()))
+			. ($val !== null ? " = " . q($val) : " IS NULL")
+		;
 	}
 	return implode(" AND ", $return);
 }
@@ -381,21 +392,20 @@ function where(array $where, array $fields = array()): string {
 * @return array<string, bool> keys are column names
 * @uses $_GET["where"]
 * @uses $_GET["null"]
+* @uses $_GET["col"]
 */
 function where_columns(array $fields): array {
 	$return = array();
 	foreach ((array) $_GET["null"] as $key) {
 		$return[$key] = true;
 	}
-	foreach ((array) $_GET["where"] as $key => $val) {
-		$key = bracket_escape($key, true); // true - back
-		foreach ($fields as $name => $field) {
-			if ($key == $name || strpos($key, idf_escape($name)) !== false) { // e.g. MD5(`name`) is used for long values
-				$return[$name] = true;
-			}
-		}
+	foreach (array_keys((array) $_GET["where"]) as $key) {
+		$return[bracket_escape($key, true)] = true; // true - back
 	}
-	return $return;
+	foreach ((array) $_GET["col"] as $col) {
+		$return[$col] = true;
+	}
+	return array_intersect_key($return, $fields); // the URL can contain a non-existent column
 }
 
 /** Create SQL condition from query string
