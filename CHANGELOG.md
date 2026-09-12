@@ -22,6 +22,7 @@
 - MS SQL: Export: Create the schema by a new option
 - MS SQL: Fix exporting more schemas at once
 - MS SQL: Fix the length of a varchar(max) column
+- MS SQL: Fix the default value written with the 'N' prefix
 - MS SQL PDO: Prefix Unicode strings with 'N'
 - Oracle: The driver is no longer beta
 - Oracle: Use schemas as databases instead of tablespaces (bug SF-204, SF-212, SF-238)
