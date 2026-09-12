@@ -5,7 +5,7 @@ $PROCEDURE = ($_GET["name"] ?: $_GET["call"]);
 $routine_type = (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE");
 $routine = routine($_GET["call"], $routine_type);
 
-page_header(lang('Call') . ": " . h($PROCEDURE), $error, array(), "", !$routine);
+page_header(lang('Call') . ": " . h($PROCEDURE), $error, "#routines", "", !$routine);
 
 $in = array();
 $out = array();

@@ -3,7 +3,7 @@ namespace Adminer;
 
 /** Print HTML header
 * @param string $title used in title, breadcrumb and heading, should be HTML escaped
-* @param mixed $breadcrumb ["key" => "link", "key2" => ["link", "desc"]], null for nothing, false for driver only, true for driver and server
+* @param mixed $breadcrumb ["key" => "link", "key2" => ["link", "desc"]], "#section" of the database page, null for nothing, false for driver only, true for driver and server
 * @param string $title2 used after colon in title and heading, should be HTML escaped
 * @param bool $not_found the object in the URL doesn't exist - print only the error and finish the page
 */
@@ -92,12 +92,18 @@ const urlSeparators = '" . js_escape(ini_get("arg_separator.input")) . "';");
 			echo "$server\n";
 		} else {
 			echo "<a href='" . h($link . (DB != "" && support("single_db") ? "&db=" : "")) . "' accesskey='1' title='Alt+Shift+1'>$server</a> » ";
+			$section = "";
+			if (is_string($breadcrumb)) {
+				$section = $breadcrumb;
+				$breadcrumb = array();
+			}
 			if ($_GET["ns"] != "" || (DB != "" && is_array($breadcrumb))) {
-				echo '<a href="' . h($link . "&db=" . url_escape(DB) . (support("scheme") ? "&ns=" : "") . (support("single_table") ? "&select=" : "")) . '">' . h(DB) . '</a> » ';
+				$db_link = "$link&db=" . url_escape(DB) . (support("scheme") ? "&ns=" : "") . (support("single_table") ? "&select=" : "");
+				echo '<a href="' . h($db_link . ($_GET["ns"] == "" ? $section : "")) . '">' . h(DB) . '</a> » '; // with ns, the database link leads to the list of schemas
 			}
 			if (is_array($breadcrumb)) {
 				if ($_GET["ns"] != "") {
-					echo '<a href="' . h(substr(ME, 0, -1)) . '">' . h($_GET["ns"]) . '</a> » ';
+					echo '<a href="' . h(substr(ME, 0, -1) . $section) . '">' . h($_GET["ns"]) . '</a> » ';
 				}
 				foreach ($breadcrumb as $key => $val) {
 					$desc = (is_array($val) ? $val[1] : h($val));

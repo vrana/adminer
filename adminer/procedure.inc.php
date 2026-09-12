@@ -50,7 +50,7 @@ if (!$_POST && $PROCEDURE != "") {
 page_header(($PROCEDURE != ""
 	? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . h($PROCEDURE)
 	: (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))
-), $error, array(), "", $not_found);
+), $error, "#routines", "", $not_found);
 
 if (!$_POST && $PROCEDURE == "") {
 	$row["language"] = "sql";

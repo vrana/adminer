@@ -42,7 +42,7 @@ if (!$row && $EVENT != "") {
 page_header(
 	($EVENT != "" ? lang('Alter event') . ": " . h($EVENT) : lang('Create event')),
 	$error,
-	array(),
+	"#events",
 	"",
 	$not_found
 );

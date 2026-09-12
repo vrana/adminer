@@ -3,6 +3,7 @@
 - Display the message on the screen when AJAX-saving
 - Install Adminer as a web-application
 - Report an object which doesn't exist instead of printing an empty form
+- Link the database in the breadcrumb of a routine, sequence, type or event to its section
 - Select: Handle columns with a name looking like a function, e.g. NOW()
 - Select: Don't link COUNT(*) if a function is applied to a grouped column
 - SQL command: Modify the values in the result by Ctrl+click (bug #1333)

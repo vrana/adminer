@@ -26,7 +26,7 @@ $not_found = (!$_POST && $SEQUENCE != ""
 page_header(
 	($SEQUENCE != "" ? lang('Alter sequence') . ": " . h($SEQUENCE) : lang('Create sequence')),
 	$error,
-	array(),
+	"#sequences",
 	"",
 	$not_found
 );

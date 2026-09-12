@@ -91,7 +91,7 @@ if ($_POST && !$error) {
 page_header(
 	($TYPE != "" ? lang('Alter type') . ": " . h($TYPE) : lang('Create type')),
 	$error,
-	array(),
+	"#user-types",
 	"",
 	($type_id === false)
 );
