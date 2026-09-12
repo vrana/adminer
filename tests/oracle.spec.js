@@ -151,7 +151,7 @@ test('Clone', async () => {
 	await page.locator('[name="check[]"]').click();
 	await page.locator('[name="clone"]').click();
 	await page.locator('[name="fields[id]"]').fill('2');
-	await page.locator('[name="fields[title]"]').fill('Black and White');
+	await page.locator('[name="fields[title]"]').fill('Černobílá');
 	await button(page, 'Save').click();
 	await expect(page.locator('body')).toContainText('1 item has been affected.'); // the clone is INSERT ... SELECT
 });
@@ -160,12 +160,12 @@ test('Pagination', async () => {
 	// the offset is built by a rownum column which must not be printed
 	await goto(page, db + '&select=albums&order[0]=id&limit=1');
 	await expect(page.locator('body')).toContainText('Dangerous');
-	await expect(page.locator('body')).not.toContainText('Black and White');
+	await expect(page.locator('body')).not.toContainText('Černobílá');
 	await link(page, 'Load more data').click(); // appends the next page by AJAX
-	await expect(page.locator('body')).toContainText('Black and White');
+	await expect(page.locator('body')).toContainText('Černobílá');
 	await expect(page.locator('body')).not.toContainText('RNUM');
 	await goto(page, db + '&select=albums&order[0]=id&limit=1&page=1');
-	await expect(page.locator('body')).toContainText('Black and White');
+	await expect(page.locator('body')).toContainText('Černobílá');
 	await expect(page.locator('body')).not.toContainText('Dangerous');
 	await expect(page.locator('body')).not.toContainText('RNUM');
 });
@@ -179,7 +179,7 @@ test('Select', async () => {
 	await page.locator('[name="order[0]"]').selectOption({label: 'interpret'});
 	await button(page, 'Select').click();
 	await expect(page.locator('body')).toContainText('Dangerous');
-	await expect(page.locator('body')).not.toContainText('Black and White');
+	await expect(page.locator('body')).not.toContainText('Černobílá');
 });
 
 test('Explain', async () => {
