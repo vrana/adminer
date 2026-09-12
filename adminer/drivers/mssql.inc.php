@@ -504,7 +504,7 @@ WHERE c.object_id = " . q($table_id)) as $row
 		) {
 			$type = $row["type"];
 			$length = (preg_match("~char|binary~", $type)
-				? intval($row["max_length"]) / ($type[0] == 'n' ? 2 : 1)
+				? ($row["max_length"] == -1 ? "max" : intval($row["max_length"]) / ($type[0] == 'n' ? 2 : 1)) // -1 - varchar(max), the other types report it too
 				: ($type == "decimal"
 					? "$row[precision],$row[scale]"
 					: ($type == "vector" ? (intval($row["max_length"]) - 8) / 4 : "") // a dimension takes 4 bytes, the header 8

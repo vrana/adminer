@@ -238,6 +238,9 @@ function option_types(string $type, string $types): string {
 
 /** Filter length value including enums */
 function process_length(?string $length): string {
+	if (JUSH == "mssql" && preg_match('~^\s*\(?\s*max\s*\)?\s*$~i', $length)) {
+		return "(max)"; // the maximum length of varchar, nvarchar and varbinary
+	}
 	$enum_length = driver()->enumLength;
 	return (preg_match("~^\\s*\\(?\\s*$enum_length(?:\\s*,\\s*$enum_length)*+\\s*\\)?\\s*\$~", $length) && preg_match_all("~$enum_length~", $length, $matches)
 		? "(" . implode(",", $matches[0]) . ")"
