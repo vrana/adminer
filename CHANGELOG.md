@@ -42,6 +42,7 @@
 - Test Oracle
 - Distribute the tests in the release archive (bug #1332)
 - Show the review status of the translations in adminer/lang/README.md
+- Unregister the service worker in the development version served from the URL of a compiled version
 
 ## Adminer 6.0.2 (released 2026-09-07)
 - Verify all parts of the server name before connecting (GHSA-rwxg-xph9-82cj, regression from 5.5.1)

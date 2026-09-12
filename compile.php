@@ -296,8 +296,9 @@ $file = replace_re('~(if \(!defined\(\'Adminer\\\\DIR\'\)\) \{.*\n\t)?define\(\'
 $dedent = function ($match) {
 	return preg_replace('~^\t~m', '', "$match[2]"); // the other replacements match the indentation of the source
 };
-$file = replace_re('~^(\t*)if \(!defined\(\'Adminer\\\\DIR\'\)\) \{[^\n]*\n(.*\n)\1\}\n~msU', $dedent, $file);
-$file = replace_re('~^(\t*)if \(defined\(\'Adminer\\\\DIR\'\)\) \{[^\n]*\n.*\n\1\}(?: else \{[^\n]*\n(.*\n)\1\})?\n~msU', $dedent, $file);
+// a build may contain only one kind of the conditions, the check below guarantees that none survives
+$file = preg_replace_callback('~^(\t*)if \(!defined\(\'Adminer\\\\DIR\'\)\) \{[^\n]*\n(.*\n)\1\}\n~msU', $dedent, $file);
+$file = preg_replace_callback('~^(\t*)if \(defined\(\'Adminer\\\\DIR\'\)\) \{[^\n]*\n.*\n\1\}(?: else \{[^\n]*\n(.*\n)\1\})?\n~msU', $dedent, $file);
 if (strpos($file, "Adminer\\DIR") !== false) {
 	not_found("Adminer\\DIR"); // the condition must not survive compilation
 }

@@ -131,7 +131,11 @@ const urlSeparators = '" . js_escape(ini_get("arg_separator.input")) . "';");
 
 /** Print the script maintaining the service worker caching the static files */
 function service_worker(): void {
-	$code = (has_passwords() // the worker belongs to all connections at once, so it is removed only after logging out of the last one; the login form must not register it back
+	$register = has_passwords(); // the worker belongs to all connections at once, so it is removed only after logging out of the last one; the login form must not register it back
+	if (defined('Adminer\DIR')) { // the development version leaves the static files to the web server, it only removes the worker registered by a compiled version at the same URL
+		$register = false;
+	}
+	$code = ($register
 		? "navigator.serviceWorker.register('" . js_escape(preg_replace('~\?.*~', '', ME) . "?file=worker.js&version=" . VERSION) . "', {scope: location.pathname}).catch(() => {});"
 		: "navigator.serviceWorker.getRegistration().then(registration => registration && registration.unregister());
 	caches.keys().then(keys => keys.forEach(key => key.startsWith('adminer-') && caches.delete(key)));"

@@ -85,9 +85,7 @@ class Adminer {
 	}
 
 	function serviceWorker(): void {
-		if (!defined('Adminer\DIR')) {
-			service_worker();
-		}
+		service_worker();
 	}
 
 	/** @return mixed[] */

@@ -118,9 +118,7 @@ class Adminer {
 
 	/** Print the script maintaining the service worker */
 	function serviceWorker(): void {
-		if (!defined('Adminer\DIR')) { // only the compiled version serves the files itself, the development version leaves them to the web server
-			service_worker();
-		}
+		service_worker();
 	}
 
 	/** Get the web app manifest allowing to install Adminer as an application, empty array to not offer it

@@ -461,7 +461,7 @@ Adminer’s source code is divided into a manageable number of reasonably small 
 For simpler deployment, these files are bundled into a single `*.php` file by inlining `include` files.
 Static files (`*.js`, `*.css`, images) are also inlined and served via the `?file=` route.
 They are sent with a year-long expiration but some hosts forbid caching anything their interface generates, so a service worker ([`worker.js`](/adminer/static/worker.js)) keeps them in the Cache Storage, which those headers don't reach.
-It is registered only by the compiled version and unregistered after the last logout.
+It is registered only by the compiled version and unregistered after the last logout, the development version unregisters it on every page in case a compiled version was served from the same URL.
 
 Includes in Adminer start with `./` to bypass `include_path`, which is unrelated to compilation.
 
