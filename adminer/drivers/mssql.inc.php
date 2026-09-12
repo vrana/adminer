@@ -52,8 +52,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function quote(string $string): string {
-				$unicode = strlen($string) != utf8_length($string);
-				return ($unicode ? "N" : "") . "'" . str_replace("'", "''", $string) . "'";
+				return unicode_prefix($string) . "'" . str_replace("'", "''", $string) . "'";
 			}
 
 			function select_db(string $database) {
@@ -187,6 +186,10 @@ if (isset($_GET["mssql"])) {
 
 	} else {
 		abstract class MssqlDb extends PdoDb {
+			function quote(string $string): string {
+				return unicode_prefix($string) . parent::quote($string);
+			}
+
 			function select_db(string $database) {
 				// database selection is separated from the connection so dbname in DSN can't be used
 				return $this->query(use_sql($database));
@@ -407,6 +410,11 @@ if (isset($_GET["mssql"])) {
 	}
 
 
+
+	/** Get the N prefix of a string literal holding a non-ASCII character */
+	function unicode_prefix(string $string): string {
+		return (strlen($string) != utf8_length($string) ? "N" : ""); // the prefix is not used always because comparing a varchar column with an nvarchar value prevents using an index
+	}
 
 	function idf_escape(string $idf): string {
 		return "[" . str_replace("]", "]]", $idf) . "]";
