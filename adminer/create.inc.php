@@ -34,12 +34,11 @@ foreach ($referencable_primary as $table_name => $field) {
 
 $orig_fields = array();
 $table_status = array();
+$not_found = false;
 if ($TABLE != "") {
 	$orig_fields = fields($TABLE);
 	$table_status = table_status1($TABLE);
-	if (count($table_status) < 2) { // there's only the Name field
-		$error = lang('No tables.');
-	}
+	$not_found = (count($table_status) < 2); // there's only the Name field
 }
 $alterable = ($TABLE == "" || driver()->supportsAlterTable($table_status)); // e.g. a virtual table can be only renamed and dropped
 
@@ -149,7 +148,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 	}
 }
 
-page_header(($TABLE != "" ? lang('Alter table') : lang('Create table')), $error, array("table" => $TABLE), h($TABLE));
+page_header(($TABLE != "" ? lang('Alter table') : lang('Create table')), $error, array("table" => $TABLE), h($TABLE), $not_found);
 
 if (!$_POST) {
 	$types = driver()->types();
