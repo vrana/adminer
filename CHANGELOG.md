@@ -1,26 +1,23 @@
 ## Adminer dev
-- Press the button highlighted as default when sending the form by Ctrl+Enter
+- Send the form by the default button by Ctrl+Enter
 - Display the message on the screen when AJAX-saving
-- Install Adminer as an application
+- Install Adminer as a web-application
 - Report an object which doesn't exist instead of printing an empty form
 - Select: Handle columns with a name looking like a function, e.g. NOW()
 - Select: Don't link COUNT(*) if a function is applied to a grouped column
 - SQL command: Modify the values in the result by Ctrl+click (bug #1333)
-- SQL command: Fix the edit links of a table joined more than once, only the first alias was linked and a composite key could mix the aliases
+- SQL command: Fix the edit links of a table joined more than once
 - SQL command: Display the values in the result according to their type in all drivers
+- Export: Allow exporting schema or qualify all names by it
+- Export: Fix exporting objects of more schemas at once
 - MySQL: Remove the definer of an exported view or event only if it is the current account, the same as in routines
 - MySQL: Display the account matched by the connection as the logged user
-- MySQL, MS SQL: Fix a fatal error when opening a trigger which doesn't exist
 - PostgreSQL: Display and edit PostGIS geometries as EWKT (bug SF-615)
 - PostgreSQL: Do not link the types created by extensions from the table structure
-- PostgreSQL: Export: Qualify all names by the schema or set the schema by a new option
-- PostgreSQL: Export check constraints when exporting more schemas at once
 - PostgreSQL: Display the installed extensions on the database page
 - CockroachDB: Export: Omit WITH (oids = false)
-- CockroachDB: Treat crdb_internal and pg_extension as read-only system schemas, e.g. do not export them
+- CockroachDB: Treat crdb_internal and pg_extension as read-only system schemas
 - MS SQL: Display, create, alter, drop and call procedures and functions
-- MS SQL: Export: Create the schema by a new option
-- MS SQL: Fix exporting more schemas at once
 - MS SQL: Fix the length of a varchar(max) column
 - MS SQL: Fix the default value written with the 'N' prefix
 - MS SQL PDO: Prefix Unicode strings with 'N'
@@ -30,7 +27,7 @@
 - Oracle: Display, create, alter and drop triggers (bug SF-385)
 - Oracle: Display and edit geometries as well-known text instead of empty (bug SF-610, SF-615)
 - Oracle: Accept and display dates in the ISO format (bug SF-770)
-- Oracle: Fix foreign keys over multiple columns, only the last column was displayed
+- Oracle: Fix foreign keys over multiple columns
 - Oracle: Fix creating a column with a default value
 - Oracle: Fix the default value displayed with the quotes around it
 ### Plugins
