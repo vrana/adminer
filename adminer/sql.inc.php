@@ -318,7 +318,7 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 			$in_transaction = connection()->inTransaction(); // ROLLBACK doesn't report whether it did anything
 			driver()->rollback(); // an unfinished transaction would break the following queries (e.g. in the menu)
 			if ($in_transaction) {
-				echo "<pre><code class='jush-" . JUSH . "'>ROLLBACK -- Adminer</code></pre>\n"; // print it also with only_errors - the data was discarded
+				echo "<pre><code class='jush-" . JUSH . "'>ROLLBACK" . (JUSH == "mssql" ? " TRANSACTION" : "") . " -- Adminer</code></pre>\n"; // print even with only_errors - the data was discarded
 			}
 			if ($_POST["only_errors"]) {
 				echo "<p class='message'>" . lang('%d query(ies) executed OK.', $commands - count($errors));

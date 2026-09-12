@@ -465,6 +465,11 @@ test('SQL command', async () => {
 	await goto(page, '/adminer/?mssql=&username=ODBC&sql=SELECT+122%2B1');
 	await button(page, 'Execute').click();
 	await expect(page.locator('body')).toContainText('123');
+	await goto(page, '/adminer/?mssql=&username=ODBC&sql=');
+	await setValue(page, 'query', 'CREATE TABLE #t (a int);\nBEGIN TRANSACTION;\nINSERT INTO #t VALUES (1);\nROLLBACK;\nSELECT COUNT(*) FROM #t;\nBEGIN TRANSACTION;\nINSERT INTO #t VALUES (2);');
+	await button(page, 'Execute').click();
+	await expect(page.locator('#sql-5 + form td')).toHaveText('0'); // the transaction survives between the commands
+	await expect(page.locator('body')).toContainText('ROLLBACK TRANSACTION -- Adminer'); // the unfinished transaction
 });
 
 test('Logout', async () => {

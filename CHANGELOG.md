@@ -23,6 +23,7 @@
 - MS SQL: Fix the default value written with the 'N' prefix
 - MS SQL PDO: Prefix Unicode strings with 'N'
 - MS SQL, Oracle: Fix transactions, e.g. a failed import or modification of more rows
+- MS SQL: SQL command: Keep a transaction between the commands
 - Oracle: The driver is no longer beta
 - Oracle: Use schemas as databases instead of tablespaces (bug SF-204, SF-212, SF-238)
 - Oracle: Create and drop databases (bug SF-246)

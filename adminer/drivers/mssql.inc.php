@@ -29,6 +29,9 @@ if (isset($_GET["mssql"])) {
 			function attach(array $server, string $username, string $password): string {
 				sqlsrv_configure("WarningsReturnAsErrors", 0); // a message from the server would stop sqlsrv_next_result(), e.g. between the result sets of sp_helpdb
 				$connection_info = array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8");
+				if (isset($_GET["sql"]) && self::$instance === null) {
+					$connection_info["MultipleActiveResultSets"] = false; // MARS rolls back BEGIN TRANSACTION after each command, other pages and explain() need it
+				}
 				$ssl = adminer()->connectSsl();
 				if (isset($ssl["Encrypt"])) {
 					$connection_info["Encrypt"] = $ssl["Encrypt"];
@@ -119,7 +122,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function inTransaction(): bool {
-				return $this->transaction;
+				return $this->transaction || (isset($_GET["sql"]) && get_val("SELECT @@TRANCOUNT", 0, $this)); // the extension doesn't know about BEGIN TRANSACTION typed in SQL command
 			}
 
 			function begin(): bool {
@@ -140,6 +143,9 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function rollback(): bool {
+				if (!$this->transaction && isset($_GET["sql"])) {
+					return !!$this->query("IF @@TRANCOUNT > 0 ROLLBACK"); // BEGIN TRANSACTION typed in SQL command
+				}
 				if ($this->transaction && !sqlsrv_rollback($this->link)) {
 					$this->get_error();
 					return false;
@@ -256,7 +262,8 @@ if (isset($_GET["mssql"])) {
 
 				function attach(array $server, string $username, string $password): string {
 					$port = $server["port"];
-					$dsn = "sqlsrv:Server=$server[host]" . ($port ? ",$port" : "");
+					$dsn = "sqlsrv:Server=$server[host]" . ($port ? ",$port" : "")
+						. (isset($_GET["sql"]) && self::$instance === null ? ";MultipleActiveResultSets=0" : ""); // the same as in SQLSRV
 					$ssl = adminer()->connectSsl();
 					foreach (array("Encrypt", "TrustServerCertificate") as $key) {
 						if (isset($ssl[$key])) {
@@ -265,6 +272,15 @@ if (isset($_GET["mssql"])) {
 					}
 					// without SQLSRV_ATTR_DIRECT_QUERY, the queries run through sp_prepexec, which reverts SET IDENTITY_INSERT after each of them
 					return $this->dsn($dsn, $username, $password, array(\PDO::SQLSRV_ATTR_DIRECT_QUERY => true));
+				}
+
+				function inTransaction(): bool {
+					// PDO knows only the transactions started by it, not BEGIN TRANSACTION typed in SQL command
+					return parent::inTransaction() || (isset($_GET["sql"]) && get_val("SELECT @@TRANCOUNT", 0, $this));
+				}
+
+				function rollback(): bool {
+					return (parent::inTransaction() || !isset($_GET["sql"]) ? parent::rollback() : !!$this->query("IF @@TRANCOUNT > 0 ROLLBACK"));
 				}
 			}
 
