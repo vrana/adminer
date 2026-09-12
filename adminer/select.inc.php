@@ -274,7 +274,7 @@ if (isset($rights["insert"]) || !support("table")) {
 adminer()->selectLinks($table_status, $set);
 
 if (!$columns && support("table")) {
-	echo "<p class='error'>" . lang('Unable to select the table') . ".\n";
+	echo "<p class='error'>" . lang('Unable to select the table.') . "\n";
 } else {
 	echo "<form action='' id='form'>\n";
 	echo "<div hidden>";
