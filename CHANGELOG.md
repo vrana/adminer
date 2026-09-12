@@ -9,6 +9,7 @@
 - SQL command: Display the values in the result according to their type in all drivers
 - MySQL: Remove the definer of an exported view or event only if it is the current account, the same as in routines
 - MySQL: Display the account matched by the connection as the logged user
+- MySQL, MS SQL: Fix a fatal error when opening a trigger which doesn't exist
 - PostgreSQL: Display and edit PostGIS geometries as EWKT (bug SF-615)
 - PostgreSQL: Do not link the types created by extensions from the table structure
 - PostgreSQL: Export: Qualify all names by the schema or set the schema by a new option

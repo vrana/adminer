@@ -1004,7 +1004,7 @@ if (!defined('Adminer\DRIVER')) {
 		if ($return) {
 			list($return["Event"], $return["Of"]) = trigger_event($return);
 		}
-		return $return;
+		return ($return ?: array());
 	}
 
 	/** Get defined triggers

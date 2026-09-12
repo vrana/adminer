@@ -752,7 +752,7 @@ WHERE s.xtype = 'TR' AND s.name = " . q($name)
 		if ($return) {
 			$return["Statement"] = preg_replace('~^.+\s+AS\s+~isU', '', $return["text"]); //! identifiers, comments
 		}
-		return $return;
+		return ($return ?: array());
 	}
 
 	function triggers(string $table): array {
