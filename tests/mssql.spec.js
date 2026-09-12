@@ -142,6 +142,8 @@ test('Invalid object', async () => {
 	await expect(page.locator('body')).toContainText('Not found.');
 	await goto(page, '/adminer/?mssql=&username=ODBC&db=adminer_test&ns=dbo&procedure=invalid');
 	await expect(page.locator('body')).toContainText('Not found.');
+	await goto(page, '/adminer/?mssql=&username=ODBC&db=adminer_test&ns=invalid');
+	await expect(page.locator('body')).toContainText('Not found.');
 });
 
 test('Schema', async () => {

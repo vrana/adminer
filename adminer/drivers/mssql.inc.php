@@ -912,7 +912,8 @@ ORDER BY o.name");
 
 	function set_schema(string $schema, ?Db $connection2 = null): bool {
 		$_GET["ns"] = $schema;
-		return true; // ALTER USER is permanent
+		// the default schema is not changed because ALTER USER is permanent, the schema is only checked
+		return !!get_val("SELECT 1 FROM sys.schemas WHERE name = " . q($schema), 0, $connection2);
 	}
 
 	function create_sql(string $table, ?bool $auto_increment, string $style): string {

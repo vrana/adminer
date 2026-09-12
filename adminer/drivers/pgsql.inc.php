@@ -1177,7 +1177,8 @@ FROM pg_range WHERE rngtypid = $id"));
 
 	function set_schema(string $schema, ?Db $connection2 = null): bool {
 		$_GET["ns"] = $schema;
-		$return = connection($connection2)->query("SET search_path TO " . idf_escape($schema));
+		// SET search_path accepts a schema which doesn't exist
+		$return = get_val("SELECT set_config('search_path', " . q(idf_escape($schema)) . ", false) FROM pg_namespace WHERE nspname = " . q($schema), 0, $connection2);
 		driver()->setUserTypes(types(true)); //! get types from current_schemas('t')
 		return !!$return;
 	}

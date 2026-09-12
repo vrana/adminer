@@ -16,6 +16,7 @@
 - PostgreSQL: Display and edit PostGIS geometries as EWKT (bug SF-615)
 - PostgreSQL: Do not link the types created by extensions from the table structure
 - PostgreSQL: Display the installed extensions on the database page
+- PostgreSQL, MS SQL: Report a schema which doesn't exist
 - CockroachDB: Export: Omit WITH (oids = false)
 - CockroachDB: Treat crdb_internal and pg_extension as read-only system schemas
 - MS SQL: Display, create, alter, drop and call procedures and functions

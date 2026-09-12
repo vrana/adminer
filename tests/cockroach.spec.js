@@ -150,6 +150,8 @@ test('Invalid object', async () => {
 	await expect(page.locator('body')).toContainText('Not found.');
 	await goto(page, '/adminer/?pgsql=localhost:26257&username=ODBC&db=adminer_test&ns=public&procedure=invalid');
 	await expect(page.locator('body')).toContainText('Not found.');
+	await goto(page, '/adminer/?pgsql=localhost:26257&username=ODBC&db=adminer_test&ns=invalid');
+	await expect(page.locator('body')).toContainText('Not found.');
 });
 
 test('Schema', async () => {
