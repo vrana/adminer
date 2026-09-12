@@ -140,6 +140,8 @@ test('Invalid object', async () => {
 	await expect(page.locator('body')).toContainText('Not found.');
 	await goto(page, '/adminer/?mssql=&username=ODBC&db=adminer_test&ns=dbo&foreign=albums&name=invalid');
 	await expect(page.locator('body')).toContainText('Not found.');
+	await goto(page, '/adminer/?mssql=&username=ODBC&db=adminer_test&ns=dbo&procedure=invalid');
+	await expect(page.locator('body')).toContainText('Not found.');
 });
 
 test('Schema', async () => {
@@ -379,6 +381,35 @@ test('Export', async () => {
 		button(page, 'Export').click(),
 	]);
 	expect(download.suggestedFilename()).toBe('adminer_test.tar');
+});
+
+test('Procedures', async () => {
+	await goto(page, '/adminer/?mssql=&username=ODBC&db=adminer_test&ns=dbo&procedure=');
+	await page.locator('[name="add[0]"]').click();
+	await page.locator('[name="fields[1][field]"]').fill('interpret_name');
+	await page.locator('[name="fields[1][type]"]').selectOption({label: 'varchar'});
+	await page.locator('[name="fields[1][length]"]').fill('50');
+	await page.locator('[name="fields[1.1][field]"]').fill('albums');
+	await page.locator('[name="fields[1.1][type]"]').selectOption({label: 'varchar'});
+	await page.locator('[name="fields[1.1][length]"]').fill('max');
+	await page.locator('[name="fields[1.1][inout]"]').selectOption({label: 'OUTPUT'});
+	await setValue(page, 'definition', 'SELECT @interpret_name AS name; SET @albums = @interpret_name');
+	await page.locator('[name="name"]').fill('insert_album');
+	await button(page, 'Save').click();
+	await expect(page.locator('body')).toContainText('Routine has been created.');
+	await link(page, 'insert_album').click();
+	await page.locator('[name="fields[interpret_name]"]').fill('Michael Jackson');
+	await button(page, 'Call').click();
+	await expect(page.locator('body')).toContainText('Michael Jackson');
+	await link(page, 'dbo').click();
+	await link(page, 'Alter').click();
+	await expect(page.locator('[name="fields[2][inout]"]')).toHaveValue('OUTPUT'); // T-SQL has no keyword for an input parameter
+	await expect(page.locator('[name="fields[2][length]"]')).toHaveValue('max');
+	await button(page, 'Save').click(); // CREATE OR ALTER, the routine is not renamed
+	await expect(page.locator('body')).toContainText('Routine has been altered.');
+	await link(page, 'Alter').click();
+	await page.locator('[name="drop"]').click();
+	await expect(page.locator('body')).toContainText('Routine has been dropped.');
 });
 
 test('Generated columns', async () => {

@@ -21,7 +21,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 	$message = lang('Routine has been altered.');
 
 	if (!$_POST["drop"] && $old_id == $new_id && connection()->flavor != "mysql") {
-		query_redirect(substr_replace($create, ' OR REPLACE', 6, 0), $location, $message); // 6 - strlen('CREATE')
+		query_redirect(substr_replace($create, (JUSH == "mssql" ? ' OR ALTER' : ' OR REPLACE'), 6, 0), $location, $message); // 6 - strlen('CREATE')
 	} else {
 		$temp_name = "adminer_" . uniqid();
 		drop_create(
@@ -71,6 +71,7 @@ echo ($collations ? "<datalist id='collations'>" . optionlist($collations) . "</
 	'sql' => "create-procedure.html", // the same page documents CREATE FUNCTION
 	'mariadb' => ($routine == "FUNCTION" ? "create-function/" : "create-procedure/"),
 	'pgsql' => ($routine == "FUNCTION" ? "sql-createfunction.html" : "sql-createprocedure.html"),
+	'mssql' => "t-sql/statements/create-" . ($routine == "FUNCTION" ? "function" : "procedure") . "-transact-sql",
 ), "?"); ?>
 <div class="scrollable">
 <table id="edit-fields" class="nowrap">

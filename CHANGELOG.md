@@ -18,6 +18,7 @@
 - PostgreSQL: Display the installed extensions on the database page
 - CockroachDB: Export: Omit WITH (oids = false)
 - CockroachDB: Treat crdb_internal and pg_extension as read-only system schemas, e.g. do not export them
+- MS SQL: Display, create, alter, drop and call procedures and functions
 - MS SQL: Export: Create the schema by a new option
 - MS SQL: Fix exporting more schemas at once
 - MS SQL: Fix the length of a varchar(max) column

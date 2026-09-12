@@ -13,7 +13,7 @@ foreach ($routine["fields"] as $i => $field) {
 	if (substr($field["inout"], -3) == "OUT" && JUSH == 'sql') {
 		$out[$i] = "@" . idf_escape($field["field"]) . " AS " . idf_escape($field["field"]);
 	}
-	if (!$field["inout"] || substr($field["inout"], 0, 2) == "IN") {
+	if (!$field["inout"] || preg_match('~^(IN|OUTPUT)~', $field["inout"])) { // T-SQL accepts a constant for an OUTPUT parameter, it only doesn't return the value
 		$in[] = $i;
 	}
 }
@@ -38,7 +38,11 @@ if (!$error && $_POST) {
 		}
 	}
 
-	$query = (isset($_GET["callf"]) ? "SELECT " : "CALL ") . (idx($routine["returns"], "type") == "record" ? "* FROM " : "") . table($PROCEDURE) . "(" . implode(", ", $call) . ")";
+	$args = implode(", ", $call);
+	$query = (isset($_GET["callf"]) || JUSH != "mssql"
+		? (isset($_GET["callf"]) ? "SELECT " : "CALL ") . (idx($routine["returns"], "type") == "record" ? "* FROM " : "") . table($PROCEDURE) . "($args)"
+		: "EXEC " . table($PROCEDURE) . ($args != "" ? " $args" : "") // T-SQL calls a procedure by EXEC without parentheses
+	);
 	$start = microtime(true);
 	$result = connection()->multi_query($query);
 	$affected = connection()->affected_rows; // getting warnings overwrites this

@@ -487,10 +487,12 @@ function create_routine($routine, array $row): string {
 	ksort($fields); // enforce fields order
 	foreach ($fields as $field) {
 		if ($field["field"] != "") {
-			$set[] = "\n  " . (preg_match("~^(" . driver()->inout . ")\$~", $field["inout"]) ? "$field[inout] " : "")
-				. idf_escape($field["field"])
-				. process_type($field, routine_collate($field["collation"]))
-			;
+			$inout = (preg_match("~^(" . driver()->inout . ")\$~", $field["inout"]) ? $field["inout"] : "");
+			// T-SQL prefixes the parameters by @ which can't be escaped (SQL injection), it puts OUTPUT after the type and accepts no COLLATE
+			$set[] = "\n  " . (JUSH == "mssql"
+				? "@$field[field]" . process_type($field) . ($inout ? " $inout" : "")
+				: ($inout ? "$inout " : "") . idf_escape($field["field"]) . process_type($field, routine_collate($field["collation"]))
+			);
 		}
 	}
 	$definer = "";
@@ -510,13 +512,15 @@ function create_routine($routine, array $row): string {
 	$language = $row["language"];
 	$definition = rtrim($row["definition"], ";");
 	$dollar_quote = (JUSH == "pgsql" || ($language && $language != "sql")); // PostgreSQL quotes the body in all languages, MySQL only in the external ones
+	$parameters = ($set ? implode(",", $set) . "\n" : "");
 	return "CREATE$definer $routine "
 		. table(trim($row["name"]))
-		. " (" . ($set ? implode(",", $set) . "\n" : "") . ")"
+		// T-SQL doesn't accept empty parentheses in a procedure, a function requires them even if it has no parameter
+		. (JUSH == "mssql" && $routine == "PROCEDURE" ? rtrim($parameters) : " ($parameters)")
 		. ($routine == "FUNCTION" ? "\nRETURNS" . process_type($row["returns"], routine_collate($row["returns"]["collation"])) : "")
 		. ($language ? " LANGUAGE $language" : "")
 		. ($options ? "\n" . implode(" ", $options) : "")
-		. ($dollar_quote ? " AS " . q_dollar("\n" . trim($definition) . "\n") : "\n$definition;")
+		. ($dollar_quote ? " AS " . q_dollar("\n" . trim($definition) . "\n") : (JUSH == "mssql" ? "\nAS" : "") . "\n$definition;")
 	;
 }
 

@@ -265,6 +265,7 @@ if (isset($_GET["mssql"])) {
 		public $grouping = array("avg", "count", "count distinct", "max", "min", "sum");
 		public $generated = array("PERSISTED", "VIRTUAL");
 		public $onActions = "NO ACTION|CASCADE|SET NULL|SET DEFAULT";
+		public $inout = "|OUTPUT"; // T-SQL has no keyword for an input parameter
 
 		/** @var list<string> */ private $unknownTypes = array(); // types of the server which Adminer doesn't know, they are offered without a group
 
@@ -485,6 +486,17 @@ WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V')
 		return true;
 	}
 
+	/** Get the length of a column or of a routine parameter */
+	function type_length(string $type, array $row): string {
+		return (preg_match("~char|binary~", $type)
+			? ($row["max_length"] == -1 ? "max" : intval($row["max_length"]) / ($type[0] == 'n' ? 2 : 1)) // -1 - varchar(max), the other types report it too
+			: ($type == "decimal"
+				? "$row[precision],$row[scale]"
+				: ($type == "vector" ? (intval($row["max_length"]) - 8) / 4 : "") // a dimension takes 4 bytes, the header 8
+			)
+		);
+	}
+
 	function fields(string $table): array {
 		$comments = get_key_vals("SELECT objname, cast(value as varchar(max)) FROM fn_listextendedproperty('MS_DESCRIPTION', 'schema', " . q(get_schema())
 			. ", 'table', " . q($table) . ", 'column', NULL)");
@@ -503,13 +515,7 @@ LEFT JOIN sys.indexes i ON ic.object_id = i.object_id AND ic.index_id = i.index_
 WHERE c.object_id = " . q($table_id)) as $row
 		) {
 			$type = $row["type"];
-			$length = (preg_match("~char|binary~", $type)
-				? ($row["max_length"] == -1 ? "max" : intval($row["max_length"]) / ($type[0] == 'n' ? 2 : 1)) // -1 - varchar(max), the other types report it too
-				: ($type == "decimal"
-					? "$row[precision],$row[scale]"
-					: ($type == "vector" ? (intval($row["max_length"]) - 8) / 4 : "") // a dimension takes 4 bytes, the header 8
-				)
-			);
+			$length = type_length($type, $row);
 			$return[$row["name"]] = array(
 				"field" => $row["name"],
 				"full_type" => $type . ($length ? "($length)" : ""),
@@ -780,6 +786,64 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)) as $row
 		);
 	}
 
+	function routine(string $name, string $type): array {
+		// sys.sql_modules holds the whole definition, syscomments and INFORMATION_SCHEMA.ROUTINES truncate it to 4000 characters
+		$definition = get_val("SELECT m.definition
+FROM sys.objects o
+JOIN sys.sql_modules m ON m.object_id = o.object_id
+WHERE o.schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND o.name = " . q($name) . " AND o.type = " . q($type == "PROCEDURE" ? "P" : "FN"));
+		if (!$definition) { // the definition is NULL if the routine is created WITH ENCRYPTION
+			return array();
+		}
+		$return = array("definition" => preg_replace('~^(?:[^[]|\[[^]]*])*\s+AS\s+~isU', '', $definition), "fields" => array()); //! comments
+		foreach (
+			get_rows("SELECT p.name, TYPE_NAME(p.user_type_id) [type], p.max_length, p.precision, p.scale, p.is_output
+FROM sys.parameters p
+JOIN sys.objects o ON p.object_id = o.object_id
+WHERE o.schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND o.name = " . q($name) . "
+ORDER BY p.parameter_id") as $row
+		) {
+			$field_type = $row["type"];
+			$length = type_length($field_type, $row);
+			$field = array(
+				"field" => preg_replace('~^@~', '', $row["name"]), // the parameters are prefixed by @
+				"type" => $field_type,
+				"length" => $length,
+				"full_type" => $field_type . ($length ? "($length)" : ""),
+				"null" => true,
+				"inout" => ($row["is_output"] ? "OUTPUT" : ""),
+			);
+			if ($field["field"] == "") {
+				$return["returns"] = $field; // the return value of a function has no name
+			} else {
+				$return["fields"][] = $field;
+			}
+		}
+		return $return;
+	}
+
+	function routines(): array {
+		// the other routines, e.g. table-valued functions, can't be expressed by the form
+		return get_rows("SELECT o.name SPECIFIC_NAME, o.name ROUTINE_NAME,
+	CASE o.type WHEN 'P' THEN 'PROCEDURE' ELSE 'FUNCTION' END ROUTINE_TYPE, TYPE_NAME(p.user_type_id) DTD_IDENTIFIER
+FROM sys.objects o
+LEFT JOIN sys.parameters p ON o.object_id = p.object_id AND p.parameter_id = 0
+WHERE o.schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND o.type IN ('P', 'FN')
+ORDER BY o.name");
+	}
+
+	function routine_languages(): array {
+		return array(); // T-SQL routines have no LANGUAGE clause
+	}
+
+	function routine_options(string $routine): array {
+		return array(); // the characteristics are a part of the header stripped by routine()
+	}
+
+	function routine_id(string $name, array $row): string {
+		return table($name); // routines are not overloaded
+	}
+
 	function schemas(): array {
 		return get_vals("SELECT name FROM sys.schemas");
 	}
@@ -869,6 +933,6 @@ WHERE sys1.xtype = 'TR' AND sys2.name = " . q($table)) as $row
 	}
 
 	function support(string $feature): bool {
-		return preg_match('~^(check|comment|columns|database|drop_col|dump|fast_status|indexes|descidx|scheme|sql|table|transaction_ddl|trigger|view|view_trigger)$~', $feature); //! routine|
+		return preg_match('~^(check|comment|columns|database|drop_col|dump|fast_status|indexes|descidx|procedure|routine|scheme|sql|table|transaction_ddl|trigger|view|view_trigger)$~', $feature);
 	}
 }
