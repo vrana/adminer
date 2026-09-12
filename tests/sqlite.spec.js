@@ -159,13 +159,15 @@ test('Create view', async () => {
 	await expect(page.locator('body')).toContainText('View has been created.');
 });
 
-test('Invalid table', async () => {
+test('Invalid object', async () => {
 	await goto(page, '/tests/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&table=invalid');
-	await expect(page.locator('body')).toContainText('No tables.');
+	await expect(page.locator('body')).toContainText('Not found.');
 	await goto(page, '/tests/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&create=invalid');
-	await expect(page.locator('body')).toContainText('No tables.');
+	await expect(page.locator('body')).toContainText('Not found.');
 	await goto(page, '/tests/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&select=invalid');
-	await expect(page.locator('body')).toContainText('Unable to select the table:');
+	await expect(page.locator('body')).toContainText('Not found.');
+	await goto(page, '/tests/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&foreign=albums&name=invalid');
+	await expect(page.locator('body')).toContainText('Not found.');
 });
 
 test('Schema', async () => {

@@ -139,13 +139,17 @@ test('Materialized view', async () => {
 	await expect(page.locator('body')).toContainText('Materialized view');
 });
 
-test('Invalid table', async () => {
+test('Invalid object', async () => {
 	await goto(page, '/adminer/?pgsql=localhost:26257&username=ODBC&db=adminer_test&ns=public&table=invalid');
-	await expect(page.locator('body')).toContainText('No tables.');
+	await expect(page.locator('body')).toContainText('Not found.');
 	await goto(page, '/adminer/?pgsql=localhost:26257&username=ODBC&db=adminer_test&ns=public&create=invalid');
-	await expect(page.locator('body')).toContainText('No tables.');
+	await expect(page.locator('body')).toContainText('Not found.');
 	await goto(page, '/adminer/?pgsql=localhost:26257&username=ODBC&db=adminer_test&ns=public&select=invalid');
-	await expect(page.locator('body')).toContainText('Unable to select the table:');
+	await expect(page.locator('body')).toContainText('Not found.');
+	await goto(page, '/adminer/?pgsql=localhost:26257&username=ODBC&db=adminer_test&ns=public&foreign=albums&name=invalid');
+	await expect(page.locator('body')).toContainText('Not found.');
+	await goto(page, '/adminer/?pgsql=localhost:26257&username=ODBC&db=adminer_test&ns=public&procedure=invalid');
+	await expect(page.locator('body')).toContainText('Not found.');
 });
 
 test('Schema', async () => {
