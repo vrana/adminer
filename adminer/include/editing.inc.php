@@ -480,7 +480,7 @@ function routine_collate(?string $collation): string {
 */
 function create_routine($routine, array $row): string {
 	$set = array();
-	$fields = (array) $row["fields"];
+	$fields = $row["fields"];
 	ksort($fields); // enforce fields order
 	foreach ($fields as $field) {
 		if ($field["field"] != "") {
@@ -493,7 +493,7 @@ function create_routine($routine, array $row): string {
 	$definer = "";
 	$options = array();
 	foreach (routine_options($routine) as $key => $values) {
-		$value = idx((array) $row["options"], $key, "");
+		$value = idx($row["options"], $key, "");
 		if ($key == "DEFINER") { // DEFINER precedes the routine type, it is not a characteristic
 			$definer = ($value ? " $key=" . implode("@", array_map('Adminer\q', explode("@", $value, 2))) : "");
 		} elseif (!$values) {

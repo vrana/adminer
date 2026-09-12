@@ -327,7 +327,7 @@ if (isset($_GET["clickhouse"])) {
 			: ''
 		);
 		$engine = (isset($row['table_engine']) ? $row['table_engine'] : '');
-		$isView = (bool) preg_match('~View$~', $engine);
+		$isView = preg_match('~View$~', $engine);
 		$privileges = array("select" => 1, "where" => 1, "order" => 1);
 		if (!$generated && !$isView) {
 			$privileges["insert"] = 1;
@@ -806,9 +806,6 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function support(string $feature): bool {
-		return (bool) preg_match(
-			"~^(columns|comment|copy|database|drop_col|dump|indexes|kill|move_col|processlist|sql|status|table|variables|view)$~",
-			$feature
-		);
+		return preg_match('~^(columns|comment|copy|database|drop_col|dump|indexes|kill|move_col|processlist|sql|status|table|variables|view)$~', $feature);
 	}
 }

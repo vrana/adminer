@@ -4,7 +4,7 @@ namespace Adminer;
 $TABLE = $_GET["trigger"];
 $name = "$_GET[name]";
 $trigger_options = trigger_options();
-$row = (array) trigger($name, $TABLE) + array("Trigger" => $TABLE . "_bi");
+$row = trigger($name, $TABLE) + array("Trigger" => $TABLE . "_bi");
 
 if ($_POST) {
 	if (!$error && in_array($_POST["Timing"], $trigger_options["Timing"]) && in_array($_POST["Event"], $trigger_options["Event"]) && in_array($_POST["Type"], $trigger_options["Type"])) {

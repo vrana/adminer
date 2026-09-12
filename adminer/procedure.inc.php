@@ -90,7 +90,6 @@ if (isset($_GET["function"])) {
 <?php
 $routine_options = routine_options($routine);
 if ($routine_options) {
-	$row["options"] = (array) $row["options"];
 	$options_visible = false;
 	foreach ($routine_options as $key => $values) {
 		$default = ($values ? reset($values) : "");
