@@ -5,9 +5,9 @@ namespace Adminer;
 * @param string $title used in title, breadcrumb and heading, should be HTML escaped
 * @param mixed $breadcrumb ["key" => "link", "key2" => ["link", "desc"]], "#section" of the database page, null for nothing, false for driver only, true for driver and server
 * @param string $title2 used after colon in title and heading, should be HTML escaped
-* @param bool $not_found the object in the URL doesn't exist - print only the error and finish the page
+* @param bool|string $not_found the object in the URL doesn't exist - print only the error and finish the page, a string is passed to page_footer()
 */
-function page_header(string $title, string $error = "", $breadcrumb = array(), string $title2 = "", bool $not_found = false): void {
+function page_header(string $title, string $error = "", $breadcrumb = array(), string $title2 = "", $not_found = false): void {
 	if ($not_found) {
 		header("HTTP/1.1 404 Not Found");
 		$error = ($error ?: lang('Not found.')); // the error of the driver is more specific
@@ -130,7 +130,7 @@ const urlSeparators = '" . js_escape(ini_get("arg_separator.input")) . "';");
 	ob_flush();
 	flush();
 	if ($not_found) {
-		page_footer();
+		page_footer($not_found === true ? "" : $not_found);
 		exit;
 	}
 }

@@ -28,7 +28,6 @@ Lang::$translations = array(
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Adminer がリバースプロキシの背後で動作している場合は %1$s <a%2$s>プラグイン</a>を使用してください。', // Claude Opus 5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'マスタパスワードが期限切れになりました。<a href="https://www.adminer.org/en/extension/"%s>(実装例)</a> 無期限にするには %s 関数を用います。',
 	'Select database' => 'データベースを選択してください',
-	'Invalid database.' => '不正なデータベースです。',
 	'Table has been dropped.' => 'テーブルを削除しました。',
 	'Table has been altered.' => 'テーブルの設定を変更しました。',
 	'Table has been created.' => 'テーブルを作成しました。',
@@ -298,7 +297,6 @@ Lang::$translations = array(
 	'%d query(ies) executed OK.' => '%d クエリーを実行しました。',
 	'Show only errors' => 'エラーのみ表示',
 	'Refresh' => 'リフレッシュ',
-	'Invalid schema.' => '無効なスキーマです。',
 	'Please use one of these file extensions: %s.' => '%s のいずれかの拡張機能を使ってください。',
 	'ltr' => 'ltr',
 	'Tables have been copied.' => 'テーブルをコピーしました。',

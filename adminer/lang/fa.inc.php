@@ -78,7 +78,6 @@ Lang::$translations = array(
 	'Database' => 'پایگاه داده',
 	'Use' => 'استفاده',
 	'Select database' => 'انتخاب پایگاه داده',
-	'Invalid database.' => 'پایگاه داده نامعتبر.',
 	'Database has been dropped.' => 'پایگاه داده حذف شد.',
 	'Databases have been dropped.' => 'پایگاه های داده حذف شدند.',
 	'Database has been created.' => 'پایگاه داده ایجاد شد.',
@@ -294,7 +293,6 @@ Lang::$translations = array(
 	'Schema has been created.' => 'ساختار ایجاد شد.',
 	'Schema has been altered.' => 'ساختار ویرایش شد.',
 	'Schema' => 'ساختار',
-	'Invalid schema.' => 'ساختار نامعتبر.',
 
 	// PostgreSQL sequences support
 	'Sequences' => 'صف ها',

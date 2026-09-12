@@ -94,7 +94,6 @@ Lang::$translations = array(
 	'DB' => 'MB',
 	'Use' => 'Foydalanish',
 	'Select database' => 'Ma\'lumotlar bazasini tanlash',
-	'Invalid database.' => 'Noto\'g\'ri ma\'lumotlar bazasi.',
 	'Database has been dropped.' => 'Ma\'lumotlar bazasi o\'chirildi.',
 	'Databases have been dropped.' => 'Ma\'lumotlar bazalari o\'chirildi.',
 	'Database has been created.' => 'Ma\'lumotlar bazasi yaratildi.',
@@ -312,7 +311,6 @@ Lang::$translations = array(
 	'Schema has been created.' => 'Sxema yaratildi.',
 	'Schema has been altered.' => 'Sxema o\'zgartirildi.',
 	'Schema' => 'Sxema',
-	'Invalid schema.' => 'Noto\'g\'ri sxema.',
 
 	// PostgreSQL sequences support
 	'Sequences' => 'Ketma-ketliklar',

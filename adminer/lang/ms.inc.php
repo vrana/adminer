@@ -106,7 +106,6 @@ Lang::$translations = array(
 	'DB' => 'DB',
 	'Use' => 'Guna',
 	'Select database' => 'Pilih pangkalan data',
-	'Invalid database.' => 'Pangkalan data tidak sah.',
 	'Database has been dropped.' => 'Pangkalan data telah dijatuhkan.',
 	'Databases have been dropped.' => 'Pangkalan data telah dijatuhkan.',
 	'Database has been created.' => 'Pangkalan data telah dibuat.',
@@ -334,7 +333,6 @@ Lang::$translations = array(
 	'Schema has been created.' => 'Skema telah dibuat.',
 	'Schema has been altered.' => 'Skema telah diubah.',
 	'Schema' => 'Skema',
-	'Invalid schema.' => 'Skema tidak sah.',
 
 	// PostgreSQL sequences support
 	'Sequences' => 'Turutan',

@@ -129,7 +129,7 @@ test('Invalid object', async () => {
 
 test('Invalid database', async () => {
 	await goto(page, root + '&db=invalid');
-	await expect(page.locator('body')).toContainText('Invalid database.');
+	await expect(page.locator('body')).toContainText('ORA-01435'); // the error of the driver is more specific than Not found.
 });
 
 test('Insert', async () => {

@@ -17,8 +17,7 @@ if (
 		set_session("dbs", null);
 	}
 	if (DB != "") {
-		header("HTTP/1.1 404 Not Found");
-		page_header(lang('Database') . ": " . h(DB), lang('Invalid database.'), true);
+		page_header(lang('Database') . ": " . h(DB), adminer()->error(), true, "", "db");
 	} else {
 		if (!isset($_GET["db"]) && support("single_db")) { // there is nothing to choose from, take the user to the only database
 			$databases = adminer()->databases();
@@ -161,10 +160,7 @@ if (support("scheme")) {
 			redirect(preg_replace('~&db=[^&]+~', '\0&ns=' . url_escape(get_schema()), relative_uri()));
 		}
 		if (!set_schema($_GET["ns"])) {
-			header("HTTP/1.1 404 Not Found");
-			page_header(lang('Schema') . h(": $_GET[ns]"), lang('Invalid schema.'), true);
-			page_footer("ns");
-			exit;
+			page_header(lang('Schema') . h(": $_GET[ns]"), adminer()->error(), true, "", "ns");
 		}
 	}
 }

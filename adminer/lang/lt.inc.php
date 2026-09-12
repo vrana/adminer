@@ -74,7 +74,6 @@ Lang::$translations = array(
 	'Database' => 'Duomenų bazė',
 	'Use' => 'Naudoti',
 	'Select database' => 'Pasirinkti duomenų bazę',
-	'Invalid database.' => 'Neteisinga duomenų bazė.',
 	'Database has been dropped.' => 'Duomenų bazė panaikinta.',
 	'Databases have been dropped.' => 'Duomenų bazės panaikintos.',
 	'Database has been created.' => 'Duomenų bazė sukurta.',
@@ -272,7 +271,6 @@ Lang::$translations = array(
 	'Schema has been created.' => 'Schema sukurta.',
 	'Schema has been altered.' => 'Schema pakeista.',
 	'Schema' => 'Schema',
-	'Invalid schema.' => 'Neteisinga schema.',
 
 	// PostgreSQL sequences support
 	'Sequences' => 'Sekos',

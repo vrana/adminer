@@ -103,7 +103,6 @@ Lang::$translations = array(
 	'DB' => '資料庫',
 	'Use' => '使用',
 	'Select database' => '選擇資料庫',
-	'Invalid database.' => '無效的資料庫。',
 	'Database has been dropped.' => '資料庫已刪除。',
 	'Databases have been dropped.' => '資料庫已刪除。',
 	'Database has been created.' => '已建立資料庫。',
@@ -326,7 +325,6 @@ Lang::$translations = array(
 	'Schema has been created.' => '已建立資料表結構。',
 	'Schema has been altered.' => '已修改資料表結構。',
 	'Schema' => '資料表結構',
-	'Invalid schema.' => '無效的資料表結構。',
 
 	// PostgreSQL sequences support
 	'Sequences' => '序列',

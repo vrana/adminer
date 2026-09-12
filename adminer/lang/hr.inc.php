@@ -74,7 +74,6 @@ Lang::$translations = array(
 	'Database' => 'Baza podataka',
 	'Use' => 'Koristi',
 	'Select database' => 'Odaberite bazu',
-	'Invalid database.' => 'Neispravna baza podataka.',
 	'Database has been dropped.' => 'Baza podataka je izbrisana.',
 	'Databases have been dropped.' => 'Baze podataka su izbrisane.',
 	'Database has been created.' => 'Baza podataka je kreirana.',
@@ -285,7 +284,6 @@ Lang::$translations = array(
 	'Schema has been created.' => 'Shema je kreirana.',
 	'Schema has been altered.' => 'Shema je izmijenjena.',
 	'Schema' => 'Shema',
-	'Invalid schema.' => 'Neispravna shema.',
 
 	// PostgreSQL sequences support
 	'Sequences' => 'Nizovi',

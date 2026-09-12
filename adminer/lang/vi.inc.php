@@ -78,7 +78,6 @@ Lang::$translations = array(
 	'Database' => 'Cơ sở dữ liệu',
 	'Use' => 'Sử dụng',
 	'Select database' => 'Chọn CSDL',
-	'Invalid database.' => 'CSDL sai.',
 	'Database has been dropped.' => 'CSDL đã bị xoá.',
 	'Databases have been dropped.' => 'Các CSDL đã bị xoá.',
 	'Database has been created.' => 'Đã tạo CSDL.',
@@ -294,7 +293,6 @@ Lang::$translations = array(
 	'Schema has been created.' => 'Đã tạo schema.',
 	'Schema has been altered.' => 'Đã thay đổi schema.',
 	'Schema' => 'Schema',
-	'Invalid schema.' => 'Schema không hợp lệ.',
 
 	// PostgreSQL sequences support
 	'Sequences' => 'Dãy số',

@@ -84,7 +84,6 @@ Lang::$translations = array(
 	'Database' => 'Β. Δεδομένων',
 	'Use' => 'χρήση',
 	'Select database' => 'Επιλέξτε Β.Δ.',
-	'Invalid database.' => 'Λανθασμένη Β.Δ.',
 	'Database has been dropped.' => 'Η Β.Δ. διαγράφηκε.',
 	'Databases have been dropped.' => 'Οι Β.Δ. διαγράφηκαν.',
 	'Database has been created.' => 'Η Β.Δ. δημιουργήθηκε.',
@@ -305,7 +304,6 @@ Lang::$translations = array(
 	'Schema has been created.' => 'Το σχήμα δημιουργήθηκε.',
 	'Schema has been altered.' => 'Το σχήμα τροποποιήθηκε.',
 	'Schema' => 'Σχήμα',
-	'Invalid schema.' => 'Άκυρο σχήμα.',
 
 	// PostgreSQL sequences support
 	'Sequences' => 'Αλληλουχία',

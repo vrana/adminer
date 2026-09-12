@@ -107,7 +107,6 @@ Lang::$translations = array(
 	'DB' => 'XX',
 	'Use' => 'Xx',
 	'Select database' => 'Xx',
-	'Invalid database.' => 'Xx.',
 	'Database has been dropped.' => 'Xx.',
 	'Databases have been dropped.' => 'Xx.',
 	'Database has been created.' => 'Xx.',
@@ -335,7 +334,6 @@ Lang::$translations = array(
 	'Schema has been created.' => 'Xx.',
 	'Schema has been altered.' => 'Xx.',
 	'Schema' => 'Xx',
-	'Invalid schema.' => 'Xx.',
 
 	// PostgreSQL sequences support
 	'Sequences' => 'Xx',

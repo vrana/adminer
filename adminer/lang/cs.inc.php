@@ -106,7 +106,6 @@ Lang::$translations = array(
 	'DB' => 'DB',
 	'Use' => 'Vybrat',
 	'Select database' => 'Vybrat databázi',
-	'Invalid database.' => 'Neplatná databáze.',
 	'Database has been dropped.' => 'Databáze byla odstraněna.',
 	'Databases have been dropped.' => 'Databáze byly odstraněny.',
 	'Database has been created.' => 'Databáze byla vytvořena.',
@@ -335,7 +334,6 @@ Lang::$translations = array(
 	'Schema has been created.' => 'Schéma bylo vytvořeno.',
 	'Schema has been altered.' => 'Schéma bylo změněno.',
 	'Schema' => 'Schéma',
-	'Invalid schema.' => 'Neplatné schéma.',
 
 	// PostgreSQL sequences support
 	'Sequences' => 'Sekvence',

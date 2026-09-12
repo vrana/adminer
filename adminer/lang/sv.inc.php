@@ -103,7 +103,6 @@ Lang::$translations = array(
 	'DB' => 'DB',
 	'Use' => 'Använd',
 	'Select database' => 'Välj databas',
-	'Invalid database.' => 'Ogiltig databas.',
 	'Database has been dropped.' => 'Databasen har tagits bort.',
 	'Databases have been dropped.' => 'Databaserna har tagits bort.',
 	'Database has been created.' => 'Databasen har skapats.',
@@ -326,7 +325,6 @@ Lang::$translations = array(
 	'Schema has been created.' => 'Schema har skapats.',
 	'Schema has been altered.' => 'Schema har ändrats.',
 	'Schema' => 'Schema',
-	'Invalid schema.' => 'Ogiltigt schema.',
 
 	// PostgreSQL sequences support
 	'Sequences' => 'Sekvenser',

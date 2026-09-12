@@ -90,7 +90,6 @@ Lang::$translations = array(
 	'DB' => 'DB',
 	'Use' => 'Kullan',
 	'Select database' => 'Veri tabanı seç',
-	'Invalid database.' => 'Geçersiz veri tabanı.',
 	'Database has been dropped.' => 'Veri tabanı silindi.',
 	'Databases have been dropped.' => 'Veritabanları silindi.',
 	'Database has been created.' => 'Veri tabanı oluşturuldu.',
@@ -312,7 +311,6 @@ Lang::$translations = array(
 	'Schema has been created.' => 'Şema oluşturuldu.',
 	'Schema has been altered.' => 'Şema değiştirildi.',
 	'Schema' => 'Şema',
-	'Invalid schema.' => 'Geçersiz şema.',
 
 	// PostgreSQL sequences support
 	'Sequences' => 'Diziler',

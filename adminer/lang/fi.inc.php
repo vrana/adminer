@@ -84,7 +84,6 @@ Lang::$translations = array(
 	'Database' => 'Tietokanta',
 	'Use' => 'Käytä',
 	'Select database' => 'Valitse tietokanta',
-	'Invalid database.' => 'Tietokanta ei kelpaa.',
 	'Database has been dropped.' => 'Tietokanta on poistettu.',
 	'Databases have been dropped.' => 'Tietokannat on poistettu.',
 	'Database has been created.' => 'Tietokanta on luotu.',
@@ -305,7 +304,6 @@ Lang::$translations = array(
 	'Schema has been created.' => 'Kaava luotiin.',
 	'Schema has been altered.' => 'Kaavaa muutettiin.',
 	'Schema' => 'Kaava',
-	'Invalid schema.' => 'Kaava ei kelpaa.',
 
 	// PostgreSQL sequences support
 	'Sequences' => 'Sekvenssit',

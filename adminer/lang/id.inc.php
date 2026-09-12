@@ -74,7 +74,6 @@ Lang::$translations = array(
 	'Database' => 'Basis data',
 	'Use' => 'Gunakan',
 	'Select database' => 'Pilih basis data',
-	'Invalid database.' => 'Basis data tidak sah.',
 	'Database has been dropped.' => 'Basis data berhasil dihapus.',
 	'Databases have been dropped.' => 'Basis data berhasil dihapus.',
 	'Database has been created.' => 'Basis data berhasil dibuat.',
@@ -281,7 +280,6 @@ Lang::$translations = array(
 	'Schema has been created.' => 'Skema berhasil dibuat.',
 	'Schema has been altered.' => 'Skema berhasil diubah.',
 	'Schema' => 'Skema',
-	'Invalid schema.' => 'Skema tidak sah.',
 
 	// PostgreSQL sequences support
 	'Sequences' => 'Deret',

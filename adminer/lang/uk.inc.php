@@ -74,7 +74,6 @@ Lang::$translations = array(
 	'Database' => 'База даних',
 	'Use' => 'Обрати',
 	'Select database' => 'Обрати базу даних',
-	'Invalid database.' => 'Погана база даних.',
 	'Database has been dropped.' => 'Базу даних було видалено.',
 	'Databases have been dropped.' => 'Бази даних були видалені.',
 	'Database has been created.' => 'Базу даних було створено.',
@@ -280,7 +279,6 @@ Lang::$translations = array(
 	'Schema has been created.' => 'Схему було створено.',
 	'Schema has been altered.' => 'Схему було змінено.',
 	'Schema' => 'Схема',
-	'Invalid schema.' => 'Невірна схема.',
 
 	// PostgreSQL sequences support
 	'Sequences' => 'Послідовності',

@@ -103,7 +103,6 @@ Lang::$translations = array(
 	'DB' => '数据库',
 	'Use' => '使用',
 	'Select database' => '选择数据库',
-	'Invalid database.' => '无效数据库。',
 	'Database has been dropped.' => '已删除数据库。',
 	'Databases have been dropped.' => '已删除数据库。',
 	'Database has been created.' => '已创建数据库。',
@@ -324,7 +323,6 @@ Lang::$translations = array(
 	'Schema has been created.' => '已创建模式。',
 	'Schema has been altered.' => '已修改模式。',
 	'Schema' => '模式',
-	'Invalid schema.' => '非法模式。',
 
 	// PostgreSQL sequences support
 	'Sequences' => '序列',
