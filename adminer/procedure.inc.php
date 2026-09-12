@@ -67,12 +67,15 @@ echo ($collations ? "<datalist id='collations'>" . optionlist($collations) . "</
 	. html_select("language", array_keys($routine_languages), $row["language"], on('change', 'routineLanguage', $routine_languages))
 	. "</label>\n" : ""); ?>
 <input type='submit' value='<?php echo lang('Save'); ?>'>
-<?php echo doc_link(array(
+<?php
+$routine_lower = strtolower($routine);
+echo doc_link(array(
 	'sql' => "create-procedure.html", // the same page documents CREATE FUNCTION
-	'mariadb' => ($routine == "FUNCTION" ? "create-function/" : "create-procedure/"),
-	'pgsql' => ($routine == "FUNCTION" ? "sql-createfunction.html" : "sql-createprocedure.html"),
-	'mssql' => "t-sql/statements/create-" . ($routine == "FUNCTION" ? "function" : "procedure") . "-transact-sql",
-), "?"); ?>
+	'mariadb' => "create-$routine_lower/",
+	'pgsql' => "sql-create$routine_lower.html",
+	'mssql' => "t-sql/statements/create-$routine_lower-transact-sql",
+), "?");
+?>
 <div class="scrollable">
 <table id="edit-fields" class="nowrap">
 <?php
