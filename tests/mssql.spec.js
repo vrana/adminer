@@ -316,9 +316,11 @@ test('Import and export CSV', async () => {
 test('Bulk table operations', async () => {
 	// MS SQL offers no maintenance operation, only Truncate and Move to another schema
 	await goto(page, '/adminer/?mssql=&username=ODBC&db=adminer_test&ns=dbo&sql=' + encodeURIComponent(
-		'CREATE SCHEMA adminer_test2; CREATE TABLE bulk_test (id int); INSERT INTO bulk_test VALUES (1)'
+		'DROP TABLE IF EXISTS adminer_test2.bulk_test; DROP SCHEMA IF EXISTS adminer_test2;' // left by an interrupted run, the first test drops only the tables of dbo
+		+ ' CREATE SCHEMA adminer_test2; CREATE TABLE bulk_test (id int); INSERT INTO bulk_test VALUES (1)'
 	));
 	await button(page, 'Execute').click();
+	await page.waitForLoadState(); // the result is flushed while the queries run, navigating away earlier aborts them
 	await goto(page, '/adminer/?mssql=&username=ODBC&db=adminer_test&ns=dbo');
 	// every operation redirects back to this page with the checkboxes cleared
 	await page.locator('input[name="tables[]"][value="bulk_test"]').check();

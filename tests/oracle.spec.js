@@ -213,6 +213,7 @@ test('Search in tables with special types', async () => {
 		"INSERT INTO \"types\" VALUES (1, HEXTORAW('61626333'), 'abc3', HEXTORAW('61626333'), DATE '2020-01-03', 'abc3')"
 	));
 	await button(page, 'Execute').click();
+	await page.waitForLoadState(); // the result is flushed while the queries run, navigating away earlier aborts them
 	await goto(page, db);
 	// the LOB and binary columns can't be compared with a string, they must be skipped instead of reported
 	for (const [op, query] of [['LIKE %%', 'abc'], ['=', 'abc3']]) {

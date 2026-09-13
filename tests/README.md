@@ -17,7 +17,7 @@ The helpers in [adminer.js](/tests/adminer.js) cover what Adminer does repeatedl
 
 Each file logs in once and the tests inside it run in the order they are written, so a failing test stops the rest of the file.
 The first test also removes what an interrupted run left behind, mostly by dropping the whole `adminer_test` database, so two runs of the same driver must never overlap.
-The bulk table operations need a second target, so they create and drop `adminer_test2` - a database in MySQL and MariaDB, a schema in PostgreSQL, CockroachDB and MS SQL.
+The bulk table operations need a second target, so they create and drop `adminer_test2` - a database in MySQL and MariaDB, a schema in PostgreSQL, CockroachDB and MS SQL - and drop it also before creating it where the first test doesn't remove it.
 Every test fails also on a PHP error printed to any response and on a browser console error or an uncaught JavaScript exception, even if the page otherwise looks right.
 By default, everything runs in a single worker, which takes about twenty minutes for all drivers with both extensions on the [development server](#development-server).
 `composer e2e -- --workers=3` runs the files of different drivers in parallel: the drivers use different database servers and the plugins have their own database `adminer_plugins`.

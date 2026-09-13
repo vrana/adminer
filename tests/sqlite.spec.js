@@ -338,6 +338,7 @@ test('Bulk table operations', async () => {
 	await goto(page, '/tests/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&sql='
 		+ encodeURIComponent('CREATE TABLE bulk_test (id integer); INSERT INTO bulk_test VALUES (1)'));
 	await button(page, 'Execute').click();
+	await page.waitForLoadState(); // the result is flushed while the queries run, navigating away earlier aborts them
 	await goto(page, '/tests/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite');
 	// every operation redirects back to this page with the checkboxes cleared
 	await page.locator('input[name="tables[]"][value="bulk_test"]').check();

@@ -369,10 +369,11 @@ test('Import and export CSV', async () => {
 
 test('Bulk table operations', async () => {
 	await goto(page, '/adminer/?username=ODBC&db=adminer_test&sql=' + encodeURIComponent(
-		'CREATE DATABASE adminer_test2; CREATE TABLE bulk_test (id int); CREATE TABLE bulk_test2 (id int);'
+		'DROP DATABASE IF EXISTS adminer_test2; CREATE DATABASE adminer_test2; CREATE TABLE bulk_test (id int); CREATE TABLE bulk_test2 (id int);'
 		+ ' INSERT INTO bulk_test VALUES (1)'
 	));
 	await button(page, 'Execute').click();
+	await page.waitForLoadState(); // the result is flushed while the queries run, navigating away earlier aborts them
 	await goto(page, '/adminer/?username=ODBC&db=adminer_test');
 	// every operation redirects back to this page with the checkboxes cleared
 	for (const [name, label] of [['', 'Analyze'], ['optimize', 'Optimize'], ['check', 'Check'], ['repair', 'Repair']]) {

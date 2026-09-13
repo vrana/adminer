@@ -406,6 +406,7 @@ test('Bulk table operations', async () => {
 		'CREATE SCHEMA adminer_test2; CREATE TABLE bulk_test (id int); INSERT INTO bulk_test VALUES (1)'
 	));
 	await button(page, 'Execute').click();
+	await page.waitForLoadState(); // the result is flushed while the queries run, navigating away earlier aborts them
 	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public');
 	// every operation redirects back to this page with the checkboxes cleared
 	for (const [name, label] of [['', 'Vacuum'], ['optimize', 'Optimize']]) {
