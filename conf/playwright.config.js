@@ -12,10 +12,10 @@ export default defineConfig({
 		baseURL: (process.env.ADMINER_URL || 'http://localhost:8000').replace(/\/?$/, '/'), // without the trailing slash, the relative URLs would replace the last part of the path
 		channel: 'chrome', // the installed browser, no download
 		actionTimeout: 5000, // an element which is hidden or missing fails fast instead of blocking until the test timeout; a click submitting a form also waits for the navigation
-		trace: 'retain-on-failure',
+		trace: 'off', // recording takes a fifth of the time even if the trace is discarded, rerun a failed test by --trace=retain-on-failure
 	},
 	projects: [
-		// traces and screenshots of failed tests, a directory per project because a run clears the directories of its projects
+		// pages and traces of failed tests, a directory per project because a run clears the directories of its projects
 		{name: 'native', outputDir: '../tests/results/native'},
 		{name: 'pdo', outputDir: '../tests/results/pdo', metadata: {ext: 'pdo'}, testIgnore: ['**/elastic.spec.js', '**/plugins.spec.js', '**/screenshots.spec.js']},
 	],
