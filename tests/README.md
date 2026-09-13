@@ -11,6 +11,10 @@ The tests are stored in `tests/*.spec.js`, one file per driver plus [plugins.spe
 - `composer e2e mysql` runs only the files matching mysql.
 - `composer e2e -- mysql --project=native` runs only the native extension - Composer passes options through only after `--`.
 
+The browser is the installed Chrome, `PLAYWRIGHT_BROWSER` selects another one: `chromium-headless-shell`, `firefox` or `webkit`.
+`composer install` doesn't install them - download one by e.g. `npx playwright install firefox`.
+Chrome Headless Shell ran the MySQL tests with the native extension in 21 seconds instead of 23 seconds in the installed Chrome.
+
 Use `composer e2e -- --ui` to watch a test, `--headed --debug` to step through it; a failed test stores the page in `tests/results/native/` or `tests/results/pdo/`, `--trace=retain-on-failure` stores also its trace there, open it by `npx playwright show-trace`.
 A new test can be recorded by `npx playwright codegen http://localhost:8000/adminer/`.
 The helpers in [adminer.js](/tests/adminer.js) cover what Adminer does repeatedly: `link()` and `button()` take the first match because Adminer prints some links in the menu as well, and `setValue()` fills a field which jush replaces by a highlighted editor.
