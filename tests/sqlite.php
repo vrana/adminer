@@ -8,7 +8,7 @@ if (strpos(file_get_contents("index.php"), 'Adminer\DIR') !== false) { // a comp
 
 function adminer_object() {
 	return new Adminer\Plugins(array(
-		new Adminer\Password('$2y$12$lFfTcGjzW1aO3wkgnLyE8uZfuUwmkrwXcZQwCh0qQLgawYWKJQKlm'), // password_hash() of YOUR_PASSWORD_HERE typed by the tests
+		new Adminer\Password('$2y$08$M1tB8YNu9lmg8Tl6filA5eaHQrRSIchz9wy6Mh/Nza59ZZyzIjXo6'), // password_hash() of YOUR_PASSWORD_HERE typed by the tests
 	));
 }
 
