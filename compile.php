@@ -350,7 +350,7 @@ if ($vendor) {
 	}
 	$file = replace_re('~doc_link\(array\((.*)\)\)~sU', function ($match) use ($vendor) {
 		list(, $links) = $match;
-		$links = preg_replace("~'(?!(" . ($vendor == "mysql" ? "sql|mariadb" : $vendor) . ")')[^']*' => [^,]*,?~", '', $links);
+		$links = preg_replace("~'(?!(" . ($vendor == "mysql" ? "sql|mariadb" : ($vendor == "pgsql" ? "pgsql|cockroach" : $vendor)) . ")')[^']*' => [^,]*,?~", '', $links);
 		return (trim($links) ? "doc_link(array($links))" : "''");
 	}, $file);
 	//! strip doc_link() definition

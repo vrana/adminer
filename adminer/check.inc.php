@@ -62,6 +62,7 @@ echo doc_link(array(
 	'sql' => "create-table-check-constraints.html",
 	'mariadb' => "constraint/",
 	'pgsql' => "ddl-constraints.html#DDL-CONSTRAINTS-CHECK-CONSTRAINTS",
+	'cockroach' => "check",
 	'mssql' => "relational-databases/tables/create-check-constraints",
 	'sqlite' => "lang_createtable.html#check_constraints",
 ), "?");

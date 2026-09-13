@@ -126,6 +126,7 @@ if ($index_algorithms) {
 		'sql' => 'create-index.html#create-index-storage-engine-index-types',
 		'mariadb' => 'storage-engine-index-types/',
 		'pgsql' => 'indexes-types.html',
+		'cockroach' => 'create-index#parameters',
 	));
 }
 ?>

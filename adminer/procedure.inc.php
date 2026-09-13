@@ -73,6 +73,7 @@ echo doc_link(array(
 	'sql' => "create-procedure.html", // the same page documents CREATE FUNCTION
 	'mariadb' => "create-$routine_lower/",
 	'pgsql' => "sql-create$routine_lower.html",
+	'cockroach' => "create-$routine_lower",
 	'mssql' => "t-sql/statements/create-$routine_lower-transact-sql",
 ), "?");
 ?>

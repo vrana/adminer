@@ -121,6 +121,7 @@ foreach ($row["source"] as $key => $val) {
 	'sql' => "innodb-foreign-key-constraints.html",
 	'mariadb' => "foreign-keys/",
 	'pgsql' => "sql-createtable.html#SQL-CREATETABLE-PARMS-REFERENCES",
+	'cockroach' => "foreign-key",
 	'mssql' => "t-sql/statements/create-table-transact-sql",
 	'oracle' => "sqlrf/constraint.html",
 )); ?>

@@ -108,6 +108,7 @@ if (!$row) {
 echo lang('Name') . ": <input name='name' value='" . h($row['name']) . "' autocapitalize='off'>\n";
 echo doc_link(array(
 	'pgsql' => "sql-createtype.html",
+	'cockroach' => "create-type",
 ), "?");
 textarea("as", $row["as"]);
 echo "<p><input type='submit' value='" . lang('Save') . "'>\n";

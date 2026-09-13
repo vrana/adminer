@@ -131,7 +131,9 @@ if (adminer()->homepage()) {
 				lang('Select data'),
 			);
 			if (support("comment")) {
-				$columns["Comment"] = array(lang('Comment') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-info.html#FUNCTIONS-INFO-COMMENT-TABLE')));
+				$columns["Comment"] = array(
+					lang('Comment') . doc_link(array('sql' => 'show-table-status.html', 'pgsql' => 'functions-info.html#FUNCTIONS-INFO-COMMENT-TABLE', 'cockroach' => 'comment-on')),
+				);
 			}
 			$asc_columns = array('Engine', 'Collation', 'Comment'); // the other columns are sorted descending
 			foreach ($columns as $key => $column) {

@@ -341,6 +341,7 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 			'mariadb' => "auto_increment/",
 			'sqlite' => "autoinc.html",
 			'pgsql' => "datatype-numeric.html#DATATYPE-SERIAL",
+			'cockroach' => "serial",
 			'mssql' => "t-sql/statements/create-table-transact-sql-identity-property",
 		));
 		echo "<th id='label-default'$default_class>" . lang('Default value');
@@ -603,6 +604,10 @@ function doc_link(array $paths, string $text = "<sup>?</sup>"): string {
 	if (connection()->flavor == 'maria') {
 		$urls['sql'] = "https://mariadb.com/kb/en/";
 		$paths['sql'] = (isset($paths['mariadb']) ? $paths['mariadb'] : str_replace(".html", "/", $paths['sql']));
+	}
+	if (connection()->flavor == 'cockroach' && isset($paths['cockroach'])) { // the others link the PostgreSQL documentation
+		$urls['pgsql'] = "https://docs.cockroachlabs.com/docs/v$version/";
+		$paths['pgsql'] = $paths['cockroach'];
 	}
 	return ($paths[JUSH] ? "<a href='" . h($urls[JUSH] . $paths[JUSH] . (JUSH == 'mssql' ? "?view=$version" : "")) . "'" . target_blank() . ">$text</a>" : "");
 }
