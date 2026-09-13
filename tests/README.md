@@ -24,7 +24,7 @@ Parallelism would help little: the drivers use different database servers but th
 
 ## Development Server
 
-The tests expect Adminer at <http://localhost:8000> (or at `ADMINER_URL`), served from the repository root by `php -S localhost:8000`.
+The tests expect Adminer at <http://localhost:8000> (or at `ADMINER_URL`, which can include a path, e.g. `http://localhost/adminer`), served from the repository root by `php -S localhost:8000`.
 `display_errors` must be on, otherwise the tests never see the PHP errors they look for in the responses, and `file_uploads` must stay on (the default), otherwise the import tests find a disabled file field.
 The tests fill in the standard login form, so a plugin changing it breaks them - `AdminerLoginServers` for example replaces the server field by a list.
 

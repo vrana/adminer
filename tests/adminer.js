@@ -54,14 +54,14 @@ export function extension() {
 
 /** Open an Adminer URL, forcing the PHP extension used by the current project
 * @param {import('@playwright/test').Page} page
-* @param {string} url relative to baseURL
+* @param {string} url relative to baseURL, e.g. '/adminer/'
 */
 export async function goto(page, url) {
 	const ext = extension();
 	if (ext && /^\/(adminer|editor|tests)\//.test(url)) {
 		url += (url.includes('?') ? '&' : '?') + 'ext=' + ext;
 	}
-	await page.goto(url);
+	await page.goto(url.replace(/^\//, '')); // an absolute path would drop the path of baseURL
 }
 
 /** Get the first link with the given text - Adminer prints some links both in the content and in the menu
