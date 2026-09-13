@@ -3,7 +3,9 @@
 // To create Adminer just for Elasticsearch, run `../compile.php elastic`.
 
 chdir(__DIR__ . "/../adminer"); // the pages are included relative to the working directory
-define('Adminer\DIR', "../adminer/"); // used also in the URLs of the static files
+if (strpos(file_get_contents("index.php"), 'Adminer\DIR') !== false) { // a compiled index.php doesn't use it
+	define('Adminer\DIR', "../adminer/"); // used also in the URLs of the static files
+}
 
 function adminer_object() {
 	include_once "../plugins/drivers/elastic.php";

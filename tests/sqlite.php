@@ -2,7 +2,9 @@
 // Entry point for tests/sqlite.spec.js, the sources are in a sibling directory.
 
 chdir(__DIR__ . "/../adminer"); // the pages are included relative to the working directory
-define('Adminer\DIR', "../adminer/"); // used also in the URLs of the static files
+if (strpos(file_get_contents("index.php"), 'Adminer\DIR') !== false) { // a compiled index.php doesn't use it
+	define('Adminer\DIR', "../adminer/"); // used also in the URLs of the static files
+}
 
 function adminer_object() {
 	return new Adminer\Plugins(array(
