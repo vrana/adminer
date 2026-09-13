@@ -19,12 +19,13 @@ Each file logs in once and the tests inside it run in the order they are written
 The first test also removes what an interrupted run left behind, mostly by dropping the whole `adminer_test` database, so two runs of the same driver must never overlap.
 The bulk table operations need a second target, so they create and drop `adminer_test2` - a database in MySQL and MariaDB, a schema in PostgreSQL, CockroachDB and MS SQL.
 Every test fails also on a PHP error printed to any response and on a browser console error or an uncaught JavaScript exception, even if the page otherwise looks right.
-Everything runs in a single worker, which takes about twenty minutes for all drivers with both extensions.
+Everything runs in a single worker, which takes about twenty minutes for all drivers with both extensions on the [development server](#development-server).
 Parallelism would help little: the drivers use different database servers but they all share the `adminer_test` database name, the `native` and `pdo` projects of one driver work with the very same data, and the requests would queue in the development server anyway, because it handles one at a time unless `PHP_CLI_SERVER_WORKERS` is set (which needs `fork()`, so not on Windows).
 
 ## Development Server
 
 The tests expect Adminer at <http://localhost:8000> (or at `ADMINER_URL`, which can include a path, e.g. `http://localhost/adminer`), served from the repository root by `php -S localhost:8000`.
+Nginx is about three times faster even with the single worker - the MySQL tests with the native extension take 23 seconds on nginx with two `php-cgi` processes instead of 66 seconds on `php -S`.
 `display_errors` must be on, otherwise the tests never see the PHP errors they look for in the responses, and `file_uploads` must stay on (the default), otherwise the import tests find a disabled file field.
 The tests fill in the standard login form, so a plugin changing it breaks them - `AdminerLoginServers` for example replaces the server field by a list.
 
