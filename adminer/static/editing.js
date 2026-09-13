@@ -24,6 +24,8 @@ function syntaxHighlighting(version, vendor) {
 					;
 					if (vendor != 'cockroach') {
 						obj[key] = obj[key].replace('/docs/current', '/docs/' + version); // PostgreSQL
+					} else if (obj == jush.urls.pgsql) { // jush.link_key.pgsql resolves the CockroachDB pages, the variables and extensions stay at PostgreSQL
+						obj[key] = 'https://docs.cockroachlabs.com/docs/v' + version + '/$key';
 					}
 					if (/^\d\d$/.test(version)) { // the version of another system would make up a directory Oracle doesn't have
 						obj[key] = obj[key].replace('/oracle-database/19/', '/oracle-database/' + version + '/');

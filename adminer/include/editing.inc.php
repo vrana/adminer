@@ -574,7 +574,8 @@ function doc_version(): string {
 		return ($match[1] >= 18 ? $match[1] : "19");
 	}
 	// MySQL uses calendar versioning since 26.7 so the URL needs both the year and the month the two most significant digits give the documented version of PostgreSQL (18, 9.6) and MS SQL (16)
-	$regexp = (JUSH == 'sql' ? '~^\d+\.\d+~' : '~^\d\.?\d~');
+	// CockroachDB also documents each year and month (v25.4)
+	$regexp = (JUSH == 'sql' || connection()->flavor == 'cockroach' ? '~^\d+\.\d+~' : '~^\d\.?\d~');
 	$version = (preg_match($regexp, $server_info, $match) ? $match[0] : "");
 	if (JUSH == 'mssql') {
 		// MS SQL identifies the versions by monikers: https://learn.microsoft.com/en-us/sql/sql-server/versioning-system-monikers-ui-sql-server

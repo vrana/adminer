@@ -20,6 +20,7 @@
 - PostgreSQL, MS SQL: Report a schema which doesn't exist
 - CockroachDB: Export: Omit WITH (oids = false)
 - CockroachDB: Treat crdb_internal and pg_extension as read-only system schemas
+- CockroachDB: Link its documentation from the highlighted SQL
 - MS SQL: Display, create, alter, drop and call procedures and functions
 - MS SQL: Fix the length of a varchar(max) column
 - MS SQL: Fix the default value written with the 'N' prefix
