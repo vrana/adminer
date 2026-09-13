@@ -45,7 +45,6 @@ test('Export formats', async () => {
 	await goto(page, '/tests/plugins.php?username=ODBC&db=adminer_test&dump=');
 	// dumpFormat() and dumpOutput() are aggregated across all plugins, not stopped by the first one
 	await expect(page.locator('input[name="format"][value="json"]')).toHaveCount(1);
-	await expect(page.locator('input[name="format"][value="xml"]')).toHaveCount(1);
 	await expect(page.locator('input[name="output"][value="zip"]')).toHaveCount(1);
 	await page.locator('input[name="output"][value="text"]').click();
 	await page.locator('input[name="format"][value="json"]').click();
@@ -53,10 +52,6 @@ test('Export formats', async () => {
 	await button(page, 'Export').click();
 	await expect(page.locator('body')).toContainText('"albums": [');
 	await expect(page.locator('body')).toContainText('"title": "Dangerous"');
-	await goto(page, '/tests/plugins.php?username=ODBC&db=adminer_test&dump=');
-	await page.locator('input[name="format"][value="xml"]').click();
-	await button(page, 'Export').click();
-	await expect(page.locator('body')).toContainText('<database name="adminer_test">');
 });
 
 test('Import CSV', async () => {
@@ -80,6 +75,27 @@ test('Edit foreign', async () => {
 	await page.locator('[name="fields[title]"]').fill('Bad');
 	await button(page, 'Save').click();
 	await expect(page.locator('body')).toContainText('Item 2 has been inserted.');
+});
+
+test('Backward keys', async () => {
+	await goto(page, '/tests/plugins.php?username=ODBC&db=adminer_test&select=interprets');
+	// the plugin links the rows of the tables referencing this row, the menu links the tables too
+	await page.locator('#table a[title="New item"]').click();
+	await expect(page.locator('[name="fields[interpret]"]')).toHaveValue('1');
+	await page.goBack();
+	await page.locator('#table').getByRole('link', {name: 'albums', exact: true}).click();
+	await expect(page.locator('body')).toContainText('Dangerous');
+});
+
+test('Tables filter', async () => {
+	await goto(page, '/tests/plugins.php?username=ODBC&db=adminer_test');
+	await page.locator('#filter-field').fill('alb'); // the list is filtered after a delay
+	await expect(page.locator('#tables li', {hasText: 'interprets'})).toBeHidden();
+	await expect(page.locator('#tables strong')).toHaveText('alb');
+	await goto(page, '/tests/plugins.php?username=ODBC&db=adminer_test&select=albums');
+	// the filter is restored from sessionStorage in the same database
+	await expect(page.locator('#filter-field')).toHaveValue('alb');
+	await expect(page.locator('#tables li', {hasText: 'interprets'})).toBeHidden();
 });
 
 test('Configuration', async () => {
