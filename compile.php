@@ -167,17 +167,12 @@ function minify_js($file) {
 // $callback only to match signature
 function compile_file($match, $callback = '') {
 	global $project, $static_files;
-	$file = "";
 	list(, $filenames, $callback) = $match;
-	if ($filenames != "") {
-		foreach (preg_split('~;\s*~', $filenames) as $filename) {
-			$file .= file_get_contents(__DIR__ . "/$project/$filename");
-		}
+	$file = "";
+	foreach (preg_split('~;\s*~', $filenames) as $filename) {
+		$file .= file_get_contents(__DIR__ . "/$project/$filename");
 	}
-	$return = ($callback
-		? "'" . call_user_func($callback, $file) . "'" // compressed string doesn't need escaping
-		: "base64_decode('" . base64_encode($file) . "')"
-	);
+	$return = "'" . add_apo_slashes(call_user_func($callback, $file)) . "'";
 	$static_files .= $return;
 	return $return;
 }
@@ -380,7 +375,7 @@ if (function_exists('stripTypes')) {
 	$file = stripTypes($file);
 }
 $static_files = "";
-$file = replace_re("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", 'compile_file', $file); // integrate static files
+$file = replace_re("~compile_file\\('([^']+)', '([^']+)'\\)~", 'compile_file', $file); // integrate static files
 $version = Adminer\VERSION . "+" . dechex(crc32($static_files)); // the checksum distinguishes -dev builds and builds of one version with different drivers
 $replace = 'preg_replace("~\\\\\\\\?.*~", "", ME) . "?file=\1&version=' . $version . '"';
 $file = replace('"?file=worker.js&version=" . VERSION', '"?file=worker.js&version=' . $version . '"', $file);
