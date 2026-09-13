@@ -98,7 +98,6 @@ parameters:
 		max: 80499
 
 	dynamicConstantNames:
-		- Adminer\VERSION # the value changes with every release so the -dev check in file.inc.php must stay undecided
 		- SID # empty when the session ID is in a cookie
 
 	# The strict rules which are not used, with the number of places they report (measured 2026-08-09):

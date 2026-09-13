@@ -460,6 +460,7 @@ The website translations are managed at https://www.adminer.org/en/translations/
 Adminer’s source code is divided into a manageable number of reasonably small files.
 For simpler deployment, these files are bundled into a single `*.php` file by inlining `include` files.
 Static files (`*.js`, `*.css`, images) are also inlined and served via the `?file=` route.
+Their URL contains the version with a checksum of the files, e.g. `?file=functions.js&version=6.1.0-dev+1a2b3c4d`, so each build has its own URL, even a `-dev` one.
 They are sent with a year-long expiration but some hosts forbid caching anything their interface generates, so a service worker ([`worker.js`](/adminer/static/worker.js)) keeps them in the Cache Storage, which those headers don't reach.
 It is registered only by the compiled version and unregistered after the last logout, the development version unregisters it on every page in case a compiled version was served from the same URL.
 

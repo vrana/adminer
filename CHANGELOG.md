@@ -4,6 +4,7 @@
 - Install Adminer as a web-application
 - Report an object which doesn't exist instead of printing an empty form
 - Link the database in the breadcrumb of a routine, sequence, type or event to its section
+- Don't serve the cached static files of a different build of the same version
 - Select: Handle columns with a name looking like a function, e.g. NOW()
 - Select: Don't link COUNT(*) if a function is applied to a grouped column
 - SQL command: Modify the values in the result by Ctrl+click (bug #1333)

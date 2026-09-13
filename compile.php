@@ -166,7 +166,7 @@ function minify_js($file) {
 
 // $callback only to match signature
 function compile_file($match, $callback = '') {
-	global $project;
+	global $project, $static_files;
 	$file = "";
 	list(, $filenames, $callback) = $match;
 	if ($filenames != "") {
@@ -174,10 +174,12 @@ function compile_file($match, $callback = '') {
 			$file .= file_get_contents(__DIR__ . "/$project/$filename");
 		}
 	}
-	if ($callback) {
-		return "'" . call_user_func($callback, $file) . "'"; // compressed string doesn't need escaping
-	}
-	return "base64_decode('" . base64_encode($file) . "')";
+	$return = ($callback
+		? "'" . call_user_func($callback, $file) . "'" // compressed string doesn't need escaping
+		: "base64_decode('" . base64_encode($file) . "')"
+	);
+	$static_files .= $return;
+	return $return;
 }
 
 function number_type() {
@@ -377,8 +379,11 @@ if ($_SESSION["lang"]) { // single language version
 if (function_exists('stripTypes')) {
 	$file = stripTypes($file);
 }
+$static_files = "";
 $file = replace_re("~compile_file\\('([^']+)'(?:, '([^']*)')?\\)~", 'compile_file', $file); // integrate static files
-$replace = 'preg_replace("~\\\\\\\\?.*~", "", ME) . "?file=\1&version=' . Adminer\VERSION . '"';
+$version = Adminer\VERSION . "+" . dechex(crc32($static_files)); // the checksum distinguishes -dev builds and builds of one version with different drivers
+$replace = 'preg_replace("~\\\\\\\\?.*~", "", ME) . "?file=\1&version=' . $version . '"';
+$file = replace('"?file=worker.js&version=" . VERSION', '"?file=worker.js&version=' . $version . '"', $file);
 $file = replace_re('~<\?php echo DIR; \?>static/(default\.css)~', '<?php echo h(' . $replace . '); ?>', $file);
 $file = replace_re('~DIR \. "static/(functions\.js)"~', $replace, $file);
 $file = replace_re('~\'src\' => DIR \. "static/(logo\.svg)"~', "'src' => $replace", $file); // the URL is used in JSON, not in HTML, so it must not be escaped by h()

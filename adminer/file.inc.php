@@ -1,15 +1,14 @@
 <?php
 namespace Adminer;
 
-if (substr(VERSION, -4) != '-dev') {
-	if ($_SERVER["HTTP_IF_MODIFIED_SINCE"]) {
-		header("HTTP/1.1 304 Not Modified");
-		exit;
-	}
-	header("Expires: " . gmdate("D, d M Y H:i:s", time() + 365*24*60*60) . " GMT");
-	header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-	header("Cache-Control: immutable");
+// the version in the URL contains a checksum of the files
+if ($_SERVER["HTTP_IF_MODIFIED_SINCE"]) {
+	header("HTTP/1.1 304 Not Modified");
+	exit;
 }
+header("Expires: " . gmdate("D, d M Y H:i:s", time() + 365*24*60*60) . " GMT");
+header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
+header("Cache-Control: immutable");
 
 ini_set("zlib.output_compression", '1');
 
