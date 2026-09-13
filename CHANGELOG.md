@@ -44,6 +44,7 @@
 - Method explain() to customize EXPLAIN in SQL command
 ### Internal
 - Test Oracle
+- Run the end-to-end tests of different drivers in parallel by `composer e2e -- --workers=N`
 - Distribute the tests in the release archive (bug #1332)
 - Show the review status of the translations in adminer/lang/README.md
 - Unregister the service worker in the development version served from the URL of a compiled version

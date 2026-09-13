@@ -1,11 +1,10 @@
 import {defineConfig} from '@playwright/test';
 
-// End-to-end tests, run them by: npx playwright test --config conf/playwright.config.js
+// End-to-end tests, run them by: node tests/run.js
 // The dev server and the database servers must be running, see ../tests/README.md.
 export default defineConfig({
 	testDir: '../tests',
-	outputDir: '../tests/results', // traces and screenshots of failed tests
-	workers: 1, // the tests share the adminer_test database and the single threaded PHP development server
+	workers: 1, // more by --workers; the files of different drivers use different database servers but the native and pdo projects of one driver share the database, so tests/run.js runs them one after another
 	reporter: 'list',
 	timeout: 30000, // the slowest tests (searching data in all tables, the bulk table operations) take about 15 s
 	expect: {timeout: 3000}, // Adminer prints the whole page at once, only JavaScript can change it later
@@ -16,7 +15,8 @@ export default defineConfig({
 		trace: 'retain-on-failure',
 	},
 	projects: [
-		{name: 'native'},
-		{name: 'pdo', metadata: {ext: 'pdo'}, testIgnore: ['**/elastic.spec.js', '**/plugins.spec.js', '**/screenshots.spec.js']},
+		// traces and screenshots of failed tests, a directory per project because a run clears the directories of its projects
+		{name: 'native', outputDir: '../tests/results/native'},
+		{name: 'pdo', outputDir: '../tests/results/pdo', metadata: {ext: 'pdo'}, testIgnore: ['**/elastic.spec.js', '**/plugins.spec.js', '**/screenshots.spec.js']},
 	],
 });
