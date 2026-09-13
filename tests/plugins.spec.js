@@ -63,6 +63,7 @@ test('Import CSV', async () => {
 	});
 	await page.locator('[name="csv_exists"]').selectOption('drop');
 	await page.locator('[name="csv"]').click(); // the plugin creates the table from the file
+	await expect(page.locator('body')).toContainText('Table has been created.'); // wait for the import before leaving the page, it failed in WebKit
 	await goto(page, '/tests/plugins.php?username=ODBC&db=adminer_plugins&select=singers');
 	await expect(page.locator('body')).toContainText('Karel Gott');
 });
