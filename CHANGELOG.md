@@ -1,3 +1,5 @@
+## Adminer dev
+
 ## Adminer 6.1.0 (released 2026-09-14)
 - Send the form by the default button by Ctrl+Enter
 - Display the message on the screen when AJAX-saving
