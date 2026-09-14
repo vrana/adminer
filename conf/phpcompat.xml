@@ -26,6 +26,8 @@
 		<exclude name="PHPCompatibility.Constants.NewConstants.pgsql_notice_clearFound"/>
 		<!-- Used only if password_hash() exists. -->
 		<exclude name="PHPCompatibility.Constants.NewConstants.password_defaultFound"/>
+		<!-- Available since PHP 5.3.2, testVersion can't express the real minimum 5.3.29. -->
+		<exclude name="PHPCompatibility.Constants.NewConstants.oci_no_auto_commitFound"/>
 	</rule>
 	<rule ref="PHPCompatibility.FunctionUse.NewFunctionParameters">
 		<!-- Used only if PHP_VERSION_ID >= 70100. -->
