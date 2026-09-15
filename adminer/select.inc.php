@@ -529,7 +529,7 @@ if (!$columns && support("table")) {
 						$idf = bracket_escape($unique_idf);
 						$id = h("val[$idf][" . bracket_escape($key) . "]");
 						$posted = idx(idx($_POST["val"], $idf), bracket_escape($key));
-						$update = idx($field["privileges"], "update");
+						$update = idx($field["privileges"], "update") && !is_identity_always($field);
 						$editable = !is_array($row[$key]) && !is_blob($field) && is_utf8($val) && $rows[$n][$key] == $val && !$fun && !$field["generated"] && $update;
 						$type = ($fun == "min" || $fun == "max" ? $fields[$col]["type"] : $field["type"]);
 						$text = preg_match('~text|json|lob~', $type);

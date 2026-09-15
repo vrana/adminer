@@ -249,7 +249,7 @@ if (isset($_GET["clickhouse"])) {
 			$rows = get_rows(
 				"SELECT c." . idf_escape('table') . " AS " . idf_escape('table')
 				. ", c.name, c.type, c.default_kind, c.default_expression, c.comment, "
-				. "c.is_in_primary_key, c.is_in_sorting_key, t.engine AS table_engine "
+				. "c.is_in_primary_key, c.is_in_sorting_key, c.is_in_partition_key, t.engine AS table_engine "
 				. "FROM system.columns AS c LEFT JOIN system.tables AS t "
 				. "ON c.database = t.database AND c." . idf_escape('table') . " = t.name "
 				. "WHERE c.database = " . q($this->conn->_db)
@@ -332,7 +332,7 @@ if (isset($_GET["clickhouse"])) {
 		if (!$generated && !$isView) {
 			$privileges["insert"] = 1;
 		}
-		if (!$generated && preg_match('~MergeTree$~', $engine)) {
+		if (!$generated && preg_match('~MergeTree$~', $engine) && !$row['is_in_sorting_key'] && !$row['is_in_partition_key']) { // ALTER TABLE UPDATE can't change a key column
 			$privileges["update"] = 1;
 		}
 		return array(
@@ -576,7 +576,7 @@ if (isset($_GET["clickhouse"])) {
 		$return = array();
 		$result = get_rows(
 			"SELECT c.name, c.type, c.default_kind, c.default_expression, c.comment, "
-			. "c.is_in_primary_key, c.is_in_sorting_key, t.engine AS table_engine "
+			. "c.is_in_primary_key, c.is_in_sorting_key, c.is_in_partition_key, t.engine AS table_engine "
 			. "FROM system.columns AS c LEFT JOIN system.tables AS t "
 			. "ON c.database = t.database AND c." . idf_escape('table') . " = t.name "
 			. "WHERE c.database = " . q(connection()->_db)

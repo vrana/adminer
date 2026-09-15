@@ -295,7 +295,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 		// 128 - JSON_PRETTY_PRINT, 64 - JSON_UNESCAPED_SLASHES, 256 - JSON_UNESCAPED_UNICODE available since PHP 5.4
 		$value = json_encode(is_array($value) ? $value : json_decode($value), 128 | 64 | 256);
 	}
-	$reset = (JUSH == "mssql" && $update && $field["auto_increment"]); // MS SQL doesn't allow updating an identity column
+	$reset = ($update && is_identity_always($field));
 	if ($reset && !$_POST["save"]) {
 		$function = null;
 	}

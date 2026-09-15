@@ -365,6 +365,7 @@ ORDER BY 1") as $row
 
 	function fields(string $table): array {
 		$return = array();
+		$identity = null;
 		foreach (get_rows("SELECT * FROM all_tab_columns WHERE table_name = " . q($table) . " AND " . where_owner() . " ORDER BY column_id") as $row) {
 			$type = $row["DATA_TYPE"];
 			$length = "$row[DATA_PRECISION],$row[DATA_SCALE]";
@@ -380,6 +381,12 @@ ORDER BY 1") as $row
 					$default = str_replace("''", "'", $match[1]); // a string is stored as a quoted literal
 				}
 			}
+			if ($row["IDENTITY_COLUMN"] == "YES") {
+				if ($identity === null) { // all_tab_identity_cols exists only since Oracle 12c, which introduced identity columns
+					$identity = get_key_vals("SELECT column_name, generation_type FROM all_tab_identity_cols WHERE table_name = " . q($table) . " AND " . where_owner());
+				}
+				$default = "GENERATED " . $identity[$row["COLUMN_NAME"]] . ($row["DEFAULT_ON_NULL"] == "YES" ? " ON NULL" : "") . " AS IDENTITY"; // instead of the internal sequence
+			}
 			$privileges = array("insert" => 1, "select" => 1, "update" => 1, "order" => 1);
 			if ($row["DATA_TYPE_OWNER"] == "" || $type == "XMLTYPE") { // an object type, e.g. SDO_GEOMETRY, can't be compared with a string
 				$privileges["where"] = 1;
@@ -391,7 +398,7 @@ ORDER BY 1") as $row
 				"length" => $length,
 				"default" => $default,
 				"null" => ($row["NULLABLE"] == "Y"),
-				//! "auto_increment" => false,
+				"auto_increment" => ($row["IDENTITY_COLUMN"] == "YES"),
 				//! "collation" => $row["CHARACTER_SET_NAME"],
 				"privileges" => $privileges,
 				//! "comment" => $row["Comment"],

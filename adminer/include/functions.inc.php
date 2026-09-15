@@ -1034,6 +1034,13 @@ function is_blob(array $field): bool {
 		&& !in_array($field["type"], idx(driver()->structuredTypes(), lang('User types'), array()));
 }
 
+/** Check whether the field is an identity column which the database doesn't allow to update
+* @param Field $field
+*/
+function is_identity_always(array $field): bool {
+	return $field["auto_increment"] && (JUSH == "mssql" || $field["default"] == "GENERATED ALWAYS AS IDENTITY");
+}
+
 /** Check whether the string is e-mail address */
 function is_mail(?string $email): bool {
 	$atom = '[-a-z0-9!#$%&\'*+/=?^_`{|}~]'; // characters of local-name
