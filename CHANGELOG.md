@@ -1,4 +1,6 @@
 ## Adminer dev
+- Editor: Describe foreign keys by the first string column, not only varchar
+- Editor: Shorten long descriptions of foreign keys
 
 ## Adminer 6.1.0 (released 2026-09-14)
 - Send the form by the default button by Ctrl+Enter

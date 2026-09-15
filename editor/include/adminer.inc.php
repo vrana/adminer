@@ -5,6 +5,7 @@ class Adminer {
 	/** @var Adminer|Plugins|null */ static $instance;
 	/** @visibility protected(set) */ public string $error = ''; // HTML
 	/** @var array<string, string[]|string> */ private array $values = array(); // [table => options or one description]
+	/** @var true[] */ private array $described = array(); // [column => true] of the columns replaced by rowDescriptions()
 
 	function name(): string {
 		return "<a href='https://www.adminer.org/editor/'" . target_blank() . " id='h1'><img src='" . DIR . "static/logo.svg' width='24' height='24' alt='' id='logo'>" . lang('Editor') . "</a>";
@@ -222,9 +223,9 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	}
 
 	function rowDescription(string $table): string {
-		// first varchar column
+		// first string column
 		foreach (fields($table) as $field) {
-			if (preg_match("~varchar|character varying~", $field["type"])) {
+			if (preg_match("~char|text~", $field["type"])) {
 				return idf_escape($field["field"]);
 			}
 		}
@@ -251,6 +252,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 					$descriptions = get_key_vals("SELECT $id, $name FROM " . table($table) . " WHERE $id IN (" . implode(", ", $ids) . ")");
 				}
 				// use the descriptions
+				$this->described[$key] = true;
 				foreach ($rows as $n => $row) {
 					if (isset($row[$key])) {
 						$return[$n][$key] = (string) $descriptions[$row[$key]];
@@ -266,6 +268,9 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 
 	function selectVal(?string $val, ?string $link, array $field, ?string $original): string {
 		$return = "$val";
+		if (isset($this->described[$field["field"]]) && $original !== null) {
+			$return = shorten_utf8($original, max(0, +adminer()->selectLengthProcess())); // the foreign key column is usually a number which is not shortened
+		}
 		$link = h($link);
 		if (is_blob($field) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($original));
