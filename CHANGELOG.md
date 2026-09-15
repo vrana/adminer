@@ -1,5 +1,6 @@
 ## Adminer dev
-- PostgreSQL: Do not highlight a valid date or time value as too long, e.g. in a timestamptz column
+- PostgreSQL, MS SQL: Do not highlight a valid date or time value as too long
+- MS SQL: Export and alter the precision of datetime2, time and datetimeoffset
 - Editor: Describe foreign keys by the first string column, not only varchar
 - Editor: Shorten long descriptions of foreign keys
 ### Plugins

@@ -336,7 +336,7 @@ if (isset($_GET["mssql"])) {
 					"tinyint" => 3, "smallint" => 5, "int" => 10, "bigint" => 20, "bit" => 1, "decimal" => 0, "numeric" => 0,
 					"real" => 12, "float" => 53, "smallmoney" => 10, "money" => 20, "vector" => 0,
 				),
-				lang('Date and time') => array("date" => 10, "smalldatetime" => 19, "datetime" => 19, "datetime2" => 19, "time" => 8, "datetimeoffset" => 26),
+				lang('Date and time') => array("date" => 10, "smalldatetime" => 19, "datetime" => 23, "datetime2" => 19, "time" => 8, "datetimeoffset" => 26),
 				lang('Strings') => array(
 					"char" => 8000, "varchar" => 8000, "text" => 2147483647, "nchar" => 4000, "nvarchar" => 4000, "ntext" => 1073741823,
 					"uniqueidentifier" => 36, "xml" => 2147483647, "json" => 2147483647, "sql_variant" => 8000, "hierarchyid" => 892,
@@ -547,7 +547,10 @@ WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V')
 			? ($row["max_length"] == -1 ? "max" : intval($row["max_length"]) / ($type[0] == 'n' ? 2 : 1)) // -1 - varchar(max), the other types report it too
 			: ($type == "decimal"
 				? "$row[precision],$row[scale]"
-				: ($type == "vector" ? (intval($row["max_length"]) - 8) / 4 : "") // a dimension takes 4 bytes, the header 8
+				: (preg_match('~^(datetime2|datetimeoffset|time)$~', $type)
+					? $row["scale"] // the number of fractional seconds digits, 7 by default
+					: ($type == "vector" ? (intval($row["max_length"]) - 8) / 4 : "") // a dimension takes 4 bytes, the header 8
+				)
 			)
 		);
 	}
@@ -573,7 +576,7 @@ WHERE c.object_id = " . q($table_id)) as $row
 			$length = type_length($type, $row);
 			$return[$row["name"]] = array(
 				"field" => $row["name"],
-				"full_type" => $type . ($length ? "($length)" : ""),
+				"full_type" => $type . ($length != "" ? "($length)" : ""),
 				"type" => $type,
 				"length" => $length,
 				"default" => (preg_match("~^\(N?'(.*)'\)$~s", $row["default"], $match) ? str_replace("''", "'", $match[1]) : $row["default"]),
@@ -864,7 +867,7 @@ ORDER BY p.parameter_id") as $row
 				"field" => preg_replace('~^@~', '', $row["name"]), // the parameters are prefixed by @
 				"type" => $field_type,
 				"length" => $length,
-				"full_type" => $field_type . ($length ? "($length)" : ""),
+				"full_type" => $field_type . ($length != "" ? "($length)" : ""),
 				"null" => true,
 				"inout" => ($row["is_output"] ? "OUTPUT" : ""),
 			);
