@@ -285,7 +285,7 @@ if (isset($_GET["pgsql"])) {
 			parent::__construct($connection);
 			$this->types = array( //! arrays
 				lang('Numbers') => array("smallint" => 5, "integer" => 10, "bigint" => 19, "boolean" => 1, "numeric" => 0, "real" => 7, "double precision" => 16, "money" => 20),
-				lang('Date and time') => array("date" => 13, "time" => 17, "timestamp" => 20, "timestamptz" => 21, "interval" => 0),
+				lang('Date and time') => array("date" => 10, "time" => 8, "timestamp" => 19, "timestamptz" => 25, "interval" => 0), // without fractions; BC dates or old time zones are longer
 				lang('Strings') => array("character" => 0, "character varying" => 0, "text" => 0, "tsquery" => 0, "tsvector" => 0, "uuid" => 0, "xml" => 0),
 				lang('Binary') => array("bit" => 0, "bit varying" => 0, "bytea" => 0),
 				lang('Network') => array("cidr" => 43, "inet" => 43, "macaddr" => 17, "macaddr8" => 23, "txid_snapshot" => 0),

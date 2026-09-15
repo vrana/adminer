@@ -1,4 +1,5 @@
 ## Adminer dev
+- PostgreSQL: Do not highlight a valid date or time value as too long, e.g. in a timestamptz column
 - Editor: Describe foreign keys by the first string column, not only varchar
 - Editor: Shorten long descriptions of foreign keys
 ### Plugins

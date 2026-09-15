@@ -346,7 +346,8 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 			$type_length = $types[$field["type"]];
 			if (preg_match('~date|time|year~', $field["type"])) {
 				// the length of a temporal type is the number of fractional seconds digits, not of characters
-				$fraction = (preg_match('~time~', $field["type"]) && preg_match('~^\d+$~', $field["length"]) ? $field["length"] + 1 : 0); // 1 - decimal point
+				$precision = ($field["length"] == "" && JUSH == "pgsql" ? 6 : $field["length"]); // PostgreSQL stores microseconds by default
+				$fraction = (preg_match('~time~', $field["type"]) && preg_match('~^\d+$~', $precision) ? $precision + 1 : 0); // 1 - decimal point
 				$maxlength = ($type_length ? $type_length + $fraction : 0);
 			} elseif (!preg_match('~int|vector~', $field["type"]) && preg_match('~^(\d+)(,(\d+))?$~', $field["length"], $match)) { // int(3) and vector(3) don't limit the length of the value
 				$maxlength = (preg_match("~binary~", $field["type"]) ? 2 : 1) * $match[1] + ($match[3] ? 1 : 0) + ($match[2] && !$field["unsigned"] ? 1 : 0);
