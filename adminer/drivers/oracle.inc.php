@@ -189,7 +189,7 @@ if (isset($_GET["oracle"])) {
 			parent::__construct($connection);
 			$this->types = array(
 				lang('Numbers') => array("number" => 38, "binary_float" => 12, "binary_double" => 21),
-				lang('Date and time') => array("date" => 10, "timestamp" => 29, "interval year" => 12, "interval day" => 28), //! year(), day() to second()
+				lang('Date and time') => array("date" => 19, "timestamp" => 29, "interval year" => 12, "interval day" => 28), //! year(), day() to second()
 				lang('Strings') => array("char" => 2000, "varchar2" => 4000, "nchar" => 2000, "nvarchar2" => 4000, "clob" => 4294967295, "nclob" => 4294967295),
 				lang('Binary') => array("raw" => 2000, "long raw" => 2147483648, "blob" => 4294967295, "bfile" => 4294967296),
 				lang('Geometry') => array("sdo_geometry" => 0),
