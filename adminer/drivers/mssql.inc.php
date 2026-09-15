@@ -28,7 +28,7 @@ if (isset($_GET["mssql"])) {
 
 			function attach(array $server, string $username, string $password): string {
 				sqlsrv_configure("WarningsReturnAsErrors", 0); // a message from the server would stop sqlsrv_next_result(), e.g. between the result sets of sp_helpdb
-				$connection_info = array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8");
+				$connection_info = array("UID" => $username, "PWD" => $password, "CharacterSet" => "UTF-8", "ReturnDatesAsStrings" => true); // DateTime would lose fractional seconds and the offset
 				if (isset($_GET["sql"]) && !self::$instance) {
 					$connection_info["MultipleActiveResultSets"] = false; // MARS rolls back BEGIN TRANSACTION after each command, other pages and explain() need it
 				}
@@ -164,22 +164,12 @@ if (isset($_GET["mssql"])) {
 				// $this->num_rows = sqlsrv_num_rows($result); // available only in scrollable results
 			}
 
-			private function convert($row) {
-				foreach ((array) $row as $key => $val) {
-					if (is_a($val, 'DateTime')) {
-						$row[$key] = $val->format("Y-m-d H:i:s");
-					}
-					//! stream
-				}
-				return $row;
-			}
-
 			function fetch_assoc() {
-				return $this->convert(sqlsrv_fetch_array($this->result, SQLSRV_FETCH_ASSOC));
+				return sqlsrv_fetch_array($this->result, SQLSRV_FETCH_ASSOC);
 			}
 
 			function fetch_row() {
-				return $this->convert(sqlsrv_fetch_array($this->result, SQLSRV_FETCH_NUMERIC));
+				return sqlsrv_fetch_array($this->result, SQLSRV_FETCH_NUMERIC);
 			}
 
 			function fetch_field(): \stdClass {

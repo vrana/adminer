@@ -1,6 +1,7 @@
 ## Adminer dev
 - PostgreSQL, MS SQL: Do not highlight a valid date or time value as too long
 - MS SQL: Export and alter the precision of datetime2, time and datetimeoffset
+- MS SQL: Keep fractional seconds and the time zone offset when saving a row with the sqlsrv extension
 - Editor: Describe foreign keys by the first string column, not only varchar
 - Editor: Shorten long descriptions of foreign keys
 ### Plugins
