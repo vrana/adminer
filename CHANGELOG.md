@@ -1,6 +1,8 @@
 ## Adminer dev
 - Editor: Describe foreign keys by the first string column, not only varchar
 - Editor: Shorten long descriptions of foreign keys
+### Plugins
+- New plugin: Display the first string column of the referenced row instead of a foreign key value, same as in Adminer Editor
 
 ## Adminer 6.1.0 (released 2026-09-14)
 - Send the form by the default button by Ctrl+Enter
