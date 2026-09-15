@@ -259,7 +259,7 @@ WHERE ' . where_owner("c.owner") . '
 ORDER BY c.table_name, c.column_id', $this->conn);
 			foreach ($rows as $row) {
 				$length = "$row[precision],$row[scale]";
-				$row["length"] = ($length == "," ? $row["char_length"] : $length); //! int
+				$row["length"] = (strpos($row["type"], "(") ? "" : ($length == "," ? $row["char_length"] : $length)); //! int
 				$row["type"] = strtolower($row["type"]);
 				$row["null"] = ($row["nullable"] == "Y");
 				$return[$row["tab"]][] = $row;
@@ -370,6 +370,8 @@ ORDER BY 1") as $row
 			$length = "$row[DATA_PRECISION],$row[DATA_SCALE]";
 			if ($length == ",") {
 				$length = $row["CHAR_COL_DECL_LENGTH"];
+			} elseif (strpos($type, "(")) {
+				$length = ""; // the type includes the precision, e.g. TIMESTAMP(6) WITH TIME ZONE
 			} //! int
 			$default = $row["DATA_DEFAULT"];
 			if ($default !== null) {
