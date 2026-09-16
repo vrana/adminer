@@ -10,6 +10,7 @@
 - ClickHouse: Offer the geometry types, Time and Time64, group the types as in the other drivers
 - ClickHouse: Display the number of rows to a read-only user
 - ClickHouse: Shorten the links to rows with a long string by its MD5 hash
+- ClickHouse: Do not round big integers and decimals, e.g. UInt64 or Decimal128, display empty maps and maps with numeric keys as objects
 - Editor: Describe foreign keys by the first string column, not only varchar
 - Editor: Shorten long descriptions of foreign keys
 ### Plugins

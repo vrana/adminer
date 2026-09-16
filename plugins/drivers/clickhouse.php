@@ -64,8 +64,8 @@ if (isset($_GET["clickhouse"])) {
 					return true;
 				}
 
-				$return = json_decode($file, true);
-				if (!is_array($return) || !isset($return['data']) || !isset($return['meta'])) {
+				$return = json_decode_exact($file); // json_decode() would round e.g. UInt64 or Decimal and they would be saved rounded
+				if (!is_object($return) || !isset($return->data) || !isset($return->meta)) {
 					$this->errno = json_last_error();
 					$this->error = ($this->errno && function_exists('json_last_error_msg')
 						? json_last_error_msg()
@@ -121,20 +121,20 @@ if (isset($_GET["clickhouse"])) {
 			public $num_rows, $columns, $meta;
 			private $rows = array(), $rowOffset = 0, $fieldOffset = 0;
 
-			function __construct(array $result) {
-				$this->meta = (array) $result['meta'];
-				foreach ((array) $result['data'] as $item) {
+			function __construct(\stdClass $result) {
+				$this->meta = array_map('get_object_vars', $result->meta);
+				foreach ((array) $result->data as $item) {
 					$row = array();
 					foreach ((array) $item as $key => $val) {
 						$type = (isset($this->meta[$key]['type']) ? $this->meta[$key]['type'] : '');
 						$row[$key] = ($val === null || is_scalar($val)
-							? $this->normalizeValue($val, $type)
-							: json_encode($val, 256 | 64) // JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES available since PHP 5.4
+							? $this->normalizeValue(json_scalar($val), $type)
+							: json_encode_exact($val, 256 | 64) // JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES available since PHP 5.4
 						);
 					}
 					$this->rows[] = $row;
 				}
-				$this->num_rows = (isset($result['rows']) ? $result['rows'] : count($this->rows));
+				$this->num_rows = count($this->rows);
 				$this->columns = array_map(function ($column) {
 					return $column['name'];
 				}, $this->meta); // array_column() is available since PHP 5.5
