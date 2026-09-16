@@ -76,8 +76,10 @@ addEventListener('DOMContentLoaded', () => {
 	protected $translations = array(
 		'cs' => array('' => 'Použije Monaco Editor z VS Code pro zvýrazňování syntaxe a <textarea>'),
 		'de' => array('' => 'Monaco-Editor von VS Code verwenden, für die Syntaxhervorhebung und SQL <textarea>'),
-		'ja' => array('' => '構文や <textarea> の強調表示に VS Code の Monaco Editor を使用'),
+		'ja' => array('' => '構文強調表示と SQL の <textarea> に VS Code の Monaco Editor を使用'), // Claude Opus 5
 		'pl' => array('' => 'Użyj Monaco Editora programu VS Code do podświetlania składni i <textarea> SQL'),
+		'ro' => array('' => 'Folosește Monaco Editor din VS Code pentru evidențierea sintaxei și <textarea> SQL'), // Claude Opus 5
+		'sk' => array('' => 'Použije Monaco Editor z VS Code na zvýrazňovanie syntaxe a SQL <textarea>'), // Claude Opus 5
 		'hr' => array('' => 'Koristi Monaco Editor iz VS Code za isticanje sintakse i SQL <textarea>'),
 	);
 }

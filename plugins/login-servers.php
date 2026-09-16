@@ -44,6 +44,7 @@ class AdminerLoginServers extends Adminer\Plugin {
 		'pl' => array('' => 'Wyświetlaj stałą listę serwerów w formularzu logowania'),
 		'ro' => array('' => 'Afișarea unei liste constante de servere în formularul de conectare'),
 		'ja' => array('' => 'ログイン画面に定義済のサーバリストを表示'),
+		'sk' => array('' => 'V prihlasovacom formulári zobrazuje preddefinovaný zoznam serverov'), // Claude Opus 5
 		'hr' => array('' => 'Prikazuje konstantan popis poslužitelja u obrascu za prijavu'),
 	);
 }

@@ -57,9 +57,10 @@ function slugifyChange(slug, length) {
 	protected $translations = array(
 		'cs' => array('' => 'Předvyplní políčko obsahující "_slug" URLizovanou hodnotou předchozího políčka (JavaScript)'),
 		'de' => array('' => 'Feld, das "_slug" enthält, mit dem Slugified-Wert eines vorherigen Felds vorab füllen (JavaScript)'),
-		'pl' => array('' => 'Wstępnie wypełnij pole zawierające "_slug" osłabioną wartością poprzedniego pola (JavaScript)'),
+		'pl' => array('' => 'Wstępnie wypełnij pole zawierające "_slug" wartością poprzedniego pola przekształconą w slug (JavaScript)'), // Claude Opus 5
 		'ro' => array('' => 'Precompletați câmpul care conține "_slug" cu valoarea slugificată a unui câmp anterior (JavaScript)'),
 		'ja' => array('' => '列名に "_slug" を含む列を、前列の URL 化された値でプレフィル (JavaScript)'),
+		'sk' => array('' => 'Predvyplní políčko obsahujúce "_slug" URLizovanou hodnotou predchádzajúceho políčka (JavaScript)'), // Claude Opus 5
 		'hr' => array('' => 'Popunjava polje koje sadrži "_slug" slugificiranom vrijednošću prethodnog polja (JavaScript)'),
 	);
 }

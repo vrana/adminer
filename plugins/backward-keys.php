@@ -75,7 +75,7 @@ ORDER BY s.ordinal_position", null, "") as $row
 
 	protected $translations = array(
 		'cs' => array(
-			'' => 'Zobrazí odkazy na tabulky odkazující aktuální řádek, stejně jako Adminer Editor',
+			'' => 'Zobrazí odkazy na tabulky odkazující na aktuální řádek, stejně jako Adminer Editor',
 			'New item' => 'Nová položka',
 		),
 		'de' => array(
@@ -87,8 +87,14 @@ ORDER BY s.ordinal_position", null, "") as $row
 			'New item' => '新規レコードを挿入',
 		),
 		'pl' => array(
-			'' => 'Wyświetlaj linki do tabel odnoszących się do bieżącego wiersza, tak samo jak w Edytorze administratora',
+			'' => 'Wyświetlaj linki do tabel odnoszących się do bieżącego wiersza, tak samo jak w Adminer Editorze', // Claude Opus 5
 			'New item' => 'Nowy rekord',
+		),
+		'ro' => array(
+			'' => 'Afișează link-uri către tabelele care fac referire la rândul curent, la fel ca în Adminer Editor', // Claude Opus 5
+		),
+		'sk' => array(
+			'' => 'Zobrazí odkazy na tabuľky odkazujúce na aktuálny riadok, rovnako ako Adminer Editor', // Claude Opus 5
 		),
 		'hr' => array(
 			'' => 'Prikazuje veze na tablice koje referenciraju trenutni redak, kao u Adminer Editoru',

@@ -103,6 +103,7 @@ geminiText.onkeydown = event => {
 			'Just a sec…' => 'Chviličku…',
 		),
 		'pl' => array(
+			'' => 'Monit AI w poleceniu SQL generującym zapytania za pomocą Google Gemini',
 			'Ask Gemini' => 'Zapytaj Gemini',
 			'Just a sec…' => 'Chwileczkę…',
 		),
@@ -115,6 +116,12 @@ geminiText.onkeydown = event => {
 			'' => 'Google Gemini AI を用いて SQL 文を生成',
 			'Ask Gemini' => 'Gemini に聞く',
 			'Just a sec…' => 'しばらくお待ち下さい…',
+		),
+		'ro' => array(
+			'' => 'Prompt AI în comanda SQL care generează interogările cu Google Gemini', // Claude Opus 5
+		),
+		'sk' => array(
+			'' => 'Generovanie SQL príkazov pomocou umelej inteligencie Google Gemini', // Claude Opus 5
 		),
 		'hr' => array(
 			'' => 'Generiranje SQL naredbi pomoću Google Gemini AI',

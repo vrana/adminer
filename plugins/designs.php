@@ -53,6 +53,7 @@ class AdminerDesigns extends Adminer\Plugin {
 		'pl' => array('' => 'Zezwalaj na przełączanie motywów'),
 		'ro' => array('' => 'Permiteți comutarea designurilor'),
 		'ja' => array('' => 'テーマ設定を有効化'),
+		'sk' => array('' => 'Umožní prepínať vzhľady'), // Claude Opus 5
 		'hr' => array('' => 'Omogućuje promjenu dizajna'),
 	);
 }

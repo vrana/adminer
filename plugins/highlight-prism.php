@@ -63,8 +63,10 @@ if (el) {
 	protected $translations = array(
 		'cs' => array('' => 'Použije Prism Code Editor pro zvýrazňování syntaxe a <textarea>'),
 		'de' => array('' => 'Prism Code Editor verwenden, für die Syntaxhervorhebung und <textarea>'),
-		'ja' => array('' => '構文や <textarea> の強調表示に Prism Code Editor を使用'),
+		'ja' => array('' => '構文強調表示と <textarea> に Prism Code Editor を使用'), // Claude Opus 5
 		'pl' => array('' => 'Użyj Prism Code Editora do podświetlania składni i <textarea>'),
+		'ro' => array('' => 'Folosește Prism Code Editor pentru evidențierea sintaxei și <textarea>'), // Claude Opus 5
+		'sk' => array('' => 'Použije Prism Code Editor na zvýrazňovanie syntaxe a <textarea>'), // Claude Opus 5
 		'hr' => array('' => 'Koristi Prism Code Editor za isticanje sintakse i SQL <textarea>'),
 	);
 }

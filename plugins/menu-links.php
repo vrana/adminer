@@ -104,6 +104,7 @@ li:hover .hover, p:hover .hover, div:hover > .hover, .hover.active, tr:hover td.
 			'Show structure' => 'Zobrazit strukturu',
 		),
 		'pl' => array(
+			'' => 'Konfiguruj łącza tabeli menu; można je łączyć za pomocą AdminerConfig',
 			'Menu table links' => 'Linki do tabel w menu',
 			'Both' => 'Obie',
 			'Both, select on hover' => 'Obie, przeglądaj po najechaniu myszą', // Claude Opus 5
@@ -134,6 +135,12 @@ li:hover .hover, p:hover .hover, div:hover > .hover, .hover.active, tr:hover td.
 			'select' => '選択',
 			'Select data' => 'データ',
 			'Show structure' => '構造',
+		),
+		'ro' => array(
+			'' => 'Configurarea link-urilor către tabele din meniu; se poate combina cu AdminerConfig', // Claude Opus 5
+		),
+		'sk' => array(
+			'' => 'Konfigurácia odkazov na tabuľky v menu; kombinovateľné s AdminerConfig', // Claude Opus 5
 		),
 		'hr' => array(
 			'' => 'Prikazuje veze na odabir podataka ili strukturu tablice u izborniku',

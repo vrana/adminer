@@ -18,6 +18,7 @@ class AdminerEditorViews extends Adminer\Plugin {
 		'pl' => array('' => 'Wyświetlaj widoki w Adminer Editorze'),
 		'ro' => array('' => 'Afișează vizualizări în Adminer Editor'),
 		'ja' => array('' => 'Adminer Editor にビューを表示'),
+		'sk' => array('' => 'Zobrazenie pohľadov v Adminer Editore'), // Claude Opus 5
 		'hr' => array('' => 'Prikazuje poglede u Adminer Editoru'),
 	);
 }

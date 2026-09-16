@@ -86,6 +86,9 @@ class AdminerLoginOtp extends Adminer\Plugin {
 		'ja' => array(
 			'' => 'ログイン時にワンタイムパスワード (二要素認証) が必要',
 		),
+		'sk' => array(
+			'' => 'Pri prihlásení vyžaduje jednorazové heslo', // Claude Opus 5
+		),
 		'hr' => array(
 			'' => 'Jednokratna lozinka (dvofaktorska autentifikacija) potrebna pri prijavi',
 			'One Time Password' => 'Jednokratna lozinka',

@@ -382,5 +382,20 @@ class AdminerImportCsv extends Adminer\Plugin {
 			'Table has been created.' => 'Tabulka byla vytvořena.',
 			'%d row(s) have been imported.' => array('Byl importován %d záznam.', 'Byly importovány %d záznamy.', 'Bylo importováno %d záznamů.'),
 		),
+		'de' => array(
+			'' => 'Erstellt eine Tabelle aus einer importierten CSV-Datei', // Claude Opus 5
+		),
+		'pl' => array(
+			'' => 'Tworzy tabelę z zaimportowanego pliku CSV', // Claude Opus 5
+		),
+		'ro' => array(
+			'' => 'Creează un tabel dintr-un fișier CSV importat', // Claude Opus 5
+		),
+		'ja' => array(
+			'' => 'インポートした CSV ファイルからテーブルを作成', // Claude Opus 5
+		),
+		'sk' => array(
+			'' => 'Vytvorenie tabuľky z nahraného CSV súboru', // Claude Opus 5
+		),
 	);
 }

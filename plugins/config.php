@@ -75,6 +75,7 @@ class AdminerConfig extends Adminer\Plugin {
 			'Save' => 'Uložit',
 		),
 		'pl' => array(
+			'' => 'Konfiguruj opcje dla użytkowników końcowych i przechowuj je w pliku cookie',
 			'Configuration' => 'Konfiguracja',
 			'Configuration saved.' => 'Konfiguracja zapisana.',
 			'Only some plugins support configuration, e.g. %s.' => 'Tylko niektóre wtyczki obsługują konfigurację, np. %s.',
@@ -102,6 +103,12 @@ class AdminerConfig extends Adminer\Plugin {
 			'Use %s if it exists' => 'あれば %s を使う',
 			'Use built-in design' => '組込みのデザインを使う',
 			'Save' => '保存',
+		),
+		'ro' => array(
+			'' => 'Configurarea opțiunilor de către utilizatori și salvarea lor într-un cookie', // Claude Opus 5
+		),
+		'sk' => array(
+			'' => 'Konfigurácia možností používateľmi a ich uloženie do cookie', // Claude Opus 5
 		),
 		'hr' => array(
 			'' => 'Postavljanje opcija krajnjim korisnicima i njihovo spremanje u cookie', // Claude Opus 5

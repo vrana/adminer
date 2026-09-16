@@ -36,14 +36,14 @@ class AdminerTableIndexesStructure extends Adminer\Plugin {
 			'Columns' => 'Sloupce',
 		),
 		'de' => array(
-			'' => 'Erweiterte Ausgabe der Tabellenindize',
+			'' => 'Erweiterte Ausgabe der Tabellenindizes', // Claude Opus 5
 			'Name' => 'Name',
 			'Type' => 'Typ',
 			'Algorithm' => 'Algorithmus',
 			'Columns' => 'Spalten',
 		),
 		'pl' => array(
-			'' => 'Rozszerzona tabela wyników struktury indeksów',
+			'' => 'Rozszerzone wyjście struktury indeksów tabeli', // Claude Opus 5
 			'Name' => 'Nazwa',
 			'Type' => 'Typ',
 			'Algorithm' => 'Algorytm',
@@ -62,6 +62,9 @@ class AdminerTableIndexesStructure extends Adminer\Plugin {
 			'Type' => '型',
 			'Algorithm' => 'アルゴリズム',
 			'Columns' => 'カラム',
+		),
+		'sk' => array(
+			'' => 'Rozšírený výpis štruktúry indexov tabuľky', // Claude Opus 5
 		),
 		'hr' => array(
 			'' => 'Prošireni prikaz indeksa tablice',

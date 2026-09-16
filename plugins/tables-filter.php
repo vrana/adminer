@@ -83,10 +83,13 @@ sessionStorage && document.addEventListener('DOMContentLoaded', () => {
 			'' => 'Filtruj nazwy na liście tabel',
 		),
 		'ro' => array(
-			'' => 'Nume de filtre în lista de tabele',
+			'' => 'Filtrează numele în lista de tabele', // Claude Opus 5
 		),
 		'ja' => array(
 			'' => 'テーブル一覧をテーブル名でフィルタリング',
+		),
+		'sk' => array(
+			'' => 'Filtruje názvy v zozname tabuliek', // Claude Opus 5
 		),
 		'hr' => array(
 			'' => 'Filtriranje tablice prema imenu',

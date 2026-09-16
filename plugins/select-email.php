@@ -183,6 +183,7 @@ function emailFileChange() {
 			'Insert' => 'Indsæt',
 		),
 		'de' => array(
+			'' => 'Senden von E-Mails an Adressen in der Tabelle zulassen',
 			'E-mail' => 'E-Mail',
 			'From' => 'Von',
 			'Subject' => 'Betreff',
@@ -291,7 +292,7 @@ function emailFileChange() {
 			'Insert' => 'Inserisci',
 		),
 		'ja' => array(
-			'' => 'テーブルに含まれるアドレスにメールを送信',
+			'' => 'テーブルに含まれるメールアドレスにメールを送信',
 			'E-mail' => 'メール',
 			'From' => '差出人',
 			'Subject' => '題名',
@@ -364,6 +365,7 @@ function emailFileChange() {
 			'Insert' => 'Sett inn',
 		),
 		'pl' => array(
+			'' => 'Zezwól na wysyłanie wiadomości e-mail na adresy w tabeli',
 			'E-mail' => 'E-mail',
 			'From' => 'Nadawca',
 			'Subject' => 'Temat',
@@ -391,6 +393,7 @@ function emailFileChange() {
 			'Insert' => 'Inserir',
 		),
 		'ro' => array(
+			'' => 'Permite trimiterea de e-mailuri către adresele din tabel', // Claude Opus 5
 			'E-mail' => 'Poșta electronică',
 			'From' => 'De la',
 			'Subject' => 'Pentru',
@@ -409,6 +412,7 @@ function emailFileChange() {
 			'Insert' => 'Вставить',
 		),
 		'sk' => array(
+			'' => 'Umožňuje posielať e-maily na adresy v tabuľke', // Claude Opus 5
 			'E-mail' => 'E-mail',
 			'From' => 'Odosielateľ',
 			'Subject' => 'Predmet',

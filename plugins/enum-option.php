@@ -49,8 +49,11 @@ class AdminerEnumOption extends Adminer\Plugin {
 			'original' => 'original',
 		),
 		'ja' => array(
-			'' => '列挙型の編集に <input type="radio"> ではなく <select><option> を使用',
+			'' => 'enum の編集に <input type="radio"> ではなく <select><option> を使用', // Claude Opus 5
 			'original' => '元',
+		),
+		'sk' => array(
+			'' => 'Použije <select><option> na editáciu enum namiesto <input type="radio">', // Claude Opus 5
 		),
 		'hr' => array(
 			'' => 'Koristi <select><option> za uređivanje enum polja umjesto <input type="radio">',

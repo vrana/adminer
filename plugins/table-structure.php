@@ -83,6 +83,9 @@ class AdminerTableStructure extends Adminer\Plugin {
 			'Comment' => 'コメント',
 			'Auto Increment' => '連番',
 		),
+		'sk' => array(
+			'' => 'Rozšírený výpis štruktúry tabuľky', // Claude Opus 5
+		),
 		'hr' => array(
 			'' => 'Prošireni prikaz strukture tablice',
 			'Column' => 'Stupac',

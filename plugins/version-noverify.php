@@ -18,6 +18,7 @@ class AdminerVersionNoverify extends Adminer\Plugin {
 		'pl' => array('' => 'Wyłącz sprawdzanie wersji'),
 		'ro' => array('' => 'Dezactivați verificatorul de versiuni'),
 		'ja' => array('' => 'バージョンチェックを無効化'),
+		'sk' => array('' => 'Zakáže kontrolu nových verzií'), // Claude Opus 5
 		'hr' => array('' => 'Onemogućuje provjeru novih verzija'),
 	);
 }

@@ -44,6 +44,7 @@ class AdminerSqlLog extends Adminer\Plugin {
 		'pl' => array('' => 'Rejestruj wszystkie zapytania do pliku SQL'),
 		'ro' => array('' => 'Logați toate interogările în fișierul SQL'),
 		'ja' => array('' => '全クエリを SQL ファイルに記録'),
+		'sk' => array('' => 'Zaznamenáva všetky príkazy do súboru SQL'), // Claude Opus 5
 		'hr' => array('' => 'Bilježi sve upite u SQL datoteku'),
 	);
 }
