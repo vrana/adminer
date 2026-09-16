@@ -147,7 +147,7 @@ if (isset($_GET["simpledb"])) {
 					return false;
 				}
 			}
-			connection()->affected_rows = count($ids);
+			$this->conn->affected_rows = count($ids);
 			return true;
 		}
 
@@ -164,10 +164,10 @@ if (isset($_GET["simpledb"])) {
 		}
 
 		function select(string $table, array $select, array $where, array $group, array $order = array(), int $limit = 1, ?int $page = 0, bool $print = false) {
-			connection()->next = $_GET["next"];
+			$this->conn->next = $_GET["next"];
 			$_GET["next"] = ""; // set by sdb_request_all() if there is a following page
 			$return = parent::select($table, $select, $where, $group, $order, $limit, $page, $print);
-			connection()->next = 0;
+			$this->conn->next = 0;
 			return $return;
 		}
 
