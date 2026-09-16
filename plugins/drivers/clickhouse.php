@@ -369,7 +369,7 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function found_rows(array $table_status, array $where) {
-		return get_val("SELECT count() FROM " . table($table_status["Name"]) . ($where ? " WHERE " . implode(" AND ", $where) : ""));
+		return ($where ? null : $table_status["Rows"]); // total_rows is exact, null in views; select.inc.php counts the filtered rows itself
 	}
 
 	function alter_table(string $table, string $name, array $fields, array $foreign, ?string $comment, string $engine, string $collation, string $auto_increment, ?array $partitioning) {
