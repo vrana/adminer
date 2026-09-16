@@ -395,7 +395,7 @@ if (!$columns && support("table")) {
 				. on('click', 'tableClick') . on('dblclick', 'tableClick') . on('keydown', 'editingKeydown') . ">\n";
 			echo "<thead><tr>" . (!$group && $select
 				? ""
-				: "<td class='hover check'><input type='checkbox' id='all-page' class='jsonly' title='" . lang('All rows on this page') . "'" . on('click', 'formCheck', '^check') . ">");
+				: "<td class='hover check sticky'><input type='checkbox' id='all-page' class='jsonly' title='" . lang('All rows on this page') . "'" . on('click', 'formCheck', '^check') . ">");
 			$names = array();
 			$rank = 1;
 			foreach ($result_columns as $key => $val) {
@@ -470,7 +470,7 @@ if (!$columns && support("table")) {
 						);
 					}
 				}
-				echo "<tr>" . (!$group && $select ? "" : "<td class='hover check'>"
+				echo "<tr>" . (!$group && $select ? "" : "<td class='hover check sticky'>"
 					. ($is_group || information_schema(DB) ? "" : "<a href='" . h(ME . "edit=" . url_escape($TABLE) . $unique_idf) . "' class='edit'>" . lang('edit') . "</a> ")
 					. checkbox("check[]", substr($unique_idf, 1), in_array(substr($unique_idf, 1), (array) $_POST["check"]))
 				);
