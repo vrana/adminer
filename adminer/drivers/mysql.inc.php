@@ -388,6 +388,13 @@ if (!defined('Adminer\DRIVER')) {
 			return "X" . q(bin2hex($s));
 		}
 
+		function md5(string $column, array $field) {
+			if (is_blob($field) || preg_match('~' . text_type() . '~', $field["type"])) {
+				// PHP hashes the value in the connection charset
+				return "MD5(" . (is_blob($field) || preg_match("~^utf8~", $field["collation"]) ? $column : "CONVERT($column USING " . charset($this->conn) . ")") . ")";
+			}
+		}
+
 		function warnings() {
 			$result = $this->conn->query("SHOW WARNINGS");
 			if ($result && $result->num_rows) {

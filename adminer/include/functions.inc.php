@@ -344,8 +344,7 @@ function unique_array(?array $row, array $indexes) {
 */
 function where_function(?string $fun, string $column, array $field): string {
 	if ($fun == "md5") { // used for values too long for the URL
-		// PHP hashes the value in the connection charset
-		return "MD5(" . (is_blob($field) || JUSH != 'sql' || preg_match("~^utf8~", $field["collation"]) ? $column : "CONVERT($column USING " . charset(connection()) . ")") . ")";
+		return driver()->md5($column, $field) ?: $column; // $column as for the other unknown functions
 	}
 	return (in_array($fun, driver()->functions) || in_array($fun, driver()->grouping) ? apply_sql_function($fun, $column) : $column);
 }

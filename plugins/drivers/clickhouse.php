@@ -216,6 +216,13 @@ if (isset($_GET["clickhouse"])) {
 			return (get_val("SELECT value FROM system.settings WHERE name = 'readonly'") == 1 ? $query : "$query SETTINGS max_execution_time = $timeout");
 		}
 
+		function md5(string $column, array $field) {
+			// not FixedString, its rendered value lacks the NUL padding; not the types rendered as JSON, the server formats e.g. floats differently
+			if (preg_match('~^(LowCardinality\()?(Nullable\()?String\b~', $field["full_type"])) {
+				return "lower(hex(MD5($column)))";
+			}
+		}
+
 		function __construct(Db $connection) {
 			parent::__construct($connection);
 			$this->types = array(

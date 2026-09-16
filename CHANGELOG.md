@@ -8,12 +8,14 @@
 - Oracle: Alter timestamp and interval columns, display their type without a duplicate precision
 - ClickHouse: Offer the geometry types, Time and Time64, group the types as in the other drivers
 - ClickHouse: Display the number of rows to a read-only user
+- ClickHouse: Shorten the links to rows with a long string by its MD5 hash
 - Editor: Describe foreign keys by the first string column, not only varchar
 - Editor: Shorten long descriptions of foreign keys
 ### Plugins
 - Driver plugins: Driver::disconnect() to forget the logged user
 - Driver plugins: Connect to the privileged ports of the driver's own protocol (ClickHouse, Elasticsearch, IMAP)
 - Driver plugins: Driver::hasEstimatedRows() to recount the rows only after an estimate
+- Driver plugins: Driver::md5() to shorten the links to rows with a long value
 - Plugin igdb: Log in by the client secret instead of an access token obtained manually
 - New plugin: Display the first string column of the referenced row instead of a foreign key value, same as in Adminer Editor
 

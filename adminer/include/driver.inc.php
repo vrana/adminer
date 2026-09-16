@@ -290,6 +290,13 @@ abstract class SqlDriver {
 		return q($s);
 	}
 
+	/** Get SQL computing the hexadecimal MD5 of a column, used to identify a row by a value too long for the URL
+	* @param Field $field
+	* @return string|void null if the column can't be hashed
+	*/
+	function md5(string $column, array $field) {
+	}
+
 	/** Get type name of a result column in the same vocabulary as Field::type
 	* @param ResultField $field result of Result::fetch_field()
 	* @return string "" if unknown

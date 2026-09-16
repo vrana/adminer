@@ -455,7 +455,7 @@ if (!$columns && support("table")) {
 					$col = ($fun ? $result_column["col"] : $key);
 					$field = (array) $fields[$col];
 					$is_binary = is_blob($field); // binary and varbinary are converted to hexadecimal so they are not shortened
-					if (!$fun && (JUSH == "sql" || JUSH == "pgsql") && ($is_binary || preg_match('~' . text_type() . '~', $field["type"])) && strlen($val) > 64) {
+					if (!$fun && strlen($val) > 64 && driver()->md5(idf_escape($col), $field)) {
 						$fun = "md5"; // the value is too long for the URL
 						$val = md5($is_binary ? (string) driver()->value($val, $field) : $val); // value() decodes bytea in PostgreSQL
 					}

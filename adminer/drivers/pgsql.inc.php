@@ -393,6 +393,12 @@ if (isset($_GET["pgsql"])) {
 			return "'\\x" . bin2hex($s) . "'"; // available since PostgreSQL 8.1
 		}
 
+		function md5(string $column, array $field) {
+			if (is_blob($field) || preg_match('~' . text_type() . '~', $field["type"])) {
+				return "MD5($column)";
+			}
+		}
+
 		function warnings() {
 			return $this->conn->warnings();
 		}
