@@ -491,6 +491,31 @@ function get_url(string $url, $context): array {
 	);
 }
 
+/** Decode JSON like json_decode() but keep the text of the numbers which a float would round
+* @return mixed pass a scalar to json_scalar() and the rest to json_encode_exact()
+*/
+function json_decode_exact(string $json) {
+	// a number is decoded as a string beginning with U+0001, a string beginning with U+0001 gets another one
+	$json = preg_replace('~"(\\\\u0001(?:[^"\\\\]|\\\\.)*+")|"(?:[^"\\\\]|\\\\.)*+"(*SKIP)(*FAIL)~', '"\\\\u0001$1', $json);
+	return json_decode(preg_replace('~"(?:[^"\\\\]|\\\\.)*+"(*SKIP)(*FAIL)|-?\d[-+.\deE]*+~', '"\\\\u0001$0"', $json));
+}
+
+/** Get a scalar decoded by json_decode_exact(), a number as a string
+* @param scalar|null $val
+* @return scalar|null
+*/
+function json_scalar($val) {
+	return (is_string($val) && substr($val, 0, 1) == "\1" ? substr($val, 1) : $val);
+}
+
+/** Encode a value decoded by json_decode_exact() with the original text of the numbers
+* @param mixed $val
+*/
+function json_encode_exact($val, int $flags = 0): string {
+	// the string U+0001 + "1.5" is the number 1.5, U+0001 + U+0001 + "x" is the string U+0001 + "x"
+	return preg_replace('~"\\\\u0001(-?\d[^"\\\\]*)"|(")\\\\u0001(\\\\u0001(?:[^"\\\\]|\\\\.)*+")|"(?:[^"\\\\]|\\\\.)*+"(*SKIP)(*FAIL)~', '$1$2$3', json_encode($val, $flags));
+}
+
 /** Get settings stored in a cookie
 * @return mixed[]
 */
