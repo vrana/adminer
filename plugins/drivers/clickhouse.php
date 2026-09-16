@@ -569,7 +569,15 @@ if (isset($_GET["clickhouse"])) {
 
 	function unconvert_field(array $field, string $return): string {
 		if ($return !== "NULL" && preg_match('~^(Array|Map|Tuple|Point|Ring|MultiPoint|(Multi)?LineString|(Multi)?Polygon)$~', $field['type'])) { // CAST can't parse their JSON
-			return "JSONExtract($return, " . q($field['full_type']) . ")";
+			$type = $field['full_type'];
+			if (preg_match('~\bDecimal~', $type) && preg_match("~^'(.*)'\$~s", $return, $match)) {
+				// JSONExtract() reads an unquoted number as a float which rounds a decimal, it parses a quoted one exactly
+				$json = strtr($match[1], array_flip(Db::$escapes));
+				$return = q(preg_replace('~"(?:[^"\\\\]|\\\\.)*+"(*SKIP)(*FAIL)|-?\d[-+.\deE]*+~', '"$0"', $json));
+			}
+			// JSONExtract() supports only the String keys of Map, CAST converts them
+			$string_keys = preg_replace("~\\bMap\\([A-Za-z]\\w*(?:\\((?:[^()']|'(?:[^'\\\\]|\\\\.)*'|\\([^()]*\\))*\\))?, ~", 'Map(String, ', $type);
+			return ($string_keys != $type ? "CAST(JSONExtract($return, " . q($string_keys) . ") AS $type)" : "JSONExtract($return, " . q($type) . ")");
 		}
 		if ($return !== "NULL" && $field['full_type'] !== "String") {
 			return "CAST($return AS $field[full_type])";
