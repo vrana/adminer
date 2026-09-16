@@ -91,6 +91,10 @@ abstract class SqlDriver {
 		return ($connection->attach($parts, $username, $password) ?: $connection);
 	}
 
+	/** Forget the logged user */
+	static function disconnect(): void {
+	}
+
 	/** Create object for performing database operations */
 	function __construct(Db $connection) {
 		$this->conn = $connection;

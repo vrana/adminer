@@ -155,6 +155,7 @@ if ($auth && (!adminer()->verifyLoginToken() || verify_token())) { // the token 
 	}
 
 } elseif ($_POST["logout"] && (!$_SESSION["token"] || verify_token())) {
+	Driver::disconnect();
 	foreach (array("pwds", "db", "dbs", "queries") as $key) {
 		set_session($key, null);
 	}
