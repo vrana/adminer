@@ -7,6 +7,7 @@
 - Oracle: Support identity columns
 - Oracle: Alter timestamp and interval columns, display their type without a duplicate precision
 - ClickHouse: Offer the geometry types, Time and Time64, group the types as in the other drivers
+- ClickHouse: Display the number of rows to a read-only user
 - Editor: Describe foreign keys by the first string column, not only varchar
 - Editor: Shorten long descriptions of foreign keys
 ### Plugins

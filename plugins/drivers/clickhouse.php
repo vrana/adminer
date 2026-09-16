@@ -212,7 +212,8 @@ if (isset($_GET["clickhouse"])) {
 		}
 
 		function slowQuery(string $query, int $timeout) {
-			return "$query SETTINGS max_execution_time = $timeout";
+			// readonly = 1 forbids changing any setting, the query would fail
+			return (get_val("SELECT value FROM system.settings WHERE name = 'readonly'") == 1 ? $query : "$query SETTINGS max_execution_time = $timeout");
 		}
 
 		function __construct(Db $connection) {
