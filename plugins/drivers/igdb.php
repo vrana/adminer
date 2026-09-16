@@ -510,6 +510,6 @@ if (isset($_GET["igdb"])) {
 	}
 
 	function support(string $feature): bool {
-		return in_array($feature, array('columns', 'comment', 'sql', 'table'));
+		return in_array($feature, array('columns', 'comment', 'single_db', 'sql', 'table'));
 	}
 }
