@@ -558,7 +558,7 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function unconvert_field(array $field, string $return): string {
-		if ($return !== "NULL" && in_array($field['type'], array("Array", "Map", "Tuple"), true)) {
+		if ($return !== "NULL" && preg_match('~^(Array|Map|Tuple|Point|Ring|MultiPoint|(Multi)?LineString|(Multi)?Polygon)$~', $field['type'])) { // CAST can't parse their JSON
 			return "JSONExtract($return, " . q($field['full_type']) . ")";
 		}
 		if ($return !== "NULL" && $field['full_type'] !== "String") {
