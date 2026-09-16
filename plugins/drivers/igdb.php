@@ -2,7 +2,7 @@
 /** Driver for https://api-docs.igdb.com/
 * @link https://demo.adminer.org/igdb/?igdb=IGDB&db=api
 * username: your Client-ID
-* password: your access token from https://id.twitch.tv/oauth2/token
+* password: your Client Secret from https://dev.twitch.tv/console/apps
 * @link https://www.adminer.org/static/plugins/igdb.png
 */
 
@@ -17,11 +17,32 @@ if (isset($_GET["igdb"])) {
 		public $extension = "json";
 		public $server_info = "v4";
 		private $username;
-		private $password;
+		private $token;
 
 		function attach(array $server, string $username, string $password): string {
 			$this->username = $username;
-			$this->password = $password;
+			$key = $_COOKIE["adminer_key"];
+			$hash = md5($password); // the cached token must not be used with a different secret, otherwise any password would be accepted
+			$cache = get_session("igdb_token"); // hash of the secret, expiration, token encrypted the same way as the password
+			if (idx($cache, 0) === $hash && $cache[1] > time()) {
+				$this->token = ($key ? decrypt_string($cache[2], $key) : $cache[2]);
+			}
+			if (!$this->token) {
+				$url = "https://id.twitch.tv/oauth2/token";
+				$context = stream_context_create(array('http' => array(
+					'method' => 'POST',
+					'header' => "Content-Type: application/x-www-form-urlencoded",
+					'content' => http_build_query(array('client_id' => $username, 'client_secret' => $password, 'grant_type' => 'client_credentials')),
+					'ignore_errors' => true,
+				)));
+				list($response, $status, , $error) = get_url($url, $context);
+				$json = (array) json_decode($response, true); // idx() requires an array
+				$this->token = $json['access_token'];
+				if (!$this->token) {
+					return "$url: " . ($error ?: idx($json, 'message', "HTTP $status")); // the URL is a constant so displaying the response doesn't disclose anything
+				}
+				set_session("igdb_token", array($hash, time() + $json['expires_in'], ($key ? encrypt_string($this->token, $key) : $this->token)));
+			}
 			return '';
 		}
 
@@ -35,7 +56,7 @@ if (isset($_GET["igdb"])) {
 				'header' => array(
 					"Content-Type: text/plain",
 					"Client-ID: $this->username",
-					"Authorization: Bearer $this->password",
+					"Authorization: Bearer $this->token",
 				),
 				'content' => $query,
 				'ignore_errors' => true,
@@ -170,9 +191,6 @@ if (isset($_GET["igdb"])) {
 		}
 
 		static function connect(string $server, string $username, string $password) {
-			if ($password == "") { // the API requires an access token, without this Adminer would refuse the driver as accepting any password
-				return lang('Invalid credentials.');
-			}
 			$filename = self::docsFilename();
 			if (!file_exists($filename)) {
 				list($contents, $status) = get_url("https://api-docs.igdb.com/", stream_context_create(array('http' => array('ignore_errors' => true))));
@@ -181,6 +199,10 @@ if (isset($_GET["igdb"])) {
 				}
 			}
 			return parent::connect($server, $username, $password);
+		}
+
+		static function disconnect(): void {
+			set_session("igdb_token", null);
 		}
 
 		function __construct(Db $connection) {
