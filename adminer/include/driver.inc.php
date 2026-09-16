@@ -19,6 +19,7 @@ abstract class SqlDriver {
 	/** @var bool */ static $passwords = true; // false in databases without passwords, they can be protected only by a plugin
 
 	/** @var list<string> */ static $serverSchemes = array(); // URL schemes allowed in the server name
+	/** @var list<int> */ static $serverPorts = array(); // privileged ports used by the protocol of the driver
 	/** @var bool */ static $serverSocket = false; // the server name can specify a socket
 	/** @var bool */ static $serverPath = false; // the server name can contain a path
 	/** @var bool */ static $serverFile = false; // the server name is a path to a file, not an address
@@ -83,7 +84,10 @@ abstract class SqlDriver {
 			) {
 				return lang('Invalid server.');
 			}
-			if ($parts["port"] != "" && ($parts["port"] < 1024 || $parts["port"] > 65535)) {
+			if (
+				$parts["port"] != ""
+				&& ($parts["port"] > 65535 || ($parts["port"] < 1024 && !in_array($parts["port"], static::$serverPorts)))
+			) {
 				return lang('Connecting to privileged ports is not allowed.');
 			}
 		}

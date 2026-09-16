@@ -25,7 +25,7 @@ if (isset($_GET["imap"])) {
 			private $imap;
 
 			function attach(array $server, string $username, string $password): string {
-				$this->mailbox = "{" . "$server[host]:" . ($server["port"] ?: 993) . "/ssl}"; // Adminer disallows specifying privileged port in server name
+				$this->mailbox = "{" . "$server[host]:" . ($server["port"] ?: 993) . "/ssl}";
 				$this->imap = @imap_open($this->mailbox, $username, $password, OP_HALFOPEN, 1);
 				return ($this->imap ? '' : imap_last_error());
 			}
@@ -142,6 +142,8 @@ if (isset($_GET["imap"])) {
 	class Driver extends SqlDriver {
 		static $extensions = array("imap");
 		static $jush = "imap";
+		static $serverPorts = array(993);
+
 		public $insertFunctions = array("json");
 	}
 

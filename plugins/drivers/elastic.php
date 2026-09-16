@@ -172,6 +172,7 @@ if (isset($_GET["elastic"])) {
 		static $jush = "elastic";
 
 		static $serverSchemes = array("http", "https");
+		static $serverPorts = array(80, 443);
 		static $serverPath = true;
 
 		public $insertFunctions = array("json");

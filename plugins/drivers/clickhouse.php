@@ -182,6 +182,7 @@ if (isset($_GET["clickhouse"])) {
 		static $jush = "clickhouse";
 
 		static $serverSchemes = array("http", "https");
+		static $serverPorts = array(80, 443);
 		static $serverPath = true;
 
 		public $functions = array("length", "lower", "round", "toDate", "toDateTime", "toString", "upper");
