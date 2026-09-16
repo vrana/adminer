@@ -219,9 +219,13 @@ if (isset($_GET["clickhouse"])) {
 		}
 
 		function md5(string $column, array $field) {
-			// not FixedString, its rendered value lacks the NUL padding; not the types rendered as JSON, the server formats e.g. floats differently
+			// not FixedString, its rendered value lacks the NUL padding
 			if (preg_match('~^(LowCardinality\()?(Nullable\()?String\b~', $field["full_type"])) {
 				return "lower(hex(MD5($column)))";
+			}
+			// json_decode_exact() renders a geometry with the numbers of the server; not Array, Map, Tuple or JSON, the server escapes / in their strings
+			if (preg_match('~^(Point|Ring|MultiPoint|(Multi)?LineString|(Multi)?Polygon)$~', $field["type"])) {
+				return "lower(hex(MD5(toJSONString($column))))";
 			}
 		}
 

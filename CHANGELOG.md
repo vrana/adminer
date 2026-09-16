@@ -9,7 +9,7 @@
 - Oracle: Alter timestamp and interval columns, display their type without a duplicate precision
 - ClickHouse: Offer the geometry types, Time and Time64, group the types as in the other drivers
 - ClickHouse: Display the number of rows to a read-only user
-- ClickHouse: Shorten the links to rows with a long string by its MD5 hash
+- ClickHouse: Shorten the links to rows with a long string or geometry by its MD5 hash
 - ClickHouse: Do not round big integers and decimals, e.g. UInt64 or Decimal128, display empty maps and maps with numeric keys as objects
 - ClickHouse: Save the decimals in Array, Map and Tuple exactly, save a Map with other than String keys
 - ClickHouse: Do not turn \b into a backspace (regression from 6.0.0)
