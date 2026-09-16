@@ -219,24 +219,18 @@ if (isset($_GET["clickhouse"])) {
 			parent::__construct($connection);
 			$this->types = array(
 				lang('Numbers') => array(
-					"Int8" => 3, "Int16" => 5, "Int32" => 10, "Int64" => 19,
-					"UInt8" => 3, "UInt16" => 5, "UInt32" => 10, "UInt64" => 20,
-					"Int128" => 39, "Int256" => 78, "UInt128" => 39, "UInt256" => 78,
-					"Float32" => 14, "Float64" => 23, "BFloat16" => 7, "Bool" => 1,
-					"Decimal" => 76, "Decimal32" => 9, "Decimal64" => 18,
-					"Decimal128" => 38, "Decimal256" => 76,
+					"Int8" => 3, "Int16" => 5, "Int32" => 10, "Int64" => 19, "Int128" => 39, "Int256" => 78,
+					"UInt8" => 3, "UInt16" => 5, "UInt32" => 10, "UInt64" => 20, "UInt128" => 39, "UInt256" => 78,
+					"Float32" => 14, "Float64" => 23, "BFloat16" => 7,
+					"Bool" => 1,
+					"Decimal" => 76, "Decimal32" => 9, "Decimal64" => 18, "Decimal128" => 38, "Decimal256" => 76,
 				),
-				lang('Date and time') => array(
-					"Date" => 10, "Date32" => 10, "DateTime" => 19, "DateTime64" => 29,
-				),
-				lang('Strings') => array("String" => 0, "FixedString" => 0),
-				lang('Other') => array(
-					"UUID" => 36, "IPv4" => 15, "IPv6" => 39,
-					"Enum8" => 0, "Enum16" => 0, "Array" => 0, "Map" => 0,
-					"Tuple" => 0, "Nested" => 0, "LowCardinality" => 0,
-					"AggregateFunction" => 0, "SimpleAggregateFunction" => 0,
-					"Variant" => 0, "Dynamic" => 0, "JSON" => 0,
-				),
+				lang('Date and time') => array("Date" => 10, "Date32" => 10, "DateTime" => 19, "DateTime64" => 29, "Time" => 9, "Time64" => 19),
+				lang('Strings') => array("String" => 0, "FixedString" => 0, "UUID" => 36, "JSON" => 0),
+				lang('Lists') => array("Enum8" => 0, "Enum16" => 0, "Array" => 0, "Map" => 0, "Tuple" => 0, "Nested" => 0),
+				lang('Network') => array("IPv4" => 15, "IPv6" => 39),
+				lang('Geometry') => array("Point" => 0, "Ring" => 0, "LineString" => 0, "MultiLineString" => 0, "MultiPoint" => 0, "Polygon" => 0, "MultiPolygon" => 0),
+				lang('Other') => array("LowCardinality" => 0, "AggregateFunction" => 0, "SimpleAggregateFunction" => 0, "Variant" => 0, "Dynamic" => 0),
 			);
 		}
 
