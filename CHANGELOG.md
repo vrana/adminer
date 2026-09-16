@@ -11,6 +11,7 @@
 - ClickHouse: Display the number of rows to a read-only user
 - ClickHouse: Shorten the links to rows with a long string by its MD5 hash
 - ClickHouse: Do not round big integers and decimals, e.g. UInt64 or Decimal128, display empty maps and maps with numeric keys as objects
+- ClickHouse: Do not turn \b into a backspace (regression from 6.0.0)
 - Editor: Describe foreign keys by the first string column, not only varchar
 - Editor: Shorten long descriptions of foreign keys
 ### Plugins

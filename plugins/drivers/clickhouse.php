@@ -103,17 +103,19 @@ if (isset($_GET["clickhouse"])) {
 				return true;
 			}
 
+			/** @var string[] */ static $escapes = array( // escape sequences in a string literal, unconvert_field() reverts them
+				"\\" => "\\\\",
+				"'" => "\\'",
+				"\0" => "\\0",
+				"\x08" => "\\b", // PHP has no \b
+				"\f" => "\\f",
+				"\n" => "\\n",
+				"\r" => "\\r",
+				"\t" => "\\t",
+			);
+
 			function quote(string $string): string {
-				return "'" . strtr($string, array(
-					"\\" => "\\\\",
-					"'" => "\\'",
-					"\0" => "\\0",
-					"\b" => "\\b",
-					"\f" => "\\f",
-					"\n" => "\\n",
-					"\r" => "\\r",
-					"\t" => "\\t",
-				)) . "'";
+				return "'" . strtr($string, self::$escapes) . "'";
 			}
 		}
 
