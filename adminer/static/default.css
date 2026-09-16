@@ -98,14 +98,14 @@ td .error { padding: 1px; margin: 0; }
 td.check { text-align: end; } /* to display the checkboxes next to the data */
 /* .edit used in designs */
 #foot:focus { outline: none; } /* focused by JS after opening the menu, never by the user */
-#menu { position: absolute; margin: 10px 0 0; top: 2em; left: 0; width: 19em; }
+#menu { margin: 10px 0 0; }
 #menu p, #logins, #tables { padding: .8em 1em; margin: 0; border-bottom: 1px solid #ccc; }
 #logins li, #tables li { list-style: none; }
 #dbs { overflow: hidden; }
 #logins, #tables { white-space: nowrap; overflow: hidden; }
 #logins a, #tables a, #tables span { background: var(--bg); }
 #content { margin: 2em 0 0; margin-inline-start: 21em; padding: 10px 0 20px; padding-inline-end: 20px; }
-#lang { position: absolute; top: -2.6em; left: 0; padding: .3em 1em; }
+#lang { padding: .3em 1em; }
 #menuopen { display: none; }
 #breadcrumb { white-space: nowrap; position: absolute; top: 0; left: 21em; background: var(--dim); height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0; margin-inline-start: -18px; }
 #ajaxstatus { width: fit-content; } /* shrink-to-fit so that the sticky message can move when the page is scrolled horizontally */
@@ -136,19 +136,20 @@ td.check { text-align: end; } /* to display the checkboxes next to the data */
 .rtl .loadmore { left: auto; right: 10px; }
 .rtl #ajaxstatus.sticky { left: auto; right: 0; }
 .rtl #breadcrumb { left: auto; right: 21em; }
-.rtl #lang, .rtl #menu { left: auto; right: 0; }
 .rtl pre, .rtl code { direction: ltr; }
 
-@media not all and (max-width: 800px) { /* a sticky column would cover most of a narrow screen */
-	th.sticky, td.sticky { position: sticky; left: 0; }
+@media not all and (max-width: 800px) {
+	#menu { position: absolute; top: 2em; left: 0; width: 19em; }
+	#lang { position: absolute; top: -2.6em; left: 0; }
+	th.sticky, td.sticky { position: sticky; left: 0; } /* a sticky column would cover most of a narrow screen */
+	.rtl #lang, .rtl #menu { left: auto; right: 0; }
 	.rtl th.sticky, .rtl td.sticky { left: auto; right: 0; }
 }
 
 @media all and (max-width: 800px) {
 	.js .logout { top: 1.667em; background-color: var(--dim); box-shadow: 0 0 5px 5px var(--dim); }
-	#menu { position: static; width: auto; min-width: 23em; background: var(--bg); border: 1px solid var(--fg); margin-top: 9px; box-shadow: 0 0 20px -3px var(--fg); }
+	#menu { min-width: 23em; background: var(--bg); border: 1px solid var(--fg); margin-top: 9px; box-shadow: 0 0 20px -3px var(--fg); }
 	#content { margin-inline-start: 10px !important; }
-	#lang { position: static; }
 	#breadcrumb { left: 48px !important; }
 	.js #foot { position: absolute; top: 2em; left: 0; z-index: 2; } /* z-index to cover the sticky thead */
 	.js .foot { display: none; }
