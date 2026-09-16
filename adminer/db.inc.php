@@ -98,7 +98,7 @@ if (adminer()->homepage()) {
 			echo '<thead><tr>';
 			echo '<td class="hover"><input id="check-all" type="checkbox" class="jsonly" title="' . lang('All') . '"' . on('click', 'formCheck', '^(tables|views)\[') . '>';
 			// without $order, the tables are sorted by name, except in SQLite which puts the sqlite_ tables last
-			echo '<th' . (!$order && JUSH != 'sqlite' ? " aria-sort='ascending'" : '') . '><a href="' . h(substr($me, 0, -1)) . '">' . lang('Table') . '</a>';
+			echo '<th class="sticky"' . (!$order && JUSH != 'sqlite' ? " aria-sort='ascending'" : '') . '><a href="' . h(substr($me, 0, -1)) . '">' . lang('Table') . '</a>';
 			$columns = array("Engine" => array(lang('Engine') . doc_link(array('sql' => 'storage-engines.html'))));
 			if (collations()) {
 				$columns["Collation"] = array(lang('Collation') . doc_link(array('sql' => 'charset-charsets.html', 'mariadb' => 'supported-character-sets-and-collations/')));
@@ -157,7 +157,7 @@ if (adminer()->homepage()) {
 				$status = ($full ? $status : array('Engine' => $status));
 				$id = h("Table-" . $name);
 				echo '<tr><td class="hover">' . checkbox(($view ? "views[]" : "tables[]"), $name, in_array("$name", $tables_views, true), "", "", "", $id); // "$name" to check numeric table names
-				echo '<th>' . (support("table") || support("indexes")
+				echo '<th class="sticky">' . (support("table") || support("indexes")
 					? "<a href='" . h(ME) . "table=" . url_escape($name) . "' title='" . lang('Show structure') . "' id='$id'>" . h($name) . '</a>'
 					: h($name)
 				);
@@ -188,7 +188,7 @@ if (adminer()->homepage()) {
 				echo "\n";
 			}
 
-			echo "<tr><td class='hover'><th>" . lang('%d in total', count($tables_list));
+			echo "<tr><td class='hover'><th class='sticky'>" . lang('%d in total', count($tables_list));
 			echo "<td>" . h(JUSH == "sql" ? get_val("SELECT @@default_storage_engine") : "");
 			echo (collations() ? "<td>" . h(db_collation(DB, collations())) : '');
 			if ($full && function_exists('Adminer\db_status')) {

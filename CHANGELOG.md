@@ -2,6 +2,7 @@
 - Fix editing identity (PostgreSQL, Oracle, Firebird), rowversion (MS SQL), key (ClickHouse)
 - Select: Fix modifying rows with a NULL value (uncompiled only, regression from 6.1.0)
 - Edit: Do not round big numbers in json (MySQL) and jsonb (PostgreSQL) when saving the row (regression from 5.4.2)
+- Keep the table names on the screen when scrolling the list of tables horizontally
 - PostgreSQL, MS SQL, Oracle: Do not highlight a valid date or time value as too long
 - MS SQL: Export and alter the precision of datetime2, time and datetimeoffset
 - MS SQL: Keep fractional seconds and the time zone offset when saving a row with the sqlsrv extension

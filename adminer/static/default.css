@@ -27,7 +27,7 @@ table > :first-child > :first-child > td, table > :first-child > :first-child > 
 td table { width: 100%; margin: 0; }
 fieldset table:first-child { margin: 0; } /* the fieldset has its own padding */
 th { background: var(--dim); text-align: start; }
-thead { position: sticky; top: 0; }
+thead { position: sticky; top: 0; z-index: 1; } /* z-index to cover the sticky cells of tbody which come later */
 thead th { text-align: center; padding: .2em .5em; }
 thead td, thead th { background: var(--lit); }
 tbody tr:hover td, tbody tr:hover th { background: var(--dim); }
@@ -110,7 +110,7 @@ td.check { text-align: end; } /* to display the checkboxes next to the data */
 #breadcrumb { white-space: nowrap; position: absolute; top: 0; left: 21em; background: var(--dim); height: 2em; line-height: 1.8em; padding: 0 1em; margin: 0; margin-inline-start: -18px; }
 #ajaxstatus { width: fit-content; } /* shrink-to-fit so that the sticky message can move when the page is scrolled horizontally */
 #ajaxstatus > :first-child { margin-top: 0; } /* the margin would be a transparent gap above the sticky message */
-#ajaxstatus.sticky { position: sticky; top: 0; left: 0; z-index: 1; max-height: 40vh; overflow: auto; } /* z-index to cover the sticky thead, max-height to not cover the whole screen by a long error */
+#ajaxstatus.sticky { position: sticky; top: 0; left: 0; z-index: 2; max-height: 40vh; overflow: auto; } /* z-index to cover the sticky thead, max-height to not cover the whole screen by a long error */
 #logo { vertical-align: baseline; margin-bottom: -3px; }
 #h1 { color: #777; text-decoration: none; font-style: italic; }
 #version, .plugins .update { color: red; }
@@ -118,7 +118,7 @@ td.check { text-align: end; } /* to display the checkboxes next to the data */
 #schema { margin-inline-start: 60px; position: relative; user-select: none; -webkit-user-select: none; }
 #schema .table { border: 1px solid silver; padding: 0 2px; cursor: move; position: absolute; box-sizing: border-box; }
 #schema .references { position: absolute; }
-#help { position: absolute; border: 1px solid #999; background: var(--dim); padding: 5px; font-family: monospace; z-index: 1; }
+#help { position: absolute; border: 1px solid #999; background: var(--dim); padding: 5px; font-family: monospace; z-index: 2; }
 :target { background: var(--lit); }
 
 /* inlined here and not in compile.php because otherwise the development version flickers a little bit when loading the images */
@@ -139,13 +139,18 @@ td.check { text-align: end; } /* to display the checkboxes next to the data */
 .rtl #lang, .rtl #menu { left: auto; right: 0; }
 .rtl pre, .rtl code { direction: ltr; }
 
+@media not all and (max-width: 800px) { /* a sticky column would cover most of a narrow screen */
+	th.sticky, td.sticky { position: sticky; left: 0; }
+	.rtl th.sticky, .rtl td.sticky { left: auto; right: 0; }
+}
+
 @media all and (max-width: 800px) {
 	.js .logout { top: 1.667em; background-color: var(--dim); box-shadow: 0 0 5px 5px var(--dim); }
 	#menu { position: static; width: auto; min-width: 23em; background: var(--bg); border: 1px solid var(--fg); margin-top: 9px; box-shadow: 0 0 20px -3px var(--fg); }
 	#content { margin-inline-start: 10px !important; }
 	#lang { position: static; }
 	#breadcrumb { left: 48px !important; }
-	.js #foot { position: absolute; top: 2em; left: 0; }
+	.js #foot { position: absolute; top: 2em; left: 0; z-index: 2; } /* z-index to cover the sticky thead */
 	.js .foot { display: none; }
 	.js #menuopen { display: block; position: absolute; top: 3px; left: 6px; }
 	.nojs #menu { position: static; }
