@@ -441,6 +441,10 @@ if (!defined('Adminer\DRIVER')) {
 			return $c_style;
 		}
 
+		function hasEstimatedRows(): bool {
+			return true; // InnoDB
+		}
+
 		function lineComment(): string {
 			return "#|-- "; // MySQL requires a space after --
 		}

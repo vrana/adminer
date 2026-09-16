@@ -337,6 +337,11 @@ abstract class SqlDriver {
 		return false;
 	}
 
+	/** Check whether found_rows() is only an estimate which should be recounted in small tables */
+	function hasEstimatedRows(): bool {
+		return false;
+	}
+
 	/** Get regular expression matching the start of a line comment; must not match an empty string */
 	function lineComment(): string {
 		return "--";

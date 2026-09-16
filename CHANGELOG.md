@@ -12,6 +12,7 @@
 ### Plugins
 - Driver plugins: Driver::disconnect() to forget the logged user
 - Driver plugins: Connect to the privileged ports of the driver's own protocol (ClickHouse, Elasticsearch, IMAP)
+- Driver plugins: Driver::hasEstimatedRows() to recount the rows only after an estimate
 - Plugin igdb: Log in by the client secret instead of an access token obtained manually
 - New plugin: Display the first string column of the referenced row instead of a foreign key value, same as in Adminer Editor
 

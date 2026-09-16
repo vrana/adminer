@@ -575,12 +575,12 @@ if (!$columns && support("table")) {
 					if (!$limit || (count($rows) < $limit && ($rows || !$page))) {
 						$found_rows = ($page ? $page * $limit : 0) + count($rows);
 					} elseif (JUSH != "sql" || !$is_group) {
-						$found_rows = ($is_group ? false : found_rows($table_status, $where));
-						if (intval($found_rows) < max(1e4, 2 * ($page + 1) * $limit)) {
+						$found_rows = ($is_group ? null : found_rows($table_status, $where));
+						$exact_count = !driver()->hasEstimatedRows();
+						if ($found_rows === null || (!$exact_count && $found_rows < max(1e4, 2 * ($page + 1) * $limit))) {
 							// slow with big tables
 							$found_rows = first(slow_query(count_rows($TABLE, $where, $is_group, $group)));
-						} elseif (JUSH == 'sql' || JUSH == 'pgsql') {
-							$exact_count = false;
+							$exact_count = true;
 						}
 					}
 				}

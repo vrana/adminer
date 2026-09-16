@@ -488,6 +488,10 @@ ORDER BY c.relname, a.attnum", $this->conn);
 			}
 			return $c_style;
 		}
+
+		function hasEstimatedRows(): bool {
+			return true; // EXPLAIN
+		}
 	}
 
 

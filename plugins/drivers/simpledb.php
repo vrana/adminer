@@ -134,6 +134,10 @@ if (isset($_GET["simpledb"])) {
 			return ""; // the queries are only a select expression and the columns are not known
 		}
 
+		function hasEstimatedRows(): bool {
+			return true; // DomainMetadata returns ItemCount with the time when it was calculated
+		}
+
 		private function chunkRequest(array $ids, string $action, array $params, array $expand = array()): bool {
 			foreach (array_chunk($ids, 25) as $chunk) {
 				$params2 = $params;
