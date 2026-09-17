@@ -49,5 +49,6 @@ class AdminerLoginIp extends Adminer\Plugin {
 		'ja' => array('' => 'IP アドレスの確認、及び空パスワードの許可'),
 		'sk' => array('' => 'Skontroluje IP adresu a povolí prázdne heslo'), // Claude Opus 5
 		'hr' => array('' => 'Provjerava IP adresu i dopušta praznu lozinku'),
+		'zh' => array('' => '检查 IP 地址并允许空密码'),
 	);
 }

@@ -37,5 +37,6 @@ verifyVersion = () => {
 		'ro' => array('' => 'Verifică versiunile noi de pe GitHub'), // Claude Opus 5
 		'sk' => array('' => 'Kontrola nových verzií z GitHubu'), // Claude Opus 5
 		'hr' => array('' => 'Provjera novih verzija s GitHuba'),
+		'zh' => array('' => '在 GitHub 上检查新版本'),
 	);
 }

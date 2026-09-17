@@ -94,5 +94,10 @@ class AdminerLoginOtp extends Adminer\Plugin {
 			'One Time Password' => 'Jednokratna lozinka',
 			'Invalid OTP.' => 'Nevažeća jednokratna lozinka.',
 		),
+		'zh' => array(
+			'' => '登录时要求一次性密码',
+			'One Time Password' => '一次性密码',
+			'Invalid OTP.' => '一次性密码无效。',
+		),
 	);
 }

@@ -95,5 +95,9 @@ sessionStorage && document.addEventListener('DOMContentLoaded', () => {
 			'' => 'Filtriranje tablice prema imenu',
 			'Filter' => 'Filtar',
 		),
+		'zh' => array(
+			'' => '过滤表列表中的名称',
+			'Filter' => '过滤',
+		),
 	);
 }

@@ -29,5 +29,6 @@ class AdminerRowNumbers extends Adminer\Plugin {
 		'ja' => array('' => '一覧に行番号を表示'), // Claude Opus 5
 		'sk' => array('' => 'Zobrazí čísla riadkov vo výpise'), // Claude Opus 5
 		'hr' => array('' => 'Prikazuje brojeve redaka u ispisu'),
+		'zh' => array('' => '在选择数据时显示行号'),
 	);
 }

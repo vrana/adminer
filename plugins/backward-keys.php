@@ -100,5 +100,9 @@ ORDER BY s.ordinal_position", null, "") as $row
 			'' => 'Prikazuje veze na tablice koje referenciraju trenutni redak, kao u Adminer Editoru',
 			'New item' => 'Nova stavka',
 		),
+		'zh' => array(
+			'' => '显示引用当前行的表的链接，与 Adminer Editor 中相同',
+			'New item' => '新建数据',
+		),
 	);
 }

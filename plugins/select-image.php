@@ -41,5 +41,9 @@ class AdminerSelectImage extends Adminer\Plugin {
 		'sk' => array(
 			'' => 'Zobrazí obrázky vo výpise', // Claude Opus 5
 		),
+		'zh' => array(
+			'' => '在选择数据时显示图片',
+			'%d byte(s)' => '%d 字节',
+		),
 	);
 }

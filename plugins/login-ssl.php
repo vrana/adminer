@@ -31,5 +31,6 @@ class AdminerLoginSsl extends Adminer\Plugin {
 		'ja' => array('' => 'MySQL, PostgreSQL, MS SQL, Elasticsearch への接続時に SSL を利用'), // Claude Opus 5
 		'sk' => array('' => 'Pripojenie k MySQL, PostgreSQL, MS SQL alebo Elasticsearch pomocou SSL'), // Claude Opus 5
 		'hr' => array('' => 'Spajanje na MySQL, PostgreSQL, MS SQL i Elasticsearch putem SSL-a'), // Claude Opus 5
+		'zh' => array('' => '使用 SSL 连接 MySQL、PostgreSQL、MS SQL 或 Elasticsearch'),
 	);
 }

@@ -193,5 +193,6 @@ class AdminerForeignSystem extends Adminer\Plugin {
 		'ja' => array('' => 'システムテーブル ("mysql" と "information_schema") を外部キーを用いて接続'),
 		'sk' => array('' => 'Prepája systémové tabuľky (v schémach "mysql", "information_schema" a "pg_catalog") pomocou cudzích kľúčov'), // Claude Opus 5
 		'hr' => array('' => 'Povezuje sistemske tablice (u bazama "mysql" i "information_schema") stranim ključevima'),
+		'zh' => array('' => '通过外键链接系统表（位于 "mysql"、"information_schema" 和 "pg_catalog" 模式中）'),
 	);
 }

@@ -22,5 +22,6 @@ class AdminerEditTextarea extends Adminer\Plugin {
 		'ja' => array('' => 'char や varchar に <textarea> を使用'),
 		'sk' => array('' => 'Použije <textarea> pre char a varchar'), // Claude Opus 5
 		'hr' => array('' => 'Koristi <textarea> za char i varchar polja'),
+		'zh' => array('' => '对 char 和 varchar 使用 <textarea>'),
 	);
 }

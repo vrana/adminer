@@ -53,5 +53,6 @@ if (saved) {
 		'ro' => array('' => 'Permite comutarea între modul luminos și cel întunecat'), // Claude Opus 5
 		'sk' => array('' => 'Dovoľuje prepínanie svetlého a tmavého režimu'), // Claude Opus 5
 		'hr' => array('' => 'Omogućuje prebacivanje između svijetlog i tamnog izgleda'),
+		'zh' => array('' => '允许切换明亮和暗黑模式'),
 	);
 }

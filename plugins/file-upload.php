@@ -58,5 +58,6 @@ class AdminerFileUpload extends Adminer\Plugin {
 		'ja' => array('' => '列名が "_path" で終わる列を <input type="file"> で変更し、一覧からアップロードされたファイルにリンク'), // Claude Opus 5
 		'sk' => array('' => 'Upravuje políčka končiace na "_path" pomocou <input type="file"> a odkazuje na nahrané súbory z výpisu'), // Claude Opus 5
 		'hr' => array('' => 'Uređuje polja koja završavaju s "_path" putem <input type="file"> i povezuje ih s učitanim datotekama'),
+		'zh' => array('' => '用 <input type="file"> 编辑以 "_path" 结尾的字段，并在选择数据时链接到已上传的文件'),
 	);
 }

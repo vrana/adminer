@@ -63,5 +63,6 @@ class AdminerDumpXml extends Adminer\Plugin {
 		'ja' => array('' => '構造化 XML 形式でエクスポート <database name=""><table name=""><column name="">value'),
 		'sk' => array('' => 'Export do formátu XML v štruktúre <database name=""><table name=""><column name="">value'), // Claude Opus 5
 		'hr' => array('' => 'Izvoz u XML format u strukturi <database name=""><table name=""><column name="">vrijednost'),
+		'zh' => array('' => '导出为 XML 格式，结构为 <database name=""><table name=""><column name="">值'),
 	);
 }

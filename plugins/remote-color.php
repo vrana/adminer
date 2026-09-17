@@ -70,5 +70,6 @@ body.remote #menuopen { margin-top: 5px; }
 		'ro' => array('' => 'Avertizează printr-o bandă roșie dacă Adminer sau baza de date nu rulează pe mașina locală'), // Claude Opus 5
 		'ja' => array('' => 'Adminer またはデータベースがローカルマシンで動作していない場合に赤い帯で警告'), // Claude Opus 5
 		'sk' => array('' => 'Upozorní červeným pruhom, ak Adminer alebo databáza nebeží na lokálnom počítači'), // Claude Opus 5
+		'zh' => array('' => 'Adminer 或数据库不在本机运行时，用红色条提示'),
 	);
 }

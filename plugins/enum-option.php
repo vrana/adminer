@@ -59,5 +59,9 @@ class AdminerEnumOption extends Adminer\Plugin {
 			'' => 'Koristi <select><option> za uređivanje enum polja umjesto <input type="radio">',
 			'original' => 'original',
 		),
+		'zh' => array(
+			'' => '编辑 enum 时使用 <select><option> 而不是 <input type="radio">',
+			'original' => '原始',
+		),
 	);
 }

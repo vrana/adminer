@@ -94,5 +94,17 @@ class AdminerTableStructure extends Adminer\Plugin {
 			'Comment' => 'Komentar',
 			'Auto Increment' => 'Auto-inkrement',
 		),
+		'zh' => array(
+			'' => '扩展显示表结构',
+			'Column' => '列',
+			'Type' => '类型',
+			'Collation' => '校对',
+			'Nullable' => '可为空',
+			'Default' => '默认值',
+			'Comment' => '注释',
+			'Auto Increment' => '自动增量',
+			'Yes' => '是',
+			'No' => '否',
+		),
 	);
 }

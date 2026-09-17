@@ -176,5 +176,6 @@ DROP PROCEDURE adminer_alter;
 		'ja' => array('' => 'データベース (開発用など) をエクスポートし、別のデータベース (本番用など) と同期'),
 		'sk' => array('' => 'Exportuje jednu databázu (napr. vývojovú) tak, aby mohla byť synchronizovaná s inou databázou (napr. produkčnou)'), // Claude Opus 5
 		'hr' => array('' => 'Izvozi bazu podataka (npr. razvojnu) tako da se može sinkronizirati s drugom bazom (npr. produkcijskom)'),
+		'zh' => array('' => '导出一个数据库（例如开发环境），以便与另一个数据库（例如生产环境）同步'),
 	);
 }

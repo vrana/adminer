@@ -20,5 +20,6 @@ class AdminerDumpDate extends Adminer\Plugin {
 		'ja' => array('' => 'エクスポートファイル名に現在日時を含める'),
 		'sk' => array('' => 'Do názvu súboru s exportom pridá aktuálny dátum a čas'), // Claude Opus 5
 		'hr' => array('' => 'Dodaje trenutni datum i vrijeme u naziv datoteke izvoza'),
+		'zh' => array('' => '在导出文件名中包含当前日期和时间'),
 	);
 }

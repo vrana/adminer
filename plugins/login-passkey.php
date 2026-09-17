@@ -389,5 +389,19 @@ if (window.isSecureContext && window.PublicKeyCredential && window.crypto && cry
 		'sk' => array(
 			'' => 'Prihlásenie iba pomocou passkey, ktorý obsahuje heslá', // Claude Opus 5
 		),
+		'zh' => array(
+			'' => '仅使用保存了密码的通行密钥登录',
+			'Log in with the passkey.' => '使用通行密钥登录。',
+			'The passkey does not support storing passwords.' => '此通行密钥不支持保存密码。',
+			'The accounts cannot be decrypted by this passkey.' => '无法用此通行密钥解密这些账号。',
+			'This browser does not support passkeys.' => '此浏览器不支持通行密钥。',
+			'Unlock with passkey' => '用通行密钥解锁',
+			'Set up passkey' => '设置通行密钥',
+			'Passkeys require HTTPS and JavaScript.' => '通行密钥需要 HTTPS 和 JavaScript。',
+			'Fill in the login form and add it to the passkey.' => '填写登录表单并将其添加到通行密钥。',
+			'Label' => '标签',
+			'Add to passkey' => '添加到通行密钥',
+			'Add this line to %s:' => '把这一行添加到 %s：',
+		),
 	);
 }

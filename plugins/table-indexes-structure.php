@@ -73,5 +73,12 @@ class AdminerTableIndexesStructure extends Adminer\Plugin {
 			'Algorithm' => 'Algoritam',
 			'Columns' => 'Stupci',
 		),
+		'zh' => array(
+			'' => '扩展显示表索引结构',
+			'Name' => '名称',
+			'Type' => '类型',
+			'Algorithm' => '算法',
+			'Columns' => '列',
+		),
 	);
 }
