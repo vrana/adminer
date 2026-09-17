@@ -1027,7 +1027,7 @@ if (!defined('Adminer\DRIVER')) {
 	}
 
 	/** Get defined triggers
-	* @return array{string, string}[]
+	* @return array{0: string, 1: string, 2?: array{ns: string, type: string, function: string, name: string}}[] [$timing, $event, $routine]
 	*/
 	function triggers(string $table): array {
 		$return = array();

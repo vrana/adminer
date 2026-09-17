@@ -987,9 +987,23 @@ ORDER BY event_manipulation DESC") as $row
 
 	function triggers(string $table): array {
 		$return = array();
+		$functions = array();
+		foreach (
+			get_rows('SELECT t.tgname, r.routine_schema AS ns, r.routine_type AS type, r.specific_name AS function, r.routine_name AS name
+FROM pg_catalog.pg_trigger t
+JOIN information_schema.routines r ON substring(r.specific_name, \'[0-9]+$\')::oid = t.tgfoid
+WHERE NOT t.tgisinternal AND t.tgrelid = (
+	SELECT c.oid FROM pg_catalog.pg_class c JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace WHERE n.nspname = current_schema() AND c.relname = ' . q($table) . '
+)') as $row
+		) { // information_schema.routines lists only the functions accessible to the user
+			$functions[array_shift($row)] = $row;
+		}
 		foreach (get_rows("SELECT * FROM information_schema.triggers WHERE trigger_schema = current_schema() AND event_object_table = " . q($table)) as $row) {
 			$trigger = trigger($row["trigger_name"], $table);
 			$return[$trigger["Trigger"]] = array($trigger["Timing"], $trigger["Event"]);
+			if ($functions[$trigger["Trigger"]]) {
+				$return[$trigger["Trigger"]][] = $functions[$trigger["Trigger"]];
+			}
 		}
 		return $return;
 	}
