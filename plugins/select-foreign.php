@@ -7,10 +7,23 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerSelectForeign extends Adminer\Plugin {
+	protected $columns;
+
+	/**
+	* @param string[] $columns table name in key, SQL expression describing its row in value, empty string means no replacement
+	*/
+	function __construct(array $columns = array()) {
+		$this->columns = $columns;
+	}
+
 	// this is copy-pasted from Adminer Editor
 	protected $described = array();
 
 	function rowDescription($table) {
+		$column = $this->columns[$table];
+		if ($column !== null) {
+			return $column;
+		}
 		// first string column
 		foreach (Adminer\fields($table) as $field) {
 			if (preg_match("~char|text~", $field["type"])) {
@@ -29,6 +42,10 @@ class AdminerSelectForeign extends Adminer\Plugin {
 					count($foreignKey["source"]) == 1
 					&& ($foreignKey["db"] == "" || $foreignKey["db"] == Adminer\DB) // Oracle fills the current owner
 				) {
+					$column = $this->columns[$table];
+					if ($column != "" && Adminer\idf_unescape($column) == $foreignKey["target"][0]) {
+						break; // the foreign key value is the description, print it as without this plugin
+					}
 					$schema = $_GET["ns"];
 					$otherSchema = ($foreignKey["ns"] != "" && $foreignKey["ns"] != $schema);
 					if ($otherSchema) {
