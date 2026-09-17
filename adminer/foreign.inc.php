@@ -47,7 +47,15 @@ page_header(
 	$error,
 	array("table" => $TABLE),
 	h($name != "" ? $name : $TABLE),
-	$not_found
+	$not_found,
+	doc_link(array(
+		'sql' => "innodb-foreign-key-constraints.html",
+		'mariadb' => "foreign-keys/",
+		'pgsql' => "sql-createtable.html#SQL-CREATETABLE-PARMS-REFERENCES",
+		'cockroach' => "foreign-key",
+		'mssql' => "t-sql/statements/create-table-transact-sql",
+		'oracle' => "sqlrf/constraint.html",
+	))
 );
 
 if ($_POST) {
@@ -116,15 +124,7 @@ foreach ($row["source"] as $key => $val) {
 <p>
 <label><?php echo lang('ON DELETE'); ?>: <?php echo html_select("on_delete", array(-1 => "") + explode("|", driver()->onActions), $row["on_delete"]); ?></label>
 <label><?php echo lang('ON UPDATE'); ?>: <?php echo html_select("on_update", array(-1 => "") + explode("|", driver()->onActions), $row["on_update"]); ?></label>
-<?php echo (support("deferrable") ? html_select("deferrable", array('NOT DEFERRABLE', 'DEFERRABLE', 'DEFERRABLE INITIALLY DEFERRED'), $row["deferrable"]) . ' ' : ''); ?>
-<?php echo doc_link(array(
-	'sql' => "innodb-foreign-key-constraints.html",
-	'mariadb' => "foreign-keys/",
-	'pgsql' => "sql-createtable.html#SQL-CREATETABLE-PARMS-REFERENCES",
-	'cockroach' => "foreign-key",
-	'mssql' => "t-sql/statements/create-table-transact-sql",
-	'oracle' => "sqlrf/constraint.html",
-)); ?>
+<?php echo (support("deferrable") ? html_select("deferrable", array('NOT DEFERRABLE', 'DEFERRABLE', 'DEFERRABLE INITIALLY DEFERRED'), $row["deferrable"]) : ''); ?>
 <p>
 <input type='submit' value='<?php echo lang('Save'); ?>'>
 <noscript><p><input type='submit' name='add' value='<?php echo lang('Add column'); ?>'></noscript>

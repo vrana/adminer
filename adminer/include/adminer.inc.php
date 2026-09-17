@@ -315,7 +315,7 @@ class Adminer {
 		foreach ($links as $key => $val) {
 			echo " <a href='" . h(ME) . "$key=" . url_escape($name) . ($key == "edit" ? $set : "") . "'" . bold(isset($_GET[$key])) . ">$val</a>";
 		}
-		echo doc_link(array(JUSH => driver()->tableHelp($name, $is_view)), "?");
+		echo doc_link(array(JUSH => driver()->tableHelp($name, $is_view)));
 		echo "\n";
 	}
 

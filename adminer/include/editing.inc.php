@@ -592,7 +592,7 @@ function doc_version(): string {
 * @param string $text HTML code
 * @return string HTML code
 */
-function doc_link(array $paths, string $text = "<sup>?</sup>"): string {
+function doc_link(array $paths, string $text = "🕮"): string {
 	$version = doc_version();
 	$urls = array(
 		'sql' => "https://dev.mysql.com/doc/refman/$version/en/",
@@ -609,7 +609,10 @@ function doc_link(array $paths, string $text = "<sup>?</sup>"): string {
 		$urls['pgsql'] = "https://docs.cockroachlabs.com/docs/v$version/";
 		$paths['pgsql'] = $paths['cockroach'];
 	}
-	return ($paths[JUSH] ? "<a href='" . h($urls[JUSH] . $paths[JUSH] . (JUSH == 'mssql' ? "?view=$version" : "")) . "'" . target_blank() . ">$text</a>" : "");
+	return ($paths[JUSH]
+		? " <a href='" . h($urls[JUSH] . $paths[JUSH] . (JUSH == 'mssql' ? "?view=$version" : "")) . "'" . target_blank() . " class='doc' title='" . lang('Documentation') . "'>$text</a>"
+		: ""
+	);
 }
 
 /** Compute size of database

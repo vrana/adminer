@@ -93,6 +93,7 @@ Lang::$translations = array(
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Xx.',
 	'You are offline.' => 'Xx.',
 	'Menu' => 'Xx',
+	'Documentation' => 'Xx',
 	'Database management in a single PHP file' => 'Xx',
 
 	'Export' => 'Xx',

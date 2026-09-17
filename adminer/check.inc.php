@@ -49,23 +49,23 @@ page_header(
 	$error,
 	array("table" => $TABLE),
 	h($name != "" ? $name : $TABLE),
-	$not_found
+	$not_found,
+	doc_link(array(
+		'sql' => "create-table-check-constraints.html",
+		'mariadb' => "constraint/",
+		'pgsql' => "ddl-constraints.html#DDL-CONSTRAINTS-CHECK-CONSTRAINTS",
+		'cockroach' => "check",
+		'mssql' => "relational-databases/tables/create-check-constraints",
+		'sqlite' => "lang_createtable.html#check_constraints",
+	))
 );
 ?>
 
 <form action="" method="post">
-<p><?php
+<?php
 if (JUSH != "sqlite") {
-	echo lang('Name') . ': <input name="name" value="' . h($row["name"]) . '" data-maxlength="64" autocapitalize="off"> ';
+	echo '<p>' . lang('Name') . ': <input name="name" value="' . h($row["name"]) . '" data-maxlength="64" autocapitalize="off">';
 }
-echo doc_link(array(
-	'sql' => "create-table-check-constraints.html",
-	'mariadb' => "constraint/",
-	'pgsql' => "ddl-constraints.html#DDL-CONSTRAINTS-CHECK-CONSTRAINTS",
-	'cockroach' => "check",
-	'mssql' => "relational-databases/tables/create-check-constraints",
-	'sqlite' => "lang_createtable.html#check_constraints",
-), "?");
 ?>
 <p><?php textarea("clause", $row["clause"]); ?>
 <p><input type='submit' value='<?php echo lang('Save'); ?>'>

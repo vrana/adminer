@@ -17,6 +17,7 @@ button.link { font: inherit; padding: 0; border: 0; background: none; color: blu
 button.link:hover { color: red; text-decoration: underline; }
 h1 { font-size: 150%; margin: 0; padding: .8em .667em; border-bottom: 1px solid #999; font-weight: normal; color: #777; background: var(--dim); }
 h2 { font-size: 150%; margin: 0 0 20px; margin-inline-start: -18px; padding: .8em 1em; border-bottom: 1px solid var(--fg); font-weight: normal; background: var(--lit); }
+h2 .doc { float: right; }
 h3 { font-weight: normal; font-size: 130%; margin: 1em 0 0; }
 form { margin: 0; }
 table { margin: 1em 0 0; margin-inline-end: 20px; font-size: 90%; border-spacing: 0; border: 0; } /* collapsing paints the borders on the table, so on a sticky thead, Chrome loses top border and Firefox all borders: https://bugzilla.mozilla.org/show_bug.cgi?id=1727594 */
@@ -27,6 +28,7 @@ table > :first-child > :first-child > td, table > :first-child > :first-child > 
 td table { width: 100%; margin: 0; }
 fieldset table:first-child { margin: 0; } /* the fieldset has its own padding */
 th { background: var(--dim); text-align: start; }
+th .doc { font-weight: normal; }
 thead { position: sticky; top: 0; z-index: 1; } /* z-index to cover the sticky cells of tbody which come later */
 thead th { text-align: center; padding: .2em .5em; }
 thead td, thead th { background: var(--lit); }
@@ -136,6 +138,7 @@ td.check { text-align: end; } /* to display the checkboxes next to the data */
 .rtl .loadmore { left: auto; right: 10px; }
 .rtl #ajaxstatus.sticky { left: auto; right: 0; }
 .rtl #breadcrumb { left: auto; right: 21em; }
+.rtl h2 .doc { float: left; }
 .rtl pre, .rtl code { direction: ltr; }
 
 @media not all and (max-width: 800px) {

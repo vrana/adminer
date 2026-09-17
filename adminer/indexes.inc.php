@@ -87,7 +87,14 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 	queries_redirect(ME . "table=" . url_escape($TABLE), lang('Indexes have been altered.'), alter_indexes($TABLE, $alter));
 }
 
-page_header(lang('Indexes'), $error, array("table" => $TABLE), h($TABLE));
+page_header(lang('Indexes'), $error, array("table" => $TABLE), h($TABLE), false, doc_link(array(
+	'sql' => "create-index.html",
+	'pgsql' => "sql-createindex.html",
+	'cockroach' => "create-index",
+	'mssql' => "t-sql/statements/create-index-transact-sql",
+	'sqlite' => "lang_createindex.html",
+	'oracle' => "sqlrf/CREATE-INDEX.html",
+)));
 
 $fields_keys = array_keys($fields);
 if ($_POST["add"]) {

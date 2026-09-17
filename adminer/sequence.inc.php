@@ -28,7 +28,11 @@ page_header(
 	$error,
 	"#sequences",
 	"",
-	$not_found
+	$not_found,
+	doc_link(array(
+		'pgsql' => "sql-createsequence.html",
+		'cockroach' => "create-sequence",
+	))
 );
 
 if (!$row) {

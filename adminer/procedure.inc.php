@@ -47,10 +47,24 @@ if (!$_POST && $PROCEDURE != "") {
 	$row["name"] = $PROCEDURE;
 }
 
-page_header(($PROCEDURE != ""
-	? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . h($PROCEDURE)
-	: (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))
-), $error, "#routines", "", $not_found);
+$routine_lower = strtolower($routine);
+page_header(
+	($PROCEDURE != ""
+		? (isset($_GET["function"]) ? lang('Alter function') : lang('Alter procedure')) . ": " . h($PROCEDURE)
+		: (isset($_GET["function"]) ? lang('Create function') : lang('Create procedure'))
+	),
+	$error,
+	"#routines",
+	"",
+	$not_found,
+	doc_link(array(
+		'sql' => "create-procedure.html", // the same page documents CREATE FUNCTION
+		'mariadb' => "create-$routine_lower/",
+		'pgsql' => "sql-create$routine_lower.html",
+		'cockroach' => "create-$routine_lower",
+		'mssql' => "t-sql/statements/create-$routine_lower-transact-sql",
+	))
+);
 
 if (!$_POST && $PROCEDURE == "") {
 	$row["language"] = "sql";
@@ -67,16 +81,6 @@ echo ($collations ? "<datalist id='collations'>" . optionlist($collations) . "</
 	. html_select("language", array_keys($routine_languages), $row["language"], on('change', 'routineLanguage', $routine_languages))
 	. "</label>\n" : ""); ?>
 <input type='submit' value='<?php echo lang('Save'); ?>'>
-<?php
-$routine_lower = strtolower($routine);
-echo doc_link(array(
-	'sql' => "create-procedure.html", // the same page documents CREATE FUNCTION
-	'mariadb' => "create-$routine_lower/",
-	'pgsql' => "sql-create$routine_lower.html",
-	'cockroach' => "create-$routine_lower",
-	'mssql' => "t-sql/statements/create-$routine_lower-transact-sql",
-), "?");
-?>
 <div class="scrollable">
 <table id="edit-fields" class="nowrap">
 <?php

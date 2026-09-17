@@ -44,7 +44,8 @@ page_header(
 	$error,
 	"#events",
 	"",
-	$not_found
+	$not_found,
+	doc_link(array('sql' => "create-event.html"))
 );
 ?>
 

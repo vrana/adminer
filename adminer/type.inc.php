@@ -93,7 +93,11 @@ page_header(
 	$error,
 	"#user-types",
 	"",
-	($type_id === false)
+	($type_id === false),
+	doc_link(array(
+		'pgsql' => "sql-createtype.html",
+		'cockroach' => "create-type",
+	))
 );
 
 if (!$row) {
@@ -106,10 +110,6 @@ if (!$row) {
 <p>
 <?php
 echo lang('Name') . ": <input name='name' value='" . h($row['name']) . "' autocapitalize='off'>\n";
-echo doc_link(array(
-	'pgsql' => "sql-createtype.html",
-	'cockroach' => "create-type",
-), "?");
 textarea("as", $row["as"]);
 echo "<p><input type='submit' value='" . lang('Save') . "'>\n";
 if ($TYPE != "") {

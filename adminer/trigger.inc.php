@@ -38,7 +38,15 @@ page_header(
 	$error,
 	array("table" => $TABLE),
 	h($name != "" ? $name : $TABLE),
-	$not_found
+	$not_found,
+	doc_link(array(
+		'sql' => "create-trigger.html",
+		'pgsql' => "sql-createtrigger.html",
+		'cockroach' => "create-trigger",
+		'mssql' => "t-sql/statements/create-trigger-transact-sql",
+		'sqlite' => "lang_createtrigger.html",
+		'oracle' => "lnpls/CREATE-TRIGGER-statement.html",
+	))
 );
 
 $trigger_change = on('change', 'triggerChange', "^" . preg_quote($TABLE, "/") . "_[ba][iud]$", $TABLE);

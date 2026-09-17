@@ -131,7 +131,8 @@ page_header(
 	$error,
 	array("privileges" => array('', lang('Privileges'))),
 	"",
-	$not_found
+	$not_found,
+	doc_link(array('sql' => "grant.html", 'mariadb' => "grant")) // grant/ redirects to a search
 );
 
 $row = $_POST;
@@ -155,7 +156,7 @@ if ($row) {
 <?php
 //! MAX_* limits, REQUIRE
 echo "<table class='odds'>\n";
-echo "<thead><tr><th colspan='2'>" . lang('Privileges') . doc_link(array('sql' => "grant.html#priv_level"));
+echo "<thead><tr><th colspan='2'>" . lang('Privileges');
 $i = 0;
 foreach ($grants as $object => $grant) {
 	echo '<th>' . ($object != "*.*"

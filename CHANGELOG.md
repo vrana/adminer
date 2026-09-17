@@ -4,6 +4,7 @@
 - Edit: Do not round big numbers in json (MySQL) and jsonb (PostgreSQL) when saving the row (regression from 5.4.2)
 - Keep the table names on the screen when scrolling the list of tables horizontally
 - Select: Keep the checkboxes on the screen when scrolling horizontally
+- Show documentation links as 🕮, link it from the heading
 - PostgreSQL, MS SQL, Oracle: Do not highlight a valid date or time value as too long
 - MS SQL: Export and alter the precision of datetime2, time and datetimeoffset
 - MS SQL: Keep fractional seconds and the time zone offset when saving a row with the sqlsrv extension

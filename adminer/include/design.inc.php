@@ -6,8 +6,9 @@ namespace Adminer;
 * @param mixed $breadcrumb ["key" => "link", "key2" => ["link", "desc"]], "#section" of the database page, null for nothing, false for driver only, true for driver and server
 * @param string $title2 used after colon in title and heading, should be HTML escaped
 * @param bool|string $not_found the object in the URL doesn't exist - print only the error and finish the page, a string is passed to page_footer()
+* @param string $doc HTML code of doc_link()
 */
-function page_header(string $title, string $error = "", $breadcrumb = array(), string $title2 = "", $not_found = false): void {
+function page_header(string $title, string $error = "", $breadcrumb = array(), string $title2 = "", $not_found = false, string $doc = ""): void {
 	if ($not_found) {
 		header("HTTP/1.1 404 Not Found");
 		$error = ($error ?: lang('Not found.')); // the error of the driver is more specific
@@ -115,7 +116,7 @@ const urlSeparators = '" . js_escape(ini_get("arg_separator.input")) . "';");
 			echo "$title\n";
 		}
 	}
-	echo "<h2>$title_all</h2>\n";
+	echo "<h2>$title_all$doc</h2>\n";
 	echo "<div id='ajaxstatus' role='status' class='jsonly'></div>\n";
 	restart_session();
 	page_messages($error);
