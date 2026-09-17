@@ -282,7 +282,12 @@ if (isset($_GET["mssql"])) {
 					$port = $server["port"];
 					$socket = $server["socket"];
 					$options = array(1002 => true); // 1002 - PDO::DBLIB_ATTR_STRINGIFY_UNIQUEIDENTIFIER available since PHP 7.0, without it uniqueidentifier is returned as 16 raw bytes
-					return $this->dsn("dblib:charset=utf8;host=$server[host]" . ($port != "" ? ";port=$port" : ($socket != "" ? ";unix_socket=$socket" : "")), $username, $password, $options);
+					$return = $this->dsn("dblib:charset=utf8;host=$server[host]" . ($port != "" ? ";port=$port" : ($socket != "" ? ";unix_socket=$socket" : "")), $username, $password, $options);
+					if (!$return) {
+						// the extension doesn't support PDO::ATTR_SERVER_VERSION; SERVERPROPERTY() returns sql_variant, which it reads as an empty string
+						$this->server_info = get_val("SELECT CAST(SERVERPROPERTY('ProductVersion') AS varchar(20))", 0, $this);
+					}
+					return $return;
 				}
 			}
 		}

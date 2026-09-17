@@ -12,6 +12,7 @@
 - MS SQL: Export and alter the precision of datetime2, time and datetimeoffset
 - MS SQL: Keep fractional seconds and the time zone offset when saving a row with the sqlsrv extension
 - MS SQL Dblib: Display uniqueidentifier (bug #1339)
+- MS SQL Dblib: Show the server version
 - Oracle: Treat SYS and SYSTEM as read-only
 - Oracle: Support identity columns
 - Oracle: Alter timestamp and interval columns, display their type without a duplicate precision
