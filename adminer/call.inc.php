@@ -5,7 +5,12 @@ $PROCEDURE = ($_GET["name"] ?: $_GET["call"]);
 $routine_type = (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE");
 $routine = routine($_GET["call"], $routine_type);
 
-page_header(lang('Call') . ": " . h($PROCEDURE), $error, "#routines", "", !$routine);
+page_header(lang('Call') . ": " . h($PROCEDURE), $error, "#routines", "", !$routine, (isset($_GET["callf"]) ? "" : doc_link(array( // a function is called by SELECT
+	'sql' => "call.html",
+	'pgsql' => "sql-call.html",
+	'cockroach' => "call",
+	'mssql' => "t-sql/language-elements/execute-transact-sql",
+))));
 
 $in = array();
 $out = array();

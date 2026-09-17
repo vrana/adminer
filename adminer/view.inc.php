@@ -53,7 +53,15 @@ page_header(
 	$error,
 	array("table" => $TABLE),
 	h($TABLE),
-	$not_found
+	$not_found,
+	doc_link(array(
+		'sql' => "create-view.html",
+		'pgsql' => "sql-createview.html",
+		'cockroach' => "create-view",
+		'mssql' => "t-sql/statements/create-view-transact-sql",
+		'sqlite' => "lang_createview.html",
+		'oracle' => "sqlrf/CREATE-VIEW.html",
+	))
 );
 ?>
 

@@ -42,7 +42,15 @@ if ($_POST && !$error && !$_POST["add"]) {
 	}
 }
 
-page_header(DB != "" ? lang('Alter database') : lang('Create database'), $error, array(), h(DB));
+$statement = (DB != "" ? "alter" : "create");
+page_header(DB != "" ? lang('Alter database') : lang('Create database'), $error, array(), h(DB), false, doc_link(array(
+	'sql' => "$statement-database.html",
+	'mariadb' => (DB != "" ? "" : "$statement-database"), // create-database/ redirects to a search
+	'pgsql' => "sql-$statement" . "database.html",
+	'cockroach' => "$statement-database",
+	'mssql' => "t-sql/statements/$statement-database-transact-sql",
+	'oracle' => "sqlrf/" . strtoupper($statement) . "-USER.html", // a database is a user
+)));
 
 $collations = collations();
 $name = DB;
