@@ -93,6 +93,7 @@ Lang::$translations = array(
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Większe pliki SQL możesz wgrać na serwer poprzez FTP przed zaimportowaniem.',
 	'You are offline.' => 'Jesteś offline.',
 	'Menu' => 'Menu',
+	'Documentation' => 'Dokumentacja', // Claude Opus 5
 	'Database management in a single PHP file' => 'Zarządzanie bazą danych w jednym pliku PHP',
 
 	'Export' => 'Eksportuj',

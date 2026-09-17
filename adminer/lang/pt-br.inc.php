@@ -310,6 +310,7 @@ Lang::$translations = array(
 	'screenshot' => 'captura de tela', // Claude Fable 5
 	'You are offline.' => 'Você está offline.', // Claude Fable 5
 	'Menu' => 'Menu', // Claude Opus 5
+	'Documentation' => 'Documentação', // Claude Opus 5
 	'Database management in a single PHP file' => 'Gerenciamento de banco de dados em um único arquivo PHP', // Claude Opus 5
 	'Increase %s.' => 'Aumente %s.', // Claude Fable 5
 	'You have no privileges to update this table.' => 'Você não tem privilégios para atualizar esta tabela.', // Claude Fable 5

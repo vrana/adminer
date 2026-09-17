@@ -295,6 +295,7 @@ Lang::$translations = array(
 	'Compute' => 'Spočítať',
 	'You are offline.' => 'Ste offline.',
 	'Menu' => 'Menu',
+	'Documentation' => 'Dokumentácia', // Claude Opus 5
 	'Database management in a single PHP file' => 'Správa databázy v jednom PHP súbore',
 	'You have no privileges to update this table.' => 'Nemáte oprávnenie na aktualizáciu tejto tabuľky.',
 	'Saving…' => 'Ukladá sa…',

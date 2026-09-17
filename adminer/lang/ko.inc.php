@@ -270,6 +270,7 @@ Lang::$translations = array(
 	'yes' => '네',
 	'You are offline.' => '오프라인입니다.',
 	'Menu' => '메뉴', // Claude Opus 5
+	'Documentation' => '문서', // Claude Opus 5
 	'Database management in a single PHP file' => '단일 PHP 파일로 데이터베이스 관리', // Claude Opus 5
 	'You can upload a large SQL file via FTP and import it from the server.' => '큰 SQL 파일은 FTP를 통하여 업로드하여 서버에서 가져올 수 있습니다.',
 	'You have no privileges to update this table.' => '이 테이블을 업데이트할 권한이 없습니다.',

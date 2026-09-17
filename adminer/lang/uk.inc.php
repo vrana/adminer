@@ -327,6 +327,7 @@ Lang::$translations = array(
 	'Compute' => 'Обчислити',
 	'You are offline.' => 'Ви офлайн.',
 	'Menu' => 'Меню', // Claude Opus 5
+	'Documentation' => 'Документація', // Claude Opus 5
 	'Database management in a single PHP file' => 'Керування базою даних в одному PHP-файлі', // Claude Opus 5
 	'You have no privileges to update this table.' => 'Ви не маєте привілеїв для оновлення цієї таблиці.',
 	'Saving…' => 'Збереження…',

@@ -282,6 +282,7 @@ Lang::$translations = array(
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Sie können eine große SQL-Datei per FTP hochladen und dann vom Server importieren.',
 	'You are offline.' => 'Sie sind offline.',
 	'Menu' => 'Menü',
+	'Documentation' => 'Dokumentation', // Claude Opus 5
 	'Database management in a single PHP file' => 'Datenbank-Verwaltung in einer einzigen PHP-Datei',
 	'You have no privileges to update this table.' => 'Sie haben keine Rechte, diese Tabelle zu aktualisieren.',
 	'Saving…' => 'Speichere…',

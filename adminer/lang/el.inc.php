@@ -71,6 +71,7 @@ Lang::$translations = array(
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Μπορείτε να μεταφορτώσετε ένα μεγάλο αρχείο SQL μέσω FTP και να το εισάγετε από το διακομιστή.',
 	'You are offline.' => 'Βρίσκεστε εκτός σύνδεσης.',
 	'Menu' => 'Μενού', // Claude Opus 5
+	'Documentation' => 'Τεκμηρίωση', // Claude Opus 5
 	'Database management in a single PHP file' => 'Διαχείριση βάσεων δεδομένων σε ένα μόνο αρχείο PHP', // Claude Opus 5
 
 	'Export' => 'Εξαγωγή',

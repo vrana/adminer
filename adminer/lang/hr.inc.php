@@ -342,6 +342,7 @@ Lang::$translations = array(
 	'screenshot' => 'snimka zaslona',
 	'You are offline.' => 'Niste povezani s mrežom.',
 	'Menu' => 'Izbornik', // Claude Opus 5
+	'Documentation' => 'Dokumentacija', // Claude Opus 5
 	'Database management in a single PHP file' => 'Upravljanje bazom podataka u jednoj PHP datoteci', // Claude Opus 5
 	'Increase %s.' => 'Povećajte %s.',
 	'You have no privileges to update this table.' => 'Nemate ovlasti za ažuriranje ove tablice.',

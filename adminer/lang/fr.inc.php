@@ -289,6 +289,7 @@ Lang::$translations = array(
 	'Not found.' => 'Introuvable.', // Claude Opus 5
 	'You are offline.' => 'Vous êtes hors ligne.',
 	'Menu' => 'Menu',
+	'Documentation' => 'Documentation', // Claude Opus 5
 	'Database management in a single PHP file' => 'Gestion de base de données dans un seul fichier PHP',
 	'Drop %s?' => 'Supprimer %s?',
 	'overwrite' => 'écraser',

@@ -315,6 +315,7 @@ Lang::$translations = array(
 	'screenshot' => 'skærmbillede', // Claude Fable 5
 	'You are offline.' => 'Du er offline.', // Claude Fable 5
 	'Menu' => 'Menu', // Claude Opus 5
+	'Documentation' => 'Dokumentation', // Claude Opus 5
 	'Database management in a single PHP file' => 'Databaseadministration i en enkelt PHP-fil', // Claude Opus 5
 	'Increase %s.' => 'Forøg %s.', // Claude Fable 5
 	'Unknown error.' => 'Ukendt fejl.', // Claude Fable 5

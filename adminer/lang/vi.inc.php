@@ -345,6 +345,7 @@ Lang::$translations = array(
 	'screenshot' => 'ảnh chụp màn hình', // Claude Fable 5
 	'You are offline.' => 'Bạn đang ngoại tuyến.', // Claude Fable 5
 	'Menu' => 'Menu', // Claude Opus 5
+	'Documentation' => 'Tài liệu', // Claude Opus 5
 	'Database management in a single PHP file' => 'Quản lý cơ sở dữ liệu trong một tệp PHP duy nhất', // Claude Opus 5
 	'Increase %s.' => 'Hãy tăng %s.', // Claude Fable 5
 	'Saving…' => 'Đang lưu…', // Claude Fable 5

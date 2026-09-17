@@ -311,6 +311,7 @@ Lang::$translations = array(
 	'screenshot' => 'képernyőkép', // Claude Fable 5
 	'You are offline.' => 'Ön offline állapotban van.', // Claude Fable 5
 	'Menu' => 'Menü', // Claude Opus 5
+	'Documentation' => 'Dokumentáció', // Claude Opus 5
 	'Database management in a single PHP file' => 'Adatbázis-kezelés egyetlen PHP-fájlban', // Claude Opus 5
 	'Increase %s.' => 'Növelje a(z) %s értékét.', // Claude Fable 5
 	'You have no privileges to update this table.' => 'Nincs jogosultsága a tábla frissítéséhez.', // Claude Fable 5

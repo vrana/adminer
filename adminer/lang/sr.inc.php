@@ -345,6 +345,7 @@ Lang::$translations = array(
 	'screenshot' => 'снимак екрана',
 	'You are offline.' => 'Ван мреже сте.',
 	'Menu' => 'Мени',
+	'Documentation' => 'Документација', // Claude Opus 5
 	'Database management in a single PHP file' => 'Управљање базом података помоћу једне PHP датотеке',
 	'Increase %s.' => 'Повећајте %s.',
 	'You have no privileges to update this table.' => 'Немате привилегије за ажурирање ове табеле.',

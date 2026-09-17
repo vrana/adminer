@@ -311,6 +311,7 @@ Lang::$translations = array(
 	'screenshot' => 'captura de pantalla',
 	'You are offline.' => 'Esteu fora de línia.',
 	'Menu' => 'Menú',
+	'Documentation' => 'Documentació', // Claude Opus 5
 	'Database management in a single PHP file' => 'Gestió de bases de dades en un sol fitxer PHP',
 	'Increase %s.' => 'Augmenteu %s.',
 	'You have no privileges to update this table.' => 'No teniu privilegis per actualitzar aquesta taula.',

@@ -341,6 +341,7 @@ Lang::$translations = array(
 	'screenshot' => 'posnetek zaslona', // Claude Fable 5
 	'You are offline.' => 'Ste brez povezave.', // Claude Fable 5
 	'Menu' => 'Meni', // Claude Opus 5
+	'Documentation' => 'Dokumentacija', // Claude Opus 5
 	'Database management in a single PHP file' => 'Upravljanje baz podatkov v eni sami datoteki PHP', // Claude Opus 5
 	'Increase %s.' => 'Povečajte %s.', // Claude Fable 5
 	'You have no privileges to update this table.' => 'Nimate pravic za posodabljanje te tabele.', // Claude Fable 5

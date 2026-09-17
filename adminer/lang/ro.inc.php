@@ -311,6 +311,7 @@ Lang::$translations = array(
 	'screenshot' => 'captură de ecran', // Claude Fable 5
 	'You are offline.' => 'Sunteți offline.', // Claude Fable 5
 	'Menu' => 'Meniu', // Claude Opus 5
+	'Documentation' => 'Documentație', // Claude Opus 5
 	'Database management in a single PHP file' => 'Gestionarea bazei de date într-un singur fișier PHP',
 	'Increase %s.' => 'Măriți %s.', // Claude Fable 5
 	'You have no privileges to update this table.' => 'Nu aveți privilegii pentru a actualiza acest tabel.', // Claude Fable 5

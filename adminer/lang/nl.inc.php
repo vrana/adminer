@@ -294,6 +294,7 @@ Lang::$translations = array(
 	'Compute' => 'Bereken',
 	'You are offline.' => 'U bent offline.',
 	'Menu' => 'Menu',
+	'Documentation' => 'Documentatie', // Claude Opus 5
 	'Database management in a single PHP file' => 'Databasebeheer in één PHP-bestand',
 	'You have no privileges to update this table.' => 'U bent niet gemachtigd om deze tabel aan te passen.',
 	'Saving…' => 'Opslaan…',

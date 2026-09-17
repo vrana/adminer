@@ -71,6 +71,7 @@ Lang::$translations = array(
 	'You can upload a large SQL file via FTP and import it from the server.' => 'Voit ladata suuren SQL-tiedoston FTP:n kautta ja tuoda sen sitten palvelimelta.',
 	'You are offline.' => 'Olet offline-tilassa.',
 	'Menu' => 'Valikko',
+	'Documentation' => 'Dokumentaatio', // Claude Opus 5
 	'Database management in a single PHP file' => 'Hallitse tietokantoja yhden PHP-tiedoston avulla',
 
 	'Export' => 'Vienti',
