@@ -242,6 +242,8 @@ test('Search in tables with special types', async () => {
 		await page.locator('[name="search"]').click();
 		await expect(page.locator('.error')).toHaveCount(0);
 	}
+	await goto(page, '/adminer/?mssql=&username=ODBC&db=adminer_test&ns=dbo&select=types');
+	await expect(page.locator('body')).toContainText('00000000-0000-0000-0000-000000000003'); // PDO_DBLIB returns uniqueidentifier as raw bytes without DBLIB_ATTR_STRINGIFY_UNIQUEIDENTIFIER
 	await goto(page, '/adminer/?mssql=&username=ODBC&db=adminer_test&ns=dbo&sql=' + encodeURIComponent('DROP TABLE types'));
 	await button(page, 'Execute').click();
 });
