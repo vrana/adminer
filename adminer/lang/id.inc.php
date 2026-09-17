@@ -308,6 +308,7 @@ Lang::$translations = array(
 	'Selected' => 'Terpilih', // Claude Fable 5
 	'overwrite' => 'timpa', // Claude Fable 5
 	'DB' => 'DB', // Claude Fable 5
+	'System%s' => 'Sistem%s', // Claude Opus 5
 	'Algorithm' => 'Algoritme', // Claude Fable 5
 	'Columns' => 'Kolom', // Claude Fable 5
 	'Condition' => 'Kondisi', // Claude Fable 5

@@ -287,6 +287,7 @@ Lang::$translations = array(
 	'Extensions' => '확장 모듈', // Claude Opus 5
 	'Version' => '버전', // Claude Opus 5
 	'DB' => 'DB', // Claude Fable 5
+	'System%s' => '시스템%s', // Claude Opus 5
 	'Algorithm' => '알고리즘', // Claude Fable 5
 	'Columns' => '열', // Claude Fable 5
 	'Condition' => '조건', // Claude Fable 5

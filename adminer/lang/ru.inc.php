@@ -295,6 +295,7 @@ Lang::$translations = array(
 	'Drop %s?' => 'Удалить %s?',
 	'overwrite' => 'перезаписать',
 	'DB' => 'DB',
+	'System%s' => 'Системные%s', // Claude Opus 5
 	'Warnings' => 'Предупреждения',
 	'Adminer does not support accessing a database without a password.' => 'Adminer не поддерживает доступ к базе данных без пароля.',
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Спасибо за использование Adminer, рассмотрите возможность <a href="https://www.adminer.org/en/donation/">пожертвования</a>.',

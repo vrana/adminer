@@ -89,6 +89,7 @@ Lang::$translations = array(
 
 	'Database' => 'Veri Tabanı',
 	'DB' => 'DB',
+	'System%s' => 'Sistem%s', // Claude Opus 5
 	'Use' => 'Kullan',
 	'Select database' => 'Veri tabanı seç',
 	'Database has been dropped.' => 'Veri tabanı silindi.',

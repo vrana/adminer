@@ -285,6 +285,7 @@ Lang::$translations = array(
 	'Drop %s?' => 'Drop %s?', // Claude Fable 5
 	'overwrite' => 'overskriv', // Claude Fable 5
 	'DB' => 'DB', // Claude Fable 5
+	'System%s' => 'System%s', // Claude Opus 5
 	'Algorithm' => 'Algoritme', // Claude Fable 5
 	'Columns' => 'Kolonner', // Claude Fable 5
 	'Condition' => 'Betingelse', // Claude Fable 5

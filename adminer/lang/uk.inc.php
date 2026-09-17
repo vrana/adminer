@@ -302,6 +302,7 @@ Lang::$translations = array(
 	'Selected' => 'Вибрані',
 	'overwrite' => 'перезаписати',
 	'DB' => 'DB',
+	'System%s' => 'Системні%s', // Claude Opus 5
 	'File must be in UTF-8 encoding.' => 'Файл повинен бути в кодуванні UTF-8.',
 	'All rows on this page' => 'Усі рядки на цій сторінці', // Claude Opus 5
 	'Modify' => 'Змінити',

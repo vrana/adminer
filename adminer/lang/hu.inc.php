@@ -272,6 +272,7 @@ Lang::$translations = array(
 	'Selected' => 'Kijelölve', // Claude Fable 5
 	'overwrite' => 'felülírás', // Claude Fable 5
 	'DB' => 'DB', // Claude Fable 5
+	'System%s' => 'Rendszer%s', // Claude Opus 5
 	'Algorithm' => 'Algoritmus', // Claude Fable 5
 	'Columns' => 'Oszlopok', // Claude Fable 5
 	'Condition' => 'Feltétel', // Claude Fable 5

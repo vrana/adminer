@@ -294,6 +294,7 @@ Lang::$translations = array(
 	'Drop %s?' => 'Supprimer %s?',
 	'overwrite' => 'écraser',
 	'DB' => 'BD',
+	'System%s' => 'Système%s', // Claude Opus 5
 	'%s queries are not supported.' => 'Requêtes %s ne sont pas supportées.',
 	'Warnings' => 'Avertissements',
 	'Adminer does not support accessing a database without a password.' => 'Adminer ne supporte pas l\'accès aux bases de données sans mot de passe.',

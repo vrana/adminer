@@ -269,6 +269,7 @@ Lang::$translations = array(
 	'Selected' => 'Geselecteerd',
 	'overwrite' => 'overschrijven',
 	'DB' => 'DB',
+	'System%s' => 'Systeem%s', // Claude Opus 5
 	'File must be in UTF-8 encoding.' => 'Het bestand moet met UTF-8 encodering zijn opgeslagen.',
 	'All rows on this page' => 'Alle rijen op deze pagina',
 	'Modify' => 'Aanpassen',

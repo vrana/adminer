@@ -269,6 +269,7 @@ Lang::$translations = array(
 	'Selected' => 'Označené',
 	'overwrite' => 'prepísať',
 	'DB' => 'DB',
+	'System%s' => 'Systémové%s', // Claude Opus 5
 	'File must be in UTF-8 encoding.' => 'Súbor musí byť v kódovaní UTF-8.',
 	'All rows on this page' => 'Všetky riadky na tejto stránke',
 	'Modify' => 'Zmeniť',

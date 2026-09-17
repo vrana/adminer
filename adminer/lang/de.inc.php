@@ -295,6 +295,7 @@ Lang::$translations = array(
 	'Vacuum' => 'Vacuum',
 	'overwrite' => 'überschreiben',
 	'DB' => 'DB',
+	'System%s' => 'System%s', // Claude Opus 5
 	'%s queries are not supported.' => '%s Abfragen werden nicht unterstützt.',
 	'Warnings' => 'Warnungen',
 	'Adminer does not support accessing a database without a password.' => 'Adminer unterstützt den Zugriff auf eine Datenbank ohne Passwort nicht.',

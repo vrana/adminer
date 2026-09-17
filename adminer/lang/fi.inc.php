@@ -328,6 +328,7 @@ Lang::$translations = array(
 	'Drop %s?' => 'Poistetaanko %s?',
 	'overwrite' => 'kirjoittaen päälle',
 	'DB' => 'TK',
+	'System%s' => 'Järjestelmä%s', // Claude Opus 5
 	'%s queries are not supported.' => '%s-komennolla tehtyjä kyselyjä ei tueta.',
 	'Warnings' => 'Varoitukset',
 	'Adminer does not support accessing a database without a password.' => 'Adminer ei tue pääsyä tietokantaan ilman salasanaa.',

@@ -64,6 +64,7 @@ Lang::$translations = array(
 	'You have no privileges to update this table.' => 'このテーブルを更新する権限がありません。',
 	'Database' => 'データベース',
 	'DB' => 'DB',
+	'System%s' => 'システム%s', // Claude Opus 5
 	'Routines' => 'ルーチン',
 	'Indexes have been altered.' => 'インデックスを変更しました。',
 	'Indexes' => 'インデックス',

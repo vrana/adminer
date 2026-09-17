@@ -270,6 +270,7 @@ Lang::$translations = array(
 	'Copy' => 'Copiar', // Claude Fable 5
 	'overwrite' => 'sobrescrever', // Claude Fable 5
 	'DB' => 'BD', // Claude Fable 5
+	'System%s' => 'Sistema%s', // Claude Opus 5
 	'Algorithm' => 'Algoritmo', // Claude Fable 5
 	'Columns' => 'Colunas', // Claude Fable 5
 	'Condition' => 'Condição', // Claude Fable 5

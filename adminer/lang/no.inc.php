@@ -285,6 +285,7 @@ Lang::$translations = array(
 	'Drop %s?' => 'Slett %s?',
 	'overwrite' => 'overskriv',
 	'DB' => 'DB',
+	'System%s' => 'System%s', // Claude Opus 5
 	'Algorithm' => 'Algoritme',
 	'Columns' => 'Kolonner',
 	'Condition' => 'Betingelse',

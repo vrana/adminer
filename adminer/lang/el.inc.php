@@ -331,6 +331,7 @@ Lang::$translations = array(
 	'Drop %s?' => 'Διαγραφή %s;', // Claude Fable 5
 	'overwrite' => 'αντικατάσταση', // Claude Fable 5
 	'DB' => 'ΒΔ', // Claude Fable 5
+	'System%s' => 'Σύστημα%s', // Claude Opus 5
 	'Algorithm' => 'Αλγόριθμος', // Claude Fable 5
 	'Columns' => 'Στήλες', // Claude Fable 5
 	'Condition' => 'Συνθήκη', // Claude Fable 5

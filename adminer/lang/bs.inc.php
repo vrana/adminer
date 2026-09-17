@@ -311,6 +311,7 @@ Lang::$translations = array(
 	'Vacuum' => 'Očisti', // Claude Fable 5
 	'overwrite' => 'prepiši', // Claude Fable 5
 	'DB' => 'DB', // Claude Fable 5
+	'System%s' => 'Sistemske%s', // Claude Opus 5
 	'Algorithm' => 'Algoritam', // Claude Fable 5
 	'Columns' => 'Kolumne', // Claude Fable 5
 	'Condition' => 'Uslov', // Claude Fable 5

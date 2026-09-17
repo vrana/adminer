@@ -324,6 +324,7 @@ Lang::$translations = array(
 	'More options' => 'Više mogućnosti', // Claude Opus 5
 	'Require a password verified by Adminer' => 'Zahtijeva lozinku koju provjerava Adminer', // Claude Opus 5
 	'DB' => 'BP',
+	'System%s' => 'Sustavske%s', // Claude Opus 5
 	'hostname[:port] or :socket' => 'hostname[:port] ili :socket',
 	'Adminer does not support accessing a database without a password.' => 'Adminer ne podržava pristup bazi podataka bez lozinke.',
 	'Warnings' => 'Upozorenja',

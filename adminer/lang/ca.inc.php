@@ -273,6 +273,7 @@ Lang::$translations = array(
 	'Selected' => 'Seleccionats',
 	'overwrite' => 'sobreescriure',
 	'DB' => 'BD',
+	'System%s' => 'Sistema%s', // Claude Opus 5
 	'Algorithm' => 'Algorisme',
 	'Columns' => 'Columnes',
 	'Condition' => 'Condició',

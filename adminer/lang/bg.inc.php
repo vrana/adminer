@@ -331,6 +331,7 @@ Lang::$translations = array(
 	'Drop %s?' => 'Премахване на %s?',
 	'overwrite' => 'презаписване',
 	'DB' => 'БД',
+	'System%s' => 'Системни%s', // Claude Opus 5
 	'Algorithm' => 'Алгоритъм',
 	'Columns' => 'Колони',
 	'Condition' => 'Условие',

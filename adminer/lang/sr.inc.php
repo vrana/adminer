@@ -310,6 +310,7 @@ Lang::$translations = array(
 	'Selected' => 'Изабрано',
 	'overwrite' => 'препиши',
 	'DB' => 'DB',
+	'System%s' => 'Системске%s', // Claude Opus 5
 	'Algorithm' => 'Алгоритам',
 	'Columns' => 'Колоне',
 	'Condition' => 'Услов',

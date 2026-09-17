@@ -44,6 +44,7 @@ Lang::$translations = array(
 	'Delete' => 'Eliminar',
 	'Database' => 'Base de datos',
 	'DB' => 'BD',
+	'System%s' => 'Sistema%s', // Claude Opus 5
 	'Routines' => 'Procedimientos',
 	'Indexes have been altered.' => 'Índices actualizados.',
 	'Indexes' => 'Índices',

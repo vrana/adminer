@@ -319,6 +319,7 @@ Lang::$translations = array(
 	'Drop %s?' => 'Xoá %s?', // Claude Fable 5
 	'overwrite' => 'ghi đè', // Claude Fable 5
 	'DB' => 'CSDL', // Claude Fable 5
+	'System%s' => 'Hệ thống%s', // Claude Opus 5
 	'Algorithm' => 'Thuật toán', // Claude Fable 5
 	'Columns' => 'Cột', // Claude Fable 5
 	'Condition' => 'Điều kiện', // Claude Fable 5

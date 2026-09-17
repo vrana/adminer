@@ -273,6 +273,7 @@ Lang::$translations = array(
 	'Selected' => 'Selectate', // Claude Fable 5
 	'overwrite' => 'suprascrie', // Claude Fable 5
 	'DB' => 'BD', // Claude Fable 5
+	'System%s' => 'Sistem%s', // Claude Opus 5
 	'Algorithm' => 'Algoritm', // Claude Fable 5
 	'Columns' => 'Coloane', // Claude Fable 5
 	'Condition' => 'Condiție', // Claude Fable 5

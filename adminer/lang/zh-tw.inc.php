@@ -102,6 +102,7 @@ Lang::$translations = array(
 
 	'Database' => '資料庫',
 	'DB' => '資料庫',
+	'System%s' => '系統%s', // Claude Opus 5
 	'Use' => '使用',
 	'Select database' => '選擇資料庫',
 	'Database has been dropped.' => '資料庫已刪除。',
