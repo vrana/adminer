@@ -114,6 +114,15 @@ if (extension_loaded('pdo')) {
 			if (is_bool($val)) { // PDO_PgSQL returns booleans, the pgsql extension returns 't' and 'f'
 				return (JUSH == 'pgsql' ? ($val ? "t" : "f") : +$val);
 			}
+			if (PHP_VERSION_ID < 70100 && is_float($val) && is_finite($val)) { // precision -1 is not available, use the shortest representation preserving the value
+				for ($precision = 15; $precision < 17; $precision++) { // 15 - any 15 digits survive
+					$return = sprintf("%.$precision" . "G", $val);
+					if ((float) $return === $val) {
+						return $return;
+					}
+				}
+				return sprintf("%.17G", $val); // 17 - enough for any double
+			}
 			return (is_resource($val) ? stream_get_contents($val) : $val);
 		}
 

@@ -6,6 +6,7 @@
 - Select: Keep the checkboxes on the screen when scrolling horizontally
 - Show documentation links as 🕮, link it from the heading
 - Menu: Group system databases and schemas
+- PDO: Preserve the exact value of double (bug #1214)
 - PostgreSQL, MS SQL, Oracle: Do not highlight a valid date or time value as too long
 - PostgreSQL: Alter the trigger function from table structure
 - MS SQL: Export and alter the precision of datetime2, time and datetimeoffset

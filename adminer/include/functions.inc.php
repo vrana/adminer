@@ -181,9 +181,10 @@ function charset(Db $connection): string {
 }
 
 /** Set PHP ini value if ini_set() is not disabled
+* @param string|int|float|bool|null $value
 * @return string|false false on failure
 */
-function ini_set(string $option, string $value) {
+function ini_set(string $option, $value) {
 	return (function_exists('ini_set') ? \ini_set($option, $value) : false);
 }
 
