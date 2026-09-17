@@ -284,6 +284,8 @@ if (isset($_GET["mssql"])) {
 					$options = array(1002 => true); // 1002 - PDO::DBLIB_ATTR_STRINGIFY_UNIQUEIDENTIFIER available since PHP 7.0, without it uniqueidentifier is returned as 16 raw bytes
 					$return = $this->dsn("dblib:charset=utf8;host=$server[host]" . ($port != "" ? ";port=$port" : ($socket != "" ? ";unix_socket=$socket" : "")), $username, $password, $options);
 					if (!$return) {
+						// DB-Library turns these options off, a generated column or an indexed view can't be created without them
+						$this->query("SET ANSI_NULLS, QUOTED_IDENTIFIER, CONCAT_NULL_YIELDS_NULL, ANSI_WARNINGS, ANSI_PADDING ON");
 						// the extension doesn't support PDO::ATTR_SERVER_VERSION; SERVERPROPERTY() returns sql_variant, which it reads as an empty string
 						$this->server_info = get_val("SELECT CAST(SERVERPROPERTY('ProductVersion') AS varchar(20))", 0, $this);
 					}
