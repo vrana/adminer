@@ -324,7 +324,8 @@ if (isset($_GET["simpledb"])) {
 		return h(connection()->error);
 	}
 
-	function information_schema(string $db) {
+	function information_schema(string $db): bool {
+		return false;
 	}
 
 	function indexes(string $table, ?Db $connection2 = null): array {

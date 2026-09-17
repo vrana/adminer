@@ -106,6 +106,7 @@ Lang::$translations = array(
 
 	'Database' => 'Xx',
 	'DB' => 'XX',
+	'System%s' => 'Xx%s', // group of system databases or schemas in the menu, %s is always empty
 	'Use' => 'Xx',
 	'Select database' => 'Xx',
 	'Database has been dropped.' => 'Xx.',

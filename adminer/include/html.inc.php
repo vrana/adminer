@@ -111,8 +111,28 @@ function optionlist($options, $selected = null, bool $use_keys = false): string 
 	return $return;
 }
 
+/** Move system databases or schemas to an optgroup
+* @param list<string> $names
+* @return array<string|list<string>>
+*/
+function group_system(array $names, bool $schemas = false): array {
+	$return = array();
+	$system = array();
+	foreach ($names as $name) {
+		if ($schemas ? driver()->isSystem(DB, $name) : driver()->isSystem($name)) {
+			$system[] = $name;
+		} else {
+			$return[] = $name;
+		}
+	}
+	if ($system) {
+		$return[lang('System%s', '')] = $system; // %s only distinguishes the key from 'System' in the login form
+	}
+	return $return;
+}
+
 /** Generate HTML <select>
-* @param string[] $options
+* @param string[]|string[][] $options
 */
 function html_select(string $name, array $options, ?string $value = "", string $attrs = "", string $labelled_by = ""): string {
 	static $label = 0;

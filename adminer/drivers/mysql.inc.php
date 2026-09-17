@@ -452,6 +452,10 @@ if (!defined('Adminer\DRIVER')) {
 			return true; // InnoDB
 		}
 
+		function isSystem(string $db, string $schema = ""): bool {
+			return information_schema($db, $schema) || in_array($db, array("mysql", "sys"));
+		}
+
 		function lineComment(): string {
 			return "#|-- "; // MySQL requires a space after --
 		}

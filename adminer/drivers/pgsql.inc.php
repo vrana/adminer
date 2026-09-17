@@ -498,6 +498,13 @@ ORDER BY c.relname, a.attnum", $this->conn);
 		function hasEstimatedRows(): bool {
 			return true; // EXPLAIN
 		}
+
+		function isSystem(string $db, string $schema = ""): bool {
+			return ($schema != ""
+				? information_schema($db, $schema) || preg_match('~^pg_~', $schema) // the server reserves the prefix pg_ for system schemas, e.g. pg_temp_1
+				: in_array($db, array("postgres", "template1")) || ($this->conn->flavor == 'cockroach' && $db == "system")
+			);
+		}
 	}
 
 

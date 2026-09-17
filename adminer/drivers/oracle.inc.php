@@ -471,7 +471,7 @@ ORDER BY aic.column_position", $connection2) as $row
 	}
 
 	function information_schema(string $db, string $schema = ""): bool {
-		return ($schema != "" ? $schema : $db) == "INFORMATION_SCHEMA"; //! SYS and SYSTEM are read-only too
+		return in_array($schema != "" ? $schema : $db, array("INFORMATION_SCHEMA", "SYS", "SYSTEM"));
 	}
 
 	function error(): string {

@@ -105,6 +105,7 @@ Lang::$translations = array(
 
 	'Database' => 'Databáze',
 	'DB' => 'DB',
+	'System%s' => 'Systémové%s', // group of system databases or schemas in the menu, %s is always empty
 	'Use' => 'Vybrat',
 	'Select database' => 'Vybrat databázi',
 	'Database has been dropped.' => 'Databáze byla odstraněna.',

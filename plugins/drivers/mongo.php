@@ -433,6 +433,10 @@ if (isset($_GET["mongo"])) {
 			$bulk->insert($set);
 			return $this->conn->executeBulkWrite("$db.$table", $bulk, 'getInsertedCount');
 		}
+
+		function isSystem(string $db, string $schema = ""): bool {
+			return in_array($db, array("admin", "config", "local"));
+		}
 	}
 
 

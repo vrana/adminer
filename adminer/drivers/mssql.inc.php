@@ -444,6 +444,14 @@ if (isset($_GET["mssql"])) {
 				return "relational-databases/system-$link" . preg_replace('~_~', '-', strtolower($name)) . "-transact-sql";
 			}
 		}
+
+		function isSystem(string $db, string $schema = ""): bool {
+			return ($schema != ""
+				// the fixed schemas present in every database, dbo is the default user schema
+				? information_schema($db, $schema) || preg_match('~^(guest|db_(owner|accessadmin|securityadmin|ddladmin|backupoperator|(deny)?data(reader|writer)))$~', $schema)
+				: in_array($db, array("master", "tempdb", "model", "msdb"))
+			);
+		}
 	}
 
 

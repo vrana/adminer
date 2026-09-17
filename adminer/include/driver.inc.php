@@ -349,6 +349,11 @@ abstract class SqlDriver {
 		return false;
 	}
 
+	/** Check whether a database or schema belongs to the system */
+	function isSystem(string $db, string $schema = ""): bool {
+		return information_schema($db, $schema);
+	}
+
 	/** Get regular expression matching the start of a line comment; must not match an empty string */
 	function lineComment(): string {
 		return "--";
