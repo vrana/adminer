@@ -603,9 +603,9 @@ function doc_link(array $paths, string $text = "🕮"): string {
 	);
 	if (connection()->flavor == 'maria') {
 		$urls['sql'] = "https://mariadb.com/kb/en/";
-		$paths['sql'] = (isset($paths['mariadb']) ? $paths['mariadb'] : str_replace(".html", "/", $paths['sql']));
+		$paths['sql'] = ($paths['mariadb'] ?: str_replace(".html", "/", $paths['sql']));
 	}
-	if (connection()->flavor == 'cockroach' && isset($paths['cockroach'])) { // the others link the PostgreSQL documentation
+	if (connection()->flavor == 'cockroach' && $paths['cockroach']) { // the others link the PostgreSQL documentation
 		$urls['pgsql'] = "https://docs.cockroachlabs.com/docs/v$version/";
 		$paths['pgsql'] = $paths['cockroach'];
 	}

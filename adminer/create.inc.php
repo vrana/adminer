@@ -151,7 +151,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 $statement = ($TABLE != "" ? "alter" : "create");
 page_header(($TABLE != "" ? lang('Alter table') : lang('Create table')), $error, array("table" => $TABLE), h($TABLE), $not_found, doc_link(array(
 	'sql' => "$statement-table.html",
-	'mariadb' => ($TABLE != "" ? "$statement-table" : null), // alter-table/ redirects to a search
+	'mariadb' => ($TABLE != "" ? "$statement-table" : ""), // alter-table/ redirects to a search
 	'pgsql' => "sql-$statement" . "table.html",
 	'cockroach' => "$statement-table",
 	'mssql' => "t-sql/statements/$statement-table-transact-sql",
