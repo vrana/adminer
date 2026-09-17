@@ -14,6 +14,7 @@
 - MS SQL Dblib: Display uniqueidentifier (bug #1339)
 - MS SQL Dblib: Show the server version
 - MS SQL Dblib: Fix creating generated columns and indexed views
+- MS SQL Dblib: SQL command: Rollback an unfinished transaction
 - Oracle: Treat SYS and SYSTEM as read-only
 - Oracle: Support identity columns
 - Oracle: Alter timestamp and interval columns, display their type without a duplicate precision

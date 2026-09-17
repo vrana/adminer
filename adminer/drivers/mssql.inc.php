@@ -225,6 +225,15 @@ if (isset($_GET["mssql"])) {
 				return $this->pdo->lastInsertId();
 			}
 
+			function inTransaction(): bool {
+				// PDO knows only the transactions started by it, not BEGIN TRANSACTION typed in SQL command
+				return parent::inTransaction() || (isset($_GET["sql"]) && get_val("SELECT @@TRANCOUNT"));
+			}
+
+			function rollback(): bool {
+				return (parent::inTransaction() || !isset($_GET["sql"]) ? parent::rollback() : !!$this->query("IF @@TRANCOUNT > 0 ROLLBACK"));
+			}
+
 			/** Get the messages printed by the current result set
 			* @return list<string>
 			*/
@@ -262,15 +271,6 @@ if (isset($_GET["mssql"])) {
 					}
 					// without SQLSRV_ATTR_DIRECT_QUERY, the queries run through sp_prepexec, which reverts SET IDENTITY_INSERT after each of them
 					return $this->dsn($dsn, $username, $password, array(\PDO::SQLSRV_ATTR_DIRECT_QUERY => true));
-				}
-
-				function inTransaction(): bool {
-					// PDO knows only the transactions started by it, not BEGIN TRANSACTION typed in SQL command
-					return parent::inTransaction() || (isset($_GET["sql"]) && get_val("SELECT @@TRANCOUNT", 0, $this));
-				}
-
-				function rollback(): bool {
-					return (parent::inTransaction() || !isset($_GET["sql"]) ? parent::rollback() : !!$this->query("IF @@TRANCOUNT > 0 ROLLBACK"));
 				}
 			}
 
