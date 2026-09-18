@@ -11,9 +11,20 @@ class AdminerBackwardKeys extends Adminer\Plugin {
 
 	function backwardKeys($table, $tableName) {
 		$return = array();
-		// we couldn't use the same query in MySQL and PostgreSQL because unique_constraint_name is not table-specific in MySQL and referenced_table_name is not available in PostgreSQL
-		foreach (
-			Adminer\get_rows("SELECT s.table_name table_name, s.constraint_name constraint_name, s.column_name column_name,
+		if (Adminer\JUSH == "pgsql") { // information_schema is very slow in PostgreSQL with many tables
+			$query = "SELECT r.relname AS table_name, c.conname AS constraint_name, a.attname AS column_name, t.attname AS referenced_column_name
+FROM (
+	SELECT conrelid, confrelid, conname, conkey, confkey, generate_subscripts(conkey, 1) AS i
+	FROM pg_constraint
+	WHERE contype = 'f' AND connamespace = " . Adminer\driver()->nsOid . " AND confrelid = " . Adminer\driver()->tableOid($table) . "
+) c
+JOIN pg_class r ON r.oid = c.conrelid
+JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = c.conkey[c.i]
+JOIN pg_attribute t ON t.attrelid = c.confrelid AND t.attnum = c.confkey[c.i]
+ORDER BY c.i";
+		} else {
+			// we couldn't use the same query in MySQL and MS SQL because unique_constraint_name is not table-specific in MySQL and referenced_table_name is not available in MS SQL
+			$query = "SELECT s.table_name table_name, s.constraint_name constraint_name, s.column_name column_name,
 	" . (Adminer\JUSH == "sql" ? "referenced_column_name" : "t.column_name") . " referenced_column_name
 FROM information_schema.key_column_usage s" . (Adminer\JUSH == "sql" ? "
 WHERE table_schema = " . Adminer\q(Adminer\DB) . "
@@ -29,8 +40,9 @@ JOIN information_schema.key_column_usage t ON r.unique_constraint_catalog = t.co
 	AND s.position_in_unique_constraint = t.ordinal_position
 WHERE t.table_catalog = " . Adminer\q(Adminer\DB) . " AND t.table_schema = " . Adminer\q("$_GET[ns]") . "
 AND t.table_name") . " = " . Adminer\q($table) . "
-ORDER BY s.ordinal_position", null, "") as $row
-		) {
+ORDER BY s.ordinal_position";
+		}
+		foreach (Adminer\get_rows($query, null, "") as $row) {
 			$return[$row["table_name"]]["keys"][$row["constraint_name"]][$row["column_name"]] = $row["referenced_column_name"];
 		}
 		foreach ($return as $key => $val) {
