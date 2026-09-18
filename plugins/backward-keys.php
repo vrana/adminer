@@ -12,20 +12,21 @@ class AdminerBackwardKeys extends Adminer\Plugin {
 	function backwardKeys($table, $tableName) {
 		$return = array();
 		if (Adminer\JUSH == "pgsql") { // information_schema is very slow in PostgreSQL with many tables
-			$query = "SELECT r.relname AS table_name, c.conname AS constraint_name, a.attname AS column_name, t.attname AS referenced_column_name
+			$query = "SELECT n.nspname AS ns, r.relname AS table_name, c.conname AS constraint_name, a.attname AS column_name, t.attname AS referenced_column_name
 FROM (
 	SELECT conrelid, confrelid, conname, conkey, confkey, generate_subscripts(conkey, 1) AS i
 	FROM pg_constraint
-	WHERE contype = 'f' AND connamespace = " . Adminer\driver()->nsOid . " AND confrelid = " . Adminer\driver()->tableOid($table) . "
+	WHERE contype = 'f' AND confrelid = " . Adminer\driver()->tableOid($table) . "
 ) c
 JOIN pg_class r ON r.oid = c.conrelid
+JOIN pg_namespace n ON n.oid = r.relnamespace
 JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = c.conkey[c.i]
 JOIN pg_attribute t ON t.attrelid = c.confrelid AND t.attnum = c.confkey[c.i]
 ORDER BY c.i";
 		} else {
 			// we couldn't use the same query in MySQL and MS SQL because unique_constraint_name is not table-specific in MySQL and referenced_table_name is not available in MS SQL
 			$query = "SELECT s.table_name table_name, s.constraint_name constraint_name, s.column_name column_name,
-	" . (Adminer\JUSH == "sql" ? "referenced_column_name" : "t.column_name") . " referenced_column_name
+	" . (Adminer\JUSH == "sql" ? "referenced_column_name" : "t.column_name") . " referenced_column_name" . (Adminer\JUSH == "sql" ? "" : ", s.table_schema ns") . "
 FROM information_schema.key_column_usage s" . (Adminer\JUSH == "sql" ? "
 WHERE table_schema = " . Adminer\q(Adminer\DB) . "
 AND referenced_table_schema = " . Adminer\q(Adminer\DB) . "
@@ -35,7 +36,6 @@ JOIN information_schema.key_column_usage t ON r.unique_constraint_catalog = t.co
 	AND r.unique_constraint_schema = t.constraint_schema
 	AND r.unique_constraint_name = t.constraint_name
 	AND r.constraint_catalog = t.constraint_catalog
-	AND r.constraint_schema = t.constraint_schema
 	AND r.unique_constraint_name = t.constraint_name
 	AND s.position_in_unique_constraint = t.ordinal_position
 WHERE t.table_catalog = " . Adminer\q(Adminer\DB) . " AND t.table_schema = " . Adminer\q("$_GET[ns]") . "
@@ -43,10 +43,15 @@ AND t.table_name") . " = " . Adminer\q($table) . "
 ORDER BY s.ordinal_position";
 		}
 		foreach (Adminer\get_rows($query, null, "") as $row) {
-			$return[$row["table_name"]]["keys"][$row["constraint_name"]][$row["column_name"]] = $row["referenced_column_name"];
+			$ns = ($row["ns"] != $_GET["ns"] ? $row["ns"] : ""); // ns is not selected in MySQL
+			$key = Adminer\idf_escape($ns) . "." . Adminer\idf_escape($row["table_name"]); // the same table name can be in several schemas
+			$return[$key]["table"] = $row["table_name"];
+			$return[$key]["ns"] = $ns;
+			$return[$key]["keys"][$row["constraint_name"]][$row["column_name"]] = $row["referenced_column_name"];
 		}
 		foreach ($return as $key => $val) {
-			$name = Adminer\adminer()->tableName(Adminer\table_status1($key, true));
+			// table_status1() looks only in the current schema
+			$name = Adminer\adminer()->tableName($val["ns"] != "" ? array("Name" => $val["table"]) : Adminer\table_status1($val["table"], true));
 			if ($name != "") {
 				$search = preg_quote($tableName);
 				$separator = '(:|\s*-)?\s+';
@@ -59,9 +64,12 @@ ORDER BY s.ordinal_position";
 	}
 
 	function backwardKeysPrint($backwardKeys, $row) {
-		foreach ($backwardKeys as $table => $backwardKey) {
+		foreach ($backwardKeys as $backwardKey) {
+			$table = $backwardKey["table"];
+			$ns = $backwardKey["ns"];
+			$me = ($ns != "" ? preg_replace('~ns=[^&]*~', "ns=" . Adminer\url_escape($ns), Adminer\ME) : Adminer\ME);
 			foreach ($backwardKey["keys"] as $cols) {
-				$link = Adminer\ME . 'select=' . Adminer\url_escape($table);
+				$link = $me . 'select=' . Adminer\url_escape($table);
 				$i = 0;
 				foreach ($cols as $column => $val) {
 					if (!isset($row[$val])) {
@@ -70,9 +78,10 @@ ORDER BY s.ordinal_position";
 					$link .= Adminer\where_link($i++, $column, $row[$val]);
 				}
 				echo "<a href='" . Adminer\h($link) . "'>"
+					. ($ns != "" ? "<b>" . Adminer\h($ns) . "</b>." : "")
 					. Adminer\h(preg_replace('(^' . preg_quote($_GET["select"]) . (substr($_GET["select"], -1) == 's' ? '?' : '') . '_)', '_', $backwardKey["name"]))
 					. "</a>";
-				$link = Adminer\ME . 'edit=' . Adminer\url_escape($table);
+				$link = $me . 'edit=' . Adminer\url_escape($table);
 				foreach ($cols as $column => $val) {
 					$link .= "&set[" . Adminer\url_escape(Adminer\bracket_escape($column)) . "]=" . Adminer\url_escape($row[$val]);
 				}
