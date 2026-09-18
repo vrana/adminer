@@ -605,16 +605,39 @@ function repeat_pattern(string $pattern, int $length): string {
 }
 
 /** Shorten UTF-8 string
+* @param list<string> $patterns regular expressions to highlight in the shortened string
 * @return string escaped string with appended ...
 */
-function shorten_utf8(string $string, int $length = 80, string $suffix = ""): string {
+function shorten_utf8(string $string, int $length = 80, string $suffix = "", array $patterns = array()): string {
 	if (!preg_match("(^(" . repeat_pattern("[\t\r\n -\x{10FFFF}]", $length) . ")($)?)u", $string, $match)) { // ~s causes trash in $match[2] under some PHP versions, (.|\n) is slow
 		preg_match("(^(" . repeat_pattern("[\t\r\n -~]", $length) . ")($)?)", $string, $match);
 	}
-	return (isset($match[2])
-		? h($match[1]) . $suffix // the whole string fits
-		: h(preg_replace('~\n[^\n]*\z~', "\n", $match[1])) . "$suffix<i>…</i>" // in a multi-line text, the ellipsis stands for the whole last line
-	);
+	$length = strlen(isset($match[2]) ? $match[1] : preg_replace('~\n[^\n]*\z~', "\n", $match[1])); // in a multi-line text, the ellipsis stands for the whole last line
+	return highlight_matches($string, $patterns, $length) . $suffix . (isset($match[2]) ? "" : "<i>…</i>");
+}
+
+/** Escape HTML and wrap the parts matching any of the regular expressions in <mark>
+* @param list<string> $patterns regular expressions without delimiters, e.g. (?i:abc)
+* @param ?int $length print only this many bytes, the matches crossing the end are highlighted up to it
+*/
+function highlight_matches(string $string, array $patterns, ?int $length = null): string {
+	if ($length === null) {
+		$length = strlen($string);
+	}
+	$return = "";
+	$pos = 0;
+	// (?| - the groups of each regular expression are numbered from 1 for its back-references; @ - the regular expression typed by the user can be invalid
+	if ($patterns && @preg_match_all("((?|" . implode("|", $patterns) . "))u", $string, $matches, PREG_OFFSET_CAPTURE)) { //! highlights only the first overlapping pattern
+		foreach ($matches[0] as $match) {
+			list($text, $start) = $match;
+			if ($text != "" && $start < $length) { // an empty match, e.g. of a*, is skipped
+				$end = min($start + strlen($text), $length);
+				$return .= h(substr($string, $pos, $start - $pos)) . "<mark>" . h(substr($string, $start, $end - $start)) . "</mark>";
+				$pos = $end;
+			}
+		}
+	}
+	return $return . h(substr($string, $pos, $length - $pos));
 }
 
 /** Get button with icon */

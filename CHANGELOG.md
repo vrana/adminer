@@ -4,6 +4,7 @@
 - Edit: Do not round big numbers in json (MySQL) and jsonb (PostgreSQL) when saving the row (regression from 5.4.2)
 - Keep the table names on the screen when scrolling the list of tables horizontally
 - Select: Keep the checkboxes on the screen when scrolling horizontally
+- Select: Highlight the searched text
 - Show documentation links as 🕮, link it from the heading
 - Menu: Group system databases and schemas
 - PDO: Preserve the exact value of double (bug #1214)

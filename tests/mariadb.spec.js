@@ -252,6 +252,7 @@ test('Search in tables', async () => {
 	await page.locator('[name="search"]').click();
 	await link(page, 'interprets').click();
 	await expect(page.locator('body')).toContainText('Michael Jackson');
+	await expect(page.locator('#table mark').first()).toHaveText('Jackson');
 });
 
 test('Update', async () => {

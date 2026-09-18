@@ -997,9 +997,10 @@ function rand_string(): string {
 * @param string|string[]|list<string[]> $val
 * @param array{type: string, full_type?: string} $field
 * @param ?numeric-string $text_length
+* @param list<string> $patterns regular expressions to highlight
 * @return string HTML
 */
-function select_value($val, string $link, array $field, ?string $text_length): string {
+function select_value($val, string $link, array $field, ?string $text_length, array $patterns = array()): string {
 	if (is_array($val)) {
 		$return = "";
 		if (array_filter($val, 'is_array') == array_values($val)) { // list of arrays
@@ -1013,14 +1014,14 @@ function select_value($val, string $link, array $field, ?string $text_length): s
 			foreach ($val as $v) {
 				$return .= "<tr>";
 				foreach (array_merge($keys, $v) as $v2) {
-					$return .= "<td>" . select_value($v2, $link, $field, $text_length);
+					$return .= "<td>" . select_value($v2, $link, $field, $text_length, $patterns);
 				}
 			}
 		} else {
 			foreach ($val as $k => $v) {
 				$return .= "<tr>"
 					. ($val != array_values($val) ? "<th>" . h($k) : "")
-					. "<td>" . select_value($v, $link, $field, $text_length)
+					. "<td>" . select_value($v, $link, $field, $text_length, $patterns)
 				;
 			}
 		}
@@ -1043,9 +1044,10 @@ function select_value($val, string $link, array $field, ?string $text_length): s
 		if (!is_utf8($return)) {
 			$return = "\0"; // htmlspecialchars of binary data returns an empty string
 		} elseif ($text_length != "" && is_shortable($field)) {
-			$return = shorten_utf8($return, max(0, +$text_length)); // usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
+			// usage of LEFT() would reduce traffic but complicate query - expected average speedup: .001 s VS .01 s on local network
+			$return = shorten_utf8($return, max(0, +$text_length), "", $patterns);
 		} else {
-			$return = h($return);
+			$return = highlight_matches($return, $patterns);
 		}
 	}
 	return adminer()->selectVal($return, $link, $field, $val);

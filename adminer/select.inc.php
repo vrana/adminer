@@ -430,6 +430,30 @@ if (!$columns && support("table")) {
 				}
 			}
 
+			$highlights = array(); // column => regular expressions matching the searched values
+			foreach ((array) $_GET["where"] as $val) {
+				$val += array("col" => "", "op" => "", "val" => "");
+				$col = $val["col"];
+				$op = $val["op"];
+				$search = $val["val"];
+				if (
+					!is_array($search) && $search != "" // $search is an array in Editor for enum
+					&& ($op ? in_array($op, adminer()->operators($table_status)) : !preg_match('~%~', $search)) // an empty operator means LIKE %% in Editor
+				) {
+					$regexp = ($op == "REGEXP" || (JUSH == "pgsql" && in_array($op, array("~", "~*")))); // ~ in IGDB is not a regular expression
+					if ($regexp || preg_match('~^(I?LIKE %%)?$~', $op)) {
+						// MySQL, MS SQL and SQLite compare case-insensitively by default
+						$ci = preg_match('~^ILIKE|\*$~', $op) || ($op != "~" && preg_match('~^(sql|mssql|sqlite)$~', JUSH)); // ~* is case-insensitive in PostgreSQL
+						$pattern = "(?" . ($regexp ? "" : "s") . ($ci ? "i" : "") . ":" . ($regexp ? $search : strtr(preg_quote($search), array("%" => ".*?", "_" => "."))) . ")";
+						foreach (($col != "" ? array($col => $fields[$col]) : $fields) as $name => $field) {
+							if (($col != "" || is_searchable($field, $val)) && ($op || preg_match('~' . text_type() . '~', $field["type"]))) {
+								$highlights[$name][] = $pattern;
+							}
+						}
+					}
+				}
+			}
+
 			echo ($backward_keys ? "<th>" . lang('Relations') : "") . "<tbody>\n";
 
 			if (is_ajax()) {
@@ -524,7 +548,7 @@ if (!$columns && support("table")) {
 							}
 						}
 
-						$html = select_value($val, $link, $field, $text_length);
+						$html = select_value($val, $link, $field, $text_length, ($fun ? array() : idx($highlights, $key, array())));
 						// PHP decodes the parameter name once and then parses the brackets, the identifier must not contain any
 						$idf = bracket_escape($unique_idf);
 						$id = h("val[$idf][" . bracket_escape($key) . "]");

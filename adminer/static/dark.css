@@ -18,6 +18,7 @@ th { background: #11385a; }
 thead td, thead th, thead th a { color: #a8b05f; }
 fieldset { border-color: #3a76ab; }
 code { background: #11385a; }
+mark { color: #fff; background: #6b5300; }
 tbody tr:hover td, tbody tr:hover th { background: #133553; }
 pre.jush { background: var(--lit); }
 input.default { box-shadow: 1px 1px 1px #888; }
