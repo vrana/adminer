@@ -436,7 +436,11 @@ if (!$columns && support("table")) {
 				$val += array("col" => "", "op" => "", "val" => "");
 				$col = $val["col"];
 				$search = $val["val"];
-				if (!is_array($search) && $search != "" && (!$val["op"] || in_array($val["op"], adminer()->operators($table_status)))) { // $search is an array in Editor for enum
+				if (
+					!is_array($search) // $search is an array in Editor for enum
+					&& ($search != "" || preg_match('~NULL$~', $val["op"]))
+					&& (!$val["op"] || in_array($val["op"], adminer()->operators($table_status)))
+				) {
 					$like = strtr(preg_quote($search), array("%" => ".*?", "_" => "."));
 					$patterns = array("LIKE %%" => $like, "ILIKE %%" => $like, "REGEXP" => $search)
 						+ (JUSH == "pgsql" ? array("~" => $search, "~*" => $search) : array()) // ~ in IGDB is not a regular expression

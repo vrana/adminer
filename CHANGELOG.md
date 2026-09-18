@@ -5,6 +5,7 @@
 - Keep the table names on the screen when scrolling the list of tables horizontally
 - Select: Keep the checkboxes on the screen when scrolling horizontally
 - Select: Highlight the searched text
+- Select: Search anywhere by IS NULL and IS NOT NULL without a value
 - Show documentation links as 🕮, link it from the heading
 - Menu: Group system databases and schemas
 - PDO: Preserve the exact value of double (bug #1214)

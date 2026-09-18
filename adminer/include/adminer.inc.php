@@ -555,7 +555,7 @@ class Adminer {
 		}
 		$operators = adminer()->operators($tableStatus);
 		foreach (array_merge((array) $_GET["where"], array(array())) as $i => $val) {
-			if (!$val || ("$val[col]$val[val]" != "" && in_array($val["op"], $operators))) {
+			if (!$val || (("$val[col]$val[val]" != "" || preg_match('~NULL$~', $val["op"])) && in_array($val["op"], $operators))) {
 				echo "<div>" . select_input(
 					" name='where[$i][col]' data-default=''" . on('change', ($val ? 'selectFieldChange' : 'selectAddRow')),
 					$columns,
@@ -696,7 +696,7 @@ class Adminer {
 			$val += array("col" => "", "op" => first($operators), "val" => "");
 			$_GET["where"][$key] = $val; // used also by selectSearchPrint() and by the COUNT(*) links
 			$col = $val["col"];
-			if ("$col$val[val]" != "" && in_array($val["op"], $operators)) {
+			if (("$col$val[val]" != "" || preg_match('~NULL$~', $val["op"])) && in_array($val["op"], $operators)) {
 				if ($val["op"] == "SQL" && (!$_POST || !verify_token())) {
 					SqlDb::$untrusted = true; // the condition can be sent by GET which is not protected by the CSRF token
 				}

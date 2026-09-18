@@ -92,6 +92,9 @@ function is_searchable(array $field, array $val): bool {
 	if (!isset($field["privileges"]["where"])) {
 		return false;
 	}
+	if (preg_match('~NULL$~', $val["op"])) {
+		return true; // the value is not used
+	}
 	$type = $field["type"];
 	$search = $val["val"];
 	// MySQL blobs are not listed, they are displayed as text; vector is anchored to not match the PostgreSQL tsvector
