@@ -364,7 +364,10 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 		} else {
 			$types = driver()->types();
 			$type_length = $types[$field["type"]];
-			if (preg_match('~date|time|year~', $field["type"])) {
+			$array = preg_match('~\[]~', $field["full_type"]);
+			if ($array) {
+				$maxlength = 0; // an array value is not limited by the length of its elements
+			} elseif (preg_match('~date|time|year~', $field["type"])) {
 				// the length of a temporal type is the number of fractional seconds digits, not of characters
 				$precision = ($field["length"] == "" && JUSH == "pgsql" ? 6 : $field["length"]); // PostgreSQL stores microseconds by default
 				$fraction = (preg_match('~time~', $field["type"]) && preg_match('~^[1-9]\d*$~', $precision) ? $precision + 1 : 0); // 1 - decimal point
@@ -376,7 +379,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 			}
 			// type='date' and type='time' display localized value which may be confusing, type='datetime' uses 'T' as date and time separator
 			echo "<input"
-				. ((!$has_function || $function === "") && preg_match('~^' . int_type() . '$~', $field["type"]) && !preg_match('~\[]~', $field["full_type"]) ? " type='number'" : "")
+				. ((!$has_function || $function === "") && preg_match('~^' . int_type() . '$~', $field["type"]) && !$array ? " type='number'" : "")
 				. " value='" . h($value) . "'" . ($maxlength ? " data-maxlength='$maxlength'" : "")
 				. (preg_match('~char|binary~', $field["type"]) && $maxlength > 20 ? " size='" . ($maxlength > 99 ? 60 : 40) . "'" : "")
 				. "$attrs>"
