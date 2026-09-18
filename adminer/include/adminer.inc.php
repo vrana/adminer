@@ -392,9 +392,9 @@ class Adminer {
 	}
 
 	/** Get descriptions of selected data
-	* @param list<string[]> $rows all data to print
+	* @param list<array<?string>> $rows all data to print
 	* @param list<ForeignKey>[] $foreignKeys
-	* @return list<string[]>
+	* @return list<array<?string>>
 	*/
 	function rowDescriptions(array $rows, array $foreignKeys): array {
 		return $rows;

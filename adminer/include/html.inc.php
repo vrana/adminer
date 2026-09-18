@@ -627,7 +627,7 @@ function highlight_matches(string $string, array $patterns, ?int $length = null)
 	$return = "";
 	$pos = 0;
 	// (?| - the groups of each regular expression are numbered from 1 for its back-references; @ - the regular expression typed by the user can be invalid
-	if ($patterns && @preg_match_all("((?|" . implode("|", $patterns) . "))u", $string, $matches, PREG_OFFSET_CAPTURE)) { //! highlights only the first overlapping pattern
+	if ($patterns && @preg_match_all("((?|" . implode("|", $patterns) . "))su", $string, $matches, PREG_OFFSET_CAPTURE)) { //! highlights only the first overlapping pattern
 		foreach ($matches[0] as $match) {
 			list($text, $start) = $match;
 			if ($text != "" && $start < $length) { // an empty match, e.g. of a*, is skipped

@@ -21,16 +21,16 @@ function check(string $string, array $patterns, string $expected): void {
 }
 
 // the value is escaped, the searched text is matched in the value, not in its HTML
-check("amp &amp; <b>", array('(?s:amp)'), "<mark>amp</mark> &amp;<mark>amp</mark>; &lt;b>");
-check("a<b>c", array('(?s:<b>)'), "a<mark>&lt;b></mark>c");
+check("amp &amp; <b>", array('(?:amp)'), "<mark>amp</mark> &amp;<mark>amp</mark>; &lt;b>");
+check("a<b>c", array('(?:<b>)'), "a<mark>&lt;b></mark>c");
 check("abc", array(), "abc");
 check("0", array('(?:0)'), "<mark>0</mark>");
 
-// the flags are inline, the value is UTF-8
-check("xAbcx abc", array('(?si:abc)'), "x<mark>Abc</mark>x <mark>abc</mark>");
-check("xAbcx abc", array('(?s:abc)'), "xAbcx <mark>abc</mark>");
+// the case flag is inline, . matches a newline, the value is UTF-8
+check("xAbcx abc", array('(?i:abc)'), "x<mark>Abc</mark>x <mark>abc</mark>");
+check("xAbcx abc", array('(?:abc)'), "xAbcx <mark>abc</mark>");
 check("žluťoučký kůň", array('(?i:ŤOU)'), "žlu<mark>ťou</mark>čký kůň");
-check("a\nb", array('(?s:a.*?b)'), "<mark>a\nb</mark>");
+check("a\nb", array('(?:a.*?b)'), "<mark>a\nb</mark>");
 
 // an empty match is skipped, it doesn't hide a match of the next regular expression
 check("aaa", array('(?:a*)'), "<mark>aaa</mark>");
@@ -42,6 +42,15 @@ check("abcdef", array('(?:abc)', '(?:cde)'), "<mark>abc</mark>def");
 check("xabcx", array('(?:abc)', '(?:b)'), "x<mark>abc</mark>x");
 check("abc", array('(?:abc)', '(?:abc)'), "<mark>abc</mark>");
 check("ab ab", array('(?:a)', '(?:b)'), "<mark>a</mark><mark>b</mark> <mark>a</mark><mark>b</mark>");
+
+// the operator = matches the whole value
+check("123", array('(?:^123\z)'), "<mark>123</mark>");
+check("1234", array('(?:^123\z)'), "1234");
+check("123\n", array('(?:^123\z)'), "123\n");
+check("plain", array('(?:^(?:123|plain)\z)'), "<mark>plain</mark>"); // IN
+check("1234", array('(?:^(?:123|plain)\z)'), "1234");
+check("x,abc,y abc", array('(?:(?<=^|,)abc(?=,|\z))'), "x,<mark>abc</mark>,y abc"); // FIND_IN_SET
+check("abc", array('(?:(?<=^|,)abc(?=,|\z))'), "<mark>abc</mark>");
 
 // the regular expressions typed by the user
 check("a|b", array('(?:a|b)'), "<mark>a</mark>|<mark>b</mark>");

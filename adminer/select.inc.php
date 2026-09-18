@@ -431,23 +431,30 @@ if (!$columns && support("table")) {
 			}
 
 			$highlights = array(); // column => regular expressions matching the searched values
+			$highlight_nulls = array(); // column => true
 			foreach ((array) $_GET["where"] as $val) {
 				$val += array("col" => "", "op" => "", "val" => "");
 				$col = $val["col"];
-				$op = $val["op"];
 				$search = $val["val"];
-				if (
-					!is_array($search) && $search != "" // $search is an array in Editor for enum
-					&& ($op ? in_array($op, adminer()->operators($table_status)) : !preg_match('~%~', $search)) // an empty operator means LIKE %% in Editor
-				) {
-					$regexp = ($op == "REGEXP" || (JUSH == "pgsql" && in_array($op, array("~", "~*")))); // ~ in IGDB is not a regular expression
-					if ($regexp || preg_match('~^(I?LIKE %%)?$~', $op)) {
-						// MySQL, MS SQL and SQLite compare case-insensitively by default
-						$ci = preg_match('~^ILIKE|\*$~', $op) || ($op != "~" && preg_match('~^(sql|mssql|sqlite)$~', JUSH)); // ~* is case-insensitive in PostgreSQL
-						$pattern = "(?" . ($regexp ? "" : "s") . ($ci ? "i" : "") . ":" . ($regexp ? $search : strtr(preg_quote($search), array("%" => ".*?", "_" => "."))) . ")";
-						foreach (($col != "" ? array($col => $fields[$col]) : $fields) as $name => $field) {
-							if (($col != "" || is_searchable($field, $val)) && ($op || preg_match('~' . text_type() . '~', $field["type"]))) {
-								$highlights[$name][] = $pattern;
+				if (!is_array($search) && $search != "" && (!$val["op"] || in_array($val["op"], adminer()->operators($table_status)))) { // $search is an array in Editor for enum
+					$like = strtr(preg_quote($search), array("%" => ".*?", "_" => "."));
+					$patterns = array("LIKE %%" => $like, "ILIKE %%" => $like, "REGEXP" => $search)
+						+ (JUSH == "pgsql" ? array("~" => $search, "~*" => $search) : array()) // ~ in IGDB is not a regular expression
+						+ ($col != "" ? array() : array( // the other operators would highlight the whole column
+							"=" => '^' . preg_quote($search) . '\z',
+							"IN" => '^(?:' . implode("|", array_map('preg_quote', array_map('trim', explode(",", $search)))) . ')\z',
+							"LIKE" => "^$like\\z",
+							"ILIKE" => "^$like\\z",
+							"FIND_IN_SET" => '(?<=^|,)' . preg_quote($search) . '(?=,|\z)',
+						));
+					foreach (($col != "" ? array($col => $fields[$col]) : $fields) as $name => $field) {
+						if ($col != "" || is_searchable($field, $val)) {
+							$op = $val["op"] ?: (!preg_match('~' . text_type() . '~', $field["type"]) ? "IN" : (preg_match('~%~', $search) ? "LIKE" : "LIKE %%")); // Editor
+							if (isset($patterns[$op])) {
+								$ci = preg_match('~^ILIKE|\*$~', $op) || ($op != "~" && preg_match('~^(sql|mssql|sqlite)$~', JUSH)); // ~* is case-insensitive in PostgreSQL
+								$highlights[$name][] = "(?" . ($ci ? "i" : "") . ":$patterns[$op])";
+							} elseif ($op == "IS NULL" && $col == "") {
+								$highlight_nulls[$name] = true;
 							}
 						}
 					}
@@ -549,6 +556,9 @@ if (!$columns && support("table")) {
 						}
 
 						$html = select_value($val, $link, $field, $text_length, ($fun ? array() : idx($highlights, $key, array())));
+						if ($val === null && !$fun && isset($highlight_nulls[$key])) {
+							$html = "<mark>$html</mark>";
+						}
 						// PHP decodes the parameter name once and then parses the brackets, the identifier must not contain any
 						$idf = bracket_escape($unique_idf);
 						$id = h("val[$idf][" . bracket_escape($key) . "]");
