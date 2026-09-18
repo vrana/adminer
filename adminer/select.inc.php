@@ -252,7 +252,14 @@ if (is_ajax()) {
 	page_headers();
 	ob_start();
 } else {
-	page_header(lang('Select') . ": $table_name", $error, array(), "", (!$fields && support("table")));
+	page_header(
+		lang('Select') . ": $table_name",
+		$error,
+		array(),
+		"",
+		(!$fields && support("table")),
+		($fields ? doc_link(array(JUSH => driver()->tableHelp($TABLE, is_view($table_status)))) : "")
+	);
 }
 
 $set = null;

@@ -17,7 +17,7 @@ button.link { font: inherit; padding: 0; border: 0; background: none; color: blu
 button.link:hover { color: red; text-decoration: underline; }
 h1 { font-size: 150%; margin: 0; padding: .8em .667em; border-bottom: 1px solid #999; font-weight: normal; color: #777; background: var(--dim); }
 h2 { font-size: 150%; margin: 0 0 20px; margin-inline-start: -18px; padding: .8em 1em; border-bottom: 1px solid var(--fg); font-weight: normal; background: var(--lit); }
-h2 .doc { float: right; }
+h2 .doc { float: right; position: sticky; right: 20px; }
 h3 { font-weight: normal; font-size: 130%; margin: 1em 0 0; }
 form { margin: 0; }
 table { margin: 1em 0 0; margin-inline-end: 20px; font-size: 90%; border-spacing: 0; border: 0; } /* collapsing paints the borders on the table, so on a sticky thead, Chrome loses top border and Firefox all borders: https://bugzilla.mozilla.org/show_bug.cgi?id=1727594 */
@@ -139,7 +139,7 @@ td.check { text-align: end; } /* to display the checkboxes next to the data */
 .rtl .loadmore { left: auto; right: 10px; }
 .rtl #ajaxstatus.sticky { left: auto; right: 0; }
 .rtl #breadcrumb { left: auto; right: 21em; }
-.rtl h2 .doc { float: left; }
+.rtl h2 .doc { float: left; left: 20px; right: auto; }
 .rtl pre, .rtl code { direction: ltr; }
 
 @media not all and (max-width: 800px) {

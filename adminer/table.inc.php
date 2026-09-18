@@ -11,12 +11,12 @@ $name = adminer()->tableName($table_status);
 $error = $error ?: h($table_status["Error"]); // the servers return an error instead of the comment of a table which cannot be opened
 
 page_header(
-	($fields && is_view($table_status) ? $table_status['Engine'] == 'materialized view' ? lang('Materialized view') : lang('View') : lang('Table'))
-		. ": " . ($name != "" ? $name : h($TABLE)),
+	($fields && is_view($table_status) ? $table_status['Engine'] == 'materialized view' ? lang('Materialized view') : lang('View') : lang('Table')) . ": " . ($name != "" ? $name : h($TABLE)),
 	$error,
 	array(),
 	"",
-	!$fields
+	!$fields,
+	($fields ? doc_link(array(JUSH => driver()->tableHelp($TABLE, is_view($table_status)))) : "")
 );
 
 $rights = array();
