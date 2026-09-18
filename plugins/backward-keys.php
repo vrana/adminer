@@ -77,7 +77,7 @@ ORDER BY s.ordinal_position";
 					}
 					$link .= Adminer\where_link($i++, $column, $row[$val]);
 				}
-				echo "<a href='" . Adminer\h($link) . "'>"
+				echo "<a href='" . Adminer\h($link) . "' title='" . Adminer\h(implode(", ", array_keys($cols))) . "'>"
 					. ($ns != "" ? "<b>" . Adminer\h($ns) . "</b>." : "")
 					. Adminer\h(preg_replace('(^' . preg_quote($_GET["select"]) . (substr($_GET["select"], -1) == 's' ? '?' : '') . '_)', '_', $backwardKey["name"]))
 					. "</a>";
