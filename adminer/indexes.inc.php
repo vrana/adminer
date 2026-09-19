@@ -119,6 +119,10 @@ if (!$row) {
 $lengths = (JUSH == "sql" || JUSH == "mssql");
 $opclasses = driver()->indexOpclasses();
 $show_options = ($_POST ? $_POST["options"] : get_setting("index_options"));
+$name_patterns = array();
+foreach ($index_types as $type) {
+	$name_patterns[$type] = str_replace("{table}", $TABLE, adminer()->namePattern($type));
+}
 ?>
 
 <form action="" method="post">
@@ -163,7 +167,7 @@ if ($primary) {
 $j = 1;
 foreach ($row["indexes"] as $index) {
 	if (!$_POST["drop_col"] || $j != key($_POST["drop_col"])) {
-		echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], ($j == count($row["indexes"]) ? on('change', 'indexesAddRow') : ""), "label-type");
+		echo "<tr><td>" . html_select("indexes[$j][type]", array(-1 => "") + $index_types, $index["type"], on('change', 'indexesChangeType', $name_patterns), "label-type");
 
 		if ($index_algorithms) {
 			echo "<td$idxopts>" . html_select("indexes[$j][algorithm]", array_merge(array(""), $index_algorithms), $index['algorithm'], "", "label-algorithm");
@@ -175,7 +179,7 @@ foreach ($row["indexes"] as $index) {
 		foreach ($index["columns"] as $key => $column) {
 			echo "<span>" . select_input(
 				" name='indexes[$j][columns][$i]' title='" . lang('Column') . "'"
-					. on('change', 'indexesChangeColumn', (JUSH == "sql" ? "" : $_GET["indexes"] . "_")),
+					. on('change', 'indexesChangeColumn', $name_patterns),
 				($fields && ($column == "" || $fields[$column]) ? array_combine($fields_keys, $fields_keys) : array()),
 				$column
 			);

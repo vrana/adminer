@@ -84,7 +84,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 						'source' => array($field["field"]),
 						'target' => array($type_field["field"]),
 						'on_delete' => $field["on_delete"],
-					));
+					), object_name("FOREIGN", trim($row["name"]), array($field["field"])));
 				}
 				$after = " AFTER " . idf_escape($field["field"]);
 			} elseif ($field["orig"] != "") {

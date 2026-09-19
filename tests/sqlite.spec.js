@@ -130,6 +130,7 @@ test('Alter table', async () => {
 test('Create trigger', async () => {
 	await goto(page, '/tests/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite&trigger=albums');
 	await page.locator('[name="Timing"]').selectOption({label: 'AFTER'});
+	await expect(page.locator('[name="Trigger"]')).toHaveValue('albums_ai');
 	await setValue(page, 'Statement', 'BEGIN\nUPDATE interprets SET albums = albums + 1 WHERE id = NEW.interpret;\nEND');
 	await button(page, 'Save').click();
 	await expect(page.locator('body')).toContainText('Trigger has been created.');

@@ -504,6 +504,20 @@ class Adminer {
 		echo "</table>\n";
 	}
 
+	/** Get the pattern for the name of a new object, empty string lets the database choose it
+	* @param 'PRIMARY'|'UNIQUE'|'INDEX'|'FULLTEXT'|'SPATIAL'|'VECTOR'|'FOREIGN'|'CHECK'|'TRIGGER' $type
+	* @return string {table}, {columns} joined by _ (UPDATE OF prefixed by _ in TRIGGER, none in CHECK), {timing} and {event} as first letters (e.g. biu) and {type} as row or statement in TRIGGER
+	*/
+	function namePattern(string $type): string {
+		if ($type == "FOREIGN" || $type == "CHECK") {
+			return "";
+		}
+		if ($type == "TRIGGER") {
+			return "{table}_{timing}{event}";
+		}
+		return (JUSH == "sql" ? "" : "{table}_") . "{columns}";
+	}
+
 	/** Print columns box in select
 	* @param list<string> $select result of selectColumnsProcess()[0]
 	* @param string[] $columns selectable columns

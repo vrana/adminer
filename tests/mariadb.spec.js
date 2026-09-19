@@ -139,6 +139,7 @@ test('Alter table', async () => {
 test('Create trigger', async () => {
 	await goto(page, '/adminer/?server=localhost:3307&username=ODBC&db=adminer_test&trigger=albums');
 	await page.locator('[name="Timing"]').selectOption({label: 'AFTER'});
+	await expect(page.locator('[name="Trigger"]')).toHaveValue('albums_ai');
 	await setValue(page, 'Statement', 'UPDATE interprets SET albums = albums + 1 WHERE id = NEW.interpret');
 	await button(page, 'Save').click();
 	await expect(page.locator('body')).toContainText('Trigger has been created.');

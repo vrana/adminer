@@ -41,7 +41,7 @@ $not_found = false;
 if (!$row) {
 	$checks = driver()->checkConstraints($TABLE);
 	$not_found = ($name != "" && !$checks[$name]);
-	$row = array("name" => $name, "clause" => $checks[$name]);
+	$row = array("name" => ($name != "" ? $name : object_name("CHECK", $TABLE, array())), "clause" => $checks[$name]);
 }
 
 page_header(

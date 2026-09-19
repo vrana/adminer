@@ -531,13 +531,22 @@ function remove_definer(string $query): string {
 	return preg_replace('(^([A-Z =]+) DEFINER=' . preg_quote($definer) . ')', '\1', $query);
 }
 
+/** Get the name of a new object by Adminer::namePattern()
+* @param 'PRIMARY'|'UNIQUE'|'INDEX'|'FULLTEXT'|'SPATIAL'|'VECTOR'|'FOREIGN'|'CHECK'|'TRIGGER' $type
+* @param list<string> $columns
+*/
+function object_name(string $type, string $table, array $columns): string {
+	return str_replace(array("{table}", "{columns}"), array($table, implode("_", $columns)), adminer()->namePattern($type));
+}
+
 /** Format foreign key to use in SQL query
 * @param ForeignKey $foreign_key
+* @param string $name empty to let the database choose it
 */
-function format_foreign_key(array $foreign_key): string {
+function format_foreign_key(array $foreign_key, string $name = ""): string {
 	$db = $foreign_key["db"];
 	$ns = $foreign_key["ns"];
-	return " FOREIGN KEY (" . implode(", ", array_map('Adminer\idf_escape', $foreign_key["source"])) . ") REFERENCES "
+	return ($name != "" ? " CONSTRAINT " . idf_escape($name) : "") . " FOREIGN KEY (" . implode(", ", array_map('Adminer\idf_escape', $foreign_key["source"])) . ") REFERENCES "
 		. ($db != "" && $db != $_GET["db"] ? idf_escape($db) . "." : "")
 		. ($ns != "" && $ns != $_GET["ns"] ? idf_escape($ns) . "." : "")
 		. idf_escape($foreign_key["table"])

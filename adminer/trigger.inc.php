@@ -6,7 +6,8 @@ $name = "$_GET[name]";
 $trigger_options = trigger_options();
 $row = trigger($name, $TABLE);
 $not_found = ($name != "" && !$row);
-$row += array("Trigger" => $TABLE . "_bi");
+$name_pattern = str_replace("{table}", $TABLE, adminer()->namePattern("TRIGGER"));
+$row += array("Trigger" => strtr($name_pattern, array("{timing}" => "b", "{event}" => "i", "{columns}" => "", "{type}" => "row")));
 
 if ($_POST) {
 	if (!$error && in_array($_POST["Timing"], $trigger_options["Timing"]) && in_array($_POST["Event"], $trigger_options["Event"]) && in_array($_POST["Type"], $trigger_options["Type"])) {
@@ -49,7 +50,9 @@ page_header(
 	))
 );
 
-$trigger_change = on('change', 'triggerChange', "^" . preg_quote($TABLE, "/") . "_[ba][iud]$", $TABLE);
+$name_re = strtr(preg_quote($name_pattern), array('\{timing\}' => '[abi]', '\{event\}' => '[iud]*', '\{columns\}' => '.*', '\{type\}' => '(row|statement)'));
+$trigger_change = on('change', 'triggerChange', "^$name_re$", $name_pattern);
+$of_input = on('input', 'triggerChange', "^$name_re$", $name_pattern);
 ?>
 
 <form action="" method="post" id="form">
@@ -57,8 +60,8 @@ $trigger_change = on('change', 'triggerChange', "^" . preg_quote($TABLE, "/") . 
 <tr><th><?php echo lang('Time'); ?>
 <td><?php echo html_select("Timing", $trigger_options["Timing"], $row["Timing"], $trigger_change); ?>
 <tr><th><?php echo lang('Event'); ?><td><?php echo html_select("Event", $trigger_options["Event"], $row["Event"], $trigger_change); ?>
-<?php echo (in_array("UPDATE OF", $trigger_options["Event"]) ? " <input name='Of' value='" . h($row["Of"]) . "' class='hidden'>": ""); ?>
-<tr><th><?php echo lang('Type'); ?><td><?php echo html_select("Type", $trigger_options["Type"], $row["Type"]); ?>
+<?php echo (in_array("UPDATE OF", $trigger_options["Event"]) ? " <input name='Of' value='" . h($row["Of"]) . "' class='hidden'$of_input>": ""); ?>
+<tr><th><?php echo lang('Type'); ?><td><?php echo html_select("Type", $trigger_options["Type"], $row["Type"], $trigger_change); ?>
 <tr><th><?php echo lang('Name'); ?><td><input name="Trigger" value="<?php echo h($row["Trigger"]); ?>" data-maxlength="64" autocapitalize="off">
 </table>
 <?php echo script("fire(qs('#form')['Timing'], 'change');"); ?>

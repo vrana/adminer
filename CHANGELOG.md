@@ -8,6 +8,7 @@
 - Select: Search anywhere by IS NULL and IS NOT NULL without a value
 - Show documentation links as 🕮, link it from the heading
 - Menu: Group system databases and schemas
+- Trigger: Name a new trigger with more events by all of them
 - PDO: Preserve the exact value of double (bug #1214)
 - PostgreSQL, MS SQL, Oracle: Do not highlight a valid date or time value as too long
 - PostgreSQL: Alter the trigger function from table structure
@@ -35,8 +36,10 @@
 - Driver plugins: Driver::hasEstimatedRows() to recount the rows only after an estimate
 - Driver plugins: Driver::md5() to shorten the links to rows with a long value
 - Driver plugins: Driver::isSystem() to group the system databases and schemas
+- Method namePattern() to customize the names of new indexes, foreign keys, checks and triggers
 - Plugin igdb: Log in by the client secret instead of an access token obtained manually
 - New plugin: Display the first string column of the referenced row instead of a foreign key value, same as in Adminer Editor
+- New plugin: Name new indexes, foreign keys, checks and triggers by your own convention
 
 ## Adminer 6.1.0 (released 2026-09-14)
 - Send the form by the default button by Ctrl+Enter

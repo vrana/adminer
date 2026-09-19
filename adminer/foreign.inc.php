@@ -16,13 +16,14 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 		$row["target"] = $target;
 	}
 
+	$constraint = object_name("FOREIGN", $TABLE, $row["source"]);
 	if (JUSH == "sqlite") {
-		$result = recreate_table($TABLE, $TABLE, array(), array(), array(" $name" => ($row["drop"] ? "" : " " . format_foreign_key($row))));
+		$result = recreate_table($TABLE, $TABLE, array(), array(), array(" $name" => ($row["drop"] ? "" : " " . format_foreign_key($row, $constraint))));
 	} else {
 		$alter = "ALTER TABLE " . table($TABLE);
 		$result = ($name == "" || queries("$alter DROP " . (JUSH == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($name)));
 		if (!$row["drop"]) {
-			$result = queries("$alter ADD" . format_foreign_key($row));
+			$result = queries("$alter ADD" . format_foreign_key($row, $constraint));
 		}
 	}
 	queries_redirect(
