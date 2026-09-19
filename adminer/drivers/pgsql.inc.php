@@ -825,8 +825,8 @@ ORDER BY conkey, conname") as $row
 				}
 			}
 		}
-		$alter = array_merge($alter, $foreign);
 		if ($table == "") {
+			$alter = array_merge($alter, $foreign);
 			$status = "";
 			if ($partitioning) {
 				$cockroach = (connection()->flavor == 'cockroach');
@@ -852,8 +852,13 @@ ORDER BY conkey, conname") as $row
 				}
 			}
 			array_unshift($queries, "CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)$status");
-		} elseif ($alter) {
-			array_unshift($queries, "ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter));
+		} else {
+			if ($alter) {
+				array_unshift($queries, "ALTER TABLE " . table($table) . "\n" . implode(",\n", $alter));
+			}
+			if ($foreign) {
+				$queries[] = "ALTER TABLE " . table($name) . "\n" . implode(",\n", $foreign); // after renaming the columns and the table
+			}
 		}
 		if ($sequence) {
 			array_unshift($queries, $sequence);
