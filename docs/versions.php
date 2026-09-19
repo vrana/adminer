@@ -123,7 +123,7 @@ function tree_gitlinks($tag) {
 */
 function compile_all($tag, $only_mysql, $compiler = "compile.php") {
 	$return = array(compile($tag, array(), $compiler), compile($tag, array("en"), $compiler));
-	$return[] = ($only_mysql ? $return[0] : compile($tag, array("mysql"), $compiler));
+	$return[] = ($only_mysql ? $return[1] : compile($tag, array("mysql", "en"), $compiler));
 	return $return;
 }
 
@@ -426,7 +426,7 @@ if (file_exists(CSV)) {
 		$done[$row[0]] = true;
 	}
 } else {
-	write_row(array("version", "date", "source", "adminer", "adminer-en", "adminer-mysql", "languages", "drivers", "plugin drivers"));
+	write_row(array("version", "date", "source", "adminer", "adminer-en", "adminer-mysql-en", "languages", "drivers", "plugin drivers"));
 }
 
 $number = parse_version(file_get_contents(VERSION_FILE));
@@ -479,6 +479,8 @@ foreach (versions() as $version => $commits) { // the newest first
 	$plugin_drivers = count(preg_grep('~\.php$~', tree_files($release, "plugins/drivers/")));
 
 	git(array("checkout", "--force", "--detach", $release)); // --force also deletes the files not present in the commit
+	// checkout leaves the directories of submodules not present in the commit (adminer/static/jush of 6.0.1+ in older versions), they would count to the source size
+	git(array("clean", "-ffdq"));
 	update_submodules($release);
 	create_jsmin();
 	clean();
