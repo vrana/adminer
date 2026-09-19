@@ -39,8 +39,8 @@
 - Driver plugins: Driver::isSystem() to group the system databases and schemas
 - Method namePattern() to customize the names of new indexes, foreign keys, checks and triggers
 - Plugin igdb: Log in by the client secret instead of an access token obtained manually
-- New plugin: Display the first string column of the referenced row instead of a foreign key value, same as in Adminer Editor
-- New plugin: Name new indexes, foreign keys, checks and triggers by your own convention
+- New plugin select-foreign: Display the first string column of the referenced row instead of a foreign key value, same as in Adminer Editor
+- New plugin name-patterns: Name new indexes, foreign keys, checks and triggers by your own convention
 
 ## Adminer 6.1.0 (released 2026-09-14)
 - Send the form by the default button by Ctrl+Enter
@@ -314,10 +314,10 @@
 - Plugin login-ip: Allow localhost by default, require the request to not be proxied if X-Forwarded-For prefixes are not specified
 - Plugin login-password-less: Allow the plugin password to be also the password of some server
 - Plugin menu-links: Add option to show the select link and other repeated links only on hover
-- New plugin: Create a table from an imported CSV file
-- New plugin: Display images in select, same as in Adminer Editor
-- New plugin: Log in only by a passkey holding the passwords
-- New plugin: Warn by a red strip if Adminer or the database doesn't run on the local machine
+- New plugin import-csv: Create a table from an imported CSV file
+- New plugin select-image: Display images in select, same as in Adminer Editor
+- New plugin login-passkey: Log in only by a passkey holding the passwords
+- New plugin remote-color: Warn by a red strip if Adminer or the database doesn't run on the local machine
 ### Internal
 - Register JavaScript event handlers by a data attribute instead of a script element
 - Register the event handlers in functions.js instead of an inline script
@@ -377,8 +377,8 @@
 - SQLite: Disable editing of sqlite_schema
 - MS SQL: Fix multiple result sets (bug #1180)
 ### Plugins
-- New plugin: Redis driver
-- New plugin: Login behind a reverse proxy
+- New plugin redis: Redis driver
+- New plugin login-reverse-proxy: Login behind a reverse proxy
 
 ## Adminer 5.4.4 (released 2026-07-11)
 - Fix blob editing (bug #1251, regression from 5.4.2)
@@ -453,7 +453,7 @@
 ### Plugins
 - Methods showVariables() and showStatus() (bug #1157)
 - Allow to be in any namespace
-- New plugin: IGDB driver
+- New plugin igdb: IGDB driver
 
 ## Adminer 5.4.1 (released 2025-09-26)
 - SQL command: Unlink NULL primary keys
@@ -493,8 +493,8 @@
 - Elasticsearch: Support dropping aliases
 ### Plugins
 - Methods afterConnect(), processList() and killProcess()
-- New plugin: Display row numbers in select (bug #1106)
-- New plugin: Specify query timeout
+- New plugin row-numbers: Display row numbers in select (bug #1106)
+- New plugin timeout: Specify query timeout
 
 ## Adminer 5.3.0 (released 2025-05-04)
 - Align numeric functions right
@@ -535,9 +535,9 @@
 ### Plugins
 - Support translations by extending Adminer\Plugin
 - Editor: Move mass sending e-mails to a plugin
-- New plugin: Configure options by end-users and store them to a cookie
-- New plugin: Configure menu table links
-- New plugin: Set up driver, server and database in Adminer Editor
+- New plugin config: Configure options by end-users and store them to a cookie
+- New plugin menu-links: Configure menu table links
+- New plugin editor-setup: Set up driver, server and database in Adminer Editor
 
 ## Adminer 5.1.1 (released 2025-04-02)
 - Export: Fix tar (regression from 5.0.3)
@@ -548,8 +548,8 @@
 - CSS: Invert icons in dark mode
 ### Plugins
 - Allow changing CSP by more plugins
-- New plugin: Use Monaco Editor for syntax highlighting
-- New plugin: Use Prism for syntax highlighting
+- New plugin highlight-monaco: Use Monaco Editor for syntax highlighting
+- New plugin highlight-prism: Use Prism for syntax highlighting
 ### Internal
 - Describe array shapes in doc-comments by the PHPStan syntax
 - Declare parameter, return and property types in the code instead of the @param tag
@@ -586,12 +586,12 @@
 - Autoload plugins from adminer-plugins/
 - Configure plugins with adminer-plugins.php
 - Display loaded plugins in server overview
-- New plugin: AI prompt in SQL command generating the queries with Google Gemini
-- New plugin: Verify new versions from GitHub
-- New plugin: IMAP driver created for fun
-- New plugin: Display links to tables referencing current row
-- New plugin: Allow switching light and dark mode (bug #926)
-- New plugin: Confirm before unloading page with changed form
+- New plugin sql-gemini: AI prompt in SQL command generating the queries with Google Gemini
+- New plugin version-github: Verify new versions from GitHub
+- New plugin imap: IMAP driver created for fun
+- New plugin backward-keys: Display links to tables referencing current row
+- New plugin dark-switcher: Allow switching light and dark mode (bug #926)
+- New plugin before-unload: Confirm before unloading page with changed form
 ### Internal
 - Modernize JavaScript: let and const instead of var, arrow functions, for...of, classList
 - Report E_NOTICE and E_STRICT except accessing an undefined array element
@@ -610,7 +610,7 @@
 - Designs named adminer-dark.css use dark basic style
 ### Plugins
 - Add method syntaxHighlighting()
-- New plugin: Use Codemirror 5 for syntax highlighting and SQL with typeahead
+- New plugin highlight-codemirror: Use Codemirror 5 for syntax highlighting and SQL with typeahead
 ### Internal
 - Move PhpShrink to a separate repository
 
