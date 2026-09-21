@@ -152,5 +152,15 @@ li:hover .hover, p:hover .hover, div:hover > .hover, .hover.active, tr:hover td.
 			'Menu table links' => 'Veze tablice u izborniku',
 			'select' => 'odaberi',
 		),
+		'zh' => array(
+			'' => '配置菜单中表的链接，可与 AdminerConfig 组合使用', // Claude Opus 5
+			'Select data' => '选择数据', // Claude Opus 5
+			'Show structure' => '显示结构', // Claude Opus 5
+			'Both' => '两者', // Claude Opus 5
+			'Both, select on hover' => '两者，悬停时显示选择数据', // Claude Opus 5
+			'Auto (select on the select page, structure otherwise)' => '自动（在选择数据页面显示选择数据，其他页面显示结构）', // Claude Opus 5
+			'Menu table links' => '菜单中表的链接', // Claude Opus 5
+			'select' => '选择', // Claude Opus 5
+		),
 	);
 }

@@ -397,5 +397,17 @@ class AdminerImportCsv extends Adminer\Plugin {
 		'sk' => array(
 			'' => 'Vytvorenie tabuľky z nahraného CSV súboru', // Claude Opus 5
 		),
+		'zh' => array(
+			'' => '从导入的 CSV 文件创建表', // Claude Opus 5
+			'If the table exists' => '如果表已存在', // Claude Opus 5
+			'Insert' => '插入', // Claude Opus 5
+			'Truncate' => '清空', // Claude Opus 5
+			'Drop' => '删除', // Claude Opus 5
+			'Import' => '导入', // Claude Opus 5
+			'File must be in UTF-8 encoding.' => '文件必须使用UTF-8编码。', // Claude Opus 5
+			'%d row(s) have been imported.' => '%d 行已导入。', // Claude Opus 5
+			'Column %s does not exist.' => '列 %s 不存在。', // Claude Opus 5
+			'Table has been created.' => '已创建表。', // Claude Opus 5
+		),
 	);
 }

@@ -45,5 +45,6 @@ class AdminerDumpBz2 extends Adminer\Plugin {
 		'ja' => array('' => 'Bzip2 形式でエクスポート'),
 		'sk' => array('' => 'Export do formátu Bzip2'), // Claude Opus 5
 		'hr' => array('' => 'Izvoz u Bzip2 format'),
+		'zh' => array('' => '导出为 Bzip2 格式'), // Claude Opus 5
 	);
 }

@@ -120,5 +120,15 @@ class AdminerConfig extends Adminer\Plugin {
 			'Design' => 'Dizajn',
 			'Save' => 'Spremi',
 		),
+		'zh' => array(
+			'' => '让最终用户配置选项并保存到 cookie', // Claude Opus 5
+			'Configuration saved.' => '配置已保存。', // Claude Opus 5
+			'Configuration' => '配置', // Claude Opus 5
+			'Only some plugins support configuration, e.g. %s.' => '只有部分插件支持配置，例如 %s。', // Claude Opus 5
+			'Save' => '保存', // Claude Opus 5
+			'Use %s if it exists' => '如果 %s 存在则使用它', // Claude Opus 5
+			'Use built-in design' => '使用内置外观', // Claude Opus 5
+			'Design' => '外观', // Claude Opus 5
+		),
 	);
 }

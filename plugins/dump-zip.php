@@ -49,5 +49,6 @@ class AdminerDumpZip extends Adminer\Plugin {
 		'ja' => array('' => 'ZIP 形式でエクスポート'),
 		'sk' => array('' => 'Export do formátu ZIP'), // Claude Opus 5
 		'hr' => array('' => 'Izvoz u ZIP format'),
+		'zh' => array('' => '导出为 ZIP 格式'), // Claude Opus 5
 	);
 }

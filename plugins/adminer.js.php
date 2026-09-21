@@ -25,5 +25,6 @@ class AdminerDotJs extends Adminer\Plugin {
 		'ja' => array('' => 'adminer.js を読込み'),
 		'sk' => array('' => 'Načíta adminer.js'), // Claude Opus 5
 		'hr' => array('' => 'Učitava adminer.js'),
+		'zh' => array('' => '自动检测并加载 adminer.js，与 adminer.css 类似'), // Claude Opus 5
 	);
 }

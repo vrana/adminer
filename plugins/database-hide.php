@@ -34,5 +34,6 @@ class AdminerDatabaseHide extends Adminer\Plugin {
 		'ja' => array('' => '一部データベースを UI 上で表示禁止 (デザイン的な効果のみでセキュリティ的には効果なし)'),
 		'sk' => array('' => 'Skryje niektoré databázy z rozhrania – iba vylepší vzhľad, nie je to bezpečnostný plugin'), // Claude Opus 5
 		'hr' => array('' => 'Sakriva neke baze podataka iz sučelja – samo radi poboljšanja izgleda, nije sigurnosni dodatak'),
+		'zh' => array('' => '在界面中隐藏部分数据库，仅为改善展示，不是安全插件'), // Claude Opus 5
 	);
 }

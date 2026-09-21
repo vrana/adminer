@@ -68,5 +68,6 @@ if (el) {
 		'ro' => array('' => 'Folosește Prism Code Editor pentru evidențierea sintaxei și <textarea>'), // Claude Opus 5
 		'sk' => array('' => 'Použije Prism Code Editor na zvýrazňovanie syntaxe a <textarea>'), // Claude Opus 5
 		'hr' => array('' => 'Koristi Prism Code Editor za isticanje sintakse i SQL <textarea>'),
+		'zh' => array('' => '使用 Prism Code Editor 实现语法高亮和 <textarea>'), // Claude Opus 5
 	);
 }

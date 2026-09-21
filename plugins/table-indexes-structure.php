@@ -73,5 +73,12 @@ class AdminerTableIndexesStructure extends Adminer\Plugin {
 			'Algorithm' => 'Algoritam',
 			'Columns' => 'Stupci',
 		),
+		'zh' => array(
+			'' => '扩展显示表索引结构', // Claude Opus 5
+			'Name' => '名称', // Claude Opus 5
+			'Type' => '类型', // Claude Opus 5
+			'Algorithm' => '算法', // Claude Opus 5
+			'Columns' => '列', // Claude Opus 5
+		),
 	);
 }

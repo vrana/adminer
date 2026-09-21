@@ -50,5 +50,6 @@ class AdminerEditForeign extends Adminer\Plugin {
 		'ja' => array('' => '外部キーを編集フォームで選択'),
 		'sk' => array('' => 'Výber cudzieho kľúča v editačnom formulári'), // Claude Opus 5
 		'hr' => array('' => 'Odabir stranog ključa u obrascu za uređivanje'),
+		'zh' => array('' => '在编辑表单中选择外键'), // Claude Opus 5
 	);
 }

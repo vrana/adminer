@@ -46,5 +46,6 @@ class AdminerLoginServers extends Adminer\Plugin {
 		'ja' => array('' => 'ログイン画面に定義済のサーバリストを表示'),
 		'sk' => array('' => 'V prihlasovacom formulári zobrazuje preddefinovaný zoznam serverov'), // Claude Opus 5
 		'hr' => array('' => 'Prikazuje konstantan popis poslužitelja u obrascu za prijavu'),
+		'zh' => array('' => '在登录表单中显示固定的服务器列表'), // Claude Opus 5
 	);
 }

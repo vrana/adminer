@@ -55,5 +55,6 @@ class AdminerDesigns extends Adminer\Plugin {
 		'ja' => array('' => 'テーマ設定を有効化'),
 		'sk' => array('' => 'Umožní prepínať vzhľady'), // Claude Opus 5
 		'hr' => array('' => 'Omogućuje promjenu dizajna'),
+		'zh' => array('' => '允许切换外观'), // Claude Opus 5
 	);
 }

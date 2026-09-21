@@ -81,5 +81,6 @@ addEventListener('DOMContentLoaded', () => {
 		'ro' => array('' => 'Folosește Monaco Editor din VS Code pentru evidențierea sintaxei și <textarea> SQL'), // Claude Opus 5
 		'sk' => array('' => 'Použije Monaco Editor z VS Code na zvýrazňovanie syntaxe a SQL <textarea>'), // Claude Opus 5
 		'hr' => array('' => 'Koristi Monaco Editor iz VS Code za isticanje sintakse i SQL <textarea>'),
+		'zh' => array('' => '使用 VS Code 的 Monaco Editor 实现语法高亮和 SQL <textarea>'), // Claude Opus 5
 	);
 }

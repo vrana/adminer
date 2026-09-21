@@ -70,5 +70,10 @@ class AdminerTimeout extends Adminer\Plugin {
 			'Query timeout' => 'Vremensko ograničenje upita',
 			'seconds' => 'sekundi',
 		),
+		'zh' => array(
+			'' => '为每个查询指定超时', // Claude Opus 5
+			'Query timeout' => '查询超时', // Claude Opus 5
+			'seconds' => '秒', // Claude Opus 5
+		),
 	);
 }

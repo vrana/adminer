@@ -112,5 +112,6 @@ class AdminerSelectForeign extends Adminer\Plugin {
 		'ro' => array('' => 'Afișează prima coloană de tip șir a rândului referit în locul valorii cheii străine, la fel ca în Adminer Editor'), // Claude Opus 5
 		'ja' => array('' => '外部キーの値の代わりに参照先の行の最初の文字列型の列を表示、Adminer Editor と同様'), // Claude Opus 5
 		'sk' => array('' => 'Zobrazí namiesto hodnoty cudzieho kľúča prvý reťazcový stĺpec odkazovaného riadku, rovnako ako Adminer Editor'), // Claude Opus 5
+		'zh' => array('' => '显示被引用行的第一个字符串列而不是外键值，与 Adminer Editor 中相同'), // Claude Opus 5
 	);
 }

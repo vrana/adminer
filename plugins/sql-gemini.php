@@ -128,5 +128,10 @@ geminiText.onkeydown = event => {
 			'Ask Gemini' => 'Pitaj Gemini',
 			'Just a sec…' => 'Samo trenutak…',
 		),
+		'zh' => array(
+			'' => '在 SQL 命令页面根据提示词用 Google Gemini 生成查询', // Claude Opus 5
+			'Ask Gemini' => '询问 Gemini', // Claude Opus 5
+			'Just a sec…' => '请稍等…', // Claude Opus 5
+		),
 	);
 }

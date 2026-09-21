@@ -36,5 +36,6 @@ class AdminerLoginTable extends Adminer\Plugin {
 		'ja' => array('' => '"login" テーブルによるユーザ認証'),
 		'sk' => array('' => 'Autentizácia používateľa podľa tabuľky "login"'), // Claude Opus 5
 		'hr' => array('' => 'Autentificira korisnika prema tablici "login"'),
+		'zh' => array('' => '通过 "login" 表验证用户'), // Claude Opus 5
 	);
 }

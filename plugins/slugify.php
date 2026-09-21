@@ -62,5 +62,6 @@ function slugifyChange(slug, length) {
 		'ja' => array('' => '列名に "_slug" を含む列を、前列の URL 化された値でプレフィル (JavaScript)'),
 		'sk' => array('' => 'Predvyplní políčko obsahujúce "_slug" URLizovanou hodnotou predchádzajúceho políčka (JavaScript)'), // Claude Opus 5
 		'hr' => array('' => 'Popunjava polje koje sadrži "_slug" slugificiranom vrijednošću prethodnog polja (JavaScript)'),
+		'zh' => array('' => '用上一个字段的 slug 值预填包含 "_slug" 的字段（JavaScript）'), // Claude Opus 5
 	);
 }

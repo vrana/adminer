@@ -69,5 +69,6 @@ class AdminerDumpJson extends Adminer\Plugin {
 		'ja' => array('' => 'JSON 形式でエクスポート'),
 		'sk' => array('' => 'Export do formátu JSON'), // Claude Opus 5
 		'hr' => array('' => 'Izvoz u JSON format'),
+		'zh' => array('' => '导出为 JSON 格式'), // Claude Opus 5
 	);
 }

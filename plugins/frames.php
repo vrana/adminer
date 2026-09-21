@@ -32,5 +32,6 @@ class AdminerFrames extends Adminer\Plugin {
 		'ja' => array('' => 'フレーム内での Adminer 利用を許可'),
 		'sk' => array('' => 'Dovolí používať Adminer vnútri rámu'), // Claude Opus 5
 		'hr' => array('' => 'Dopušta korištenje Adminera unutar framea'),
+		'zh' => array('' => '允许在 frame 中使用 Adminer'), // Claude Opus 5
 	);
 }

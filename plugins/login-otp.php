@@ -94,5 +94,10 @@ class AdminerLoginOtp extends Adminer\Plugin {
 			'One Time Password' => 'Jednokratna lozinka',
 			'Invalid OTP.' => 'Nevažeća jednokratna lozinka.',
 		),
+		'zh' => array(
+			'' => '登录时要求一次性密码', // Claude Opus 5
+			'One Time Password' => '一次性密码', // Claude Opus 5
+			'Invalid OTP.' => '一次性密码无效。', // Claude Opus 5
+		),
 	);
 }

@@ -512,6 +512,7 @@ function emailFileChange() {
 			'Insert' => '新增',
 		),
 		'zh' => array(
+			'' => '允许向表中的地址发送电子邮件', // Claude Opus 5
 			'E-mail' => '电子邮件',
 			'From' => '来自',
 			'Subject' => '主题',
