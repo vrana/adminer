@@ -305,11 +305,13 @@ function default_value(array $field): string {
 	}
 	$default = str_replace("\r", "", $field["default"]);
 	$generated = $field["generated"];
+	$string = !preg_match('~]$~', $field["length"]) // a PostgreSQL array literal is quoted by starting with {, ARRAY[] is an expression
+		&& (preg_match('~char|binary|text|json|enum|set|String~', $field["type"]) || driver()->enumLength($field)); // String - ClickHouse
 	return (in_array($generated, driver()->generated)
 		? (JUSH == "mssql" ? " AS ($default)" . ($generated == "VIRTUAL" ? "" : " $generated") : " GENERATED ALWAYS AS ($default) $generated")
 		: (preg_match('~^GENERATED ~i', $default)
 			? " $default"
-			: " DEFAULT " . (preg_match('~char|binary|text|json|enum|set|String~', $field["type"]) || preg_match('~^(?![a-z])~i', $default) // String - ClickHouse
+			: " DEFAULT " . ($string || preg_match('~^(?![a-z])~i', $default)
 				? (JUSH == "sql" && preg_match('~text|json~', $field["type"]) ? "(" . q($default) . ")" : q($default)) // MySQL requires () around default value of text column
 				: str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", (JUSH == "sqlite" ? "($default)" : $default))
 			)

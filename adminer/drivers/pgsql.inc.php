@@ -320,8 +320,8 @@ if (isset($_GET["pgsql"])) {
 		}
 
 		function enumLength(array $field) {
-			$oid = $this->userTypes[$field["type"]];
-			return ($oid ? type_values($oid) : "");
+			$oid = $this->userTypes[idf_unescape($field["type"])]; // format_type() quotes e.g. "Status"
+			return ($oid && !preg_match('~]$~', $field["length"]) ? type_values($oid) : ""); // an array of enums is not an enum
 		}
 
 		function setUserTypes(array $types): void {
@@ -669,7 +669,8 @@ ORDER BY a.attnum") as $row
 			$row["auto_increment"] = $row['attidentity'] || preg_match('~^nextval\(~i', $row["default"])
 				|| preg_match('~^unique_rowid\(~', $row["default"]); // CockroachDB
 			$row["privileges"] = array("insert" => 1, "select" => 1, "update" => 1, "where" => 1, "order" => 1);
-			if (!$row['generated'] && preg_match('~(.+)::[^,)]+(.*)~', $row["default"], $match)) {
+			// strip only the cast of a literal or NULL, e.g. not ARRAY[]::text[] which would lose its type
+			if (!$row['generated'] && preg_match('~(.+)::[^,)]+(.*)~', $row["default"], $match) && ($match[2] != "" || preg_match("~^('.*'|NULL)\$~s", $match[1]))) {
 				$row["default"] = ($match[1] == "NULL" ? null : idf_unescape($match[1]) . $match[2]);
 			}
 			$return[$row["field"]] = $row;
