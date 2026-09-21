@@ -281,12 +281,12 @@ function file_input(string $attrs, string $rest = ""): string {
 * @param string|string[]|false|null $value false means original value
 */
 function enum_input(string $type, string $attrs, array $field, $value, string $empty = ""): string {
-	preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
+	preg_match_all("~" . driver()->enumLength . "~", $field["length"], $matches);
 	$prefix = ($field["type"] == "enum" ? "val-" : "");
 	$checked = (is_array($value) ? in_array("null", $value) : $value === null);
 	$return = ($field["null"] && $prefix ? "<label><input type='$type'$attrs value='null'" . ($checked ? " checked" : "") . "><i>$empty</i></label>" : "");
-	foreach ($matches[1] as $val) {
-		$val = stripcslashes(str_replace("''", "'", $val));
+	foreach ($matches[0] as $val) {
+		$val = stripcslashes(idf_unescape($val));
 		$checked = (is_array($value) ? in_array($prefix . $val, $value) : $value === $val);
 		$return .= " <label><input type='$type'$attrs value='" . h($prefix . $val) . "'" . ($checked ? ' checked' : '') . '>' . h(adminer()->editVal($val, $field)) . '</label>';
 	}
