@@ -209,5 +209,5 @@ function placeholder_errors($lang, $en, $translation) {
 * @return int
 */
 function plural_forms($lang) {
-	return ($lang == 'sl' ? 4 : (preg_match('~^(cs|sk|pl|lt|lv|bs|hr|ru|sr|uk)$~', $lang) ? 3 : 2));
+	return ($lang == 'sl' ? 4 : (preg_match('~^(cs|sk|pl|lt|lv|ro|bs|hr|ru|sr|uk)$~', $lang) ? 3 : 2));
 }
