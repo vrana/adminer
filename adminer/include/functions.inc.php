@@ -84,6 +84,19 @@ function text_type(): string {
 	return 'char|text' . (JUSH == "sql" ? '|enum|set' : '');
 }
 
+/** Check whether the type is a user type, e.g. an enum in PostgreSQL */
+function is_user_type(string $type): bool {
+	return in_array($type, idx(driver()->structuredTypes(), lang('User types'), array()));
+}
+
+/** Get full type for SQL with a quoted user type
+* @param Field $field
+*/
+function full_type_sql(array $field): string {
+	$type = $field["type"];
+	return (is_user_type($type) ? idf_escape($type) . substr($field["full_type"], strlen($type)) : $field["full_type"]);
+}
+
 /** Check whether it makes sense to search the field for the value when searching in all columns
 * @param Field $field
 * @param array{op: string, val: string} $val

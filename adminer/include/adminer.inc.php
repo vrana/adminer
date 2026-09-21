@@ -961,7 +961,7 @@ class Adminer {
 			if ($is_view == 2) {
 				$fields = array();
 				foreach (fields($table) as $name => $field) {
-					$fields[] = idf_escape($name) . " $field[full_type]";
+					$fields[] = idf_escape($name) . " " . full_type_sql($field);
 				}
 				$create = "CREATE TABLE " . table($table) . " (" . implode(", ", $fields) . ")";
 			} else {

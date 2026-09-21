@@ -320,7 +320,7 @@ if (isset($_GET["pgsql"])) {
 		}
 
 		function enumLength(array $field) {
-			$oid = $this->userTypes[idf_unescape($field["type"])]; // format_type() quotes e.g. "Status"
+			$oid = $this->userTypes[$field["type"]];
 			return ($oid && !preg_match('~]$~', $field["length"]) ? type_values($oid) : ""); // an array of enums is not an enum
 		}
 
@@ -631,7 +631,8 @@ AND relnamespace = " . driver()->nsOid . "
 			$row["type"] = $aliases[$check_type];
 			$row["full_type"] = $row["type"] . $length . $array;
 		} else {
-			$row["type"] = $type;
+			$unescaped = idf_unescape($type);
+			$row["type"] = (is_user_type($unescaped) ? $unescaped : $type); // format_type() quotes e.g. "Status", process_type() and full_type_sql() quote it back
 			$row["full_type"] = $row["type"] . $length . $addon . $array;
 		}
 	}
@@ -1299,7 +1300,7 @@ WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary !=
 				$field['full_type'] = preg_replace('~int(eger)?~', 'serial', $field['full_type']);
 			}
 
-			$part = idf_escape($field['field']) . ' ' . $field['full_type']
+			$part = idf_escape($field['field']) . ' ' . full_type_sql($field)
 				. preg_replace_callback('~(nextval\(\')([^.\']+)\'~', function (array $match): string {
 					return $match[1] . str_replace("'", "''", table(idf_unescape($match[2]))) . "'"; // a sequence in another schema contains the dot
 				}, default_value($field))
@@ -1455,7 +1456,7 @@ WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary !=
 
 	function unconvert_field(array $field, string $return): string {
 		// a literal compared with a composite value would be an anonymous record: input of anonymous composite types is not implemented
-		return ($field["composite"] ? "$return::$field[type]" : $return); // type is the result of format_type(), quoted and schema qualified if needed
+		return ($field["composite"] ? "$return::" . full_type_sql($field) : $return);
 	}
 
 	function support(string $feature): bool {

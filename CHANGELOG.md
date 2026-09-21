@@ -16,6 +16,7 @@
 - PostgreSQL: Fix renaming a column and making it a foreign key at the same time
 - PostgreSQL: Export and alter the default values of enum and array columns (bug #1342)
 - PostgreSQL: Edit the enum values containing an apostrophe
+- PostgreSQL: Alter table: Offer and quote the user types with uppercase letters
 - MS SQL: Export and alter the precision of datetime2, time and datetimeoffset
 - MS SQL: Keep fractional seconds and the time zone offset when saving a row with the sqlsrv extension
 - MS SQL Dblib: Display uniqueidentifier (bug #1339)
