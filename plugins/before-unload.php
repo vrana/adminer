@@ -36,11 +36,11 @@ onbeforeunload = () => editChanged;
 	protected $translations = array(
 		'cs' => array('' => 'Zobrazí potvrzení před opuštěním stránky, pokud bylo změněno formulářové políčko'),
 		'de' => array('' => 'Zeigt eine Bestätigung an, bevor die Seite verlassen wird, wenn ein Formularfeld geändert wurde'),
+		'hr' => array('' => 'Prikazuje potvrdu prije napuštanja stranice ako je polje obrasca promijenjeno'),
 		'ja' => array('' => 'フォームの項目が変更されている場合、ページを離れる前に確認を表示'), // Claude Opus 5
 		'pl' => array('' => 'Wyświetlaj potwierdzenie przed opuszczeniem strony, jeśli pole formularza zostało zmienione'), // Claude Opus 5
 		'ro' => array('' => 'Afișează o confirmare înainte de părăsirea paginii dacă un câmp din formular a fost modificat'), // Claude Opus 5
 		'sk' => array('' => 'Zobrazí potvrdenie pred opustením stránky, pokiaľ bolo zmenené formulárové políčko'), // Claude Opus 5
-		'hr' => array('' => 'Prikazuje potvrdu prije napuštanja stranice ako je polje obrasca promijenjeno'),
 		'zh' => array('' => '表单字段被修改后，离开页面前显示确认'), // Claude Opus 5
 	);
 }

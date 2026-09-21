@@ -102,31 +102,31 @@ geminiText.onkeydown = event => {
 			'Ask Gemini' => 'Zeptat se Gemini',
 			'Just a sec…' => 'Chviličku…',
 		),
-		'pl' => array(
-			'' => 'Monit AI w poleceniu SQL generującym zapytania za pomocą Google Gemini',
-			'Ask Gemini' => 'Zapytaj Gemini',
-			'Just a sec…' => 'Chwileczkę…',
-		),
 		'de' => array(
 			'' => 'KI-Eingabeaufforderung im SQL-Befehl zur Erstellung der Abfragen mit Google Gemini',
 			'Ask Gemini' => 'Gemini fragen',
 			'Just a sec…' => 'Einen Moment…',
+		),
+		'hr' => array(
+			'' => 'Generiranje SQL naredbi pomoću Google Gemini AI',
+			'Ask Gemini' => 'Pitaj Gemini',
+			'Just a sec…' => 'Samo trenutak…',
 		),
 		'ja' => array(
 			'' => 'Google Gemini AI を用いて SQL 文を生成',
 			'Ask Gemini' => 'Gemini に聞く',
 			'Just a sec…' => 'しばらくお待ち下さい…',
 		),
+		'pl' => array(
+			'' => 'Monit AI w poleceniu SQL generującym zapytania za pomocą Google Gemini',
+			'Ask Gemini' => 'Zapytaj Gemini',
+			'Just a sec…' => 'Chwileczkę…',
+		),
 		'ro' => array(
 			'' => 'Prompt AI în comanda SQL care generează interogările cu Google Gemini', // Claude Opus 5
 		),
 		'sk' => array(
 			'' => 'Generovanie SQL príkazov pomocou umelej inteligencie Google Gemini', // Claude Opus 5
-		),
-		'hr' => array(
-			'' => 'Generiranje SQL naredbi pomoću Google Gemini AI',
-			'Ask Gemini' => 'Pitaj Gemini',
-			'Just a sec…' => 'Samo trenutak…',
 		),
 		'zh' => array(
 			'' => '在 SQL 命令页面根据提示词用 Google Gemini 生成查询', // Claude Opus 5

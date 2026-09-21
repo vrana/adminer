@@ -44,11 +44,11 @@ class AdminerDumpZip extends Adminer\Plugin {
 	protected $translations = array(
 		'cs' => array('' => 'Export do formátu ZIP'),
 		'de' => array('' => 'Export im ZIP-Format'),
+		'hr' => array('' => 'Izvoz u ZIP format'),
+		'ja' => array('' => 'ZIP 形式でエクスポート'),
 		'pl' => array('' => 'Zrzuć do formatu ZIP'),
 		'ro' => array('' => 'Dump în format ZIP'),
-		'ja' => array('' => 'ZIP 形式でエクスポート'),
 		'sk' => array('' => 'Export do formátu ZIP'), // Claude Opus 5
-		'hr' => array('' => 'Izvoz u ZIP format'),
 		'zh' => array('' => '导出为 ZIP 格式'), // Claude Opus 5
 	);
 }

@@ -64,11 +64,11 @@ class AdminerDumpJson extends Adminer\Plugin {
 	protected $translations = array(
 		'cs' => array('' => 'Export do formátu JSON'),
 		'de' => array('' => 'Export im JSON-Format'),
+		'hr' => array('' => 'Izvoz u JSON format'),
+		'ja' => array('' => 'JSON 形式でエクスポート'),
 		'pl' => array('' => 'Zrzuć do formatu JSON'),
 		'ro' => array('' => 'Dump în format JSON'),
-		'ja' => array('' => 'JSON 形式でエクスポート'),
 		'sk' => array('' => 'Export do formátu JSON'), // Claude Opus 5
-		'hr' => array('' => 'Izvoz u JSON format'),
 		'zh' => array('' => '导出为 JSON 格式'), // Claude Opus 5
 	);
 }

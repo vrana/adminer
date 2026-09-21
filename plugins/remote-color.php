@@ -66,9 +66,9 @@ body.remote #menuopen { margin-top: 5px; }
 	protected $translations = array(
 		'cs' => array('' => 'Upozorní červeným pruhem, pokud Adminer nebo databáze neběží na lokálním počítači'),
 		'de' => array('' => 'Warnt mit einem roten Streifen, wenn Adminer oder die Datenbank nicht auf dem lokalen Rechner läuft'), // Claude Opus 5
+		'ja' => array('' => 'Adminer またはデータベースがローカルマシンで動作していない場合に赤い帯で警告'), // Claude Opus 5
 		'pl' => array('' => 'Ostrzega czerwonym paskiem, jeśli Adminer lub baza danych nie działa na lokalnym komputerze'), // Claude Opus 5
 		'ro' => array('' => 'Avertizează printr-o bandă roșie dacă Adminer sau baza de date nu rulează pe mașina locală'), // Claude Opus 5
-		'ja' => array('' => 'Adminer またはデータベースがローカルマシンで動作していない場合に赤い帯で警告'), // Claude Opus 5
 		'sk' => array('' => 'Upozorní červeným pruhom, ak Adminer alebo databáza nebeží na lokálnom počítači'), // Claude Opus 5
 		'zh' => array('' => 'Adminer 或数据库不在本机运行时，用红色条提示'), // Claude Opus 5
 	);

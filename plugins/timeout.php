@@ -53,22 +53,22 @@ class AdminerTimeout extends Adminer\Plugin {
 		'de' => array(
 			'' => 'Legt ein Timeout für die Ausführung jeder Abfrage fest', // Claude Opus 5
 		),
+		'hr' => array(
+			'' => 'Postavljanje vremenskog ograničenja upita',
+			'Query timeout' => 'Vremensko ograničenje upita',
+			'seconds' => 'sekundi',
+		),
+		'ja' => array(
+			'' => 'すべてのクエリの実行にタイムアウトを設定', // Claude Opus 5
+		),
 		'pl' => array(
 			'' => 'Ustawia limit czasu wykonania każdego zapytania', // Claude Opus 5
 		),
 		'ro' => array(
 			'' => 'Stabilește un timeout pentru executarea fiecărei interogări', // Claude Opus 5
 		),
-		'ja' => array(
-			'' => 'すべてのクエリの実行にタイムアウトを設定', // Claude Opus 5
-		),
 		'sk' => array(
 			'' => 'Nastaví timeout pre spúšťanie každého dotazu', // Claude Opus 5
-		),
-		'hr' => array(
-			'' => 'Postavljanje vremenskog ograničenja upita',
-			'Query timeout' => 'Vremensko ograničenje upita',
-			'seconds' => 'sekundi',
 		),
 		'zh' => array(
 			'' => '为每个查询指定超时', // Claude Opus 5

@@ -103,6 +103,10 @@ ORDER BY s.ordinal_position";
 			'' => 'Links zu Tabellen anzeigen die auf die aktuelle Zeile verweisen, wie im Adminer Editor',
 			'New item' => 'Neuer Datensatz',
 		),
+		'hr' => array(
+			'' => 'Prikazuje veze na tablice koje referenciraju trenutni redak, kao u Adminer Editoru',
+			'New item' => 'Nova stavka',
+		),
 		'ja' => array(
 			'' => 'Adminer Editor と同様に、カレント行を参照しているテーブルへのリンクを表示',
 			'New item' => '新規レコードを挿入',
@@ -116,10 +120,6 @@ ORDER BY s.ordinal_position";
 		),
 		'sk' => array(
 			'' => 'Zobrazí odkazy na tabuľky odkazujúce na aktuálny riadok, rovnako ako Adminer Editor', // Claude Opus 5
-		),
-		'hr' => array(
-			'' => 'Prikazuje veze na tablice koje referenciraju trenutni redak, kao u Adminer Editoru',
-			'New item' => 'Nova stavka',
 		),
 		'zh' => array(
 			'' => '显示引用当前行的表的链接，与 Adminer Editor 中相同', // Claude Opus 5

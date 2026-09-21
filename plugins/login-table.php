@@ -31,11 +31,11 @@ class AdminerLoginTable extends Adminer\Plugin {
 	protected $translations = array(
 		'cs' => array('' => 'Autentizace uživatele podle tabulky "login"'),
 		'de' => array('' => 'Authentifizieren Sie einen Benutzer über die Tabelle "login"'),
+		'hr' => array('' => 'Autentificira korisnika prema tablici "login"'),
+		'ja' => array('' => '"login" テーブルによるユーザ認証'),
 		'pl' => array('' => 'Uwierzytelnij użytkownika z tabeli "login"'),
 		'ro' => array('' => 'Autentificați un utilizator din tabelul "login"'),
-		'ja' => array('' => '"login" テーブルによるユーザ認証'),
 		'sk' => array('' => 'Autentizácia používateľa podľa tabuľky "login"'), // Claude Opus 5
-		'hr' => array('' => 'Autentificira korisnika prema tablici "login"'),
 		'zh' => array('' => '通过 "login" 表验证用户'), // Claude Opus 5
 	);
 }

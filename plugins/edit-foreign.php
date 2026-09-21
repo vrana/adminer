@@ -45,11 +45,11 @@ class AdminerEditForeign extends Adminer\Plugin {
 	protected $translations = array(
 		'cs' => array('' => 'Výběr cizího klíče v editačním formuláři'),
 		'de' => array('' => 'Wählen Sie im Bearbeitungsformular den Fremdschlüssel aus'),
+		'hr' => array('' => 'Odabir stranog ključa u obrascu za uređivanje'),
+		'ja' => array('' => '外部キーを編集フォームで選択'),
 		'pl' => array('' => 'Wybierz klucz obcy w formularzu edycji'),
 		'ro' => array('' => 'Selectați cheia străină în formularul de editare'),
-		'ja' => array('' => '外部キーを編集フォームで選択'),
 		'sk' => array('' => 'Výber cudzieho kľúča v editačnom formulári'), // Claude Opus 5
-		'hr' => array('' => 'Odabir stranog ključa u obrascu za uređivanje'),
 		'zh' => array('' => '在编辑表单中选择外键'), // Claude Opus 5
 	);
 }

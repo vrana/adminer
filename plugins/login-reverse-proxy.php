@@ -17,9 +17,9 @@ class AdminerLoginReverseProxy extends Adminer\Plugin {
 	protected $translations = array(
 		'cs' => array('' => 'Sdružuje neúspěšné pokusy o přihlášení podle poslední části X-Forwarded-For (užitečné, pokud Adminer běží za reverzní proxy)'),
 		'de' => array('' => 'Fasst ungültige Anmeldeversuche nach dem letzten Teil von X-Forwarded-For zusammen (nützlich, wenn Adminer hinter einem Reverse Proxy läuft)'), // Claude Opus 5
+		'ja' => array('' => 'X-Forwarded-For の末尾部分で不正なログイン試行をまとめる (Adminer をリバースプロキシの背後で動かす場合に便利)'), // Claude Opus 5
 		'pl' => array('' => 'Grupuje nieudane próby logowania według ostatniej części X-Forwarded-For (przydatne, gdy Adminer działa za odwrotnym proxy)'), // Claude Opus 5
 		'ro' => array('' => 'Grupează încercările de autentificare eșuate după ultima parte din X-Forwarded-For (util dacă Adminer rulează în spatele unui reverse proxy)'), // Claude Opus 5
-		'ja' => array('' => 'X-Forwarded-For の末尾部分で不正なログイン試行をまとめる (Adminer をリバースプロキシの背後で動かす場合に便利)'), // Claude Opus 5
 		'sk' => array('' => 'Zoskupuje neúspešné pokusy o prihlásenie podľa poslednej časti X-Forwarded-For (užitočné, pokiaľ Adminer beží za reverznou proxy)'), // Claude Opus 5
 		'zh' => array('' => '按 X-Forwarded-For 的最后一段归类无效的登录尝试（Adminer 运行在反向代理后面时有用）'), // Claude Opus 5
 	);

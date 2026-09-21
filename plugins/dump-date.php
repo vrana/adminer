@@ -15,11 +15,11 @@ class AdminerDumpDate extends Adminer\Plugin {
 	protected $translations = array(
 		'cs' => array('' => 'Do názvu souboru s exportem přidá aktuální datum a čas'),
 		'de' => array('' => 'Aktuelles Datum und die aktuelle Uhrzeit in den Namen der Exportdatei einfügen'),
+		'hr' => array('' => 'Dodaje trenutni datum i vrijeme u naziv datoteke izvoza'),
+		'ja' => array('' => 'エクスポートファイル名に現在日時を含める'),
 		'pl' => array('' => 'Dołącz bieżącą datę i godzinę do nazwy pliku eksportu'),
 		'ro' => array('' => 'Includeți data și ora curentă în numele fișierului de export'),
-		'ja' => array('' => 'エクスポートファイル名に現在日時を含める'),
 		'sk' => array('' => 'Do názvu súboru s exportom pridá aktuálny dátum a čas'), // Claude Opus 5
-		'hr' => array('' => 'Dodaje trenutni datum i vrijeme u naziv datoteke izvoza'),
 		'zh' => array('' => '在导出文件名中包含当前日期和时间'), // Claude Opus 5
 	);
 }

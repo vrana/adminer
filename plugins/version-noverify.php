@@ -15,11 +15,11 @@ class AdminerVersionNoverify extends Adminer\Plugin {
 	protected $translations = array(
 		'cs' => array('' => 'Zakáže kontrolu nových verzí'),
 		'de' => array('' => 'Deaktivieren Sie die Versionsprüfung'),
+		'hr' => array('' => 'Onemogućuje provjeru novih verzija'),
+		'ja' => array('' => 'バージョンチェックを無効化'),
 		'pl' => array('' => 'Wyłącz sprawdzanie wersji'),
 		'ro' => array('' => 'Dezactivați verificatorul de versiuni'),
-		'ja' => array('' => 'バージョンチェックを無効化'),
 		'sk' => array('' => 'Zakáže kontrolu nových verzií'), // Claude Opus 5
-		'hr' => array('' => 'Onemogućuje provjeru novih verzija'),
 		'zh' => array('' => '禁用版本检查'), // Claude Opus 5
 	);
 }

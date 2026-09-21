@@ -41,11 +41,11 @@ class AdminerSqlLog extends Adminer\Plugin {
 	protected $translations = array(
 		'cs' => array('' => 'Zaznamenává všechny příkazy do souboru SQL'),
 		'de' => array('' => 'Protokollieren Sie alle Abfragen in einer SQL-Datei'),
+		'hr' => array('' => 'Bilježi sve upite u SQL datoteku'),
+		'ja' => array('' => '全クエリを SQL ファイルに記録'),
 		'pl' => array('' => 'Rejestruj wszystkie zapytania do pliku SQL'),
 		'ro' => array('' => 'Logați toate interogările în fișierul SQL'),
-		'ja' => array('' => '全クエリを SQL ファイルに記録'),
 		'sk' => array('' => 'Zaznamenáva všetky príkazy do súboru SQL'), // Claude Opus 5
-		'hr' => array('' => 'Bilježi sve upite u SQL datoteku'),
 		'zh' => array('' => '把所有查询记录到 SQL 文件'), // Claude Opus 5
 	);
 }

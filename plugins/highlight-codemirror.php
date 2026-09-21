@@ -110,11 +110,11 @@ addEventListener('DOMContentLoaded', () => {
 	protected $translations = array(
 		'cs' => array('' => 'Použít CodeMirror 5 pro zvýrazňování syntaxe a <textarea> včetně našeptávání klíčových slov a tabulek'),
 		'de' => array('' => 'CodeMirror 5 verwenden für die Syntaxhervorhebung und <textarea> einschließlich Autovervollständigung von Schlüsselwörtern und Tabellen'), // Claude Opus 5
+		'hr' => array('' => 'Koristi CodeMirror 5 za isticanje sintakse i <textarea>, uključujući dovršavanje ključnih riječi i tablica'),
 		'ja' => array('' => 'CodeMirror 5 を用い、キーワードやテーブル名の補完を含む構文強調表示と <textarea> を提供'), // Claude Opus 5
 		'pl' => array('' => 'Użyj CodeMirror 5 do podświetlania składni i <textarea>, wraz z podpowiadaniem słów kluczowych i nazw tabel'), // Claude Opus 5
 		'ro' => array('' => 'Folosiți CodeMirror 5 pentru evidențierea sintaxei și <textarea>, inclusiv sugestii pentru cuvinte cheie și tabele'), // Claude Opus 5
 		'sk' => array('' => 'Použije CodeMirror 5 na zvýrazňovanie syntaxe a <textarea> vrátane napovedania kľúčových slov a tabuliek'), // Claude Opus 5
-		'hr' => array('' => 'Koristi CodeMirror 5 za isticanje sintakse i <textarea>, uključujući dovršavanje ključnih riječi i tablica'),
 		'zh' => array('' => '使用 CodeMirror 5 实现语法高亮和 <textarea>，包含关键字和表名的输入提示'), // Claude Opus 5
 	);
 }

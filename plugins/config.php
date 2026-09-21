@@ -74,16 +74,6 @@ class AdminerConfig extends Adminer\Plugin {
 			'Use built-in design' => 'Použít vestavěný vzhled',
 			'Save' => 'Uložit',
 		),
-		'pl' => array(
-			'' => 'Konfiguruj opcje dla użytkowników końcowych i przechowuj je w pliku cookie',
-			'Configuration' => 'Konfiguracja',
-			'Configuration saved.' => 'Konfiguracja zapisana.',
-			'Only some plugins support configuration, e.g. %s.' => 'Tylko niektóre wtyczki obsługują konfigurację, np. %s.',
-			'Design' => 'Wygląd',
-			'Use %s if it exists' => 'Użyj %s, jeśli istnieje',
-			'Use built-in design' => 'Użyj wbudowanego wyglądu',
-			'Save' => 'Zapisz zmiany',
-		),
 		'de' => array(
 			'' => 'Optionen durch den Endbenutzer konfigurieren und dies in einem Cookie speichern',
 			'Configuration' => 'Konfiguration',
@@ -93,6 +83,16 @@ class AdminerConfig extends Adminer\Plugin {
 			'Use %s if it exists' => '%s verwenden, falls vorhanden',
 			'Use built-in design' => 'Standard Design verwenden',
 			'Save' => 'Speichern',
+		),
+		'hr' => array(
+			'' => 'Postavljanje opcija krajnjim korisnicima i njihovo spremanje u cookie', // Claude Opus 5
+			'Configuration saved.' => 'Konfiguracija je spremljena.',
+			'Configuration' => 'Konfiguracija',
+			'Only some plugins support configuration, e.g. %s.' => 'Samo neki dodaci podržavaju konfiguraciju, npr. %s.',
+			'Use %s if it exists' => 'Koristi %s ako postoji',
+			'Use built-in design' => 'Koristi ugrađeni dizajn',
+			'Design' => 'Dizajn',
+			'Save' => 'Spremi',
 		),
 		'ja' => array(
 			'' => 'ユーザオプションを設定し cookie に保存',
@@ -104,21 +104,21 @@ class AdminerConfig extends Adminer\Plugin {
 			'Use built-in design' => '組込みのデザインを使う',
 			'Save' => '保存',
 		),
+		'pl' => array(
+			'' => 'Konfiguruj opcje dla użytkowników końcowych i przechowuj je w pliku cookie',
+			'Configuration' => 'Konfiguracja',
+			'Configuration saved.' => 'Konfiguracja zapisana.',
+			'Only some plugins support configuration, e.g. %s.' => 'Tylko niektóre wtyczki obsługują konfigurację, np. %s.',
+			'Design' => 'Wygląd',
+			'Use %s if it exists' => 'Użyj %s, jeśli istnieje',
+			'Use built-in design' => 'Użyj wbudowanego wyglądu',
+			'Save' => 'Zapisz zmiany',
+		),
 		'ro' => array(
 			'' => 'Configurarea opțiunilor de către utilizatori și salvarea lor într-un cookie', // Claude Opus 5
 		),
 		'sk' => array(
 			'' => 'Konfigurácia možností používateľmi a ich uloženie do cookie', // Claude Opus 5
-		),
-		'hr' => array(
-			'' => 'Postavljanje opcija krajnjim korisnicima i njihovo spremanje u cookie', // Claude Opus 5
-			'Configuration saved.' => 'Konfiguracija je spremljena.',
-			'Configuration' => 'Konfiguracija',
-			'Only some plugins support configuration, e.g. %s.' => 'Samo neki dodaci podržavaju konfiguraciju, npr. %s.',
-			'Use %s if it exists' => 'Koristi %s ako postoji',
-			'Use built-in design' => 'Koristi ugrađeni dizajn',
-			'Design' => 'Dizajn',
-			'Save' => 'Spremi',
 		),
 		'zh' => array(
 			'' => '让最终用户配置选项并保存到 cookie', // Claude Opus 5

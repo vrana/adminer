@@ -23,10 +23,10 @@ class AdminerNamePatterns extends Adminer\Plugin {
 	protected $translations = array(
 		'cs' => array('' => 'Pojmenuje nové indexy, cizí klíče, kontroly a triggery podle vlastní konvence'),
 		'de' => array('' => 'Neue Indizes, Fremdschlüssel, Checks und Trigger nach eigener Konvention benennen'), // Claude Opus 5
+		'hr' => array('' => 'Imenuje nove indekse, strane ključeve, provjere i okidače prema vlastitoj konvenciji'), // Claude Opus 5
+		'ja' => array('' => '新しいインデックス、外部キー、チェック制約、トリガーに独自の命名規則で名前を付ける'), // Claude Opus 5
 		'pl' => array('' => 'Nazywaj nowe indeksy, klucze obce, ograniczenia CHECK i wyzwalacze według własnej konwencji'), // Claude Opus 5
 		'ro' => array('' => 'Denumiți indexurile, cheile externe, verificările și declanșatoarele noi după propria convenție'), // Claude Opus 5
-		'ja' => array('' => '新しいインデックス、外部キー、チェック制約、トリガーに独自の命名規則で名前を付ける'), // Claude Opus 5
 		'sk' => array('' => 'Pomenuje nové indexy, cudzie kľúče, kontroly a triggery podľa vlastnej konvencie'), // Claude Opus 5
-		'hr' => array('' => 'Imenuje nove indekse, strane ključeve, provjere i okidače prema vlastitoj konvenciji'), // Claude Opus 5
 	);
 }

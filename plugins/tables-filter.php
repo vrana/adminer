@@ -79,21 +79,21 @@ sessionStorage && document.addEventListener('DOMContentLoaded', () => {
 		'de' => array(
 			'' => 'Filtern Sie Namen in der Tabellenliste',
 		),
+		'hr' => array(
+			'' => 'Filtriranje tablice prema imenu',
+			'Filter' => 'Filtar',
+		),
+		'ja' => array(
+			'' => 'テーブル一覧をテーブル名でフィルタリング',
+		),
 		'pl' => array(
 			'' => 'Filtruj nazwy na liście tabel',
 		),
 		'ro' => array(
 			'' => 'Filtrează numele în lista de tabele', // Claude Opus 5
 		),
-		'ja' => array(
-			'' => 'テーブル一覧をテーブル名でフィルタリング',
-		),
 		'sk' => array(
 			'' => 'Filtruje názvy v zozname tabuliek', // Claude Opus 5
-		),
-		'hr' => array(
-			'' => 'Filtriranje tablice prema imenu',
-			'Filter' => 'Filtar',
 		),
 		'zh' => array(
 			'' => '过滤表列表中的名称', // Claude Opus 5

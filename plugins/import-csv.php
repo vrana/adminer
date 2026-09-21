@@ -367,9 +367,6 @@ class AdminerImportCsv extends Adminer\Plugin {
 	}
 
 	protected $translations = array(
-		'en' => array(
-			'%d row(s) have been imported.' => array('%d row has been imported.', '%d rows have been imported.'),
-		),
 		'cs' => array(
 			'' => 'Vytvoření tabulky z nahraného CSV souboru',
 			'If the table exists' => 'Pokud tabulka existuje',
@@ -385,14 +382,17 @@ class AdminerImportCsv extends Adminer\Plugin {
 		'de' => array(
 			'' => 'Erstellt eine Tabelle aus einer importierten CSV-Datei', // Claude Opus 5
 		),
+		'en' => array(
+			'%d row(s) have been imported.' => array('%d row has been imported.', '%d rows have been imported.'),
+		),
+		'ja' => array(
+			'' => 'インポートした CSV ファイルからテーブルを作成', // Claude Opus 5
+		),
 		'pl' => array(
 			'' => 'Tworzy tabelę z zaimportowanego pliku CSV', // Claude Opus 5
 		),
 		'ro' => array(
 			'' => 'Creează un tabel dintr-un fișier CSV importat', // Claude Opus 5
-		),
-		'ja' => array(
-			'' => 'インポートした CSV ファイルからテーブルを作成', // Claude Opus 5
 		),
 		'sk' => array(
 			'' => 'Vytvorenie tabuľky z nahraného CSV súboru', // Claude Opus 5

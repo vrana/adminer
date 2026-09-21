@@ -377,14 +377,14 @@ if (window.isSecureContext && window.PublicKeyCredential && window.crypto && cry
 		'de' => array(
 			'' => 'Anmeldung nur mit einem Passkey, der die Passwörter enthält', // Claude Opus 5
 		),
+		'ja' => array(
+			'' => 'パスワードを保存したパスキーでのみログイン', // Claude Opus 5
+		),
 		'pl' => array(
 			'' => 'Logowanie wyłącznie za pomocą passkey przechowującego hasła', // Claude Opus 5
 		),
 		'ro' => array(
 			'' => 'Autentificare doar cu un passkey care conține parolele', // Claude Opus 5
-		),
-		'ja' => array(
-			'' => 'パスワードを保存したパスキーでのみログイン', // Claude Opus 5
 		),
 		'sk' => array(
 			'' => 'Prihlásenie iba pomocou passkey, ktorý obsahuje heslá', // Claude Opus 5

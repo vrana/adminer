@@ -77,22 +77,22 @@ class AdminerLoginOtp extends Adminer\Plugin {
 			'One Time Password' => 'Einmal-Passwort',
 			'Invalid OTP.' => 'Ungültiger OTP.',
 		),
+		'hr' => array(
+			'' => 'Jednokratna lozinka (dvofaktorska autentifikacija) potrebna pri prijavi',
+			'One Time Password' => 'Jednokratna lozinka',
+			'Invalid OTP.' => 'Nevažeća jednokratna lozinka.',
+		),
+		'ja' => array(
+			'' => 'ログイン時にワンタイムパスワード (二要素認証) が必要',
+		),
 		'pl' => array(
 			'' => 'Wymagaj jednorazowego hasła przy logowaniu',
 		),
 		'ro' => array(
 			'' => 'Cereți o parolă unică la autentificare',
 		),
-		'ja' => array(
-			'' => 'ログイン時にワンタイムパスワード (二要素認証) が必要',
-		),
 		'sk' => array(
 			'' => 'Pri prihlásení vyžaduje jednorazové heslo', // Claude Opus 5
-		),
-		'hr' => array(
-			'' => 'Jednokratna lozinka (dvofaktorska autentifikacija) potrebna pri prijavi',
-			'One Time Password' => 'Jednokratna lozinka',
-			'Invalid OTP.' => 'Nevažeća jednokratna lozinka.',
 		),
 		'zh' => array(
 			'' => '登录时要求一次性密码', // Claude Opus 5

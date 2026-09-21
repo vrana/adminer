@@ -17,11 +17,11 @@ class AdminerEditTextarea extends Adminer\Plugin {
 	protected $translations = array(
 		'cs' => array('' => 'Použije <textarea> pro char a varchar'),
 		'de' => array('' => 'Verwenden Sie <textarea> für char und varchar Felder'),
+		'hr' => array('' => 'Koristi <textarea> za char i varchar polja'),
+		'ja' => array('' => 'char や varchar に <textarea> を使用'),
 		'pl' => array('' => 'Użyj <textarea> dla char i varchar'),
 		'ro' => array('' => 'Utilizați <textarea> pentru char și varchar'),
-		'ja' => array('' => 'char や varchar に <textarea> を使用'),
 		'sk' => array('' => 'Použije <textarea> pre char a varchar'), // Claude Opus 5
-		'hr' => array('' => 'Koristi <textarea> za char i varchar polja'),
 		'zh' => array('' => '对 char 和 varchar 使用 <textarea>'), // Claude Opus 5
 	);
 }

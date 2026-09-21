@@ -115,9 +115,6 @@ function emailFileChange() {
 	}
 
 	protected $translations = array(
-		'en' => array(
-			'%d e-mail(s) have been sent.' => array('%d e-mail has been sent.', '%d e-mails have been sent.'),
-		),
 		'ar' => array(
 			'E-mail' => 'البريد الإلكتروني',
 			'From' => 'من',
@@ -201,6 +198,9 @@ function emailFileChange() {
 			'%d e-mail(s) have been sent.' => array('%d e-mail απεστάλη.', '%d e-mail απεστάλησαν.'),
 			'Insert' => 'Εισαγωγή',
 		),
+		'en' => array(
+			'%d e-mail(s) have been sent.' => array('%d e-mail has been sent.', '%d e-mails have been sent.'),
+		),
 		'es' => array(
 			'E-mail' => 'Email',
 			'From' => 'De',
@@ -263,6 +263,16 @@ function emailFileChange() {
 			'%d e-mail(s) have been sent.' => '%d הודעות דוא"ל נשלחו',
 			'Attachments' => 'קבצים מצורפים',
 			'Insert' => 'הכנס',
+		),
+		'hr' => array(
+			'' => 'Slanje e-pošte odabranim recima',
+			'E-mail' => 'E-pošta',
+			'From' => 'Od',
+			'Subject' => 'Predmet',
+			'Attachments' => 'Privici',
+			'Send' => 'Pošalji',
+			'%d e-mail(s) have been sent.' => array('%d e-mail je poslan.', '%d e-maila su poslana.', '%d e-mailova je poslano.'),
+			'Insert' => 'Unesi',
 		),
 		'hu' => array(
 			'E-mail' => 'E-mail',
@@ -374,21 +384,21 @@ function emailFileChange() {
 			'%d e-mail(s) have been sent.' => array('Wysłano %d e-mail.', 'Wysłano %d e-maile.', 'Wysłano %d e-maili.'),
 			'Insert' => 'Dodaj',
 		),
-		'pt-br' => array(
-			'E-mail' => 'E-mail',
-			'From' => 'De',
-			'Subject' => 'Assunto',
-			'Send' => 'Enviar',
-			'%d e-mail(s) have been sent.' => array('%d email foi enviado.', '%d emails foram enviados.'),
-			'Attachments' => 'Anexos',
-			'Insert' => 'Inserir',
-		),
 		'pt' => array(
 			'E-mail' => 'E-mail',
 			'From' => 'De',
 			'Subject' => 'Assunto',
 			'Send' => 'Enviar',
 			'%d e-mail(s) have been sent.' => array('%d email enviado.', '%d emails enviados.'),
+			'Attachments' => 'Anexos',
+			'Insert' => 'Inserir',
+		),
+		'pt-br' => array(
+			'E-mail' => 'E-mail',
+			'From' => 'De',
+			'Subject' => 'Assunto',
+			'Send' => 'Enviar',
+			'%d e-mail(s) have been sent.' => array('%d email foi enviado.', '%d emails foram enviados.'),
 			'Attachments' => 'Anexos',
 			'Insert' => 'Inserir',
 		),
@@ -502,15 +512,6 @@ function emailFileChange() {
 			'%d e-mail(s) have been sent.' => '%d thư đã gửi.',
 			'Insert' => 'Thêm',
 		),
-		'zh-tw' => array(
-			'E-mail' => '電子郵件',
-			'From' => '來自',
-			'Subject' => '主旨',
-			'Attachments' => '附件',
-			'Send' => '寄出',
-			'%d e-mail(s) have been sent.' => '已寄出 %d 封郵件。',
-			'Insert' => '新增',
-		),
 		'zh' => array(
 			'' => '允许向表中的地址发送电子邮件', // Claude Opus 5
 			'E-mail' => '电子邮件',
@@ -521,15 +522,14 @@ function emailFileChange() {
 			'%d e-mail(s) have been sent.' => '%d 封邮件已发送。',
 			'Insert' => '插入',
 		),
-		'hr' => array(
-			'' => 'Slanje e-pošte odabranim recima',
-			'E-mail' => 'E-pošta',
-			'From' => 'Od',
-			'Subject' => 'Predmet',
-			'Attachments' => 'Privici',
-			'Send' => 'Pošalji',
-			'%d e-mail(s) have been sent.' => array('%d e-mail je poslan.', '%d e-maila su poslana.', '%d e-mailova je poslano.'),
-			'Insert' => 'Unesi',
+		'zh-tw' => array(
+			'E-mail' => '電子郵件',
+			'From' => '來自',
+			'Subject' => '主旨',
+			'Attachments' => '附件',
+			'Send' => '寄出',
+			'%d e-mail(s) have been sent.' => '已寄出 %d 封郵件。',
+			'Insert' => '新增',
 		),
 	);
 }

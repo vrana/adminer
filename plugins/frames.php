@@ -27,11 +27,11 @@ class AdminerFrames extends Adminer\Plugin {
 	protected $translations = array(
 		'cs' => array('' => 'Dovolí pracovat Admineru uvnitř rámu'),
 		'de' => array('' => 'Erlauben Sie die Verwendung von Adminer innerhalb eines Frames'),
+		'hr' => array('' => 'Dopušta korištenje Adminera unutar framea'),
+		'ja' => array('' => 'フレーム内での Adminer 利用を許可'),
 		'pl' => array('' => 'Zezwalaj na używanie Adminera wewnątrz ramki'),
 		'ro' => array('' => 'Permiteți utilizarea Adminer în interiorul unui cadru'),
-		'ja' => array('' => 'フレーム内での Adminer 利用を許可'),
 		'sk' => array('' => 'Dovolí používať Adminer vnútri rámu'), // Claude Opus 5
-		'hr' => array('' => 'Dopušta korištenje Adminera unutar framea'),
 		'zh' => array('' => '允许在 frame 中使用 Adminer'), // Claude Opus 5
 	);
 }

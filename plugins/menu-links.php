@@ -103,17 +103,6 @@ li:hover .hover, p:hover .hover, div:hover > .hover, .hover.active, tr:hover td.
 			'Select data' => 'Vypsat data',
 			'Show structure' => 'Zobrazit strukturu',
 		),
-		'pl' => array(
-			'' => 'Konfiguruj łącza tabeli menu; można je łączyć za pomocą AdminerConfig',
-			'Menu table links' => 'Linki do tabel w menu',
-			'Both' => 'Obie',
-			'Both, select on hover' => 'Obie, przeglądaj po najechaniu myszą', // Claude Opus 5
-			'Auto (select on the select page, structure otherwise)' => 'Auto (pokaż na stronie przeglądania, w przeciwnym razie struktura)',
-			// this is copied from adminer/lang/
-			'select' => 'przeglądaj',
-			'Select data' => 'Pokaż dane',
-			'Show structure' => 'Struktura tabeli',
-		),
 		'de' => array(
 			'' => 'Menü- und Tabellen-Links konfigurieren. Kombinierbar mit AdminerConfig',
 			'Both' => 'Beide',
@@ -124,6 +113,16 @@ li:hover .hover, p:hover .hover, div:hover > .hover, .hover.active, tr:hover td.
 			'select' => 'zeigen',
 			'Select data' => 'Daten auswählen',
 			'Show structure' => 'Struktur anzeigen',
+		),
+		'hr' => array(
+			'' => 'Prikazuje veze na odabir podataka ili strukturu tablice u izborniku',
+			'Select data' => 'Odaberi podatke',
+			'Show structure' => 'Prikaži strukturu',
+			'Both' => 'Oboje',
+			'Both, select on hover' => 'Oboje, odaberi prelaskom miša', // Claude Opus 5
+			'Auto (select on the select page, structure otherwise)' => 'Automatski (odabir na stranici odabira, inače struktura)',
+			'Menu table links' => 'Veze tablice u izborniku',
+			'select' => 'odaberi',
 		),
 		'ja' => array(
 			'' => 'メニュー内テーブルへのリンク設定; AdminerConfig との併用可',
@@ -136,21 +135,22 @@ li:hover .hover, p:hover .hover, div:hover > .hover, .hover.active, tr:hover td.
 			'Select data' => 'データ',
 			'Show structure' => '構造',
 		),
+		'pl' => array(
+			'' => 'Konfiguruj łącza tabeli menu; można je łączyć za pomocą AdminerConfig',
+			'Menu table links' => 'Linki do tabel w menu',
+			'Both' => 'Obie',
+			'Both, select on hover' => 'Obie, przeglądaj po najechaniu myszą', // Claude Opus 5
+			'Auto (select on the select page, structure otherwise)' => 'Auto (pokaż na stronie przeglądania, w przeciwnym razie struktura)',
+			// this is copied from adminer/lang/
+			'select' => 'przeglądaj',
+			'Select data' => 'Pokaż dane',
+			'Show structure' => 'Struktura tabeli',
+		),
 		'ro' => array(
 			'' => 'Configurarea link-urilor către tabele din meniu; se poate combina cu AdminerConfig', // Claude Opus 5
 		),
 		'sk' => array(
 			'' => 'Konfigurácia odkazov na tabuľky v menu; kombinovateľné s AdminerConfig', // Claude Opus 5
-		),
-		'hr' => array(
-			'' => 'Prikazuje veze na odabir podataka ili strukturu tablice u izborniku',
-			'Select data' => 'Odaberi podatke',
-			'Show structure' => 'Prikaži strukturu',
-			'Both' => 'Oboje',
-			'Both, select on hover' => 'Oboje, odaberi prelaskom miša', // Claude Opus 5
-			'Auto (select on the select page, structure otherwise)' => 'Automatski (odabir na stranici odabira, inače struktura)',
-			'Menu table links' => 'Veze tablice u izborniku',
-			'select' => 'odaberi',
 		),
 		'zh' => array(
 			'' => '配置菜单中表的链接，可与 AdminerConfig 组合使用', // Claude Opus 5

@@ -40,11 +40,11 @@ class AdminerDumpBz2 extends Adminer\Plugin {
 	protected $translations = array(
 		'cs' => array('' => 'Export do formátu Bzip2'),
 		'de' => array('' => 'Export im Bzip2-Format'),
+		'hr' => array('' => 'Izvoz u Bzip2 format'),
+		'ja' => array('' => 'Bzip2 形式でエクスポート'),
 		'pl' => array('' => 'Zrzuć do formatu Bzip2'),
 		'ro' => array('' => 'Dump în format Bzip2'),
-		'ja' => array('' => 'Bzip2 形式でエクスポート'),
 		'sk' => array('' => 'Export do formátu Bzip2'), // Claude Opus 5
-		'hr' => array('' => 'Izvoz u Bzip2 format'),
 		'zh' => array('' => '导出为 Bzip2 格式'), // Claude Opus 5
 	);
 }

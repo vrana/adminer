@@ -20,11 +20,11 @@ class AdminerDotJs extends Adminer\Plugin {
 	protected $translations = array(
 		'cs' => array('' => 'Nahraje adminer.js'),
 		'de' => array('' => 'Laden Sie adminer.js'),
+		'hr' => array('' => 'Učitava adminer.js'),
+		'ja' => array('' => 'adminer.js を読込み'),
 		'pl' => array('' => 'Wczytuj adminer.js'),
 		'ro' => array('' => 'Încarcă adminer.js'),
-		'ja' => array('' => 'adminer.js を読込み'),
 		'sk' => array('' => 'Načíta adminer.js'), // Claude Opus 5
-		'hr' => array('' => 'Učitava adminer.js'),
 		'zh' => array('' => '自动检测并加载 adminer.js，与 adminer.css 类似'), // Claude Opus 5
 	);
 }

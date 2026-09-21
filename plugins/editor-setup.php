@@ -41,11 +41,11 @@ class AdminerEditorSetup extends Adminer\Plugin {
 	protected $translations = array(
 		'cs' => array('' => 'Nastavit ovladač, server a databázi pro použití s Adminer Editorem'),
 		'de' => array('' => 'Treiber, Server und Datenbank für die Verwendung mit Adminer Editor einrichten'),
+		'hr' => array('' => 'Postavlja upravljački program, poslužitelj i bazu podataka za korištenje s Adminer Editorom'),
 		'ja' => array('' => 'Adminer Editor で使用するドライバ、サーバ、データベースを設定'),
 		'pl' => array('' => 'Konfiguruj sterownik, serwer i bazę danych do użycia z Adminer Editorem'),
 		'ro' => array('' => 'Configurați driverul, serverul și baza de date folosite cu Adminer Editor'), // Claude Opus 5
 		'sk' => array('' => 'Nastaví ovládač, server a databázu na použitie s Adminer Editorom'), // Claude Opus 5
-		'hr' => array('' => 'Postavlja upravljački program, poslužitelj i bazu podataka za korištenje s Adminer Editorom'),
 		'zh' => array('' => '设置 Adminer Editor 使用的驱动、服务器和数据库'), // Claude Opus 5
 	);
 }

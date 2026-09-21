@@ -171,11 +171,11 @@ DROP PROCEDURE adminer_alter;
 	protected $translations = array(
 		'cs' => array('' => 'Exportuje jednu databázi (např. vývojovou) tak, že může být synchronizována s jinou databází (např. produkční)'),
 		'de' => array('' => 'Exportiert eine Datenbank (z. B. Entwicklung), damit sie mit einer anderen Datenbank (z. B. Produktion) synchronisiert werden kann'),
+		'hr' => array('' => 'Izvozi bazu podataka (npr. razvojnu) tako da se može sinkronizirati s drugom bazom (npr. produkcijskom)'),
+		'ja' => array('' => 'データベース (開発用など) をエクスポートし、別のデータベース (本番用など) と同期'),
 		'pl' => array('' => 'Eksportuje jedną bazę danych (np. programistyczną), aby można ją było zsynchronizować z inną bazą danych (np. produkcyjną)'),
 		'ro' => array('' => 'Exportați o bază de date (de exemplu, development) astfel încât să poată fi sincronizată cu o altă bază de date (de exemplu, de producție)'),
-		'ja' => array('' => 'データベース (開発用など) をエクスポートし、別のデータベース (本番用など) と同期'),
 		'sk' => array('' => 'Exportuje jednu databázu (napr. vývojovú) tak, aby mohla byť synchronizovaná s inou databázou (napr. produkčnou)'), // Claude Opus 5
-		'hr' => array('' => 'Izvozi bazu podataka (npr. razvojnu) tako da se može sinkronizirati s drugom bazom (npr. produkcijskom)'),
 		'zh' => array('' => '导出一个数据库（例如开发环境），以便与另一个数据库（例如生产环境）同步'), // Claude Opus 5
 	);
 }

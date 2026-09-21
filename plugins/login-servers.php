@@ -41,11 +41,11 @@ class AdminerLoginServers extends Adminer\Plugin {
 	protected $translations = array(
 		'cs' => array('' => 'V přihlašovacím formuláři zobrazuje předdefinovaný seznam serverů'),
 		'de' => array('' => 'Anzeige einer konstanten Serverliste im Anmeldeformular'),
+		'hr' => array('' => 'Prikazuje konstantan popis poslužitelja u obrascu za prijavu'),
+		'ja' => array('' => 'ログイン画面に定義済のサーバリストを表示'),
 		'pl' => array('' => 'Wyświetlaj stałą listę serwerów w formularzu logowania'),
 		'ro' => array('' => 'Afișarea unei liste constante de servere în formularul de conectare'),
-		'ja' => array('' => 'ログイン画面に定義済のサーバリストを表示'),
 		'sk' => array('' => 'V prihlasovacom formulári zobrazuje preddefinovaný zoznam serverov'), // Claude Opus 5
-		'hr' => array('' => 'Prikazuje konstantan popis poslužitelja u obrascu za prijavu'),
 		'zh' => array('' => '在登录表单中显示固定的服务器列表'), // Claude Opus 5
 	);
 }
