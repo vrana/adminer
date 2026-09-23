@@ -18,6 +18,7 @@
 - PostgreSQL: Edit the enum values containing an apostrophe
 - PostgreSQL: Alter table: Offer and quote the user types with uppercase letters
 - SQLite: Disallow ATTACH and VACUUM INTO prefixed by BOM (GHSA-r9r5-j5q8-8c59)
+- SQLite: Deny writing files by an authorizer (PHP 8.0+, PDO PHP 8.5+)
 - MS SQL: Export and alter the precision of datetime2, time and datetimeoffset
 - MS SQL: Keep fractional seconds and the time zone offset when saving a row with the sqlsrv extension
 - MS SQL Dblib: Display uniqueidentifier (bug #1339)
