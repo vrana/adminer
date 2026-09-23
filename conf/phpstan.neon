@@ -63,9 +63,6 @@ parameters:
 		- "~'strlen' given~" # used as a bool callback
 		- "~between int<70100~" # PHP_VERSION_ID check
 		-
-			message: "~implode expects array, string given~" # pg_last_notice() returns array with PGSQL_NOTICE_ALL
-			path: ../adminer/drivers/pgsql.inc.php
-		-
 			message: "~ type specified~" # duplicate functions and methods, the doc-comments with array types are in adminer/
 			paths:
 				- ../adminer/include/pdo.inc.php
