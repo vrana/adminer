@@ -137,7 +137,7 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 			}
 		}
 
-		$space = "(?:\\s|/\\*[\s\S]*?\\*/|(?:$line_comment)[^\n]*\n?|--\r?\n)";
+		$space = "(?:\\s|\xEF\xBB\xBF|/\\*[\s\S]*?\\*/|(?:$line_comment)[^\n]*\n?|--\r?\n)"; // BOM - SQLite skips it
 		$offset = 0;
 		$empty = true;
 		$copy = false; // PostgreSQL COPY ... FROM stdin
