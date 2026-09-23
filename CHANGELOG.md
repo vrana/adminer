@@ -410,7 +410,7 @@
 - Escape REQUEST_URI (GHSA-c533-9qwm-8w5h, bug #1298)
 - Validate server (GHSA-r4x9-5m63-3vxw)
 - Validate server version (GHSA-h6jr-7pr6-grgj)
-- SQLite: Disallow ATTACH commands (GHSA-q4f2-39gr-45jh)
+- SQLite: Disallow ATTACH commands (GHSA-3582-q6xq-5vf7)
 - SQLite: Disallow VACUUM INTO commands (GHSA-gmx3-g29w-77wf)
 - SQLite: Check filename before deleting (GHSA-6pg3-chwq-wgqc)
 - Avoid unserialize() in brute force protection (bug #1289)
