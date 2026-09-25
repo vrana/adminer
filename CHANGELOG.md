@@ -1,4 +1,4 @@
-## Adminer dev
+## Adminer 6.1.1 (released 2026-09-25)
 - Fix editing identity (PostgreSQL, Oracle, Firebird), rowversion (MS SQL), key (ClickHouse)
 - Select: Fix modifying rows with a NULL value (uncompiled only, regression from 6.1.0)
 - Edit: Do not round big numbers in json (MySQL) and jsonb (PostgreSQL) when saving the row (regression from 5.4.2)
