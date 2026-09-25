@@ -1122,7 +1122,7 @@ body > form{
 
 .jush-sql {padding: 2px 4px; margin-right: 4px; font-size: 9pt;background-color:#49526D;}
 .jush { color: white; }
-.jush-htm_com, .jush-com, .jush-com_code, .jush-one, .jush-php_doc, .jush-php_com, .jush-php_one, .jush-js_one, .jush-js_doc { color: #E0E0E0; }
+.jush-htm_com, .jush-com, .jush-com_code, .jush-com_nest, .jush-one, .jush-php_doc, .jush-php_com, .jush-php_one, .jush-js_one, .jush-js_doc { color: #E0E0E0; }
 .jush-php, .jush-php_new, .jush-php_fun { color: #CCDAFF; background-color: #F0F0F0; }
 .jush-php_quo, .jush-quo, .jush-quo_one, .jush-php_eot, .jush-apo, .jush-sql_apo, .jush-sqlite_apo, .jush-sql_quo, .jush-sql_eot { color: #D3FFDC; }
 .jush-php_apo { color: #D3FFDC; }
