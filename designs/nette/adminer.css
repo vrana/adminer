@@ -476,41 +476,59 @@ a[href*="&default="] {
 }
 
 table tbody input[type="checkbox"] {
-	display: block;
-	float: left;
+	display: inline-block;
+	float: none;
+	margin: 0 4px 0 0;
+	vertical-align: middle;
 }
 
-table a[href*="&edit="][href*="&where"] {
+table a[href*="&edit="][href*="&where"]:not(.edit) {
 	background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFUSURBVDjLrZM/SAJxGIZdWwuDlnCplkAEm1zkaIiGFFpyMIwGK5KGoK2lphDKkMDg3LLUSIJsSKhIi+684CokOtTiMizCGuzEU5K3vOEgKvtBDe/2Pc8H3x8NAM1fQlx4H9M3pcOWp6TXWmM8A7j0629v1nraiAVC0IrrwATKIgs5xyG5QiE+Z4iQdoeU2oAsnqCSO1NSTu+D9VhqRLD8nIB8F0Q2MgmJDyipCzjvYJkIfpN2UBLG8MpP4dxvQ3ZzGuyyBQ2H+AnOOCBd9aL6soh81A5hyYSGWyCFvxUcerqI4S+CvYVOFPMHxLAq8I3qdHVY5LbBhJzEsCrwutpRFBlUHy6wO2tEYtWAzLELPN2P03kjfj3luqDycV2F8AgefWbEnVqEHa2IznSD6BdsVDNStB0lfh0FPoQjdx8RrAqGzC0YprSgxzsUMOY2bf37N/6Ud1Vc9yYcH50CAAAAAElFTkSuQmCC") no-repeat scroll right center;
 	padding-right: 18px;
 }
 
+/* the whitespace between the edit link and the checkbox would collapse on hover */
+table td.check {
+	font-size: 0;
+}
+
 table a.edit {
-	clear: right;
-	display: block;
-	float: left;
-	line-height: 15px;
-	margin-right: 8px;
+	background: none;
+	border: none;
+	display: inline-block;
+	float: none;
+	font-size: 13px;
+	height: 16px;
+	line-height: 16px;
+	margin: 0 4px 0 0;
 	overflow: hidden;
 	padding: 0;
 	text-decoration: none;
+	vertical-align: middle;
+	white-space: nowrap;
 	width: 16px;
 }
 
 table a.edit:before {
 	content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFUSURBVDjLrZM/SAJxGIZdWwuDlnCplkAEm1zkaIiGFFpyMIwGK5KGoK2lphDKkMDg3LLUSIJsSKhIi+684CokOtTiMizCGuzEU5K3vOEgKvtBDe/2Pc8H3x8NAM1fQlx4H9M3pcOWp6TXWmM8A7j0629v1nraiAVC0IrrwATKIgs5xyG5QiE+Z4iQdoeU2oAsnqCSO1NSTu+D9VhqRLD8nIB8F0Q2MgmJDyipCzjvYJkIfpN2UBLG8MpP4dxvQ3ZzGuyyBQ2H+AnOOCBd9aL6soh81A5hyYSGWyCFvxUcerqI4S+CvYVOFPMHxLAq8I3qdHVY5LbBhJzEsCrwutpRFBlUHy6wO2tEYtWAzLELPN2P03kjfj3luqDycV2F8AgefWbEnVqEHa2IznSD6BdsVDNStB0lfh0FPoQjdx8RrAqGzC0YprSgxzsUMOY2bf37N/6Ud1Vc9yYcH50CAAAAAElFTkSuQmCC");
+	display: inline-block;
+	height: 16px;
 	padding-right: 5px;
+	vertical-align: top;
 }
 
 table a.edit:hover {
-	background: #FFC;
-	color: white;
-	margin-left: 19px;
-	margin-top: -1px;
+	border: none;
 	overflow: visible;
-	padding: 1px 2px;
+	padding-right: 4px;
 	position: absolute;
 	width: auto;
+	z-index: 2;
+}
+
+/* keep the place of the absolutely positioned link so that the checkbox does not jump under the cursor */
+table a.edit:hover + input[type="checkbox"] {
+	margin-left: 20px;
 }
 
 table a[href*="&clone="] {
