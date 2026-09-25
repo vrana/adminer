@@ -7,7 +7,7 @@
 - Select: Enable saving the modified values again after an error (regression from 6.0.0)
 - Select: Highlight the searched text
 - Select: Search anywhere by IS NULL and IS NOT NULL without a value
-- Show documentation links as 🕮, link it from the heading
+- Show documentation links as 📖, link it from the heading
 - Menu: Group system databases and schemas
 - Trigger: Name a new trigger with more events by all of them
 - PDO: Preserve the exact value of double (bug #1214)

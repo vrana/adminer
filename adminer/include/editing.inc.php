@@ -600,10 +600,10 @@ function doc_version(): string {
 
 /** Create link to database documentation
 * @param string[] $paths JUSH => $path
-* @param string $text HTML code
+* @param string $text HTML code (🕮 is not on Mac)
 * @return string HTML code
 */
-function doc_link(array $paths, string $text = "🕮"): string {
+function doc_link(array $paths, string $text = "📖"): string {
 	$version = doc_version();
 	$urls = array(
 		'sql' => "https://dev.mysql.com/doc/refman/$version/en/",
