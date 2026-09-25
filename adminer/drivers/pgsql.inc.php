@@ -996,7 +996,7 @@ ORDER BY event_manipulation DESC") as $row
 		$return = array();
 		$functions = array();
 		foreach (
-			get_rows('SELECT t.tgname, r.routine_schema AS ns, r.routine_type AS type, r.specific_name AS function, r.routine_name AS name
+			get_rows('SELECT t.tgname, r.routine_schema AS ns, r.specific_name AS function, r.routine_name AS name
 FROM pg_catalog.pg_trigger t
 JOIN information_schema.routines r ON substring(r.specific_name, \'[0-9]+$\')::oid = t.tgfoid
 WHERE NOT t.tgisinternal AND t.tgrelid = (

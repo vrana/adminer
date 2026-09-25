@@ -128,11 +128,8 @@ if (support(is_view($table_status) ? "view_trigger" : "trigger") && driver()->su
 				. "<td class='hover'><a href='" . h(ME . 'trigger=' . url_escape($TABLE) . '&name=' . url_escape($key)) . "'>" . lang('Alter') . "</a>";
 			$routine = $val[2];
 			if ($routine) { // PostgreSQL triggers only call a function which is what users usually want to alter
-				$procedure = ($routine["type"] == "PROCEDURE");
-				$routine_link = preg_replace('~ns=[^&]*~', "ns=" . url_escape($routine["ns"]), ME)
-					. ($procedure ? 'procedure=' : 'function=') . url_escape($routine["function"])
-					. '&name=' . url_escape($routine["name"]);
-				echo ", <a href='" . h($routine_link) . "' title='" . h($routine["name"]) . "'>" . ($procedure ? lang('Alter procedure') : lang('Alter function')) . "</a>";
+				$routine_link = preg_replace('~ns=[^&]*~', "ns=" . url_escape($routine["ns"]), ME) . 'function=' . url_escape($routine["function"]) . '&name=' . url_escape($routine["name"]);
+				echo ", <a href='" . h($routine_link) . "' title='" . h($routine["name"]) . "'>" . lang('Alter function') . "</a>";
 			}
 			echo "\n";
 		}
