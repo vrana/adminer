@@ -684,7 +684,7 @@ if (!$columns && support("table")) {
 					?>
 <fieldset<?php echo ($_GET["modify"] ? '' : " title='" . lang('Ctrl+click on a value to modify it.') . "'"); ?>>
 <legend><a href='<?php echo h($_GET["modify"] ? remove_from_uri("modify") : relative_uri() . "&modify=1"); ?>'><?php echo lang('Modify'); ?></a></legend><div>
-<input type='submit' id='save' value='<?php echo lang('Save'); ?>'<?php echo ($_GET["modify"] ? '' : " class='jsonly' disabled"); ?>>
+<input type='submit' id='save' value='<?php echo lang('Save'); ?>'<?php echo ($_GET["modify"] || $_POST["val"] ? '' : " class='jsonly' disabled"); ?>>
 </div></fieldset>
 
 <fieldset><legend><?php echo lang('Selected'); ?> <span id="selected"></span></legend><div>

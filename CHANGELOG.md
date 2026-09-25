@@ -4,6 +4,7 @@
 - Edit: Do not round big numbers in json (MySQL) and jsonb (PostgreSQL) when saving the row (regression from 5.4.2)
 - Keep the table names on the screen when scrolling the list of tables horizontally
 - Select: Keep the checkboxes on the screen when scrolling horizontally
+- Select: Enable saving the modified values again after an error (regression from 6.0.0)
 - Select: Highlight the searched text
 - Select: Search anywhere by IS NULL and IS NOT NULL without a value
 - Show documentation links as 🕮, link it from the heading
