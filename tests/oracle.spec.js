@@ -221,6 +221,7 @@ test('Search in tables with special types', async () => {
 		await page.locator('[name="op"]').selectOption(op);
 		await page.locator('[name="query"]').fill(query);
 		await page.locator('[name="search"]').click();
+		await page.waitForLoadState();
 		await expect(page.locator('.error')).toHaveCount(0);
 		await expect(page.locator("li a[href*='select=types&where']")).toBeVisible();
 	}
