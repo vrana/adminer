@@ -2,7 +2,7 @@
 - Fix editing identity (PostgreSQL, Oracle, Firebird), rowversion (MS SQL), key (ClickHouse)
 - Select: Fix modifying rows with a NULL value (uncompiled only, regression from 6.1.0)
 - Edit: Do not round big numbers in json (MySQL) and jsonb (PostgreSQL) when saving the row (regression from 5.4.2)
-- Keep the table names on the screen when scrolling the list of tables horizontally
+- DB overview: Keep the table names on the screen when scrolling the list of tables horizontally
 - Select: Keep the checkboxes on the screen when scrolling horizontally
 - Select: Enable saving the modified values again after an error (regression from 6.0.0)
 - Select: Highlight the searched text
