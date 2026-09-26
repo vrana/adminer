@@ -592,6 +592,9 @@ if (!$columns && support("table")) {
 								? " data-text='" . ($long ? 2 : ($text ? 1 : 0)) . "'"
 									. ($editable ? "" : " data-warning='" . lang('Use the edit link to modify this value.') . "'")
 								: ""
+							) . ($html != h($val)
+								? 'data-original-value="' . h($val) . '"' // save original DB value (unaltered by plugins)
+								: ""
 							) . ">$html";
 						}
 					}
