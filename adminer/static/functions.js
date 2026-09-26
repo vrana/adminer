@@ -880,7 +880,7 @@ function selectClick(event, text, warning) {
 	};
 
 	const pos = getSelection().anchorOffset;
-	let value = (td.firstChild && td.firstChild.alt) || td.textContent;
+	let value = (td.firstChild && td.firstChild.alt) || (td.attributes['data-original-value']?.value ?? td.textContent);
 	const tdStyle = window.getComputedStyle(td, null);
 
 	input.style.width = Math.max(td.clientWidth - parseFloat(tdStyle.paddingLeft) - parseFloat(tdStyle.paddingRight), (text ? 200 : 20)) + 'px';
