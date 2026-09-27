@@ -725,6 +725,16 @@ class Adminer {
 					} elseif ($val["op"] == "FIND_IN_SET") {
 						$prefix = "$val[op](" . q($val["val"]) . ", ";
 						$cond = ")";
+					} elseif ($val["op"] == "&") {
+						$cond .= " $val[val]";
+					} elseif ($val["op"] == "BETWEEN") {
+						$parts = preg_split('/\s+(?:AND\s+|,)?/i', trim($val["val"]), 2);
+						if (count($parts) === 2) {
+							[$min, $max] = $parts;
+							$min_val = is_numeric($min) ? $min : q($min);
+							$max_val = is_numeric($max) ? $max : q($max);
+							$cond .= " $min_val AND $max_val";
+						}
 					} elseif (!preg_match('~NULL$~', $val["op"])) {
 						$cond .= " " . q($val["val"]);
 					}

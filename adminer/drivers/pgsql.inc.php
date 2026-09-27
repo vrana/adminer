@@ -261,7 +261,7 @@ if (isset($_GET["pgsql"])) {
 		/** @var int[] */ private array $userTypes = array(); // [$name => $oid]
 
 		function operators(?array $tableStatus): array {
-			return array("=", "<", ">", "<=", ">=", "!=", "~", "~*", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT ILIKE", "NOT IN", "IS NOT NULL", "SQL");
+			return array("=", "<", ">", "<=", ">=", "!=", "~", "~*", "!~", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "BETWEEN", "IS NULL", "NOT LIKE", "NOT ILIKE", "NOT IN", "IS NOT NULL", "SQL");
 		}
 
 		static function connect(string $server, string $username, string $password) {

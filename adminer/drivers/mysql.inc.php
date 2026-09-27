@@ -220,7 +220,7 @@ if (!defined('Adminer\DRIVER')) {
 		public $partitionBy = array("HASH", "LINEAR HASH", "KEY", "LINEAR KEY", "RANGE", "LIST");
 
 		function operators(?array $tableStatus): array {
-			return array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "REGEXP", "IN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL");
+			return array("=", "<", ">", "<=", ">=", "!=", "&", "LIKE", "LIKE %%", "REGEXP", "IN", "BETWEEN", "FIND_IN_SET", "IS NULL", "NOT LIKE", "NOT REGEXP", "NOT IN", "IS NOT NULL", "SQL");
 		}
 
 		static function connect(string $server, string $username, string $password) {
