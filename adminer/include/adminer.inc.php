@@ -1377,10 +1377,9 @@ class Adminer {
 	}
 
 	/** Format a size value
-	* @param int|float|null $val
-	* @return string
+	* @param int|float $val
 	*/
-	function formatSizeValue(int|float|null $val): string {
+	function formatSizeValue($val): string {
 		return format_number($val);
 	}
 }
