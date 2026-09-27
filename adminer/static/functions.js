@@ -888,7 +888,7 @@ function selectClick(event, text, warning) {
 	if (text) {
 		input.rows = value.split('\n').length;
 	}
-	if (qsa('i', td).length) { // <i> - NULL
+	if (original === "<i>NULL</i>") {
 		value = '';
 	}
 	td.innerHTML = '';
