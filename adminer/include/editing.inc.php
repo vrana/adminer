@@ -254,16 +254,14 @@ function process_length(?string $length): string {
 * @return string SQL expression in parentheses
 */
 function process_in(string $val): string {
-	$enum_length = driver()->enumLength;
-	if (preg_match("~^\\s*\\(?\\s*$enum_length(?:\\s*,\\s*$enum_length)*+\\s*\\)?\\s*\$~", $val) && preg_match_all("~$enum_length~", $val, $matches)) {
-		return "(" . implode(", ", $matches[0]) . ")";
-	}
-	$return = array();
-	foreach (explode(",", $val) as $item) {
-		// the values are quoted also if they are numbers, an unquoted number can't be compared with a text column
-		$return[] = q(trim($item));
-	}
-	return "(" . implode(", ", $return) . ")";
+	// quoted values can contain a comma; they are unquoted and quoted again because backslash escapes a quote only in some databases
+	$quoted = "'((?:[^']|'')*+)'";
+	$items = (preg_match("~^\\s*\\(?\\s*$quoted(?:\\s*,\\s*$quoted)*+\\s*\\)?\\s*\$~", $val) && preg_match_all("~$quoted~", $val, $matches)
+		? str_replace("''", "'", $matches[1])
+		: array_map('trim', explode(",", $val))
+	);
+	// the values are quoted also if they are numbers, an unquoted number can't be compared with a text column
+	return "(" . implode(", ", array_map('Adminer\q', $items)) . ")";
 }
 
 /** Create the range of the BETWEEN operator in select
