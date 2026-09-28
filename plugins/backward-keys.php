@@ -22,14 +22,14 @@ JOIN pg_class r ON r.oid = c.conrelid
 JOIN pg_namespace n ON n.oid = r.relnamespace
 JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = c.conkey[c.i]
 JOIN pg_attribute t ON t.attrelid = c.confrelid AND t.attnum = c.confkey[c.i]
-ORDER BY c.i";
+ORDER BY n.nspname, s.relname, c.conname, c.i";
 		} else {
 			// we couldn't use the same query in MySQL and MS SQL because unique_constraint_name is not table-specific in MySQL and referenced_table_name is not available in MS SQL
 			$query = "SELECT s.table_name table_name, s.constraint_name constraint_name, s.column_name column_name,
 	" . (Adminer\JUSH == "sql" ? "referenced_column_name" : "t.column_name") . " referenced_column_name" . (Adminer\JUSH == "sql" ? "" : ", s.table_schema ns") . "
+	, s.table_schema table_schema
 FROM information_schema.key_column_usage s" . (Adminer\JUSH == "sql" ? "
-WHERE table_schema = " . Adminer\q(Adminer\DB) . "
-AND referenced_table_schema = " . Adminer\q(Adminer\DB) . "
+WHERE referenced_table_schema = " . Adminer\q(Adminer\DB) . "
 AND referenced_table_name" : "
 JOIN information_schema.referential_constraints r USING (constraint_catalog, constraint_schema, constraint_name)
 JOIN information_schema.key_column_usage t ON r.unique_constraint_catalog = t.constraint_catalog
@@ -40,12 +40,19 @@ JOIN information_schema.key_column_usage t ON r.unique_constraint_catalog = t.co
 	AND s.position_in_unique_constraint = t.ordinal_position
 WHERE t.table_catalog = " . Adminer\q(Adminer\DB) . " AND t.table_schema = " . Adminer\q("$_GET[ns]") . "
 AND t.table_name") . " = " . Adminer\q($table) . "
-ORDER BY s.ordinal_position";
+ORDER BY
+	s.table_schema, 
+	s.table_name, 
+	s.constraint_name, 
+	s.ordinal_position";
 		}
 		foreach (Adminer\get_rows($query, null, "") as $row) {
 			$ns = ($row["ns"] != $_GET["ns"] ? $row["ns"] : ""); // ns is not selected in MySQL
-			$key = Adminer\idf_escape($ns) . "." . Adminer\idf_escape($row["table_name"]); // the same table name can be in several schemas
+			$schema = (Adminer\JUSH == "sql" ? $row["table_schema"] : Adminer\DB);
+			$keyPrefix = (Adminer\JUSH == "sql" ? $schema : $ns);
+			$key = Adminer\idf_escape($keyPrefix) . "." . Adminer\idf_escape($row["table_name"]);
 			$return[$key]["table"] = $row["table_name"];
+			$return[$key]["schema"] = $schema;
 			$return[$key]["ns"] = $ns;
 			$return[$key]["keys"][$row["constraint_name"]][$row["column_name"]] = $row["referenced_column_name"];
 		}
@@ -67,7 +74,10 @@ ORDER BY s.ordinal_position";
 		foreach ($backwardKeys as $backwardKey) {
 			$table = $backwardKey["table"];
 			$ns = $backwardKey["ns"];
+			$schema = $backwardKey["schema"] ?: Adminer\DB;
 			$me = ($ns != "" ? preg_replace('~ns=[^&]*~', "ns=" . Adminer\url_escape($ns), Adminer\ME) : Adminer\ME);
+			if (Adminer\JUSH == "sql" && Adminer\DB != $schema)
+                $me = preg_replace('~\bdb=[^&]*~', "db=" . Adminer\url_escape($schema), $me);
 			foreach ($backwardKey["keys"] as $cols) {
 				$link = $me . 'select=' . Adminer\url_escape($table);
 				$i = 0;
@@ -80,6 +90,7 @@ ORDER BY s.ordinal_position";
 				echo "<a href='" . Adminer\h($link) . "' title='" . Adminer\h(implode(", ", array_keys($cols))) . "'>"
 					. ($ns != "" ? "<b>" . Adminer\h($ns) . "</b>." : "")
 					. Adminer\h(preg_replace('(^' . preg_quote($_GET["select"]) . (substr($_GET["select"], -1) == 's' ? '?' : '') . '_)', '_', $backwardKey["name"]))
+					. (Adminer\JUSH == "sql" && Adminer\DB != $schema ? " @ " . Adminer\h($schema) : "")
 					. "</a>";
 				$link = $me . 'edit=' . Adminer\url_escape($table);
 				foreach ($cols as $column => $val) {
