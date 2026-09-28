@@ -593,8 +593,8 @@ if (!$columns && support("table")) {
 							echo ($update
 								? " data-text='" . ($long ? 2 : ($text ? 1 : 0)) . "'"
 									. ($editable ? "" : " data-warning='" . lang('Use the edit link to modify this value.') . "'")
-									// the displayed text differs from the value if it is a description or if a plugin changes it in selectVal(), long text is loaded by AJAX
-									. ($editable && !$long && $edit_text !== null && html_entity_decode(strip_tags($html), ENT_QUOTES, "UTF-8") !== $edit_text
+									// the displayed text differs from the value if it is NULL, a description or if a plugin changes it in selectVal(), long text is loaded by AJAX
+									. ($editable && !$long && html_entity_decode(strip_tags($html), ENT_QUOTES, "UTF-8") !== $edit_text
 										? " data-value='" . h($edit_text) . "'"
 										: ""
 									)

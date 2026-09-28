@@ -891,9 +891,6 @@ function selectClick(event, text, warning) {
 	if (text) {
 		input.rows = value.split('\n').length;
 	}
-	if (qsa('i', td).length) { // <i> - NULL
-		value = '';
-	}
 	td.innerHTML = '';
 	td.append(input);
 	const save = (form && form['save']) || qs('#save'); // each result of the SQL command has its own button

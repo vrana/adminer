@@ -119,7 +119,7 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 				// the same value can be displayed in more rows so it is identified by an attribute instead of by an ID
 				$attrs = " data-name='" . h("val[" . bracket_escape($tables[$cell[0]]) . "][" . bracket_escape(substr($idfs[$cell[0]], 1)) . "][" . bracket_escape($cell[1]) . "]")
 					. "' data-text='" . ($cell[2] ? 1 : 0) . "'"
-					. ($val !== null && html_entity_decode(strip_tags($html), ENT_QUOTES, "UTF-8") !== $val ? " data-value='" . h($val) . "'" : "") // a plugin can change the text in selectVal()
+					. (html_entity_decode(strip_tags($html), ENT_QUOTES, "UTF-8") !== $val ? " data-value='" . h($val) . "'" : "") // NULL or a text changed by a plugin in selectVal()
 				;
 			}
 			echo "<td" . (preg_match(number_type(), $types[$key]) ? " class='number'" : "") . "$attrs>$html";
