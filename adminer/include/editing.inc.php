@@ -639,7 +639,7 @@ function db_size(string $db): string {
 	foreach (table_status() as $table_status) {
 		$return += $table_status["Data_length"] + $table_status["Index_length"];
 	}
-	return format_number($return);
+	return adminer()->formatSizeValue($return);
 }
 
 /** Print SET NAMES if utf8mb4 might be needed */

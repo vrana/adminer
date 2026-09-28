@@ -816,7 +816,8 @@ function format_status(array $table_status, string $key): string {
 	}
 	// these engines estimate the number of rows, even 0 can be reported for a non-empty table
 	$approximate = ($key == "Rows" && (JUSH == "sqlite" || $table_status["Engine"] == (JUSH == "pgsql" ? "table" : "InnoDB")));
-	return ($approximate ? "~ " : "") . format_number($val);
+	$val = in_array($key, array("Data_length", "Index_length", "Data_free")) ? adminer()->formatSizeValue($val) : format_number($val);
+	return ($approximate ? "~ " : "") . $val;
 }
 
 /** Generate friendly URL */

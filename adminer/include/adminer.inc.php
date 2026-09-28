@@ -1375,4 +1375,12 @@ class Adminer {
 	function killProcess(string $id) {
 		return kill_process($id);
 	}
+
+	/** Format a size in bytes of tables, indexes and databases
+	* @param float|numeric-string $val
+	* @return string HTML code
+	*/
+	function formatSizeValue($val): string {
+		return format_number($val);
+	}
 }

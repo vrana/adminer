@@ -195,7 +195,7 @@ if (adminer()->homepage()) {
 				$sums = db_status();
 			}
 			foreach ($sums as $key => $sum) {
-				echo ($columns[$key] ? "<td align='right' id='sum-$key'>" . ($full ? format_number($sum) : "") : "");
+				echo ($columns[$key] ? "<td align='right' id='sum-$key'>" . ($full ? adminer()->formatSizeValue($sum) : "") : "");
 			}
 			echo "\n";
 
