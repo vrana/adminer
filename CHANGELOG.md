@@ -3,6 +3,7 @@
 - Select: Edit the stored value by Ctrl+click on a non-original value (bug #1344)
 - Select: Search by BETWEEN (bug #1346)
 - MySQL, SQLite: Search by & (bug #1346)
+- Editor: Offer the row with the typed ID first when searching a foreign key, fix the search in MS SQL and Oracle
 ### Plugins
 - Method formatSizeValue() to format the sizes of tables, indexes and databases
 
