@@ -22,14 +22,13 @@ JOIN pg_class r ON r.oid = c.conrelid
 JOIN pg_namespace n ON n.oid = r.relnamespace
 JOIN pg_attribute a ON a.attrelid = c.conrelid AND a.attnum = c.conkey[c.i]
 JOIN pg_attribute t ON t.attrelid = c.confrelid AND t.attnum = c.confkey[c.i]
-ORDER BY c.i";
+ORDER BY n.nspname, r.relname, c.conname, c.i";
 		} else {
 			// we couldn't use the same query in MySQL and MS SQL because unique_constraint_name is not table-specific in MySQL and referenced_table_name is not available in MS SQL
 			$query = "SELECT s.table_name table_name, s.constraint_name constraint_name, s.column_name column_name,
-	" . (Adminer\JUSH == "sql" ? "referenced_column_name" : "t.column_name") . " referenced_column_name" . (Adminer\JUSH == "sql" ? "" : ", s.table_schema ns") . "
+	" . (Adminer\JUSH == "sql" ? "referenced_column_name" : "t.column_name") . " referenced_column_name, s.table_schema " . (Adminer\JUSH == "sql" ? "db" : "ns") . "
 FROM information_schema.key_column_usage s" . (Adminer\JUSH == "sql" ? "
-WHERE table_schema = " . Adminer\q(Adminer\DB) . "
-AND referenced_table_schema = " . Adminer\q(Adminer\DB) . "
+WHERE referenced_table_schema = " . Adminer\q(Adminer\DB) . "
 AND referenced_table_name" : "
 JOIN information_schema.referential_constraints r USING (constraint_catalog, constraint_schema, constraint_name)
 JOIN information_schema.key_column_usage t ON r.unique_constraint_catalog = t.constraint_catalog
@@ -40,18 +39,24 @@ JOIN information_schema.key_column_usage t ON r.unique_constraint_catalog = t.co
 	AND s.position_in_unique_constraint = t.ordinal_position
 WHERE t.table_catalog = " . Adminer\q(Adminer\DB) . " AND t.table_schema = " . Adminer\q("$_GET[ns]") . "
 AND t.table_name") . " = " . Adminer\q($table) . "
-ORDER BY s.ordinal_position";
+ORDER BY
+	s.table_schema,
+	s.table_name,
+	s.constraint_name,
+	s.ordinal_position";
 		}
 		foreach (Adminer\get_rows($query, null, "") as $row) {
+			$db = ($row["db"] != "" && $row["db"] != Adminer\DB ? $row["db"] : ""); // db is selected only in MySQL
 			$ns = ($row["ns"] != $_GET["ns"] ? $row["ns"] : ""); // ns is not selected in MySQL
-			$key = Adminer\idf_escape($ns) . "." . Adminer\idf_escape($row["table_name"]); // the same table name can be in several schemas
+			$key = Adminer\idf_escape($db) . "." . Adminer\idf_escape($ns) . "." . Adminer\idf_escape($row["table_name"]); // the same table name can be in several databases or schemas
 			$return[$key]["table"] = $row["table_name"];
+			$return[$key]["db"] = $db;
 			$return[$key]["ns"] = $ns;
 			$return[$key]["keys"][$row["constraint_name"]][$row["column_name"]] = $row["referenced_column_name"];
 		}
 		foreach ($return as $key => $val) {
-			// table_status1() looks only in the current schema
-			$name = Adminer\adminer()->tableName($val["ns"] != "" ? array("Name" => $val["table"]) : Adminer\table_status1($val["table"], true));
+			// table_status1() looks only in the current database and schema
+			$name = Adminer\adminer()->tableName($val["db"] != "" || $val["ns"] != "" ? array("Name" => $val["table"]) : Adminer\table_status1($val["table"], true));
 			if ($name != "") {
 				$search = preg_quote($tableName);
 				$separator = '(:|\s*-)?\s+';
@@ -66,8 +71,12 @@ ORDER BY s.ordinal_position";
 	function backwardKeysPrint($backwardKeys, $row) {
 		foreach ($backwardKeys as $backwardKey) {
 			$table = $backwardKey["table"];
+			$db = $backwardKey["db"];
 			$ns = $backwardKey["ns"];
-			$me = ($ns != "" ? preg_replace('~ns=[^&]*~', "ns=" . Adminer\url_escape($ns), Adminer\ME) : Adminer\ME);
+			$me = ($db != "" ? preg_replace('~&db=[^&]*~', "&db=" . Adminer\url_escape($db), Adminer\ME) : Adminer\ME);
+			if ($ns != "") {
+				$me = preg_replace('~&ns=[^&]*~', "&ns=" . Adminer\url_escape($ns), $me);
+			}
 			foreach ($backwardKey["keys"] as $cols) {
 				$link = $me . 'select=' . Adminer\url_escape($table);
 				$i = 0;
@@ -78,6 +87,7 @@ ORDER BY s.ordinal_position";
 					$link .= Adminer\where_link($i++, $column, $row[$val]);
 				}
 				echo "<a href='" . Adminer\h($link) . "' title='" . Adminer\h(implode(", ", array_keys($cols))) . "'>"
+					. ($db != "" ? "<b>" . Adminer\h($db) . "</b>." : "")
 					. ($ns != "" ? "<b>" . Adminer\h($ns) . "</b>." : "")
 					. Adminer\h(preg_replace('(^' . preg_quote($_GET["select"]) . (substr($_GET["select"], -1) == 's' ? '?' : '') . '_)', '_', $backwardKey["name"]))
 					. "</a>";
