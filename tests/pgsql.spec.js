@@ -318,7 +318,7 @@ test('Search in tables with special types', async () => {
 	await button(page, 'Execute').click();
 	await expect(page.locator('body')).toContainText('Query executed OK');
 	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public');
-	for (const [op, query] of [['LIKE %%', 'abc'], ['LIKE %%', '3'], ['=', 'abc3'], ['~', 'abc'], ['ILIKE %%', 'ABC']]) {
+	for (const [op, query] of [['LIKE %%', 'abc'], ['LIKE %%', '3'], ['=', 'abc3'], ['~', 'abc'], ['ILIKE %%', 'ABC'], ['BETWEEN', 'abc AND abd']]) {
 		await page.locator('[name="op"]').selectOption(op);
 		await page.locator('[name="query"]').fill(query);
 		await page.locator('[name="search"]').click();

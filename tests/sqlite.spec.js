@@ -251,7 +251,7 @@ test('Search in tables with special types', async () => {
 	await button(page, 'Execute').click();
 	await expect(page.locator('body')).toContainText('Query executed OK');
 	await goto(page, '/tests/sqlite.php?sqlite=&username=ODBC&db=adminer_test.sqlite');
-	for (const [op, query] of [['LIKE %%', 'abc'], ['LIKE %%', '3'], ['=', 'abc3'], ['LIKE', '%bc%']]) {
+	for (const [op, query] of [['LIKE %%', 'abc'], ['LIKE %%', '3'], ['=', 'abc3'], ['LIKE', '%bc%'], ['BETWEEN', 'abc AND abd'], ['&', '1']]) {
 		await page.locator('[name="op"]').selectOption(op);
 		await page.locator('[name="query"]').fill(query);
 		await page.locator('[name="search"]').click();

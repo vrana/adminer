@@ -266,6 +266,20 @@ function process_in(string $val): string {
 	return "(" . implode(", ", $return) . ")";
 }
 
+/** Create the range of the BETWEEN operator in select
+* @return string SQL expression "min AND max", "NULL AND NULL" matching nothing if $val isn't two values separated by AND
+*/
+function process_between(string $val): string {
+	// quoted values can contain AND; they are unquoted and quoted again because backslash escapes a quote only in some databases
+	$quoted = "'((?:[^']|'')*+)'";
+	$range = (preg_match("~^\\s*$quoted\\s+AND\\s+$quoted\\s*\$~i", $val, $match)
+		? array(str_replace("''", "'", $match[1]), str_replace("''", "'", $match[2]))
+		: preg_split('~\s+AND\s+~i', trim($val))
+	);
+	// the values are quoted also if they are numbers, an unquoted number can't be compared with a text column
+	return (count($range) == 2 ? q($range[0]) . " AND " . q($range[1]) : "NULL AND NULL");
+}
+
 /** Create SQL string from field type
 * @param FieldType $field
 */

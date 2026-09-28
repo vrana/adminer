@@ -717,6 +717,8 @@ class Adminer {
 					$cond = " $val[op]";
 					if (preg_match('~IN$~', $val["op"])) {
 						$cond .= " " . ($val["val"] != "" ? process_in($val["val"]) : "(NULL)");
+					} elseif ($val["op"] == "BETWEEN") {
+						$cond .= " " . process_between($val["val"]);
 					} elseif ($val["op"] == "SQL") {
 						$cond = " $val[val]"; // SQL injection
 					} elseif (preg_match('~^(I?LIKE) %%$~', $val["op"], $match)) {

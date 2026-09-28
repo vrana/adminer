@@ -144,7 +144,7 @@ if (isset($_GET["sqlite"])) {
 		public $grouping = array("avg", "count", "count distinct", "group_concat", "max", "min", "sum");
 
 		function operators(?array $tableStatus): array {
-			$return = array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // REGEXP can be user defined function
+			$return = array("=", "<", ">", "<=", ">=", "!=", "&", "LIKE", "LIKE %%", "IN", "BETWEEN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL"); // REGEXP can be user defined function
 			if (preg_match('~^fts\d+$~i', (string) idx($tableStatus, "Engine"))) { // table_status() puts the module of a virtual table in Engine
 				$return[] = "MATCH"; // FTS accepts it on a single column and on the whole table
 			}

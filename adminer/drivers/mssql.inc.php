@@ -317,7 +317,7 @@ if (isset($_GET["mssql"])) {
 		/** @var list<string> */ private $unknownTypes = array(); // types of the server which Adminer doesn't know, they are offered without a group
 
 		function operators(?array $tableStatus): array {
-			return array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL");
+			return array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "BETWEEN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL");
 		}
 
 		static function connect(string $server, string $username, string $password) {

@@ -121,7 +121,8 @@ function is_searchable(array $field, array $val): bool {
 	}
 	if (preg_match(number_type(), $type)) {
 		$number = '-?\d+(\.\d+)?';
-		return (bool) preg_match('~^' . $number . (preg_match('~IN$~', $val["op"]) ? "( *, *$number)*" : '') . '$~', $search);
+		$more = (preg_match('~IN$~', $val["op"]) ? "( *, *$number)*" : ($val["op"] == "BETWEEN" ? "\\s+AND\\s+$number" : ''));
+		return (bool) preg_match('~^' . $number . $more . '$~i', $search);
 	}
 	if (preg_match('~^(small)?date|^timestamp~', $type)) {
 		return (bool) preg_match('~^\d+-\d+-\d+~', $search);
