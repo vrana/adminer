@@ -26,7 +26,7 @@ if ($_GET["script"] == "db") {
 		$sums = db_status();
 	}
 	foreach ($sums as $key => $val) {
-		json_row("sum-$key", format_number($val));
+		json_row("sum-$key", adminer()->formatSizeValue($val));
 	}
 	json_row("");
 
