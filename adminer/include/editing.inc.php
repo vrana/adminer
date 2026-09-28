@@ -110,17 +110,19 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 					$link = ME . "edit=" . url_escape($tables[$links[$key]]) . $idfs[$links[$key]];
 				}
 			}
+			// the binary values are not converted to hexadecimal as in select
+			$html = select_value($val, $link, array('type' => (preg_match('~binary~', $types[$key]) ? 'blob' : $types[$key])), null);
 			$attrs = "";
 			$cell = idx($editable, $key);
 			if ($cell && idx($idfs, $cell[0]) !== null && is_utf8($val)) {
 				$edit = true;
 				// the same value can be displayed in more rows so it is identified by an attribute instead of by an ID
 				$attrs = " data-name='" . h("val[" . bracket_escape($tables[$cell[0]]) . "][" . bracket_escape(substr($idfs[$cell[0]], 1)) . "][" . bracket_escape($cell[1]) . "]")
-					. "' data-text='" . ($cell[2] ? 1 : 0) . "'";
+					. "' data-text='" . ($cell[2] ? 1 : 0) . "'"
+					. ($val !== null && html_entity_decode(strip_tags($html), ENT_QUOTES, "UTF-8") !== $val ? " data-value='" . h($val) . "'" : "") // a plugin can change the text in selectVal()
+				;
 			}
-			// the binary values are not converted to hexadecimal as in select
-			$val = select_value($val, $link, array('type' => (preg_match('~binary~', $types[$key]) ? 'blob' : $types[$key])), null);
-			echo "<td" . (preg_match(number_type(), $types[$key]) ? " class='number'" : "") . "$attrs>$val";
+			echo "<td" . (preg_match(number_type(), $types[$key]) ? " class='number'" : "") . "$attrs>$html";
 		}
 	}
 	$limit = $i;

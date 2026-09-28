@@ -575,22 +575,29 @@ if (!$columns && support("table")) {
 						$id = h("val[$idf][" . bracket_escape($key) . "]");
 						$posted = idx(idx($_POST["val"], $idf), bracket_escape($key));
 						$update = idx($field["privileges"], "update") && !is_identity_always($field);
-						$editable = !is_array($row[$key]) && !is_blob($field) && is_utf8($val) && $rows[$n][$key] == $val && !$fun && !$field["generated"] && $update;
+						$edit_val = $rows[$n][$key]; // $val can be replaced by rowDescriptions()
+						$editable = !is_array($row[$key]) && !is_blob($field) && is_utf8($edit_val) && !$fun && !$field["generated"] && $update;
 						$type = ($fun == "min" || $fun == "max" ? $fields[$col]["type"] : $field["type"]);
 						$text = preg_match('~text|json|lob~', $type);
 						$is_number = preg_match(number_type(), $type) || preg_match('~^(avg|ceil|char_length|count|count distinct|floor|len|length|round|sum|time_to_sec)$~', $fun);
 						echo "<td id='$id'" . ($is_number && ($val === null || is_numeric(strip_tags($html)) || $type == "money") ? " class='number'" : "");
-						if (($_GET["modify"] && $editable && $val !== null) || $posted !== null) {
-							$h_value = h($posted !== null ? $posted : $val);
+						if (($_GET["modify"] && $editable && $edit_val !== null) || $posted !== null) {
+							$h_value = h($posted !== null ? $posted : $edit_val);
 							echo ">" . ($text
-								? "<textarea name='$id' cols='30' rows='" . (substr_count($val, "\n") + 1) . "'>$h_value</textarea>"
+								? "<textarea name='$id' cols='30' rows='" . (substr_count($edit_val, "\n") + 1) . "'>$h_value</textarea>"
 								: "<input name='$id' value='$h_value' size='$lengths[$key]'>"
 							);
 						} else {
 							$long = strpos($html, "<i>…</i>");
+							$edit_text = adminer()->editVal($edit_val, $field); // processInput() converts it back
 							echo ($update
 								? " data-text='" . ($long ? 2 : ($text ? 1 : 0)) . "'"
 									. ($editable ? "" : " data-warning='" . lang('Use the edit link to modify this value.') . "'")
+									// the displayed text differs from the value if it is a description or if a plugin changes it in selectVal(), long text is loaded by AJAX
+									. ($editable && !$long && $edit_text !== null && html_entity_decode(strip_tags($html), ENT_QUOTES, "UTF-8") !== $edit_text
+										? " data-value='" . h($edit_text) . "'"
+										: ""
+									)
 								: ""
 							) . ">$html";
 						}

@@ -1,4 +1,5 @@
 ## Adminer dev
+- Select: Edit the stored value by Ctrl+click on a non-original value (bug #1344)
 
 ## Adminer 6.1.1 (released 2026-09-25)
 - Fix editing identity (PostgreSQL, Oracle, Firebird), rowversion (MS SQL), key (ClickHouse)
