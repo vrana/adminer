@@ -9,39 +9,122 @@
 class AdminerEditForeign extends Adminer\Plugin {
 	protected $limit;
 
-	function __construct($limit = 0) {
+	/**
+	* @param int $limit maximum number of rows in <select>, more rows are searched by AJAX in <datalist>, 0 means unlimited
+	*/
+	function __construct($limit = 100) {
 		$this->limit = $limit;
 	}
 
+	function afterConnect() {
+		if (isset($_GET["edit-foreign"])) {
+			$fields = Adminer\fields($_GET["edit-foreign"]);
+			$field = $fields[$_GET["field"]];
+			if ($field && (list($target, $id, $name) = $this->foreignColumn($_GET["edit-foreign"], $field)) && $name != $id) {
+				$value = $_GET["value"];
+				$exact = (preg_match('~^[0-9]+$~', $value) ? "$id = " . Adminer\q($value) : "");
+				$where = ($exact ? "$exact OR " : "") . "$name LIKE " . Adminer\q("$value%");
+				// the row with the typed ID first, the limit would cut it off otherwise; CASE - MS SQL and Oracle can't order by ($exact) DESC
+				$order = ($exact ? "CASE WHEN $exact THEN 0 ELSE 1 END, " : "") . "2";
+				echo Adminer\optionlist($this->options("SELECT" . Adminer\limit("$id, $name FROM $target", " WHERE $where ORDER BY $order", $this->limit)), null, true);
+			}
+			exit;
+		}
+	}
+
 	function editInput($table, $field, $attrs, $value) {
-		static $foreignTables = array();
 		static $values = array();
+		static $lists = 0;
+		if (list($target, $id, $name) = $this->foreignColumn($table, $field)) {
+			$options = &$values[$target][$id];
+			if ($options === null) {
+				// no ORDER BY - a big table stops after the limit instead of sorting all rows
+				$options = $this->options("SELECT" . Adminer\limit("$id, $name FROM $target", "", ($this->limit ? $this->limit + 1 : 0)));
+				if ($this->limit && count($options) > $this->limit) {
+					$options = false;
+				} else {
+					asort($options);
+					$options = array("" => "") + $options;
+				}
+			}
+			if ($options) {
+				return "<select$attrs>" . Adminer\optionlist($options, $value, true) . "</select>";
+			}
+			if ($name != $id) { // a datalist of bare IDs would add nothing to the default input
+				$lists++;
+				return "<input value='" . Adminer\h($value) . "' list='edit-foreign-$lists'"
+					. Adminer\on('input', 'editForeignInput', Adminer\ME . "edit-foreign=" . Adminer\url_escape($table) . "&field=" . Adminer\url_escape($field["field"]) . "&value=")
+					. "$attrs><datalist id='edit-foreign-$lists'></datalist>"
+					. ($lists > 1 ? "" : Adminer\script("function editForeignInput(url) {
+	const input = this;
+	const value = input.value;
+	ajax(url + urlEscape(value), request => {
+		if (input.value == value) { // ignore old responses
+			input.list.innerHTML = request.responseText;
+		}
+	});
+}"));
+			}
+		}
+	}
+
+	/** Get the referenced table, the referenced column and the first string column describing its row
+	* @return array{string, string, string}|void the referenced column also in place of a missing description
+	*/
+	protected function foreignColumn($table, array $field) {
+		static $foreignTables = array();
 		$foreignKeys = &$foreignTables[$table];
 		if ($foreignKeys === null) {
 			$foreignKeys = Adminer\column_foreign_keys($table);
 		}
 		foreach ((array) $foreignKeys[$field["field"]] as $foreignKey) {
 			if (count($foreignKey["source"]) == 1) {
-				$target = ($foreignKey["db"] != "" && $foreignKey["db"] != Adminer\DB ? Adminer\idf_escape($foreignKey["db"]) . "." : "") // Oracle fills the current owner
+				$otherDb = ($foreignKey["db"] != "" && $foreignKey["db"] != Adminer\DB); // Oracle fills the current owner
+				$target = ($otherDb ? Adminer\idf_escape($foreignKey["db"]) . "." : "")
 					. ($foreignKey["ns"] != "" ? Adminer\idf_escape($foreignKey["ns"]) . "." : "")
 					. Adminer\idf_escape($foreignKey["table"])
 				;
-				$id = $foreignKey["target"][0];
-				$options = &$values[$target][$id];
-				if (!$options) {
-					$column = Adminer\idf_escape($id);
-					if (preg_match('~binary~', $field["type"])) {
-						$column = "HEX($column)";
+				$id = Adminer\idf_escape($foreignKey["target"][0]);
+				if (preg_match('~binary~', $field["type"])) {
+					$id = "HEX($id)";
+				}
+				$name = $id;
+				// fields() works in the current database and schema, Oracle's in the current owner
+				if (!$otherDb || (Adminer\JUSH == "sql" && Adminer\connection()->select_db($foreignKey["db"]))) {
+					$schema = $_GET["ns"];
+					$otherSchema = ($foreignKey["ns"] != "" && $foreignKey["ns"] != $schema);
+					if ($otherSchema) {
+						Adminer\set_schema($foreignKey["ns"]);
 					}
-					$options = array("" => "")
-						+ Adminer\get_vals("SELECT $column FROM $target ORDER BY 1" . ($this->limit ? " LIMIT " . ($this->limit + 1) : ""));
-					if ($this->limit && count($options) - 1 > $this->limit) {
-						return;
+					foreach (Adminer\fields($foreignKey["table"]) as $column) {
+						if (preg_match('~char|text~', $column["type"])) {
+							if ($column["field"] != $foreignKey["target"][0]) {
+								$name = Adminer\idf_escape($column["field"]);
+							}
+							break;
+						}
+					}
+					if ($otherSchema) {
+						Adminer\set_schema($schema);
+					}
+					if ($otherDb) {
+						Adminer\connection()->select_db(Adminer\DB);
 					}
 				}
-				return "<select$attrs>" . Adminer\optionlist($options, $value) . "</select>";
+				return array($target, $id, $name);
 			}
 		}
+	}
+
+	/** Get options from a query selecting an ID and its description
+	* @return string[] the ID in place of a NULL description
+	*/
+	protected function options($query) {
+		$return = array();
+		foreach (Adminer\get_key_vals($query) as $id => $name) {
+			$return[$id] = ($name !== null ? $name : $id);
+		}
+		return $return;
 	}
 
 	protected $translations = array(

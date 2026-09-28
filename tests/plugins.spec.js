@@ -70,9 +70,9 @@ test('Import CSV', async () => {
 
 test('Edit foreign', async () => {
 	await goto(page, '/tests/plugins.php?username=ODBC&db=adminer_plugins&edit=albums');
-	// the plugin replaces the input by a list of the referenced values
+	// the plugin replaces the input by a list of the referenced rows described by their first string column
 	await expect(page.locator('select[name="fields[interpret]"]')).toHaveCount(1);
-	await page.locator('[name="fields[interpret]"]').selectOption('1');
+	await page.locator('[name="fields[interpret]"]').selectOption({label: 'Michael Jackson'});
 	await page.locator('[name="fields[title]"]').fill('Bad');
 	await button(page, 'Save').click();
 	await expect(page.locator('body')).toContainText('Item 2 has been inserted.');
