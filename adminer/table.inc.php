@@ -40,7 +40,7 @@ if ($fields) {
 function tables_links(array $tables): void {
 	echo "<ul>\n";
 	foreach ($tables as $row) {
-		$link = preg_replace('~ns=[^&]*~', "ns=" . url_escape($row["ns"]), ME);
+		$link = preg_replace('~&ns=[^&]*~', "&ns=" . url_escape($row["ns"]), ME);
 		echo "<li><a href='" . h($link . "table=" . url_escape($row["table"])) . "'>" . ($row["ns"] != $_GET["ns"] ? "<b>" . h($row["ns"]) . "</b>." : "") . h($row["table"]) . "</a>";
 	}
 	echo "</ul>\n";
@@ -77,8 +77,8 @@ if (!is_view($table_status) && driver()->supportsAlterTable($table_status)) {
 				echo "<tr title='" . h($name) . "'>";
 				echo "<th><i>" . implode("</i>, <i>", array_map('Adminer\h', $foreign_key["source"])) . "</i>";
 				$link = ($foreign_key["db"] != ""
-					? preg_replace('~db=[^&]*~', "db=" . url_escape($foreign_key["db"]), ME)
-					: ($foreign_key["ns"] != "" ? preg_replace('~ns=[^&]*~', "ns=" . url_escape($foreign_key["ns"]), ME) : ME)
+					? preg_replace('~&db=[^&]*~', "&db=" . url_escape($foreign_key["db"]), ME)
+					: ($foreign_key["ns"] != "" ? preg_replace('~&ns=[^&]*~', "&ns=" . url_escape($foreign_key["ns"]), ME) : ME)
 				);
 				echo "<td><a href='" . h($link . "table=" . url_escape($foreign_key["table"])) . "'>"
 					. ($foreign_key["db"] != "" && $foreign_key["db"] != DB ? "<b>" . h($foreign_key["db"]) . "</b>." : "")
@@ -128,7 +128,7 @@ if (support(is_view($table_status) ? "view_trigger" : "trigger") && driver()->su
 				. "<td class='hover'><a href='" . h(ME . 'trigger=' . url_escape($TABLE) . '&name=' . url_escape($key)) . "'>" . lang('Alter') . "</a>";
 			$routine = $val[2];
 			if ($routine) { // PostgreSQL triggers only call a function which is what users usually want to alter
-				$routine_link = preg_replace('~ns=[^&]*~', "ns=" . url_escape($routine["ns"]), ME) . 'function=' . url_escape($routine["function"]) . '&name=' . url_escape($routine["name"]);
+				$routine_link = preg_replace('~&ns=[^&]*~', "&ns=" . url_escape($routine["ns"]), ME) . 'function=' . url_escape($routine["function"]) . '&name=' . url_escape($routine["name"]);
 				echo ", <a href='" . h($routine_link) . "' title='" . h($routine["name"]) . "'>" . lang('Alter function') . "</a>";
 			}
 			echo "\n";

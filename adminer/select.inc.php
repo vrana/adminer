@@ -538,10 +538,10 @@ if (!$columns && support("table")) {
 										$link .= where_link($i, $foreign_key["target"][$i], $rows[$n][$source]);
 									}
 									// InnoDB supports non-UNIQUE keys
-									$link = ($foreign_key["db"] != "" ? preg_replace('~([?&]db=)[^&]+~', '\1' . url_escape($foreign_key["db"]), ME) : ME)
+									$link = ($foreign_key["db"] != "" ? preg_replace('~&db=[^&]*~', "&db=" . url_escape($foreign_key["db"]), ME) : ME)
 										. 'select=' . url_escape($foreign_key["table"]) . $link;
-									if ($foreign_key["ns"]) {
-										$link = preg_replace('~([?&]ns=)[^&]+~', '\1' . url_escape($foreign_key["ns"]), $link);
+									if ($foreign_key["ns"] != "") {
+										$link = preg_replace('~&ns=[^&]*~', "&ns=" . url_escape($foreign_key["ns"]), $link);
 									}
 									if (count($foreign_key["source"]) == 1) {
 										break;

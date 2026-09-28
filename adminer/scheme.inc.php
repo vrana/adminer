@@ -4,7 +4,7 @@ namespace Adminer;
 $row = $_POST;
 
 if ($_POST && !$error) {
-	$link = preg_replace('~ns=[^&]*&~', '', ME) . "ns=";
+	$link = preg_replace('~&ns=[^&]*~', '', ME) . "ns=";
 	if ($_POST["drop"]) {
 		query_redirect("DROP SCHEMA " . idf_escape($_GET["ns"]), $link, lang('Schema has been dropped.'));
 	} else {
