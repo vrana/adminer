@@ -1,5 +1,6 @@
 ## Adminer dev
 - Select: Quote again the quoted values of IN
+- Select: Accept the unquoted values of IN in parentheses (bug #1350, regression from 6.0.1)
 - Select: Edit the stored value by Ctrl+click on a non-original value (bug #1344)
 - Select: Search by BETWEEN (bug #1346)
 - MySQL, SQLite: Search by & (bug #1346)

@@ -254,9 +254,10 @@ function process_length(?string $length): string {
 * @return string SQL expression in parentheses
 */
 function process_in(string $val): string {
+	$val = preg_replace('~^\s*\(\s*(.*?)\s*\)\s*$~s', '\1', $val); // the parentheses are optional
 	// quoted values can contain a comma; they are unquoted and quoted again because backslash escapes a quote only in some databases
 	$quoted = "'((?:[^']|'')*+)'";
-	$items = (preg_match("~^\\s*\\(?\\s*$quoted(?:\\s*,\\s*$quoted)*+\\s*\\)?\\s*\$~", $val) && preg_match_all("~$quoted~", $val, $matches)
+	$items = (preg_match("~^\\s*$quoted(?:\\s*,\\s*$quoted)*+\\s*\$~", $val) && preg_match_all("~$quoted~", $val, $matches)
 		? str_replace("''", "'", $matches[1])
 		: array_map('trim', explode(",", $val))
 	);
