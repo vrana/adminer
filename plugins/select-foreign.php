@@ -40,11 +40,15 @@ class AdminerSelectForeign extends Adminer\Plugin {
 				$table = $foreignKey["table"];
 				if (
 					count($foreignKey["source"]) == 1
-					&& ($foreignKey["db"] == "" || $foreignKey["db"] == Adminer\DB) // Oracle fills the current owner
+					&& ($foreignKey["db"] == "" || $foreignKey["db"] == Adminer\DB || Adminer\JUSH == "sql") // Oracle fills the current owner, its fields() look only into the current owner
 				) {
 					$column = $this->columns[$table];
 					if ($column != "" && Adminer\idf_unescape($column) == $foreignKey["target"][0]) {
 						break; // the foreign key value is the description, print it as without this plugin
+					}
+					$otherDb = ($foreignKey["db"] != "" && $foreignKey["db"] != Adminer\DB);
+					if ($otherDb && !Adminer\connection()->select_db($foreignKey["db"])) { // rowDescription() and table() work in the current database
+						continue;
 					}
 					$schema = $_GET["ns"];
 					$otherSchema = ($foreignKey["ns"] != "" && $foreignKey["ns"] != $schema);
@@ -74,6 +78,9 @@ class AdminerSelectForeign extends Adminer\Plugin {
 					}
 					if ($otherSchema) {
 						Adminer\set_schema($schema);
+					}
+					if ($otherDb) {
+						Adminer\connection()->select_db(Adminer\DB);
 					}
 					if ($name != "") {
 						break;
