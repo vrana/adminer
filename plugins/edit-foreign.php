@@ -22,7 +22,10 @@ class AdminerEditForeign extends Adminer\Plugin {
 		}
 		foreach ((array) $foreignKeys[$field["field"]] as $foreignKey) {
 			if (count($foreignKey["source"]) == 1) {
-				$target = $foreignKey["table"];
+				$target = ($foreignKey["db"] != "" && $foreignKey["db"] != Adminer\DB ? Adminer\idf_escape($foreignKey["db"]) . "." : "") // Oracle fills the current owner
+					. ($foreignKey["ns"] != "" ? Adminer\idf_escape($foreignKey["ns"]) . "." : "")
+					. Adminer\idf_escape($foreignKey["table"])
+				;
 				$id = $foreignKey["target"][0];
 				$options = &$values[$target][$id];
 				if (!$options) {
@@ -31,8 +34,7 @@ class AdminerEditForeign extends Adminer\Plugin {
 						$column = "HEX($column)";
 					}
 					$options = array("" => "")
-						+ Adminer\get_vals("SELECT $column FROM " . ($foreignKey["ns"] ? Adminer\idf_escape($foreignKey["ns"]) . "." : "") . Adminer\idf_escape($target)
-							. " ORDER BY 1" . ($this->limit ? " LIMIT " . ($this->limit + 1) : ""));
+						+ Adminer\get_vals("SELECT $column FROM $target ORDER BY 1" . ($this->limit ? " LIMIT " . ($this->limit + 1) : ""));
 					if ($this->limit && count($options) - 1 > $this->limit) {
 						return;
 					}
