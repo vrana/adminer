@@ -18,7 +18,7 @@ test.afterAll(async () => {
 });
 
 test('Password required', async () => {
-	await goto(page, '/tests/sqlite.php');
+	await goto(page, '/tests/plugins.php'); // without Adminer\Password
 	await page.locator('[name="lang"]').selectOption({label: 'English'}); // submits the form
 	await page.locator('[name="auth[driver]"]').selectOption({label: 'SQLite'});
 	await page.locator('#username').fill('ODBC');
@@ -31,6 +31,19 @@ test('Password required', async () => {
 	await expect(page.locator('body')).toContainText('The database does not support passwords.');
 	await link(page, 'Require a password.').click();
 	await expect(page.locator('#password-less')).toContainText("new Adminer\\Password('$2y$");
+});
+
+test('Invalid password', async () => {
+	await goto(page, '/tests/sqlite.php');
+	await page.locator('[name="auth[driver]"]').selectOption({label: 'SQLite'});
+	await page.locator('#username').fill('ODBC');
+	await button(page, 'Login').click(); // no password
+	await expect(page.locator('body')).toContainText('Invalid credentials.');
+	await expect(page.locator('body')).not.toContainText('Require a password.');
+	await page.locator('[name="auth[password]"]').fill('invalid');
+	await button(page, 'Login').click();
+	await expect(page.locator('body')).toContainText('Invalid credentials.');
+	await expect(page.locator('body')).not.toContainText('Require a password.');
 });
 
 test('Login', async () => {

@@ -25,10 +25,13 @@ class Password {
 		return array(SERVER, $_GET["username"], ($this->passwordMatches($password) && !password_required() ? "" : $password));
 	}
 
-	/** @return true|void */
+	/** @return bool|void */
 	function login(string $login, string $password) {
 		if ($this->passwordMatches($password)) {
 			return true; // we have verified the password ourselves
+		}
+		if (!Driver::$passwords || !password_required()) {
+			return false; // the server would accept any password so only ours counts
 		}
 	}
 
