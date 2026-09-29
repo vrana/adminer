@@ -328,6 +328,14 @@ if (isset($_GET["igdb"])) {
 			$columns = ($select != array('*') ? $select : array_keys($this->fields[$table]));
 			$common = ($where ? "\nwhere " . implode(" & ", $where) . ";" : "");
 			$method = ($table == 'webhooks' || $table == 'dumps' ? 'GET' : 'POST');
+			$endpoint = $table;
+			if ($method == 'GET' && $where) { // the GET endpoints accept only a single row by its primary key, the edit page passes 'id = 1', export of a checked row '((id = 1))'
+				if (!preg_match('~^\(*(?:id|endpoint) = (\w+)\)*$~', implode(' & ', $where), $match)) {
+					$this->conn->error = "Only a single row can be selected by its primary key.";
+					return false;
+				}
+				$endpoint .= "/$match[1]";
+			}
 			if ($method == 'POST') {
 				$query .= "fields " . implode(",", $select) . ";"
 					. ($select == array('*') ? "\nexclude checksum;" : "")
@@ -342,7 +350,7 @@ if (isset($_GET["igdb"])) {
 			$realQuery = str_replace("*;\nexclude checksum", implode(',', $columns), $query); // exclude deprecated columns
 			$return = ($multi
 				? $this->conn->request('multiquery', "query $table \"result\" { $realQuery };\nquery $table/count \"count\" { $common };")
-				: $this->conn->request(($method == 'GET' && $where ? "$table/" . reset($_GET["where"]) : $table), $realQuery, $method)
+				: $this->conn->request($endpoint, $realQuery, $method)
 			);
 			$this->query = "$method $table;\n$query";
 			if ($print) {
