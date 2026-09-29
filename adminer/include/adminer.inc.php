@@ -1039,6 +1039,11 @@ class Adminer {
 						}
 						$suffix = ($style == "INSERT+UPDATE" ? "\nON DUPLICATE KEY UPDATE " . implode(", ", $values) : "") . ";\n";
 					}
+					foreach ($row as $key => $val) {
+						if (is_array($val)) { // nested values of the document drivers, printed as tables by select_value()
+							$row[$key] = json_encode($val, 256 | 64); // 256 - JSON_UNESCAPED_UNICODE, 64 - JSON_UNESCAPED_SLASHES available since PHP 5.4
+						}
+					}
 					if ($_POST["format"] != "sql") {
 						if ($style == "table") {
 							dump_csv($keys);
