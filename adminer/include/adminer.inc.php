@@ -1088,6 +1088,8 @@ class Adminer {
 				}
 			} elseif ($_POST["format"] == "sql") {
 				echo "-- " . str_replace("\n", " ", connection()->error) . "\n";
+			} else {
+				dump_csv(array(connection()->error));
 			}
 			if ($identity_insert) {
 				echo "SET IDENTITY_INSERT " . table($table) . " OFF;\n";
