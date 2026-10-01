@@ -441,6 +441,15 @@ if (isset($_GET["pgsql"])) {
 			return array();
 		}
 
+		function routineTriggers(string $name): array {
+			return get_rows("SELECT nspname AS ns, relname AS table, tgname AS trigger
+FROM pg_trigger
+JOIN pg_class ON tgrelid = pg_class.oid
+JOIN pg_namespace ON relnamespace = pg_namespace.oid
+WHERE NOT tgisinternal AND tgfoid = substring(" . q($name) . ", '[0-9]+\$')::oid
+ORDER BY 1, 2, 3");
+		}
+
 		function tableOid(string $table): string {
 			return "(SELECT oid FROM pg_class WHERE relnamespace = $this->nsOid AND relname = " . q($table) . " AND relkind IN ('r', 'm', 'v', 'f', 'p'))";
 		}

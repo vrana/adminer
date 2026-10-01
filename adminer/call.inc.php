@@ -4,8 +4,9 @@ namespace Adminer;
 $PROCEDURE = ($_GET["name"] ?: $_GET["call"]);
 $routine_type = (isset($_GET["callf"]) ? "FUNCTION" : "PROCEDURE");
 $routine = routine($_GET["call"], $routine_type);
+$is_trigger = (idx($routine["returns"], "type") == "trigger"); // PostgreSQL calls a trigger function only from a trigger
 
-page_header(lang('Call') . ": " . h($PROCEDURE), $error, "#routines", "", !$routine, (isset($_GET["callf"]) ? "" : doc_link(array( // a function is called by SELECT
+page_header(($is_trigger ? lang('Triggers') : lang('Call')) . ": " . h($PROCEDURE), $error, "#routines", "", !$routine, (isset($_GET["callf"]) ? "" : doc_link(array( // a function is called by SELECT
 	'sql' => "call.html",
 	'pgsql' => "sql-call.html",
 	'cockroach' => "call",
@@ -77,8 +78,24 @@ if (!$error && $_POST) {
 		}
 	}
 }
-?>
 
+if ($is_trigger) {
+	$triggers = driver()->routineTriggers($_GET["call"]);
+	if ($triggers) {
+		echo "<table>\n";
+		foreach ($triggers as $row) {
+			$link = preg_replace('~&ns=[^&]*~', "&ns=" . url_escape($row["ns"]), ME);
+			echo "<tr><th>" . h($row["trigger"])
+				. "<td><a href='" . h($link . "table=" . url_escape($row["table"]) . "#triggers") . "'>"
+				. ($row["ns"] != $_GET["ns"] ? "<b>" . h($row["ns"]) . "</b>." : "") . h($row["table"]) . "</a>"
+				. "<td class='hover'><a href='" . h($link . "trigger=" . url_escape($row["table"]) . "&name=" . url_escape($row["trigger"])) . "'>" . lang('Alter') . "</a>\n"
+			;
+		}
+		echo "</table>\n";
+	}
+
+} else {
+?>
 <form action="" method="post">
 <?php
 if ($in) {
@@ -103,5 +120,6 @@ if ($in) {
 <input type='submit' value='<?php echo lang('Call'); ?>'>
 <?php echo input_token(); ?>
 </form>
+<?php } ?>
 
 <?php echo adminer()->commentValue($routine_type, $routine['comment']); ?>

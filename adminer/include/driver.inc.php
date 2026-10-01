@@ -409,6 +409,13 @@ abstract class SqlDriver {
 		return array();
 	}
 
+	/** Get triggers executing a trigger function
+	* @return list<array{ns: string, table: string, trigger: string}>
+	*/
+	function routineTriggers(string $name): array {
+		return array();
+	}
+
 	/** Get a condition for a fulltext search
 	* @param string $name index name
 	* @param Index $index
