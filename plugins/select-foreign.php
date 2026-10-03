@@ -8,12 +8,25 @@
 */
 class AdminerSelectForeign extends Adminer\Plugin {
 	protected $columns;
+	protected $display;
 
 	/**
 	* @param string[] $columns table name in key, SQL expression describing its row in value, empty string means no replacement
+	* @param ''|'id'|'both' $display see config() for explanation
 	*/
-	function __construct(array $columns = array()) {
+	function __construct(array $columns = array(), $display = '') {
 		$this->columns = $columns;
+		$this->display = $display;
+	}
+
+	function config() {
+		$options = array(
+			'' => $this->lang('Description, ID on hover'),
+			'id' => $this->lang('ID, description on hover'),
+			'both' => $this->lang('Description (ID)'),
+		);
+		$display = Adminer\get_setting("foreign", "adminer_config", $this->display);
+		return array($this->lang('Foreign keys') => Adminer\html_radios('config[foreign]', $options, $display, "<br>"));
 	}
 
 	// this is copy-pasted from Adminer Editor
@@ -106,19 +119,65 @@ class AdminerSelectForeign extends Adminer\Plugin {
 					if ($length != "") {
 						$val = Adminer\shorten_utf8($original, max(0, +$length));
 					}
-					return "<a href='" . Adminer\h($link) . "' title='" . Adminer\h($id) . "'>$val</a>";
+					$display = Adminer\get_setting("foreign", "adminer_config", $this->display);
+					return ($display == 'id' ? "<a href='" . Adminer\h($link) . "' title='" . Adminer\h($original) . "'>" . Adminer\h($id) . "</a>"
+						: ($display == 'both' ? "<a href='" . Adminer\h($link) . "'>$val (" . Adminer\h($id) . ")</a>"
+						: "<a href='" . Adminer\h($link) . "' title='" . Adminer\h($id) . "'>$val</a>"
+					));
 				}
 			}
 		}
 	}
 
 	protected $translations = array(
-		'cs' => array('' => 'Místo hodnoty cizího klíče zobrazí první řetězcový sloupec odkazovaného řádku, stejně jako Adminer Editor'),
-		'de' => array('' => 'Zeigt statt des Fremdschlüsselwerts die erste Zeichenkettenspalte der referenzierten Zeile an, wie im Adminer Editor'), // Claude Opus 5
-		'ja' => array('' => '外部キーの値の代わりに参照先の行の最初の文字列型の列を表示、Adminer Editor と同様'), // Claude Opus 5
-		'pl' => array('' => 'Zamiast wartości klucza obcego wyświetla pierwszą kolumnę znakową wskazywanego wiersza, tak samo jak Adminer Editor'), // Claude Opus 5
-		'ro' => array('' => 'Afișează prima coloană de tip șir a rândului referit în locul valorii cheii străine, la fel ca în Adminer Editor'), // Claude Opus 5
-		'sk' => array('' => 'Zobrazí namiesto hodnoty cudzieho kľúča prvý reťazcový stĺpec odkazovaného riadku, rovnako ako Adminer Editor'), // Claude Opus 5
-		'zh' => array('' => '显示被引用行的第一个字符串列而不是外键值，与 Adminer Editor 中相同'), // Claude Opus 5
+		'cs' => array(
+			'' => 'Místo hodnoty cizího klíče zobrazí první řetězcový sloupec odkazovaného řádku, stejně jako Adminer Editor',
+			'Description, ID on hover' => 'Popis, ID při najetí myší',
+			'ID, description on hover' => 'ID, popis při najetí myší',
+			'Description (ID)' => 'Popis (ID)',
+			'Foreign keys' => 'Cizí klíče', // copied from adminer/lang/
+		),
+		'de' => array(
+			'' => 'Zeigt statt des Fremdschlüsselwerts die erste Zeichenkettenspalte der referenzierten Zeile an, wie im Adminer Editor', // Claude Opus 5
+			'Description, ID on hover' => 'Beschreibung, ID beim Überfahren mit der Maus', // Claude Opus 5.5
+			'ID, description on hover' => 'ID, Beschreibung beim Überfahren mit der Maus', // Claude Opus 5.5
+			'Description (ID)' => 'Beschreibung (ID)', // Claude Opus 5.5
+			'Foreign keys' => 'Fremdschlüssel', // copied from adminer/lang/
+		),
+		'ja' => array(
+			'' => '外部キーの値の代わりに参照先の行の最初の文字列型の列を表示、Adminer Editor と同様', // Claude Opus 5
+			'Description, ID on hover' => '説明 (ID はマウスオーバー時)', // Claude Opus 5.5
+			'ID, description on hover' => 'ID (説明はマウスオーバー時)', // Claude Opus 5.5
+			'Description (ID)' => '説明 (ID)', // Claude Opus 5.5
+			'Foreign keys' => '外部キー', // copied from adminer/lang/
+		),
+		'pl' => array(
+			'' => 'Zamiast wartości klucza obcego wyświetla pierwszą kolumnę znakową wskazywanego wiersza, tak samo jak Adminer Editor', // Claude Opus 5
+			'Description, ID on hover' => 'Opis, ID po najechaniu myszą', // Claude Opus 5.5
+			'ID, description on hover' => 'ID, opis po najechaniu myszą', // Claude Opus 5.5
+			'Description (ID)' => 'Opis (ID)', // Claude Opus 5.5
+			'Foreign keys' => 'Klucze obce', // copied from adminer/lang/
+		),
+		'ro' => array(
+			'' => 'Afișează prima coloană de tip șir a rândului referit în locul valorii cheii străine, la fel ca în Adminer Editor', // Claude Opus 5
+			'Description, ID on hover' => 'Descriere, ID la trecerea mouse-ului', // Claude Opus 5.5
+			'ID, description on hover' => 'ID, descriere la trecerea mouse-ului', // Claude Opus 5.5
+			'Description (ID)' => 'Descriere (ID)', // Claude Opus 5.5
+			'Foreign keys' => 'Chei externe', // copied from adminer/lang/
+		),
+		'sk' => array(
+			'' => 'Zobrazí namiesto hodnoty cudzieho kľúča prvý reťazcový stĺpec odkazovaného riadku, rovnako ako Adminer Editor', // Claude Opus 5
+			'Description, ID on hover' => 'Popis, ID pri prejdení myšou', // Claude Opus 5.5
+			'ID, description on hover' => 'ID, popis pri prejdení myšou', // Claude Opus 5.5
+			'Description (ID)' => 'Popis (ID)', // Claude Opus 5.5
+			'Foreign keys' => 'Cudzie kľúče', // copied from adminer/lang/
+		),
+		'zh' => array(
+			'' => '显示被引用行的第一个字符串列而不是外键值，与 Adminer Editor 中相同', // Claude Opus 5
+			'Description, ID on hover' => '描述，悬停时显示 ID', // Claude Opus 5.5
+			'ID, description on hover' => 'ID，悬停时显示描述', // Claude Opus 5.5
+			'Description (ID)' => '描述（ID）', // Claude Opus 5.5
+			'Foreign keys' => '外键', // copied from adminer/lang/
+		),
 	);
 }
