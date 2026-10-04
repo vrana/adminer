@@ -937,10 +937,13 @@ ORDER BY o.name");
 	}
 
 	function create_sql(string $table, ?bool $auto_increment, string $style): string {
-		if (is_view(table_status1($table))) {
+		$status = table_status1($table);
+		if (is_view($status)) {
 			$view = view($table);
 			return "CREATE VIEW " . table($table) . " AS $view[select]";
 		}
+		$property = "EXEC sp_addextendedproperty @name = N'MS_Description', @level0type = N'Schema', @level0name = " . q(get_schema()) . ", @level1type = N'Table', @level1name = " . q($table);
+		$comments = ($status["Comment"] != "" ? ";\n\n$property, @value = " . q($status["Comment"]) : "");
 		$fields = array();
 		$primary = false;
 		foreach (fields($table) as $name => $field) {
@@ -948,7 +951,11 @@ ORDER BY o.name");
 			if ($val[6]) {
 				$primary = true;
 			}
+			unset($val[5]); // comments are set separately
 			$fields[] = implode("", $val);
+			if ($field["comment"] != "") {
+				$comments .= ";\n\n$property, @level2type = N'Column', @level2name = " . q($name) . ", @value = " . q($field["comment"]);
+			}
 		}
 		foreach (indexes($table) as $name => $index) {
 			if (!$primary || $index["type"] != "PRIMARY") {
@@ -963,7 +970,7 @@ ORDER BY o.name");
 		foreach (driver()->checkConstraints($table) as $name => $check) {
 			$fields[] = "CONSTRAINT " . idf_escape($name) . " CHECK ($check)";
 		}
-		return "CREATE TABLE " . table($table) . " (\n\t" . implode(",\n\t", $fields) . "\n)";
+		return "CREATE TABLE " . table($table) . " (\n\t" . implode(",\n\t", $fields) . "\n)$comments";
 	}
 
 	function foreign_keys_sql(string $table): string {

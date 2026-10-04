@@ -10,6 +10,7 @@
 - MS SQL: Save the comments of new and renamed columns
 - MS SQL: Save the table comment
 - MS SQL: List the tables also if a table has another extended property than the comment
+- MS SQL: Export the comments of tables and columns, the column comments made the export invalid
 - IGDB, SimpleDB: Fix export of nested values
 - Editor: Offer the row with the typed ID first when searching a foreign key, fix the search in MS SQL and Oracle
 ### Plugins
