@@ -286,7 +286,10 @@ function process_type(array $field, string $collate = "COLLATE"): string {
 	return " " . (is_user_type($field["type"]) ? idf_escape($field["type"]) : $field["type"])
 		. process_length($field["length"])
 		. (preg_match(number_type(), $field["type"]) && in_array($field["unsigned"], driver()->unsigned) ? " $field[unsigned]" : "")
-		. (preg_match('~' . text_type() . '~', $field["type"]) && $field["collation"] ? " $collate " . (JUSH == "mssql" ? $field["collation"] : q($field["collation"])) : "")
+		. (preg_match('~' . text_type() . '~', $field["type"]) && $field["collation"]
+			? " $collate " . (JUSH == "mssql" && preg_match('~^\w+$~', $field["collation"]) ? $field["collation"] : q($field["collation"]))
+			: ""
+		)
 	;
 }
 

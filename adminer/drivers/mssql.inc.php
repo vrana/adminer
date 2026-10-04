@@ -678,7 +678,6 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 			if (!$val) {
 				$alter["DROP"][] = " COLUMN $column";
 			} else {
-				$val[1] = preg_replace("~( COLLATE )'(\\w+)'~", '\1\2', $val[1]);
 				$comments[$field[0]] = $val[5];
 				unset($val[5]);
 				if (preg_match('~ AS ~', $val[3])) {
