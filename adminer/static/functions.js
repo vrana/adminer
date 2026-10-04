@@ -94,6 +94,22 @@ function urlUnescape(string) {
 	return decodeURIComponent(string.replace(/\+/g, ' '));
 }
 
+/** Escape string to use in an SQL query
+* @param {string} string
+* @return {string}
+*/
+function escapeSQL(string) {
+	return String(string).replace(/['\\%_]/g, char => {
+		const map = {
+			"'": "''",
+			"\\": "\\\\\\\\",
+			"%": "\\\\%",
+			"_": "\\\\_",
+		};
+		return map[char];
+	});
+}
+
 /** Serialize form fields to a query string
 * @param {HTMLFormElement} form
 * @param {HTMLElement} [submitter] the button which sent the form
@@ -859,7 +875,7 @@ function ajaxStatus(html) {
 function selectClick(event, text, warning) {
 	const td = this;
 	const target = event.target;
-	if (!isCtrl(event) || (td.firstElementChild && td.firstElementChild.matches('input, textarea')) || target.matches('a')) {
+	if (!(event.ctrlKey || event.metaKey) || (td.firstElementChild && td.firstElementChild.matches('input, textarea')) || target.matches('a')) {
 		return;
 	}
 	const form = td.closest('form');
@@ -884,6 +900,62 @@ function selectClick(event, text, warning) {
 	if (value === undefined) {
 		value = (td.firstChild && td.firstChild.alt) || td.textContent;
 	}
+
+	// search by target field value
+	if (event.altKey) {
+		const matches = name.match(/\[([^\]]+)]$/);
+		if (matches !== null) {
+			const url = new URL(window.location.href);
+
+			Array.from(url.searchParams.keys()).forEach(key => {
+			  if (key.startsWith('where[') || key === 'page') {
+				 url.searchParams.delete(key);
+			  }
+			});
+
+			if (!url.searchParams.has("select")) {
+				return false;
+			}
+
+			const resultHandler = function(requestOrValue) {
+				let targetVal = requestOrValue;
+
+				if (requestOrValue && typeof requestOrValue === 'object' && 'responseText' in requestOrValue) {
+					if (requestOrValue.status && requestOrValue.status !== 200) {
+						return false;
+					}
+					targetVal = requestOrValue.responseText;
+				}
+
+				url.searchParams.set('where[0][col]', matches[1]);
+				const maxLength = 200;
+				if (targetVal.length > maxLength) {
+					targetVal = targetVal.substring(0, maxLength);
+
+					url.searchParams.set('where[0][op]', "SQL");
+					url.searchParams.set('where[0][val]', `LIKE '${escapeSQL(targetVal)}%'`);
+				}
+				else {
+					url.searchParams.set('where[0][val]', targetVal);
+				}
+				const cleanQuery = url.searchParams.toString()
+					.replace(/%5B/gi, '[')
+					.replace(/%5D/gi, ']');
+
+				window.location.href = url.pathname + '?' + cleanQuery + url.hash;
+
+				return true;
+			};
+			if (text == 2) { // long text
+				return ajax(location.href + '&' + urlEscape(name) + '=', resultHandler);
+			}
+			else {
+				resultHandler(value);
+			}
+		}
+		return true;
+	}
+
 	const tdStyle = window.getComputedStyle(td, null);
 
 	input.style.width = Math.max(td.clientWidth - parseFloat(tdStyle.paddingLeft) - parseFloat(tdStyle.paddingRight), (text ? 200 : 20)) + 'px';
