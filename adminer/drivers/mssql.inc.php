@@ -678,7 +678,10 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 			if (!$val) {
 				$alter["DROP"][] = " COLUMN $column";
 			} else {
-				$comments[$field[0]] = $val[5];
+				$orig_comment = idx($orig_fields[$field[0]], "comment");
+				if ($val[5] != ($orig_comment != "" ? " COMMENT " . q($orig_comment) : "")) {
+					$comments[idf_unescape($val[0])] = array($orig_comment != "", substr($val[5], 9)); // 9 - strlen(" COMMENT ")
+				}
 				unset($val[5]);
 				if (preg_match('~ AS ~', $val[3])) {
 					unset($val[1], $val[2]);
@@ -712,34 +715,32 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 					$add[] = "\n$val";
 				}
 			}
-			return queries("CREATE TABLE " . table($name) . " (" . implode(",", $add) . "\n)");
-		}
-		if ($table != $name) {
-			queries("EXEC sp_rename " . q(table($table)) . ", " . q($name));
-		}
-		if ($foreign) {
-			$alter[""] = $foreign;
-		}
-		foreach ($alter as $key => $val) {
-			if (!queries("ALTER TABLE " . table($name) . " $key" . implode(",", $val))) {
+			if (!queries("CREATE TABLE " . table($name) . " (" . implode(",", $add) . "\n)")) {
 				return false;
 			}
+		} else {
+			if ($table != $name) {
+				queries("EXEC sp_rename " . q(table($table)) . ", " . q($name));
+			}
+			if ($foreign) {
+				$alter[""] = $foreign;
+			}
+			foreach ($alter as $key => $val) {
+				if (!queries("ALTER TABLE " . table($name) . " $key" . implode(",", $val))) {
+					return false;
+				}
+			}
 		}
+		$property = "@name = N'MS_Description', @level0type = N'Schema', @level0name = " . q(get_schema()) . ", @level1type = N'Table', @level1name = " . q($name);
 		foreach ($comments as $key => $val) {
-			$comment = substr($val, 9); // 9 - strlen(" COMMENT ")
-			queries("EXEC sp_dropextendedproperty @name = N'MS_Description', @level0type = N'Schema', @level0name = " . q(get_schema())
-				. ", @level1type = N'Table', @level1name = " . q($name)
-				. ", @level2type = N'Column', @level2name = " . q($key));
-			queries("EXEC sp_addextendedproperty
-@name = N'MS_Description',
-@value = $comment,
-@level0type = N'Schema',
-@level0name = " . q(get_schema()) . ",
-@level1type = N'Table',
-@level1name = " . q($name) . ",
-@level2type = N'Column',
-@level2name = " . q($key))
-			;
+			list($drop, $comment2) = $val;
+			$property2 = "$property, @level2type = N'Column', @level2name = " . q($key);
+			if ($drop) {
+				queries("EXEC sp_dropextendedproperty $property2");
+			}
+			if ($comment2 != "") {
+				queries("EXEC sp_addextendedproperty $property2, @value = $comment2");
+			}
 		}
 		return true;
 	}
