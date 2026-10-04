@@ -7,6 +7,7 @@
 - Login: Report invalid credentials for a wrong password required by Adminer\Password (bug #1351)
 - MySQL, SQLite: Search by & (bug #1346)
 - PostgreSQL: List the triggers of a trigger function instead of calling it
+- PostgreSQL: Alter only the changed parts of a column
 - MS SQL: Save the comments of new and renamed columns
 - MS SQL: Save the table comment
 - MS SQL: List the tables also if a table has another extended property than the comment

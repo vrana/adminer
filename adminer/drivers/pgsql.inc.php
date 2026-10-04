@@ -800,12 +800,15 @@ ORDER BY conkey, conname") as $row
 			$queries[] = "ALTER TABLE " . table($table) . " RENAME TO " . table($name);
 		}
 		$sequence = "";
+		$orig_fields = ($table != "" ? fields($table) : array());
 		foreach ($fields as $field) {
 			$column = idf_escape($field[0]);
 			$val = $field[1];
 			if (!$val) {
 				$alter[] = "DROP $column";
 			} else {
+				$orig_field = $orig_fields[$field[0]];
+				$orig = ($orig_field ? process_field($orig_field, $orig_field) : array()); // only the changed parts are altered
 				$val5 = $val[5];
 				unset($val[5]);
 				if ($field[0] == "") {
@@ -820,18 +823,24 @@ ORDER BY conkey, conname") as $row
 					if ($column != $val[0]) {
 						$queries[] = "ALTER TABLE " . table($name) . " RENAME $column TO $val[0]";
 					}
-					$alter[] = "ALTER $column TYPE$val[1]";
-					$sequence_name = $table . "_" . idf_unescape($val[0]) . "_seq";
-					$alter[] = "ALTER $column " . ($val[3] ? "SET" . preg_replace('~GENERATED ALWAYS(.*) (STORED|VIRTUAL)~', 'EXPRESSION\1', $val[3])
-						: (isset($val[6]) ? "SET DEFAULT nextval(" . q($sequence_name) . ")"
-						: "DROP DEFAULT" //! change to DROP EXPRESSION with generated columns
-					));
-					if (isset($val[6])) {
-						$sequence = "CREATE SEQUENCE IF NOT EXISTS " . idf_escape($sequence_name) . " OWNED BY " . idf_escape($table) . ".$val[0]";
+					if ($val[1] != $orig[1]) {
+						$alter[] = "ALTER $column TYPE$val[1]";
 					}
-					$alter[] = "ALTER $column " . ($val[2] == " NULL" ? "DROP NOT" : "SET") . $val[2];
+					if ($val[3] != $orig[3] || isset($val[6]) != isset($orig[6])) {
+						$sequence_name = $table . "_" . idf_unescape($val[0]) . "_seq";
+						$alter[] = "ALTER $column " . ($val[3] ? "SET" . preg_replace('~GENERATED ALWAYS(.*) (STORED|VIRTUAL)~', 'EXPRESSION\1', $val[3])
+							: (isset($val[6]) ? "SET DEFAULT nextval(" . q($sequence_name) . ")"
+							: "DROP DEFAULT" //! change to DROP EXPRESSION with generated columns
+						));
+						if (isset($val[6])) {
+							$sequence = "CREATE SEQUENCE IF NOT EXISTS " . idf_escape($sequence_name) . " OWNED BY " . idf_escape($table) . ".$val[0]";
+						}
+					}
+					if ($val[2] != $orig[2]) {
+						$alter[] = "ALTER $column " . ($val[2] == " NULL" ? "DROP NOT" : "SET") . $val[2];
+					}
 				}
-				if ($field[0] != "" || $val5 != "") {
+				if ($val5 != $orig[5]) {
 					$queries[] = "COMMENT ON COLUMN " . table($name) . ".$val[0] IS " . ($val5 != "" ? substr($val5, 9) : "''");
 				}
 			}
