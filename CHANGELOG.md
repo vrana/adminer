@@ -8,6 +8,7 @@
 - MySQL, SQLite: Search by & (bug #1346)
 - PostgreSQL: List the triggers of a trigger function instead of calling it
 - MS SQL: Save the comments of new and renamed columns
+- MS SQL: Save the table comment
 - IGDB, SimpleDB: Fix export of nested values
 - Editor: Offer the row with the typed ID first when searching a foreign key, fix the search in MS SQL and Oracle
 ### Plugins

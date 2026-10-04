@@ -742,6 +742,14 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 				queries("EXEC sp_addextendedproperty $property2, @value = $comment2");
 			}
 		}
+		if ($comment !== null) {
+			if (idx(table_status1($name), "Comment") != "") {
+				queries("EXEC sp_dropextendedproperty $property");
+			}
+			if ($comment != "") {
+				queries("EXEC sp_addextendedproperty $property, @value = " . q($comment));
+			}
+		}
 		return true;
 	}
 
