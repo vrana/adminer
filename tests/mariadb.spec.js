@@ -489,6 +489,38 @@ test('Procedures', async () => {
 	await expect(page.locator('body')).toContainText('Routine has been dropped.');
 });
 
+test('Export routine with hidden definition', async () => {
+	// EXECUTE lists the routines of other definers but only their definers and privileged users see the definition
+	await goto(page, '/adminer/?server=localhost:3307&username=ODBC&db=adminer_test&error_stops=1&only_errors=1&sql=' + encodeURIComponent("DROP USER IF EXISTS 'adminer_test'@'%';\n"
+		+ "CREATE USER 'adminer_test'@'%' IDENTIFIED BY 'adminer_test';\n"
+		+ "GRANT EXECUTE ON adminer_test.* TO 'adminer_test'@'%';\n"
+		+ 'CREATE PROCEDURE `hidden\ndefinition`() SELECT 1;\n'
+		+ "CREATE DEFINER = 'adminer_test'@'%' PROCEDURE visible_definition() SELECT 2;\n"));
+	await button(page, 'Execute').click();
+	await expect(page.locator('body')).toContainText('5 queries executed OK.');
+	await goto(page, '/adminer/');
+	await page.locator('#username').fill('adminer_test');
+	await page.locator('[name="auth[server]"]').fill('localhost:3307');
+	await page.locator('[name="auth[password]"]').fill('adminer_test');
+	await button(page, 'Login').click();
+	await goto(page, '/adminer/?server=localhost:3307&username=adminer_test&db=adminer_test&dump=');
+	await page.locator('[name="output"]').first().click();
+	await page.locator('[name="format"]').first().click();
+	await page.locator('[name="routines"]').check();
+	await button(page, 'Export').click();
+	await expect(page.locator('body')).toContainText('PROCEDURE `visible_definition`');
+	const dump = await page.locator('body').textContent(); // toContainText() would collapse the line breaks
+	expect(dump).toContain('\n-- Could not export procedure hidden definition\n'); // a line break in the name must not end the comment
+	expect(dump).not.toContain('`hidden'); // neither CREATE without the body nor DROP
+	await goto(page, '/adminer/?server=localhost:3307&username=adminer_test');
+	await page.locator('[name="logout"]').click();
+	await goto(page, '/adminer/?server=localhost:3307&username=ODBC&db=adminer_test&error_stops=1&only_errors=1&sql=' + encodeURIComponent("DROP USER 'adminer_test'@'%';\n"
+		+ 'DROP PROCEDURE `hidden\ndefinition`;\n'
+		+ 'DROP PROCEDURE visible_definition;\n'));
+	await button(page, 'Execute').click();
+	await expect(page.locator('body')).toContainText('3 queries executed OK.');
+});
+
 test('Generated columns', async () => {
 	await goto(page, '/adminer/?server=localhost:3307&username=ODBC&db=adminer_test&create=');
 	await page.locator('[name="name"]').fill('generated');

@@ -4,6 +4,7 @@
 - Select: Edit the stored value by Ctrl+click on a non-original value (bug #1344)
 - Select: Search by BETWEEN (bug #1346)
 - Export: Print the error also in CSV
+- Export: Skip the routines whose definition is hidden from the user, CREATE without the body made the export invalid
 - Login: Report invalid credentials for a wrong password required by Adminer\Password (bug #1351)
 - MySQL, SQLite: Search by & (bug #1346)
 - PostgreSQL: List the triggers of a trigger function instead of calling it
