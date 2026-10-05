@@ -110,9 +110,14 @@ SET foreign_key_checks = 0;
 						foreach (routines() as $row) {
 							$name = $row["ROUTINE_NAME"];
 							$routine = $row["ROUTINE_TYPE"];
-							$create = create_routine($routine, array("name" => $name) + routine($row["SPECIFIC_NAME"], $routine));
-							set_utf8mb4($create);
-							$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . table($name) . ";;\n" : "") . "$create;\n\n";
+							$info = routine($row["SPECIFIC_NAME"], $routine);
+							if ($info["definition"] != "") { // empty if only the definer and privileged users can see it, CREATE without it would be invalid
+								$create = create_routine($routine, array("name" => $name) + $info);
+								set_utf8mb4($create);
+								$out .= ($style != 'DROP+CREATE' ? "DROP $routine IF EXISTS " . table($name) . ";;\n" : "") . "$create;\n\n";
+							} else {
+								$out .= "-- Could not export " . strtolower($routine) . " " . preg_replace('~[\r\n]+~', ' ', $name) . "\n\n"; // a line break in the name would end the comment
+							}
 						}
 					}
 

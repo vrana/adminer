@@ -5,6 +5,7 @@
 - Select: Search by BETWEEN (bug #1346)
 - Select: Report an unknown column in search instead of a fatal error
 - Export: Print the error also in CSV
+- Export: Skip routines with a hidden definition instead of creating them without the body
 - Login: Report invalid credentials for a wrong password required by Adminer\Password (bug #1351)
 - MySQL, SQLite: Search by & (bug #1346)
 - PostgreSQL: List the triggers of a trigger function instead of calling it
