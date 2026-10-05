@@ -712,7 +712,7 @@ class Adminer {
 					SqlDb::$untrusted = true; // the condition can be sent by GET which is not protected by the CSRF token
 				}
 				$conds = array();
-				foreach (($col != "" ? array($col => $fields[$col]) : $fields) as $name => $field) {
+				foreach (($col != "" ? array($col => idx($fields, $col, array())) : $fields) as $name => $field) {
 					$prefix = "";
 					$cond = " $val[op]";
 					if (preg_match('~IN$~', $val["op"])) {

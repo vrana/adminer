@@ -3,6 +3,7 @@
 - Select: Accept the unquoted values of IN in parentheses (bug #1350, regression from 6.0.1)
 - Select: Edit the stored value by Ctrl+click on a non-original value (bug #1344)
 - Select: Search by BETWEEN (bug #1346)
+- Select: Report an unknown column in search instead of a fatal error
 - Export: Print the error also in CSV
 - Login: Report invalid credentials for a wrong password required by Adminer\Password (bug #1351)
 - MySQL, SQLite: Search by & (bug #1346)
