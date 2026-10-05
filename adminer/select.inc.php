@@ -407,7 +407,7 @@ if (!$columns && support("table")) {
 			$rank = 1;
 			foreach ($result_columns as $key => $val) {
 				$field = $fields[$val["col"]];
-				$name = ($field ? adminer()->fieldName($field, $rank) : ($val["fun"] ? "*" : h($key)));
+				$name = ($field ? adminer()->fieldName($field, $rank) : ($val["fun"] ? ($val["col"] != "" ? h($val["col"]) : "*") : h($key)));
 				if ($name != "") {
 					$rank++;
 					$names[$key] = $name;
@@ -493,6 +493,9 @@ if (!$columns && support("table")) {
 				$i = 0;
 				foreach ($unique_array as $key => $val) {
 					$result_column = idx($result_columns, $key, array()); // the columns added to identify the row are not selected
+					if ($select && $result_column && !isset($fields[$result_column["col"]])) {
+						continue; // an expression typed by a plugin can't identify the row
+					}
 					$fun = idx($result_column, "fun", "");
 					$col = ($fun ? $result_column["col"] : $key);
 					$field = (array) $fields[$col];
@@ -704,7 +707,7 @@ if (!$columns && support("table")) {
 
 				$format = adminer()->dumpFormat();
 				foreach ((array) $_GET["columns"] as $column) {
-					if ($column["fun"]) {
+					if ($column["fun"] || ($column["col"] != "" && !isset($fields[$column["col"]]))) { // an expression typed by a plugin has no column to insert into
 						unset($format['sql']);
 						break;
 					}

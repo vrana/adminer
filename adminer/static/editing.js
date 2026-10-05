@@ -169,7 +169,7 @@ function selectFieldChange() {
 		let ok = form.limit.value;
 		let group = false;
 		const columns = {};
-		for (const select of qsa('select', form)) {
+		for (const select of qsa('select, input', form)) { // input - a column typed by a plugin
 			const col = selectValue(select);
 			let match = /^(where.+)col]/.exec(select.name);
 			if (match) {

@@ -18,6 +18,9 @@
 ### Plugins
 - Method formatSizeValue() to format the sizes of tables, indexes and databases
 - Method Driver::routineTriggers()
+- Method selectColumnInput() to customize choosing a column in select
+- Method selectSearchCondition() to customize the SQL of a search operator
+- New plugin select-expression: Type the columns in select with suggestions, also expressions like a+b
 
 ## Adminer 6.1.1 (released 2026-09-25)
 - Fix editing identity (PostgreSQL, Oracle, Firebird), rowversion (MS SQL), key (ClickHouse)

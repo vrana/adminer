@@ -475,7 +475,7 @@ function selectSearchKeydown(event) {
 */
 function selectSearchSearch() {
 	if (!this.value) {
-		this.parentNode.firstChild.selectedIndex = 0;
+		this.parentNode.firstChild.value = ''; // also an input typed by a plugin
 	}
 }
 

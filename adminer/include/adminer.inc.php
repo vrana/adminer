@@ -518,6 +518,13 @@ class Adminer {
 		return (JUSH == "sql" ? "" : "{table}_") . "{columns}";
 	}
 
+	/** Get HTML for choosing a column in the Select, Search and Sort boxes of select
+	* @param string[] $columns selectable columns
+	*/
+	function selectColumnInput(string $attrs, array $columns, ?string $value = "", string $placeholder = ""): string {
+		return select_input($attrs, $columns, $value, $placeholder);
+	}
+
 	/** Print columns box in select
 	* @param list<string> $select result of selectColumnsProcess()[0]
 	* @param string[] $columns selectable columns
@@ -528,7 +535,7 @@ class Adminer {
 		$select[""] = array();
 		foreach ($select as $key => $val) {
 			$val = idx($_GET["columns"], $key, array());
-			$column = select_input(
+			$column = adminer()->selectColumnInput(
 				" name='columns[$i][col]' data-default=''" . on('change', ($key !== "" ? 'selectFieldChange' : 'selectAddRow')),
 				$columns,
 				$val["col"]
@@ -567,7 +574,7 @@ class Adminer {
 		$operators = adminer()->operators($tableStatus);
 		foreach (array_merge((array) $_GET["where"], array(array())) as $i => $val) {
 			if (!$val || (("$val[col]$val[val]" != "" || preg_match('~NULL$~', $val["op"])) && in_array($val["op"], $operators))) {
-				echo "<div>" . select_input(
+				echo "<div>" . adminer()->selectColumnInput(
 					" name='where[$i][col]' data-default=''" . on('change', ($val ? 'selectFieldChange' : 'selectAddRow')),
 					$columns,
 					$val["col"],
@@ -593,12 +600,12 @@ class Adminer {
 		$i = 0;
 		foreach ((array) $_GET["order"] as $key => $val) {
 			if ($val != "") {
-				echo "<div>" . select_input(" name='order[$i]' data-default=''" . on('change', 'selectFieldChange'), $columns, $val);
+				echo "<div>" . adminer()->selectColumnInput(" name='order[$i]' data-default=''" . on('change', 'selectFieldChange'), $columns, $val);
 				echo checkbox("desc[$i]", 1, isset($_GET["desc"][$key]), lang('descending')) . "</div>\n";
 				$i++;
 			}
 		}
-		echo "<div>" . select_input(" name='order[$i]' data-default=''" . on('change', 'selectAddRow'), $columns);
+		echo "<div>" . adminer()->selectColumnInput(" name='order[$i]' data-default=''" . on('change', 'selectAddRow'), $columns);
 		echo checkbox("desc[$i]", 1, false, lang('descending')) . "</div>\n";
 		echo "</div></fieldset>\n";
 	}
@@ -713,25 +720,8 @@ class Adminer {
 				}
 				$conds = array();
 				foreach (($col != "" ? array($col => idx($fields, $col, array())) : $fields) as $name => $field) {
-					$prefix = "";
-					$cond = " $val[op]";
-					if (preg_match('~IN$~', $val["op"])) {
-						$cond .= " " . ($val["val"] != "" ? process_in($val["val"]) : "(NULL)");
-					} elseif ($val["op"] == "BETWEEN") {
-						$cond .= " " . process_between($val["val"]);
-					} elseif ($val["op"] == "SQL") {
-						$cond = " $val[val]"; // SQL injection
-					} elseif (preg_match('~^(I?LIKE) %%$~', $val["op"], $match)) {
-						// the searched value is compared with the value displayed in select, so it is not passed through unconvert_field()
-						$cond = " $match[1] " . q("%$val[val]%");
-					} elseif ($val["op"] == "FIND_IN_SET") {
-						$prefix = "$val[op](" . q($val["val"]) . ", ";
-						$cond = ")";
-					} elseif (!preg_match('~NULL$~', $val["op"])) {
-						$cond .= " " . q($val["val"]);
-					}
 					if ($col != "" || is_searchable($field, $val)) { // search anywhere
-						$conds[] = $prefix . driver()->convertSearch(idf_escape($name), $val, $field) . $cond;
+						$conds[] = adminer()->selectSearchCondition(driver()->convertSearch(idf_escape($name), $val, $field), $val["op"], $val["val"]);
 					}
 				}
 				$return[] =
@@ -742,6 +732,30 @@ class Adminer {
 			}
 		}
 		return $return;
+	}
+
+	/** Create SQL condition from one row of the search box in select
+	* @param string $column SQL expression, e.g. the escaped column passed through Driver::convertSearch()
+	* @param string $op one of operators()
+	*/
+	function selectSearchCondition(string $column, string $op, string $val): string {
+		if (preg_match('~IN$~', $op)) {
+			return "$column $op " . ($val != "" ? process_in($val) : "(NULL)");
+		}
+		if ($op == "BETWEEN") {
+			return "$column $op " . process_between($val);
+		}
+		if ($op == "SQL") {
+			return "$column $val"; // SQL injection
+		}
+		if (preg_match('~^(I?LIKE) %%$~', $op, $match)) {
+			// the searched value is compared with the value displayed in select, so it is not passed through unconvert_field()
+			return "$column $match[1] " . q("%$val%");
+		}
+		if ($op == "FIND_IN_SET") {
+			return "$op(" . q($val) . ", $column)";
+		}
+		return "$column $op" . (!preg_match('~NULL$~', $op) ? " " . q($val) : "");
 	}
 
 	/** Process order box in select
