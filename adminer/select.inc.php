@@ -580,7 +580,7 @@ if (!$columns && support("table")) {
 						$type = ($fun == "min" || $fun == "max" ? $fields[$col]["type"] : $field["type"]);
 						$text = preg_match('~text|json|lob~', $type);
 						$is_number = preg_match(number_type(), $type) || preg_match('~^(avg|ceil|char_length|count|count distinct|floor|len|length|round|sum|time_to_sec)$~', $fun);
-						echo "<td id='$id'" . ($is_number && ($val === null || is_numeric(strip_tags($html)) || $type == "money") ? " class='number'" : "");
+						echo "<td id='$id'" . ($is_number && ($edit_val === null || is_numeric($edit_val) || $type == "money") ? " class='number'" : "");
 						if (($_GET["modify"] && $editable && $edit_val !== null) || $posted !== null) {
 							$h_value = h($posted !== null ? $posted : $edit_val);
 							echo ">" . ($text
