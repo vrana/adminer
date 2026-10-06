@@ -101,7 +101,7 @@ SET foreign_key_checks = 0;
 								$out .= ($style != 'DROP+CREATE' ? "DROP $object IF EXISTS " . table($type) . ";;\n" : "")
 									. "CREATE $object " . table($type) . " $definition[definition];\n\n";
 							} else {
-								$out .= "-- Could not export type $type\n\n";
+								$out .= "-- Could not export type " . preg_replace('~[\r\n]+~', ' ', $type) . "\n\n"; // a line break in the name would end the comment
 							}
 						}
 					}
