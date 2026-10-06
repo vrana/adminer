@@ -267,11 +267,7 @@ ORDER BY (m.name LIKE 'sqlite_%'), m.name, p.cid", $this->conn);
 					$return[$row["tab"]][] = $row;
 				}
 			} else {
-				foreach (tables_list() as $table => $type) {
-					foreach (fields($table) as $field) {
-						$return[$table][] = $field;
-					}
-				}
+				$return = parent::allFields();
 			}
 			return $return;
 		}

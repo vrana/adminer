@@ -372,10 +372,6 @@ if (isset($_GET["redis"])) {
 			return '[^\s\S]'; // Redis has no comments
 		}
 
-		function allFields(): array {
-			return array(); // the parent implementation would send a SQL query
-		}
-
 		function insert(string $table, array $set) {
 			return queries("SET " . implode(" ", $set)); // the values are quoted by quote()
 		}

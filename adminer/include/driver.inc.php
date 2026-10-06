@@ -444,7 +444,11 @@ AND CHECK_CLAUSE NOT LIKE '% IS NOT NULL'" : ""), $this->conn); // ignore defaul
 	*/
 	function allFields(): array {
 		$return = array();
-		if (DB != "") {
+		if (JUSH != 'sql' && JUSH != 'mssql') { // the other core drivers override it
+			foreach (tables_list() as $table => $type) {
+				$return[$table] = array_values(fields($table));
+			}
+		} elseif (DB != "") {
 			// 'primary' is the column name or null because PostgreSQL returns booleans as 't' and 'f' (both truthy) and MS SQL doesn't support them in SELECT
 			foreach (
 				get_rows("SELECT c.TABLE_NAME AS tab, c.COLUMN_NAME AS field, c.IS_NULLABLE AS nullable,
