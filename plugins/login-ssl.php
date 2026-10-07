@@ -14,6 +14,7 @@ class AdminerLoginSsl extends Adminer\Plugin {
 	* PostgresSQL: ["mode" => sslmode] (https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNECT-SSLMODE)
 	* MSSQL: ["Encrypt" => true, "TrustServerCertificate" => true] (https://learn.microsoft.com/en-us/sql/connect/php/connection-options)
 	* Elasticsearch: ["key" => filename, "cert" => filename, "ca" => filename, "verify" => bool] (verify => false accepts the self-signed certificate created by Elasticsearch)
+	* LDAP: ["key" => filename, "cert" => filename, "ca" => filename, "verify" => bool] (switches ldap:// to StartTLS, the ldap extension applies them only to StartTLS)
 	*/
 	function __construct(array $ssl) {
 		$this->ssl = $ssl;
