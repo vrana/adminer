@@ -244,8 +244,8 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 								} else {
 									$link = ME . "sql=" . url_escape(trim($q));
 									$time = " <span class='time'>(" . format_time($start) . ")</span>"
-										// 1900 - the same limit as in sqlSubmit() lowered by the expected length of the origin
-										. (strlen($link) < 1900 ? " <a href='" . h($link) . "'>" . lang('Edit') . "</a>" : "")
+										// 100 - the expected length of the origin counted by sqlSubmit()
+										. (strlen($link) < adminer()->sqlUrlLength() - 100 ? " <a href='" . h($link) . "'>" . lang('Edit') . "</a>" : "")
 									;
 									$affected = connection()->affected_rows; // getting warnings overwrites this
 									$warnings = ($_POST["only_errors"] ? "" : driver()->warnings());
@@ -338,7 +338,7 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 <form action="" method="post" enctype="multipart/form-data" id="form"<?php
 $upload_progress = "";
 if (!isset($_GET["import"])) {
-	echo on('submit', 'sqlSubmit', remove_from_uri("sql|limit|error_stops|only_errors|history"));
+	echo on('submit', 'sqlSubmit', remove_from_uri("sql|limit|error_stops|only_errors|history"), adminer()->sqlUrlLength());
 } else {
 	echo on_upload_progress($upload_progress);
 }

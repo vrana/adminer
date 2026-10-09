@@ -736,14 +736,15 @@ function indexesChangeColumn(namePatterns) {
 
 /** Update the form action
 * @param {string} root
+* @param {number} maxLength
 * @this HTMLFormElement
 */
-function sqlSubmit(root) {
+function sqlSubmit(root, maxLength) {
 	const suffix = (this['limit'].value ? '&limit=' + +this['limit'].value : '')
 		+ (this['error_stops'].checked ? '&error_stops=1' : '')
 		+ (this['only_errors'].checked ? '&only_errors=1' : '');
 	const action = root + '&sql=' + urlEscape(this['query'].value) + suffix;
-	this.action = ((location.origin + location.pathname + action).length < 2000 // reasonable minimum is 2048
+	this.action = ((location.origin + location.pathname + action).length < maxLength
 		? action
 		: root + '&sql=' + suffix
 	);

@@ -23,7 +23,9 @@
 - Method selectColumnInput() to customize choosing a column in select
 - Method selectSearchCondition() to customize the SQL of a search operator
 - Methods commentValue() and commentInput() with type 'SCHEMA'
+- Method sqlUrlLength() to limit the length of URLs with the query from SQL command (bug #1358)
 - New plugin select-expression: Type the columns in select with suggestions, also expressions like a+b
+- New plugin sql-url-length: Limit the length of URLs with the query from SQL command, some servers reject them
 
 ## Adminer 6.1.1 (released 2026-09-25)
 - Fix editing identity (PostgreSQL, Oracle, Firebird), rowversion (MS SQL), key (ClickHouse)

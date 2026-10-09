@@ -367,6 +367,11 @@ class Adminer {
 	function sqlPrintAfter(): void {
 	}
 
+	/** Get the maximum length of a URL with the query from SQL command, 0 to never put the query to the URL */
+	function sqlUrlLength(): int {
+		return 2000; // reasonable minimum is 2048
+	}
+
 	/** Get EXPLAIN of a SELECT in SQL command
 	* @param string[] $orgtables table => orgtable from the result of $query
 	* @return string HTML
