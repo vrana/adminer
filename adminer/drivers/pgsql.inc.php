@@ -1490,11 +1490,11 @@ WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary !=
 	}
 
 	function support(string $feature): bool {
-		return preg_match('~^(check|columns|comment|database|drop_col|dump|descidx|fast_status|indexes|kill|partial_indexes|routine|scheme|sequence|sql|table'
-			. '|transaction_ddl|trigger|type|variables|view'
+		return preg_match('~^(check|columns|comment|database|drop_col|dump|descidx|fast_status|indexes|kill|partial_indexes|routine|scheme|sequence|sql|table|trigger|type|variables|view'
 			. (min_version(9.3) ? '|materializedview' : '')
 			. (min_version(11) ? '|procedure' : '')
 			. (connection()->flavor == 'cockroach' ? '' : '|deferrable') // https://github.com/cockroachdb/cockroach/issues/31632
+			. (connection()->flavor == 'cockroach' ? '' : '|transaction_ddl') // autocommit_before_ddl commits DDL in a transaction
 			. (connection()->flavor == 'cockroach' || !min_version(9.1) ? '' : '|extension') // CockroachDB has no real rows in pg_extension
 			. (connection()->flavor == 'cockroach' ? '' : '|processlist') // https://github.com/cockroachdb/cockroach/issues/24745
 			. ')$~', $feature)

@@ -12,6 +12,7 @@
 - PostgreSQL: List the triggers of a trigger function instead of calling it
 - PostgreSQL: Alter only the changed parts of a column
 - PostgreSQL, MS SQL: Display, edit and export the schema comment
+- CockroachDB: Keep the original view, type or check if altering it fails
 - MS SQL: Save the comments of new and renamed columns
 - MS SQL: Save the table comment
 - MS SQL: List the tables also if a table has another extended property than the comment

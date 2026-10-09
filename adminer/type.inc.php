@@ -72,12 +72,13 @@ if ($_POST && !$error) {
 		queries_redirect($link, $message, !$failed);
 	} else {
 		// there's no CREATE OR REPLACE TYPE so the type is dropped and created again
+		$temp_name = "adminer_" . uniqid();
 		drop_create(
 			"DROP $object " . idf_escape($TYPE),
 			"CREATE $new_object " . idf_escape($name) . " $as",
-			"", // only PostgreSQL supports types and its DDL is transactional
-			"",
-			"",
+			"DROP $new_object " . idf_escape($name),
+			"CREATE $new_object " . idf_escape($temp_name) . " $as",
+			"DROP $new_object " . idf_escape($temp_name),
 			$link,
 			lang('Type has been dropped.'),
 			$message,
