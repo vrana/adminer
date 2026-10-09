@@ -7,6 +7,7 @@
 - Export: Print the error also in CSV
 - Export: Skip routines with a hidden definition instead of creating them without the body
 - Login: Report invalid credentials for a wrong password required by Adminer\Password (bug #1351)
+- Alter foreign key: Keep the original key if altering it fails (regression from 5.0.0)
 - MySQL, SQLite: Search by & (bug #1346)
 - PostgreSQL: List the triggers of a trigger function instead of calling it
 - PostgreSQL: Alter only the changed parts of a column

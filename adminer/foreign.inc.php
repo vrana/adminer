@@ -17,13 +17,29 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 	}
 
 	$constraint = object_name("FOREIGN", $TABLE, $row["source"]);
+	$begin = false;
 	if (JUSH == "sqlite") {
 		$result = recreate_table($TABLE, $TABLE, array(), array(), array(" $name" => ($row["drop"] ? "" : " " . format_foreign_key($row, $constraint))));
 	} else {
 		$alter = "ALTER TABLE " . table($TABLE);
-		$result = ($name == "" || queries("$alter DROP " . (JUSH == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($name)));
-		if (!$row["drop"]) {
-			$result = queries("$alter ADD" . format_foreign_key($row, $constraint));
+		$drop = "$alter DROP " . (JUSH == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($name ?: '');
+		if ($row["drop"]) {
+			$result = queries($drop);
+		} else {
+			$add = " ADD" . format_foreign_key($row, $constraint);
+			if ($name == "") {
+				$result = queries($alter . $add);
+			} elseif (JUSH == "pgsql" || (JUSH == "sql" && $constraint != $name)) {
+				// one statement keeps the original key if creating the new one fails; MySQL can't reuse its name in it
+				$result = queries("$drop,$add");
+			} else {
+				$begin = support("transaction_ddl") && driver()->begin();
+				// without a transaction, a failed attempt may have dropped the original key already
+				$result = ($begin || idx(foreign_keys($TABLE), $name) ? queries($drop) : true)
+					&& queries($alter . $add)
+					&& (!$begin || driver()->commit())
+				;
+			}
 		}
 	}
 	queries_redirect(
@@ -31,6 +47,9 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 		($row["drop"] ? lang('Foreign key has been dropped.') : ($name != "" ? lang('Foreign key has been altered.') : lang('Foreign key has been created.'))),
 		$result
 	);
+	if ($begin) {
+		driver()->rollback(); // after queries_redirect() to not overwrite error
+	}
 	if (!$row["drop"]) {
 		$error = lang('Source and target columns must have the same data type, there must be an index on the target columns and the referenced data must exist.'); //! no partitioning
 	}
