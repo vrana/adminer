@@ -1460,6 +1460,10 @@ WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary !=
 				$return = "DROP SCHEMA IF EXISTS $name CASCADE;\n";
 			}
 			$return .= "CREATE SCHEMA IF NOT EXISTS $name;\n"; // a new database contains the public schema
+			$comment = schema_comment($schema);
+			if ($comment != "") {
+				$return .= "COMMENT ON SCHEMA $name IS " . q($comment) . ";\n";
+			}
 		}
 		return $return . "SET search_path TO $name";
 	}

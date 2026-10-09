@@ -10,7 +10,7 @@
 - MySQL, SQLite: Search by & (bug #1346)
 - PostgreSQL: List the triggers of a trigger function instead of calling it
 - PostgreSQL: Alter only the changed parts of a column
-- PostgreSQL, MS SQL: Display and edit the schema comment
+- PostgreSQL, MS SQL: Display, edit and export the schema comment
 - MS SQL: Save the comments of new and renamed columns
 - MS SQL: Save the table comment
 - MS SQL: List the tables also if a table has another extended property than the comment

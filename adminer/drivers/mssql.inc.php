@@ -1007,8 +1007,13 @@ ORDER BY o.name");
 		// there is nothing like search_path to select the schema, the names are qualified
 		// CREATE SCHEMA must be the only command in a batch and it has no IF NOT EXISTS, dbo exists always
 		$name = idf_escape($schema);
-		return ($style == "DROP+CREATE" ? "DROP SCHEMA IF EXISTS $name;\n" : "")
-			. "IF SCHEMA_ID(" . q($schema) . ") IS NULL EXEC(" . q("CREATE SCHEMA $name") . ")";
+		$create = "EXEC(" . q("CREATE SCHEMA $name") . ")";
+		$comment = schema_comment($schema);
+		if ($comment != "") {
+			// sp_addextendedproperty fails if the comment exists so it is set only in a new schema; no semicolons inside the block which the import would split
+			$create = "BEGIN\n$create\nEXEC sp_addextendedproperty @name = N'MS_Description', @level0type = N'Schema', @level0name = " . q($schema) . ", @value = " . q($comment) . "\nEND";
+		}
+		return ($style == "DROP+CREATE" ? "DROP SCHEMA IF EXISTS $name;\n" : "") . "IF SCHEMA_ID(" . q($schema) . ") IS NULL $create";
 	}
 
 	function trigger_sql(string $table): string {
