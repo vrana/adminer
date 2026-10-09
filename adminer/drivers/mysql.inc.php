@@ -1334,4 +1334,14 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 	function set_schema(string $schema, ?Db $connection2 = null): bool {
 		return true;
 	}
+
+	/** Get comment of a schema */
+	function schema_comment(string $schema): string {
+		return "";
+	}
+
+	/** Set comment of a schema, empty to remove it */
+	function set_schema_comment(string $schema, string $comment): bool {
+		return true;
+	}
 }

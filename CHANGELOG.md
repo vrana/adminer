@@ -10,6 +10,7 @@
 - MySQL, SQLite: Search by & (bug #1346)
 - PostgreSQL: List the triggers of a trigger function instead of calling it
 - PostgreSQL: Alter only the changed parts of a column
+- PostgreSQL, MS SQL: Display and edit the schema comment
 - MS SQL: Save the comments of new and renamed columns
 - MS SQL: Save the table comment
 - MS SQL: List the tables also if a table has another extended property than the comment
@@ -21,6 +22,7 @@
 - Method Driver::routineTriggers()
 - Method selectColumnInput() to customize choosing a column in select
 - Method selectSearchCondition() to customize the SQL of a search operator
+- Methods commentValue() and commentInput() with type 'SCHEMA'
 - New plugin select-expression: Type the columns in select with suggestions, also expressions like a+b
 
 ## Adminer 6.1.1 (released 2026-09-25)

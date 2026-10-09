@@ -73,6 +73,12 @@ page_header(($_GET["ns"] == "" ? lang('Database') . ": " . h(DB) : lang('Schema'
 
 if (adminer()->homepage()) {
 	if ($_GET["ns"] !== "") {
+		if (support("scheme") && support("comment")) {
+			$comment = schema_comment($_GET["ns"]);
+			if ($comment != "") {
+				echo "<p class='nowrap'>" . lang('Comment') . ": " . adminer()->commentValue('SCHEMA', $comment) . "\n";
+			}
+		}
 		$order = $_GET["order"];
 		$full = ($order || support("fast_status")); // whether to print the full table_status() without a background request
 		echo "<div>\n";

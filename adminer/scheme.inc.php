@@ -2,6 +2,7 @@
 namespace Adminer;
 
 $row = $_POST;
+$comment = (support("comment") && $_GET["ns"] != "" ? schema_comment($_GET["ns"]) : "");
 
 if ($_POST && !$error) {
 	$link = preg_replace('~&ns=[^&]*~', '', ME) . "ns=";
@@ -10,13 +11,21 @@ if ($_POST && !$error) {
 	} else {
 		$name = trim($row["name"]);
 		$link .= url_escape($name);
+		$new_comment = (support("comment") ? $row["comment"] : $comment);
+		$result = true;
+		$message = lang('Schema has been altered.');
 		if ($_GET["ns"] == "") {
-			query_redirect("CREATE SCHEMA " . idf_escape($name), $link, lang('Schema has been created.'));
+			$result = queries("CREATE SCHEMA " . idf_escape($name));
+			$message = lang('Schema has been created.');
 		} elseif ($_GET["ns"] != $name) {
-			query_redirect("ALTER SCHEMA " . idf_escape($_GET["ns"]) . " RENAME TO " . idf_escape($name), $link, lang('Schema has been altered.')); //! sp_rename in MS SQL
-		} else {
+			$result = queries("ALTER SCHEMA " . idf_escape($_GET["ns"]) . " RENAME TO " . idf_escape($name)); //! sp_rename in MS SQL
+		} elseif ($new_comment === $comment) {
 			redirect($link);
 		}
+		if ($result && $new_comment !== $comment) {
+			$result = set_schema_comment($name, $new_comment);
+		}
+		queries_redirect($link, $message, $result);
 	}
 }
 
@@ -29,6 +38,7 @@ page_header($_GET["ns"] != "" ? lang('Alter schema') : lang('Create schema'), $e
 
 if (!$row) {
 	$row["name"] = $_GET["ns"];
+	$row["comment"] = $comment;
 }
 ?>
 
@@ -39,6 +49,7 @@ if (!$row) {
 if ($_GET["ns"] != "") {
 	echo "<input type='submit' name='drop' value='" . lang('Drop') . "'" . confirm(lang('Drop %s?', $_GET["ns"])) . ">\n";
 }
+echo (support("comment") ? "<p>" . lang('Comment') . ": " . adminer()->commentInput('SCHEMA', " name='comment'", $row["comment"]) . "\n" : "");
 echo input_token();
 ?>
 </form>

@@ -936,6 +936,17 @@ ORDER BY o.name");
 		return !!get_val("SELECT 1 FROM sys.schemas WHERE name = " . q($schema), 0, $connection2);
 	}
 
+	function schema_comment(string $schema): string {
+		return (string) get_val("SELECT CAST(value AS nvarchar(max)) FROM fn_listextendedproperty('MS_Description', 'SCHEMA', " . q($schema) . ", NULL, NULL, NULL, NULL)");
+	}
+
+	function set_schema_comment(string $schema, string $comment): bool {
+		$property = "@name = N'MS_Description', @level0type = N'Schema', @level0name = " . q($schema);
+		return (schema_comment($schema) == "" || queries("EXEC sp_dropextendedproperty $property"))
+			&& ($comment == "" || queries("EXEC sp_addextendedproperty $property, @value = " . q($comment)))
+		;
+	}
+
 	function create_sql(string $table, ?bool $auto_increment, string $style): string {
 		$status = table_status1($table);
 		if (is_view($status)) {

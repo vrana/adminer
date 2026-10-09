@@ -1239,6 +1239,14 @@ FROM pg_range WHERE rngtypid = $id"));
 		return !!$return;
 	}
 
+	function schema_comment(string $schema): string {
+		return (string) get_val("SELECT obj_description(oid, 'pg_namespace') FROM pg_namespace WHERE nspname = " . q($schema));
+	}
+
+	function set_schema_comment(string $schema, string $comment): bool {
+		return !!queries("COMMENT ON SCHEMA " . idf_escape($schema) . " IS " . q($comment)); // an empty comment removes it
+	}
+
 	/** Get SQL commands dropping all exported tables and views
 	* @param TableStatus[] $tables
 	*/

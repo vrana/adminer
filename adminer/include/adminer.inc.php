@@ -241,13 +241,13 @@ class Adminer {
 		return '<span title="' . h($type . ($comment != "" ? ($type ? ": " : "") . $comment : '')) . '">' . h($field["field"]) . '</span>';
 	}
 
-	/** Get comment of a table, column or routine
-	* @param 'TABLE'|'COLUMN'|'PROCEDURE'|'FUNCTION' $type
+	/** Get comment of a schema, table, column or routine
+	* @param 'SCHEMA'|'TABLE'|'COLUMN'|'PROCEDURE'|'FUNCTION' $type
 	* @param ?string $comment null if the driver doesn't return comments
 	* @return string HTML code
 	*/
 	function commentValue(string $type, ?string $comment): string {
-		if ($comment == "" || $type == 'TABLE' || $type == 'COLUMN') {
+		if ($comment == "" || $type == 'SCHEMA' || $type == 'TABLE' || $type == 'COLUMN') {
 			return h($comment);
 		}
 		// routine comments usually hold documentation, e.g. in the MySQL sys schema
@@ -271,7 +271,7 @@ class Adminer {
 	}
 
 	/** Get input for editing a comment
-	* @param 'TABLE'|'COLUMN' $type
+	* @param 'SCHEMA'|'TABLE'|'COLUMN' $type
 	* @param string $attrs attributes to use inside the tag
 	* @param ?string $comment null if the driver doesn't return comments
 	* @return string HTML code

@@ -81,7 +81,7 @@ function put_file($match) {
 				"kill" => array("kill_process", "connection_id", "max_connections"),
 				"processlist" => array("process_list"),
 				"routine" => array("routines", "routine", "routine_languages", "routine_options", "routine_id"),
-				"scheme" => array("schemas", "get_schema", "set_schema"),
+				"scheme" => array("schemas", "get_schema", "set_schema", "schema_comment", "set_schema_comment"),
 				"sql" => array("multi_query", "store_result", "next_result", "explain"),
 				"status" => array("show_status"),
 				"indexes" => array("alter_indexes"),
