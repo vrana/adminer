@@ -1,3 +1,5 @@
+## Adminer dev
+
 ## Adminer 6.1.2 (released 2026-10-10)
 - Select: Quote again the quoted values of IN
 - Select: Accept the unquoted values of IN in parentheses (bug #1350, regression from 6.0.1)
