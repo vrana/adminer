@@ -261,8 +261,8 @@ test('Enum', async () => {
 });
 
 test('Composite type', async () => {
-	const sql = "CREATE TYPE composite_key AS (a int, b text);"
-		+ " CREATE TABLE composites (id composite_key PRIMARY KEY, val text);"
+	const sql = 'CREATE TYPE composite_key AS (a int, b text);'
+		+ ' CREATE TABLE composites (id composite_key PRIMARY KEY, val text);'
 		+ " INSERT INTO composites VALUES (ROW(1, 'x'), 'one'), (ROW(2, NULL), 'two')";
 	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public&sql=' + encodeURIComponent(sql));
 	await button(page, 'Execute').click();
@@ -312,7 +312,7 @@ test('Search in tables', async () => {
 
 test('Search in tables with special types', async () => {
 	const sql = "CREATE TYPE mood AS ENUM ('abc3', 'x');"
-		+ " CREATE TABLE types (id int PRIMARY KEY, b bytea, o boolean, tm time, r int4range, u uuid, e mood, a text[], t text);"
+		+ ' CREATE TABLE types (id int PRIMARY KEY, b bytea, o boolean, tm time, r int4range, u uuid, e mood, a text[], t text);'
 		+ " INSERT INTO types VALUES (1, 'abc3', true, '12:34:56', '[1,3)', '00000000-0000-0000-0000-000000000003', 'abc3', '{abc3,x}', 'abc3')";
 	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public&sql=' + encodeURIComponent(sql));
 	await button(page, 'Execute').click();
@@ -406,7 +406,7 @@ test('Import and export CSV', async () => {
 
 test('Bulk table operations', async () => {
 	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public&sql=' + encodeURIComponent(
-		'CREATE SCHEMA adminer_test2; CREATE TABLE bulk_test (id int); INSERT INTO bulk_test VALUES (1)'
+		'CREATE SCHEMA adminer_test2; CREATE TABLE bulk_test (id int); INSERT INTO bulk_test VALUES (1)',
 	));
 	await button(page, 'Execute').click();
 	await page.waitForLoadState(); // the result is flushed while the queries run, navigating away earlier aborts them
@@ -612,9 +612,9 @@ test('Partitioning', async () => {
 });
 
 test('Partitioned rows', async () => {
-	const sql = "CREATE TABLE parts (id int, val text) PARTITION BY LIST (id);"
-		+ " CREATE TABLE parts_1 PARTITION OF parts FOR VALUES IN (1);"
-		+ " CREATE TABLE parts_2 PARTITION OF parts FOR VALUES IN (2);"
+	const sql = 'CREATE TABLE parts (id int, val text) PARTITION BY LIST (id);'
+		+ ' CREATE TABLE parts_1 PARTITION OF parts FOR VALUES IN (1);'
+		+ ' CREATE TABLE parts_2 PARTITION OF parts FOR VALUES IN (2);'
 		+ " INSERT INTO parts VALUES (1, 'one'), (2, 'two')"; // both rows are the first one in their partition, so they share the ctid
 	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public&sql=' + encodeURIComponent(sql));
 	await button(page, 'Execute').click();

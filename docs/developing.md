@@ -413,7 +413,8 @@ JavaScript code is split into [functions.js](/adminer/static/functions.js) (comm
 These files are concatenated during compilation since they depend on each other.
 
 JavaScript code follows the coding style defined in [eslint.config.mjs](/conf/eslint.config.mjs), which `composer check` verifies by ESLint.
-`composer install` fetches ESLint by npm, together with `@eslint/js` and `globals`, which ESLint doesn't ship but the config needs.
+`composer install` fetches ESLint by npm, together with `@eslint/js`, `@stylistic/eslint-plugin` and `globals`, which ESLint doesn't ship but the config needs.
+The formatting is checked by the preset of `@stylistic/eslint-plugin` with the options and overrides matching our style, except in the jush submodule which has its own style.
 Run it by `npx eslint -c conf/eslint.config.mjs`, which prefers the local installation over a global one.
 The config prepends the counterpart file to each of them by a processor, so ESLint sees the same code as the browser and shifts the reported line numbers back.
 

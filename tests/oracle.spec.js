@@ -211,7 +211,7 @@ test('Search in tables with special types', async () => {
 	await button(page, 'Execute').click();
 	await expect(page.locator('body')).toContainText('Query executed OK');
 	await goto(page, db + '&sql=' + encodeURIComponent(
-		"INSERT INTO \"types\" VALUES (1, HEXTORAW('61626333'), 'abc3', HEXTORAW('61626333'), DATE '2020-01-03', 'abc3')"
+		"INSERT INTO \"types\" VALUES (1, HEXTORAW('61626333'), 'abc3', HEXTORAW('61626333'), DATE '2020-01-03', 'abc3')",
 	));
 	await button(page, 'Execute').click();
 	await page.waitForLoadState(); // the result is flushed while the queries run, navigating away earlier aborts them

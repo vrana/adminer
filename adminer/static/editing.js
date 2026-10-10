@@ -130,7 +130,7 @@ function dbMouseDown(event) {
 	// Firefox: mouse-down event does not contain pressed key information for OPTION.
 	// Chrome: mouse-down event has inherited key information from SELECT.
 	// So we ignore the event for OPTION to work Ctrl+click correctly everywhere.
-	if (event.target.tagName == "OPTION") {
+	if (event.target.tagName == 'OPTION') {
 		return;
 	}
 
@@ -259,7 +259,7 @@ function editFields() {
 			onfocus: function () {
 				lastType = selectValue(this);
 			},
-			onchange: editingTypeChange
+			onchange: editingTypeChange,
 		});
 	}
 	const table = qs('#edit-fields');
@@ -297,7 +297,7 @@ function editFields() {
 			if (dragMove(e.target)) {
 				e.preventDefault();
 			}
-		}
+		},
 	});
 	// HTML5 drag and drop doesn't work on touch screens; addEventListener() because the handlers must not be passive
 	table.addEventListener('touchstart', e => {
@@ -354,8 +354,8 @@ function editingClick(event) {
 function editingInput(event) {
 	const el = event.target;
 	if (/\[default]$/.test(el.name)) {
-		 el.previousElementSibling.checked = true;
-		 el.previousElementSibling.selectedIndex = Math.max(el.previousElementSibling.selectedIndex, 1);
+		el.previousElementSibling.checked = true;
+		el.previousElementSibling.selectedIndex = Math.max(el.previousElementSibling.selectedIndex, 1);
 	}
 }
 
@@ -368,7 +368,7 @@ function editingNameChange() {
 	const opts = type.options;
 	let candidate; // don't select anything with ambiguous match (like column `id`)
 	const val = this.value;
-	for (let i = opts.length; i--; ) {
+	for (let i = opts.length; i--;) {
 		const match = /(.+)`(.+)/.exec(opts[i].value);
 		if (!match) { // common type
 			if (candidate && i == opts.length - 2 && val == opts[candidate].value.replace(/.+`/, '') && name == 'fields[1]') { // single target table, link to column, first field - probably `id`
@@ -377,7 +377,7 @@ function editingNameChange() {
 			break;
 		}
 		const [, base, column] = match;
-		for (const table of [ base, base.replace(/s$/, ''), base.replace(/es$/, '') ]) {
+		for (const table of [base, base.replace(/s$/, ''), base.replace(/es$/, '')]) {
 			if (val == column || val == table || delimiterEqual(val, table, column) || delimiterEqual(val, column, table)) {
 				if (candidate) {
 					return;
@@ -711,7 +711,7 @@ function indexesChangeColumn(namePatterns) {
 	const type = field.form[field.name.replace(/].*/, '][type]')];
 	if (columns[columns.length - 1] == field) { // the appended column becomes the last one so it adds the next
 		if (!type.selectedIndex) {
-			while (selectValue(type) != "INDEX" && type.selectedIndex < type.options.length) {
+			while (selectValue(type) != 'INDEX' && type.selectedIndex < type.options.length) {
 				type.selectedIndex++;
 			}
 			fire(type, 'change');
@@ -962,7 +962,7 @@ function schemaMousemove(event) {
 				if (!div2) { // table in another schema
 					continue;
 				}
-				const ref = (tablePos[div.title] || tablePosDefault[div.title] || [ div2.parentNode.offsetTop / em, div2.parentNode.offsetLeft / em ]);
+				const ref = (tablePos[div.title] || tablePosDefault[div.title] || [div2.parentNode.offsetTop / em, div2.parentNode.offsetLeft / em]);
 				const id = div.id.replace(/^ref.(.+)-.+/, '$1');
 				let lineLeft = left - 1; // a self-reference, the line is left of the table
 				if (div.parentNode != div2.parentNode) {
@@ -1000,7 +1000,7 @@ function schemaMousemove(event) {
 */
 function schemaMouseup(event, db) {
 	if (that !== undefined) {
-		tablePos[that.firstChild.firstChild.firstChild.data] = [ (event.clientY - y) / em, (event.clientX - x) / em ];
+		tablePos[that.firstChild.firstChild.firstChild.data] = [(event.clientY - y) / em, (event.clientX - x) / em];
 		that = undefined;
 		let s = '';
 		for (const key in tablePos) {
@@ -1033,7 +1033,7 @@ function helpMouseover(text, side, event) {
 		helpOpen = 1;
 		const help = qs('#help');
 		help.textContent = text;
-		jush.highlight_tag([ help ]);
+		jush.highlight_tag([help]);
 		alterClass(help, 'hidden');
 		const rect = target.getBoundingClientRect();
 		const body = document.documentElement;

@@ -74,7 +74,7 @@ function toggle(id) {
 * @return {string}
 */
 function urlEscape(string) {
-  // unlike encodeURIComponent(), escapes only the characters misinterpreted by PHP or by the URL syntax and those rewritten by the browser
+	// unlike encodeURIComponent(), escapes only the characters misinterpreted by PHP or by the URL syntax and those rewritten by the browser
 	return encodeURIComponent(string)
 		.replace(/'/g, '%27') // encodeURIComponent() keeps it but the browser escapes it anyway
 		.replace(/%20/g, '+')
@@ -501,6 +501,7 @@ function selectSearch(name) {
 	qs('[name$="[val]"]', div).focus();
 	return false;
 }
+
 
 
 /** Check if Ctrl key (Command key on Mac) was pressed

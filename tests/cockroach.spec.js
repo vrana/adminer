@@ -323,7 +323,7 @@ test('Import and export CSV', async () => {
 test('Bulk table operations', async () => {
 	// CockroachDB doesn't implement VACUUM, so only the operations of the other buttons are tested
 	await goto(page, '/adminer/?pgsql=localhost:26257&username=ODBC&db=adminer_test&ns=public&sql=' + encodeURIComponent(
-		'CREATE SCHEMA adminer_test2; CREATE TABLE bulk_test (id int); INSERT INTO bulk_test VALUES (1)'
+		'CREATE SCHEMA adminer_test2; CREATE TABLE bulk_test (id int); INSERT INTO bulk_test VALUES (1)',
 	));
 	await button(page, 'Execute').click();
 	await page.waitForLoadState(); // the result is flushed while the queries run, navigating away earlier aborts them

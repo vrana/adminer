@@ -262,7 +262,7 @@ test('Search in tables', async () => {
 });
 
 test('Search in tables with special types', async () => {
-	const sql = "CREATE TABLE types (id int PRIMARY KEY, b bit(3), bin binary(4), g point, j json, t text);"
+	const sql = 'CREATE TABLE types (id int PRIMARY KEY, b bit(3), bin binary(4), g point, j json, t text);'
 		+ " INSERT INTO types VALUES (1, b'101', 'abc3', ST_GeomFromText('POINT(3 4)'), '{\"a\": 3}', 'abc3')";
 	await goto(page, '/adminer/?username=ODBC&db=adminer_test&sql=' + encodeURIComponent(sql));
 	await button(page, 'Execute').click();
@@ -374,7 +374,7 @@ test('Import and export CSV', async () => {
 test('Bulk table operations', async () => {
 	await goto(page, '/adminer/?username=ODBC&db=adminer_test&sql=' + encodeURIComponent(
 		'DROP DATABASE IF EXISTS adminer_test2; CREATE DATABASE adminer_test2; CREATE TABLE bulk_test (id int); CREATE TABLE bulk_test2 (id int);'
-		+ ' INSERT INTO bulk_test VALUES (1)'
+		+ ' INSERT INTO bulk_test VALUES (1)',
 	));
 	await button(page, 'Execute').click();
 	await page.waitForLoadState(); // the result is flushed while the queries run, navigating away earlier aborts them
@@ -410,7 +410,7 @@ test('SQL file import', async () => {
 		name: 'test.sql',
 		mimeType: 'application/sql',
 		buffer: Buffer.from("INSERT INTO interprets (name) VALUES ('Karel Gott');\n"
-			+ "DELIMITER ;;\nCREATE PROCEDURE bulk_test_proc() BEGIN SELECT 1; END;;\nDELIMITER ;\n"
+			+ 'DELIMITER ;;\nCREATE PROCEDURE bulk_test_proc() BEGIN SELECT 1; END;;\nDELIMITER ;\n'
 			+ 'DROP PROCEDURE bulk_test_proc;\n'),
 	});
 	await button(page, 'Execute').click();

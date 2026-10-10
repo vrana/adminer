@@ -35,7 +35,7 @@ test('Login', async () => {
 		+ ' CREATE TABLE albums (id int PRIMARY KEY AUTO_INCREMENT, interpret int, title varchar(50),'
 		+ ' FOREIGN KEY (interpret) REFERENCES interprets (id));'
 		+ " INSERT INTO interprets (name) VALUES ('Michael Jackson');"
-		+ " INSERT INTO albums (interpret, title) VALUES (1, 'Dangerous')"
+		+ " INSERT INTO albums (interpret, title) VALUES (1, 'Dangerous')",
 	));
 	await button(page, 'Execute').click();
 	await expect(page.locator('body')).toContainText('Query executed OK');

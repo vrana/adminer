@@ -1,5 +1,7 @@
 ## Adminer dev
 - Select: Don't link a URL followed by text
+### Internal
+- ESLint: Check the formatting by @stylistic/eslint-plugin
 
 ## Adminer 6.1.2 (released 2026-10-10)
 - Select: Quote again the quoted values of IN
