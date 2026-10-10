@@ -1,4 +1,5 @@
 ## Adminer dev
+- Select: Don't link a URL followed by text
 
 ## Adminer 6.1.2 (released 2026-10-10)
 - Select: Quote again the quoted values of IN

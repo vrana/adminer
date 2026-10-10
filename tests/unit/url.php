@@ -5,7 +5,7 @@ namespace Adminer;
 require __DIR__ . "/../../adminer/include/errors.inc.php";
 require __DIR__ . "/../../adminer/include/functions.inc.php";
 
-// Test url_escape(), bracket_escape(), relative_uri() and remove_from_uri().
+// Test url_escape(), bracket_escape(), relative_uri(), remove_from_uri() and is_url().
 // Prints found errors, prints nothing and exits with 0 if everything is OK.
 
 // characters which url_escape() leaves verbatim; + is not among them, it is the escaped space
@@ -136,6 +136,18 @@ if (!defined("SID")) {
 $_SERVER["REQUEST_URI"] = "/adminer.php?sql=a%3Fpage%3D9&db=x&page=2";
 if (remove_from_uri("page|next") !== "adminer.php?sql=a%3Fpage%3D9&db=x") {
 	error("remove_from_uri() removes a parameter from a value: " . remove_from_uri("page|next"));
+}
+
+// is_url() must accept a whole URL and reject a URL followed by text
+foreach (array("http://example.com/", "https://example.com/path?q=1#f", "//example.com/x", "http://example.com:8080") as $url) {
+	if (!is_url($url)) {
+		error("is_url() rejects " . json_encode($url));
+	}
+}
+foreach (array("http://example.com/ some text", "http://example.com/path?q=a b", "http://example.com/x#a b", "http://example.com/x\n", "http://example.com/a\tb") as $url) {
+	if (is_url($url)) {
+		error("is_url() accepts " . json_encode($url));
+	}
 }
 
 exit($errors ? 1 : 0);
