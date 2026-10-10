@@ -21,48 +21,48 @@ Reviewed means translated by a human: 🟩 at least 95%, 🟨 85%, 🟥 less.
 |---|---|--:|--:|--:|--:|---|
 | 🟩 | [English](en.inc.php) | 100% |  |  | 100% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/en.inc.php.atom) |
 | 🟩 | [Čeština](cs.inc.php) | 100% |  |  | 100% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/cs.inc.php.atom) |
-| 🟩 | [Deutsch](de.inc.php) | 98% | 5 |  | 63% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/de.inc.php.atom) |
-| 🟩 | [Polski](pl.inc.php) | 98% | 5 |  | 57% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/pl.inc.php.atom) |
-| 🟩 | [Limba Română](ro.inc.php) | 98% | 5 |  | 37% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ro.inc.php.atom) |
-| 🟩 | [Català](ca.inc.php) | 98% | 5 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ca.inc.php.atom) |
-| 🟩 | [Español](es.inc.php) | 98% | 5 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/es.inc.php.atom) |
-| 🟩 | [Français](fr.inc.php) | 98% | 5 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/fr.inc.php.atom) |
-| 🟩 | [Italiano](it.inc.php) | 98% | 5 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/it.inc.php.atom) |
-| 🟩 | [Nederlands](nl.inc.php) | 98% | 5 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/nl.inc.php.atom) |
-| 🟩 | [Norsk](no.inc.php) | 98% | 5 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/no.inc.php.atom) |
-| 🟩 | [Português (Brazil)](pt-br.inc.php) | 98% | 5 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/pt-br.inc.php.atom) |
+| 🟩 | [Deutsch](de.inc.php) | 98% | 5 |  | 59% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/de.inc.php.atom) |
+| 🟩 | [Polski](pl.inc.php) | 98% | 5 |  | 53% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/pl.inc.php.atom) |
+| 🟩 | [Limba Română](ro.inc.php) | 98% | 5 |  | 35% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ro.inc.php.atom) |
 | 🟩 | [Slovenčina](sk.inc.php) | 98% | 5 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/sk.inc.php.atom) |
-| 🟩 | [Български](bg.inc.php) | 98% | 5 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/bg.inc.php.atom) |
-| 🟩 | [Српски](sr.inc.php) | 98% | 5 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/sr.inc.php.atom) |
-| 🟩 | [繁體中文](zh-tw.inc.php) | 98% | 5 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/zh-tw.inc.php.atom) |
-| 🟩 | [Bahasa Melayu](ms.inc.php) | 98% |  | 5 | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ms.inc.php.atom) |
-| 🟩 | [العربية](ar.inc.php) | 98% |  | 5 | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ar.inc.php.atom) |
-| 🟩 | [Suomi](fi.inc.php) | 98% | 6 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/fi.inc.php.atom) |
-| 🟨 | [Hrvatski](hr.inc.php) | 91% | 27 |  | 68% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/hr.inc.php.atom) |
-| 🟨 | [日本語](ja.inc.php) | 91% | 29 |  | 57% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ja.inc.php.atom) |
-| 🟨 | [বাংলা](bn.inc.php) | 90% | 3 | 29 | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/bn.inc.php.atom) |
+| 🟩 | [Català](ca.inc.php) | 98% | 5 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ca.inc.php.atom) |
+| 🟩 | [Español](es.inc.php) | 98% | 5 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/es.inc.php.atom) |
+| 🟩 | [Français](fr.inc.php) | 98% | 5 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/fr.inc.php.atom) |
+| 🟩 | [Italiano](it.inc.php) | 98% | 5 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/it.inc.php.atom) |
+| 🟩 | [Nederlands](nl.inc.php) | 98% | 5 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/nl.inc.php.atom) |
+| 🟩 | [Norsk](no.inc.php) | 98% | 5 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/no.inc.php.atom) |
+| 🟩 | [Português (Brazil)](pt-br.inc.php) | 98% | 5 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/pt-br.inc.php.atom) |
+| 🟩 | [Български](bg.inc.php) | 98% | 5 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/bg.inc.php.atom) |
+| 🟩 | [Српски](sr.inc.php) | 98% | 5 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/sr.inc.php.atom) |
+| 🟩 | [繁體中文](zh-tw.inc.php) | 98% | 5 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/zh-tw.inc.php.atom) |
+| 🟩 | [Bahasa Melayu](ms.inc.php) | 98% |  | 5 | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ms.inc.php.atom) |
+| 🟩 | [العربية](ar.inc.php) | 98% |  | 5 | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ar.inc.php.atom) |
+| 🟩 | [Suomi](fi.inc.php) | 98% | 6 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/fi.inc.php.atom) |
+| 🟨 | [Hrvatski](hr.inc.php) | 91% | 27 |  | 63% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/hr.inc.php.atom) |
+| 🟨 | [日本語](ja.inc.php) | 91% | 29 |  | 53% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ja.inc.php.atom) |
+| 🟨 | [বাংলা](bn.inc.php) | 90% | 3 | 29 | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/bn.inc.php.atom) |
 | 🟨 | [हिन्दी](hi.inc.php) | 90% | 4 | 29 | 0% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/hi.inc.php.atom) |
-| 🟨 | [Oʻzbekcha](uz.inc.php) | 89% | 2 | 33 | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/uz.inc.php.atom) |
-| 🟨 | [Українська](uk.inc.php) | 89% | 36 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/uk.inc.php.atom) |
-| 🟨 | [Русский](ru.inc.php) | 88% | 37 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ru.inc.php.atom) |
-| 🟨 | [Svenska](sv.inc.php) | 86% | 45 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/sv.inc.php.atom) |
-| 🟨 | [ქართული](ka.inc.php) | 86% | 2 | 43 | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ka.inc.php.atom) |
+| 🟨 | [Oʻzbekcha](uz.inc.php) | 89% | 2 | 33 | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/uz.inc.php.atom) |
+| 🟨 | [Українська](uk.inc.php) | 89% | 36 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/uk.inc.php.atom) |
+| 🟨 | [Русский](ru.inc.php) | 88% | 37 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ru.inc.php.atom) |
+| 🟨 | [Svenska](sv.inc.php) | 86% | 45 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/sv.inc.php.atom) |
+| 🟨 | [ქართული](ka.inc.php) | 86% | 2 | 43 | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ka.inc.php.atom) |
 | 🟨 | [简体中文](zh.inc.php) | 86% | 46 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/zh.inc.php.atom) |
-| 🟥 | [Türkçe](tr.inc.php) | 84% | 51 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/tr.inc.php.atom) |
-| 🟥 | [Latviešu](lv.inc.php) | 84% | 10 | 42 | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/lv.inc.php.atom) |
-| 🟥 | [Galego](gl.inc.php) | 82% | 57 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/gl.inc.php.atom) |
-| 🟥 | [Ελληνικά](el.inc.php) | 82% | 57 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/el.inc.php.atom) |
-| 🟥 | [עברית](he.inc.php) | 82% | 7 | 50 | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/he.inc.php.atom) |
-| 🟥 | [فارسی](fa.inc.php) | 81% | 3 | 57 | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/fa.inc.php.atom) |
-| 🟥 | [Dansk](da.inc.php) | 80% | 66 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/da.inc.php.atom) |
-| 🟥 | [Tiếng Việt](vi.inc.php) | 80% | 66 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/vi.inc.php.atom) |
-| 🟥 | [한국어](ko.inc.php) | 79% | 69 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ko.inc.php.atom) |
-| 🟥 | [Bosanski](bs.inc.php) | 77% | 73 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/bs.inc.php.atom) |
-| 🟥 | [Bahasa Indonesia](id.inc.php) | 76% | 77 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/id.inc.php.atom) |
-| 🟥 | [Magyar](hu.inc.php) | 75% | 81 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/hu.inc.php.atom) |
-| 🟥 | [Eesti](et.inc.php) | 75% | 3 | 78 | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/et.inc.php.atom) |
-| 🟥 | [Lietuvių](lt.inc.php) | 75% | 3 | 79 | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/lt.inc.php.atom) |
-| 🟥 | [Slovenski](sl.inc.php) | 74% | 83 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/sl.inc.php.atom) |
-| 🟥 | [த‌மிழ்](ta.inc.php) | 74% | 4 | 79 | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ta.inc.php.atom) |
-| 🟥 | [Português](pt.inc.php) | 74% | 85 |  | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/pt.inc.php.atom) |
-| 🟥 | [ภาษาไทย](th.inc.php) | 73% | 9 | 78 | 6% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/th.inc.php.atom) |
+| 🟥 | [Türkçe](tr.inc.php) | 84% | 51 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/tr.inc.php.atom) |
+| 🟥 | [Latviešu](lv.inc.php) | 84% | 10 | 42 | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/lv.inc.php.atom) |
+| 🟥 | [Galego](gl.inc.php) | 82% | 57 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/gl.inc.php.atom) |
+| 🟥 | [Ελληνικά](el.inc.php) | 82% | 57 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/el.inc.php.atom) |
+| 🟥 | [עברית](he.inc.php) | 82% | 7 | 50 | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/he.inc.php.atom) |
+| 🟥 | [فارسی](fa.inc.php) | 81% | 3 | 57 | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/fa.inc.php.atom) |
+| 🟥 | [Dansk](da.inc.php) | 80% | 66 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/da.inc.php.atom) |
+| 🟥 | [Tiếng Việt](vi.inc.php) | 80% | 66 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/vi.inc.php.atom) |
+| 🟥 | [한국어](ko.inc.php) | 79% | 69 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ko.inc.php.atom) |
+| 🟥 | [Bosanski](bs.inc.php) | 77% | 73 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/bs.inc.php.atom) |
+| 🟥 | [Bahasa Indonesia](id.inc.php) | 76% | 77 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/id.inc.php.atom) |
+| 🟥 | [Magyar](hu.inc.php) | 75% | 81 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/hu.inc.php.atom) |
+| 🟥 | [Eesti](et.inc.php) | 75% | 3 | 78 | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/et.inc.php.atom) |
+| 🟥 | [Lietuvių](lt.inc.php) | 75% | 3 | 79 | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/lt.inc.php.atom) |
+| 🟥 | [Slovenski](sl.inc.php) | 74% | 83 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/sl.inc.php.atom) |
+| 🟥 | [த‌மிழ்](ta.inc.php) | 74% | 4 | 79 | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/ta.inc.php.atom) |
+| 🟥 | [Português](pt.inc.php) | 74% | 85 |  | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/pt.inc.php.atom) |
+| 🟥 | [ภาษาไทย](th.inc.php) | 73% | 9 | 78 | 5% | [🔔](https://github.com/vrana/adminer/commits/main/adminer/lang/th.inc.php.atom) |
