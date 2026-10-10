@@ -99,6 +99,7 @@ $source = array_keys(fields($TABLE)); //! no text and blob
 if ($row["db"] != "") {
 	connection()->select_db($row["db"]);
 }
+$orig_schema = null;
 if ($row["ns"] != "") {
 	$orig_schema = get_schema();
 	set_schema($row["ns"]);
@@ -114,7 +115,7 @@ if (support("scheme")) {
 		return !information_schema(DB, $schema);
 	});
 	echo "<label>" . lang('Schema') . ": " . html_select("ns", $schemas, $row["ns"] != "" ? $row["ns"] : $_GET["ns"], $attrs) . "</label>";
-	if ($row["ns"] != "") {
+	if ($orig_schema !== null) {
 		set_schema($orig_schema);
 	}
 } elseif (JUSH != "sqlite") {
