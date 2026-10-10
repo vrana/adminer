@@ -198,6 +198,10 @@ class AdminerSelectExpression extends Adminer\Plugin {
 		return ($depth ? null : "($return)");
 	}
 
+	function screenshot() {
+		return "https://www.adminer.org/static/plugins/select-expression.webp";
+	}
+
 	protected $translations = array(
 		'cs' => array('' => 'Umožní psát sloupce ve výpisu s výběrem, také výrazy jako a+b'),
 		'de' => array('' => 'Ermöglicht das Eintippen der Spalten im Select mit Vorschlägen, auch Ausdrücke wie a+b'), // Claude Opus 5.5
