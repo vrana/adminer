@@ -141,6 +141,7 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 		$offset = 0;
 		$empty = true;
 		$copy = false; // PostgreSQL COPY ... FROM stdin
+		$meta = false; // psql \connect
 		$connection2 = connect(); // connection for exploring indexes and EXPLAIN (to not replace FOUND_ROWS()) //! PDO - silent error
 		if ($connection2 && DB != "") {
 			$connection2->select_db(DB);
@@ -160,6 +161,10 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 			} elseif (!$offset && JUSH == 'pgsql' && preg_match("~^($space*+COPY\\s+)[^;]+\\s+FROM\\s+stdin;~i", $query, $match)) {
 				$delimiter = "\n\\\\\\.\r?\n";
 				$copy = true;
+				$offset = strlen($match[0]);
+			} elseif (!$offset && JUSH == 'pgsql' && preg_match("~^$space*+\\\\connect[ \t][^\n]*~", $query, $match)) { // psql meta-command ends at the end of line
+				$delimiter = "\n";
+				$meta = true;
 				$offset = strlen($match[0]);
 			} else {
 				preg_match("($delimiter\\s*|$parse)", $query, $match, PREG_OFFSET_CAPTURE, $offset); // always matches
@@ -198,9 +203,10 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 						$q = substr($query, 0, $pos + ($copy ? 3 : 0)); // 3 - pass "\n\\." to PostgreSQL COPY
 						$query = substr($query, $offset);
 						$offset = 0;
-						if ($copy) { // the COPY delimiter is valid only for the single query
+						if ($copy || $meta) { // the COPY and meta-command delimiters are valid only for the single query
 							$delimiter = driver()->delimiter;
 							$copy = false;
+							$meta = false;
 						}
 						$code = "<code class='jush-" . JUSH . "'>" . adminer()->sqlCommandQuery($q) . "</code>";
 						if (preg_match("~^$space*+\$~", $q) && !preg_match('~/\*M?!~', $q)) { // non-executable comment
@@ -226,7 +232,17 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 							}
 							$start = microtime(true);
 							//! don't allow changing of character_set_results, convert encoding of displayed query
-							if (connection()->multi_query($q) && $connection2 && preg_match("~^$space*+USE\\b~i", $q)) {
+							if (JUSH == "pgsql" && preg_match("~^$space*+\\\\connect\\s+(\"(?:[^\"]|\"\")+\"|[^\\s\";]+)\\s*;*\\s*\$~", $q, $match)) { // trailing semicolons are ignored like in psql
+								$db = idf_unescape($match[1]);
+								if (connection()->select_db($db)) {
+									if ($connection2) {
+										$connection2->select_db($db);
+									}
+									echo ($_POST["only_errors"] ? "" : "<p class='message'>" . lang('Database') . ": " . h($db) . " <span class='time'>(" . format_time($start) . ")</span>\n");
+									continue;
+								}
+								// the error set by select_db() is printed below
+							} elseif (connection()->multi_query($q) && $connection2 && preg_match("~^$space*+USE\\b~i", $q)) {
 								$connection2->query($q);
 							}
 

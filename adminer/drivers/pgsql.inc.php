@@ -10,7 +10,7 @@ if (isset($_GET["pgsql"])) {
 		class PgsqlDb extends SqlDb {
 			public $extension = "PgSQL";
 			public $timeout = 0;
-			private $link, $string, $database = true;
+			private $link, $string;
 
 			// no type declarations, this is passed to set_error_handler()
 			function _error($errno, $error) {
@@ -34,7 +34,6 @@ if (isset($_GET["pgsql"])) {
 				$this->link = @pg_connect("$this->string dbname='" . ($db != "" ? addcslashes($db, "'\\") : "postgres") . "'", PGSQL_CONNECT_FORCE_NEW);
 				if (!$this->link && $db != "") {
 					// try to connect directly with database for performance
-					$this->database = false;
 					$this->link = @pg_connect("$this->string dbname='postgres'", PGSQL_CONNECT_FORCE_NEW);
 				}
 				restore_error_handler();
@@ -56,10 +55,12 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function select_db(string $database) {
-				if ($database == adminer()->database()) {
-					return $this->database;
+				if ($database == pg_dbname($this->link)) { // the connection is to the database directly or to postgres if it failed
+					return true;
 				}
+				set_error_handler(array($this, '_error'));
 				$return = @pg_connect("$this->string dbname='" . addcslashes($database, "'\\") . "'", PGSQL_CONNECT_FORCE_NEW);
+				restore_error_handler();
 				if ($return) {
 					$this->link = $return;
 				}
@@ -161,22 +162,34 @@ if (isset($_GET["pgsql"])) {
 		class PgsqlDb extends PdoDb {
 			public $extension = "PDO_PgSQL";
 			public $timeout = 0;
+			private $string, $username, $password, $database;
 
 			function attach(array $server, string $username, string $password): string {
 				$db = adminer()->database();
 				$port = $server["port"];
 				$host = ($server["host"] ?: $server["socket"]); // the socket is passed as the host directory
 				//! client_encoding is supported since 9.1, but we can't yet use min_version here
-				$dsn = "pgsql:host='$host'" . ($port ? " port=$port" : "") . " client_encoding=utf8 dbname='" . ($db != "" ? addcslashes($db, "'\\") : "postgres") . "'";
+				$this->string = "pgsql:host='$host'" . ($port ? " port=$port" : "") . " client_encoding=utf8";
 				$ssl = adminer()->connectSsl();
 				if (isset($ssl["mode"])) {
-					$dsn .= " sslmode=$ssl[mode]";
+					$this->string .= " sslmode=$ssl[mode]";
 				}
-				return $this->dsn($dsn, $username, $password);
+				$this->username = $username;
+				$this->password = $password;
+				$this->database = ($db != "" ? $db : "postgres");
+				return $this->dsn("$this->string dbname='" . addcslashes($this->database, "'\\") . "'", $username, $password);
 			}
 
 			function select_db(string $database) {
-				return (adminer()->database() == $database);
+				if ($database != $this->database) {
+					$error = $this->dsn("$this->string dbname='" . addcslashes($database, "'\\") . "'", $this->username, $this->password);
+					if ($error != "") {
+						$this->error = $error;
+						return false;
+					}
+					$this->database = $database;
+				}
+				return true;
 			}
 
 			function query(string $query, bool $unbuffered = false) {

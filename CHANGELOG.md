@@ -1,5 +1,8 @@
 ## Adminer dev
 - Select: Don't link a URL followed by text
+- PostgreSQL: Import \connect
+- PostgreSQL PDO: Compute the number of tables in databases
+- PostgreSQL PDO: Export databases from the server level
 ### Internal
 - ESLint: Check the formatting by @stylistic/eslint-plugin
 
