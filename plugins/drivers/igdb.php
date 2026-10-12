@@ -3,7 +3,7 @@
 * @link https://demo.adminer.org/igdb/?igdb=IGDB&db=api
 * username: your Client-ID
 * password: your Client Secret from https://dev.twitch.tv/console/apps
-* @link https://www.adminer.org/static/plugins/igdb.png
+* @link https://www.adminer.org/static/plugins/igdb.webp
 */
 
 namespace Adminer;

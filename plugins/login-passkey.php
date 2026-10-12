@@ -356,7 +356,7 @@ if (window.isSecureContext && window.PublicKeyCredential && window.crypto && cry
 	}
 
 	function screenshot() {
-		return "https://www.adminer.org/static/plugins/login-passkey.png";
+		return "https://www.adminer.org/static/plugins/login-passkey.webp";
 	}
 
 	protected $translations = array(

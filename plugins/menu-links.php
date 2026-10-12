@@ -88,7 +88,7 @@ li:hover .hover, p:hover .hover, div:hover > .hover, .hover.active, tr:hover td.
 	}
 
 	function screenshot() {
-		return "https://www.adminer.org/static/plugins/menu-links.png";
+		return "https://www.adminer.org/static/plugins/menu-links.webp";
 	}
 
 	protected $translations = array(

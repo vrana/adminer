@@ -6,4 +6,4 @@ Colors, fonts, cards, buttons and form controls are taken from the Jupiter style
 Light only, the same way cPanel is by default.
 
 ## Screenshot
-![screenshot](https://www.adminer.org/static/designs/cpanel/screenshot.png)
+![screenshot](https://www.adminer.org/static/designs/cpanel/screenshot.webp)

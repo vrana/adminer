@@ -60,7 +60,7 @@ class AdminerConfig extends Adminer\Plugin {
 	}
 
 	function screenshot() {
-		return "https://www.adminer.org/static/plugins/config.png";
+		return "https://www.adminer.org/static/plugins/config.webp";
 	}
 
 	protected $translations = array(

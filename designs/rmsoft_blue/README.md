@@ -1,2 +1,2 @@
 ## Screenshot
-![screenshot](https://www.adminer.org/static/designs/rmsoft_blue/screenshot.png)
+![screenshot](https://www.adminer.org/static/designs/rmsoft_blue/screenshot.webp)

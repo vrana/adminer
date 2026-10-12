@@ -1,2 +1,2 @@
 ## Screenshot
-![screenshot](https://www.adminer.org/static/designs/dracula/screenshot.png)
+![screenshot](https://www.adminer.org/static/designs/dracula/screenshot.webp)

@@ -101,7 +101,7 @@ ORDER BY
 	}
 
 	function screenshot() {
-		return "https://www.adminer.org/static/plugins/backward-keys.png";
+		return "https://www.adminer.org/static/plugins/backward-keys.webp";
 	}
 
 	protected $translations = array(

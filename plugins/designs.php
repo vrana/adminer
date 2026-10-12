@@ -44,7 +44,7 @@ class AdminerDesigns extends Adminer\Plugin {
 	}
 
 	function screenshot() {
-		return "https://www.adminer.org/static/plugins/designs.png";
+		return "https://www.adminer.org/static/plugins/designs.webp";
 	}
 
 	protected $translations = array(

@@ -10,7 +10,7 @@
 - **Requirements:** PHP 5.3+ (compiled file), PHP 7.4+ (source codes)
 
 ## Screenshot
-![Table structure](https://www.adminer.org/static/screenshots/table.png)
+![Table structure](https://www.adminer.org/static/screenshots/table.webp)
 
 ## Installation
 If downloaded from Git then run: `git submodule update --init` (or `composer install`)
