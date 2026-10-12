@@ -63,7 +63,7 @@ class AdminerLoginOtp extends Adminer\Plugin {
 	}
 
 	function screenshot() {
-		return "https://www.adminer.org/static/login-otp.png";
+		return "https://www.adminer.org/static/plugins/login-otp.webp";
 	}
 
 	protected $translations = array(
