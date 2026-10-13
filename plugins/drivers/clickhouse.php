@@ -253,6 +253,13 @@ if (isset($_GET["clickhouse"])) {
 			return ($engines ?: array("MergeTree", "ReplacingMergeTree", "Memory", "Log", "TinyLog"));
 		}
 
+		function tableHelp(string $name, bool $is_view = false) {
+			$db = strtolower(DB); // there are both information_schema and INFORMATION_SCHEMA
+			if ($db == "system" || $db == "information_schema") {
+				return "https://clickhouse.com/docs/reference/system-tables/" . ($db == "system" ? $name : $db);
+			}
+		}
+
 		function allFields(): array {
 			$return = array();
 			$rows = get_rows(

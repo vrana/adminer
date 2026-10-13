@@ -3,6 +3,7 @@
 - PostgreSQL: Import \connect
 - PostgreSQL PDO: Compute the number of tables in databases
 - PostgreSQL PDO: Export databases from the server level
+- Oracle: Link documentation of data dictionary views
 ### Plugins
 - Drivers: Field key 'doc' to link documentation from column names in select and table structure
 ### Internal

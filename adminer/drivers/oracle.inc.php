@@ -232,6 +232,18 @@ if (isset($_GET["oracle"])) {
 			return true;
 		}
 
+		function tableHelp(string $name, bool $is_view = false) {
+			if (DB == "SYS") {
+				// V$SESSION is a public synonym of SYS.V_$SESSION, GV$ views are documented together with V$
+				if (preg_match('~^G?V_\$(.+)~', $name, $match)) {
+					return "refrn/V-$match[1].html";
+				}
+				if (preg_match('~^(ALL|DBA|USER)_~', $name)) {
+					return "refrn/$name.html";
+				}
+			}
+		}
+
 		function select(string $table, array $select, array $where, array $group, array $order = array(), int $limit = 1, ?int $page = 0, bool $print = false) {
 			// fetching a row with a raw object column fails (ORA-00932) so unlike in MySQL, the conversions appended next to * don't help - * must be expanded to convert the objects in SQL
 			if (in_array("*", $select)) {
