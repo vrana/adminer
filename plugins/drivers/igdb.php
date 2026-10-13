@@ -79,11 +79,9 @@ if (isset($_GET["igdb"])) {
 		}
 
 		function query(string $query, bool $unbuffered = false) {
-			if (preg_match('~^SELECT COUNT\(\*\) FROM (\w+)( WHERE ((MATCH \(search\) AGAINST \((.+)\))|.+))?$~', $query, $match)) {
-				return new Result(array($match[1] == 'dumps' ? array('count' => 50) : $this->request("$match[1]/count", ($match[5] ? 'search "' . addcslashes($match[5], '\\"') . '";'
-					: ($match[3] ? 'where ' . str_replace(' AND ', ' & ', $match[3]) . ';'
-					: ''
-				)))));
+			if (preg_match('~^SELECT COUNT\(\*\) FROM (\w+)(?: WHERE (search "(?:[^"\\\\]|\\\\.)*")?(?:(?: AND )?(.+))?)?$~s', $query, $match)) { // search "..." is built by fulltextSql()
+				$where = (isset($match[3]) ? 'where ' . str_replace(' AND ', ' & ', $match[3]) . ';' : '');
+				return new Result(array($match[1] == 'dumps' ? array('count' => 50) : $this->request("$match[1]/count", ($match[2] ? "$match[2];" : '') . $where)));
 			}
 			if (preg_match('~^\s*(GET|POST|DELETE)\s+([\w/?=]+)\s*;\s*(.*)$~s', $query, $match)) {
 				$endpoint = $match[2];
@@ -230,7 +228,7 @@ if (isset($_GET["igdb"])) {
 						$tds = $xpath->query('td', $tr);
 						$field = $tds[0]->nodeValue;
 						$comment = $tds[2]->nodeValue;
-						if ($field != 'checksum' && $field != 'content_descriptions' && !preg_match('~^DEPRECATED!~', $comment)) {
+						if (!in_array($field, array('checksum', 'content_descriptions', 'test_dummy')) && !preg_match('~^DEPRECATED!~', $comment)) {
 							$this->fields[$table][$field] = array(
 								'full_type' => str_replace('  ', ' ', $tds[1]->nodeValue),
 								'comment' => str_replace('  ', ' ', $comment),
@@ -353,7 +351,7 @@ if (isset($_GET["igdb"])) {
 				;
 			}
 			$start = microtime(true);
-			$multi = (!$search && $method == 'POST' && array_key_exists($table, driver()->tables));
+			$multi = (!$search && $method == 'POST' && array_key_exists($table, driver()->tables) && $table != 'search'); // multiquery rejects the search endpoint
 			$realQuery = str_replace("*;\nexclude checksum", implode(',', $columns), $query); // exclude deprecated columns
 			$return = ($multi
 				? $this->conn->request('multiquery', "query $table \"result\" { $realQuery };\nquery $table/count \"count\" { $common };")
@@ -433,7 +431,7 @@ if (isset($_GET["igdb"])) {
 
 	function indexes(string $table, ?Db $connection2 = null): array {
 		$return = array(array('type' => 'PRIMARY', 'columns' => array($table == 'dumps' ? 'endpoint' : 'id')));
-		if (in_array($table, array('characters', 'collections', 'games', 'platforms', 'themes'))) { // https://api-docs.igdb.com/#search-1
+		if (in_array($table, array('characters', 'collections', 'games', 'platforms', 'search', 'themes'))) { // https://api-docs.igdb.com/#search-1
 			$return[] = array("type" => "FULLTEXT", "columns" => array("search"));
 		}
 		return $return;
