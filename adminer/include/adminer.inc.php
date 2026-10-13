@@ -452,7 +452,7 @@ class Adminer {
 		echo "<thead><tr><th>" . lang('Column') . "<th>" . lang('Type') . (support("comment") ? "<th>" . lang('Comment') : "") . "<tbody>\n";
 		$user_types = (support("type") ? types() : array()); // not structuredTypes() - the types created by extensions are offered in the type dropdown but the type page doesn't manage them
 		foreach ($fields as $field) {
-			echo "<tr><th>" . h($field["field"]);
+			echo "<tr><th>" . h($field["field"]) . doc_link(array(JUSH => $field["doc"]));
 			$type = h($field["full_type"]);
 			$collation = h($field["collation"]);
 			echo "<td><span title='$collation'>"

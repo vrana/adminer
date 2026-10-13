@@ -236,8 +236,15 @@ if (isset($_GET["igdb"])) {
 								'comment' => str_replace('  ', ' ', $comment),
 							);
 							$ref = $xpath->query('a/@href', $tds[1]);
-							if (count($ref) && !in_array($ref[0]->value, array('#game-version-feature-enums', '#tag-numbers'))) {
-								$this->foreignKeys[$table][$field] = substr($ref[0]->value, 1);
+							if ($field == 'image_id') {
+								$this->fields[$table][$field]['doc'] = "https://api-docs.igdb.com/#images";
+							}
+							if (count($ref)) {
+								if (preg_match('~^#(tag-numbers|.*-enums)$~', $ref[0]->value)) {
+									$this->fields[$table][$field]['doc'] = "https://api-docs.igdb.com/" . $ref[0]->value;
+								} else {
+									$this->foreignKeys[$table][$field] = substr($ref[0]->value, 1);
+								}
 							} elseif ($field === 'game_id') { // game_time_to_beats, popularity_primitives
 								$this->foreignKeys[$table][$field] = 'game';
 							}
