@@ -1,4 +1,5 @@
 ## Adminer dev
+- Alter table: Spell out Auto Increment instead of the abbreviation AI
 - Select: Don't link a URL followed by text
 - PostgreSQL: Import \connect
 - PostgreSQL PDO: Compute the number of tables in databases
