@@ -173,31 +173,32 @@ if (isset($_GET["imap"])) {
 	function fields(string $table): array {
 		$return = array();
 		foreach (
-			array( // taken from imap_fetch_overview
-				'subject' => 'the messages subject',
-				'from' => 'who sent it',
-				'to' => 'recipient',
-				'date' => 'when was it sent',
-				'message_id' => 'Message-ID',
-				'references' => 'is a reference to this message id',
-				'in_reply_to' => 'is a reply to this message id',
-				'size' => 'size in bytes',
-				'uid' => 'UID the message has in the mailbox',
-				'msgno' => 'message sequence number in the mailbox',
-				'recent' => 'flagged as recent',
-				'flagged' => 'flagged',
-				'answered' => 'flagged as answered',
-				'deleted' => 'flagged for deletion',
-				'seen' => 'flagged as already read',
-				'draft' => 'flagged as being a draft',
-				'udate' => 'the GMT time of the arrival date',
-			) as $name => $comment
+			array( // taken from imap_fetch_overview, documented by RFC 5322 (message) and RFC 9051 (IMAP)
+				'subject' => array('the messages subject', 'rfc5322.html#section-3.6.5'),
+				'from' => array('who sent it', 'rfc5322.html#section-3.6.2'),
+				'to' => array('recipient', 'rfc5322.html#section-3.6.3'),
+				'date' => array('when was it sent', 'rfc5322.html#section-3.6.1'),
+				'message_id' => array('Message-ID', 'rfc5322.html#section-3.6.4'),
+				'references' => array('is a reference to this message id', 'rfc5322.html#section-3.6.4'),
+				'in_reply_to' => array('is a reply to this message id', 'rfc5322.html#section-3.6.4'),
+				'size' => array('size in bytes', 'rfc9051.html#section-2.3.4'),
+				'uid' => array('UID the message has in the mailbox', 'rfc9051.html#section-2.3.1.1'),
+				'msgno' => array('message sequence number in the mailbox', 'rfc9051.html#section-2.3.1.2'),
+				'recent' => array('flagged as recent', 'rfc9051.html#section-2.3.2'),
+				'flagged' => array('flagged', 'rfc9051.html#section-2.3.2'),
+				'answered' => array('flagged as answered', 'rfc9051.html#section-2.3.2'),
+				'deleted' => array('flagged for deletion', 'rfc9051.html#section-2.3.2'),
+				'seen' => array('flagged as already read', 'rfc9051.html#section-2.3.2'),
+				'draft' => array('flagged as being a draft', 'rfc9051.html#section-2.3.2'),
+				'udate' => array('the GMT time of the arrival date', 'rfc9051.html#section-2.3.3'),
+			) as $name => $val
 		) {
 			$return[$name] = array(
 				"field" => $name,
 				"type" => (preg_match('~^(size|uid|msgno)$~', $name) ? "int" : ""),
 				"privileges" => array("select" => 1),
-				"comment" => $comment,
+				"comment" => $val[0],
+				"doc" => "https://www.rfc-editor.org/rfc/$val[1]",
 			);
 		}
 		return $return;

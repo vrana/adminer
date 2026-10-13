@@ -437,7 +437,11 @@ if (isset($_GET["redis"])) {
 	function fields(string $table): array {
 		return array(
 			"key" => array("field" => "key", "privileges" => array("select" => 1, "where" => 1, "insert" => 1)),
-			"type" => array("field" => "type", "privileges" => array("select" => 1)), // the type is determined by the command creating the key
+			"type" => array(
+				"field" => "type",
+				"privileges" => array("select" => 1), // the type is determined by the command creating the key
+				"doc" => "https://redis.io/docs/latest/develop/data-types/",
+			),
 			"value" => array("field" => "value", "privileges" => array("select" => 1, "insert" => 1, "update" => 1)),
 		);
 	}
