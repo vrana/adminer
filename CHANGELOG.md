@@ -1,6 +1,7 @@
 ## Adminer dev
 - Select: Don't link a URL followed by text
 - PostgreSQL: Import \connect
+- PostgreSQL: Edit rows with a column of an extension type outside search_path
 - PostgreSQL PDO: Compute the number of tables in databases
 - PostgreSQL PDO: Export databases from the server level
 - Oracle: Link documentation of data dictionary views
