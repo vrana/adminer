@@ -21,5 +21,5 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: lts/*
-      - run: npm install --no-save --prefix . eslint @eslint/js globals # composer install runs in a container without npm
+      - run: npm install --no-save --prefix . eslint @eslint/js @stylistic/eslint-plugin globals # composer install runs in a container without npm
       - run: composer check
