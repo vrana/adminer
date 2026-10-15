@@ -1,6 +1,6 @@
 /* Adminer design hever */
 /*
-Theme by Hever [http://hev.cz] - August 2026, ver 0.3.3
+Theme by Hever [http://hev.cz] - August 2026, ver 0.3.4
 Used Silk icon set 1.3 by Mark James - http://www.famfamfam.com/lab/icons/silk
 */
 
@@ -28,7 +28,7 @@ a[href$="&import="] {background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEU
   #menu .links a:hover {color:light-dark(red, #f88);}
 }
 
-#menu ul#tables a[href*="&select="] {background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHISURBVDjLpVPNK0RRFP+9D98syMwUspHkm9I0YkFZWBFKkZ0s7a3Ewh+ilChK7FgoZCJFKYlYKB8zk2+Z5t0P577He29kQU7dd+6575zf+d1zztWklPiPmOozt/U4SThjXIoyIQS4AJjSXO0lGGlvcXAm6Vzsz4xUhm0AIeX4QLig+C+ZpxbOG1wGhGYHr1zMUmZGWRgs0ha3PE1nX/8mWmdgWTzLB+DUYbhm9FfZ35IEyrhXA3VXJfPbsV8B9LQUIeUHYJ8ASobag1jcucNgW8g9W4reYSDi2YnnZDoDiwCokDANct6NwTB0LEdj0HRA/wxa2SN25JNBEdWluUhZ366gqmAaGvrCAXKOozccTGPgt8+vn8GYSGcgyTYp3dpBnBg42nbQPRBTo5bTvqYkmxL6AQhNTWQGBXY3B7BxlEBXozcW64dxRKoKUZBju+P06gl5WaaviMJBM3TNDlbypemIZgHYOnlwASsCmW7nHADGnBoQ3c76YmweJ9BR5zFYjsbRHwm4tmJg6PhWA7pCXXk+bu7fURHKweXtq/sWaksz7SC/CCGFrwtyZ3r+rCnFRZ7qr1qc6mLZj4f9OEyPL8lVpbX/PucPv5QPKHB1TdEAAAAASUVORK5CYII=") no-repeat scroll right bottom; display:inline-block; height:16px; margin-right:4px; vertical-align:middle; overflow:hidden; padding-left:16px; width:0;}
+body.adminer #menu ul#tables a[href*="&select="] {background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAHISURBVDjLpVPNK0RRFP+9D98syMwUspHkm9I0YkFZWBFKkZ0s7a3Ewh+ilChK7FgoZCJFKYlYKB8zk2+Z5t0P577He29kQU7dd+6575zf+d1zztWklPiPmOozt/U4SThjXIoyIQS4AJjSXO0lGGlvcXAm6Vzsz4xUhm0AIeX4QLig+C+ZpxbOG1wGhGYHr1zMUmZGWRgs0ha3PE1nX/8mWmdgWTzLB+DUYbhm9FfZ35IEyrhXA3VXJfPbsV8B9LQUIeUHYJ8ASobag1jcucNgW8g9W4reYSDi2YnnZDoDiwCokDANct6NwTB0LEdj0HRA/wxa2SN25JNBEdWluUhZ366gqmAaGvrCAXKOozccTGPgt8+vn8GYSGcgyTYp3dpBnBg42nbQPRBTo5bTvqYkmxL6AQhNTWQGBXY3B7BxlEBXozcW64dxRKoKUZBju+P06gl5WaaviMJBM3TNDlbypemIZgHYOnlwASsCmW7nHADGnBoQ3c76YmweJ9BR5zFYjsbRHwm4tmJg6PhWA7pCXXk+bu7fURHKweXtq/sWaksz7SC/CCGFrwtyZ3r+rCnFRZ7qr1qc6mLZj4f9OEyPL8lVpbX/PucPv5QPKHB1TdEAAAAASUVORK5CYII=") no-repeat scroll right bottom; display:inline-block; height:16px; margin-right:4px; vertical-align:middle; overflow:hidden; padding-left:16px; width:0;}
 #menu ul#tables a.active[href*="&select="] {border-left:2px solid light-dark(blue, #99d); margin-left:-4px; padding-left:18px;}
 
 .links a[href*="&create="] {background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJ6SURBVDjLpZNZSNRRGMV//2XGsjFrMg2z0so2K21xIFpepYUiAsGIICLffI8eWiBBeg3qQV+KwBYKLB8qpHUmrahcKLc0QsxldNSxdPz/79LD1ChBUXTh8sG93POdc75zDa01/7NsgGvPR09rzQmpVZZSCqlAKIWUCqk0QqoZWyKFRir1uvxIbsAGUFqXHQqkpP1L57M3Pm5MMJBKpQHUdF9BKIGQAlcJXOlOVykSdye3leO6MmkGQNyHw+uO/1X3bzGBK+S0B1IqAKqDg3986HeCZPffwvJtoNT7lOZLvUdtAPEDAKBkRzo3QwMUb89InN1uGGD3spdE214xe8MRUnM2MfppNW0Pqy7YAK5UKK2xLbhdP4hlmdxpGMQwwQT8ziNiI534c7cT6WrFazikzF2Eb8HS1IQEDdiWwcHAQmpehTkQSAcgNvSMiYFW5uUUMdV3HW+ywefGNqITJsbUUL75k4FWYJtQ+yaMZcXrk1ANk/33mbdiD7EvlRieETy+FJLkMFcjRRSW3emIAwiF1hqPBfu2LGSWbbA1uZ41SfWkrtxPrPcypsfFiWYzFGzGKTjFV28WEJeIUHETLdOgrmkI1VdHpCdEet5enP4qLK9mKrqMgedv6cyrAP+qxOTiUxAi7oEJi8frELoFoTLpa7nI/HQvscgSRt+0kV1SSW7qYtp7xrBMphm4Mi5h/VIfTcEq1u0oJaknSEdNiMYHET7UvcMpPEN31Ed7zxgASmk1I0g6dK66s8CRak5mVxjnfS05+TsZCw/T9baTx1nnGb47DrQksjE6HrsHYPz6nYt3+Sc3L8+wA2tz0J6pF5OD4WP7Kpq7f5fO79DfSxjdtCtDAAAAAElFTkSuQmCC") no-repeat scroll 2px bottom; padding-left:22px;}
@@ -57,8 +57,8 @@ th a[href*="&table="]  {background:url("data:image/png;base64,iVBORw0KGgoAAAANSU
 
 table tbody input[name*="check"] {display:inline-block; margin-left: 3px;}
 
-table a[href*="&edit="][href*="&where"] {background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFUSURBVDjLrZM/SAJxGIZdWwuDlnCplkAEm1zkaIiGFFpyMIwGK5KGoK2lphDKkMDg3LLUSIJsSKhIi+684CokOtTiMizCGuzEU5K3vOEgKvtBDe/2Pc8H3x8NAM1fQlx4H9M3pcOWp6TXWmM8A7j0629v1nraiAVC0IrrwATKIgs5xyG5QiE+Z4iQdoeU2oAsnqCSO1NSTu+D9VhqRLD8nIB8F0Q2MgmJDyipCzjvYJkIfpN2UBLG8MpP4dxvQ3ZzGuyyBQ2H+AnOOCBd9aL6soh81A5hyYSGWyCFvxUcerqI4S+CvYVOFPMHxLAq8I3qdHVY5LbBhJzEsCrwutpRFBlUHy6wO2tEYtWAzLELPN2P03kjfj3luqDycV2F8AgefWbEnVqEHa2IznSD6BdsVDNStB0lfh0FPoQjdx8RrAqGzC0YprSgxzsUMOY2bf37N/6Ud1Vc9yYcH50CAAAAAElFTkSuQmCC") no-repeat scroll left bottom;}
-table a[href*="&edit="][href*="&where"] {width:0; display:inline-block; height:16px; overflow:hidden; text-decoration:none; padding:0 0 0 16px; background-position:0px bottom; vertical-align: middle;}
+table a[href*="&edit="][href*="&where"] {background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFUSURBVDjLrZM/SAJxGIZdWwuDlnCplkAEm1zkaIiGFFpyMIwGK5KGoK2lphDKkMDg3LLUSIJsSKhIi+684CokOtTiMizCGuzEU5K3vOEgKvtBDe/2Pc8H3x8NAM1fQlx4H9M3pcOWp6TXWmM8A7j0629v1nraiAVC0IrrwATKIgs5xyG5QiE+Z4iQdoeU2oAsnqCSO1NSTu+D9VhqRLD8nIB8F0Q2MgmJDyipCzjvYJkIfpN2UBLG8MpP4dxvQ3ZzGuyyBQ2H+AnOOCBd9aL6soh81A5hyYSGWyCFvxUcerqI4S+CvYVOFPMHxLAq8I3qdHVY5LbBhJzEsCrwutpRFBlUHy6wO2tEYtWAzLELPN2P03kjfj3luqDycV2F8AgefWbEnVqEHa2IznSD6BdsVDNStB0lfh0FPoQjdx8RrAqGzC0YprSgxzsUMOY2bf37N/6Ud1Vc9yYcH50CAAAAAElFTkSuQmCC") no-repeat scroll left bottom; padding:0 0 0 20px;}
+table td.check a[href*="&edit="][href*="&where"] {width:0; display:inline-block; height:16px; overflow:hidden; text-decoration:none; padding:0 0 0 16px; background-position:0px bottom; vertical-align: middle;}
 
 table thead td a[href*="&modify=1"] {background:url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QAAAAAAAD5Q7t/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3gEKDjA70u7s9gAAAMZJREFUOMvtksFpwzAUhr9fcUsWyAQewWDIHt6iLrlriBDIBl4maARPYNH6VtAh2FEuCSQksUV77Qc66Ef63nvw5JyLTNA0DXme03UdVVU9PnDOxWEYJk9d109z733MrqLN/oAkiBEJEAjYfqwJIbzsMLu9vC9XoIgxJ94yEX6+meNOoAXACWPAmEsnqQIBx/CFgEGRo0DEdMHuc81vkPd+soy1lqIoaNsWa+2jYG4PkkYoy/IuHMcx6XPf9xj+yL8gYQ/mOAPpeHRKiIdANAAAAABJRU5ErkJggg==") no-repeat scroll right bottom; }
 table thead td a[href*="&modify=1"] {width:0; display:inline-block; height:16px; overflow:hidden; text-decoration:none; padding:0 0 0 16px; vertical-align: middle;}
@@ -108,8 +108,8 @@ input[name="logout"]:hover {color:light-dark(red, #f88);}
   .js .checkable .checked:hover td, .js .checkable .checked:hover th { background: var(--lit); }
   .js .checkable .checked a { color: var(--link); }
   .time { color: silver; }
-  .icon { filter: invert(1); background-color: var(--bg); }
-  .icon:hover { background-color: var(--lit); }
+  .icon { filter: invert(1); background-color: #062642; }
+  .icon:hover { background-color: #d1394e; }
   #menu { border-color: #777; }
   #menu p, #logins, #tables { border-color: #777; }
   #h1 { color: #999; }
@@ -118,6 +118,6 @@ input[name="logout"]:hover {color:light-dark(red, #f88);}
   #help { border-color: #777; background: var(--lit); }
   #schema div.table a { color: #6ba4d6; }
   #menu .active { color: var(--link); }
-  #edit-fields tbody tr:hover td, #edit-fields tbody tr:hover th { background: var(--lit); }
+  #edit-fields tbody tr:hover td, #edit-fields tbody tr:hover th { background: #1a4268; }
   :target { color: #a8b05f; }
 }
