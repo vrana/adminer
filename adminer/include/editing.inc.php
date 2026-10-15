@@ -355,7 +355,7 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 	echo "<th>" . lang('Options'); // no label required, options have their own label
 	if ($type == "TABLE") {
 		echo "<th id='label-null'>NULL\n";
-		echo "<th><input type='radio' name='auto_increment_col' value=''><abbr id='label-ai' title='" . lang('Auto Increment') . "'>AI</abbr>";
+		echo "<th><input type='radio' name='auto_increment_col' value=''><abbr id='label-ai' title='" . lang('Auto Increment') . "'>A_I</abbr>";
 		echo doc_link(array(
 			'sql' => "example-auto-increment.html",
 			'mariadb' => "auto_increment/",
