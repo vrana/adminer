@@ -3,6 +3,7 @@
 - Alter table: Label the auto-increment column A_I instead of AI (bug #1360)
 - Create database: Search collations (bug #1362)
 - PostgreSQL: Import \connect
+- PostgreSQL: Set collation in Create database
 - PostgreSQL: Edit rows with a column of an extension type outside search_path
 - PostgreSQL PDO: Compute the number of tables in databases
 - PostgreSQL PDO: Export databases from the server level

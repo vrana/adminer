@@ -766,8 +766,11 @@ ORDER BY conkey, conname") as $row
 	}
 
 	function collations(): array {
-		//! supported in CREATE DATABASE
-		return array();
+		// only LOCALE of a new database, columns use collation names and an existing database can't change it
+		return (isset($_GET["database"]) && DB == "" && connection()->flavor != 'cockroach' && min_version(13)
+			? get_vals("SELECT DISTINCT collcollate FROM pg_collation WHERE collprovider = 'c' ORDER BY 1") // not filtered by encoding
+			: array()
+		);
 	}
 
 	function information_schema(string $db, string $schema = ""): bool {
@@ -789,7 +792,7 @@ ORDER BY conkey, conname") as $row
 	}
 
 	function create_database(string $db, string $collation) {
-		return queries("CREATE DATABASE " . idf_escape($db) . ($collation ? " ENCODING " . idf_escape($collation) : ""));
+		return queries("CREATE DATABASE " . idf_escape($db) . ($collation ? " TEMPLATE template0 LOCALE " . q($collation) : "")); // template1 accepts only its own locale
 	}
 
 	function drop_databases(array $databases): bool {
