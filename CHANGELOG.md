@@ -1,6 +1,7 @@
 ## Adminer dev
 - Select: Don't link a URL followed by text
 - Alter table: Label the auto-increment column A_I instead of AI (bug #1360)
+- Create database: Search collations (bug #1362)
 - PostgreSQL: Import \connect
 - PostgreSQL: Edit rows with a column of an extension type outside search_path
 - PostgreSQL PDO: Compute the number of tables in databases

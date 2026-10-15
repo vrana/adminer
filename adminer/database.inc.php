@@ -76,7 +76,8 @@ echo ($_POST["add"] || strpos($name, "\n")
 	? '<textarea autofocus name="name" rows="10" cols="40">' . h($name) . '</textarea><br>'
 	: '<input name="name" autofocus value="' . h($name) . '" data-maxlength="64" autocapitalize="off">'
 ) . "\n";
-echo ($collations ? html_select("collation", array("" => "(" . lang('collation') . ")") + $collations, $row["collation"]) . doc_link(array(
+echo ($collations ? "<datalist id='collations'>" . optionlist(flat_collations()) . "</datalist>"
+	. "<input list='collations' name='collation' value='" . h($row["collation"]) . "' placeholder='(" . lang('collation') . ")'>" . doc_link(array(
 	'sql' => "charset-charsets.html",
 	'mariadb' => "supported-character-sets-and-collations/",
 	'mssql' => "relational-databases/system-functions/sys-fn-helpcollations-transact-sql",
