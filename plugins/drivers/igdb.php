@@ -190,7 +190,7 @@ if (isset($_GET["igdb"])) {
 
 		static function connect(string $server, string $username, string $password) {
 			$filename = self::docsFilename();
-			if (!file_exists($filename)) {
+			if (!file_exists($filename) || filemtime($filename) < time() - 7 * 24 * 60 * 60) {
 				list($contents, $status) = get_url("https://api-docs.igdb.com/", stream_context_create(array('http' => array('ignore_errors' => true))));
 				if ($status != 200 || !file_put_contents($filename, $contents)) {
 					return "Download https://api-docs.igdb.com/ and save it as $filename";
