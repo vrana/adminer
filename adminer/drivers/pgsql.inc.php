@@ -925,6 +925,12 @@ ORDER BY conkey, conname") as $row
 		$queries = array();
 		$concurrently = (support("concurrent_indexes") && $_POST["concurrently"] ? " CONCURRENTLY" : "");
 		foreach ($alter as $val) {
+			if (
+				$val[0] == "UNIQUE" && $val[2] == "DROP"
+				&& !get_val("SELECT 1 FROM pg_constraint JOIN pg_class ON conindid = pg_class.oid WHERE conrelid = " . driver()->tableOid($table) . " AND relname = " . q($val[1]))
+			) {
+				$val[0] = "INDEX"; // CREATE UNIQUE INDEX without a constraint, e.g. an invalid one
+			}
 			if ($val[0] != "INDEX") {
 				//! descending UNIQUE indexes result in syntax error
 				$create[] = ($val[2] == "DROP"

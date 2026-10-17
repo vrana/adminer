@@ -609,7 +609,7 @@ WHERE c.object_id = " . q($table_id)) as $row
 		$return = array();
 		// sp_statistics doesn't return information about primary key
 		foreach (
-			get_rows("SELECT i.name, key_ordinal, is_unique, is_primary_key, c.name AS column_name, is_descending_key
+			get_rows("SELECT i.name, key_ordinal, is_unique, is_primary_key, is_disabled, c.name AS column_name, is_descending_key
 FROM sys.indexes i
 INNER JOIN sys.index_columns ic ON i.object_id = ic.object_id AND i.index_id = ic.index_id
 INNER JOIN sys.columns c ON ic.object_id = c.object_id AND ic.column_id = c.column_id
@@ -618,6 +618,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 			$name = $row["name"];
 			$return[$name]["type"] = ($row["is_primary_key"] ? "PRIMARY" : ($row["is_unique"] ? "UNIQUE" : "INDEX"));
 			$return[$name]["lengths"] = array();
+			$return[$name]["invalid"] = !!$row["is_disabled"]; // ALTER INDEX ... DISABLE, a unique one doesn't enforce uniqueness
 			$return[$name]["columns"][$row["key_ordinal"]] = $row["column_name"];
 			$return[$name]["descs"][$row["key_ordinal"]] = ($row["is_descending_key"] ? '1' : null);
 		}
@@ -756,25 +757,37 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 	function alter_indexes(string $table, $alter) {
 		$index = array();
 		$drop = array();
+		$queries = array();
 		foreach ($alter as $val) {
 			if ($val[2] == "DROP") {
-				if ($val[0] == "PRIMARY") { //! sometimes used also for UNIQUE
+				if (
+					$val[0] == "PRIMARY"
+					|| ($val[0] == "UNIQUE" && get_val("SELECT is_unique_constraint FROM sys.indexes WHERE object_id = OBJECT_ID(" . q(table($table)) . ") AND name = " . q($val[1])))
+				) {
 					$drop[] = idf_escape($val[1]);
 				} else {
 					$index[] = idf_escape($val[1]) . " ON " . table($table);
 				}
-			} elseif (
-				!queries(($val[0] != "PRIMARY"
+			} else {
+				$queries[] = ($val[0] != "PRIMARY"
 					? "CREATE $val[0] " . ($val[0] != "INDEX" ? "INDEX " : "") . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table)
 					: "ALTER TABLE " . table($table) . " ADD PRIMARY KEY"
-				) . " (" . implode(", ", $val[2]) . ")")
-			) {
+				) . " (" . implode(", ", $val[2]) . ")";
+			}
+		}
+		// drop first, a changed index keeps its name
+		if ($drop) {
+			array_unshift($queries, "ALTER TABLE " . table($table) . " DROP " . implode(", ", $drop));
+		}
+		if ($index) {
+			array_unshift($queries, "DROP INDEX " . implode(", ", $index));
+		}
+		foreach ($queries as $query) {
+			if (!queries($query)) {
 				return false;
 			}
 		}
-		return (!$index || queries("DROP INDEX " . implode(", ", $index)))
-			&& (!$drop || queries("ALTER TABLE " . table($table) . " DROP " . implode(", ", $drop)))
-		;
+		return true;
 	}
 
 	function found_rows(array $table_status, array $where) {

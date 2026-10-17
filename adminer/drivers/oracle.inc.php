@@ -446,12 +446,14 @@ ORDER BY cc.position', $connection2) as $row
 	function indexes(string $table, ?Db $connection2 = null): array {
 		$return = array();
 		$constraints = array();
+		$partitioned = array();
 		foreach (table_constraints($table, $connection2) as $name => $constraint) {
 			$constraints[$name] = $constraint["type"];
 		}
 		foreach (
-			get_rows("SELECT aic.*, atc.data_default
+			get_rows("SELECT aic.*, atc.data_default, ai.status, ai.partitioned
 FROM all_ind_columns aic
+JOIN all_indexes ai ON ai.owner = aic.index_owner AND ai.index_name = aic.index_name
 LEFT JOIN all_tab_cols atc ON aic.column_name = atc.column_name AND aic.table_name = atc.table_name AND aic.index_owner = atc.owner
 WHERE aic.table_name = " . q($table) . " AND " . where_owner("aic.table_owner") . "
 ORDER BY aic.column_position", $connection2) as $row
@@ -461,9 +463,20 @@ ORDER BY aic.column_position", $connection2) as $row
 			$column_name = ($column_name ? trim($column_name, '"') : $row["COLUMN_NAME"]); // trim - possibly wrapped in quotes but never contains quotes inside
 			$type = idx($constraints, $index_name);
 			$return[$index_name]["type"] = ($type == "P" ? "PRIMARY" : ($type == "U" ? "UNIQUE" : "INDEX"));
+			$return[$index_name]["invalid"] = ($row["STATUS"] == "UNUSABLE");
 			$return[$index_name]["columns"][] = $column_name;
 			$return[$index_name]["lengths"][] = ($row["CHAR_LENGTH"] && $row["CHAR_LENGTH"] != $row["COLUMN_LENGTH"] ? $row["CHAR_LENGTH"] : null);
 			$return[$index_name]["descs"][] = ($row["DESCEND"] && $row["DESCEND"] == "DESC" ? '1' : null);
+			if ($row["PARTITIONED"] == "YES") {
+				$partitioned[$index_name] = q($index_name);
+			}
+		}
+		if ($partitioned) {
+			// a partitioned index has status N/A, its partitions have their own; EXISTS over them in the query above took ~0.3 s each to compile
+			$in = where_owner("index_owner") . " AND index_name IN (" . implode(", ", $partitioned) . ") AND status = 'UNUSABLE'";
+			foreach (get_rows("SELECT index_name FROM all_ind_partitions WHERE $in UNION SELECT index_name FROM all_ind_subpartitions WHERE $in", $connection2) as $row) {
+				$return[$row["INDEX_NAME"]]["invalid"] = true;
+			}
 		}
 		uasort($return, function ($a, $b) {
 			// the constraint indexes first as the removed ORDER BY ac.constraint_type did, the callers pick the first usable index

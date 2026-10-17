@@ -80,7 +80,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 
 	// drop removed indexes
 	foreach ($indexes as $name => $existing) {
-		$alter[] = array(($existing["invalid"] ? "INDEX" : $existing["type"]), $name, "DROP"); // an invalid unique index is not a constraint
+		$alter[] = array($existing["type"], $name, "DROP");
 	}
 	if (!$alter) {
 		redirect(ME . "table=" . url_escape($TABLE));
