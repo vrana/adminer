@@ -500,7 +500,7 @@ class Adminer {
 
 			echo "<tr title='" . h($name) . "'>";
 			echo "<th>" . h($index["type"]) . ($default_algorithm && $index['algorithm'] != $default_algorithm ? " (" . h($index['algorithm']) . ")" : "");
-			echo "<td>" . implode(", ", $print);
+			echo "<td>" . implode(", ", $print) . ($index["invalid"] ? " <span class='error'>INVALID</span>" : "");
 			if ($partial) {
 				echo "<td>" . ($index['partial'] ? "<code class='sql jush-" . JUSH . "'>WHERE " . h($index['partial']) : "");
 			}

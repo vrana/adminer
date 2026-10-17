@@ -707,7 +707,7 @@ ORDER BY a.attnum") as $row
 		$table_oid = driver()->tableOid($table);
 		$columns = get_key_vals("SELECT attnum, attname FROM pg_attribute WHERE attrelid = $table_oid AND attnum > 0", $connection2);
 		foreach (
-			get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey, indoption, amname,
+			get_rows("SELECT relname, indisunique::int, indisprimary::int, indisvalid::int, indkey, indoption, amname,
 	pg_get_expr(indpred, indrelid, true) AS partial, pg_get_expr(indexprs, indrelid) AS indexpr" . ($connection2->flavor == 'cockroach' ? "" : ",
 	(SELECT string_agg(CASE WHEN opcdefault THEN '' ELSE opcname END, ' ' ORDER BY s)
 		FROM generate_subscripts(indclass, 1) AS s JOIN pg_catalog.pg_opclass ON pg_opclass.oid = indclass[s]) AS opclasses") . "
@@ -723,6 +723,7 @@ ORDER BY indisprimary DESC, indisunique DESC", $connection2) as $row
 			$return[$relname]["descs"] = array();
 			$return[$relname]["algorithm"] = $row["amname"];
 			$return[$relname]["partial"] = $row["partial"];
+			$return[$relname]["invalid"] = !$row["indisvalid"]; // left by a failed CREATE INDEX CONCURRENTLY, a unique one doesn't enforce uniqueness
 			$indexpr = preg_split('~(?<=\)), (?=\()~', $row["indexpr"]); //! '), (' used in expression
 			foreach (explode(" ", $row["indkey"]) as $indkey) {
 				$return[$relname]["columns"][] = ($indkey ? $columns[$indkey] : array_shift($indexpr));

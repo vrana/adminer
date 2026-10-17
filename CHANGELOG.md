@@ -8,6 +8,7 @@
 - PostgreSQL: Set collation in Create database
 - PostgreSQL: Edit rows with a column of an extension type outside search_path
 - PostgreSQL: Create and drop indexes concurrently
+- PostgreSQL: Mark and recreate invalid indexes
 - PostgreSQL PDO: Compute the number of tables in databases
 - PostgreSQL PDO: Export databases from the server level
 - Oracle: Link documentation of data dictionary views

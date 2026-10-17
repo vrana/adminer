@@ -65,6 +65,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 					&& (!$existing["opclasses"] || array_values($existing["opclasses"]) === $opclasses)
 					&& $existing["partial"] == $index_condition
 					&& (!$index_algorithms || $existing["algorithm"] == $index_algorithm)
+					&& !$existing["invalid"] // saving an invalid index recreates it
 				) {
 					// skip existing index
 					unset($indexes[$name]);
@@ -79,7 +80,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 
 	// drop removed indexes
 	foreach ($indexes as $name => $existing) {
-		$alter[] = array($existing["type"], $name, "DROP");
+		$alter[] = array(($existing["invalid"] ? "INDEX" : $existing["type"]), $name, "DROP"); // an invalid unique index is not a constraint
 	}
 	if (!$alter) {
 		redirect(ME . "table=" . url_escape($TABLE));
@@ -205,6 +206,8 @@ foreach ($row["indexes"] as $index) {
 			echo "<td$idxopts><input name='indexes[$j][partial]' value='" . h($index["partial"]) . "' autocapitalize='off' aria-labelledby='label-condition'>\n";
 		}
 		echo "<td>" . icon("cross", "drop_col[$j]", "x", lang('Remove'), on('click', 'editingRemoveRow', 'indexes$1[type]'));
+		echo (idx($indexes[$index["name"]], "invalid") ? " <span class='error'>INVALID</span>" : ""); // rows from $_POST don't carry the flag
+		echo "\n";
 	}
 	$j++;
 }
