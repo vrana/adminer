@@ -1,5 +1,6 @@
 ## Adminer dev
 - Select: Don't link a URL followed by text
+- Edit: Fix the SQL function with a syntax highlighted textarea, keep newlines
 - Alter table: Label the auto-increment column A_I instead of AI (bug #1360)
 - Create database: Search collations (bug #1362)
 - PostgreSQL: Import \connect
@@ -8,6 +9,7 @@
 - PostgreSQL PDO: Compute the number of tables in databases
 - PostgreSQL PDO: Export databases from the server level
 - Oracle: Link documentation of data dictionary views
+- Editor: Hide the hint for now()
 ### Plugins
 - Drivers: Field key 'doc' to link documentation from column names in select and table structure
 ### Internal
