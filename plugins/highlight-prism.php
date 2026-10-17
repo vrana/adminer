@@ -31,28 +31,30 @@ import { highlightText } from '<?php echo $this->editorRoot; ?>/prism/index.js';
 import '<?php echo $this->editorRoot; ?>/prism/languages/json.js';
 import '<?php echo $this->editorRoot; ?>/prism/languages/sql.js';
 
+const language = el => (
+	/jush-json/.test(el.className) ? 'json' : (
+	/jush-(\w*sql|oracle|clickhouse|firebird)/.test(el.className) ? 'sql' : (
+	''
+)));
+
 adminerHighlighter = els => els.forEach(el => {
-	const mode = (
-		/jush-json/.test(el.className) ? 'json' : (
-		/jush-(\w*sql|oracle|clickhouse|firebird)/.test(el.className) ? 'sql' : (
-		''
-	)));
+	const mode = language(el);
 	if (mode) {
 		el.innerHTML = highlightText(el.textContent, mode);
 	}
 });
 adminerHighlighter(qsa('code'));
 
-const el = document.querySelector('.sqlarea');
-if (el) {
+for (const el of qsa('textarea[class*="jush-"]')) {
 	const name = el.name;
+	const className = el.className;
 	const width = el.clientWidth;
 	const height = el.clientHeight;
-	const editor = editorFromPlaceholder('.sqlarea', { language: 'sql', lineNumbers: false });
+	const editor = editorFromPlaceholder(el, { language: language(el) || 'sql', lineNumbers: false });
 	editor.wrapper.parentElement.style.width = width + 'px';
 	editor.wrapper.style.height = height + 'px';
 	editor.textarea.name = name;
-	editor.textarea.className = 'sqlarea';
+	editor.textarea.className = className;
 	editor.textarea.onchange = editor.update;
 }
 </script>
