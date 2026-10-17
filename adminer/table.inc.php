@@ -106,7 +106,7 @@ if (!is_view($table_status) && driver()->supportsAlterTable($table_status)) {
 			echo "<table>\n";
 			foreach ($check_constraints as $key => $val) {
 				echo "<tr title='" . h($key) . "'>";
-				echo "<td><code class='jush-" . JUSH . "'>" . shorten_utf8(preg_replace('~\s+~', ' ', ltrim($val)), 80, "</code>");
+				echo "<td><code class='sql jush-" . JUSH . "'>" . shorten_utf8(preg_replace('~\s+~', ' ', ltrim($val)), 80, "</code>");
 				echo "<td class='hover'><a href='" . h(ME . 'check=' . url_escape($TABLE) . '&name=' . url_escape($key)) . "'>" . lang('Alter') . "</a>";
 				echo "\n";
 			}
@@ -150,7 +150,7 @@ if ($inherited) {
 	echo "<h3 id='partitions'>" . lang('Inherited by') . "</h3>\n";
 	$partition = driver()->partitionsInfo($TABLE);
 	if ($partition) {
-		echo "<p><code class='jush-" . JUSH . "'>BY " . h("$partition[partition_by]($partition[partition])") . "</code>\n";
+		echo "<p><code class='sql jush-" . JUSH . "'>BY " . h("$partition[partition_by]($partition[partition])") . "</code>\n";
 	}
 	tables_links($inherited);
 }
