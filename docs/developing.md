@@ -41,6 +41,7 @@ A driver announces which features it supports by `support()`, called with one of
 - `check` - CHECK constraints on the table structure page
 - `columns` - columns can be defined when creating and altering a table
 - `comment` - comments of tables and columns
+- `concurrent_indexes` - creating and dropping indexes concurrently (PostgreSQL)
 - `copy` - copying a table including its data
 - `cursor` - rows are paged by a cursor so the number of the following rows is unknown (Redis, SimpleDB)
 - `database` - creating, altering and dropping databases

@@ -922,6 +922,7 @@ ORDER BY conkey, conname") as $row
 		$create = array();
 		$drop = array();
 		$queries = array();
+		$concurrently = (support("concurrent_indexes") && $_POST["concurrently"] ? " CONCURRENTLY" : "");
 		foreach ($alter as $val) {
 			if ($val[0] != "INDEX") {
 				//! descending UNIQUE indexes result in syntax error
@@ -932,7 +933,7 @@ ORDER BY conkey, conname") as $row
 			} elseif ($val[2] == "DROP") {
 				$drop[] = idf_escape($val[1]);
 			} else {
-				$queries[] = "CREATE INDEX " . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_"))
+				$queries[] = "CREATE INDEX$concurrently " . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_"))
 					. " ON " . table($table)
 					. ($val[3] ? " USING $val[3]" : "")
 					. " (" . implode(", ", $val[2]) . ")"
@@ -944,7 +945,13 @@ ORDER BY conkey, conname") as $row
 			array_unshift($queries, "ALTER TABLE " . table($table) . implode(",", $create));
 		}
 		if ($drop) {
-			array_unshift($queries, "DROP INDEX " . implode(", ", $drop));
+			// DROP INDEX CONCURRENTLY accepts only one index
+			$queries = array_merge(($concurrently
+				? array_map(function ($idf) {
+					return "DROP INDEX CONCURRENTLY $idf";
+				}, $drop)
+				: array("DROP INDEX " . implode(", ", $drop))
+			), $queries);
 		}
 		foreach ($queries as $query) {
 			if (!queries($query)) {
@@ -1512,6 +1519,7 @@ WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary !=
 			. (connection()->flavor == 'cockroach' ? '' : '|deferrable') // https://github.com/cockroachdb/cockroach/issues/31632
 			. (connection()->flavor == 'cockroach' ? '' : '|transaction_ddl') // autocommit_before_ddl commits DDL in a transaction
 			. (connection()->flavor == 'cockroach' || !min_version(9.1) ? '' : '|extension') // CockroachDB has no real rows in pg_extension
+			. (connection()->flavor == 'cockroach' || !min_version(9.2) ? '' : '|concurrent_indexes') // CockroachDB ignores CONCURRENTLY, it always builds indexes online
 			. (connection()->flavor == 'cockroach' ? '' : '|processlist') // https://github.com/cockroachdb/cockroach/issues/24745
 			. ')$~', $feature)
 		;

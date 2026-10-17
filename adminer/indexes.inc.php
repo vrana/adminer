@@ -213,5 +213,10 @@ foreach ($row["indexes"] as $index) {
 </div>
 <p>
 <input type='submit' value='<?php echo lang('Save'); ?>'>
-<?php echo input_token(); ?>
+<?php
+if (support("concurrent_indexes")) {
+	echo checkbox("concurrently", 1, $_POST["concurrently"], "concurrently") . doc_link(array('pgsql' => 'sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY')) . "\n";
+}
+echo input_token();
+?>
 </form>
