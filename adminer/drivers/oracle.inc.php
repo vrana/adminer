@@ -364,6 +364,16 @@ ORDER BY 1") as $row
 		) {
 			$return[$row["Name"]] = $row;
 		}
+		// a partitioned index has status N/A, its partitions have their own
+		foreach (
+			get_vals("SELECT table_name FROM all_indexes ai WHERE " . where_owner("table_owner") . " AND (status = 'UNUSABLE'
+	OR EXISTS (SELECT 1 FROM all_ind_partitions aip WHERE aip.index_owner = ai.owner AND aip.index_name = ai.index_name AND aip.status = 'UNUSABLE')
+	OR EXISTS (SELECT 1 FROM all_ind_subpartitions ais WHERE ais.index_owner = ai.owner AND ais.index_name = ai.index_name AND ais.status = 'UNUSABLE'))") as $table
+		) {
+			if ($return[$table]) { // don't create an entry for an object not listed above
+				$return[$table]["invalid_index"] = "1";
+			}
+		}
 		return $return;
 	}
 

@@ -606,6 +606,7 @@ ORDER BY 1";
 	obj_description(c.oid, 'pg_class') AS \"Comment\",
 	" . (min_version(12) ? "''" : "CASE WHEN relhasoids THEN 'oid' ELSE '' END") . " AS \"Oid\",
 	reltuples AS \"Rows\",
+	EXISTS (SELECT 1 FROM pg_index WHERE indrelid = c.oid AND NOT indisvalid)::int AS invalid_index,
 	" . ($sequences ? "seq.last_value" : "NULL") . " AS \"Auto_increment\"" . (min_version(10) ? ",
 	relispartition::int AS dependent" : "") . "
 FROM pg_class c

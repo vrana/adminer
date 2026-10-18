@@ -8,15 +8,13 @@
 - PostgreSQL: Set collation in Create database
 - PostgreSQL: Edit rows with a column of an extension type outside search_path
 - PostgreSQL: Create and drop indexes concurrently
-- PostgreSQL: Mark and recreate invalid indexes
 - PostgreSQL: Drop a unique index without a constraint
 - PostgreSQL PDO: Compute the number of tables in databases
 - PostgreSQL PDO: Export databases from the server level
-- MS SQL: Mark and recreate disabled indexes
+- PostgreSQL, MS SQL, Oracle: Mark and recreate invalid indexes
 - MS SQL: Alter an index without renaming it
 - MS SQL: Drop a unique constraint in Alter indexes
 - Oracle: Link documentation of data dictionary views
-- Oracle: Mark and recreate unusable indexes
 - Editor: Hide the hint for now()
 ### Plugins
 - Drivers: Field key 'doc' to link documentation from column names in select and table structure

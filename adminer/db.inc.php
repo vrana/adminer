@@ -185,7 +185,8 @@ if (adminer()->homepage()) {
 					foreach ($columns as $key => $column) {
 						$id = " id='$key-" . h($name) . "'";
 						echo ($column[1]
-							? "<td align='right'><a href='" . h(ME . "$column[1]=") . url_escape($name) . "'$id title='$column[2]'>" . format_status($status, $key) . "</a>"
+							? "<td align='right'>" . ($key == "Index_length" && $status["invalid_index"] ? "<span class='error'>INVALID</span> " : "")
+								. "<a href='" . h(ME . "$column[1]=") . url_escape($name) . "'$id title='$column[2]'>" . format_status($status, $key) . "</a>"
 							: "<td$id>" . h(idx($status, $key, '?')) . ($key == "Comment" && $status["Error"] ? " <span class='error'>" . h($status["Error"]) . "</span>" : "")
 						);
 					}
