@@ -403,7 +403,7 @@ if (isset($_GET["pgsql"])) {
 		}
 
 		function quoteBinary(string $s): string {
-			return "'\\x" . bin2hex($s) . "'"; // available since PostgreSQL 8.1
+			return "decode('" . bin2hex($s) . "', 'hex')"; // '\x...' requires standard_conforming_strings
 		}
 
 		function md5(string $column, array $field) {

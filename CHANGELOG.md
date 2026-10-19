@@ -9,6 +9,7 @@
 - PostgreSQL: Edit rows with a column of an extension type outside search_path
 - PostgreSQL: Create and drop indexes concurrently
 - PostgreSQL: Drop a unique index without a constraint
+- PostgreSQL: Save binary data with standard_conforming_strings off
 - PostgreSQL PDO: Compute the number of tables in databases
 - PostgreSQL PDO: Export databases from the server level
 - PostgreSQL, MS SQL, Oracle: Mark and recreate invalid indexes
