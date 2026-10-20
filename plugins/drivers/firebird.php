@@ -176,9 +176,16 @@ ORDER BY r.RDB$FIELD_POSITION';
 				$type = "text"; // BLOB SUB_TYPE TEXT, alter_table() translates it back
 			}
 			$default = $row['FIELD_DEFAULT_VALUE']; // RDB$DEFAULT_VALUE is compiled BLR, the source is 'DEFAULT expression' of the column or its domain
+			$default_sql = false;
 			if ($default !== null) {
 				$default = preg_replace('~^\s*DEFAULT\s+~i', '', $default);
-				$default = (preg_match("~^'(.*)'$~s", $default, $match) ? str_replace("''", "'", $match[1]) : ($default == "NULL" ? null : $default));
+				if (preg_match("~^'((?:[^']|'')*)'$~s", $default, $match)) {
+					$default = str_replace("''", "'", $match[1]);
+				} elseif (preg_match('~^NULL$~i', $default)) {
+					$default = null;
+				} else {
+					$default_sql = !is_numeric($default);
+				}
 			}
 			$return[trim($row['FIELD_NAME'])] = array(
 				"field" => trim($row["FIELD_NAME"]),
@@ -189,6 +196,7 @@ ORDER BY r.RDB$FIELD_POSITION';
 					? "GENERATED " . ($row["FIELD_IDENTITY_TYPE"] ? "BY DEFAULT" : "ALWAYS") . " AS IDENTITY"
 					: $default
 				),
+				"default_sql" => ($row["FIELD_IDENTITY_TYPE"] === null && $default_sql),
 				"null" => !$row["FIELD_NOT_NULL_CONSTRAINT"], // 1 - NOT NULL on the column or its domain
 				"auto_increment" => ($row["FIELD_IDENTITY_TYPE"] !== null),
 				"primary" => ($row["FIELD_PRIMARY"] == 1),
