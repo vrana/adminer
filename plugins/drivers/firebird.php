@@ -173,19 +173,61 @@ ORDER BY r.RDB$FIELD_POSITION';
 
 	function indexes(string $table, ?Db $connection2 = null): array {
 		$return = array();
-		/*
-		$query = 'SELECT RDB$INDEX_SEGMENTS.RDB$FIELD_NAME AS field_name,
-RDB$INDICES.RDB$DESCRIPTION AS description,
-(RDB$INDEX_SEGMENTS.RDB$FIELD_POSITION + 1) AS field_position
-FROM RDB$INDEX_SEGMENTS
-LEFT JOIN RDB$INDICES ON RDB$INDICES.RDB$INDEX_NAME = RDB$INDEX_SEGMENTS.RDB$INDEX_NAME
-LEFT JOIN RDB$RELATION_CONSTRAINTS ON RDB$RELATION_CONSTRAINTS.RDB$INDEX_NAME = RDB$INDEX_SEGMENTS.RDB$INDEX_NAME
-WHERE UPPER(RDB$INDICES.RDB$RELATION_NAME) = ' . q($table) . '
-// AND UPPER(RDB$INDICES.RDB$INDEX_NAME) = \'TEST2_FIELD5_IDX\'
-AND RDB$RELATION_CONSTRAINTS.RDB$CONSTRAINT_TYPE IS NULL
-ORDER BY RDB$INDEX_SEGMENTS.RDB$FIELD_POSITION';
-		*/
+		// RDB$FOREIGN_KEY - the index of a foreign key is managed by the constraint
+		$query = 'SELECT i.RDB$INDEX_NAME AS index_name, c.RDB$CONSTRAINT_NAME AS constraint_name, c.RDB$CONSTRAINT_TYPE AS constraint_type,
+i.RDB$UNIQUE_FLAG AS unique_flag, i.RDB$INDEX_TYPE AS index_type, i.RDB$INDEX_INACTIVE AS inactive,
+i.RDB$EXPRESSION_SOURCE AS expression, ' . (min_version(5, "", $connection2) ? 'i.RDB$CONDITION_SOURCE' : 'NULL') . ' AS condition, s.RDB$FIELD_NAME AS field_name
+FROM RDB$INDICES i
+LEFT JOIN RDB$INDEX_SEGMENTS s ON s.RDB$INDEX_NAME = i.RDB$INDEX_NAME
+LEFT JOIN RDB$RELATION_CONSTRAINTS c ON c.RDB$INDEX_NAME = i.RDB$INDEX_NAME
+WHERE i.RDB$RELATION_NAME = ' . q($table) . ' AND i.RDB$FOREIGN_KEY IS NULL
+ORDER BY c.RDB$CONSTRAINT_TYPE NULLS LAST, i.RDB$UNIQUE_FLAG DESC, i.RDB$INDEX_NAME, s.RDB$FIELD_POSITION';
+		foreach (get_rows($query, $connection2) as $row) {
+			$name = trim($row["CONSTRAINT_NAME"] ?: $row["INDEX_NAME"]); // the constraint is dropped by its name, the index can be named differently, e.g. RDB$PRIMARY1
+			$return[$name]["type"] = ($row["CONSTRAINT_TYPE"] == "PRIMARY KEY" ? "PRIMARY" : ($row["UNIQUE_FLAG"] ? "UNIQUE" : "INDEX"));
+			// an expression index has no segments, its source includes the parentheses of COMPUTED BY
+			$return[$name]["columns"][] = ($row["EXPRESSION"] !== null ? substr($row["EXPRESSION"], 1, -1) : trim($row["FIELD_NAME"]));
+			$return[$name]["lengths"] = array();
+			$return[$name]["descs"][] = ($row["INDEX_TYPE"] == 1 ? '1' : null); // DESCENDING applies to the whole index
+			$return[$name]["partial"] = preg_replace('~^WHERE\s+~i', '', (string) $row["CONDITION"]);
+			$return[$name]["invalid"] = ($row["INACTIVE"] == 1);
+		}
 		return $return;
+	}
+
+	function alter_indexes(string $table, $alter) {
+		$drop = array();
+		$queries = array();
+		foreach ($alter as $val) {
+			$name = $val[1];
+			if ($val[2] == "DROP") {
+				$drop[] = ($val[0] == "PRIMARY"
+					|| ($val[0] == "UNIQUE" && get_val('SELECT 1 FROM RDB$RELATION_CONSTRAINTS WHERE RDB$RELATION_NAME = ' . q($table) . ' AND RDB$CONSTRAINT_NAME = ' . q($name)))
+					? "ALTER TABLE " . table($table) . " DROP CONSTRAINT " . idf_escape($name)
+					: "DROP INDEX " . idf_escape($name)
+				);
+			} else {
+				// DESCENDING applies to the whole index, mixed directions are left for the server to reject
+				$columns = preg_replace('~ DESC$~', '', $val[2]);
+				$desc = !array_diff_key($val[2], preg_grep('~ DESC$~', $val[2]));
+				$expression = preg_grep('~^"~', $columns, PREG_GREP_INVERT);
+				$queries[] = ($val[0] == "PRIMARY" || ($val[0] == "UNIQUE" && !$desc && !$expression && $val[4] == "")
+					? "ALTER TABLE " . table($table) . " ADD" . ($name != "" ? " CONSTRAINT " . idf_escape($name) : "")
+						. ($val[0] == "PRIMARY" ? " PRIMARY KEY" : " UNIQUE") . " (" . implode(", ", $val[2]) . ")"
+					: "CREATE" . ($val[0] == "UNIQUE" ? " UNIQUE" : "") . ($desc ? " DESCENDING" : "")
+						. " INDEX " . idf_escape($name != "" ? $name : uniqid($table . "_")) . " ON " . table($table)
+						. ($expression ? " COMPUTED BY" : "") . " (" . implode(", ", ($desc ? $columns : $val[2])) . ")"
+						. ($val[4] != "" ? " WHERE $val[4]" : "")
+				);
+			}
+		}
+		// drop first, a changed index keeps its name
+		foreach (array_merge($drop, $queries) as $query) {
+			if (!queries($query)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	function foreign_keys(string $table): array {
@@ -225,6 +267,6 @@ ORDER BY RDB$INDEX_SEGMENTS.RDB$FIELD_POSITION';
 	}
 
 	function support(string $feature): bool {
-		return preg_match('~^(columns|single_db|sql|table)$~', $feature);
+		return preg_match('~^(columns|descidx|indexes|single_db|sql|table)$~', $feature) || ($feature == "partial_indexes" && min_version(5));
 	}
 }
