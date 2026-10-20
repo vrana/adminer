@@ -10,72 +10,22 @@ add_driver('firebird', 'Firebird (alpha)');
 if (isset($_GET["firebird"])) {
 	define('Adminer\DRIVER', "firebird");
 
-	if (extension_loaded("interbase")) {
-		class Db extends SqlDb {
-			public $extension = "Firebird", $_link;
+	if (extension_loaded("pdo_firebird")) {
+		class Db extends PdoDb {
+			public $extension = "PDO_Firebird";
 
 			function attach(array $server, string $username, string $password): string {
 				$host = $server["host"] . ($server["port"] != "" ? "/" . $server["port"] : "");
-				$this->_link = ibase_connect($host . ($server["path"] != "" ? ":" . $server["path"] : ""), $username, $password); // the ibase connection string is 'host/port:/path/to/your.gdb'
-				if ($this->_link) {
-					$service_link = ibase_service_attach($host, $username, $password);
-					$this->server_info = ibase_server_info($service_link, IBASE_SVC_SERVER_VERSION);
-					return '';
+				// dbname is 'host/port:/path/to/your.fdb', a server without a path is a local file or an alias from databases.conf
+				$return = $this->dsn("firebird:charset=UTF8;dbname=$host" . ($server["path"] != "" ? ":" . $server["path"] : ""), $username, $password);
+				if ($return == "") {
+					$this->server_info = get_val("SELECT rdb\$get_context('SYSTEM', 'ENGINE_VERSION') FROM rdb\$database", 0, $this); // ATTR_SERVER_VERSION is a long description
 				}
-				return ibase_errmsg();
-			}
-
-			function quote(string $string): string {
-				return "'" . str_replace("'", "''", $string) . "'";
+				return $return;
 			}
 
 			function select_db(string $database): bool {
 				return ($database == "domain");
-			}
-
-			function query(string $query, bool $unbuffered = false) {
-				$result = ibase_query($this->_link, $query);
-				if (!$result) {
-					$this->errno = ibase_errcode();
-					$this->error = ibase_errmsg();
-					return false;
-				}
-				$this->error = "";
-				if ($result === true) {
-					$this->affected_rows = ibase_affected_rows($this->_link);
-					return true;
-				}
-				return new Result($result);
-			}
-		}
-
-		class Result {
-			public $num_rows;
-			private $result, $offset = 0;
-
-			function __construct($result) {
-				$this->result = $result;
-				// $this->num_rows = ibase_num_rows($result);
-			}
-
-			function fetch_assoc() {
-				return ibase_fetch_assoc($this->result);
-			}
-
-			function fetch_row() {
-				return ibase_fetch_row($this->result);
-			}
-
-			function fetch_field(): \stdClass {
-				$types = array(
-					'TEXT' => 'char', 'VARYING' => 'varchar', 'SHORT' => 'smallint', 'LONG' => 'integer', 'INT64' => 'bigint',
-					'FLOAT' => 'float', 'DOUBLE' => 'double precision', 'BLOB' => 'blob', 'DATE' => 'date', 'TIME' => 'time', 'TIMESTAMP' => 'timestamp',
-				);
-				$field = ibase_field_info($this->result, $this->offset++);
-				return (object) array(
-					'name' => $field['name'],
-					'native_type' => idx($types, $field['type'], ''),
-				);
 			}
 		}
 
@@ -84,7 +34,7 @@ if (isset($_GET["firebird"])) {
 
 
 	class Driver extends SqlDriver {
-		static $extensions = array("interbase");
+		static $extensions = array("PDO_Firebird");
 		static $jush = "firebird";
 
 		static $serverPath = true; // the path to the database file
@@ -133,11 +83,9 @@ if (isset($_GET["firebird"])) {
 	}
 
 	function tables_list(): array {
-		$query = 'SELECT RDB$RELATION_NAME FROM rdb$relations WHERE rdb$system_flag = 0';
-		$result = ibase_query(connection()->_link, $query);
 		$return = array();
-		while ($row = ibase_fetch_assoc($result)) {
-				$return[$row['RDB$RELATION_NAME']] = 'table';
+		foreach (get_vals('SELECT RDB$RELATION_NAME FROM rdb$relations WHERE rdb$system_flag = 0') as $name) {
+			$return[trim($name)] = 'table';
 		}
 		ksort($return);
 		return $return;
@@ -204,8 +152,7 @@ LEFT JOIN RDB$COLLATIONS coll ON f.RDB$COLLATION_ID = coll.RDB$COLLATION_ID
 LEFT JOIN RDB$CHARACTER_SETS cset ON f.RDB$CHARACTER_SET_ID = cset.RDB$CHARACTER_SET_ID
 WHERE r.RDB$RELATION_NAME = ' . q($table) . '
 ORDER BY r.RDB$FIELD_POSITION';
-		$result = ibase_query(connection()->_link, $query);
-		while ($row = ibase_fetch_assoc($result)) {
+		foreach (get_rows($query) as $row) {
 			$return[trim($row['FIELD_NAME'])] = array(
 				"field" => trim($row["FIELD_NAME"]),
 				"full_type" => trim($row["FIELD_TYPE"]),

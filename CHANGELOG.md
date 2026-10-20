@@ -16,6 +16,7 @@
 - MS SQL: Alter an index without renaming it
 - MS SQL: Drop a unique constraint in Alter indexes
 - Oracle: Link documentation of data dictionary views
+- Firebird: Support PDO_Firebird, drop the unmaintained InterBase extension
 - Editor: Hide the hint for now()
 ### Plugins
 - Drivers: Field key 'doc' to link documentation from column names in select and table structure
