@@ -87,6 +87,15 @@ if (isset($_GET["sqlite"])) {
 					: "x'" . bin2hex($string) . "'" // PDO::quote() mangles binary data
 				);
 			}
+
+			function store_result($result = null) {
+				$affected_rows = $this->affected_rows;
+				$return = parent::store_result($result);
+				if (!$result && $return === true) {
+					$this->affected_rows = $affected_rows; // counted by query(), PDO_SQLite runs only one statement
+				}
+				return $return;
+			}
 		}
 
 	}
@@ -94,12 +103,30 @@ if (isset($_GET["sqlite"])) {
 	if (class_exists('Adminer\SqliteDb')) {
 		class Db extends SqliteDb {
 			private $attaching = false;
+			private $total_changes = 0; // total_changes() after the last statement reporting affected rows
 
 			function attach(array $server, string $username, string $password): string {
 				parent::attach($server, $username, $password);
+				$this->total_changes = 0; // counted per connection
 				$this->query("PRAGMA foreign_keys = 1");
 				$this->query("PRAGMA busy_timeout = 500");
 				return '';
+			}
+
+			function query(string $query, bool $unbuffered = false) {
+				$return = parent::query($query, $unbuffered);
+				if ($this->affected_rows) {
+					// SQLite reports the count of the last INSERT, UPDATE or DELETE also after other statements, e.g. DROP TABLE
+					$result = parent::query("SELECT total_changes()");
+					$row = ($result ? $result->fetch_row() : false);
+					if ($row) {
+						if ($row[0] == $this->total_changes) {
+							$this->affected_rows = 0;
+						}
+						$this->total_changes = $row[0];
+					}
+				}
+				return $return;
 			}
 
 			function select_db(string $filename): bool {

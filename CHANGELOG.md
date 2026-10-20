@@ -21,6 +21,7 @@
 - PostgreSQL, MS SQL, Oracle: Mark and recreate invalid indexes
 - SQLite: Name checks and keep their names when altering the table
 - SQLite: Fix recreating a table referenced by foreign keys or triggers
+- SQLite: Don't report the affected rows of the previous statement after DROP TABLE and other statements
 - SQLite 3.53+: Alter checks without recreating the table
 - MS SQL: Alter an index without renaming it
 - MS SQL: Drop a unique constraint in Alter indexes
