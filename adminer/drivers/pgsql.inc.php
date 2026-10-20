@@ -684,6 +684,9 @@ ORDER BY a.attnum") as $row
 		) {
 			//! collation
 			parse_full_type($row);
+			// a literal is a string cast to the column type, NULL, a number or a boolean
+			$row["default_sql"] = ($row["default"] !== null && !$row["attidentity"] && !$row["attgenerated"]
+				&& !preg_match("~^(('(?:[^']|'')*'|NULL)(::[^,)]+)?|[-+]?[\\d.]+|true|false)$~s", $row["default"]));
 			if (in_array($row['attidentity'], array('a', 'd'))) {
 				$row['default'] = 'GENERATED ' . ($row['attidentity'] == 'd' ? 'BY DEFAULT' : 'ALWAYS') . ' AS IDENTITY';
 			}

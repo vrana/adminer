@@ -325,13 +325,15 @@ function default_value(array $field): string {
 	$generated = $field["generated"];
 	$string = !preg_match('~]$~', $field["length"]) // a PostgreSQL array literal is quoted by starting with {, ARRAY[] is an expression
 		&& (preg_match('~char|binary|text|json|enum|set|String~', $field["type"]) || driver()->enumLength($field)); // String - ClickHouse
+	// MySQL requires () around expressions except CURRENT_TIMESTAMP
+	$parentheses = (JUSH == "sqlite" || (JUSH == "sql" && $field["default_sql"] && !preg_match('~^current_timestamp(\(\d*\))?$~i', $default)));
 	return (in_array($generated, driver()->generated)
 		? (JUSH == "mssql" ? " AS ($default)" . ($generated == "VIRTUAL" ? "" : " $generated") : " GENERATED ALWAYS AS ($default) $generated")
 		: (preg_match('~^GENERATED ~i', $default)
 			? " $default"
 			: " DEFAULT " . (!$field["default_sql"] && ($string || preg_match('~^(?![a-z])~i', $default))
 				? (JUSH == "sql" && preg_match('~text|json~', $field["type"]) ? "(" . q($default) . ")" : q($default)) // MySQL requires () around default value of text column
-				: str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", (JUSH == "sqlite" ? "($default)" : $default))
+				: str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", ($parentheses ? "($default)" : $default))
 			)
 		)
 	);
