@@ -555,7 +555,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 				}
 				if (preg_match("~time~", $field["type"]) && preg_match('~^CURRENT_TIMESTAMP~i', $value)) {
 					$value = "";
-					$function = "now";
+					$function = (in_array("now", adminer()->editFunctions($field)) ? "now" : "current_timestamp"); // Oracle and Firebird have no now()
 				}
 				if ($field["type"] == "uuid" && $value == "uuid()") {
 					$value = "";

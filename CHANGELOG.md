@@ -16,6 +16,7 @@
 - MS SQL: Alter an index without renaming it
 - MS SQL: Drop a unique constraint in Alter indexes
 - Oracle: Link documentation of data dictionary views
+- Oracle: Fix inserting the CURRENT_TIMESTAMP default
 - Firebird: Support PDO_Firebird, drop the unmaintained InterBase extension
 - Editor: Hide the hint for now()
 ### Plugins
