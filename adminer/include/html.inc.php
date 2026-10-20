@@ -550,7 +550,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 						: ($value === false ? null : ($value !== null ? '' : 'NULL'))
 					)
 				);
-				if (!$_POST && !$update && $value == $field["default"] && preg_match('~^[\w.]+\(~', $value)) {
+				if (!$_POST && !$update && $value == $field["default"] && ($field["default_sql"] || preg_match('~^[\w.]+\(~', $value))) {
 					$function = "SQL";
 				}
 				if (preg_match("~time~", $field["type"]) && preg_match('~^CURRENT_TIMESTAMP~i', $value)) {

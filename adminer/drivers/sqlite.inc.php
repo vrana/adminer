@@ -416,7 +416,8 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 				"field" => $name,
 				"type" => ($fts ? "text" : type_affinity($type)),
 				"full_type" => $type,
-				"default" => (preg_match("~^'(.*)'$~", $default, $match) ? str_replace("''", "'", $match[1]) : ($default == "NULL" ? null : $default)),
+				"default" => (preg_match("~^'((?:[^']|'')*)'$~", $default, $match) ? str_replace("''", "'", $match[1]) : ($default == "NULL" ? null : $default)),
+				"default_sql" => ($default !== null && !$match && $default != "NULL" && !is_numeric($default)), // the pragma returns expressions without parentheses
 				"null" => !$row["notnull"],
 				"privileges" => $privileges,
 				"primary" => $row["pk"],

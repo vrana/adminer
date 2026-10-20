@@ -464,7 +464,7 @@ class Adminer {
 			echo ($field["null"] ? " <i>NULL</i>" : "");
 			echo ($field["auto_increment"] ? " <i>" . lang('Auto Increment') . "</i>" : "");
 			echo (isset($field["default"])
-				? " <span title='" . lang('Default value') . "'>[<b>" . ($field["generated"]
+				? " <span title='" . lang('Default value') . "'>[<b>" . ($field["generated"] || $field["default_sql"]
 					? "<code class='sql jush-" . JUSH . "'>" . shorten_utf8(preg_replace('~\s+~', ' ', ltrim($field["default"])), 80, "</code>")
 					: h($field["default"])
 				) . "</b>]</span>"

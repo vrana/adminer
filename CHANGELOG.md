@@ -3,6 +3,7 @@
 - Select: Don't link a URL followed by text
 - Edit: Fix the SQL function with a syntax highlighted textarea, keep newlines
 - Alter table: Label the auto-increment column A_I instead of AI (bug #1360)
+- Alter table: Set the default value as an SQL expression by DEFAULT SQL
 - Create database: Search collations (bug #1362)
 - Database schema: Don't widen tables by others in the column (regression from 6.0.1)
 - Foreign key: Hide system databases and schemas
@@ -28,6 +29,7 @@
 - Editor: Hide the hint for now()
 ### Plugins
 - Drivers: Field key 'doc' to link documentation from column names in select and table structure
+- Drivers: Field key 'default_sql' to mark the default value as an SQL expression
 ### Internal
 - ESLint: Check the formatting by @stylistic/eslint-plugin
 

@@ -329,7 +329,7 @@ function default_value(array $field): string {
 		? (JUSH == "mssql" ? " AS ($default)" . ($generated == "VIRTUAL" ? "" : " $generated") : " GENERATED ALWAYS AS ($default) $generated")
 		: (preg_match('~^GENERATED ~i', $default)
 			? " $default"
-			: " DEFAULT " . ($string || preg_match('~^(?![a-z])~i', $default)
+			: " DEFAULT " . (!$field["default_sql"] && ($string || preg_match('~^(?![a-z])~i', $default))
 				? (JUSH == "sql" && preg_match('~text|json~', $field["type"]) ? "(" . q($default) . ")" : q($default)) // MySQL requires () around default value of text column
 				: str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", (JUSH == "sqlite" ? "($default)" : $default))
 			)
@@ -386,10 +386,7 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 		if ($type == "TABLE") {
 			echo "<td><label class='block'>" . checkbox("fields[$i][null]", 1, $field["null"], "", "", "", "label-null") . "</label>";
 			echo "<td><label class='block'><input type='radio' name='auto_increment_col' value='$i'" . ($field["auto_increment"] ? " checked" : "") . " aria-labelledby='label-ai'></label>";
-			echo "<td$default_class>" . (driver()->generated
-				? html_select("fields[$i][generated]", array_merge(array("", "DEFAULT"), driver()->generated), $field["generated"]) . " "
-				: checkbox("fields[$i][generated]", 1, $field["generated"], "", "", "", "label-default")
-			);
+			echo "<td$default_class>" . html_select("fields[$i][generated]", array_merge(array("", "DEFAULT", "DEFAULT SQL"), driver()->generated), $field["generated"], "", "label-default") . " ";
 			$attrs = " name='fields[$i][default]' aria-labelledby='label-default'";
 			$value = h($field["default"]);
 			// \n to preserve the leading newline

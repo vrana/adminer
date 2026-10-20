@@ -70,6 +70,7 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 				if (!$field["generated"]) {
 					$field["default"] = null;
 				}
+				$field["default_sql"] = ($field["generated"] == "DEFAULT SQL");
 				$process_field = process_field($field, $type_field);
 				$all_fields[] = array($field["orig"], $process_field, $after);
 				if (!$orig_field || $process_field !== process_field($orig_field, $orig_field)) {
@@ -178,7 +179,7 @@ if (!$_POST) {
 			if ($field["generated"]) {
 				$field["default"] = ltrim($field["default"]);
 			}
-			$field["generated"] = $field["generated"] ?: (isset($field["default"]) ? "DEFAULT" : "");
+			$field["generated"] = $field["generated"] ?: (isset($field["default"]) ? ($field["default_sql"] ? "DEFAULT SQL" : "DEFAULT") : "");
 			$row["fields"][] = $field;
 		}
 
