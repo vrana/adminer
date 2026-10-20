@@ -118,7 +118,7 @@ if (
 				$reflection = new \ReflectionObject($plugin);
 				$description = (method_exists($plugin, 'description') ? $plugin->description() : "");
 				if (!$description) {
-					if (preg_match('~^/[\s*]+(.+)~', $reflection->getDocComment(), $match)) {
+					if (preg_match('~^/[\s*]+(.+?)(?:\s*\*/)?$~m', $reflection->getDocComment(), $match)) {
 						$description = $match[1];
 					}
 				}
