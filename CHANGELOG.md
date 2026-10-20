@@ -4,6 +4,7 @@
 - Edit: Fix the SQL function with a syntax highlighted textarea, keep newlines
 - Alter table: Label the auto-increment column A_I instead of AI (bug #1360)
 - Create database: Search collations (bug #1362)
+- Foreign key: Hide system databases and schemas
 - PostgreSQL: Import \connect
 - PostgreSQL: Set collation in Create database
 - PostgreSQL: Edit rows with a column of an extension type outside search_path

@@ -111,21 +111,23 @@ $target = array_keys(fields(in_array($row["table"], $referencable) ? $row["table
 $attrs = on('change', 'foreignChange');
 echo "<p><label>" . lang('Target table') . ": " . html_select("table", $referencable, $row["table"], $attrs) . "</label>\n";
 if (support("scheme")) {
-	$schemas = array_filter(adminer()->schemas(), function ($schema) {
-		return !information_schema(DB, $schema);
+	$ns = ($row["ns"] != "" ? $row["ns"] : $_GET["ns"]);
+	$schemas = array_filter(adminer()->schemas(), function ($schema) use ($ns) {
+		return !driver()->isSystem(DB, $schema) || $schema == $ns || $schema == $_GET["ns"];
 	});
-	echo "<label>" . lang('Schema') . ": " . html_select("ns", $schemas, $row["ns"] != "" ? $row["ns"] : $_GET["ns"], $attrs) . "</label>";
+	echo "<label>" . lang('Schema') . ": " . html_select("ns", $schemas, $ns, $attrs) . "</label>";
 	if ($orig_schema !== null) {
 		set_schema($orig_schema);
 	}
 } elseif (JUSH != "sqlite") {
+	$selected = ($row["db"] != "" ? $row["db"] : DB);
 	$dbs = array();
 	foreach (adminer()->databases() as $db) {
-		if (!information_schema($db)) {
+		if (!driver()->isSystem($db) || $db == $selected || $db == DB) {
 			$dbs[] = $db;
 		}
 	}
-	echo "<label>" . lang('DB') . ": " . html_select("db", $dbs, $row["db"] != "" ? $row["db"] : $_GET["db"], $attrs) . "</label>";
+	echo "<label>" . lang('DB') . ": " . html_select("db", $dbs, $selected, $attrs) . "</label>";
 }
 echo input_hidden("change-js");
 ?>
