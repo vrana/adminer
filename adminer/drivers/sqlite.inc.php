@@ -249,10 +249,11 @@ if (isset($_GET["sqlite"])) {
 		function checkConstraints(string $table): array {
 			//! could be inside a comment
 			$create = get_val("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table), 0, $this->conn);
-			preg_match_all('~ (?:CONSTRAINT +("(?:[^"]|"")*"|`(?:[^`]|``)*`|\[[^]]*]|\S+) +)?CHECK *(\( *(((?>[^()]*[^() ])|(?2))*) *\))~', $create, $matches, PREG_SET_ORDER);
+			preg_match_all('~\s(?:CONSTRAINT\s+("(?:[^"]|"")*"|`(?:[^`]|``)*`|\[[^]]*]|\S+)\s+)?CHECK\s*(\(((?>[^()]+)|(?2))*\))~', $create, $matches, PREG_SET_ORDER);
 			$return = array();
 			foreach ($matches as $match) {
-				$return[$match[1] != "" ? idf_unescape($match[1]) : $match[3]] = $match[3]; // unnamed checks are identified by their clause
+				$clause = trim(substr($match[2], 1, -1));
+				$return[$match[1] != "" ? idf_unescape($match[1]) : $clause] = $clause; // unnamed checks are identified by their clause
 			}
 			return $return;
 		}
@@ -685,6 +686,9 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 				if ($val[0] == "PRIMARY") {
 					unset($indexes[$key]);
 					$foreign[] = "  PRIMARY KEY (" . implode(", ", $val[2]) . ")";
+				} elseif (preg_match('~^sqlite_autoindex_~', $val[1])) { // created by a UNIQUE constraint, the name is reserved
+					unset($indexes[$key]);
+					$foreign[] = "  UNIQUE (" . implode(", ", $val[2]) . ")";
 				}
 			}
 			foreach (foreign_keys($table) as $key_name => $foreign_key) {
@@ -698,6 +702,8 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 					$foreign[] = " " . format_foreign_key($foreign_key);
 				}
 			}
+			queries("PRAGMA foreign_keys = 0"); // DROP TABLE would carry out ON DELETE actions of the referencing tables, the pragma is a no-op inside a transaction
+			queries("PRAGMA legacy_alter_table = 1"); // RENAME TO would fail on triggers and views of other tables referencing the dropped table
 			queries("BEGIN");
 		}
 		$changes = array();
@@ -752,7 +758,14 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 					return false;
 				}
 			}
+			if (get_rows("PRAGMA foreign_key_check(" . table($name) . ")")) {
+				connection()->error = "FOREIGN KEY constraint failed"; // the message of SQLite which checked the copied rows with foreign_keys enabled
+				return false;
+			}
 			queries("COMMIT");
+			// after a failure, the pragmas are left until the connection closes together with the implicit ROLLBACK
+			queries("PRAGMA foreign_keys = 1");
+			queries("PRAGMA legacy_alter_table = 0");
 		}
 		return true;
 	}
