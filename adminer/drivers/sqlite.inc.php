@@ -248,8 +248,13 @@ if (isset($_GET["sqlite"])) {
 
 		function checkConstraints(string $table): array {
 			//! could be inside a comment
-			preg_match_all('~ CHECK *(\( *(((?>[^()]*[^() ])|(?1))*) *\))~', get_val("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table), 0, $this->conn), $matches);
-			return array_combine($matches[2], $matches[2]);
+			$create = get_val("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = " . q($table), 0, $this->conn);
+			preg_match_all('~ (?:CONSTRAINT +("(?:[^"]|"")*"|`(?:[^`]|``)*`|\[[^]]*]|\S+) +)?CHECK *(\( *(((?>[^()]*[^() ])|(?2))*) *\))~', $create, $matches, PREG_SET_ORDER);
+			$return = array();
+			foreach ($matches as $match) {
+				$return[$match[1] != "" ? idf_unescape($match[1]) : $match[3]] = $match[3]; // unnamed checks are identified by their clause
+			}
+			return $return;
 		}
 
 		function allFields(): array {
@@ -624,8 +629,8 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 	* @param string[] $foreign [format_foreign_key()], empty to preserve
 	* @param numeric-string|'' $auto_increment set auto_increment to this value, "" to preserve
 	* @param list<array{string, string, list<string>|'DROP'}> $indexes [[$type, $name, $columns]], empty to preserve
-	* @param string $drop_check CHECK constraint to drop
-	* @param string $add_check CHECK constraint to add
+	* @param string $drop_check name of the CHECK constraint to drop, its clause if unnamed
+	* @param string $add_check CHECK constraint to add including CHECK and optionally CONSTRAINT name
 	*/
 	function recreate_table(
 		string $table,
@@ -703,13 +708,13 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 			$changes[] = "  " . implode($field);
 		}
 		$changes = array_merge($changes, array_filter($foreign));
-		foreach (driver()->checkConstraints($table) as $check) {
-			if ($check != $drop_check) {
-				$changes[] = "  CHECK ($check)";
+		foreach (driver()->checkConstraints($table) as $key => $check) {
+			if ($key != $drop_check) {
+				$changes[] = " " . ($key != $check ? " CONSTRAINT " . idf_escape($key) : "") . " CHECK ($check)";
 			}
 		}
 		if ($add_check) {
-			$changes[] = "  CHECK ($add_check)";
+			$changes[] = "  $add_check";
 		}
 		$temp_name = ($table != "" && $table == $name ? "adminer_$name" : $name);
 		if (!$engine && $table != "") {

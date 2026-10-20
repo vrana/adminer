@@ -10,11 +10,13 @@ if ($row && !$error) {
 	$message_drop = lang('Check has been dropped.');
 	$message_alter = lang('Check has been altered.');
 	$message_create = lang('Check has been created.');
-	if (JUSH == "sqlite") {
+	// SQLite supports ADD and DROP CONSTRAINT since 3.53, DROP needs a name
+	if (JUSH == "sqlite" && !(min_version(3.53) && ($name == "" || idx(driver()->checkConstraints($TABLE), $name) != $name))) {
+		$add = ($row["drop"] ? "" : ($row["name"] != "" ? "CONSTRAINT " . idf_escape($row["name"]) . " " : "") . "CHECK ($row[clause])");
 		queries_redirect(
 			$location,
 			($row["drop"] ? $message_drop : ($name != "" ? $message_alter : $message_create)),
-			recreate_table($TABLE, $TABLE, array(), array(), array(), "", array(), "$name", ($row["drop"] ? "" : $row["clause"]))
+			recreate_table($TABLE, $TABLE, array(), array(), array(), "", array(), "$name", $add)
 		);
 	} else {
 		// there's no ALTER CHECK so the constraint is dropped and created again, the old one must survive an invalid new one
@@ -41,7 +43,8 @@ $not_found = false;
 if (!$row) {
 	$checks = driver()->checkConstraints($TABLE);
 	$not_found = ($name != "" && !$checks[$name]);
-	$row = array("name" => ($name != "" ? $name : object_name("CHECK", $TABLE, array())), "clause" => $checks[$name]);
+	// SQLite identifies unnamed checks by their clause
+	$row = array("name" => ($name == "" ? object_name("CHECK", $TABLE, array()) : ($checks[$name] != $name ? $name : "")), "clause" => $checks[$name]);
 }
 
 page_header(
@@ -62,11 +65,7 @@ page_header(
 ?>
 
 <form action="" method="post">
-<?php
-if (JUSH != "sqlite") {
-	echo '<p>' . lang('Name') . ': <input name="name" value="' . h($row["name"]) . '" data-maxlength="64" autocapitalize="off">';
-}
-?>
+<p><label><?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" data-maxlength="64" autocapitalize="off"></label>
 <p><?php textarea("clause", $row["clause"]); ?>
 <p><input type='submit' value='<?php echo lang('Save'); ?>'>
 <?php if ($name != "") { ?>
