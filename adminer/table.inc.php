@@ -105,7 +105,7 @@ if (!is_view($table_status) && driver()->supportsAlterTable($table_status)) {
 		if ($check_constraints) {
 			echo "<table>\n";
 			foreach ($check_constraints as $key => $val) {
-				echo "<tr title='" . h($key) . "'>";
+				echo "<tr" . ($key != $val ? " title='" . h($key) . "'" : "") . ">"; // SQLite identifies unnamed checks by their clause
 				echo "<td><code class='sql jush-" . JUSH . "'>" . shorten_utf8(preg_replace('~\s+~', ' ', ltrim($val)), 80, "</code>");
 				echo "<td class='hover'><a href='" . h(ME . 'check=' . url_escape($TABLE) . '&name=' . url_escape($key)) . "'>" . lang('Alter') . "</a>";
 				echo "\n";
