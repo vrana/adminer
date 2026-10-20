@@ -10,6 +10,7 @@
 - PostgreSQL: Create and drop indexes concurrently
 - PostgreSQL: Drop a unique index without a constraint
 - PostgreSQL: Save binary data with standard_conforming_strings off
+- PostgreSQL: Fix inserting the CURRENT_DATE default
 - PostgreSQL PDO: Compute the number of tables in databases
 - PostgreSQL PDO: Export databases from the server level
 - PostgreSQL, MS SQL, Oracle: Mark and recreate invalid indexes
