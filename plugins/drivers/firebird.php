@@ -225,6 +225,6 @@ ORDER BY RDB$INDEX_SEGMENTS.RDB$FIELD_POSITION';
 	}
 
 	function support(string $feature): bool {
-		return preg_match("~^(columns|sql|table)$~", $feature);
+		return preg_match('~^(columns|single_db|sql|table)$~', $feature);
 	}
 }
