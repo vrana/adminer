@@ -324,7 +324,7 @@ function default_value(array $field): string {
 	$default = str_replace("\r", "", $field["default"]);
 	$generated = $field["generated"];
 	$string = !preg_match('~]$~', $field["length"]) // a PostgreSQL array literal is quoted by starting with {, ARRAY[] is an expression
-		&& (preg_match('~char|binary|text|json|enum|set|String~', $field["type"]) || driver()->enumLength($field)); // String - ClickHouse
+		&& (preg_match('~char|binary|text|clob|json|enum|set|String~', $field["type"]) || driver()->enumLength($field)); // String - ClickHouse
 	// MySQL requires () around expressions except CURRENT_TIMESTAMP
 	$parentheses = (JUSH == "sqlite" || (JUSH == "sql" && $field["default_sql"] && !preg_match('~^current_timestamp(\(\d*\))?$~i', $default)));
 	return (in_array($generated, driver()->generated)

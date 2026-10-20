@@ -159,11 +159,13 @@ if (isset($_GET["sqlite"])) {
 
 		protected $types = array(array("integer" => 0, "real" => 0, "numeric" => 0, "text" => 0, "blob" => 0));
 
-		public $insertFunctions = array(); // "text" => "date('now')/time('now')/datetime('now')",
-		public $editFunctions = array(
-			"integer|real|numeric" => "+/-",
-			// "text" => "date/time/datetime",
-			"text" => "||",
+		public $insertFunctions = array(
+			"date" => "current_date",
+			"time" => "current_timestamp",
+		);
+		public $editFunctions = array( // the declared types by their affinity
+			"^(?!.*(char|clob|text|blob))." => "+/-",
+			"char|clob|text" => "||",
 		);
 
 		public $fulltextOperator = "MATCH";
@@ -439,10 +441,13 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 			$name = $row["name"];
 			$type = strtolower($row["type"]);
 			$default = $row["dflt_value"];
+			// the declared type, e.g. varchar(100), is kept by the alter form; a column without a type has the numeric affinity
+			preg_match('~^(.+?)\s*(?:\((.*)\))?$~s', $type, $parts);
 			$return[$name] = array(
 				"field" => $name,
-				"type" => ($fts ? "text" : type_affinity($type)),
+				"type" => ($fts ? "text" : ($parts ? $parts[1] : type_affinity($type))),
 				"full_type" => $type,
+				"length" => ($fts ? "" : idx($parts, 2, "")),
 				"default" => (preg_match("~^'((?:[^']|'')*)'$~", $default, $match) ? str_replace("''", "'", $match[1]) : ($default == "NULL" ? null : $default)),
 				"default_sql" => ($default !== null && !$match && $default != "NULL" && !is_numeric($default)), // the pragma returns expressions without parentheses
 				"null" => !$row["notnull"],
