@@ -121,7 +121,7 @@ if (isset($_GET["firebird"])) {
 		$query = 'SELECT r.RDB$FIELD_NAME AS field_name,
 r.RDB$DESCRIPTION AS field_description,
 COALESCE(r.RDB$DEFAULT_SOURCE, f.RDB$DEFAULT_SOURCE) AS field_default_value,
-r.RDB$NULL_FLAG AS field_not_null_constraint,
+COALESCE(r.RDB$NULL_FLAG, f.RDB$NULL_FLAG) AS field_not_null_constraint,
 r.RDB$IDENTITY_TYPE AS field_identity_type,
 f.RDB$FIELD_LENGTH AS field_length,
 f.RDB$FIELD_PRECISION AS field_precision,
@@ -166,7 +166,7 @@ ORDER BY r.RDB$FIELD_POSITION';
 					? "GENERATED " . ($row["FIELD_IDENTITY_TYPE"] ? "BY DEFAULT" : "ALWAYS") . " AS IDENTITY"
 					: $default
 				),
-				"null" => (trim($row["FIELD_NOT_NULL_CONSTRAINT"]) == "YES"),
+				"null" => !$row["FIELD_NOT_NULL_CONSTRAINT"], // 1 - NOT NULL on the column or its domain
 				"auto_increment" => ($row["FIELD_IDENTITY_TYPE"] !== null),
 				"collation" => trim($row["FIELD_COLLATION"]),
 				"privileges" => array("insert" => 1, "select" => 1, "update" => 1, "where" => 1, "order" => 1),
