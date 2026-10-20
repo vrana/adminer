@@ -393,6 +393,9 @@ ORDER BY 1") as $row
 			$length = "$row[DATA_PRECISION],$row[DATA_SCALE]";
 			if ($length == ",") {
 				$length = ($type == "RAW" ? $row["DATA_LENGTH"] : (preg_match('~CHAR~', $type) ? $row["CHAR_COL_DECL_LENGTH"] : "")); // CLOB reports 4000
+				if ($row["CHAR_USED"] == "C" && preg_match('~^(VARCHAR2|CHAR)$~', $type)) {
+					$length = "$row[CHAR_LENGTH] CHAR"; // the declared length is in bytes, NVARCHAR2 and NCHAR are always in characters
+				}
 			} elseif (strpos($type, "(")) {
 				$length = ""; // the type includes the precision, e.g. TIMESTAMP(6) WITH TIME ZONE
 			} //! int

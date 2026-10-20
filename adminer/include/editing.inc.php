@@ -243,6 +243,9 @@ function process_length(?string $length): string {
 	if (JUSH == "mssql" && preg_match('~^\s*\(?\s*max\s*\)?\s*$~i', $length)) {
 		return "(max)"; // the maximum length of varchar, nvarchar and varbinary
 	}
+	if (JUSH == "oracle" && preg_match('~^\s*\(?\s*(\d+)\s+(CHAR|BYTE)\s*\)?\s*$~i', $length, $match)) {
+		return "($match[1] " . strtoupper($match[2]) . ")"; // the length semantics of varchar2 and char
+	}
 	$enum_length = driver()->enumLength;
 	return (preg_match("~^\\s*\\(?\\s*$enum_length(?:\\s*,\\s*$enum_length)*+\\s*\\)?\\s*\$~", $length) && preg_match_all("~$enum_length~", $length, $matches)
 		? "(" . implode(",", $matches[0]) . ")"
