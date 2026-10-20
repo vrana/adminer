@@ -39,6 +39,8 @@ if (isset($_GET["firebird"])) {
 
 		static $serverPath = true; // the path to the database file
 
+		public $onActions = "NO ACTION|CASCADE|SET NULL|SET DEFAULT";
+
 		public $insertFunctions = array(
 			"date" => "current_date",
 			"timestamp" => "current_timestamp",
@@ -132,7 +134,7 @@ if (isset($_GET["firebird"])) {
 	}
 
 	function fk_support(array $table_status): bool {
-		return preg_match('~InnoDB|IBMDB2I~i', $table_status["Engine"]);
+		return true;
 	}
 
 	function fields(string $table): array {
@@ -302,8 +304,9 @@ ORDER BY c.RDB$CONSTRAINT_TYPE NULLS LAST, i.RDB$UNIQUE_FLAG DESC, i.RDB$INDEX_N
 				}
 			}
 		}
+		$alter = array_merge($alter, $foreign);
 		if ($table == "") {
-			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", array_merge($alter, $foreign)) . "\n)");
+			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)");
 		}
 		if ($table != $name) {
 			$queries[] = "ALTER TABLE " . table($table) . " RENAME TO " . table($name); // not supported by Firebird, let it report the error
@@ -324,7 +327,26 @@ ORDER BY c.RDB$CONSTRAINT_TYPE NULLS LAST, i.RDB$UNIQUE_FLAG DESC, i.RDB$INDEX_N
 	}
 
 	function foreign_keys(string $table): array {
-		return array();
+		$return = array();
+		$query = 'SELECT c.RDB$CONSTRAINT_NAME AS name, s.RDB$FIELD_NAME AS source, u.RDB$RELATION_NAME AS target_table, us.RDB$FIELD_NAME AS target,
+rc.RDB$DELETE_RULE AS on_delete, rc.RDB$UPDATE_RULE AS on_update
+FROM RDB$RELATION_CONSTRAINTS c
+JOIN RDB$REF_CONSTRAINTS rc ON rc.RDB$CONSTRAINT_NAME = c.RDB$CONSTRAINT_NAME
+JOIN RDB$RELATION_CONSTRAINTS u ON u.RDB$CONSTRAINT_NAME = rc.RDB$CONST_NAME_UQ
+JOIN RDB$INDEX_SEGMENTS s ON s.RDB$INDEX_NAME = c.RDB$INDEX_NAME
+JOIN RDB$INDEX_SEGMENTS us ON us.RDB$INDEX_NAME = u.RDB$INDEX_NAME AND us.RDB$FIELD_POSITION = s.RDB$FIELD_POSITION
+WHERE c.RDB$RELATION_NAME = ' . q($table) . ' AND c.RDB$CONSTRAINT_TYPE = \'FOREIGN KEY\'
+ORDER BY c.RDB$CONSTRAINT_NAME, s.RDB$FIELD_POSITION';
+		foreach (get_rows($query) as $row) {
+			$name = trim($row["NAME"]);
+			$return[$name]["table"] = trim($row["TARGET_TABLE"]);
+			$return[$name]["source"][] = trim($row["SOURCE"]);
+			$return[$name]["target"][] = trim($row["TARGET"]);
+			// RESTRICT is stored for an action not specified, it behaves as NO ACTION which is the only one of them accepted in SQL
+			$return[$name]["on_delete"] = str_replace("RESTRICT", "NO ACTION", trim($row["ON_DELETE"]));
+			$return[$name]["on_update"] = str_replace("RESTRICT", "NO ACTION", trim($row["ON_UPDATE"]));
+		}
+		return $return;
 	}
 
 	function collations(): array {
