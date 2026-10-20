@@ -74,7 +74,7 @@ if (!is_view($table_status) && driver()->supportsAlterTable($table_status)) {
 			echo "<table>\n";
 			echo "<thead><tr><th>" . lang('Source') . "<th>" . lang('Target') . "<th>" . lang('ON DELETE') . "<th>" . lang('ON UPDATE') . "<td class='hover'><tbody>\n";
 			foreach ($foreign_keys as $name => $foreign_key) {
-				echo "<tr title='" . h($name) . "'>";
+				echo "<tr" . (!is_int($name) ? " title='" . h($name) . "'" : "") . ">"; // SQLite and IGDB identify foreign keys by their position
 				echo "<th><i>" . implode("</i>, <i>", array_map('Adminer\h', $foreign_key["source"])) . "</i>";
 				$link = ($foreign_key["db"] != ""
 					? preg_replace('~&db=[^&]*~', "&db=" . url_escape($foreign_key["db"]), ME)
