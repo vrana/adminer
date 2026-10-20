@@ -397,10 +397,15 @@ ORDER BY 1") as $row
 				$length = ""; // the type includes the precision, e.g. TIMESTAMP(6) WITH TIME ZONE
 			} //! int
 			$default = $row["DATA_DEFAULT"];
+			$default_sql = false;
 			if ($default !== null) {
 				$default = rtrim($default); // Oracle pads the default by a space
-				if (preg_match("~^'(.*)'\$~s", $default, $match)) {
+				if (preg_match("~^'((?:[^']|'')*)'\$~s", $default, $match)) {
 					$default = str_replace("''", "'", $match[1]); // a string is stored as a quoted literal
+				} elseif (preg_match('~^NULL$~i', $default)) {
+					$default = null;
+				} else {
+					$default_sql = !is_numeric($default);
 				}
 			}
 			if ($row["IDENTITY_COLUMN"] == "YES") {
@@ -419,6 +424,7 @@ ORDER BY 1") as $row
 				"type" => strtolower($type),
 				"length" => $length,
 				"default" => $default,
+				"default_sql" => ($default_sql && $row["IDENTITY_COLUMN"] != "YES"),
 				"null" => ($row["NULLABLE"] == "Y"),
 				"auto_increment" => ($row["IDENTITY_COLUMN"] == "YES"),
 				//! "collation" => $row["CHARACTER_SET_NAME"],

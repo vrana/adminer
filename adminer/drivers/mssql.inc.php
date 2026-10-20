@@ -581,12 +581,24 @@ WHERE c.object_id = " . q($table_id)) as $row
 		) {
 			$type = $row["type"];
 			$length = type_length($type, $row);
+			// the definition is wrapped in (), a number in (())
+			$default = $row["default"];
+			$default_sql = false;
+			if (preg_match("~^\\(N?'((?:[^']|'')*)'\\)$~s", $default, $match)) {
+				$default = str_replace("''", "'", $match[1]);
+			} elseif (preg_match('~^\(\(([-+]?[\d.]+)\)\)$~', $default, $match)) {
+				$default = $match[1];
+			} elseif ($default !== null) {
+				$default = preg_replace('~^\((.*)\)$~s', '\1', $default);
+				$default_sql = true;
+			}
 			$return[$row["name"]] = array(
 				"field" => $row["name"],
 				"full_type" => $type . ($length != "" ? "($length)" : ""),
 				"type" => $type,
 				"length" => $length,
-				"default" => (preg_match("~^\(N?'(.*)'\)$~s", $row["default"], $match) ? str_replace("''", "'", $match[1]) : $row["default"]),
+				"default" => $default,
+				"default_sql" => $default_sql,
 				"default_constraint" => $row["default_constraint"],
 				"null" => $row["is_nullable"],
 				"auto_increment" => $row["is_identity"],
