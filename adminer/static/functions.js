@@ -697,6 +697,9 @@ function editingKeydown(event) {
 */
 function functionChange() {
 	let input = this.form[this.name.replace(/^function/, 'fields')];
+	if (input instanceof RadioNodeList) { // boolean is a hidden input and a checkbox of the same name
+		input = input[input.length - 1];
+	}
 	if (input) { // undefined with the set data type
 		const func = selectValue(this);
 		if (func == 'SQL') { // raw expression - use a plain <input>, e.g. instead of <select> from the edit-foreign plugin

@@ -2,6 +2,7 @@
 - Select: Don't link a URL followed by text
 - Alter table: Label the auto-increment column A_I instead of AI (bug #1360)
 - Create database: Search collations (bug #1362)
+- Edit: Fix JavaScript error with a nullable boolean column
 - PostgreSQL: Import \connect
 - PostgreSQL: Set collation in Create database
 - PostgreSQL: Edit rows with a column of an extension type outside search_path
