@@ -299,16 +299,13 @@ function process_type(array $field, string $collate = "COLLATE"): string {
 * @return list<string> ["field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT"]
 */
 function process_field(array $field, array $type_field): array {
-	// MariaDB exports CURRENT_TIMESTAMP as a function.
-	if ($field["on_update"]) {
-		$field["on_update"] = str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", $field["on_update"]);
-	}
 	return array(
 		idf_escape(trim($field["field"])),
 		process_type($type_field),
 		($field["null"] ? " NULL" : " NOT NULL"), // NULL for timestamp
 		default_value($field),
-		(preg_match('~timestamp|datetime~', $field["type"]) && $field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
+		// MySQL requires the same precision as the column
+		(preg_match('~timestamp|datetime~', $field["type"]) && $field["on_update"] ? " ON UPDATE $field[on_update]" . process_length($field["length"]) : ""),
 		(support("comment") && $field["comment"] != "" ? " COMMENT " . q($field["comment"]) : ""),
 		($field["auto_increment"] ? auto_increment() : null),
 	);
@@ -333,7 +330,7 @@ function default_value(array $field): string {
 			? " $default"
 			: " DEFAULT " . (!$field["default_sql"] && ($string || preg_match('~^(?![a-z])~i', $default))
 				? (JUSH == "sql" && preg_match('~text|json~', $field["type"]) ? "(" . q($default) . ")" : q($default)) // MySQL requires () around default value of text column
-				: str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", ($parentheses ? "($default)" : $default))
+				: ($parentheses ? "($default)" : $default)
 			)
 		)
 	);

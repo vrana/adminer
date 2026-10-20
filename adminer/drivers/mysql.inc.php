@@ -673,7 +673,8 @@ if (!defined('Adminer\DRIVER')) {
 				"default_sql" => (!$generated && $default_sql),
 				"null" => ($row["IS_NULLABLE"] == "YES"),
 				"auto_increment" => ($extra == "auto_increment"),
-				"on_update" => (preg_match('~\bon update (\w+)~i', $extra, $match) ? $match[1] : ""), //! available since MySQL 5.1.23
+				// MariaDB reports current_timestamp(), the precision is the length
+				"on_update" => (preg_match('~\bon update current_timestamp\b~i', $extra) ? "CURRENT_TIMESTAMP" : ""), //! available since MySQL 5.1.23
 				"collation" => $row["COLLATION_NAME"],
 				"privileges" => array_flip(explode(",", "$row[PRIVILEGES],where,order")),
 				"comment" => $row["COLUMN_COMMENT"],

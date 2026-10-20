@@ -8,6 +8,7 @@
 - Database schema: Don't widen tables by others in the column (regression from 6.0.1)
 - Foreign key: Hide system databases and schemas
 - Foreign key: Set the name
+- MySQL, MariaDB: Keep the precision of ON UPDATE CURRENT_TIMESTAMP
 - PostgreSQL: Import \connect
 - PostgreSQL: Set collation in Create database
 - PostgreSQL: Edit rows with a column of an extension type outside search_path
