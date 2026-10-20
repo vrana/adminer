@@ -392,7 +392,7 @@ ORDER BY 1") as $row
 			$type = $row["DATA_TYPE"];
 			$length = "$row[DATA_PRECISION],$row[DATA_SCALE]";
 			if ($length == ",") {
-				$length = $row["CHAR_COL_DECL_LENGTH"];
+				$length = ($type == "RAW" ? $row["DATA_LENGTH"] : (preg_match('~CHAR~', $type) ? $row["CHAR_COL_DECL_LENGTH"] : "")); // CLOB reports 4000
 			} elseif (strpos($type, "(")) {
 				$length = ""; // the type includes the precision, e.g. TIMESTAMP(6) WITH TIME ZONE
 			} //! int
