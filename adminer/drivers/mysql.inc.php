@@ -650,14 +650,17 @@ if (!defined('Adminer\DRIVER')) {
 					} else {
 						$default_sql = true;
 					}
+				} elseif (preg_match("~^[bx]'[\\da-f]*'$~i", $default)) {
+					$default_sql = true; // a bit or hex literal can't be quoted
 				}
 				if ($quoted) {
 					$default = ($default == "NULL" ? null : preg_replace_callback("~^'(.*)'$~", function ($match) {
 						return stripslashes(str_replace("''", "'", $match[1]));
 					}, $default));
 				}
-				if (!$maria && preg_match('~binary~', $type_name) && preg_match('~^0x(\w*)$~', $default, $match)) {
-					$default = pack("H*", $match[1]);
+				if (preg_match('~binary~', $type_name) && preg_match("~^(?:0x(\\w*)|x'(\\w*)')$~", $default, $match)) {
+					$default = pack("H*", $match[1] . idx($match, 2)); // MySQL reports 0x6162, MariaDB x'6162'
+					$default_sql = false;
 				}
 			}
 			$return[$field] = array(

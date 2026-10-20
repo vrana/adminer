@@ -325,8 +325,8 @@ function default_value(array $field): string {
 	$generated = $field["generated"];
 	$string = !preg_match('~]$~', $field["length"]) // a PostgreSQL array literal is quoted by starting with {, ARRAY[] is an expression
 		&& (preg_match('~char|binary|text|clob|json|enum|set|String~', $field["type"]) || driver()->enumLength($field)); // String - ClickHouse
-	// MySQL requires () around expressions except CURRENT_TIMESTAMP
-	$parentheses = (JUSH == "sqlite" || (JUSH == "sql" && $field["default_sql"] && !preg_match('~^current_timestamp(\(\d*\))?$~i', $default)));
+	// MySQL requires () around expressions except CURRENT_TIMESTAMP, literals like b'1' don't need them
+	$parentheses = (JUSH == "sqlite" || (JUSH == "sql" && $field["default_sql"] && !preg_match("~^(current_timestamp(\\(\\d*\\))?|[bx]'[\\da-f]*')$~i", $default)));
 	return (in_array($generated, driver()->generated)
 		? (JUSH == "mssql" ? " AS ($default)" . ($generated == "VIRTUAL" ? "" : " $generated") : " GENERATED ALWAYS AS ($default) $generated")
 		: (preg_match('~^GENERATED ~i', $default)
