@@ -928,7 +928,7 @@ function parse_csv(string $csv, string $separator): array {
 
 /** Get value of a CSV field */
 function csv_value(string $val): string {
-	return (preg_match('~^".*"$~s', $val) ? str_replace('""', '"', substr($val, 1, -1)) : $val);
+	return (preg_match('~^".*"$~s', $val) ? idf_unescape($val) : $val);
 }
 
 /** Apply SQL function

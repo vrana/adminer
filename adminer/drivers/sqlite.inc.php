@@ -505,14 +505,14 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 		$rest = '(?:[^,()\']|\'[^\']*+\'|\([^)]*+\))*?'; // rest of the column definition, never crossing to the next column
 		preg_match_all('~' . $idf . '\s+text\b' . $rest . 'COLLATE\s+(\'[^\']+\'|[a-z0-9_]+)~i', $sql, $matches, PREG_SET_ORDER);
 		foreach ($matches as $match) {
-			$name = str_replace('""', '"', preg_replace('~^"|"$~', '', $match[1]));
+			$name = idf_unescape($match[1]);
 			if ($return[$name]) {
 				$return[$name]["collation"] = trim($match[3], "'");
 			}
 		}
 		preg_match_all('~' . $idf . '\s' . $rest . 'GENERATED\s+ALWAYS\s+AS\s*\((.+?)\)\s+(STORED|VIRTUAL)~i', $sql, $matches, PREG_SET_ORDER);
 		foreach ($matches as $match) {
-			$name = str_replace('""', '"', preg_replace('~^"|"$~', '', $match[1]));
+			$name = idf_unescape($match[1]);
 			if ($return[$name]) {
 				$return[$name]["default"] = $match[3];
 				$return[$name]["generated"] = strtoupper($match[4]);
