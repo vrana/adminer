@@ -346,6 +346,45 @@ ORDER BY (m.name LIKE 'sqlite_%'), m.name, p.cid", $this->conn);
 		return (preg_match('~^CREATE\s+VIRTUAL\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:"[^"]*+"|`[^`]*+`|\[[^\]]*+\]|[^\s(]+)\s+USING\s+([a-z0-9_]+)~i', $sql, $match) ? $match[1] : "");
 	}
 
+	/** Get the comments of a table and its columns written as -- on the line of the opening parenthesis and after the column definitions
+	* @return string[] ["" => table comment, column name => comment]
+	*/
+	function sqlite_comments(string $sql): array {
+		$return = array();
+		if (virtual_module($sql) != "") {
+			return $return;
+		}
+		preg_match_all('~\'(?:[^\']|\'\')*\'|"(?:[^"]|"")*"|`(?:[^`]|``)*`|\[[^]]*]|--[^\n]*|/\*.*?\*/|[(),\n]|[^-/\'"`[(),\n]+|[-/]~s', $sql, $matches);
+		$depth = 0;
+		$names = array(); // name of each definition, false before its first token, null for a table constraint
+		$last = ""; // the last token on this line: "(" opening the definitions, "," or "" for anything else
+		$newline = true;
+		foreach ($matches[0] as $token) {
+			if (preg_match('~^--~', $token)) {
+				if ($depth == 1 && !$newline) { // a comment on its own line describes nothing
+					$name = ($last == "(" ? "" : ($last == "," ? idx($names, count($names) - 2) : end($names)));
+					if (is_string($name)) {
+						$return[$name] = trim(substr($token, 2));
+					}
+				}
+			} elseif ($token == "\n") {
+				$newline = true;
+			} elseif (trim($token) != "" && !preg_match('~^/\*~', $token)) {
+				$newline = false;
+				$last = ($depth == 1 && $token == "," ? "," : ($depth == 0 && $token == "(" ? "(" : ""));
+				if ($last) {
+					$names[] = false;
+				} elseif ($depth == 1 && end($names) === false && $token != "(" && $token != ")") {
+					$quoted = preg_match('~^[\'"`[]~', $token);
+					$word = ($quoted ? idf_unescape($token) : preg_replace('~\s.*~s', '', trim($token)));
+					$names[count($names) - 1] = ($quoted || !preg_match('~^(CONSTRAINT|PRIMARY|UNIQUE|CHECK|FOREIGN)$~i', $word) ? $word : null);
+				}
+				$depth += ($token == "(" ? 1 : ($token == ")" ? -1 : 0));
+			}
+		}
+		return $return;
+	}
+
 	function tables_list(): array {
 		// the shadow tables of virtual tables are listed only by table_status()
 		return get_key_vals("SELECT name, type FROM sqlite_master WHERE type IN ('table', 'view')"
@@ -393,6 +432,7 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 					(preg_match('~\bSTRICT\b~i', $suffix) ? "STRICT" : 0),
 					(preg_match('~\bWITHOUT\s+ROWID\b~i', $suffix) ? "WITHOUT ROWID" : 0),
 				))) ?: "table");
+				$row["Comment"] = idx(sqlite_comments($row["sql"]), "", "");
 			}
 			unset($row["sql"]);
 			$row["Rows"] = idx($rows, $row["Name"], 0);
@@ -434,6 +474,7 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 			$privileges += array("insert" => 1, "update" => 1);
 		}
 		$fts = preg_match('~^fts\d+$~i', virtual_module($sql)); // FTS declares the columns without a type but stores strings
+		$comments = sqlite_comments($sql);
 		foreach (get_rows("PRAGMA table_" . (min_version(3.31) ? "x" : "") . "info(" . table($table) . ")") as $row) {
 			if ($row["hidden"] == 1) { // the columns of a virtual table usable only in a condition; generated columns have 2 and 3
 				continue;
@@ -453,6 +494,7 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 				"null" => !$row["notnull"],
 				"privileges" => $privileges,
 				"primary" => $row["pk"],
+				"comment" => idx($comments, $name, ""),
 			);
 			if ($row["pk"] && preg_match('~\bAUTOINCREMENT\b~i', $sql)) {
 				$return[$name]["auto_increment"] = true;
@@ -615,9 +657,9 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 	}
 
 	function alter_table(string $table, string $name, array $fields, array $foreign, ?string $comment, string $engine, string $collation, string $auto_increment, ?array $partitioning) {
-		$use_all_fields = ($table == "" || $foreign || $engine);
+		$use_all_fields = ($table == "" || $foreign || $engine || $comment !== null);
 		foreach ($fields as $field) {
-			if ($field[0] != "" || !$field[1] || $field[2]) {
+			if ($field[0] != "" || !$field[1] || $field[2] || $field[1][5]) { // ADD COLUMN can't end with a -- comment
 				$use_all_fields = true;
 				break;
 			}
@@ -641,7 +683,7 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 			if ($table != $name && !queries("ALTER TABLE " . table($table) . " RENAME TO " . table($name))) {
 				return false;
 			}
-		} elseif (!recreate_table($table, $name, $alter, $originals, $foreign, $auto_increment, array(), "", "", $engine)) {
+		} elseif (!recreate_table($table, $name, $alter, $originals, $foreign, $auto_increment, array(), "", "", $engine, $comment)) {
 			return false;
 		}
 		if ($auto_increment) {
@@ -665,6 +707,7 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 	* @param list<array{string, string, list<string>|'DROP'}> $indexes [[$type, $name, $columns]], empty to preserve
 	* @param string $drop_check name of the CHECK constraint to drop, its clause if unnamed
 	* @param string $add_check CHECK constraint to add including CHECK and optionally CONSTRAINT name
+	* @param ?string $comment table comment, null to preserve
 	*/
 	function recreate_table(
 		string $table,
@@ -676,7 +719,8 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 		$indexes = array(),
 		string $drop_check = "",
 		string $add_check = "",
-		string $engine = ""
+		string $engine = "",
+		?string $comment = null
 	): bool {
 		if ($table != "") {
 			if (!$fields) {
@@ -740,13 +784,18 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 			queries("BEGIN");
 		}
 		$changes = array();
+		$comments = array(); // the comments are written as -- after the definitions
 		foreach ($fields as $field) {
 			if (preg_match('~GENERATED~', $field[3])) {
 				unset($originals[array_search($field[0], $originals)]);
 			}
+			if (preg_match("~^ COMMENT '(.*)'$~s", $field[5], $match)) { // process_field() uses the MySQL syntax
+				$comments[count($changes)] = str_replace("''", "'", $match[1]);
+			}
+			unset($field[5]);
 			$changes[] = "  " . implode($field);
 		}
-		$changes = array_merge($changes, array_filter($foreign));
+		$changes = array_merge($changes, array_values(array_filter($foreign))); // array_values() - the edited foreign keys have string keys, the commas below need positions
 		foreach (driver()->checkConstraints($table) as $key => $check) {
 			if ($key != $drop_check) {
 				$changes[] = " " . ($key != $check ? " CONSTRAINT " . idf_escape($key) : "") . " CHECK ($check)";
@@ -756,10 +805,19 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 			$changes[] = "  $add_check";
 		}
 		$temp_name = ($table != "" && $table == $name ? "adminer_$name" : $name);
-		if (!$engine && $table != "") {
-			$engine = idx(table_status1($table), "Engine");
+		if ($table != "" && (!$engine || $comment === null)) {
+			$status = table_status1($table);
+			$engine = $engine ?: idx($status, "Engine");
+			$comment = ($comment === null ? idx($status, "Comment", "") : $comment);
 		}
-		if (!queries("CREATE TABLE " . table($temp_name) . " (\n" . implode(",\n", $changes) . "\n)" . ($engine != "table" && in_array($engine, driver()->engines()) ? " $engine" : ""))) {
+		$line_comment = function ($text) {
+			return ($text != "" ? " -- " . preg_replace('~[\r\n]+~', ' ', $text) : "");
+		};
+		$create = "CREATE TABLE " . table($temp_name) . " (" . $line_comment($comment) . "\n";
+		foreach ($changes as $i => $change) {
+			$create .= $change . ($i < count($changes) - 1 ? "," : "") . $line_comment(idx($comments, $i)) . "\n";
+		}
+		if (!queries("$create)" . ($engine != "table" && in_array($engine, driver()->engines()) ? " $engine" : ""))) {
 			// implicit ROLLBACK to not overwrite connection()->error
 			return false;
 		}
@@ -955,6 +1013,6 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 	}
 
 	function support(string $feature): bool {
-		return preg_match('~^(check|columns|database|drop_col|dump|fast_status|indexes|descidx|move_col|sql|status|table|transaction_ddl|trigger|variables|view|view_trigger)$~', $feature);
+		return preg_match('~^(check|columns|comment|database|drop_col|dump|fast_status|indexes|descidx|move_col|sql|status|table|transaction_ddl|trigger|variables|view|view_trigger)$~', $feature);
 	}
 }

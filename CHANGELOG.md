@@ -23,6 +23,7 @@
 - SQLite: Fix recreating a table referenced by foreign keys or triggers
 - SQLite: Keep the declared column types in Alter table
 - SQLite: Offer current_date and current_timestamp in Insert
+- SQLite: Display and edit the comments of tables and columns written as -- after the definitions
 - SQLite: Don't report the affected rows of the previous statement after DROP TABLE and other statements
 - SQLite 3.53+: Alter checks without recreating the table
 - MS SQL: Alter an index without renaming it
