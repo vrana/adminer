@@ -14,7 +14,7 @@ if (isset($_GET["mssql"])) {
 
 	if (extension_loaded("sqlsrv") && $_GET["ext"] != "pdo") {
 		class Db extends SqlDb {
-			public $extension = "sqlsrv";
+			public $extension = "SQLSRV";
 			private $link, $result, $warnings, $transaction = false;
 
 			private function get_error(): void {

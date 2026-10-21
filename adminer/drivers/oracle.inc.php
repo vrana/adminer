@@ -15,7 +15,7 @@ if (isset($_GET["oracle"])) {
 
 	if (extension_loaded("oci8") && $_GET["ext"] != "pdo") {
 		class Db extends SqlDb {
-			public $extension = "oci8";
+			public $extension = "OCI8";
 			private $link, $transaction = false;
 
 			function _error($errno, $error) {
