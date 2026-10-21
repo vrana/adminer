@@ -584,8 +584,8 @@ WHERE c.object_id = " . q($table_id)) as $row
 			// the definition is wrapped in (), a number in (())
 			$default = $row["default"];
 			$default_sql = false;
-			if (preg_match("~^\\(N?'((?:[^']|'')*)'\\)$~s", $default, $match)) {
-				$default = str_replace("''", "'", $match[1]);
+			if (preg_match("~^\\(N?('(?:[^']|'')*')\\)$~s", $default, $match)) {
+				$default = idf_unescape($match[1]);
 			} elseif (preg_match('~^\(\(([-+]?[\d.]+)\)\)$~', $default, $match)) {
 				$default = $match[1];
 			} elseif ($default !== null) {

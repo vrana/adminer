@@ -329,8 +329,8 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function clickhouse_default_value(string $expression): string {
-		if (preg_match("~^'(.*)'$~s", $expression, $match)) {
-			return stripcslashes(str_replace("''", "'", $match[1]));
+		if (preg_match("~^'.*'$~s", $expression)) {
+			return stripcslashes(idf_unescape($expression));
 		}
 		return $expression;
 	}

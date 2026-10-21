@@ -403,8 +403,8 @@ ORDER BY 1") as $row
 			$default_sql = false;
 			if ($default !== null) {
 				$default = rtrim($default); // Oracle pads the default by a space
-				if (preg_match("~^'((?:[^']|'')*)'\$~s", $default, $match)) {
-					$default = str_replace("''", "'", $match[1]); // a string is stored as a quoted literal
+				if (preg_match("~^'(?:[^']|'')*'\$~s", $default)) {
+					$default = idf_unescape($default); // a string is stored as a quoted literal
 				} elseif (preg_match('~^NULL$~i', $default)) {
 					$default = null;
 				} else {

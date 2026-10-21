@@ -179,8 +179,8 @@ ORDER BY r.RDB$FIELD_POSITION';
 			$default_sql = false;
 			if ($default !== null) {
 				$default = preg_replace('~^\s*DEFAULT\s+~i', '', $default);
-				if (preg_match("~^'((?:[^']|'')*)'$~s", $default, $match)) {
-					$default = str_replace("''", "'", $match[1]);
+				if (preg_match("~^'(?:[^']|'')*'$~s", $default)) {
+					$default = idf_unescape($default);
 				} elseif (preg_match('~^NULL$~i', $default)) {
 					$default = null;
 				} else {

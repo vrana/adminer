@@ -484,13 +484,14 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 			$default = $row["dflt_value"];
 			// the declared type, e.g. varchar(100), is kept by the alter form; a column without a type has the numeric affinity
 			preg_match('~^(.+?)\s*(?:\((.*)\))?$~s', $type, $parts);
+			$quoted = preg_match("~^'(?:[^']|'')*'$~", $default);
 			$return[$name] = array(
 				"field" => $name,
 				"type" => ($fts ? "text" : ($parts ? $parts[1] : type_affinity($type))),
 				"full_type" => $type,
 				"length" => ($fts ? "" : idx($parts, 2, "")),
-				"default" => (preg_match("~^'((?:[^']|'')*)'$~", $default, $match) ? str_replace("''", "'", $match[1]) : ($default == "NULL" ? null : $default)),
-				"default_sql" => ($default !== null && !$match && $default != "NULL" && !is_numeric($default)), // the pragma returns expressions without parentheses
+				"default" => ($quoted ? idf_unescape($default) : ($default == "NULL" ? null : $default)),
+				"default_sql" => ($default !== null && !$quoted && $default != "NULL" && !is_numeric($default)), // the pragma returns expressions without parentheses
 				"null" => !$row["notnull"],
 				"privileges" => $privileges,
 				"primary" => $row["pk"],
@@ -789,8 +790,8 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 			if (preg_match('~GENERATED~', $field[3])) {
 				unset($originals[array_search($field[0], $originals)]);
 			}
-			if (preg_match("~^ COMMENT '(.*)'$~s", $field[5], $match)) { // process_field() uses the MySQL syntax
-				$comments[count($changes)] = str_replace("''", "'", $match[1]);
+			if (preg_match("~^ COMMENT ('.*')$~s", $field[5], $match)) { // process_field() uses the MySQL syntax
+				$comments[count($changes)] = idf_unescape($match[1]);
 			}
 			unset($field[5]);
 			$changes[] = "  " . implode($field);

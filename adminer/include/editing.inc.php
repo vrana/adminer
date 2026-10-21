@@ -259,9 +259,9 @@ function process_length(?string $length): string {
 function process_in(string $val): string {
 	$val = preg_replace('~^\s*\(\s*(.*?)\s*\)\s*$~s', '\1', $val); // the parentheses are optional
 	// quoted values can contain a comma; they are unquoted and quoted again because backslash escapes a quote only in some databases
-	$quoted = "'((?:[^']|'')*+)'";
+	$quoted = "'(?:[^']|'')*+'";
 	$items = (preg_match("~^\\s*$quoted(?:\\s*,\\s*$quoted)*+\\s*\$~", $val) && preg_match_all("~$quoted~", $val, $matches)
-		? str_replace("''", "'", $matches[1])
+		? array_map('Adminer\idf_unescape', $matches[0])
 		: array_map('trim', explode(",", $val))
 	);
 	// the values are quoted also if they are numbers, an unquoted number can't be compared with a text column
@@ -273,9 +273,9 @@ function process_in(string $val): string {
 */
 function process_between(string $val): string {
 	// quoted values can contain AND; they are unquoted and quoted again because backslash escapes a quote only in some databases
-	$quoted = "'((?:[^']|'')*+)'";
+	$quoted = "('(?:[^']|'')*+')";
 	$range = (preg_match("~^\\s*$quoted\\s+AND\\s+$quoted\\s*\$~i", $val, $match)
-		? array(str_replace("''", "'", $match[1]), str_replace("''", "'", $match[2]))
+		? array(idf_unescape($match[1]), idf_unescape($match[2]))
 		: preg_split('~\s+AND\s+~i', trim($val))
 	);
 	// the values are quoted also if they are numbers, an unquoted number can't be compared with a text column
