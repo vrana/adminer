@@ -184,6 +184,7 @@ if (isset($_GET["redis"])) {
 					$cmd .= '$' . strlen($arg) . "\r\n$arg\r\n";
 				}
 			}
+			error_clear_last(); // readError() reports only the errors of this command
 			fwrite($this->fp, $cmd);
 			$return = array();
 			$count = count($commands);
@@ -196,7 +197,7 @@ if (isset($_GET["redis"])) {
 		function read() {
 			$line = fgets($this->fp);
 			if ($line === false) {
-				$this->error = php_error_text(idx(error_get_last(), 'message', ''));
+				$this->error = $this->readError();
 				return false;
 			}
 			$type = $line[0];
@@ -216,8 +217,8 @@ if (isset($_GET["redis"])) {
 					$data = '';
 					while (strlen($data) < $len) {
 						$block = fread($this->fp, $len - strlen($data));
-						if ($block === false) {
-							$this->error = php_error_text(idx(error_get_last(), 'message', ''));
+						if ($block == "") { // false for an error, "" for a closed connection or a timeout
+							$this->error = $this->readError();
 							return false;
 						}
 						$data .= $block;
@@ -238,6 +239,15 @@ if (isset($_GET["redis"])) {
 					$this->error = "Unknown response type: $type";
 					return false;
 			}
+		}
+
+		/** Get the error of a failed read */
+		private function readError(): string {
+			$error = error_get_last();
+			return ($error // a closed connection or a timeout emits no PHP error
+				? php_error_text($error['message'])
+				: (stream_get_meta_data($this->fp)['timed_out'] ? "Connection timed out" : "Connection closed")
+			);
 		}
 	}
 

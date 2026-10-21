@@ -32,6 +32,7 @@
 - Oracle: Fix inserting the CURRENT_TIMESTAMP default
 - Firebird: Support PDO_Firebird, drop the unmaintained InterBase extension
 - ClickHouse, Elasticsearch, IGDB, SimpleDB: Don't escape PHP errors twice with html_errors
+- Redis: Report a closed connection and a timeout
 - Editor: Hide the hint for now()
 ### Plugins
 - Drivers: Field key 'doc' to link documentation from column names in select and table structure
