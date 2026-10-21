@@ -493,6 +493,11 @@ function cookie(string $name, ?string $value, int $lifetime = 2592000): void {
 	);
 }
 
+/** Get plain text of a PHP error message */
+function php_error_text(string $error): string {
+	return (ini_bool("html_errors") ? html_entity_decode(strip_tags($error)) : $error); // docref_root adds a link after the function
+}
+
 /** Get contents from URL
 * @param resource $context
 * @return array{0: string, 1: string, 2: list<string>, 3: string} [$contents, $status, $headers, $error]
@@ -502,7 +507,7 @@ function get_url(string $url, $context): array {
 	$errors = array();
 	// a failed request emits several warnings and the first one is the most descriptive, error_get_last() would return the last one
 	set_error_handler(function ($errno, $error) use (&$errors) {
-		$errors[] = preg_replace('~^file_get_contents\([^)]*\):\s*~', '', $error); // the URL can contain a password
+		$errors[] = preg_replace('~^file_get_contents\([^)]*\)( \[[^]]*\])?:\s*~', '', php_error_text($error)); // the URL can contain a password
 		return true;
 	});
 	$return = file_get_contents($url, false, $context);

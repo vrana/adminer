@@ -14,11 +14,7 @@ if (isset($_GET["pgsql"])) {
 
 			// no type declarations, this is passed to set_error_handler()
 			function _error($errno, $error) {
-				if (ini_bool("html_errors")) {
-					$error = html_entity_decode(strip_tags($error));
-				}
-				$error = preg_replace('~^[^:]*: ~', '', $error);
-				$this->error = $error;
+				$this->error = preg_replace('~^[^:]*: ~', '', php_error_text($error));
 			}
 
 			function attach(array $server, string $username, string $password): string {
@@ -122,7 +118,7 @@ if (isset($_GET["pgsql"])) {
 			function copyFrom(string $table, array $rows): bool {
 				$this->error = '';
 				set_error_handler(function (int $errno, string $error): bool {
-					$this->error = (ini_bool('html_errors') ? html_entity_decode($error) : $error);
+					$this->error = php_error_text($error);
 					return true;
 				});
 				$return = pg_copy_from($this->link, $table, $rows);

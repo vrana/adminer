@@ -19,11 +19,7 @@ if (isset($_GET["oracle"])) {
 			private $link, $transaction = false;
 
 			function _error($errno, $error) {
-				if (ini_bool("html_errors")) {
-					$error = html_entity_decode(strip_tags($error));
-				}
-				$error = preg_replace('~^[^:]*: ~', '', $error);
-				$this->error = $error;
+				$this->error = preg_replace('~^[^:]*: ~', '', php_error_text($error));
 			}
 
 			function attach(array $server, string $username, string $password): string {

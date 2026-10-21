@@ -196,7 +196,7 @@ if (isset($_GET["redis"])) {
 		function read() {
 			$line = fgets($this->fp);
 			if ($line === false) {
-				$this->error = error_get_last()['message'];
+				$this->error = php_error_text(idx(error_get_last(), 'message', ''));
 				return false;
 			}
 			$type = $line[0];
@@ -217,7 +217,7 @@ if (isset($_GET["redis"])) {
 					while (strlen($data) < $len) {
 						$block = fread($this->fp, $len - strlen($data));
 						if ($block === false) {
-							$this->error = error_get_last()['message'];
+							$this->error = php_error_text(idx(error_get_last(), 'message', ''));
 							return false;
 						}
 						$data .= $block;
