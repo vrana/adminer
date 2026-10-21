@@ -77,8 +77,8 @@ if (isset($_GET["clickhouse"])) {
 			}
 
 			function query(string $query, bool $unbuffered = false) {
-				if (preg_match('~^\s*USE\s+(?:`((?:``|[^`])+)`|([A-Za-z_][A-Za-z0-9_]*))\s*;?\s*$~i', $query, $match)) {
-					$this->_db = str_replace("``", "`", ($match[1] !== '' ? $match[1] : $match[2]));
+				if (preg_match('~^\s*USE\s+(`(?:``|[^`])+`|[A-Za-z_][A-Za-z0-9_]*)\s*;?\s*$~i', $query, $match)) {
+					$this->_db = idf_unescape($match[1]);
 					return true;
 				}
 				return $this->rootQuery($this->_db, $query);
