@@ -162,7 +162,7 @@ if ($auth && (!adminer()->verifyLoginToken() || verify_token())) { // the token 
 	unset_permanent($permanent);
 	redirect(
 		substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1),
-		lang('Logout successful.') . ' ' . lang('Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.')
+		lang('Logout successful.') . ' ' . str_replace('<a ', '<a' . target_blank() . ' ', lang('Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.'))
 	);
 
 } elseif ($permanent && !$_SESSION["pwds"]) {
