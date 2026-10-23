@@ -134,7 +134,7 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 * @param string|list<array{string}> $value
 */
 function textarea(string $name, $value, int $rows = 10, int $cols = 80, string $jush = JUSH): void {
-	echo "<textarea name='" . h($name) . "' rows='$rows' cols='$cols' class='sqlarea jush-" . h($jush) . "' spellcheck='false' wrap='off'>";
+	echo "<textarea name='" . h($name) . "' rows='$rows' cols='$cols' class='sqlarea jush-" . h($jush) . "' spellcheck='false' wrap='off'>\n"; // \n to preserve the leading newline
 	if (is_array($value)) {
 		foreach ($value as $val) { // not implode() to save memory
 			echo h($val[0]) . "\n\n\n"; // $val == array($query, $time, $elapsed)

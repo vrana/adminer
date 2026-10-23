@@ -588,7 +588,7 @@ if (!$columns && support("table")) {
 						if (($_GET["modify"] && $editable && $edit_val !== null) || $posted !== null) {
 							$h_value = h($posted !== null ? $posted : $edit_val);
 							echo ">" . ($text
-								? "<textarea name='$id' cols='30' rows='" . (substr_count($edit_val, "\n") + 1) . "'>$h_value</textarea>"
+								? "<textarea name='$id' cols='30' rows='" . (substr_count($edit_val, "\n") + 1) . "'>\n$h_value</textarea>" // \n to preserve the leading newline
 								: "<input name='$id' value='$h_value' size='$lengths[$key]'>"
 							);
 						} else {

@@ -1,5 +1,6 @@
 ## Adminer dev
 - Use the page font instead of monospace in &lt;code> except SQL
+- Keep the leading newline of values in &lt;textarea>
 - Select: Don't link a URL followed by text
 - Edit: Fix the SQL function with a syntax highlighted textarea, keep newlines
 - Alter table: Label the auto-increment column A_I instead of AI (bug #1360)

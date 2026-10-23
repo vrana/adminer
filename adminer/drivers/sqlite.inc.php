@@ -584,7 +584,8 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 
 	function view(string $name): array {
 		//! identifiers may be inside []
-		return array("select" => preg_replace('~^(?:[^`"[]+|`[^`]*`|"[^"]*")* AS\s+~iU', '', get_val("SELECT sql FROM sqlite_master WHERE type = 'view' AND name = " . q($name))));
+		// (?=\S) - all whitespace with U
+		return array("select" => preg_replace('~^(?:[^`"[]+|`[^`]*`|"[^"]*")* AS\s+(?=\S)~iU', '', get_val("SELECT sql FROM sqlite_master WHERE type = 'view' AND name = " . q($name))));
 	}
 
 	function collations(): array {
@@ -911,7 +912,7 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 		$idf = '(?:[^`"\s]+|`[^`]*`|"[^"]*")+';
 		$trigger_options = trigger_options();
 		preg_match(
-			"~^CREATE\\s+TRIGGER\\s*$idf\\s*(" . implode("|", $trigger_options["Timing"]) . ")\\s+([a-z]+)(?:\\s+OF\\s+($idf))?\\s+ON\\s*$idf\\s*(?:FOR\\s+EACH\\s+ROW\\s)?(.*)~is",
+			"~^CREATE\\s+TRIGGER\\s*$idf\\s*(" . implode("|", $trigger_options["Timing"]) . ")\\s+([a-z]+)(?:\\s+OF\\s+($idf))?\\s+ON\\s*$idf\\s*(?:FOR\\s+EACH\\s+ROW\\s+)?(.*)~is",
 			get_val("SELECT sql FROM sqlite_master WHERE type = 'trigger' AND name = " . q($name)),
 			$match
 		);

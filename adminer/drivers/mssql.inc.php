@@ -896,7 +896,7 @@ WHERE o.schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND o.name = " . q($name)
 		if (!$definition) { // the definition is NULL if the routine is created WITH ENCRYPTION
 			return array();
 		}
-		$return = array("definition" => preg_replace('~^(?:[^[]|\[[^]]*])*\s+AS\s+~isU', '', $definition), "fields" => array()); //! comments
+		$return = array("definition" => preg_replace('~^(?:[^[]|\[[^]]*])*\s+AS\s+(?=\S)~isU', '', $definition), "fields" => array()); //! comments; (?=\S) - all whitespace with U
 		foreach (
 			get_rows("SELECT p.name, TYPE_NAME(p.user_type_id) [type], p.max_length, p.precision, p.scale, p.is_output
 FROM sys.parameters p

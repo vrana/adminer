@@ -1095,6 +1095,7 @@ WHERE r.routine_schema = current_schema() AND r.specific_name = ' . q($name)); /
 			return array();
 		}
 		$return = $rows[0];
+		$return["definition"] = trim("$return[definition]", "\r\n"); // create_routine() puts the body between newlines
 		$return["options"] = array_intersect_key($return, $options);
 		$return["returns"] = array("type" => preg_replace('~^_(.*)~', '\1[]', "$return[type_udt_name]")); // _int4 - array of int4
 		$return["fields"] = get_rows("SELECT COALESCE(parameter_name, ordinal_position::text) AS field,
