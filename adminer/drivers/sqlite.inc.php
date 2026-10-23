@@ -349,7 +349,7 @@ ORDER BY (m.name LIKE 'sqlite_%'), m.name, p.cid", $this->conn);
 	/** Get the comments of a table and its columns written as -- on the line of the opening parenthesis and after the column definitions
 	* @return string[] ["" => table comment, column name => comment]
 	*/
-	function sqlite_comments(string $sql): array {
+	function parse_comments(string $sql): array {
 		$return = array();
 		if (virtual_module($sql) != "") {
 			return $return;
@@ -432,7 +432,7 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 					(preg_match('~\bSTRICT\b~i', $suffix) ? "STRICT" : 0),
 					(preg_match('~\bWITHOUT\s+ROWID\b~i', $suffix) ? "WITHOUT ROWID" : 0),
 				))) ?: "table");
-				$row["Comment"] = idx(sqlite_comments($row["sql"]), "", "");
+				$row["Comment"] = idx(parse_comments($row["sql"]), "", "");
 			}
 			unset($row["sql"]);
 			$row["Rows"] = idx($rows, $row["Name"], 0);
@@ -474,7 +474,7 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 			$privileges += array("insert" => 1, "update" => 1);
 		}
 		$fts = preg_match('~^fts\d+$~i', virtual_module($sql)); // FTS declares the columns without a type but stores strings
-		$comments = sqlite_comments($sql);
+		$comments = parse_comments($sql);
 		foreach (get_rows("PRAGMA table_" . (min_version(3.31) ? "x" : "") . "info(" . table($table) . ")") as $row) {
 			if ($row["hidden"] == 1) { // the columns of a virtual table usable only in a condition; generated columns have 2 and 3
 				continue;
