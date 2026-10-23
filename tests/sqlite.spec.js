@@ -84,6 +84,10 @@ test('Create table', async () => {
 	await page.locator('[name="fields[1.1][field]"]').fill('name');
 	await page.locator('[name="fields[1.1][type]"]').selectOption({label: 'text'});
 	await page.locator('[name="fields[1.1][length]"]').fill('50');
+	await page.locator('[name="comments"]').uncheck();
+	await page.locator('[name="comments"]').click();
+	await page.locator('[name="fields[1.1][comment]"]').fill('Interpret');
+	await page.locator('[name="Comment"]').fill('Interprets');
 	await button(page, 'Save').click();
 	await expect(page.locator('body')).toContainText('Table has been created.');
 });
@@ -113,6 +117,10 @@ test('Create table 2', async () => {
 	await page.locator('[name="fields[1.11][field]"]').fill('title');
 	await page.locator('[name="fields[1.11][type]"]').selectOption({label: 'text'});
 	await page.locator('[name="fields[1.11][length]"]').fill('50');
+	await page.locator('[name="comments"]').check();
+	await page.locator('[name="fields[1.1][comment]"]').fill('Interpret');
+	await page.locator('[name="fields[1.11][comment]"]').fill('Album');
+	await page.locator('[name="Comment"]').fill('Albums');
 	await button(page, 'Save').click();
 	await expect(page.locator('body')).toContainText('Table has been created.');
 });
@@ -138,6 +146,8 @@ test('Alter table', async () => {
 	await page.locator('[name="fields[2.1][default]"]').fill('0');
 	await button(page, 'Save').click();
 	await expect(page.locator('body')).toContainText('Table has been altered.');
+	await expect(page.locator('body')).toContainText('Comment: Interprets'); // the table comment survives altering the table
+	await expect(page.getByRole('cell', {name: 'Interpret', exact: true})).toBeVisible(); // the column comment
 });
 
 test('Create trigger', async () => {
