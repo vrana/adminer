@@ -1,3 +1,5 @@
+## Adminer dev
+
 ## Adminer 6.2.0 (released 2026-10-23)
 - Use the page font instead of monospace in &lt;code> except SQL
 - Keep the leading newline of values in &lt;textarea>
@@ -636,6 +638,7 @@
 - CSS: Invert icons in dark mode
 ### Plugins
 - Allow changing CSP by more plugins
+- Call the methods of Adminer by adminer() instead of $this so that the plugins apply to them too
 - New plugin highlight-monaco: Use Monaco Editor for syntax highlighting
 - New plugin highlight-prism: Use Prism for syntax highlighting
 ### Internal
@@ -645,6 +648,7 @@
 - Check the code by PHPStan level 6
 - Add a common ancestor to the Db classes of all extensions
 - Plugins: Call the plugins by __call(), register Adminer as the last plugin
+- Plugins: Don't extend Adminer by the Plugins class
 - Remove all global variables
 - Stop ignoring the notice about accessing an array offset on null
 - Use strict mode in JavaScript
@@ -683,6 +687,7 @@
 ### Internal
 - Modernize JavaScript: let and const instead of var, arrow functions, for...of, classList
 - Report E_NOTICE and E_STRICT except accessing an undefined array element
+- Tests: PDO
 - Docs: Notes for developers
 
 ## Adminer 5.0.6 (released 2025-03-17)
