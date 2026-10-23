@@ -24,7 +24,7 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 	$return = array(); // table => orgtable - mapping to use in EXPLAIN
 	$modify = $edit; // $edit is used also for the output value
 	$edit = false;
-	for ($i=0; (!$limit || $i < $limit) && ($row = $result->fetch_row()); $i++) {
+	for ($i=0; (!$limit || $i < $limit) && is_array($row = $result->fetch_row()); $i++) { // a row without columns is an empty array
 		if (!$i) {
 			echo "<div class='scrollable'>\n";
 			echo "<table class='nowrap odds'" . ($modify

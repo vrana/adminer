@@ -81,7 +81,7 @@ if (isset($_GET["pgsql"])) {
 				if (!$result) {
 					$this->error = pg_last_error($this->link);
 					$return = false;
-				} elseif (!pg_num_fields($result)) {
+				} elseif (!pg_num_fields($result) && pg_result_status($result) != PGSQL_TUPLES_OK) { // SELECT without columns returns rows
 					$this->affected_rows = pg_affected_rows($result);
 					$return = true;
 				} else {
