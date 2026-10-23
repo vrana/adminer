@@ -35,6 +35,10 @@ class AdminerConfig extends Adminer\Plugin {
 				if ($plugins) {
 					echo "<h3>" . $this->lang('Enabled plugins') . "</h3>\n";
 					echo "<table>\n$plugins</table>\n";
+					// only one syntax highlighter can be enabled
+					echo Adminer\script('const highlighters = qsa(\'[type="checkbox"][name^="config[plugins][AdminerHighlight"]\');'
+						. ' highlighters.forEach(input => input.addEventListener(\'click\', () => highlighters.forEach(other => other.checked = (other == input && input.checked))));')
+					;
 				}
 				echo "<p><input type='submit' value='" . $this->lang('Save') . "'>\n";
 				echo Adminer\input_token();
