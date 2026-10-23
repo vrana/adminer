@@ -14,7 +14,7 @@ class AdminerConfig extends Adminer\Plugin {
 			$called = true;
 			if ($_POST["config"] && Adminer\verify_token()) { // a GET form would allow sharing links between devices but any page could change the settings by a link
 				Adminer\save_settings($_POST["config"], "adminer_config");
-				Adminer\redirect(null, $this->lang('Configuration saved.'));
+				Adminer\redirect(Adminer\relative_uri(), $this->lang('Configuration saved.')); // the plugins were switched before saving
 			}
 			Adminer\page_header($this->lang('Configuration'));
 			$config = Adminer\adminer()->config();
