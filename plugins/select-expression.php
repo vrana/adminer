@@ -160,7 +160,7 @@ class AdminerSelectExpression extends Adminer\Plugin {
 			$sql = $token;
 			$space = true;
 			if ($type == 1) {
-				$sql = Adminer\q(str_replace("''", "'", substr($token, 1, -1)));
+				$sql = Adminer\q(Adminer\idf_unescape($token));
 			} elseif ($type == 2) {
 				$name = Adminer\idf_unescape($token);
 				if (!isset($columns[$name])) {

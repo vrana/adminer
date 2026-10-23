@@ -24,7 +24,7 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 	$return = array(); // table => orgtable - mapping to use in EXPLAIN
 	$modify = $edit; // $edit is used also for the output value
 	$edit = false;
-	for ($i=0; (!$limit || $i < $limit) && ($row = $result->fetch_row()); $i++) {
+	for ($i=0; (!$limit || $i < $limit) && is_array($row = $result->fetch_row()); $i++) { // a row without columns is an empty array
 		if (!$i) {
 			echo "<div class='scrollable'>\n";
 			echo "<table class='nowrap odds'" . ($modify
@@ -132,9 +132,13 @@ function print_select_result($result, ?Db $connection2 = null, array $orgtables 
 
 /** Print SQL <textarea> tag
 * @param string|list<array{string}> $value
+* @param int $error_line line with an error counted from 1, printed in data-error-line for the syntax highlighters to mark it
 */
-function textarea(string $name, $value, int $rows = 10, int $cols = 80, string $jush = JUSH): void {
-	echo "<textarea name='" . h($name) . "' rows='$rows' cols='$cols' class='sqlarea jush-" . h($jush) . "' spellcheck='false' wrap='off'>";
+function textarea(string $name, $value, int $rows = 10, int $cols = 80, string $jush = JUSH, int $error_line = 0): void {
+	echo "<textarea name='" . h($name) . "' rows='$rows' cols='$cols' class='sqlarea jush-" . h($jush) . "' spellcheck='false' wrap='off'"
+		. ($error_line ? " data-error-line='$error_line'" : "")
+		. ">\n" // \n to preserve the leading newline
+	;
 	if (is_array($value)) {
 		foreach ($value as $val) { // not implode() to save memory
 			echo h($val[0]) . "\n\n\n"; // $val == array($query, $time, $elapsed)
@@ -243,6 +247,9 @@ function process_length(?string $length): string {
 	if (JUSH == "mssql" && preg_match('~^\s*\(?\s*max\s*\)?\s*$~i', $length)) {
 		return "(max)"; // the maximum length of varchar, nvarchar and varbinary
 	}
+	if (JUSH == "oracle" && preg_match('~^\s*\(?\s*(\d+)\s+(CHAR|BYTE)\s*\)?\s*$~i', $length, $match)) {
+		return "($match[1] " . strtoupper($match[2]) . ")"; // the length semantics of varchar2 and char
+	}
 	$enum_length = driver()->enumLength;
 	return (preg_match("~^\\s*\\(?\\s*$enum_length(?:\\s*,\\s*$enum_length)*+\\s*\\)?\\s*\$~", $length) && preg_match_all("~$enum_length~", $length, $matches)
 		? "(" . implode(",", $matches[0]) . ")"
@@ -256,9 +263,9 @@ function process_length(?string $length): string {
 function process_in(string $val): string {
 	$val = preg_replace('~^\s*\(\s*(.*?)\s*\)\s*$~s', '\1', $val); // the parentheses are optional
 	// quoted values can contain a comma; they are unquoted and quoted again because backslash escapes a quote only in some databases
-	$quoted = "'((?:[^']|'')*+)'";
+	$quoted = "'(?:[^']|'')*+'";
 	$items = (preg_match("~^\\s*$quoted(?:\\s*,\\s*$quoted)*+\\s*\$~", $val) && preg_match_all("~$quoted~", $val, $matches)
-		? str_replace("''", "'", $matches[1])
+		? array_map('Adminer\idf_unescape', $matches[0])
 		: array_map('trim', explode(",", $val))
 	);
 	// the values are quoted also if they are numbers, an unquoted number can't be compared with a text column
@@ -270,9 +277,9 @@ function process_in(string $val): string {
 */
 function process_between(string $val): string {
 	// quoted values can contain AND; they are unquoted and quoted again because backslash escapes a quote only in some databases
-	$quoted = "'((?:[^']|'')*+)'";
+	$quoted = "('(?:[^']|'')*+')";
 	$range = (preg_match("~^\\s*$quoted\\s+AND\\s+$quoted\\s*\$~i", $val, $match)
-		? array(str_replace("''", "'", $match[1]), str_replace("''", "'", $match[2]))
+		? array(idf_unescape($match[1]), idf_unescape($match[2]))
 		: preg_split('~\s+AND\s+~i', trim($val))
 	);
 	// the values are quoted also if they are numbers, an unquoted number can't be compared with a text column
@@ -299,16 +306,13 @@ function process_type(array $field, string $collate = "COLLATE"): string {
 * @return list<string> ["field", "type", "NULL", "DEFAULT", "ON UPDATE", "COMMENT", "AUTO_INCREMENT"]
 */
 function process_field(array $field, array $type_field): array {
-	// MariaDB exports CURRENT_TIMESTAMP as a function.
-	if ($field["on_update"]) {
-		$field["on_update"] = str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", $field["on_update"]);
-	}
 	return array(
 		idf_escape(trim($field["field"])),
 		process_type($type_field),
 		($field["null"] ? " NULL" : " NOT NULL"), // NULL for timestamp
 		default_value($field),
-		(preg_match('~timestamp|datetime~', $field["type"]) && $field["on_update"] ? " ON UPDATE $field[on_update]" : ""),
+		// MySQL requires the same precision as the column
+		(preg_match('~timestamp|datetime~', $field["type"]) && $field["on_update"] ? " ON UPDATE $field[on_update]" . process_length($field["length"]) : ""),
 		(support("comment") && $field["comment"] != "" ? " COMMENT " . q($field["comment"]) : ""),
 		($field["auto_increment"] ? auto_increment() : null),
 	);
@@ -324,14 +328,16 @@ function default_value(array $field): string {
 	$default = str_replace("\r", "", $field["default"]);
 	$generated = $field["generated"];
 	$string = !preg_match('~]$~', $field["length"]) // a PostgreSQL array literal is quoted by starting with {, ARRAY[] is an expression
-		&& (preg_match('~char|binary|text|json|enum|set|String~', $field["type"]) || driver()->enumLength($field)); // String - ClickHouse
+		&& (preg_match('~char|binary|text|clob|json|enum|set|String~', $field["type"]) || driver()->enumLength($field)); // String - ClickHouse
+	// MySQL requires () around expressions except CURRENT_TIMESTAMP, literals like b'1' don't need them
+	$parentheses = (JUSH == "sqlite" || (JUSH == "sql" && $field["default_sql"] && !preg_match("~^(current_timestamp(\\(\\d*\\))?|[bx]'[\\da-f]*')$~i", $default)));
 	return (in_array($generated, driver()->generated)
 		? (JUSH == "mssql" ? " AS ($default)" . ($generated == "VIRTUAL" ? "" : " $generated") : " GENERATED ALWAYS AS ($default) $generated")
 		: (preg_match('~^GENERATED ~i', $default)
 			? " $default"
-			: " DEFAULT " . ($string || preg_match('~^(?![a-z])~i', $default)
+			: " DEFAULT " . (!$field["default_sql"] && ($string || preg_match('~^(?![a-z])~i', $default))
 				? (JUSH == "sql" && preg_match('~text|json~', $field["type"]) ? "(" . q($default) . ")" : q($default)) // MySQL requires () around default value of text column
-				: str_ireplace("current_timestamp()", "CURRENT_TIMESTAMP", (JUSH == "sqlite" ? "($default)" : $default))
+				: ($parentheses ? "($default)" : $default)
 			)
 		)
 	);
@@ -386,10 +392,7 @@ function edit_fields(array $fields, array $collations, $type = "TABLE", array $f
 		if ($type == "TABLE") {
 			echo "<td><label class='block'>" . checkbox("fields[$i][null]", 1, $field["null"], "", "", "", "label-null") . "</label>";
 			echo "<td><label class='block'><input type='radio' name='auto_increment_col' value='$i'" . ($field["auto_increment"] ? " checked" : "") . " aria-labelledby='label-ai'></label>";
-			echo "<td$default_class>" . (driver()->generated
-				? html_select("fields[$i][generated]", array_merge(array("", "DEFAULT"), driver()->generated), $field["generated"]) . " "
-				: checkbox("fields[$i][generated]", 1, $field["generated"], "", "", "", "label-default")
-			);
+			echo "<td$default_class>" . html_select("fields[$i][generated]", array_merge(array("", "DEFAULT", "DEFAULT SQL"), driver()->generated), $field["generated"], "", "label-default") . " ";
 			$attrs = " name='fields[$i][default]' aria-labelledby='label-default'";
 			$value = h($field["default"]);
 			// \n to preserve the leading newline

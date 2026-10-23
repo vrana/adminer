@@ -15,15 +15,12 @@ if (isset($_GET["oracle"])) {
 
 	if (extension_loaded("oci8") && $_GET["ext"] != "pdo") {
 		class Db extends SqlDb {
-			public $extension = "oci8";
+			public $extension = "OCI8";
+			/** @var int */ public $error_offset = 0; // byte offset of the last error in the query, PDO_OCI doesn't report it
 			private $link, $transaction = false;
 
 			function _error($errno, $error) {
-				if (ini_bool("html_errors")) {
-					$error = html_entity_decode(strip_tags($error));
-				}
-				$error = preg_replace('~^[^:]*: ~', '', $error);
-				$this->error = $error;
+				$this->error = preg_replace('~^[^:]*: ~', '', php_error_text($error));
 			}
 
 			function attach(array $server, string $username, string $password): string {
@@ -47,6 +44,7 @@ if (isset($_GET["oracle"])) {
 			function query(string $query, bool $unbuffered = false) {
 				$result = oci_parse($this->link, $query);
 				$this->error = "";
+				$this->error_offset = 0;
 				if (!$result) {
 					$error = oci_error($this->link);
 					$this->errno = $error["code"];
@@ -56,6 +54,10 @@ if (isset($_GET["oracle"])) {
 				set_error_handler(array($this, '_error'));
 				$return = @oci_execute($result, ($this->transaction ? OCI_NO_AUTO_COMMIT : OCI_COMMIT_ON_SUCCESS));
 				restore_error_handler();
+				if (!$return) {
+					$error = oci_error($result);
+					$this->error_offset = ($error ? $error["offset"] : 0);
+				}
 				if ($return) {
 					if (oci_num_fields($result)) {
 						return new Result($result);
@@ -232,6 +234,11 @@ if (isset($_GET["oracle"])) {
 			return true;
 		}
 
+		function errorLine(string $query): int {
+			$offset = (isset($this->conn->error_offset) ? $this->conn->error_offset : 0); // only OCI8 reports it
+			return ($offset ? substr_count($query, "\n", 0, min($offset, strlen($query))) + 1 : 0);
+		}
+
 		function tableHelp(string $name, bool $is_view = false) {
 			if (DB == "SYS") {
 				// V$SESSION is a public synonym of SYS.V_$SESSION, GV$ views are documented together with V$
@@ -364,6 +371,16 @@ ORDER BY 1") as $row
 		) {
 			$return[$row["Name"]] = $row;
 		}
+		// a partitioned index has status N/A, its partitions have their own
+		foreach (
+			get_vals("SELECT table_name FROM all_indexes ai WHERE " . where_owner("table_owner") . " AND (status = 'UNUSABLE'
+	OR EXISTS (SELECT 1 FROM all_ind_partitions aip WHERE aip.index_owner = ai.owner AND aip.index_name = ai.index_name AND aip.status = 'UNUSABLE')
+	OR EXISTS (SELECT 1 FROM all_ind_subpartitions ais WHERE ais.index_owner = ai.owner AND ais.index_name = ai.index_name AND ais.status = 'UNUSABLE'))") as $table
+		) {
+			if ($return[$table]) { // don't create an entry for an object not listed above
+				$return[$table]["invalid_index"] = "1";
+			}
+		}
 		return $return;
 	}
 
@@ -382,15 +399,23 @@ ORDER BY 1") as $row
 			$type = $row["DATA_TYPE"];
 			$length = "$row[DATA_PRECISION],$row[DATA_SCALE]";
 			if ($length == ",") {
-				$length = $row["CHAR_COL_DECL_LENGTH"];
+				$length = ($type == "RAW" ? $row["DATA_LENGTH"] : (preg_match('~CHAR~', $type) ? $row["CHAR_COL_DECL_LENGTH"] : "")); // CLOB reports 4000
+				if ($row["CHAR_USED"] == "C" && preg_match('~^(VARCHAR2|CHAR)$~', $type)) {
+					$length = "$row[CHAR_LENGTH] CHAR"; // the declared length is in bytes, NVARCHAR2 and NCHAR are always in characters
+				}
 			} elseif (strpos($type, "(")) {
 				$length = ""; // the type includes the precision, e.g. TIMESTAMP(6) WITH TIME ZONE
 			} //! int
 			$default = $row["DATA_DEFAULT"];
+			$default_sql = false;
 			if ($default !== null) {
 				$default = rtrim($default); // Oracle pads the default by a space
-				if (preg_match("~^'(.*)'\$~s", $default, $match)) {
-					$default = str_replace("''", "'", $match[1]); // a string is stored as a quoted literal
+				if (preg_match("~^'(?:[^']|'')*'\$~s", $default)) {
+					$default = idf_unescape($default); // a string is stored as a quoted literal
+				} elseif (preg_match('~^NULL$~i', $default)) {
+					$default = null;
+				} else {
+					$default_sql = !is_numeric($default);
 				}
 			}
 			if ($row["IDENTITY_COLUMN"] == "YES") {
@@ -409,6 +434,7 @@ ORDER BY 1") as $row
 				"type" => strtolower($type),
 				"length" => $length,
 				"default" => $default,
+				"default_sql" => ($default_sql && $row["IDENTITY_COLUMN"] != "YES"),
 				"null" => ($row["NULLABLE"] == "Y"),
 				"auto_increment" => ($row["IDENTITY_COLUMN"] == "YES"),
 				//! "collation" => $row["CHARACTER_SET_NAME"],
@@ -446,12 +472,14 @@ ORDER BY cc.position', $connection2) as $row
 	function indexes(string $table, ?Db $connection2 = null): array {
 		$return = array();
 		$constraints = array();
+		$partitioned = array();
 		foreach (table_constraints($table, $connection2) as $name => $constraint) {
 			$constraints[$name] = $constraint["type"];
 		}
 		foreach (
-			get_rows("SELECT aic.*, atc.data_default
+			get_rows("SELECT aic.*, atc.data_default, ai.status, ai.partitioned
 FROM all_ind_columns aic
+JOIN all_indexes ai ON ai.owner = aic.index_owner AND ai.index_name = aic.index_name
 LEFT JOIN all_tab_cols atc ON aic.column_name = atc.column_name AND aic.table_name = atc.table_name AND aic.index_owner = atc.owner
 WHERE aic.table_name = " . q($table) . " AND " . where_owner("aic.table_owner") . "
 ORDER BY aic.column_position", $connection2) as $row
@@ -461,9 +489,20 @@ ORDER BY aic.column_position", $connection2) as $row
 			$column_name = ($column_name ? trim($column_name, '"') : $row["COLUMN_NAME"]); // trim - possibly wrapped in quotes but never contains quotes inside
 			$type = idx($constraints, $index_name);
 			$return[$index_name]["type"] = ($type == "P" ? "PRIMARY" : ($type == "U" ? "UNIQUE" : "INDEX"));
+			$return[$index_name]["invalid"] = ($row["STATUS"] == "UNUSABLE");
 			$return[$index_name]["columns"][] = $column_name;
 			$return[$index_name]["lengths"][] = ($row["CHAR_LENGTH"] && $row["CHAR_LENGTH"] != $row["COLUMN_LENGTH"] ? $row["CHAR_LENGTH"] : null);
 			$return[$index_name]["descs"][] = ($row["DESCEND"] && $row["DESCEND"] == "DESC" ? '1' : null);
+			if ($row["PARTITIONED"] == "YES") {
+				$partitioned[$index_name] = q($index_name);
+			}
+		}
+		if ($partitioned) {
+			// a partitioned index has status N/A, its partitions have their own; EXISTS over them in the query above took ~0.3 s each to compile
+			$in = where_owner("index_owner") . " AND index_name IN (" . implode(", ", $partitioned) . ") AND status = 'UNUSABLE'";
+			foreach (get_rows("SELECT index_name FROM all_ind_partitions WHERE $in UNION SELECT index_name FROM all_ind_subpartitions WHERE $in", $connection2) as $row) {
+				$return[$row["INDEX_NAME"]]["invalid"] = true;
+			}
 		}
 		uasort($return, function ($a, $b) {
 			// the constraint indexes first as the removed ORDER BY ac.constraint_type did, the callers pick the first usable index

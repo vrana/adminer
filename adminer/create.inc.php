@@ -70,11 +70,12 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 				if (!$field["generated"]) {
 					$field["default"] = null;
 				}
+				$field["default_sql"] = ($field["generated"] == "DEFAULT SQL");
 				$process_field = process_field($field, $type_field);
 				$all_fields[] = array($field["orig"], $process_field, $after);
 				if (!$orig_field || $process_field !== process_field($orig_field, $orig_field)) {
 					$fields[] = array($field["orig"], $process_field, $after);
-					if ($field["orig"] != "" || $after) {
+					if ($field["orig"] != "" || $after || (JUSH == "sqlite" && $field["comment"] != "")) { // SQLite can't add a column with a comment
 						$use_all_fields = true;
 					}
 				}
@@ -129,13 +130,15 @@ if ($_POST && !process_fields($row["fields"]) && !$error) {
 		$name = trim($row["name"]);
 
 		$location = ME . (support("table") ? "table=" : "select=") . url_escape($name);
+		$comment = ($row["Comment"] != $table_status["Comment"] ? $row["Comment"] : null);
+		$engine = ($row["Engine"] && $row["Engine"] != $table_status["Engine"] ? $row["Engine"] : "");
 		$result = alter_table(
 			$TABLE,
 			$name,
-			(JUSH == "sqlite" && ($use_all_fields || $foreign) ? $all_fields : $fields),
+			(JUSH == "sqlite" && ($use_all_fields || $foreign || $comment !== null || $engine) ? $all_fields : $fields), // SQLite recreates the table
 			$foreign,
-			($row["Comment"] != $table_status["Comment"] ? $row["Comment"] : null),
-			($row["Engine"] && $row["Engine"] != $table_status["Engine"] ? $row["Engine"] : ""),
+			$comment,
+			$engine,
 			($row["Collation"] && $row["Collation"] != $table_status["Collation"] ? $row["Collation"] : ""),
 			($row["Auto_increment"] != "" ? number($row["Auto_increment"]) : ""),
 			$partitioning
@@ -178,7 +181,7 @@ if (!$_POST) {
 			if ($field["generated"]) {
 				$field["default"] = ltrim($field["default"]);
 			}
-			$field["generated"] = $field["generated"] ?: (isset($field["default"]) ? "DEFAULT" : "");
+			$field["generated"] = $field["generated"] ?: (isset($field["default"]) ? ($field["default_sql"] ? "DEFAULT SQL" : "DEFAULT") : "");
 			$row["fields"][] = $field;
 		}
 

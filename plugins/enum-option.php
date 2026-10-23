@@ -22,9 +22,9 @@ class AdminerEnumOption extends Adminer\Plugin {
 			if ($field["null"]) {
 				$options["null"] = "NULL";
 			}
-			preg_match_all("~'((?:[^']|'')*)'~", $field["length"], $matches);
-			foreach ($matches[1] as $val) {
-				$val = stripcslashes(str_replace("''", "'", $val));
+			preg_match_all("~'(?:[^']|'')*'~", $field["length"], $matches);
+			foreach ($matches[0] as $val) {
+				$val = stripcslashes(Adminer\idf_unescape($val));
 				$options["val-$val"] = $val;
 			}
 			return "<select$attrs>" . Adminer\optionlist($options, $selected, 1) . "</select>"; // 1 - use keys

@@ -39,7 +39,7 @@ test('Create database', async () => {
 	await goto(page, '/adminer/?username=ODBC');
 	await link(page, 'Create database').click();
 	await page.locator('[name="name"]').fill('adminer_test');
-	await page.locator('[name="collation"]').selectOption({label: 'utf8mb4_general_ci'});
+	await page.locator('[name="collation"]').fill('utf8mb4_general_ci'); // <input> with <datalist>
 	await button(page, 'Save').click();
 	await expect(page.locator('body')).toContainText('Database has been created.');
 });
@@ -137,6 +137,8 @@ test('Alter table', async () => {
 	await page.locator('[name="fields[2.1][default]"]').fill('0');
 	await button(page, 'Save').click();
 	await expect(page.locator('body')).toContainText('Table has been altered.');
+	await expect(page.locator('body')).toContainText('Comment: Interprets'); // the table comment survives altering the table
+	await expect(page.getByRole('cell', {name: 'Interpret', exact: true})).toBeVisible(); // the column comment
 });
 
 test('Create trigger', async () => {

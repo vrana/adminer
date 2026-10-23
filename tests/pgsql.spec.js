@@ -112,6 +112,8 @@ test('Alter table', async () => {
 	await page.locator('[name="fields[3.1][default]"]').fill('0');
 	await button(page, 'Save').click();
 	await expect(page.locator('body')).toContainText('Table has been altered.');
+	await expect(page.locator('body')).toContainText('Comment: Interprets'); // the table comment survives altering the table
+	await expect(page.getByRole('cell', {name: 'Interpret', exact: true})).toBeVisible(); // the column comment
 });
 
 test('Check constraints', async () => {

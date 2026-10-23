@@ -14,11 +14,7 @@ if (isset($_GET["pgsql"])) {
 
 			// no type declarations, this is passed to set_error_handler()
 			function _error($errno, $error) {
-				if (ini_bool("html_errors")) {
-					$error = html_entity_decode(strip_tags($error));
-				}
-				$error = preg_replace('~^[^:]*: ~', '', $error);
-				$this->error = $error;
+				$this->error = preg_replace('~^[^:]*: ~', '', php_error_text($error));
 			}
 
 			function attach(array $server, string $username, string $password): string {
@@ -85,7 +81,7 @@ if (isset($_GET["pgsql"])) {
 				if (!$result) {
 					$this->error = pg_last_error($this->link);
 					$return = false;
-				} elseif (!pg_num_fields($result)) {
+				} elseif (!pg_num_fields($result) && pg_result_status($result) != PGSQL_TUPLES_OK) { // SELECT without columns returns rows
 					$this->affected_rows = pg_affected_rows($result);
 					$return = true;
 				} else {
@@ -122,7 +118,7 @@ if (isset($_GET["pgsql"])) {
 			function copyFrom(string $table, array $rows): bool {
 				$this->error = '';
 				set_error_handler(function (int $errno, string $error): bool {
-					$this->error = (ini_bool('html_errors') ? html_entity_decode($error) : $error);
+					$this->error = php_error_text($error);
 					return true;
 				});
 				$return = pg_copy_from($this->link, $table, $rows);
@@ -403,7 +399,7 @@ if (isset($_GET["pgsql"])) {
 		}
 
 		function quoteBinary(string $s): string {
-			return "'\\x" . bin2hex($s) . "'"; // available since PostgreSQL 8.1
+			return "decode('" . bin2hex($s) . "', 'hex')"; // '\x...' requires standard_conforming_strings
 		}
 
 		function md5(string $column, array $field) {
@@ -414,6 +410,10 @@ if (isset($_GET["pgsql"])) {
 
 		function warnings() {
 			return $this->conn->warnings();
+		}
+
+		function errorLine(string $query): int {
+			return (preg_match('~^LINE (\d+):~m', $this->conn->error, $match) ? (int) $match[1] : 0); // the message quotes the line with the error
 		}
 
 		function tableHelp(string $name, bool $is_view = false) {
@@ -606,6 +606,7 @@ ORDER BY 1";
 	obj_description(c.oid, 'pg_class') AS \"Comment\",
 	" . (min_version(12) ? "''" : "CASE WHEN relhasoids THEN 'oid' ELSE '' END") . " AS \"Oid\",
 	reltuples AS \"Rows\",
+	EXISTS (SELECT 1 FROM pg_index WHERE indrelid = c.oid AND NOT indisvalid)::int AS invalid_index,
 	" . ($sequences ? "seq.last_value" : "NULL") . " AS \"Auto_increment\"" . (min_version(10) ? ",
 	relispartition::int AS dependent" : "") . "
 FROM pg_class c
@@ -683,6 +684,9 @@ ORDER BY a.attnum") as $row
 		) {
 			//! collation
 			parse_full_type($row);
+			// a literal is a string cast to the column type, NULL, a number or a boolean
+			$row["default_sql"] = ($row["default"] !== null && !$row["attidentity"] && !$row["attgenerated"]
+				&& !preg_match("~^(('(?:[^']|'')*'|NULL)(::[^,)]+)?|[-+]?[\\d.]+|true|false)$~s", $row["default"]));
 			if (in_array($row['attidentity'], array('a', 'd'))) {
 				$row['default'] = 'GENERATED ' . ($row['attidentity'] == 'd' ? 'BY DEFAULT' : 'ALWAYS') . ' AS IDENTITY';
 			}
@@ -707,7 +711,7 @@ ORDER BY a.attnum") as $row
 		$table_oid = driver()->tableOid($table);
 		$columns = get_key_vals("SELECT attnum, attname FROM pg_attribute WHERE attrelid = $table_oid AND attnum > 0", $connection2);
 		foreach (
-			get_rows("SELECT relname, indisunique::int, indisprimary::int, indkey, indoption, amname,
+			get_rows("SELECT relname, indisunique::int, indisprimary::int, indisvalid::int, indkey, indoption, amname,
 	pg_get_expr(indpred, indrelid, true) AS partial, pg_get_expr(indexprs, indrelid) AS indexpr" . ($connection2->flavor == 'cockroach' ? "" : ",
 	(SELECT string_agg(CASE WHEN opcdefault THEN '' ELSE opcname END, ' ' ORDER BY s)
 		FROM generate_subscripts(indclass, 1) AS s JOIN pg_catalog.pg_opclass ON pg_opclass.oid = indclass[s]) AS opclasses") . "
@@ -723,6 +727,7 @@ ORDER BY indisprimary DESC, indisunique DESC", $connection2) as $row
 			$return[$relname]["descs"] = array();
 			$return[$relname]["algorithm"] = $row["amname"];
 			$return[$relname]["partial"] = $row["partial"];
+			$return[$relname]["invalid"] = !$row["indisvalid"]; // left by a failed CREATE INDEX CONCURRENTLY, a unique one doesn't enforce uniqueness
 			$indexpr = preg_split('~(?<=\)), (?=\()~', $row["indexpr"]); //! '), (' used in expression
 			foreach (explode(" ", $row["indkey"]) as $indkey) {
 				$return[$relname]["columns"][] = ($indkey ? $columns[$indkey] : array_shift($indexpr));
@@ -922,7 +927,14 @@ ORDER BY conkey, conname") as $row
 		$create = array();
 		$drop = array();
 		$queries = array();
+		$concurrently = (support("concurrent_indexes") && $_POST["concurrently"] ? " CONCURRENTLY" : "");
 		foreach ($alter as $val) {
+			if (
+				$val[0] == "UNIQUE" && $val[2] == "DROP"
+				&& !get_val("SELECT 1 FROM pg_constraint JOIN pg_class ON conindid = pg_class.oid WHERE conrelid = " . driver()->tableOid($table) . " AND relname = " . q($val[1]))
+			) {
+				$val[0] = "INDEX"; // CREATE UNIQUE INDEX without a constraint, e.g. an invalid one
+			}
 			if ($val[0] != "INDEX") {
 				//! descending UNIQUE indexes result in syntax error
 				$create[] = ($val[2] == "DROP"
@@ -932,7 +944,7 @@ ORDER BY conkey, conname") as $row
 			} elseif ($val[2] == "DROP") {
 				$drop[] = idf_escape($val[1]);
 			} else {
-				$queries[] = "CREATE INDEX " . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_"))
+				$queries[] = "CREATE INDEX$concurrently " . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_"))
 					. " ON " . table($table)
 					. ($val[3] ? " USING $val[3]" : "")
 					. " (" . implode(", ", $val[2]) . ")"
@@ -944,7 +956,13 @@ ORDER BY conkey, conname") as $row
 			array_unshift($queries, "ALTER TABLE " . table($table) . implode(",", $create));
 		}
 		if ($drop) {
-			array_unshift($queries, "DROP INDEX " . implode(", ", $drop));
+			// DROP INDEX CONCURRENTLY accepts only one index
+			$queries = array_merge(($concurrently
+				? array_map(function ($idf) {
+					return "DROP INDEX CONCURRENTLY $idf";
+				}, $drop)
+				: array("DROP INDEX " . implode(", ", $drop))
+			), $queries);
 		}
 		foreach ($queries as $query) {
 			if (!queries($query)) {
@@ -1081,6 +1099,7 @@ WHERE r.routine_schema = current_schema() AND r.specific_name = ' . q($name)); /
 			return array();
 		}
 		$return = $rows[0];
+		$return["definition"] = trim("$return[definition]", "\r\n"); // create_routine() puts the body between newlines
 		$return["options"] = array_intersect_key($return, $options);
 		$return["returns"] = array("type" => preg_replace('~^_(.*)~', '\1[]', "$return[type_udt_name]")); // _int4 - array of int4
 		$return["fields"] = get_rows("SELECT COALESCE(parameter_name, ordinal_position::text) AS field,
@@ -1512,6 +1531,7 @@ WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary !=
 			. (connection()->flavor == 'cockroach' ? '' : '|deferrable') // https://github.com/cockroachdb/cockroach/issues/31632
 			. (connection()->flavor == 'cockroach' ? '' : '|transaction_ddl') // autocommit_before_ddl commits DDL in a transaction
 			. (connection()->flavor == 'cockroach' || !min_version(9.1) ? '' : '|extension') // CockroachDB has no real rows in pg_extension
+			. (connection()->flavor == 'cockroach' || !min_version(9.2) ? '' : '|concurrent_indexes') // CockroachDB ignores CONCURRENTLY, it always builds indexes online
 			. (connection()->flavor == 'cockroach' ? '' : '|processlist') // https://github.com/cockroachdb/cockroach/issues/24745
 			. ')$~', $feature)
 		;

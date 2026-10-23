@@ -349,7 +349,7 @@ function get_rows(string $query, ?Db $connection2 = null, string $error = "<p cl
 */
 function unique_array(?array $row, array $indexes) {
 	foreach ($indexes as $index) {
-		if (preg_match("~^(PRIMARY|UNIQUE)$~", $index["type"]) && !$index["partial"]) {
+		if (preg_match("~^(PRIMARY|UNIQUE)$~", $index["type"]) && !$index["partial"] && !$index["invalid"]) {
 			$return = array();
 			foreach ($index["columns"] as $key) {
 				if (!isset($row[$key])) { // NULL is ambiguous
@@ -493,6 +493,11 @@ function cookie(string $name, ?string $value, int $lifetime = 2592000): void {
 	);
 }
 
+/** Get plain text of a PHP error message */
+function php_error_text(string $error): string {
+	return (ini_bool("html_errors") ? html_entity_decode(strip_tags($error)) : $error); // docref_root adds a link after the function
+}
+
 /** Get contents from URL
 * @param resource $context
 * @return array{0: string, 1: string, 2: list<string>, 3: string} [$contents, $status, $headers, $error]
@@ -502,7 +507,7 @@ function get_url(string $url, $context): array {
 	$errors = array();
 	// a failed request emits several warnings and the first one is the most descriptive, error_get_last() would return the last one
 	set_error_handler(function ($errno, $error) use (&$errors) {
-		$errors[] = preg_replace('~^file_get_contents\([^)]*\):\s*~', '', $error); // the URL can contain a password
+		$errors[] = preg_replace('~^file_get_contents\([^)]*\)( \[[^]]*\])?:\s*~', '', php_error_text($error)); // the URL can contain a password
 		return true;
 	});
 	$return = file_get_contents($url, false, $context);
@@ -928,7 +933,7 @@ function parse_csv(string $csv, string $separator): array {
 
 /** Get value of a CSV field */
 function csv_value(string $val): string {
-	return (preg_match('~^".*"$~s', $val) ? str_replace('""', '"', substr($val, 1, -1)) : $val);
+	return (preg_match('~^".*"$~s', $val) ? idf_unescape($val) : $val);
 }
 
 /** Apply SQL function

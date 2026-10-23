@@ -105,6 +105,18 @@ if ($_POST && $adminer_export) { //! delete on 2026-09-26
 
 page_header((isset($_GET["import"]) ? lang('Import') : lang('SQL command')), $error);
 $line_comment = driver()->lineComment();
+$error_line = 0; // the line of the first error in the <textarea>, counted from 1
+
+/** Get the line of an error in the <textarea>
+* @param string $text the whole <textarea>
+* @param int $offset the position of $query in $text
+* @param int $line the line of the error in $query, 0 for the first line skipping the leading whitespace
+* @return int counted from 1
+*/
+function query_error_line(string $text, int $offset, string $query, int $line): int {
+	// substr() - substr_count() with the zero length warns in PHP < 8
+	return substr_count(substr($text, 0, $offset), "\n") + ($line ?: substr_count(substr($query, 0, strspn($query, " \t\r\n")), "\n") + 1);
+}
 
 if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())) {
 	$delimiter = driver()->delimiter;
@@ -139,6 +151,7 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 
 		$space = "(?:\\s|\xEF\xBB\xBF|/\\*[\s\S]*?\\*/|(?:$line_comment)[^\n]*\n?|--\r?\n)"; // BOM - SQLite skips it
 		$offset = 0;
+		$query_offset = 0; // the position of $query in the <textarea>
 		$empty = true;
 		$copy = false; // PostgreSQL COPY ... FROM stdin
 		$meta = false; // psql \connect
@@ -158,6 +171,7 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 			if (!$offset && preg_match("~^$space*+DELIMITER\\s+(\\S+)~i", $query, $match)) {
 				$delimiter = preg_quote($match[1]);
 				$query = substr($query, strlen($match[0]));
+				$query_offset += strlen($match[0]);
 			} elseif (!$offset && JUSH == 'pgsql' && preg_match("~^($space*+COPY\\s+)[^;]+\\s+FROM\\s+stdin;~i", $query, $match)) {
 				$delimiter = "\n\\\\\\.\r?\n";
 				$copy = true;
@@ -202,6 +216,8 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 					} else { // end of a query
 						$q = substr($query, 0, $pos + ($copy ? 3 : 0)); // 3 - pass "\n\\." to PostgreSQL COPY
 						$query = substr($query, $offset);
+						$q_offset = $query_offset;
+						$query_offset += $offset;
 						$offset = 0;
 						if ($copy || $meta) { // the COPY and meta-command delimiters are valid only for the single query
 							$delimiter = driver()->delimiter;
@@ -221,6 +237,9 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 							echo $print;
 							echo "<p class='error'>" . lang('%s queries are not supported.', preg_match('~ATTACH~i', $match[1]) ? 'ATTACH' : 'VACUUM INTO') . "\n";
 							$errors[] = " <a href='#sql-$commands'>$commands</a>";
+							if (!$error_line && !isset($_GET["import"])) {
+								$error_line = query_error_line($_POST["query"], $q_offset, $q, 0);
+							}
 							if ($_POST["error_stops"]) {
 								break;
 							}
@@ -253,6 +272,9 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 									echo ($_POST["only_errors"] ? $print : "");
 									echo "<p class='error'>" . lang('Error in query') . (connection()->errno ? " (" . connection()->errno . ")" : "") . ": " . adminer()->error() . "\n";
 									$errors[] = " <a href='#sql-$commands'>$commands</a>";
+									if (!$error_line && !isset($_GET["import"])) {
+										$error_line = query_error_line($_POST["query"], $q_offset, $q, driver()->errorLine($q));
+									}
 									if ($_POST["error_stops"]) {
 										break 2;
 									}
@@ -371,7 +393,7 @@ if (!isset($_GET["import"])) {
 		$q = idx($history[$_GET["history"]], 0);
 	}
 	echo "<p>";
-	textarea("query", $q, 20);
+	textarea("query", $q, 20, 80, JUSH, $error_line);
 	echo ($_POST ? "" : script("qs('textarea').focus();"));
 	echo "<p>";
 	adminer()->sqlPrintAfter();
@@ -407,7 +429,7 @@ if (!isset($_GET["import"]) && $history) {
 		list($q, $time, $elapsed) = $val;
 		echo '<div><a href="' . h(ME . "sql=&history=$key") . '" class="hover">' . lang('Edit') . "</a>"
 			. " <span class='time' title='" . @date('Y-m-d', $time) . "'>" . @date("H:i:s", $time) . "</span>" // @ - time zone may be not set
-			. " <code class='jush-" . JUSH . "'>" . shorten_utf8(preg_replace('~\s+~', ' ', ltrim(preg_replace("~^(?:$line_comment).*~m", '', $q))), 80, "</code>")
+			. " <code class='sql jush-" . JUSH . "'>" . shorten_utf8(preg_replace('~\s+~', ' ', ltrim(preg_replace("~^(?:$line_comment).*~m", '', $q))), 80, "</code>")
 			. ($elapsed ? " <span class='time'>($elapsed)</span>" : "")
 			. "</div>\n"
 		;

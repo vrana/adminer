@@ -14,7 +14,7 @@ if (isset($_GET["mssql"])) {
 
 	if (extension_loaded("sqlsrv") && $_GET["ext"] != "pdo") {
 		class Db extends SqlDb {
-			public $extension = "sqlsrv";
+			public $extension = "SQLSRV";
 			private $link, $result, $warnings, $transaction = false;
 
 			private function get_error(): void {
@@ -528,7 +528,8 @@ GROUP BY object_id", null, "") as $row
 		}
 		foreach (
 			get_rows("SELECT ao.object_id, ao.name AS Name, ao.type_desc AS Engine,
-	(SELECT cast(value as varchar(max)) FROM fn_listextendedproperty('MS_Description', 'SCHEMA', schema_name(schema_id), 'TABLE', ao.name, null, null)) AS Comment
+	(SELECT cast(value as varchar(max)) FROM fn_listextendedproperty('MS_Description', 'SCHEMA', schema_name(schema_id), 'TABLE', ao.name, null, null)) AS Comment,
+	CASE WHEN EXISTS (SELECT 1 FROM sys.indexes i WHERE i.object_id = ao.object_id AND i.is_disabled = 1) THEN 1 END AS invalid_index
 FROM sys.all_objects AS ao
 WHERE schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND type IN ('S', 'U', 'V') " . ($name != "" ? "AND name = " . q($name) : "ORDER BY name")) as $row
 		) {
@@ -580,12 +581,24 @@ WHERE c.object_id = " . q($table_id)) as $row
 		) {
 			$type = $row["type"];
 			$length = type_length($type, $row);
+			// the definition is wrapped in (), a number in (())
+			$default = $row["default"];
+			$default_sql = false;
+			if (preg_match("~^\\(N?('(?:[^']|'')*')\\)$~s", $default, $match)) {
+				$default = idf_unescape($match[1]);
+			} elseif (preg_match('~^\(\(([-+]?[\d.]+)\)\)$~', $default, $match)) {
+				$default = $match[1];
+			} elseif ($default !== null) {
+				$default = preg_replace('~^\((.*)\)$~s', '\1', $default);
+				$default_sql = true;
+			}
 			$return[$row["name"]] = array(
 				"field" => $row["name"],
 				"full_type" => $type . ($length != "" ? "($length)" : ""),
 				"type" => $type,
 				"length" => $length,
-				"default" => (preg_match("~^\(N?'(.*)'\)$~s", $row["default"], $match) ? str_replace("''", "'", $match[1]) : $row["default"]),
+				"default" => $default,
+				"default_sql" => $default_sql,
 				"default_constraint" => $row["default_constraint"],
 				"null" => $row["is_nullable"],
 				"auto_increment" => $row["is_identity"],
@@ -609,7 +622,7 @@ WHERE c.object_id = " . q($table_id)) as $row
 		$return = array();
 		// sp_statistics doesn't return information about primary key
 		foreach (
-			get_rows("SELECT i.name, key_ordinal, is_unique, is_primary_key, c.name AS column_name, is_descending_key
+			get_rows("SELECT i.name, key_ordinal, is_unique, is_primary_key, is_disabled, c.name AS column_name, is_descending_key
 FROM sys.indexes i
 INNER JOIN sys.index_columns ic ON i.object_id = ic.object_id AND i.index_id = ic.index_id
 INNER JOIN sys.columns c ON ic.object_id = c.object_id AND ic.column_id = c.column_id
@@ -618,6 +631,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 			$name = $row["name"];
 			$return[$name]["type"] = ($row["is_primary_key"] ? "PRIMARY" : ($row["is_unique"] ? "UNIQUE" : "INDEX"));
 			$return[$name]["lengths"] = array();
+			$return[$name]["invalid"] = !!$row["is_disabled"]; // ALTER INDEX ... DISABLE, a unique one doesn't enforce uniqueness
 			$return[$name]["columns"][$row["key_ordinal"]] = $row["column_name"];
 			$return[$name]["descs"][$row["key_ordinal"]] = ($row["is_descending_key"] ? '1' : null);
 		}
@@ -756,25 +770,37 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 	function alter_indexes(string $table, $alter) {
 		$index = array();
 		$drop = array();
+		$queries = array();
 		foreach ($alter as $val) {
 			if ($val[2] == "DROP") {
-				if ($val[0] == "PRIMARY") { //! sometimes used also for UNIQUE
+				if (
+					$val[0] == "PRIMARY"
+					|| ($val[0] == "UNIQUE" && get_val("SELECT is_unique_constraint FROM sys.indexes WHERE object_id = OBJECT_ID(" . q(table($table)) . ") AND name = " . q($val[1])))
+				) {
 					$drop[] = idf_escape($val[1]);
 				} else {
 					$index[] = idf_escape($val[1]) . " ON " . table($table);
 				}
-			} elseif (
-				!queries(($val[0] != "PRIMARY"
+			} else {
+				$queries[] = ($val[0] != "PRIMARY"
 					? "CREATE $val[0] " . ($val[0] != "INDEX" ? "INDEX " : "") . idf_escape($val[1] != "" ? $val[1] : uniqid($table . "_")) . " ON " . table($table)
 					: "ALTER TABLE " . table($table) . " ADD PRIMARY KEY"
-				) . " (" . implode(", ", $val[2]) . ")")
-			) {
+				) . " (" . implode(", ", $val[2]) . ")";
+			}
+		}
+		// drop first, a changed index keeps its name
+		if ($drop) {
+			array_unshift($queries, "ALTER TABLE " . table($table) . " DROP " . implode(", ", $drop));
+		}
+		if ($index) {
+			array_unshift($queries, "DROP INDEX " . implode(", ", $index));
+		}
+		foreach ($queries as $query) {
+			if (!queries($query)) {
 				return false;
 			}
 		}
-		return (!$index || queries("DROP INDEX " . implode(", ", $index)))
-			&& (!$drop || queries("ALTER TABLE " . table($table) . " DROP " . implode(", ", $drop)))
-		;
+		return true;
 	}
 
 	function found_rows(array $table_status, array $where) {
@@ -870,7 +896,7 @@ WHERE o.schema_id = SCHEMA_ID(" . q(get_schema()) . ") AND o.name = " . q($name)
 		if (!$definition) { // the definition is NULL if the routine is created WITH ENCRYPTION
 			return array();
 		}
-		$return = array("definition" => preg_replace('~^(?:[^[]|\[[^]]*])*\s+AS\s+~isU', '', $definition), "fields" => array()); //! comments
+		$return = array("definition" => preg_replace('~^(?:[^[]|\[[^]]*])*\s+AS\s+(?=\S)~isU', '', $definition), "fields" => array()); //! comments; (?=\S) - all whitespace with U
 		foreach (
 			get_rows("SELECT p.name, TYPE_NAME(p.user_type_id) [type], p.max_length, p.precision, p.scale, p.is_output
 FROM sys.parameters p

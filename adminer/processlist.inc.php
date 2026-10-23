@@ -40,7 +40,7 @@ foreach (adminer()->processList() as $i => $row) {
 			(JUSH == "sql" && $key == "Info" && preg_match("~Query|Killed~", $row["Command"])) ||
 			(JUSH == "pgsql" && $key == "query") ||
 			(JUSH == "oracle" && $key == "sql_text"))
-			? "<code class='jush-" . JUSH . "' data-full='" . h($val) . "'>" . shorten_utf8($val, 100, "</code>")
+			? "<code class='sql jush-" . JUSH . "' data-full='" . h($val) . "'>" . shorten_utf8($val, 100, "</code>")
 				. ' <a href="' . h(($row["db"] != "" ? preg_replace('~&db=[^&]*~', '', ME) . "db=" . url_escape($row["db"]) . "&" : ME) . "sql=" . url_escape($val)) . '">' . lang('Clone') . '</a>'
 				. ' ' . copy_icon()
 			: h($val)

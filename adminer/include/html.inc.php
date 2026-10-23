@@ -352,7 +352,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 		} elseif (is_blob($field) && ini_bool("file_uploads")) {
 			echo "<input type='file' name='fields-$name'>";
 		} elseif ($json) {
-			echo "<textarea$attrs cols='50' rows='12' class='jush-json'>" . h($value) . '</textarea>';
+			echo "<textarea$attrs cols='50' rows='12' class='jush-json'>\n" . h($value) . '</textarea>'; // \n to preserve the leading newline
 		} elseif (($text = preg_match('~text|lob|memo~i', $field["type"])) || preg_match("~\n~", $value)) {
 			if ($text && JUSH != "sqlite") {
 				$attrs .= " cols='50' rows='12'";
@@ -360,7 +360,7 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 				$rows = min(12, substr_count($value, "\n") + 1);
 				$attrs .= " cols='30' rows='$rows'";
 			}
-			echo "<textarea$attrs>" . h($value) . '</textarea>';
+			echo "<textarea$attrs>\n" . h($value) . '</textarea>'; // \n to preserve the leading newline
 		} else {
 			$types = driver()->types();
 			$type_length = $types[$field["type"]];
@@ -550,12 +550,16 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 						: ($value === false ? null : ($value !== null ? '' : 'NULL'))
 					)
 				);
-				if (!$_POST && !$update && $value == $field["default"] && preg_match('~^[\w.]+\(~', $value)) {
+				if (!$_POST && !$update && $value == $field["default"] && ($field["default_sql"] || preg_match('~^[\w.]+\(~', $value))) {
 					$function = "SQL";
 				}
 				if (preg_match("~time~", $field["type"]) && preg_match('~^CURRENT_TIMESTAMP~i', $value)) {
 					$value = "";
-					$function = "now";
+					$function = (in_array("now", adminer()->editFunctions($field)) ? "now" : "current_timestamp"); // Oracle and Firebird have no now()
+				}
+				if (preg_match("~date~", $field["type"]) && preg_match('~^CURRENT_DATE~i', $value)) {
+					$value = "";
+					$function = (in_array("now", adminer()->editFunctions($field)) ? "now" : "current_date");
 				}
 				if ($field["type"] == "uuid" && $value == "uuid()") {
 					$value = "";

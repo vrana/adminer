@@ -65,6 +65,7 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["drop_col"]) {
 					&& (!$existing["opclasses"] || array_values($existing["opclasses"]) === $opclasses)
 					&& $existing["partial"] == $index_condition
 					&& (!$index_algorithms || $existing["algorithm"] == $index_algorithm)
+					&& !$existing["invalid"] // saving an invalid index recreates it
 				) {
 					// skip existing index
 					unset($indexes[$name]);
@@ -205,6 +206,8 @@ foreach ($row["indexes"] as $index) {
 			echo "<td$idxopts><input name='indexes[$j][partial]' value='" . h($index["partial"]) . "' autocapitalize='off' aria-labelledby='label-condition'>\n";
 		}
 		echo "<td>" . icon("cross", "drop_col[$j]", "x", lang('Remove'), on('click', 'editingRemoveRow', 'indexes$1[type]'));
+		echo (idx($indexes[$index["name"]], "invalid") ? " <span class='error'>INVALID</span>" : ""); // rows from $_POST don't carry the flag
+		echo "\n";
 	}
 	$j++;
 }
@@ -213,5 +216,10 @@ foreach ($row["indexes"] as $index) {
 </div>
 <p>
 <input type='submit' value='<?php echo lang('Save'); ?>'>
-<?php echo input_token(); ?>
+<?php
+if (support("concurrent_indexes")) {
+	echo checkbox("concurrently", 1, $_POST["concurrently"], "concurrently") . doc_link(array('pgsql' => 'sql-createindex.html#SQL-CREATEINDEX-CONCURRENTLY')) . "\n";
+}
+echo input_token();
+?>
 </form>

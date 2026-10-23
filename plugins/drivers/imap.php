@@ -140,7 +140,7 @@ if (isset($_GET["imap"])) {
 	}
 
 	class Driver extends SqlDriver {
-		static $extensions = array("imap");
+		static $extensions = array("IMAP");
 		static $jush = "imap";
 		static $serverPorts = array(993);
 

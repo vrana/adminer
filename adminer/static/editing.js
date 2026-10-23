@@ -42,6 +42,9 @@ function syntaxHighlighting(version, vendor) {
 					const pre = jush.textarea(tag, autocompleter);
 					if (pre) {
 						tag.jushPre = pre;
+						if (tag.dataset.errorLine) {
+							jush.mark_line(pre, +tag.dataset.errorLine); // jush.textarea() removes the mark on typing
+						}
 						setupSubmitHighlightInput(pre);
 						tag.onchange = () => {
 							pre.textContent = tag.value;
@@ -653,6 +656,19 @@ function foreignAddRow() {
 		select.selectedIndex = 0;
 	}
 	tr.parentNode.append(row);
+}
+
+/** Name the foreign key by its source columns
+* @param {string} nameRe matching the names created from the pattern
+* @param {string} namePattern Adminer::namePattern() with the table
+* @this HTMLTableElement
+*/
+function foreignName(nameRe, namePattern) {
+	const name = this.closest('form')['constraint'];
+	if (name && new RegExp(nameRe).test(name.value)) { // don't overwrite a name typed by the user
+		const columns = [...qsa('select', this)].filter(select => /^source/.test(select.name)).map(select => selectValue(select)).filter(value => value);
+		name.value = namePattern.replace('{columns}', () => columns.join('_')); // function - column names can contain $&
+	}
 }
 
 

@@ -404,6 +404,10 @@ if (!defined('Adminer\DRIVER')) {
 			}
 		}
 
+		function errorLine(string $query): int {
+			return (preg_match('~ at line (\d+)$~', $this->conn->error, $match) ? (int) $match[1] : 0); // syntax errors end by "near '...' at line 1"
+		}
+
 		function tableHelp(string $name, bool $is_view = false) {
 			$maria = ($this->conn->flavor == 'maria');
 			if (information_schema(DB)) {
@@ -636,19 +640,29 @@ if (!defined('Adminer\DRIVER')) {
 			preg_match('~^(VIRTUAL|PERSISTENT|STORED)~', $extra, $generated);
 			list($type_name, $length, $unsigned) = parse_type($type);
 			$default = $row["COLUMN_DEFAULT"];
+			$default_sql = false;
 			if ($default != "") {
-				$is_text = preg_match('~text|json~', $type_name);
-				if (!$maria && $is_text) {
-					// default value a'b of text column is stored as _utf8mb4\'a\\\'b\' in MySQL
-					$default = preg_replace("~^(_\w+)?('.*')$~", '\2', stripslashes($default));
+				$quoted = $maria;
+				if ($maria) {
+					$default_sql = !preg_match("~^('(?:[^'\\\\]|\\\\.|'')*'|NULL|[-+]?[\\d.]+)$~s", $default); // MariaDB quotes strings
+				} elseif (preg_match('~text|json~', $type_name) || preg_match('~\bDEFAULT_GENERATED\b~', $extra)) {
+					// default value a'b of text column is stored as _utf8mb4\'a\\\'b\' in MySQL, other expressions escape the quotes too
+					$default = stripslashes($default);
+					$quoted = preg_match("~^(_\\w+)?('(?:[^'\\\\]|\\\\.|'')*')$~s", $default, $match);
+					if ($quoted) {
+						$default = $match[2];
+					} else {
+						$default_sql = true;
+					}
+				} elseif (preg_match("~^[bx]'[\\da-f]*'$~i", $default)) {
+					$default_sql = true; // a bit or hex literal can't be quoted
 				}
-				if ($maria || $is_text) {
-					$default = ($default == "NULL" ? null : preg_replace_callback("~^'(.*)'$~", function ($match) {
-						return stripslashes(str_replace("''", "'", $match[1]));
-					}, $default));
+				if ($quoted) {
+					$default = ($default == "NULL" ? null : (preg_match("~^'.*'$~s", $default) ? stripslashes(idf_unescape($default)) : $default));
 				}
-				if (!$maria && preg_match('~binary~', $type_name) && preg_match('~^0x(\w*)$~', $default, $match)) {
-					$default = pack("H*", $match[1]);
+				if (preg_match('~binary~', $type_name) && preg_match("~^(?:0x(\\w*)|x'(\\w*)')$~", $default, $match)) {
+					$default = pack("H*", $match[1] . idx($match, 2)); // MySQL reports 0x6162, MariaDB x'6162'
+					$default_sql = false;
 				}
 			}
 			$return[$field] = array(
@@ -661,9 +675,11 @@ if (!defined('Adminer\DRIVER')) {
 					? ($maria ? $generation : stripslashes($generation))
 					: $default
 				),
+				"default_sql" => (!$generated && $default_sql),
 				"null" => ($row["IS_NULLABLE"] == "YES"),
 				"auto_increment" => ($extra == "auto_increment"),
-				"on_update" => (preg_match('~\bon update (\w+)~i', $extra, $match) ? $match[1] : ""), //! available since MySQL 5.1.23
+				// MariaDB reports current_timestamp(), the precision is the length
+				"on_update" => (preg_match('~\bon update current_timestamp\b~i', $extra) ? "CURRENT_TIMESTAMP" : ""), //! available since MySQL 5.1.23
 				"collation" => $row["COLLATION_NAME"],
 				"privileges" => array_flip(explode(",", "$row[PRIVILEGES],where,order")),
 				"comment" => $row["COLUMN_COMMENT"],

@@ -107,6 +107,8 @@ foreach ($columns as $name => $column) {
 	}
 	$columns[$name] = max($column, (int) $min - 1);
 }
+/** @var float[] */
+$table_width = array(); // table => width
 foreach ($schema as $name => $table) {
 	$column = $columns[$name];
 	$grid[$column][] = $name;
@@ -114,8 +116,9 @@ foreach ($schema as $name => $table) {
 	foreach ($table["fields"] as $field) {
 		$text_width = max($text_width, .65 * strlen($field["field"]));
 	}
-	// strlen() overestimates multi-byte names on purpose, a too narrow column would be overlapped by the reference lines
-	$widths[$column] = max(idx($widths, $column, 0), ceil($text_width) + 1); // whole em keeps the computed positions free of rounding errors
+	// strlen() overestimates multi-byte names on purpose, a too narrow table would be overlapped by the reference lines
+	$table_width[$name] = ceil($text_width) + 1; // whole em keeps the computed positions free of rounding errors
+	$widths[$column] = max(idx($widths, $column, 0), $table_width[$name]);
 }
 foreach ($foreign_keys as $name => $vals) {
 	foreach ($vals as $val) {
@@ -132,8 +135,6 @@ $column_left = 0;
 $prev_column = null;
 /** @var float[] */
 $table_left = array(); // table => left
-/** @var float[] */
-$table_width = array(); // table => width of its column
 foreach ($grid as $column => $tables) {
 	if ($prev_column !== null) {
 		// 1 em for the reference line, .7 em of space, round() to not print the rounding errors of .1
@@ -163,7 +164,6 @@ foreach ($grid as $column => $tables) {
 		$pos = 1.25 * count($schema[$name]["fields"]);
 		$schema[$name]["pos"] = ($table_pos[$name] ?: array($top, $column_left)); // the saved position wins but the table still occupies its slot
 		$table_left[$name] = $schema[$name]["pos"][1];
-		$table_width[$name] = $widths[$column];
 		$top += 2.5 + $pos;
 		$height = max($height, $schema[$name]["pos"][0] + 2.5 + $pos);
 		$width = max($width, round($schema[$name]["pos"][1] + $widths[$column], 1));
@@ -181,7 +181,7 @@ $base_lefts = array();
 foreach ($foreign_keys as $name => $vals) {
 	foreach ($vals as $val) {
 		$target_left = idx($table_left, $val["table"], $table_left[$name]);
-		$source_right = $table_left[$name] + $table_width[$name];
+		$source_right = $table_left[$name] + $widths[$columns[$name]]; // right of the whole column, a line right of a narrower table would cross the wider ones
 		$right = ($target_left - 1 > $source_right); // a self-reference or a dragged table can put the referenced table elsewhere, then draw the line left of both, as before 6.0.1
 		$left = ($right ? $source_right + 1 : min($table_left[$name], $target_left) - 1);
 		$base = idx($base_lefts, (string) $left, 0);

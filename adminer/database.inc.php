@@ -73,7 +73,7 @@ if ($_POST) {
 <p>
 <?php
 echo ($_POST["add"] || strpos($name, "\n")
-	? '<textarea autofocus name="name" rows="10" cols="40">' . h($name) . '</textarea><br>'
+	? "<textarea autofocus name='name' rows='10' cols='40'>\n" . h($name) . '</textarea><br>' // \n to preserve the leading newline
 	: '<input name="name" autofocus value="' . h($name) . '" data-maxlength="64" autocapitalize="off">'
 ) . "\n";
 echo ($collations ? "<datalist id='collations'>" . optionlist(flat_collations()) . "</datalist>"

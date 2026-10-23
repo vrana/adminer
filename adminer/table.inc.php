@@ -70,11 +70,12 @@ if (!is_view($table_status) && driver()->supportsAlterTable($table_status)) {
 		echo "<div>\n";
 		echo "<h3 id='foreign-keys'>" . lang('Foreign keys') . "</h3>\n";
 		$foreign_keys = foreign_keys($TABLE);
+		$alterable = function_exists('Adminer\alter_table'); // IGDB only reads foreign keys
 		if ($foreign_keys) {
 			echo "<table>\n";
-			echo "<thead><tr><th>" . lang('Source') . "<th>" . lang('Target') . "<th>" . lang('ON DELETE') . "<th>" . lang('ON UPDATE') . "<td class='hover'><tbody>\n";
+			echo "<thead><tr><th>" . lang('Source') . "<th>" . lang('Target') . "<th>" . lang('ON DELETE') . "<th>" . lang('ON UPDATE') . ($alterable ? "<td class='hover'>" : "") . "<tbody>\n";
 			foreach ($foreign_keys as $name => $foreign_key) {
-				echo "<tr title='" . h($name) . "'>";
+				echo "<tr" . (!is_int($name) ? " title='" . h($name) . "'" : "") . ">"; // SQLite and IGDB identify foreign keys by their position
 				echo "<th><i>" . implode("</i>, <i>", array_map('Adminer\h', $foreign_key["source"])) . "</i>";
 				$link = ($foreign_key["db"] != ""
 					? preg_replace('~&db=[^&]*~', "&db=" . url_escape($foreign_key["db"]), ME)
@@ -89,12 +90,12 @@ if (!is_view($table_status) && driver()->supportsAlterTable($table_status)) {
 				echo "(<i>" . implode("</i>, <i>", array_map('Adminer\h', $foreign_key["target"])) . "</i>)";
 				echo "<td>" . h($foreign_key["on_delete"]);
 				echo "<td>" . h($foreign_key["on_update"]);
-				echo '<td class="hover"><a href="' . h(ME . 'foreign=' . url_escape($TABLE) . '&name=' . url_escape($name)) . '">' . lang('Alter') . '</a>';
+				echo ($alterable ? '<td class="hover"><a href="' . h(ME . 'foreign=' . url_escape($TABLE) . '&name=' . url_escape($name)) . '">' . lang('Alter') . '</a>' : '');
 				echo "\n";
 			}
 			echo "</table>\n";
 		}
-		echo '<p class="links hover"><a href="' . h(ME) . 'foreign=' . url_escape($TABLE) . '">' . lang('Create foreign key') . "</a>\n";
+		echo ($alterable ? '<p class="links hover"><a href="' . h(ME) . 'foreign=' . url_escape($TABLE) . '">' . lang('Create foreign key') . "</a>\n" : '');
 		echo "</div>\n";
 	}
 
@@ -105,8 +106,8 @@ if (!is_view($table_status) && driver()->supportsAlterTable($table_status)) {
 		if ($check_constraints) {
 			echo "<table>\n";
 			foreach ($check_constraints as $key => $val) {
-				echo "<tr title='" . h($key) . "'>";
-				echo "<td><code class='jush-" . JUSH . "'>" . shorten_utf8(preg_replace('~\s+~', ' ', ltrim($val)), 80, "</code>");
+				echo "<tr" . ($key != $val ? " title='" . h($key) . "'" : "") . ">"; // SQLite identifies unnamed checks by their clause
+				echo "<td><code class='sql jush-" . JUSH . "'>" . shorten_utf8(preg_replace('~\s+~', ' ', ltrim($val)), 80, "</code>");
 				echo "<td class='hover'><a href='" . h(ME . 'check=' . url_escape($TABLE) . '&name=' . url_escape($key)) . "'>" . lang('Alter') . "</a>";
 				echo "\n";
 			}
@@ -150,7 +151,7 @@ if ($inherited) {
 	echo "<h3 id='partitions'>" . lang('Inherited by') . "</h3>\n";
 	$partition = driver()->partitionsInfo($TABLE);
 	if ($partition) {
-		echo "<p><code class='jush-" . JUSH . "'>BY " . h("$partition[partition_by]($partition[partition])") . "</code>\n";
+		echo "<p><code class='sql jush-" . JUSH . "'>BY " . h("$partition[partition_by]($partition[partition])") . "</code>\n";
 	}
 	tables_links($inherited);
 }

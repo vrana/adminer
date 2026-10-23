@@ -692,42 +692,54 @@ function editingKeydown(event) {
 	}
 }
 
-/** Change the value field to a plain <input> for the SQL function and disable maxlength for functions
+/** Replace the value field by a plain <input> or <textarea> for the SQL function, hide it for functions without an argument and disable maxlength for other functions
 * @this HTMLSelectElement
 */
 function functionChange() {
-	let input = this.form[this.name.replace(/^function/, 'fields')];
-	if (input instanceof RadioNodeList) { // boolean is a hidden input and a checkbox of the same name
-		input = input[input.length - 1];
-	}
-	if (input) { // undefined with the set data type
-		const func = selectValue(this);
-		if (func == 'SQL') { // raw expression - use a plain <input>, e.g. instead of <select> from the edit-foreign plugin
-			if (!input.origElement) {
-				const text = document.createElement('input');
-				text.name = input.name;
-				text.value = selectValue(input);
+	const td = this.parentNode.nextSibling;
+	const name = this.name.replace(/^function/, 'fields');
+	const func = selectValue(this);
+	const noArg = /^(now|getdate|current_date|current_timestamp|uuid)$/.test(func); // these functions take no argument
+	if (func == 'SQL' || noArg) {
+		if (!td.origNodes) { // move away the whole content, e.g. a syntax highlighter, <select> from the edit-foreign plugin or Editor's hint
+			const input = this.form[name]; // undefined with the set data type
+			const textarea = (input && input.tagName == 'TEXTAREA');
+			const text = document.createElement(textarea ? 'textarea' : 'input'); // <textarea> keeps newlines
+			text.name = name;
+			text.value = (input ? selectValue(input) : '');
+			if (textarea) {
+				text.rows = input.rows;
+				text.cols = input.cols;
+			} else {
 				text.size = 40;
-				text.origElement = input;
-				input.replaceWith(text);
-				setupSubmitHighlightInput(text);
-				input = text;
 			}
-		} else if (input.origElement) { // revive the original element (keeps its type, e.g. number for +)
-			input.replaceWith(input.origElement);
-			input = input.origElement;
+			setupSubmitHighlightInput(text);
+			td.sqlInput = text;
+			td.origNodes = document.createDocumentFragment();
+			td.origNodes.append(...td.childNodes);
+			td.append(text);
 		}
-		if (func) { // the length is not limited when a function is applied
-			if (input.origMaxLength === undefined) {
-				input.origMaxLength = input.dataset.maxlength;
+		alterClass(td.sqlInput, 'hidden', noArg); // still sent, process_input() skips a missing field
+	} else {
+		if (td.origNodes) { // revive the original content (keeps its type, e.g. number for +)
+			td.textContent = '';
+			td.append(td.origNodes);
+			delete td.origNodes;
+			delete td.sqlInput;
+		}
+		const input = this.form[name];
+		if (input && input.tagName) { // undefined with the set data type, RadioNodeList with boolean (a hidden input and a checkbox)
+			if (func) { // the length is not limited when a function is applied
+				if (input.origMaxLength === undefined) {
+					input.origMaxLength = input.dataset.maxlength;
+				}
+				delete input.dataset.maxlength;
+			} else if (input.origMaxLength >= 0) {
+				input.dataset.maxlength = input.origMaxLength;
+				delete input.origMaxLength;
 			}
-			delete input.dataset.maxlength;
-		} else if (input.origMaxLength >= 0) {
-			input.dataset.maxlength = input.origMaxLength;
-			delete input.origMaxLength;
+			maxlengthCheck(input); // not fire() - the input event would also run skipOriginal() on the parent <td>
 		}
-		alterClass(input, 'hidden', /^(now|getdate|current_date|current_timestamp|uuid)$/.test(func)); // these functions take no argument
-		maxlengthCheck(input); // not fire() - the input event would also run skipOriginal() on the parent <td>
 	}
 	helpClose();
 }

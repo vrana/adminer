@@ -24,6 +24,7 @@ class AdminerHighlightPrism extends Adminer\Plugin {
 @import url(<?php echo "$this->editorRoot/layout$this->minified.css"; ?>);
 @import url(<?php echo "$this->editorRoot/themes/$this->theme$this->minified.css"; ?>);
 .prism-code-editor { border: 1px inset #ccc; resize: both; }
+.adminer-error-line { background: #fc05; }
 </style>
 <script type="module"<?php echo Adminer\nonce(); ?>>
 import { editorFromPlaceholder } from '<?php echo $this->editorRoot; ?>/index.js';
@@ -31,29 +32,42 @@ import { highlightText } from '<?php echo $this->editorRoot; ?>/prism/index.js';
 import '<?php echo $this->editorRoot; ?>/prism/languages/json.js';
 import '<?php echo $this->editorRoot; ?>/prism/languages/sql.js';
 
+const language = el => (
+	/jush-json/.test(el.className) ? 'json' : (
+	/jush-(\w*sql|oracle|clickhouse|firebird)/.test(el.className) ? 'sql' : (
+	''
+)));
+
 adminerHighlighter = els => els.forEach(el => {
-	const mode = (
-		/jush-json/.test(el.className) ? 'json' : (
-		/jush-(\w*sql|oracle|clickhouse|firebird)/.test(el.className) ? 'sql' : (
-		''
-	)));
+	const mode = language(el);
 	if (mode) {
 		el.innerHTML = highlightText(el.textContent, mode);
 	}
 });
 adminerHighlighter(qsa('code'));
 
-const el = document.querySelector('.sqlarea');
-if (el) {
+for (const el of qsa('textarea[class*="jush-"]')) {
 	const name = el.name;
+	const className = el.className;
 	const width = el.clientWidth;
 	const height = el.clientHeight;
-	const editor = editorFromPlaceholder('.sqlarea', { language: 'sql', lineNumbers: false });
+	const errorLine = +el.dataset.errorLine;
+	const editor = editorFromPlaceholder(el, { language: language(el) || 'sql', lineNumbers: false });
 	editor.wrapper.parentElement.style.width = width + 'px';
 	editor.wrapper.style.height = height + 'px';
 	editor.textarea.name = name;
-	editor.textarea.className = 'sqlarea';
+	editor.textarea.className = className;
 	editor.textarea.onchange = editor.update;
+	const line = errorLine && editor.wrapper.children[errorLine]; // [0] holds the overlays
+	if (line) {
+		line.classList.add('adminer-error-line');
+		editor.scrollContainer.scrollTop = line.offsetTop - height / 3;
+		const unmark = () => {
+			line.classList.remove('adminer-error-line');
+			editor.removeListener('update', unmark);
+		};
+		editor.addListener('update', unmark);
+	}
 }
 </script>
 <?php

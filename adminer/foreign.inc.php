@@ -16,11 +16,11 @@ if ($_POST && !$error && !$_POST["add"] && !$_POST["change"] && !$_POST["change-
 		$row["target"] = $target;
 	}
 
-	$constraint = object_name("FOREIGN", $TABLE, $row["source"]);
 	$begin = false;
 	if (JUSH == "sqlite") {
-		$result = recreate_table($TABLE, $TABLE, array(), array(), array(" $name" => ($row["drop"] ? "" : " " . format_foreign_key($row, $constraint))));
+		$result = recreate_table($TABLE, $TABLE, array(), array(), array(" $name" => ($row["drop"] ? "" : " " . format_foreign_key($row))));
 	} else {
+		$constraint = $row["constraint"];
 		$alter = "ALTER TABLE " . table($TABLE);
 		$drop = "$alter DROP " . (JUSH == "sql" ? "FOREIGN KEY " : "CONSTRAINT ") . idf_escape($name ?: '');
 		if ($row["drop"]) {
@@ -61,6 +61,8 @@ if (!$_POST && $name != "") {
 	$row = idx($foreign_keys, $name, array());
 	$not_found = !$row;
 }
+$name_pattern = str_replace("{table}", $TABLE, adminer()->namePattern("FOREIGN"));
+$name_re = "^" . str_replace('\{columns\}', '.*', preg_quote($name_pattern)) . "$";
 
 page_header(
 	($name != "" ? lang('Alter foreign key') : lang('Create foreign key')),
@@ -87,9 +89,11 @@ if ($_POST) {
 	}
 } elseif ($name != "") {
 	$row["source"][] = "";
+	$row["constraint"] = $name;
 } else {
 	$row["table"] = $TABLE;
 	$row["source"] = array("");
+	$row["constraint"] = str_replace("{columns}", "", $name_pattern);
 }
 ?>
 
@@ -111,26 +115,28 @@ $target = array_keys(fields(in_array($row["table"], $referencable) ? $row["table
 $attrs = on('change', 'foreignChange');
 echo "<p><label>" . lang('Target table') . ": " . html_select("table", $referencable, $row["table"], $attrs) . "</label>\n";
 if (support("scheme")) {
-	$schemas = array_filter(adminer()->schemas(), function ($schema) {
-		return !information_schema(DB, $schema);
+	$ns = ($row["ns"] != "" ? $row["ns"] : $_GET["ns"]);
+	$schemas = array_filter(adminer()->schemas(), function ($schema) use ($ns) {
+		return !driver()->isSystem(DB, $schema) || $schema == $ns || $schema == $_GET["ns"];
 	});
-	echo "<label>" . lang('Schema') . ": " . html_select("ns", $schemas, $row["ns"] != "" ? $row["ns"] : $_GET["ns"], $attrs) . "</label>";
+	echo "<label>" . lang('Schema') . ": " . html_select("ns", $schemas, $ns, $attrs) . "</label>";
 	if ($orig_schema !== null) {
 		set_schema($orig_schema);
 	}
 } elseif (JUSH != "sqlite") {
+	$selected = ($row["db"] != "" ? $row["db"] : DB);
 	$dbs = array();
 	foreach (adminer()->databases() as $db) {
-		if (!information_schema($db)) {
+		if (!driver()->isSystem($db) || $db == $selected || $db == DB) {
 			$dbs[] = $db;
 		}
 	}
-	echo "<label>" . lang('DB') . ": " . html_select("db", $dbs, $row["db"] != "" ? $row["db"] : $_GET["db"], $attrs) . "</label>";
+	echo "<label>" . lang('DB') . ": " . html_select("db", $dbs, $selected, $attrs) . "</label>";
 }
 echo input_hidden("change-js");
 ?>
 <noscript><p><input type='submit' name='change' value='<?php echo lang('Change'); ?>'></noscript>
-<table>
+<table<?php echo on('change', 'foreignName', $name_re, $name_pattern); ?>>
 <thead><tr><th id="label-source"><?php echo lang('Source'); ?><th id="label-target"><?php echo lang('Target'); ?><tbody>
 <?php
 $j = 0;
@@ -152,5 +158,13 @@ foreach ($row["source"] as $key => $val) {
 <?php if ($name != "") { ?>
 <input type='submit' name='drop' value='<?php echo lang('Drop'); ?>'<?php echo confirm(lang('Drop %s?', $name)); ?>>
 <?php } ?>
-<?php echo input_token(); ?>
+<?php
+if (JUSH != "sqlite") {
+	// expand the fieldset only if the name was typed
+	print_fieldset("options", lang('Options'), $row["constraint"] != $name && !preg_match("($name_re)", $row["constraint"]));
+	echo "<label>" . lang('Name') . ": <input name='constraint' value='" . h($row["constraint"]) . "' autocapitalize='off'></label>\n";
+	echo "</div></fieldset>\n";
+}
+echo input_token();
+?>
 </form>

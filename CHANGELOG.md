@@ -1,16 +1,49 @@
 ## Adminer dev
+- Use the page font instead of monospace in &lt;code> except SQL
+- Keep the leading newline of values in &lt;textarea>
 - Select: Don't link a URL followed by text
-- Alter table: Label the auto-increment column A_I instead of AI (bug #1360)
-- Create database: Search collations (bug #1362)
+- Edit: Fix the SQL function with a syntax highlighted textarea, keep newlines
 - Edit: Fix JavaScript error with a nullable boolean column
+- Alter table: Label the auto-increment column A_I instead of AI (bug #1360)
+- Alter table: Set the default value as an SQL expression by DEFAULT SQL
+- Create database: Search collations (bug #1362)
+- Database schema: Don't widen tables by others in the column (regression from 6.0.1)
+- Foreign key: Hide system databases and schemas
+- Foreign key: Set the name
+- SQL textarea: Keep the indentation on Enter
+- SQL command: Mark the line of the first error
+- MySQL, MariaDB: Keep the precision of ON UPDATE CURRENT_TIMESTAMP
 - PostgreSQL: Import \connect
 - PostgreSQL: Set collation in Create database
 - PostgreSQL: Edit rows with a column of an extension type outside search_path
+- PostgreSQL: Create and drop indexes concurrently
+- PostgreSQL: Drop a unique index without a constraint
+- PostgreSQL: Save binary data with standard_conforming_strings off
+- PostgreSQL: Fix inserting the CURRENT_DATE default
+- PostgreSQL: Don't report SELECT without columns as affected rows (fix #1365)
 - PostgreSQL PDO: Compute the number of tables in databases
 - PostgreSQL PDO: Export databases from the server level
+- PostgreSQL, MS SQL, Oracle: Mark and recreate invalid indexes
+- SQLite: Name checks and keep their names when altering the table
+- SQLite: Fix recreating a table referenced by foreign keys or triggers
+- SQLite: Keep the declared column types in Alter table
+- SQLite: Offer current_date and current_timestamp in Insert
+- SQLite: Display and edit the comments of tables and columns written as -- after the definitions
+- SQLite: Don't report the affected rows of the previous statement after DROP TABLE and other statements
+- SQLite 3.53+: Alter checks without recreating the table
+- MS SQL: Alter an index without renaming it
+- MS SQL: Drop a unique constraint in Alter indexes
 - Oracle: Link documentation of data dictionary views
+- Oracle: Fix inserting the CURRENT_TIMESTAMP default
+- Firebird: Support PDO_Firebird, drop the unmaintained InterBase extension
+- ClickHouse, Elasticsearch, IGDB, SimpleDB: Don't escape PHP errors twice with html_errors
+- Redis: Report a closed connection and a timeout
+- Editor: Hide the hint for now()
 ### Plugins
 - Drivers: Field key 'doc' to link documentation from column names in select and table structure
+- Drivers: Field key 'default_sql' to mark the default value as an SQL expression
+- Method Driver::errorLine() to mark the line of an error in SQL command
+- Attribute data-error-line of the SQL &lt;textarea> for syntax highlighters to mark the line with an error
 ### Internal
 - ESLint: Check the formatting by @stylistic/eslint-plugin
 
