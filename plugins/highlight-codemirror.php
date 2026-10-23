@@ -22,6 +22,7 @@ class AdminerHighlightCodemirror extends Adminer\Plugin {
 @import url(<?php echo $this->root; ?>/lib/codemirror<?php echo $this->minified; ?>.css);
 @import url(<?php echo $this->root; ?>/addon/hint/show-hint<?php echo $this->minified; ?>.css);
 .CodeMirror { border: 1px inset #ccc; resize: both; }
+.adminer-error-line { background: #fc05; }
 </style>
 <?php
 		echo Adminer\script_src("$this->root/lib/codemirror$this->minified.js", true);
@@ -95,6 +96,16 @@ addEventListener('DOMContentLoaded', () => {
 			});
 			setupSubmitHighlightInput(cm.getWrapperElement());
 			el.onchange = () => cm.setValue(el.value);
+			const errorLine = el.dataset.errorLine - 1; // NaN without the attribute
+			if (errorLine >= 0) {
+				cm.addLineClass(errorLine, 'background', 'adminer-error-line');
+				cm.scrollIntoView({ line: errorLine, ch: 0 }, height / 3);
+				const unmark = () => {
+					cm.removeLineClass(errorLine, 'background', 'adminer-error-line');
+					cm.off('change', unmark);
+				};
+				cm.on('change', unmark);
+			}
 		}
 	}
 });

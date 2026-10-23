@@ -412,6 +412,10 @@ if (isset($_GET["pgsql"])) {
 			return $this->conn->warnings();
 		}
 
+		function errorLine(string $query): int {
+			return (preg_match('~^LINE (\d+):~m', $this->conn->error, $match) ? (int) $match[1] : 0); // the message quotes the line with the error
+		}
+
 		function tableHelp(string $name, bool $is_view = false) {
 			$links = array(
 				"information_schema" => "infoschema",

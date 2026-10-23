@@ -42,6 +42,9 @@ function syntaxHighlighting(version, vendor) {
 					const pre = jush.textarea(tag, autocompleter);
 					if (pre) {
 						tag.jushPre = pre;
+						if (tag.dataset.errorLine) {
+							jush.mark_line(pre, +tag.dataset.errorLine); // jush.textarea() removes the mark on typing
+						}
 						setupSubmitHighlightInput(pre);
 						tag.onchange = () => {
 							pre.textContent = tag.value;

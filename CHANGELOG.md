@@ -10,6 +10,7 @@
 - Foreign key: Hide system databases and schemas
 - Foreign key: Set the name
 - SQL textarea: Keep the indentation on Enter
+- SQL command: Mark the line of the first error
 - MySQL, MariaDB: Keep the precision of ON UPDATE CURRENT_TIMESTAMP
 - PostgreSQL: Import \connect
 - PostgreSQL: Set collation in Create database
@@ -39,6 +40,8 @@
 ### Plugins
 - Drivers: Field key 'doc' to link documentation from column names in select and table structure
 - Drivers: Field key 'default_sql' to mark the default value as an SQL expression
+- Method Driver::errorLine() to mark the line of an error in SQL command
+- Attribute data-error-line of the SQL &lt;textarea> for syntax highlighters to mark the line with an error
 ### Internal
 - ESLint: Check the formatting by @stylistic/eslint-plugin
 

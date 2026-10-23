@@ -312,6 +312,13 @@ abstract class SqlDriver {
 	function warnings() {
 	}
 
+	/** Get the line of the last error in the query
+	* @return int counted from 1, 0 if unknown
+	*/
+	function errorLine(string $query): int {
+		return 0;
+	}
+
 	/** Get help link for table
 	* @return string|void relative URL
 	*/

@@ -64,6 +64,10 @@ if (isset($_GET["firebird"])) {
 			return array("=");
 		}
 
+		function errorLine(string $query): int {
+			return (preg_match('~\bline (\d+), column \d+~', $this->conn->error, $match) ? (int) $match[1] : 0); // Token unknown - line 3, column 11
+		}
+
 		/** Get the JUSH module inlined in the released driver by the release script */
 		static function jushModule(): string {
 			return ""; // the repository and the source archive load adminer/static/jush/modules/jush-firebird.js

@@ -404,6 +404,10 @@ if (!defined('Adminer\DRIVER')) {
 			}
 		}
 
+		function errorLine(string $query): int {
+			return (preg_match('~ at line (\d+)$~', $this->conn->error, $match) ? (int) $match[1] : 0); // syntax errors end by "near '...' at line 1"
+		}
+
 		function tableHelp(string $name, bool $is_view = false) {
 			$maria = ($this->conn->flavor == 'maria');
 			if (information_schema(DB)) {

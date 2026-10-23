@@ -196,6 +196,10 @@ if (isset($_GET["clickhouse"])) {
 		);
 		public $generated = array("MATERIALIZED", "ALIAS", "EPHEMERAL");
 
+		function errorLine(string $query): int {
+			return (preg_match('~\(line (\d+), col \d+\)~', $this->conn->error, $match) ? (int) $match[1] : 0); // Syntax error: failed at position 18 (...) (line 3, col 10)
+		}
+
 		function operators(?array $tableStatus): array {
 			return array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "ILIKE", "ILIKE %%", "IN", "IS NULL", "NOT LIKE", "NOT ILIKE", "NOT IN", "IS NOT NULL", "SQL");
 		}

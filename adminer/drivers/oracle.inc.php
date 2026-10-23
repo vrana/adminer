@@ -16,6 +16,7 @@ if (isset($_GET["oracle"])) {
 	if (extension_loaded("oci8") && $_GET["ext"] != "pdo") {
 		class Db extends SqlDb {
 			public $extension = "OCI8";
+			/** @var int */ public $error_offset = 0; // byte offset of the last error in the query, PDO_OCI doesn't report it
 			private $link, $transaction = false;
 
 			function _error($errno, $error) {
@@ -43,6 +44,7 @@ if (isset($_GET["oracle"])) {
 			function query(string $query, bool $unbuffered = false) {
 				$result = oci_parse($this->link, $query);
 				$this->error = "";
+				$this->error_offset = 0;
 				if (!$result) {
 					$error = oci_error($this->link);
 					$this->errno = $error["code"];
@@ -52,6 +54,10 @@ if (isset($_GET["oracle"])) {
 				set_error_handler(array($this, '_error'));
 				$return = @oci_execute($result, ($this->transaction ? OCI_NO_AUTO_COMMIT : OCI_COMMIT_ON_SUCCESS));
 				restore_error_handler();
+				if (!$return) {
+					$error = oci_error($result);
+					$this->error_offset = ($error ? $error["offset"] : 0);
+				}
 				if ($return) {
 					if (oci_num_fields($result)) {
 						return new Result($result);
@@ -226,6 +232,11 @@ if (isset($_GET["oracle"])) {
 
 		function hasCStyleEscapes(): bool {
 			return true;
+		}
+
+		function errorLine(string $query): int {
+			$offset = (isset($this->conn->error_offset) ? $this->conn->error_offset : 0); // only OCI8 reports it
+			return ($offset ? substr_count($query, "\n", 0, min($offset, strlen($query))) + 1 : 0);
 		}
 
 		function tableHelp(string $name, bool $is_view = false) {
