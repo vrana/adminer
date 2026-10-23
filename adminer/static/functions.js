@@ -728,7 +728,7 @@ function functionChange() {
 			delete td.sqlInput;
 		}
 		const input = this.form[name];
-		if (input) { // undefined with the set data type
+		if (input && input.tagName) { // undefined with the set data type, RadioNodeList with boolean (a hidden input and a checkbox)
 			if (func) { // the length is not limited when a function is applied
 				if (input.origMaxLength === undefined) {
 					input.origMaxLength = input.dataset.maxlength;

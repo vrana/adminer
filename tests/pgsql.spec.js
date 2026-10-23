@@ -335,6 +335,8 @@ test('Search in tables with special types', async () => {
 		await page.waitForLoadState();
 		await expect(page.locator('.error')).toHaveCount(0);
 	}
+	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public&edit=types&where[id]=1');
+	await expect(page.locator('input[type="checkbox"][name="fields[o]"]')).toBeChecked(); // the nullable boolean has a function select which must not fail on the hidden input of the same name
 	await goto(page, '/adminer/?pgsql=&username=ODBC&db=adminer_test&ns=public&sql=' + encodeURIComponent('DROP TABLE types; DROP TYPE mood'));
 	await button(page, 'Execute').click();
 });

@@ -3,6 +3,7 @@
 - Keep the leading newline of values in &lt;textarea>
 - Select: Don't link a URL followed by text
 - Edit: Fix the SQL function with a syntax highlighted textarea, keep newlines
+- Edit: Fix JavaScript error with a nullable boolean column
 - Alter table: Label the auto-increment column A_I instead of AI (bug #1360)
 - Alter table: Set the default value as an SQL expression by DEFAULT SQL
 - Create database: Search collations (bug #1362)
