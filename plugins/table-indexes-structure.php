@@ -7,6 +7,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerTableIndexesStructure extends Adminer\Plugin {
+	static $optional = true;
 
 	function tableIndexesPrint($indexes, $tableStatus): bool {
 		echo "<table>\n";

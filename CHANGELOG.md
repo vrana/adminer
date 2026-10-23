@@ -40,6 +40,8 @@
 - Redis: Report a closed connection and a timeout
 - Editor: Hide the hint for now()
 ### Plugins
+- Plugin::$optional to let users switch the plugin in AdminerConfig, Plugin::disable() to disable it by default
+- Plugin config: Switch the optional plugins
 - Drivers: Field key 'doc' to link documentation from column names in select and table structure
 - Drivers: Field key 'default_sql' to mark the default value as an SQL expression
 - Method Driver::errorLine() to mark the line of an error in SQL command

@@ -7,6 +7,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerSelectImage extends Adminer\Plugin {
+	static $optional = true;
 
 	function selectVal($val, $link, $field, $original) {
 		if ($link != "" && Adminer\is_blob($field) && !Adminer\is_utf8($val) && function_exists('getimagesizefromstring')) {

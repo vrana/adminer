@@ -7,6 +7,8 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerMenuLinks extends Adminer\Plugin {
+	static $optional = true;
+
 	private $menu;
 
 	/** @param ''|'hover'|'table'|'select'|'auto' $menu see config() for explanation */

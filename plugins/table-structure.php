@@ -7,6 +7,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerTableStructure extends Adminer\Plugin {
+	static $optional = true;
 
 	/** Print table structure in tabular format
 	* @param Field[] $fields data about individual fields

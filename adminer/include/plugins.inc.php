@@ -6,6 +6,7 @@ class Plugins {
 	/** @var true[] */ private static array $append = array('dumpFormat' => true, 'dumpOutput' => true, 'editRowPrint' => true, 'editFunctions' => true, 'config' => true);
 
 	/** @var list<object> @visibility protected(set) */ public array $plugins;
+	/** @var list<Plugin> @visibility protected(set) */ public array $disabled = array(); // optional plugins switched off
 	/** @var string[] @visibility protected(set) */ public array $drivers = array(); // [id => name] of drivers registered by plugins
 	/** @var string[] @visibility protected(set) */ public array $driverFiles = array(); // [id => filename] of files which registered a driver
 	/** @visibility protected(set) */ public string $error = ''; // HTML
@@ -60,6 +61,17 @@ class Plugins {
 			$plugins = array_diff_key($plugins, $invalid);
 		}
 
+		$switched = get_setting("plugins", "adminer_config"); // saved by AdminerConfig
+		foreach ($plugins as $key => $plugin) {
+			if ($plugin instanceof Plugin && $plugin::$optional) {
+				$state = idx($switched, get_class($plugin));
+				if ($state !== null ? !$state : !$plugin->enabled) {
+					$this->disabled[] = $plugin;
+					unset($plugins[$key]);
+				}
+			}
+		}
+
 		$this->drivers = array_diff_key(SqlDriver::$drivers, $drivers);
 		$this->plugins = $plugins;
 
@@ -81,6 +93,23 @@ class Plugins {
 	*/
 	function includeOnce(string $filename) {
 		return include_once "./$filename";
+	}
+
+	/** Get HTML with plugin description and screenshot link
+	* @param object $plugin
+	*/
+	static function describe($plugin): string {
+		$description = (method_exists($plugin, 'description') ? $plugin->description() : "");
+		if (!$description) {
+			$reflection = new \ReflectionObject($plugin);
+			if (preg_match('~^/[\s*]+(.+?)(?:\s*\*/)?$~m', $reflection->getDocComment(), $match)) {
+				$description = $match[1];
+			}
+		}
+		$screenshot = (method_exists($plugin, 'screenshot') ? $plugin->screenshot() : "");
+		return h($description)
+			. ($screenshot ? ($description ? " " : "") . "(<a href='" . h($screenshot) . "'" . target_blank() . ">" . lang('screenshot') . "</a>)" : "")
+		;
 	}
 
 	/** Get checksum of a plugin or design file, ignoring line ends and translations

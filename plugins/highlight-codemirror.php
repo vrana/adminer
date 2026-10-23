@@ -8,6 +8,8 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerHighlightCodemirror extends Adminer\Plugin {
+	static $optional = true;
+
 	private $root;
 	private $minified;
 

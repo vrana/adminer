@@ -7,6 +7,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerEditTextarea extends Adminer\Plugin {
+	static $optional = true;
 
 	function editInput($table, $field, $attrs, $value) {
 		if (preg_match('~char~', $field["type"])) {

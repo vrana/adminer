@@ -116,16 +116,8 @@ if (
 			echo "<h3>" . lang('Loaded plugins') . "</h3>\n<ul>\n";
 			foreach ($plugins as $plugin) {
 				$reflection = new \ReflectionObject($plugin);
-				$description = (method_exists($plugin, 'description') ? $plugin->description() : "");
-				if (!$description) {
-					if (preg_match('~^/[\s*]+(.+?)(?:\s*\*/)?$~m', $reflection->getDocComment(), $match)) {
-						$description = $match[1];
-					}
-				}
-				$screenshot = (method_exists($plugin, 'screenshot') ? $plugin->screenshot() : "");
-				echo "<li><b>" . get_class($plugin) . "</b>"
-					. h($description ? ": $description" : "")
-					. ($screenshot ? " (<a href='" . h($screenshot) . "'" . target_blank() . ">" . lang('screenshot') . "</a>)" : "")
+				$description = Plugins::describe($plugin);
+				echo "<li><b>" . get_class($plugin) . "</b>" . ($description != "" ? ": $description" : "")
 					. $plugin_version(basename((string) $reflection->getFileName(), '.php'))
 					. "\n"
 				;

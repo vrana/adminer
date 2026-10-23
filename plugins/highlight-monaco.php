@@ -8,6 +8,8 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerHighlightMonaco extends Adminer\Plugin {
+	static $optional = true;
+
 	private $root;
 
 	function __construct($root = "https://cdn.jsdelivr.net/npm/monaco-editor@0.52/min/vs") {

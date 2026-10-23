@@ -7,6 +7,7 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerImportCsv extends Adminer\Plugin {
+	static $optional = true;
 
 	function importPrint() {
 		if (Adminer\DB == "" || !preg_match('~^(sql|pgsql|sqlite|oracle|mssql)$~', Adminer\JUSH)) { // the other drivers would need their type names in _type()

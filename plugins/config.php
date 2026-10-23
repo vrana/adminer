@@ -31,6 +31,11 @@ class AdminerConfig extends Adminer\Plugin {
 					echo "<tr><th>$title<td>$html\n";
 				}
 				echo "</table>\n";
+				$plugins = $this->pluginsConfig();
+				if ($plugins) {
+					echo "<h3>" . $this->lang('Enabled plugins') . "</h3>\n";
+					echo "<table>\n$plugins</table>\n";
+				}
 				echo "<p><input type='submit' value='" . $this->lang('Save') . "'>\n";
 				echo Adminer\input_token();
 				echo "</form>\n";
@@ -46,6 +51,28 @@ class AdminerConfig extends Adminer\Plugin {
 			'builtin' => $this->lang('Use built-in design'),
 		);
 		return array($this->lang('Design') => Adminer\html_radios('config[design]', $options, Adminer\get_setting("design", "adminer_config"), "<br>"));
+	}
+
+	/** Get table rows with checkboxes switching the optional plugins
+	* @return string HTML
+	*/
+	private function pluginsConfig() {
+		$adminer = Adminer\adminer();
+		$return = array();
+		if ($adminer instanceof Adminer\Plugins) {
+			foreach (array_merge($adminer->plugins, $adminer->disabled) as $plugin) {
+				if ($plugin instanceof Adminer\Plugin && $plugin::$optional) {
+					$class = get_class($plugin);
+					// the hidden input saves an unchecked plugin
+					$return[$class] = "<tr><th><input type='hidden' name='config[plugins][$class]' value='0'>"
+						. Adminer\checkbox("config[plugins][$class]", 1, !in_array($plugin, $adminer->disabled, true), $class)
+						. "<td>" . Adminer\Plugins::describe($plugin) . "\n"
+					;
+				}
+			}
+			ksort($return);
+		}
+		return implode($return);
 	}
 
 	function css() {
@@ -73,6 +100,7 @@ class AdminerConfig extends Adminer\Plugin {
 			'Use %s if it exists' => 'Použít %s, pokud existuje',
 			'Use built-in design' => 'Použít vestavěný vzhled',
 			'Save' => 'Uložit',
+			'Enabled plugins' => 'Povolené pluginy',
 		),
 		'de' => array(
 			'' => 'Optionen durch den Endbenutzer konfigurieren und dies in einem Cookie speichern',
@@ -83,6 +111,7 @@ class AdminerConfig extends Adminer\Plugin {
 			'Use %s if it exists' => '%s verwenden, falls vorhanden',
 			'Use built-in design' => 'Standard Design verwenden',
 			'Save' => 'Speichern',
+			'Enabled plugins' => 'Aktivierte Plugins', // Claude Opus 5.5
 		),
 		'hr' => array(
 			'' => 'Postavljanje opcija krajnjim korisnicima i njihovo spremanje u cookie', // Claude Opus 5
@@ -93,6 +122,7 @@ class AdminerConfig extends Adminer\Plugin {
 			'Use built-in design' => 'Koristi ugrađeni dizajn',
 			'Design' => 'Dizajn',
 			'Save' => 'Spremi',
+			'Enabled plugins' => 'Omogućeni dodaci', // Claude Opus 5.5
 		),
 		'ja' => array(
 			'' => 'ユーザオプションを設定し cookie に保存',
@@ -103,6 +133,7 @@ class AdminerConfig extends Adminer\Plugin {
 			'Use %s if it exists' => 'あれば %s を使う',
 			'Use built-in design' => '組込みのデザインを使う',
 			'Save' => '保存',
+			'Enabled plugins' => '有効なプラグイン', // Claude Opus 5.5
 		),
 		'pl' => array(
 			'' => 'Konfiguruj opcje dla użytkowników końcowych i przechowuj je w pliku cookie',
@@ -113,12 +144,15 @@ class AdminerConfig extends Adminer\Plugin {
 			'Use %s if it exists' => 'Użyj %s, jeśli istnieje',
 			'Use built-in design' => 'Użyj wbudowanego wyglądu',
 			'Save' => 'Zapisz zmiany',
+			'Enabled plugins' => 'Włączone wtyczki', // Claude Opus 5.5
 		),
 		'ro' => array(
 			'' => 'Configurarea opțiunilor de către utilizatori și salvarea lor într-un cookie', // Claude Opus 5
+			'Enabled plugins' => 'Pluginuri activate', // Claude Opus 5.5
 		),
 		'sk' => array(
 			'' => 'Konfigurácia možností používateľmi a ich uloženie do cookie', // Claude Opus 5
+			'Enabled plugins' => 'Povolené pluginy', // Claude Opus 5.5
 		),
 		'zh' => array(
 			'' => '让最终用户配置选项并保存到 cookie', // Claude Opus 5
@@ -129,6 +163,7 @@ class AdminerConfig extends Adminer\Plugin {
 			'Use %s if it exists' => '如果 %s 存在则使用它', // Claude Opus 5
 			'Use built-in design' => '使用内置外观', // Claude Opus 5
 			'Design' => '外观', // Claude Opus 5
+			'Enabled plugins' => '已启用的插件', // Claude Opus 5.5
 		),
 	);
 }

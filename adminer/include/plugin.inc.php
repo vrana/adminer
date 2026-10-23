@@ -3,7 +3,17 @@ namespace Adminer;
 
 // the overridable methods don't use return type declarations so that plugins can be compatible with PHP 5
 abstract class Plugin {
+	/** @var bool */ static $optional = false; // true lets users switch the plugin off and on in AdminerConfig, untyped to allow redeclaring in plugins
+	/** @var bool @visibility protected(set) */ public $enabled = true; // default state of an optional plugin
 	/** @var array<literal-string, string|list<string>>[] */ protected $translations = array(); // key is language code
+
+	/** Disable an optional plugin by default, users can enable it in AdminerConfig
+	* @return $this
+	*/
+	function disable() {
+		$this->enabled = false;
+		return $this;
+	}
 
 	/** Get plain text plugin description; empty string means to use the first line of class doc-comment
 	* @return string
