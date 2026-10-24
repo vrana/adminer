@@ -987,7 +987,7 @@ function file_unlock($fp): void {
 
 /** Get first element of an array
 * @param mixed[] $array
-* @return mixed if not found
+* @return mixed false if not found
 */
 function first(array $array) {
 	// reset(f()) triggers a notice
