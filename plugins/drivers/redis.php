@@ -135,8 +135,15 @@ if (isset($_GET["redis"])) {
 				return ($error ?: ($warnings ? $warnings[0] : "Unable to connect"));
 			}
 			// PING verifies that a server without a password really doesn't require one
-			if (!$this->send($password != "" ? array("AUTH", $username, $password) : array("PING"))) {
-				return $this->error;
+			$reply = $this->send($password != "" ? array("AUTH", $username, $password) : array("PING"));
+			if ($reply !== ($password != "" ? "OK" : "PONG")) {
+				$return = $this->error;
+				// any service can listen on the port, only Redis repeats the unknown option in the error
+				$probe = rand_string();
+				return ($reply === false && $this->send(array("HELLO", "2", $probe)) === false && strpos($this->error, $probe) !== false
+					? $return
+					: "The server did not reply as Redis."
+				);
 			}
 			if (DB == "" && preg_match('~redis_version:(.+)~', $this->send(array("INFO", "server")), $match)) {
 				$this->server_info = $match[1];
