@@ -22,17 +22,18 @@ if (isset($_GET["sqlite"])) {
 			}
 
 			function query(string $query, bool $unbuffered = false) {
+				$start = microtime(true);
 				$result = @$this->link->query($query);
 				$this->error = "";
 				if (!$result) {
 					$this->errno = $this->link->lastErrorCode();
 					$this->error = $this->link->lastErrorMsg();
-					return false;
+					return query_done($query, $start, false);
 				} elseif ($result->numColumns()) {
-					return new Result($result);
+					return query_done($query, $start, new Result($result));
 				}
 				$this->affected_rows = $this->link->changes();
-				return true;
+				return query_done($query, $start, true);
 			}
 
 			function quote(string $string): string {

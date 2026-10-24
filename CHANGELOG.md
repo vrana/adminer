@@ -1,3 +1,7 @@
+## Adminer dev
+### Plugins
+- Method afterQuery() to profile the queries
+
 ## Adminer 6.2.0 (released 2026-10-23)
 - Use the page font instead of monospace in &lt;code> except SQL
 - Keep the leading newline of values in &lt;textarea>

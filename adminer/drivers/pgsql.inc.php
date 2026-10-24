@@ -68,6 +68,7 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function query(string $query, bool $unbuffered = false) {
+				$start = microtime(true);
 				if (self::$untrusted) {
 					// the extended protocol doesn't allow multiple commands, the transaction doesn't allow modifying data
 					$result = (@pg_query($this->link, "BEGIN READ ONLY")
@@ -87,6 +88,7 @@ if (isset($_GET["pgsql"])) {
 				} else {
 					$return = new Result($result);
 				}
+				query_done($query, $start, $return);
 				if (self::$untrusted) {
 					@pg_query($this->link, "COMMIT"); // rollbacks the transaction if the query failed
 				}

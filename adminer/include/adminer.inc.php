@@ -99,6 +99,13 @@ class Adminer {
 	function afterConnect(): void {
 	}
 
+	/** Called after each query sent to the database, e.g. to profile them
+	* @param float $time seconds the query took
+	* @param Result|bool $result
+	*/
+	function afterQuery(string $query, float $time, $result): void {
+	}
+
 	/** Headers to send before HTML output */
 	function headers(): void {
 	}

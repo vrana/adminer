@@ -51,6 +51,16 @@ if (!defined('Adminer\DRIVER')) {
 				return self::more_results() && parent::next_result(); // triggers E_STRICT on PHP < 7.4 otherwise
 			}
 
+			function query($query, int $result_mode = MYSQLI_STORE_RESULT) {
+				$start = microtime(true);
+				return query_done($query, $start, parent::query($query, $result_mode));
+			}
+
+			function multi_query($query) {
+				$start = microtime(true);
+				return query_done($query, $start, parent::multi_query($query));
+			}
+
 			function quote(string $string): string {
 				return "'" . $this->escape_string($string) . "'";
 			}

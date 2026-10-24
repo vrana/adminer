@@ -12,6 +12,19 @@ function connection(?Db $connection2 = null) {
 	return ($connection2 ?: Db::$instance);
 }
 
+/** Report a finished query to plugins
+* @param float $start output of microtime(true) before sending the query
+* @param T $result
+* @return T
+* @template T
+*/
+function query_done(string $query, float $start, $result) {
+	if (Adminer::$instance) { // queries can be sent before plugins are loaded
+		adminer()->afterQuery($query, microtime(true) - $start, $result);
+	}
+	return $result;
+}
+
 /** Get Adminer object
 * @return Adminer|Plugins
 */

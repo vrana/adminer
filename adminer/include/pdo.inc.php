@@ -28,14 +28,15 @@ if (extension_loaded('pdo')) {
 		}
 
 		function query(string $query, bool $unbuffered = false) {
+			$start = microtime(true);
 			/** @var Result|bool */
 			$result = $this->pdo->query($query);
 			$this->error = "";
 			if (!$result) {
-				return $this->store_error(false);
+				return query_done($query, $start, $this->store_error(false));
 			}
 			$this->store_result($result);
-			return $result;
+			return query_done($query, $start, $result);
 		}
 
 		/** Store the last error of the connection if the operation failed */
