@@ -18,20 +18,21 @@ class AdminerConfig extends Adminer\Plugin {
 			}
 			Adminer\page_header($this->lang('Configuration'));
 			$config = Adminer\adminer()->config();
-			if (!$config) {
-				// this plugin itself defines config() so this branch is not currently used
+			$plugins = $this->pluginsConfig();
+			if (!$config && !$plugins) {
 				echo "<p>" . $this->lang(
 					'Only some plugins support configuration, e.g. %s.',
 					'<a href="https://github.com/vrana/adminer/blob/main/plugins/menu-links.php"' . Adminer\target_blank() . '>menu-links</a>'
 				) . "\n";
 			} else {
 				echo "<form action='' method='post'>\n";
-				echo "<table>\n";
-				foreach (array_reverse($config) as $title => $html) { // Plugins::$append actually prepends
-					echo "<tr><th>$title<td>$html\n";
+				if ($config) {
+					echo "<table>\n";
+					foreach (array_reverse($config) as $title => $html) { // Plugins::$append actually prepends
+						echo "<tr><th>$title<td>$html\n";
+					}
+					echo "</table>\n";
 				}
-				echo "</table>\n";
-				$plugins = $this->pluginsConfig();
 				if ($plugins) {
 					echo "<h3>" . $this->lang('Enabled plugins') . "</h3>\n";
 					echo "<table>\n$plugins</table>\n";
@@ -47,14 +48,6 @@ class AdminerConfig extends Adminer\Plugin {
 			Adminer\page_footer('db');
 			exit;
 		}
-	}
-
-	function config() {
-		$options = array(
-			'' => $this->lang('Use %s if it exists', "adminer.css"),
-			'builtin' => $this->lang('Use built-in design'),
-		);
-		return array($this->lang('Design') => Adminer\html_radios('config[design]', $options, Adminer\get_setting("design", "adminer_config"), "<br>"));
 	}
 
 	/** Get table rows with checkboxes switching the optional plugins
@@ -79,12 +72,6 @@ class AdminerConfig extends Adminer\Plugin {
 		return implode($return);
 	}
 
-	function css() {
-		if (Adminer\get_setting("design", "adminer_config") == "builtin") {
-			return array();
-		}
-	}
-
 	function pluginsLinks() {
 		$link = preg_replace('~\b(db|ns)=[^&]*&~', '', Adminer\ME);
 		echo "<p class='links hover'><a href='" . Adminer\h($link) . "config='>" . $this->lang('Configuration') . "</a>\n";
@@ -100,9 +87,6 @@ class AdminerConfig extends Adminer\Plugin {
 			'Configuration' => 'Konfigurace',
 			'Configuration saved.' => 'Konfigurace uložena.',
 			'Only some plugins support configuration, e.g. %s.' => 'Konfiguraci podporují jen některé pluginy, např. %s.',
-			'Design' => 'Vzhled',
-			'Use %s if it exists' => 'Použít %s, pokud existuje',
-			'Use built-in design' => 'Použít vestavěný vzhled',
 			'Save' => 'Uložit',
 			'Enabled plugins' => 'Povolené pluginy',
 		),
@@ -111,9 +95,6 @@ class AdminerConfig extends Adminer\Plugin {
 			'Configuration' => 'Konfiguration',
 			'Configuration saved.' => 'Konfiguration gespeichert.',
 			'Only some plugins support configuration, e.g. %s.' => 'Nur einige Plugins unterstützen die Konfiguration, z.B. %s.',
-			'Design' => 'Design',
-			'Use %s if it exists' => '%s verwenden, falls vorhanden',
-			'Use built-in design' => 'Standard Design verwenden',
 			'Save' => 'Speichern',
 			'Enabled plugins' => 'Aktivierte Plugins', // Claude Opus 5.5
 		),
@@ -122,9 +103,6 @@ class AdminerConfig extends Adminer\Plugin {
 			'Configuration saved.' => 'Konfiguracija je spremljena.',
 			'Configuration' => 'Konfiguracija',
 			'Only some plugins support configuration, e.g. %s.' => 'Samo neki dodaci podržavaju konfiguraciju, npr. %s.',
-			'Use %s if it exists' => 'Koristi %s ako postoji',
-			'Use built-in design' => 'Koristi ugrađeni dizajn',
-			'Design' => 'Dizajn',
 			'Save' => 'Spremi',
 			'Enabled plugins' => 'Omogućeni dodaci', // Claude Opus 5.5
 		),
@@ -133,9 +111,6 @@ class AdminerConfig extends Adminer\Plugin {
 			'Configuration' => '設定',
 			'Configuration saved.' => '設定を保存しました。',
 			'Only some plugins support configuration, e.g. %s.' => '設定変更に対応しているのは一部のプラグインのみです。例: %s。',
-			'Design' => 'デザイン',
-			'Use %s if it exists' => 'あれば %s を使う',
-			'Use built-in design' => '組込みのデザインを使う',
 			'Save' => '保存',
 			'Enabled plugins' => '有効なプラグイン', // Claude Opus 5.5
 		),
@@ -144,9 +119,6 @@ class AdminerConfig extends Adminer\Plugin {
 			'Configuration' => 'Konfiguracja',
 			'Configuration saved.' => 'Konfiguracja zapisana.',
 			'Only some plugins support configuration, e.g. %s.' => 'Tylko niektóre wtyczki obsługują konfigurację, np. %s.',
-			'Design' => 'Wygląd',
-			'Use %s if it exists' => 'Użyj %s, jeśli istnieje',
-			'Use built-in design' => 'Użyj wbudowanego wyglądu',
 			'Save' => 'Zapisz zmiany',
 			'Enabled plugins' => 'Włączone wtyczki', // Claude Opus 5.5
 		),
@@ -164,9 +136,6 @@ class AdminerConfig extends Adminer\Plugin {
 			'Configuration' => '配置', // Claude Opus 5
 			'Only some plugins support configuration, e.g. %s.' => '只有部分插件支持配置，例如 %s。', // Claude Opus 5
 			'Save' => '保存', // Claude Opus 5
-			'Use %s if it exists' => '如果 %s 存在则使用它', // Claude Opus 5
-			'Use built-in design' => '使用内置外观', // Claude Opus 5
-			'Design' => '外观', // Claude Opus 5
 			'Enabled plugins' => '已启用的插件', // Claude Opus 5.5
 		),
 	);

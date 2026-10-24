@@ -102,12 +102,12 @@ test('Tables filter', async () => {
 test('Configuration', async () => {
 	await goto(page, '/tests/plugins.php?username=ODBC'); // the link is printed below the list of the plugins
 	await link(page, 'Configuration').click();
-	await page.locator('input[name="config[design]"][value="builtin"]').click();
+	await page.locator('input[name="config[edit_foreign]"][value="id"]').click();
 	await button(page, 'Save').click();
 	await expect(page.locator('body')).toContainText('Configuration saved.');
 	await goto(page, '/tests/plugins.php?username=ODBC&config=');
-	await expect(page.locator('input[name="config[design]"][value="builtin"]')).toBeChecked();
-	await page.locator('input[name="config[design]"][value=""]').click();
+	await expect(page.locator('input[name="config[edit_foreign]"][value="id"]')).toBeChecked();
+	await page.locator('input[name="config[edit_foreign]"][value=""]').click();
 	await button(page, 'Save').click();
 	await expect(page.locator('body')).toContainText('Configuration saved.');
 });
