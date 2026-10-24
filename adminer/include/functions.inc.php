@@ -498,21 +498,31 @@ function php_error_text(string $error): string {
 	return (ini_bool("html_errors") ? html_entity_decode(strip_tags($error)) : $error); // docref_root adds a link after the function
 }
 
+/** Call a function and get the warnings and notices it raised instead of printing them
+* @param callable(): void $callback
+* @return list<string> plain text without the function name
+*/
+function php_errors(callable $callback): array {
+	$errors = array();
+	set_error_handler(function ($errno, $error) use (&$errors) {
+		$errors[] = preg_replace('~^\w+\([^)]*\)( \[[^]]*])?:\s*~', '', php_error_text($error)); // the arguments can contain a password, e.g. the URL
+		return true;
+	}, E_WARNING | E_NOTICE);
+	$callback();
+	restore_error_handler();
+	return $errors;
+}
+
 /** Get contents from URL
 * @param resource $context
 * @return array{0: string, 1: string, 2: list<string>, 3: string} [$contents, $status, $headers, $error]
 */
 function get_url(string $url, $context): array {
-	$http_response_header = null; // assigning it avoids deprecating the predefined locally scoped variable in PHP 8.4, file_get_contents() overwrites it in older versions
-	$errors = array();
-	// a failed request emits several warnings and the first one is the most descriptive, error_get_last() would return the last one
-	set_error_handler(function ($errno, $error) use (&$errors) {
-		$errors[] = preg_replace('~^file_get_contents\([^)]*\)( \[[^]]*\])?:\s*~', '', php_error_text($error)); // the URL can contain a password
-		return true;
+	$errors = php_errors(function () use ($url, $context, &$return, &$headers) {
+		$http_response_header = null; // assigning it avoids deprecating the predefined locally scoped variable in PHP 8.4, file_get_contents() overwrites it in older versions
+		$return = file_get_contents($url, false, $context);
+		$headers = (function_exists('http_get_last_response_headers') ? http_get_last_response_headers() : $http_response_header);
 	});
-	$return = file_get_contents($url, false, $context);
-	restore_error_handler();
-	$headers = (function_exists('http_get_last_response_headers') ? http_get_last_response_headers() : $http_response_header);
 	return array(
 		$return,
 		(preg_match('~^HTTP/[\d.]+ (\d+)~', idx($headers, 0, ''), $match) ? $match[1] : ''),

@@ -19,10 +19,6 @@ if (isset($_GET["oracle"])) {
 			/** @var int */ public $error_offset = 0; // byte offset of the last error in the query, PDO_OCI doesn't report it
 			private $link, $transaction = false;
 
-			function _error($errno, $error) {
-				$this->error = preg_replace('~^[^:]*: ~', '', php_error_text($error));
-			}
-
 			function attach(array $server, string $username, string $password): string {
 				$this->link = @oci_new_connect($username, $password, easy_connect($server), "AL32UTF8");
 				if ($this->link) {
@@ -51,9 +47,12 @@ if (isset($_GET["oracle"])) {
 					$this->error = $error["message"];
 					return false;
 				}
-				set_error_handler(array($this, '_error'));
-				$return = @oci_execute($result, ($this->transaction ? OCI_NO_AUTO_COMMIT : OCI_COMMIT_ON_SUCCESS));
-				restore_error_handler();
+				$errors = php_errors(function () use ($result, &$return) {
+					$return = oci_execute($result, ($this->transaction ? OCI_NO_AUTO_COMMIT : OCI_COMMIT_ON_SUCCESS));
+				});
+				if ($errors) {
+					$this->error = end($errors);
+				}
 				if (!$return) {
 					$error = oci_error($result);
 					$this->error_offset = ($error ? $error["offset"] : 0);

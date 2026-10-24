@@ -12,14 +12,8 @@ if (isset($_GET["pgsql"])) {
 			public $timeout = 0;
 			private $link, $string;
 
-			// no type declarations, this is passed to set_error_handler()
-			function _error($errno, $error) {
-				$this->error = preg_replace('~^[^:]*: ~', '', php_error_text($error));
-			}
-
 			function attach(array $server, string $username, string $password): string {
 				$db = adminer()->database();
-				set_error_handler(array($this, '_error'));
 				$port = $server["port"];
 				$host = ($server["host"] ?: $server["socket"]); // the socket is passed as the host directory
 				$this->string = "host='$host'" . ($port ? " port=$port" : "") . " user='" . addcslashes($username, "'\\") . "' password='" . addcslashes($password, "'\\") . "'";
@@ -27,16 +21,17 @@ if (isset($_GET["pgsql"])) {
 				if (isset($ssl["mode"])) {
 					$this->string .= " sslmode=$ssl[mode]";
 				}
-				$this->link = @pg_connect("$this->string dbname='" . ($db != "" ? addcslashes($db, "'\\") : "postgres") . "'", PGSQL_CONNECT_FORCE_NEW);
-				if (!$this->link && $db != "") {
-					// try to connect directly with database for performance
-					$this->link = @pg_connect("$this->string dbname='postgres'", PGSQL_CONNECT_FORCE_NEW);
-				}
-				restore_error_handler();
+				$errors = php_errors(function () use ($db) {
+					$this->link = pg_connect("$this->string dbname='" . ($db != "" ? addcslashes($db, "'\\") : "postgres") . "'", PGSQL_CONNECT_FORCE_NEW);
+					if (!$this->link && $db != "") {
+						// try to connect directly with database for performance
+						$this->link = pg_connect("$this->string dbname='postgres'", PGSQL_CONNECT_FORCE_NEW);
+					}
+				});
 				if ($this->link) {
 					pg_set_client_encoding($this->link, "UTF8");
 				}
-				return ($this->link ? '' : $this->error);
+				return ($this->link ? '' : (string) end($errors));
 			}
 
 			function quote(string $string): string {
@@ -54,11 +49,13 @@ if (isset($_GET["pgsql"])) {
 				if ($database == pg_dbname($this->link)) { // the connection is to the database directly or to postgres if it failed
 					return true;
 				}
-				set_error_handler(array($this, '_error'));
-				$return = @pg_connect("$this->string dbname='" . addcslashes($database, "'\\") . "'", PGSQL_CONNECT_FORCE_NEW);
-				restore_error_handler();
+				$errors = php_errors(function () use ($database, &$return) {
+					$return = pg_connect("$this->string dbname='" . addcslashes($database, "'\\") . "'", PGSQL_CONNECT_FORCE_NEW);
+				});
 				if ($return) {
 					$this->link = $return;
+				} elseif ($errors) {
+					$this->error = end($errors);
 				}
 				return $return;
 			}
@@ -116,13 +113,10 @@ if (isset($_GET["pgsql"])) {
 			* @param list<string> $rows
 			*/
 			function copyFrom(string $table, array $rows): bool {
-				$this->error = '';
-				set_error_handler(function (int $errno, string $error): bool {
-					$this->error = php_error_text($error);
-					return true;
+				$errors = php_errors(function () use ($table, $rows, &$return) {
+					$return = pg_copy_from($this->link, $table, $rows);
 				});
-				$return = pg_copy_from($this->link, $table, $rows);
-				restore_error_handler();
+				$this->error = (string) end($errors);
 				return $return;
 			}
 		}

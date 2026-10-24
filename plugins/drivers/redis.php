@@ -123,14 +123,11 @@ if (isset($_GET["redis"])) {
 		function attach(array $server, string $username, string $password): string {
 			$scheme = $server["scheme"];
 			$host = ($scheme ? "$scheme://" : "") . ($server["host"] ?: "127.0.0.1");
+			$port = intval($server["port"] ?: 6379);
 			// a failed TLS handshake leaves $error empty, its reason is in the first of the warnings
-			$warnings = array();
-			set_error_handler(function ($errno, $warning) use (&$warnings) {
-				$warnings[] = preg_replace('~^fsockopen\(\)( \[[^]]*\])?:\s*~', '', php_error_text($warning));
-				return true;
+			$warnings = php_errors(function () use ($host, $port, &$error) {
+				$this->fp = fsockopen($host, $port, $errno, $error);
 			});
-			$this->fp = fsockopen($host, intval($server["port"] ?: 6379), $errno, $error);
-			restore_error_handler();
 			if (!$this->fp) {
 				return ($error ?: ($warnings ? $warnings[0] : "Unable to connect"));
 			}
