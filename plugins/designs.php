@@ -33,12 +33,22 @@ class AdminerDesigns extends Adminer\Plugin {
 		if (array_key_exists($design, $this->designs)) {
 			$return[$design] = (preg_match('~-dark~', $design)
 				? "dark"
-				: (preg_match('~prefers-color-scheme:\s*dark~', file_get_contents($design)) ? "" : "light")
+				: (preg_match('~prefers-color-scheme:\s*dark~', file_get_contents($this->filename($design))) ? "" : "light")
 			);
 		} elseif ($this->config) {
 			return null; // use adminer.css if it exists
 		}
 		return $return;
+	}
+
+	/** Get the file or URL to read a design linked by this URL from */
+	private function filename($url) {
+		if (preg_match('~^(\w+:)?//~', $url, $match)) {
+			return ($match[1] ? "" : (Adminer\HTTPS ? "https:" : "http:")) . $url;
+		}
+		$path = preg_replace('~[?#].*~s', '', $url);
+		// a relative URL is relative to the script, which needn't be in the working directory
+		return ($path[0] == "/" ? $_SERVER["DOCUMENT_ROOT"] : dirname($_SERVER["SCRIPT_FILENAME"]) . "/") . $path;
 	}
 
 	function config() {
