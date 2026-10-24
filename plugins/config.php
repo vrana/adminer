@@ -60,9 +60,10 @@ class AdminerConfig extends Adminer\Plugin {
 			foreach (array_merge($adminer->plugins, $adminer->disabled) as $plugin) {
 				if ($plugin instanceof Adminer\Plugin && $plugin::$optional) {
 					$class = get_class($plugin);
+					$label = ltrim(preg_replace('~[A-Z]~', ' $0', preg_replace('~^Adminer~', '', $class)));
 					// the hidden input saves an unchecked plugin
-					$return[$class] = "<tr><th><input type='hidden' name='config[plugins][$class]' value='0'>"
-						. Adminer\checkbox("config[plugins][$class]", 1, !in_array($plugin, $adminer->disabled, true), $class)
+					$return[$class] = "<tr><th style='white-space: nowrap;'><input type='hidden' name='config[plugins][$class]' value='0'>"
+						. Adminer\checkbox("config[plugins][$class]", 1, !in_array($plugin, $adminer->disabled, true), $label)
 						. "<td>" . Adminer\Plugins::describe($plugin) . "\n"
 					;
 				}
