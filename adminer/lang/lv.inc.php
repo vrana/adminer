@@ -285,7 +285,7 @@ Lang::$translations = array(
 	'DB' => 'DB',
 	'Warnings' => 'Brīdinājumi',
 	'Adminer does not support accessing a database without a password.' => 'Adminer neatbalsta pieeju bez paroles.',
-	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Paldies, ka izmantoji Adminer, vai vēlies veikt <a href="https://www.adminer.org/en/donation/">ziedojumu</a>.',
+	'Thanks for using Adminer. Consider <a%s>donating</a>.' => 'Paldies, ka izmantoji Adminer, vai vēlies veikt <a%s>ziedojumu</a>.',
 	'The action will be performed after successful login with the same credentials.' => 'Darbība tiks pabeigta pēc derīgas pieteikšanās sistēmā.',
 	'Connecting to privileged ports is not allowed.' => 'Pieeja priviliģētiem portiem nav atļauta.',
 	'There is a space in the entered password, which might be the cause.' => 'Parole satur atstarpi, kas varētu būt lieka.',

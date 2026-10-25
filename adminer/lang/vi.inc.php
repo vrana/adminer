@@ -335,7 +335,7 @@ Lang::$translations = array(
 	'hostname[:port] or :socket' => 'hostname[:port] hoặc :socket', // Claude Fable 5
 	'Adminer does not support accessing a database without a password.' => 'Adminer không hỗ trợ truy cập cơ sở dữ liệu không có mật khẩu.', // Claude Fable 5
 	'Default value' => 'Giá trị mặc định', // Claude Fable 5
-	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Cảm ơn bạn đã sử dụng Adminer, hãy cân nhắc <a href="https://www.adminer.org/en/donation/">quyên góp</a>.', // Claude Fable 5
+	'Thanks for using Adminer. Consider <a%s>donating</a>.' => 'Cảm ơn bạn đã sử dụng Adminer, hãy cân nhắc <a%s>quyên góp</a>.', // Claude Fable 5
 	'Donate' => 'Ủng hộ', // Claude Opus 5.5
 	'The action will be performed after successful login with the same credentials.' => 'Hành động sẽ được thực hiện sau khi đăng nhập thành công với cùng thông tin đăng nhập.', // Claude Fable 5
 	'Invalid server.' => 'Máy chủ không hợp lệ.', // Claude Fable 5

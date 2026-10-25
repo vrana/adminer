@@ -329,7 +329,7 @@ Lang::$translations = array(
 	'Adminer does not support accessing a database without a password.' => 'Adminer ne podržava pristup bazi podataka bez lozinke.',
 	'Warnings' => 'Upozorenja',
 	'Default value' => 'Zadana vrijednost',
-	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Hvala što koristite Adminer, razmislite o <a href="https://www.adminer.org/en/donation/">donaciji</a>.',
+	'Thanks for using Adminer. Consider <a%s>donating</a>.' => 'Hvala što koristite Adminer, razmislite o <a%s>donaciji</a>.',
 	'Donate' => 'Donirajte', // Claude Opus 5.5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Glavna lozinka je istekla. <a href="https://www.adminer.org/en/extension/"%s>Implementirajte</a> metodu %s kako biste je učinili trajnom.',
 	'The action will be performed after successful login with the same credentials.' => 'Radnja će biti izvršena nakon uspješne prijave s istim podacima.',

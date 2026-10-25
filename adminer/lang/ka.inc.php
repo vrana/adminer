@@ -283,7 +283,7 @@ Lang::$translations = array(
 	'Warnings' => 'გაფრთხილება',
 	'Adminer does not support accessing a database without a password.' => 'უპაროლო წვდომა ბაზასთან არაა დაშვებული Adminer-ში.',
 	'DB' => 'ბაზა',
-	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'მადლობას გიხდით Adminer-ით სარგებლობისთვის, გადახედეთ ბმულს <a href="https://www.adminer.org/en/donation/">შემოწირულობა</a>.',
+	'Thanks for using Adminer. Consider <a%s>donating</a>.' => 'მადლობას გიხდით Adminer-ით სარგებლობისთვის, გადახედეთ ბმულს <a%s>შემოწირულობა</a>.',
 	'The action will be performed after successful login with the same credentials.' => 'მოქმედება შესრულდება იგივე მომხმარებლით წარმატებული ავტორიზაციის შემდეგ.',
 	'Connecting to privileged ports is not allowed.' => 'პრივილეგირებულ პორტთან წვდომა დაუშვებელია.',
 	'There is a space in the entered password, which might be the cause.' => 'პაროლში არის გამოტოვება, შეიძლება ეს ქმნის პრობლემას.',

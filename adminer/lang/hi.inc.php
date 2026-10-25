@@ -283,7 +283,7 @@ Lang::$translations = array(
 	'Default value' => 'डिफ़ॉल्ट मान',
 	'Full table scan' => 'पूरी टेबल स्कैन',
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'बहुत अधिक असफल लॉगिन प्रयास, %d मिनट बाद पुनः प्रयास करें।',
-	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'एडमिनर उपयोग करने के लिए धन्यवाद, <a href="https://www.adminer.org/en/donation/">दान</a> करने पर विचार करें।',
+	'Thanks for using Adminer. Consider <a%s>donating</a>.' => 'एडमिनर उपयोग करने के लिए धन्यवाद, <a%s>दान</a> करने पर विचार करें।',
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'मास्टर पासवर्ड समाप्त हो गया। इसे स्थायी बनाने के लिए %s मेथड <a href="https://www.adminer.org/en/extension/"%s>इम्प्लीमेंट</a> करें।',
 	'The action will be performed after successful login with the same credentials.' => 'यह क्रिया उसी क्रेडेंशियल्स से सफल लॉगिन के बाद की जाएगी।',
 	'Connecting to privileged ports is not allowed.' => 'प्रिविलेज्ड पोर्ट्स से कनेक्ट करने की अनुमति नहीं है।',

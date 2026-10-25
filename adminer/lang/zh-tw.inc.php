@@ -11,7 +11,7 @@ Lang::$translations = array(
 	'Logout' => '登出',
 	'Logged in as: %s' => '登錄為： %s',
 	'Logout successful.' => '成功登出。',
-	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => '感謝使用Adminer，請考慮為我們<a href="https://www.adminer.org/en/donation/">捐款（英文網頁）</a>。',
+	'Thanks for using Adminer. Consider <a%s>donating</a>.' => '感謝使用Adminer，請考慮為我們<a%s>捐款（英文網頁）</a>。',
 	'Donate' => '捐贈', // Claude Opus 5.5
 	'Invalid credentials.' => '無效的憑證。',
 	'There is a space in the entered password, which might be the cause.' => '您輸入的密碼中有一個空格，這可能是導致問題的原因。',

@@ -331,7 +331,7 @@ Lang::$translations = array(
 	'Default value' => 'Nilai bawaan', // Claude Fable 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'Terlalu banyak upaya masuk yang gagal, coba lagi dalam %d menit.', // Claude Fable 5
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Gunakan <a%2$s>plugin</a> %1$s jika Adminer berjalan di belakang reverse proxy.', // Claude Opus 5
-	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Terima kasih telah menggunakan Adminer, pertimbangkan untuk <a href="https://www.adminer.org/en/donation/">berdonasi</a>.', // Claude Fable 5
+	'Thanks for using Adminer. Consider <a%s>donating</a>.' => 'Terima kasih telah menggunakan Adminer, pertimbangkan untuk <a%s>berdonasi</a>.', // Claude Fable 5
 	'Donate' => 'Donasi', // Claude Opus 5.5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Sandi utama kedaluwarsa. <a href="https://www.adminer.org/en/extension/"%s>Implementasikan</a> metode %s agar permanen.', // Claude Fable 5
 	'The action will be performed after successful login with the same credentials.' => 'Tindakan akan dilakukan setelah berhasil masuk dengan kredensial yang sama.', // Claude Fable 5

@@ -4,7 +4,7 @@ namespace Adminer;
 Lang::$translations = array(
 	'Login' => 'تسجيل الدخول',
 	'Logout successful.' => 'تم تسجيل الخروج بنجاح.',
-	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'شكرا لاستعمالك أدمينر. يمكنك <a href="https://www.adminer.org/en/donation/">التبرع</a>.',
+	'Thanks for using Adminer. Consider <a%s>donating</a>.' => 'شكرا لاستعمالك أدمينر. يمكنك <a%s>التبرع</a>.',
 	'hostname[:port] or :socket' => 'اسم المضيف[:المنفذ] أو :المقبس',
 	'Invalid server.' => 'خادم خاطئ.',
 	'Invalid credentials.' => 'بيانات الدخول غير صالحة.',

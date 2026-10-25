@@ -297,7 +297,7 @@ Lang::$translations = array(
 	'Full table scan' => 'Scanare completă a tabelului',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Prea multe autentificări nereușite, încercați din nou peste %d minut.', 'Prea multe autentificări nereușite, încercați din nou peste %d minute.', 'Prea multe autentificări nereușite, încercați din nou peste %d de minute.'),
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Folosiți %s <a%s>pluginul</a> dacă Adminer rulează în spatele unui proxy invers.',
-	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Vă mulțumim că folosiți Adminer, luați în considerare o <a href="https://www.adminer.org/en/donation/">donație</a>.',
+	'Thanks for using Adminer. Consider <a%s>donating</a>.' => 'Vă mulțumim că folosiți Adminer, luați în considerare o <a%s>donație</a>.',
 	'Donate' => 'Donează', // Claude Opus 5.5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Parola principală a expirat. <a href="https://www.adminer.org/en/extension/"%s>Implementați</a> metoda %s pentru a o face permanentă.',
 	'The action will be performed after successful login with the same credentials.' => 'Acțiunea va fi efectuată după autentificarea reușită cu aceleași date de autentificare.',

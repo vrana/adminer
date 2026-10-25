@@ -11,7 +11,7 @@ Lang::$translations = array(
 	'Logout' => 'Chiqish',
 	'Logged in as: %s' => 'Siz kirgansiz: %s',
 	'Logout successful.' => 'Muvaffaqiyatli chiqdingiz.',
-	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Adminer dasturidan foydalanganingiz uchun rahmat, <a href="https://www.adminer.org/en/donation/">xayriya qilishni</a> o\'ylab ko\'ring.',
+	'Thanks for using Adminer. Consider <a%s>donating</a>.' => 'Adminer dasturidan foydalanganingiz uchun rahmat, <a%s>xayriya qilishni</a> o\'ylab ko\'ring.',
 	'Loaded plugins' => 'Yuklangan plaginlar',
 	'%s must <a%s>return an array</a>.' => '%s <a%s>massiv qaytarishi</a> kerak.',
 	'<a%s>Configure</a> %s in %s.' => '%s ni %s ichida <a%s>sozlang</a>.',

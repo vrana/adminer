@@ -11,7 +11,7 @@ Lang::$translations = array(
 	'Logout' => 'Log keluar',
 	'Logged in as: %s' => 'Log masuk sebagai: %s',
 	'Logout successful.' => 'Log keluar berjaya.',
-	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Terima kasih kerana menggunakan Adminer, pertimbangkan untuk <a href="https://www.adminer.org/en/donation/">menderma</a>.',
+	'Thanks for using Adminer. Consider <a%s>donating</a>.' => 'Terima kasih kerana menggunakan Adminer, pertimbangkan untuk <a%s>menderma</a>.',
 	'hostname[:port] or :socket' => 'hostname[:port] atau :socket',
 	'Invalid server.' => 'Pelayan tidak sah.',
 	'Invalid credentials.' => 'Akses tidak sah.',

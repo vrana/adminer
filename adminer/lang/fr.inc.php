@@ -325,7 +325,7 @@ Lang::$translations = array(
 	'Inherited by' => 'Héritée par',
 	'Shadow tables' => 'Tables ombres',
 	'hostname[:port] or :socket' => 'hostname[:port] ou :socket',
-	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Merci d\'utiliser Adminer, pensez à <a href="https://www.adminer.org/en/donation/">faire un don</a>.',
+	'Thanks for using Adminer. Consider <a%s>donating</a>.' => 'Merci d\'utiliser Adminer, pensez à <a%s>faire un don</a>.',
 	'Donate' => 'Faire un don', // Claude Opus 5.5
 	'Invalid server.' => 'Serveur invalide.',
 	'Loaded plugins' => 'Plugins chargés',

@@ -271,7 +271,7 @@ Lang::$translations = array(
 	'Default value' => 'ערך ברירת מחדל',
 	'Full table scan' => 'סריקה טבלה מלאה',
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'יותר מידי נסיונות כניסה נכשלו, אנא נסה עוד %d דקות',
-	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'תודה שהשתמש ב-adminer אנא שקול <a href="https://www.adminer.org/en/donation/">לתרום</a>',
+	'Thanks for using Adminer. Consider <a%s>donating</a>.' => 'תודה שהשתמש ב-adminer אנא שקול <a%s>לתרום</a>',
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'פג תוקף סיסמת המאסטר. <a href="https://www.adminer.org/en/extension/"%s>יש לממש</a> את המתודה %s כדי להפוך אותה לקבועה.', // Claude Fable 5
 	'If you did not send this request from Adminer, close this page.' => 'אם לא אתה שלחת בקשה ל-Adminer הינך יכול לסגור חלון זה',
 	'You can upload a large SQL file via FTP and import it from the server.' => 'ניתן לעלות קבצים ב-FTP ואז למשוך אותם מהשרת',

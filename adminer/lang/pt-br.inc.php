@@ -296,7 +296,7 @@ Lang::$translations = array(
 	'Full table scan' => 'Varredura completa da tabela',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Muitas tentativas de login sem sucesso, tente novamente em %d minuto.', 'Muitas tentativas de login sem sucesso, tente novamente em %d minutos.'),
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Use o <a%2$s>plugin</a> %1$s se o Adminer estiver sendo executado atrás de um proxy reverso.',
-	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Obrigado por usar o Adminer, considere <a href="https://www.adminer.org/en/donation/">fazer uma doação</a>.',
+	'Thanks for using Adminer. Consider <a%s>donating</a>.' => 'Obrigado por usar o Adminer, considere <a%s>fazer uma doação</a>.',
 	'Donate' => 'Doar', // Claude Opus 5.5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'A senha mestra expirou. <a href="https://www.adminer.org/en/extension/"%s>Implemente</a> o método %s para torná-la permanente.',
 	'The action will be performed after successful login with the same credentials.' => 'A ação será realizada após o login bem-sucedido com as mesmas credenciais.',

@@ -11,7 +11,7 @@ Lang::$translations = array(
 	'Logout' => '登出',
 	'Logged in as: %s' => '登录用户：%s',
 	'Logout successful.' => '成功登出。',
-	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => '感谢使用Adminer，请考虑为我们<a href="https://www.adminer.org/en/donation/">捐款（英文页面）</a>。',
+	'Thanks for using Adminer. Consider <a%s>donating</a>.' => '感谢使用Adminer，请考虑为我们<a%s>捐款（英文页面）</a>。',
 	'Donate' => '捐赠', // Claude Opus 5.5
 	'Invalid credentials.' => '无效凭据。',
 	'There is a space in the entered password, which might be the cause.' => '您输入的密码中有一个空格，这可能是导致问题的原因。',

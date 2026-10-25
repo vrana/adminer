@@ -11,7 +11,7 @@ Lang::$translations = array(
 	'Logout' => 'Wyloguj się',
 	'Logged in as: %s' => 'Zalogowany jako: %s',
 	'Logout successful.' => 'Wylogowano pomyślnie.',
-	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Dziękujemy za używanie Adminera, rozważ <a href="https://www.adminer.org/pl/donation/">dotację</a>.',
+	'Thanks for using Adminer. Consider <a%s>donating</a>.' => 'Dziękujemy za używanie Adminera, rozważ <a%s>dotację</a>.',
 	'Donate' => 'Wesprzyj', // Claude Opus 5.5
 	'hostname[:port] or :socket' => 'hostname[:port] lub :socket',
 	'Invalid server.' => 'Nieprawidłowy serwer.',

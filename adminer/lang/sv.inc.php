@@ -11,7 +11,7 @@ Lang::$translations = array(
 	'Logout' => 'Logga ut',
 	'Logged in as: %s' => 'Inloggad som: %s',
 	'Logout successful.' => 'Du är nu utloggad.',
-	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Tack för att du använder Adminer, vänligen fundera över att <a href="https://www.adminer.org/en/donation/">donera</a>.',
+	'Thanks for using Adminer. Consider <a%s>donating</a>.' => 'Tack för att du använder Adminer, vänligen fundera över att <a%s>donera</a>.',
 	'Donate' => 'Donera', // Claude Opus 5.5
 	'Invalid credentials.' => 'Ogiltiga inloggningsuppgifter.',
 	'There is a space in the entered password, which might be the cause.' => 'Det finns ett mellanslag i lösenordet, vilket kan vara anledningen.',

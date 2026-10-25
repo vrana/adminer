@@ -327,7 +327,7 @@ Lang::$translations = array(
 	'Full table scan' => 'Pregled celotne tabele', // Claude Fable 5
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Preveč neuspešnih prijav, poskusite znova čez %d minuto.', 'Preveč neuspešnih prijav, poskusite znova čez %d minuti.', 'Preveč neuspešnih prijav, poskusite znova čez %d minute.', 'Preveč neuspešnih prijav, poskusite znova čez %d minut.'), // Claude Fable 5
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Uporabite <a%2$s>vtičnik</a> %1$s, če Adminer teče za obratnim proxyjem.', // Claude Opus 5
-	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Hvala, ker uporabljate Adminer, razmislite o <a href="https://www.adminer.org/en/donation/">donaciji</a>.', // Claude Fable 5
+	'Thanks for using Adminer. Consider <a%s>donating</a>.' => 'Hvala, ker uporabljate Adminer, razmislite o <a%s>donaciji</a>.', // Claude Fable 5
 	'Donate' => 'Donirajte', // Claude Opus 5.5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Glavno geslo je poteklo. <a href="https://www.adminer.org/en/extension/"%s>Implementirajte</a> metodo %s, da postane trajno.', // Claude Fable 5
 	'The action will be performed after successful login with the same credentials.' => 'Dejanje bo izvedeno po uspešni prijavi z istimi poverilnicami.', // Claude Fable 5
