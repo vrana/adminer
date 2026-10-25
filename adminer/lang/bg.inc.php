@@ -344,6 +344,7 @@ Lang::$translations = array(
 	'hostname[:port] or :socket' => 'hostname[:port] или :socket',
 	'Adminer does not support accessing a database without a password.' => 'Adminer не поддържа достъп до база данни без парола.',
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Благодарим ви, че използвате Adminer, помислете за <a href="https://www.adminer.org/en/donation/">дарение</a>.',
+	'Donate' => 'Дарете', // Claude Opus 5.5
 	'The action will be performed after successful login with the same credentials.' => 'Действието ще бъде извършено след успешно влизане със същите данни.',
 	'Invalid server.' => 'Невалиден сървър.',
 	'Connecting to privileged ports is not allowed.' => 'Свързването към привилегировани портове не е разрешено.',

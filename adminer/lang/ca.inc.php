@@ -298,6 +298,7 @@ Lang::$translations = array(
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Massa intents d\'inici de sessió fallits, torneu-ho a provar d\'aquí a %d minut.', 'Massa intents d\'inici de sessió fallits, torneu-ho a provar d\'aquí a %d minuts.'),
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Utilitzeu el <a%2$s>connector</a> %1$s si Adminer s\'executa darrere d\'un proxy invers.',
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Gràcies per utilitzar Adminer, considereu <a href="https://www.adminer.org/en/donation/">fer una donació</a>.',
+	'Donate' => 'Feu una donació', // Claude Opus 5.5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'La contrasenya mestra ha caducat. <a href="https://www.adminer.org/en/extension/"%s>Implementeu</a> el mètode %s perquè sigui permanent.',
 	'The action will be performed after successful login with the same credentials.' => 'L\'acció es durà a terme després d\'iniciar la sessió correctament amb les mateixes credencials.',
 	'Invalid server.' => 'Servidor no vàlid.',

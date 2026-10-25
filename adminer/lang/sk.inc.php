@@ -285,6 +285,7 @@ Lang::$translations = array(
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Príliš veľa pokusov o prihlásenie, skúste to znova za %d minútu.', 'Príliš veľa pokusov o prihlásenie, skúste to znova za %d minúty.', 'Príliš veľa pokusov o prihlásenie, skúste to znova za %d minút.'),
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Ak Adminer beží za reverznou proxy, použite <a%2$s>plugin</a> %1$s.',
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Vďaka za používanie Adminera, <a href="https://www.adminer.org/sk/donation/">prispejte</a> na vývoj.',
+	'Donate' => 'Prispieť', // Claude Opus 5.5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Platnosť hlavného hesla vypršala. <a href="https://www.adminer.org/sk/extension/"%s>Implementujte</a> metódu %s, aby platilo natrvalo.',
 	'The action will be performed after successful login with the same credentials.' => 'Akcia sa vykoná po úspešnom prihlásení s rovnakými prihlasovacími údajmi.',
 	'Connecting to privileged ports is not allowed.' => 'Pripojenie k privilegovaným portom nie je povolené.',

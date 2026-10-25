@@ -298,6 +298,7 @@ Lang::$translations = array(
 	'Too many unsuccessful logins, try again in %d minute(s).' => 'Túl sok sikertelen bejelentkezés, próbálja újra %d perc múlva.', // Claude Fable 5
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Használja a %s <a%s>bővítményt</a>, ha az Adminer fordított proxy mögött fut.', // Claude Opus 5
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Köszönjük, hogy az Adminert használja, fontolja meg az <a href="https://www.adminer.org/en/donation/">adományozást</a>.', // Claude Fable 5
+	'Donate' => 'Adományozás', // Claude Opus 5.5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'A mesterjelszó lejárt. <a href="https://www.adminer.org/en/extension/"%s>Implementálja</a> a %s metódust, hogy állandó legyen.', // Claude Fable 5
 	'The action will be performed after successful login with the same credentials.' => 'A művelet az azonos hitelesítő adatokkal történő sikeres bejelentkezés után hajtódik végre.', // Claude Fable 5
 	'Invalid server.' => 'Érvénytelen szerver.', // Claude Fable 5

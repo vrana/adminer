@@ -325,6 +325,7 @@ Lang::$translations = array(
 	'Version' => 'Versio', // Claude Opus 5
 
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Kiitos, kun käytät Admineriä, voit <a href="https://www.adminer.org/en/donation/">tehdä lahjoituksen tästä</a>.',
+	'Donate' => 'Lahjoita', // Claude Opus 5.5
 	'Drop %s?' => 'Poistetaanko %s?',
 	'overwrite' => 'kirjoittaen päälle',
 	'DB' => 'TK',

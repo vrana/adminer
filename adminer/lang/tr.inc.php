@@ -12,6 +12,7 @@ Lang::$translations = array(
 	'Logged in as: %s' => '%s olarak giriş yapıldı',
 	'Logout successful.' => 'Oturum başarıyla sonlandı.',
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Adminer kullandığınız için teşekkür ederiz <a href="https://www.adminer.org/en/donation/">bağış yapmayı düşünün</a>.',
+	'Donate' => 'Bağış yap', // Claude Opus 5.5
 	'Invalid credentials.' => 'Geçersiz kimlik bilgileri.',
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Çok fazla oturum açma denemesi yapıldı.', '%d Dakika sonra tekrar deneyiniz.'),
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Adminer bir ters proxy arkasında çalışıyorsa %s <a%s>eklentisini</a> kullanın.', // Claude Opus 5

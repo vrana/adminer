@@ -328,6 +328,7 @@ Lang::$translations = array(
 	'Default value' => 'Valor predeterminado',
 	'Full table scan' => 'Escaneo de la tabla completa',
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Gracias por usar Adminer, considere <a href="https://www.adminer.org/en/donation/">hacer una donación</a>.',
+	'Donate' => 'Donar', // Claude Opus 5.5
 	'Invalid server.' => 'Servidor no válido.',
 	'Size' => 'Tamaño',
 	'Compute' => 'Calcular',

@@ -332,6 +332,7 @@ Lang::$translations = array(
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('Previše neuspješnih prijava, pokušajte ponovo za %d minutu.', 'Previše neuspješnih prijava, pokušajte ponovo za %d minute.', 'Previše neuspješnih prijava, pokušajte ponovo za %d minuta.'), // Claude Fable 5
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Koristite <a%2$s>dodatak</a> %1$s ako Adminer radi iza reverznog proxyja.', // Claude Opus 5
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Hvala što koristite Adminer, razmislite o <a href="https://www.adminer.org/en/donation/">donaciji</a>.', // Claude Fable 5
+	'Donate' => 'Donirajte', // Claude Opus 5.5
 	'Master password expired. <a href="https://www.adminer.org/en/extension/"%s>Implement</a> the %s method to make it permanent.' => 'Glavna lozinka je istekla. <a href="https://www.adminer.org/en/extension/"%s>Implementirajte</a> metodu %s da biste je učinili trajnom.', // Claude Fable 5
 	'The action will be performed after successful login with the same credentials.' => 'Radnja će biti izvršena nakon uspješne prijave s istim podacima.', // Claude Fable 5
 	'Invalid server.' => 'Nevažeći server.', // Claude Fable 5

@@ -326,6 +326,7 @@ Lang::$translations = array(
 	'Shadow tables' => 'Tabelle ombra',
 	'hostname[:port] or :socket' => 'hostname[:port] o :socket',
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Grazie per aver usato Adminer, considera una <a href="https://www.adminer.org/en/donation/">donazione</a>.',
+	'Donate' => 'Dona', // Claude Opus 5.5
 	'Invalid server.' => 'Server non valido.',
 	'Loaded plugins' => 'Plugin caricati',
 	'screenshot' => 'screenshot',

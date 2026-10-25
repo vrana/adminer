@@ -312,6 +312,7 @@ Lang::$translations = array(
 	'hostname[:port] or :socket' => 'hostname[:port] ou :socket', // Claude Fable 5
 	'Adminer does not support accessing a database without a password.' => 'Adminer non permite acceder a unha base de datos sen contrasinal.', // Claude Fable 5
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Grazas por usar Adminer, considere <a href="https://www.adminer.org/en/donation/">facer unha doazón</a>.', // Claude Fable 5
+	'Donate' => 'Doar', // Claude Opus 5.5
 	'The action will be performed after successful login with the same credentials.' => 'A acción realizarase despois de iniciar sesión correctamente coas mesmas credenciais.', // Claude Fable 5
 	'Invalid server.' => 'Servidor non válido.', // Claude Fable 5
 	'Connecting to privileged ports is not allowed.' => 'Non se permite conectar a portos privilexiados.', // Claude Fable 5

@@ -304,6 +304,7 @@ Lang::$translations = array(
 	'Too many unsuccessful logins, try again in %d minute(s).' => array('For mange mislykkede innloggingsforsøk, prøv igjen om %d minutt.', 'For mange mislykkede innloggingsforsøk, prøv igjen om %d minutter.'),
 	'Use the %s <a%s>plugin</a> if Adminer runs behind a reverse proxy.' => 'Bruk <a%2$s>pluginet</a> %1$s hvis Adminer kjører bak en omvendt proxy.',
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Takk for at du bruker Adminer, vurder å <a href="https://www.adminer.org/en/donation/">donere</a>.',
+	'Donate' => 'Doner', // Claude Opus 5.5
 	'The action will be performed after successful login with the same credentials.' => 'Handlingen utføres etter vellykket innlogging med samme påloggingsinformasjon.',
 	'Invalid server.' => 'Ugyldig server.',
 	'Connecting to privileged ports is not allowed.' => 'Tilkobling til privilegerte porter er ikke tillatt.',

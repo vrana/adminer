@@ -5,6 +5,7 @@ Lang::$translations = array(
 	'Login' => 'Login',
 	'Logout successful.' => 'Abmeldung erfolgreich.',
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Danke, dass Sie Adminer genutzt haben. <a href="https://www.adminer.org/de/donation/">Spenden willkommen!</a>.',
+	'Donate' => 'Spenden', // Claude Opus 5.5
 	'Invalid credentials.' => 'Ungültige Anmelde-Informationen.',
 	'Server' => 'Server',
 	'Username' => 'Benutzer',

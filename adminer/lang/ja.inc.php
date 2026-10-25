@@ -10,6 +10,7 @@ Lang::$translations = array(
 	'Password' => 'パスワード',
 	'Loaded plugins' => '読込済プラグイン',
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Adminerのご利用ありがとうございました。(寄付は<a href="https://www.adminer.org/en/donation/">こちら</a>)',
+	'Donate' => '寄付', // Claude Opus 5.5
 	'%s must <a%s>return an array</a>.' => '%s は<a%s>配列を返す</a>必要があります。',
 	'<a%s>Configure</a> %s in %s.' => '%3$s の %2$s を<a%1$s>設定</a>してください。',
 	'Every plugin must <a%s>be an object</a>.' => 'すべてのプラグインは<a%s>オブジェクトである</a>必要があります。', // Claude Opus 5
