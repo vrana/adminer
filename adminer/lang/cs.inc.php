@@ -12,6 +12,7 @@ Lang::$translations = array(
 	'Logged in as: %s' => 'Přihlášen jako: %s',
 	'Logout successful.' => 'Odhlášení proběhlo v pořádku.',
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Díky za použití Admineru, <a href="https://www.adminer.org/cs/donation/">přispějte</a> na vývoj.',
+	'Donate' => 'Přispět',
 	'hostname[:port] or :socket' => 'hostname[:port] nebo :socket',
 	'Invalid server.' => 'Neplatný server.',
 	'Invalid credentials.' => 'Neplatné přihlašovací údaje.',

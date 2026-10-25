@@ -85,6 +85,10 @@ class Adminer {
 		return true;
 	}
 
+	function donation(): string {
+		return "<a href='https://www.adminer.org/donation/'" . target_blank() . " id='donation' title='" . lang('Donate') . "'>❤️</a>";
+	}
+
 	function serviceWorker(): void {
 		service_worker();
 	}

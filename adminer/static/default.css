@@ -118,6 +118,7 @@ td.check { text-align: end; } /* to display the checkboxes next to the data */
 #logo { vertical-align: baseline; margin-bottom: -3px; }
 #h1 { color: #777; text-decoration: none; font-style: italic; }
 #version, .plugins .update { color: red; }
+#donation { color: red; text-decoration: none; }
 #version iframe { pointer-events: none; border: 0; width: 7ex; height: 1.25em; vertical-align: text-bottom; }
 #schema { margin-inline-start: 60px; position: relative; user-select: none; -webkit-user-select: none; }
 #schema .table { border: 1px solid silver; padding: 0 2px; cursor: move; position: absolute; box-sizing: border-box; }

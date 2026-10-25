@@ -12,6 +12,7 @@ Lang::$translations = array(
 	'Logged in as: %s' => 'Xx: %s',
 	'Logout successful.' => 'Xx.',
 	'Thanks for using Adminer. Consider <a href="https://www.adminer.org/en/donation/">donating</a>.' => 'Xx <a href="https://www.adminer.org/en/donation/">xx</a>.',
+	'Donate' => 'Xx',
 	'hostname[:port] or :socket' => 'xx',
 	'Invalid server.' => 'Xx.',
 	'Invalid credentials.' => 'Xx.',

@@ -116,6 +116,11 @@ class Adminer {
 		return true;
 	}
 
+	/** Get HTML code of the donation link in the top right corner, empty string to hide it */
+	function donation(): string {
+		return "<a href='https://www.adminer.org/donation/'" . target_blank() . " id='donation' title='" . lang('Donate') . "'>❤️</a>";
+	}
+
 	/** Print the script maintaining the service worker */
 	function serviceWorker(): void {
 		service_worker();

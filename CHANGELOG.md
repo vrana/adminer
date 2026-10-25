@@ -1,4 +1,8 @@
 ## Adminer dev
+- Link the donation page by a heart in the top right corner
+### Plugins
+- Method donation() to replace or hide the donation link
+- New plugin donation: Replace or hide the donation link in the top right corner
 
 ## Adminer 6.2.0 (released 2026-10-23)
 - Use the page font instead of monospace in &lt;code> except SQL
