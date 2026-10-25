@@ -220,6 +220,7 @@ function auth_error(string $error, array &$permanent, bool $invalid_login = true
 	$params = session_get_cookie_params();
 	cookie("adminer_key", ($_COOKIE["adminer_key"] ?: rand_string()), $params["lifetime"]);
 	if (!$_SESSION["token"]) {
+		restart_session();
 		$_SESSION["token"] = rand(1, 1e6); // this is for next attempt
 	}
 	page_header(lang('Login'), $error, null);
@@ -247,6 +248,7 @@ if (isset($_GET["username"]) && !class_exists('Adminer\Db')) {
 $connection = '';
 if (isset($_GET["username"]) && is_string(get_password())) {
 	check_invalid_login($permanent);
+	stop_session(true); // connecting to an unresponsive server would block other pages until it times out
 	$credentials = adminer()->credentials();
 	$connection = Driver::connect($credentials[0], $credentials[1], $credentials[2]);
 	if (is_object($connection)) {
@@ -272,6 +274,7 @@ if ($_POST["logout"] && $_SESSION["token"] && !verify_token()) {
 }
 
 if (!$_SESSION["token"]) {
+	restart_session();
 	$_SESSION["token"] = rand(1, 1e6); // defense against cross-site request forgery
 }
 stop_session(true);
