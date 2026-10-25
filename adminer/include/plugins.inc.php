@@ -95,6 +95,13 @@ class Plugins {
 		return include_once "./$filename";
 	}
 
+	/** Get human readable plugin name, e.g. 'Dump Json' from AdminerDumpJson
+	* @param object $plugin
+	*/
+	static function pluginName($plugin): string {
+		return preg_replace('~^ Adminer ~', '', preg_replace('~[A-Z]~', ' $0', get_class($plugin)));
+	}
+
 	/** Get HTML with plugin description and screenshot link
 	* @param object $plugin
 	*/

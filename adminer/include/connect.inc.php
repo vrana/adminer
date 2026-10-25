@@ -117,7 +117,7 @@ if (
 			foreach ($plugins as $plugin) {
 				$reflection = new \ReflectionObject($plugin);
 				$description = Plugins::describe($plugin);
-				echo "<li><b>" . get_class($plugin) . "</b>" . ($description != "" ? ": $description" : "")
+				echo "<li><b>" . h(Plugins::pluginName($plugin)) . "</b>" . ($description != "" ? ": $description" : "")
 					. $plugin_version(basename((string) $reflection->getFileName(), '.php'))
 					. "\n"
 				;
