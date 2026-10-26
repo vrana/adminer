@@ -410,7 +410,7 @@ GET forms are therefore sent by JavaScript: the browser would serialize them wit
 `bodySubmit()` serializes the form by `formData()` and navigates to the result instead; `ajaxForm()` reuses `formData()` for its request.
 This is only an enhancement - without JavaScript the browser submits the form itself and everything works, just with a longer URL.
 
-JavaScript code is split into [functions.js](/adminer/static/functions.js) (common utilities) and [editing.js](/adminer/static/editing.js) (specific to Adminer or Adminer Editor).
+JavaScript code is split into [functions.js](/adminer/static/functions.js) (common utilities), [editing.js](/adminer/static/editing.js) (specific to Adminer or Adminer Editor) and [jump.js](/adminer/static/jump.js) (the Ctrl+K search box).
 These files are concatenated during compilation since they depend on each other.
 
 JavaScript code follows the coding style defined in [eslint.config.mjs](/conf/eslint.config.mjs), which `composer check` verifies by ESLint.

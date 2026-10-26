@@ -51,9 +51,10 @@ function page_header(string $title, string $error = "", $breadcrumb = array(), s
 	echo "<meta name='color-scheme' content='" . ($dark === null ? "light dark" : ($dark ? "dark" : "light")) . "'>\n";
 
 	echo script_src(DIR . "static/functions.js");
-	if (defined('Adminer\DIR')) { // the compiled version merges editing.js into functions.js
+	if (defined('Adminer\DIR')) { // the compiled version merges editing.js and jump.js into functions.js
 		// Editor has its own version of the file in its own directory, which is the working directory of every entry point
 		echo script_src(str_replace("adminer/", basename(getcwd()) . "/", DIR) . "static/editing.js");
+		echo script_src(DIR . "static/jump.js");
 	}
 	if (adminer()->head($dark)) {
 		echo "<link rel='icon' href='data:image/gif;base64,"

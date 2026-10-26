@@ -4,19 +4,22 @@ import stylistic from '@stylistic/eslint-plugin';
 import {readFileSync} from 'node:fs';
 import {dirname, join} from 'node:path';
 
-/** Create a processor linting the file together with a file prepended to it during compilation
-* @param {string} prepended path relative to the directory of the linted file
+/** Create a processor linting the file together with the files concatenated with it during compilation
+* @param {...string} prepended paths relative to the directory of the linted file
 * @return {Object} ESLint processor
 */
-function merge(prepended) {
+function merge(...prepended) {
 	let lines = 0;
 	return {
 		meta: {name: 'merge'},
 		supportsAutofix: false, // the fix ranges would point into the merged code
 		preprocess(text, filename) {
-			let prefix = readFileSync(join(dirname(filename), prepended), 'utf8');
-			if (!prefix.endsWith('\n')) {
-				prefix += '\n';
+			let prefix = '';
+			for (const path of prepended) {
+				prefix += readFileSync(join(dirname(filename), path), 'utf8');
+				if (!prefix.endsWith('\n')) {
+					prefix += '\n';
+				}
 			}
 			lines = prefix.split('\n').length - 1;
 			return [{text: prefix + text, filename: 'merged.js'}]; // the virtual name must not match this config again
@@ -87,7 +90,8 @@ export default [
 		},
 	},
 	// the files are concatenated during compilation and depend on each other
-	{files: ['**/adminer/static/functions.js'], processor: merge('editing.js')},
-	{files: ['**/adminer/static/editing.js'], processor: merge('functions.js')},
-	{files: ['**/editor/static/editing.js'], processor: merge('../../adminer/static/functions.js')},
+	{files: ['**/adminer/static/functions.js'], processor: merge('editing.js', 'jump.js')},
+	{files: ['**/adminer/static/editing.js'], processor: merge('functions.js', 'jump.js')},
+	{files: ['**/adminer/static/jump.js'], processor: merge('functions.js', 'editing.js')},
+	{files: ['**/editor/static/editing.js'], processor: merge('../../adminer/static/functions.js', '../../adminer/static/jump.js')},
 ];

@@ -20,7 +20,7 @@ if ($_GET["file"] == "default.css") {
 	echo decompress_string(compile_file('../adminer/static/dark.css;../adminer/static/jush/jush-dark.css', 'minify_css'));
 } elseif ($_GET["file"] == "functions.js") {
 	header("Content-Type: text/javascript; charset=utf-8");
-	echo decompress_string(compile_file('../adminer/static/functions.js;static/editing.js', 'minify_js'));
+	echo decompress_string(compile_file('../adminer/static/functions.js;static/editing.js;../adminer/static/jump.js', 'minify_js'));
 } elseif ($_GET["file"] == "jush.js") {
 	header("Content-Type: text/javascript; charset=utf-8");
 	echo decompress_string(compile_file('../adminer/static/jush/modules/jush.js;
