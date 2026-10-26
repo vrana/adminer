@@ -863,6 +863,54 @@ function ajaxStatus(html) {
 	return ajaxstatus;
 }
 
+/** Check if PHP can handle the uploaded files
+* @param {number} count
+* @param {string} countMessage
+* @param {number} size
+* @param {string} sizeMessage
+* @this HTMLInputElement
+*/
+function fileChange(count, countMessage, size, sizeMessage) {
+	if (this.files.length > count) {
+		alert(countMessage);
+	} else if (Array.from(this.files).reduce((sum, file) => sum + file.size, 0) > size) {
+		alert(sizeMessage);
+	}
+}
+
+/** Display the progress of the file upload
+* @param {string} url
+* @param {string} assign cookie identifying the session where PHP stores the progress - it uses the session name from php.ini which differs from Adminer's
+* @this HTMLFormElement
+*/
+function uploadProgress(url, assign) {
+	const progress = qs('progress', this);
+	// the form can be submitted also without a file - by Run file in Import or by Save, Delete and Export in Select
+	if (!progress || !Array.from(qsa('input[type=file]', this)).some(input => input.value)) {
+		return;
+	}
+	cookie(assign, 1);
+	let started = false;
+	const poll = () => ajax(url, request => {
+		const data = JSON.parse(request.responseText);
+		if (!data.length) {
+			if (started) {
+				progress.value = 1;
+				progress.textContent = '100%';
+				cookie(assign, -1); // the session is no longer needed, don't keep its name taken
+				return;
+			}
+		} else if (data[1]) {
+			started = true;
+			alterClass(progress, 'hidden');
+			progress.value = data[0] / data[1];
+			progress.textContent = Math.floor(100 * data[0] / data[1]) + '%';
+		}
+		setTimeout(poll, 1000);
+	}, null, null); // null message - a failed poll would print an error and stop the polling
+	setTimeout(poll, 1000);
+}
+
 
 
 /** Display edit field
