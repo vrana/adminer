@@ -408,7 +408,10 @@ function process_input(array $field) {
 		if (!is_string($file)) {
 			return false; //! report errors
 		}
-		return driver()->quoteBinary($file);
+		return (JUSH == "sql" // hexadecimal would halve the size allowed by max_allowed_packet
+			? "_binary" . q($file) //! mysqli_stmt_send_long_data() to send more big files at once
+			: driver()->quoteBinary($file)
+		);
 	}
 	$value = idx($_POST["fields"], $idf);
 	if ($value === null) {

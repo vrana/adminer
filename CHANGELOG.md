@@ -2,6 +2,7 @@
 - Search tables, schemas and databases by Ctrl+K
 - Link the donation page by a heart in the top right corner
 - Mac: Use ⌘ instead of Ctrl in keyboard shortcuts and write them so
+- MySQL, MariaDB: Upload files up to max_allowed_packet instead of its half
 - MySQL &lt; 5.7.8, MariaDB &lt; 10.1.2: Unsupport found rows timeout
 - MS SQL Dblib: Don't stop queries after 30 seconds
 - MS SQL, Oracle: Limit the execution time of counting rows in select
