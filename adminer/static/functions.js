@@ -28,6 +28,19 @@ function qsa(selector, context = document) {
 	return context.querySelectorAll(selector);
 }
 
+/** Create an element
+* @param {string} tag
+* @param {Object} [props] properties including event handlers, e.g. {className: 'x', onclick: fn}
+* @param {...(Node|string)} content strings are inserted as text
+* @return {HTMLElement}
+*/
+function ce(tag, props = {}, ...content) {
+	const el = document.createElement(tag);
+	mixin(el, props);
+	el.append(...content);
+	return el;
+}
+
 /** Return a function calling fn with the next arguments
 * @param {function} fn
 * @param {...*} args
@@ -704,15 +717,11 @@ function functionChange() {
 		if (!td.origNodes) { // move away the whole content, e.g. a syntax highlighter, <select> from the edit-foreign plugin or Editor's hint
 			const input = this.form[name]; // undefined with the set data type
 			const textarea = (input && input.tagName == 'TEXTAREA');
-			const text = document.createElement(textarea ? 'textarea' : 'input'); // <textarea> keeps newlines
-			text.name = name;
+			const text = (textarea
+				? ce('textarea', {name, rows: input.rows, cols: input.cols})
+				: ce('input', {name, size: 40})
+			);
 			text.value = (input ? selectValue(input) : '');
-			if (textarea) {
-				text.rows = input.rows;
-				text.cols = input.cols;
-			} else {
-				text.size = 40;
-			}
 			setupSubmitHighlightInput(text);
 			td.sqlInput = text;
 			td.origNodes = document.createDocumentFragment();
@@ -935,13 +944,14 @@ function selectClick(event, text, warning) {
 	}
 	const original = td.innerHTML;
 	text = text || /\n/.test(original);
-	const input = document.createElement(text ? 'textarea' : 'input');
-	input.onkeydown = event => {
-		if (isEscape(event)) {
-			inputBlur();
-			td.innerHTML = original;
-		}
-	};
+	const input = ce(text ? 'textarea' : 'input', {
+		onkeydown: event => {
+			if (isEscape(event)) {
+				inputBlur();
+				td.innerHTML = original;
+			}
+		},
+	});
 
 	const pos = getSelection().anchorOffset;
 	let value = td.dataset.value;
@@ -991,7 +1001,7 @@ function selectLoadMore(loading) {
 	const href = a.href;
 	if (href) {
 		ajax(href, request => {
-			const tbody = document.createElement('tbody');
+			const tbody = ce('tbody');
 			tbody.innerHTML = request.responseText;
 			adminerHighlighter(qsa('code', tbody));
 			qs('#table').tBodies[0].append(...tbody.children); // keep the rows in the original TBODY to continue the .odds highlighting

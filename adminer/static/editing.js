@@ -802,9 +802,7 @@ function sqlExport(event) {
 	}
 	const url = URL.createObjectURL(new Blob([data], {type: (output == 'file' ? 'text/csv' : 'text/plain') + '; charset=utf-8'}));
 	if (output == 'file') {
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = 'sql.csv';
+		const a = ce('a', {href: url, download: 'sql.csv'});
 		document.body.append(a);
 		a.click();
 		a.remove();
@@ -828,7 +826,7 @@ function sqlSave(message) {
 	const button = this;
 	const form = button.form;
 	ajax(form.action, request => {
-		const response = document.createElement('div');
+		const response = ce('div');
 		response.innerHTML = request.responseText;
 		for (const el of qsa('[data-name]', response)) {
 			// a join can display the same row more than once, refresh all its cells
