@@ -182,7 +182,7 @@ function jumpToggle(open) {
 	qs('#jump input').setAttribute('aria-expanded', open);
 }
 
-/** Move in the list of the search box by arrows, open the link by Enter, leave the box by Esc
+/** Move in the list of the search box by arrows and PgUp/PgDn, open the link by Enter, leave the box by Esc
 * @param {KeyboardEvent} event
 * @return {boolean|undefined} false if the key was handled
 * @this HTMLInputElement
@@ -206,6 +206,11 @@ function jumpKeydown(event) {
 	const column = [...links].indexOf(qs('.current', li || list));
 	if (/^Arrow(Down|Up)$/.test(event.key) && !isCtrl(event)) {
 		jumpSelect((row + (event.key == 'ArrowUp' ? rows.length - 1 : 1)) % rows.length, jumpColumn);
+		return false;
+	}
+	if (/^Page(Down|Up)$/.test(event.key) && !isCtrl(event)) {
+		const page = Math.max(1, Math.floor(list.clientHeight / li.offsetHeight)); // the rows visible in the list
+		jumpSelect(Math.max(0, Math.min(rows.length - 1, row + (event.key == 'PageUp' ? -page : page))), jumpColumn);
 		return false;
 	}
 	if (/^Arrow(Left|Right)$/.test(event.key) && !isCtrl(event) && !event.shiftKey && this.selectionStart == this.value.length) { // elsewhere the arrows move the caret
