@@ -17,6 +17,7 @@ if (isset($_GET["oracle"])) {
 		class Db extends SqlDb {
 			public $extension = "OCI8";
 			/** @var int */ public $error_offset = 0; // byte offset of the last error in the query, PDO_OCI doesn't report it
+			public $timeout = 0; // seconds, limits the next query only
 			private $link, $transaction = false;
 
 			function attach(array $server, string $username, string $password): string {
@@ -47,9 +48,17 @@ if (isset($_GET["oracle"])) {
 					$this->error = $error["message"];
 					return false;
 				}
+				$timeout = $this->timeout;
+				if ($timeout) {
+					$this->timeout = 0;
+					$this->timeout(1000 * $timeout);
+				}
 				$errors = php_errors(function () use ($result, &$return) {
 					$return = oci_execute($result, ($this->transaction ? OCI_NO_AUTO_COMMIT : OCI_COMMIT_ON_SUCCESS));
 				});
+				if ($timeout) {
+					$this->timeout(0);
+				}
 				if ($errors) {
 					$this->error = end($errors);
 				}
@@ -138,6 +147,7 @@ if (isset($_GET["oracle"])) {
 	} elseif (extension_loaded("pdo_oci")) {
 		class Db extends PdoDb {
 			public $extension = "PDO_OCI";
+			public $timeout = 0; // seconds, limits the next query only
 
 			function attach(array $server, string $username, string $password): string {
 				return $this->dsn("oci:dbname=//" . easy_connect($server) . ";charset=AL32UTF8", $username, $password);
@@ -145,6 +155,22 @@ if (isset($_GET["oracle"])) {
 
 			function select_db(string $database) {
 				return $this->query("ALTER SESSION SET CURRENT_SCHEMA = " . idf_escape($database));
+			}
+
+			function query(string $query, bool $unbuffered = false) {
+				$timeout = $this->timeout;
+				if (!$timeout) {
+					return parent::query($query, $unbuffered);
+				}
+				$this->timeout = 0;
+				$this->timeout(1000 * $timeout);
+				$return = parent::query($query, $unbuffered);
+				$this->timeout(0);
+				return $return;
+			}
+
+			function timeout(int $ms): bool {
+				return $this->pdo->setAttribute(1004, $ms); // 1004 - PDO::OCI_ATTR_CALL_TIMEOUT available since PHP 8.0
 			}
 		}
 
@@ -201,6 +227,11 @@ if (isset($_GET["oracle"])) {
 
 		function begin() {
 			return $this->conn->begin(); // there is no command starting a transaction to print
+		}
+
+		function slowQuery(string $query, int $timeout) {
+			$this->conn->timeout = $timeout;
+			return $query;
 		}
 
 		function convertSearch(string $idf, array $val, array $field): string {
