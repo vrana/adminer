@@ -296,7 +296,10 @@ if (isset($_GET["mssql"])) {
 				function attach(array $server, string $username, string $password): string {
 					$port = $server["port"];
 					$socket = $server["socket"];
-					$options = array(1002 => true); // 1002 - PDO::DBLIB_ATTR_STRINGIFY_UNIQUEIDENTIFIER available since PHP 7.0, without it uniqueidentifier is returned as 16 raw bytes
+					$options = array(
+						1001 => 0, // PDO::DBLIB_ATTR_QUERY_TIMEOUT, any driver option limits queries to PDO::ATTR_TIMEOUT defaulting to 30 seconds and a timeout closes the connection
+						1002 => true, // PDO::DBLIB_ATTR_STRINGIFY_UNIQUEIDENTIFIER available since PHP 7.0, without it uniqueidentifier is returned as 16 raw bytes
+					);
 					$return = $this->dsn("dblib:charset=utf8;host=$server[host]" . ($port != "" ? ";port=$port" : ($socket != "" ? ";unix_socket=$socket" : "")), $username, $password, $options);
 					if (!$return) {
 						// DB-Library turns these options off, a generated column or an indexed view can't be created without them
