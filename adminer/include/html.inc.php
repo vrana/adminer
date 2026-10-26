@@ -440,12 +440,34 @@ function process_input(array $field) {
 	return adminer()->processInput($field, $value, $function);
 }
 
+/** Get the box searching tables, schemas and databases by name, opened by Ctrl+K
+* @return string HTML
+*/
+function jump_input(): string {
+	$labels = array(
+		'select' => lang('select'),
+		'insert' => lang('insert'),
+		'search' => (support("table") ? lang('Search data in tables') : ''),
+		'schema' => lang('Schema'),
+		'database' => lang('Database'),
+	);
+	$return = "<span id='jump'><input type='search' form='jump-form' name='filter' value='" . h($_GET["filter"]) . "'"
+		. " placeholder='" . lang('Search') . "' aria-label='" . lang('Search') . "' autocomplete='off' autocapitalize='off'"
+		. " role='combobox' aria-expanded='false' aria-autocomplete='list' aria-controls='jump-list'"
+		. on('input', 'jumpInput') . on('keydown', 'jumpKeydown')
+	;
+	foreach ($labels as $key => $val) {
+		$return .= ($val != "" ? " data-$key='" . h($val) . "'" : "");
+	}
+	return "$return><input type='submit' form='jump-form' value='" . lang('Search') . "' class='hidden'></span> ";
+}
+
 /** Print results of search in all tables
 * @uses $_GET["where"][0]
 * @uses $_POST["tables"]
 */
-function search_tables(): void {
-	$_GET["where"][0]["val"] = $_POST["query"];
+function search_tables(string $query): void {
+	$_GET["where"][0]["val"] = $query;
 	$sep = "<ul>\n";
 	foreach (table_status('', true) as $table => $table_status) {
 		$name = adminer()->tableName($table_status);

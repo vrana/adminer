@@ -298,6 +298,7 @@ Lang::$translations = array(
 	'edit' => 'upravit',
 	'Edit' => 'Upravit',
 	'Insert' => 'Vložit',
+	'insert' => 'vložit',
 	'Save' => 'Uložit',
 	'Saving…' => 'Ukládá se…',
 	'Save and continue editing' => 'Uložit a pokračovat v úpravách',

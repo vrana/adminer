@@ -1250,6 +1250,30 @@ class Adminer {
 			}
 			$actions = adminer()->menuActions($actions, $missing);
 			echo ($actions ? "<p class='links'>\n" . implode("\n", $actions) . "\n" : "");
+			$sections = array(); // the sections and the links of the database page offered by the Ctrl+K box
+			if ($in_db) {
+				if (function_exists('Adminer\alter_table')) {
+					$sections[] = array(lang('Create table'), ME . "create=");
+				}
+				if (support("view")) {
+					$sections[] = array(lang('Create view'), ME . "view=");
+				}
+				$features = array(
+					'routine' => array('routines', lang('Routines')),
+					'sequence' => array('sequences', lang('Sequences')),
+					'type' => array('user-types', lang('User types')),
+					'event' => array('events', lang('Events')),
+				);
+				foreach ($features as $feature => $section) {
+					if (support($feature)) {
+						$sections[] = array($section[1], substr(ME, 0, -1) . "#$section[0]");
+					}
+				}
+			}
+			if (DB != "" && !$missing && support("extension")) { // the extensions are on the page of the database without a schema
+				$sections[] = array(lang('Extensions'), preg_replace('~\bns=[^&]*&~', '', ME) . "ns=#extensions");
+			}
+			echo ($sections ? script("jumpSections.push(..." . json_encode($sections, 256) . ");") : ""); // 256 - JSON_UNESCAPED_UNICODE
 			if ($in_db) {
 				if ($tables) {
 					adminer()->tablesPrint($tables);

@@ -49,6 +49,14 @@ if (
 		echo "<p>" . lang('Logged in as: %s', "<b>" . h(logged_user()) . "</b>") . "\n";
 
 		$databases = adminer()->databases();
+		$filter = $_GET["filter"]; // sent by the Ctrl+K box without JavaScript
+		if ($filter != "") {
+			foreach ($databases as $key => $db) {
+				if (stripos($db, $filter) === false) {
+					unset($databases[$key]);
+				}
+			}
+		}
 		if ($databases) {
 			$scheme = support("scheme");
 			$collations = collations();

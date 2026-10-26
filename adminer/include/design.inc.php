@@ -84,8 +84,9 @@ const urlSeparators = '" . js_escape(ini_get("arg_separator.input")) . "';");
 	echo "<div id='content'>\n";
 	echo "<span id='menuopen' class='jsonly'" . on('click', 'menuToggle') . "><button title='" . lang('Menu') . "' class='icon icon-move' aria-expanded='false'></button></span>\n";
 	if ($breadcrumb !== null) {
+		$jump = (class_exists('Adminer\Db') && connection()); // not on the page reporting a missing extension
 		$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
-		echo '<p id="breadcrumb"><a href="' . h($link ?: ".") . '">' . get_driver(DRIVER) . '</a> » ';
+		echo '<p id="breadcrumb">' . ($jump ? jump_input() : '') . '<a href="' . h($link ?: ".") . '">' . get_driver(DRIVER) . '</a> » ';
 		$link = substr(preg_replace('~\b(db|ns)=[^&]*&~', '', ME), 0, -1);
 		$server = adminer()->serverName(SERVER);
 		$server = ($server != "" ? $server : lang('Server'));
@@ -114,6 +115,15 @@ const urlSeparators = '" . js_escape(ini_get("arg_separator.input")) . "';");
 				}
 			}
 			echo "$title\n";
+		}
+		if ($jump) {
+			// the fields are outside of #breadcrumb because <form> would close <p>
+			echo "<form id='jump-form'>\n";
+			hidden_fields_get();
+			echo (DB != "" ? input_hidden("db", DB) : "");
+			echo (isset($_GET["ns"]) ? input_hidden("ns", $_GET["ns"]) : "");
+			echo "</form>\n";
+			echo script("jumpSetup();");
 		}
 	}
 	echo "<h2>$title_all$doc</h2>\n";

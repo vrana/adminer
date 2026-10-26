@@ -84,6 +84,14 @@ if (adminer()->homepage()) {
 		echo "<div>\n";
 		echo "<h3 id='tables-views'>" . lang('Tables and views') . "</h3>\n";
 		$tables_list = ($full ? table_status() : tables_list());
+		$filter = $_GET["filter"]; // sent by the Ctrl+K box without JavaScript
+		if ($filter != "") {
+			foreach ($tables_list as $table => $status) {
+				if (stripos("$table", $filter) === false) {
+					unset($tables_list[$table]);
+				}
+			}
+		}
 		if (!$tables_list) {
 			echo "<p class='message'>" . lang('No tables.') . "\n";
 		} else {
@@ -91,12 +99,13 @@ if (adminer()->homepage()) {
 			if (support("table")) {
 				echo "<fieldset><legend>" . lang('Search data in tables') . " <span id='selected2'></span></legend><div>";
 				echo html_select("op", adminer()->operators(), idx($_POST, "op", JUSH == "elastic" ? "should" : "LIKE %%"));
-				echo " <input type='search' name='query' value='" . h($_POST["query"]) . "'" . on('keydown', 'submitKeydown', 'search') . ">";
+				$query = ($_POST ? $_POST["query"] : $_GET["query"]); // GET is used by the Ctrl+K box
+				echo " <input type='search' name='query' value='" . h($query != "" ? $query : $filter) . "'" . on('keydown', 'submitKeydown', 'search') . ">";
 				echo " <input type='submit' name='search' value='" . lang('Search') . "'>\n";
 				echo "</div></fieldset>\n";
-				if (!$error && $_POST["search"] && $_POST["query"] != "") {
-					$_GET["where"][0]["op"] = $_POST["op"];
-					search_tables();
+				if (!$error && (!$_POST || $_POST["search"]) && $query != "") {
+					$_GET["where"][0]["op"] = idx($_POST, "op", JUSH == "elastic" ? "should" : "LIKE %%");
+					search_tables($query);
 				}
 			}
 			echo "<div class='scrollable'>\n";

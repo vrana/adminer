@@ -1,4 +1,4 @@
 <?php
 namespace Adminer;
 
-const VERSION = "6.2.1-dev";
+const VERSION = "6.3.0-dev";
