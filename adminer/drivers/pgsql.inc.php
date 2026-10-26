@@ -1535,10 +1535,6 @@ WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary !=
 		return queries("SELECT pg_terminate_backend(" . number($id) . ")");
 	}
 
-	function connection_id(): string {
-		return "SELECT pg_backend_pid()";
-	}
-
 	function max_connections(): string {
 		return get_val("SHOW max_connections");
 	}

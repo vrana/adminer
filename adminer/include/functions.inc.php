@@ -1205,30 +1205,14 @@ function count_rows(string $table, array $where, bool $is_group, array $group): 
 	);
 }
 
-/** Run query which can be killed by AJAX call after timing out
+/** Run query with the execution time limited by the driver if it supports it
 * @return string[]
 */
 function slow_query(string $query): array {
-	$db = adminer()->database();
-	$timeout = adminer()->queryTimeout();
-	$slow_query = driver()->slowQuery($query, $timeout);
-	$connection2 = null;
-	if (!$slow_query && support("kill")) {
-		$connection2 = connect();
-		if ($connection2 && ($db == "" || $connection2->select_db($db))) {
-			$kill = number(get_val(connection_id(), 0, $connection2)); // MySQL and MySQLi can use thread_id but it's not in PDO_MySQL
-			echo script("const timeout = setTimeout(() => { ajax('" . js_escape(ME) . "script=kill', function () {}, 'kill=$kill&token=" . get_token() . "'); }, 1000 * $timeout);");
-		}
-	}
+	$slow_query = driver()->slowQuery($query, adminer()->queryTimeout());
 	ob_flush();
 	flush();
-	$return = @get_key_vals(($slow_query ?: $query), $connection2, false); // @ - may be killed
-	if ($connection2) {
-		echo script("clearTimeout(timeout);");
-		ob_flush();
-		flush();
-	}
-	return $return;
+	return @get_key_vals(($slow_query ?: $query), null, false); // @ - may time out
 }
 
 /** Generate BREACH resistant CSRF token */

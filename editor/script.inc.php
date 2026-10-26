@@ -1,12 +1,7 @@
 <?php
 namespace Adminer;
 
-if ($_GET["script"] == "kill") {
-	if (!$error) {
-		connection()->query("KILL " . number($_POST["kill"]));
-	}
-
-} elseif (list($table, $id, $name) = adminer()->_foreignColumn(column_foreign_keys($_GET["source"]), $_GET["field"])) { // complete
+if (list($table, $id, $name) = adminer()->_foreignColumn(column_foreign_keys($_GET["source"]), $_GET["field"])) { // complete
 	$limit = 11;
 	$exact = (preg_match('~^[0-9]+$~', $_GET["value"]) ? "$id = $_GET[value]" : "");
 	// the row with the typed ID first, the limit would cut it off otherwise; CASE - MS SQL and Oracle can't order by ($exact) DESC

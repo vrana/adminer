@@ -1295,11 +1295,6 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 		return queries("KILL " . number($id));
 	}
 
-	/** Return query to get connection ID */
-	function connection_id(): string {
-		return "SELECT CONNECTION_ID()";
-	}
-
 	/** Get maximum number of connections
 	* @return numeric-string
 	*/

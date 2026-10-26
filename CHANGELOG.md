@@ -1,5 +1,6 @@
 ## Adminer dev
 - Link the donation page by a heart in the top right corner
+- MySQL &lt; 5.7.8, MariaDB &lt; 10.1.2: Unsupport found rows timeout
 - MS SQL: Limit the execution time of counting rows in select
 ### Plugins
 - Method donation() to replace or hide the donation link
