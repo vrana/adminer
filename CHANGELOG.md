@@ -1,5 +1,6 @@
 ## Adminer dev
 - Link the donation page by a heart in the top right corner
+- MS SQL: Limit the execution time of counting rows in select
 ### Plugins
 - Method donation() to replace or hide the donation link
 - New plugin donation: Replace or hide the donation link in the top right corner

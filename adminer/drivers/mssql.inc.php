@@ -15,6 +15,7 @@ if (isset($_GET["mssql"])) {
 	if (extension_loaded("sqlsrv") && $_GET["ext"] != "pdo") {
 		class Db extends SqlDb {
 			public $extension = "SQLSRV";
+			public $timeout = 0; // seconds, limits the next query only
 			private $link, $result, $warnings, $transaction = false;
 
 			private function get_error(): void {
@@ -63,7 +64,9 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function query(string $query, bool $unbuffered = false) {
-				$result = sqlsrv_query($this->link, $query); //! , array(), ($unbuffered ? array() : array("Scrollable" => "keyset"))
+				$options = ($this->timeout ? array("QueryTimeout" => $this->timeout) : array()); //! "Scrollable" => "keyset" unless $unbuffered
+				$this->timeout = 0;
+				$result = sqlsrv_query($this->link, $query, array(), $options);
 				$this->error = "";
 				if (!$result) {
 					$this->get_error();
@@ -258,6 +261,7 @@ if (isset($_GET["mssql"])) {
 		if (extension_loaded("pdo_sqlsrv")) {
 			class Db extends MssqlDb {
 				public $extension = "PDO_SQLSRV";
+				public $timeout = 0; // seconds, limits the next query only
 
 				function attach(array $server, string $username, string $password): string {
 					$port = $server["port"];
@@ -271,6 +275,17 @@ if (isset($_GET["mssql"])) {
 					}
 					// without SQLSRV_ATTR_DIRECT_QUERY, the queries run through sp_prepexec, which reverts SET IDENTITY_INSERT after each of them
 					return $this->dsn($dsn, $username, $password, array(\PDO::SQLSRV_ATTR_DIRECT_QUERY => true));
+				}
+
+				function query(string $query, bool $unbuffered = false) {
+					if (!$this->timeout) {
+						return parent::query($query, $unbuffered);
+					}
+					$this->pdo->setAttribute(\PDO::SQLSRV_ATTR_QUERY_TIMEOUT, $this->timeout);
+					$this->timeout = 0;
+					$return = parent::query($query, $unbuffered);
+					$this->pdo->setAttribute(\PDO::SQLSRV_ATTR_QUERY_TIMEOUT, 0);
+					return $return;
 				}
 			}
 
@@ -417,6 +432,14 @@ if (isset($_GET["mssql"])) {
 		function begin() {
 			remember_query("BEGIN TRANSACTION");
 			return $this->conn->begin();
+		}
+
+		function slowQuery(string $query, int $timeout) {
+			// the server has no execution time limit, LOCK_TIMEOUT limits only waiting for locks
+			if ($this->conn->extension != "PDO_DBLIB") { // DB-Library closes the connection after a timeout, the following queries would fail
+				$this->conn->timeout = $timeout;
+				return $query;
+			}
 		}
 
 		function convertSearch(string $idf, array $val, array $field): string {
