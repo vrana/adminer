@@ -517,12 +517,26 @@ function selectSearch(name) {
 
 
 
+const isMac = /^(Mac|iP)/.test(navigator.platform);
+
 /** Check if Ctrl key (Command key on Mac) was pressed
 * @param {KeyboardEvent|MouseEvent} event
 * @return {boolean}
 */
 function isCtrl(event) {
-	return (event.ctrlKey || event.metaKey) && !event.altKey; // shiftKey allowed
+	// not Ctrl on Mac - Ctrl+click opens the context menu and Ctrl+K deletes to the end of the line in text fields
+	return (event.metaKey || (!isMac && event.ctrlKey)) && !event.altKey; // shiftKey allowed
+}
+
+/** Write the keyboard shortcuts in titles in the Mac notation */
+function macShortcuts() {
+	for (const el of qsa('a[title], input[title], fieldset[title]')) { // not all elements - e.g. a comment in a title could contain Ctrl
+		el.title = el.title
+			.replace(/^Alt\+Shift\+/, '⌃⌥') // access keys
+			.replace(/^Ctrl\+(Shift\+)?Enter$/, (all, shift) => (shift ? '⇧' : '') + '⌘↩')
+			.replace(/\bCtrl\b/, '⌘') // the translations of Ctrl+click
+		;
+	}
 }
 
 /** Check if Esc was pressed alone
@@ -1113,6 +1127,9 @@ function cloneNode(el) {
 alterClass(document.documentElement, 'js', true);
 alterClass(document.documentElement, 'nojs'); // two calls, not classList.replace() - unsupported in Chrome < 61
 alterClass(document.documentElement, 'insecure', !navigator.clipboard); // clipboard is undefined also in an insecure context
+if (isMac) {
+	addEventListener('DOMContentLoaded', macShortcuts);
+}
 
 mixin(document, {
 	onchange: delegateEvent,

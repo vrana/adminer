@@ -6,7 +6,7 @@ const jumpSections = []; // [label, URL] of the sections and the links of the da
 /** Set up the box searching tables, schemas and databases */
 function jumpSetup() {
 	const input = qs('#jump input');
-	input.placeholder += (/^(Mac|iP)/.test(navigator.platform) ? ' (⌘K)' : ' (Ctrl+K)');
+	input.placeholder += (isMac ? ' (⌘K)' : ' (Ctrl+K)');
 	input.onfocus = jumpInput;
 	input.onblur = () => {
 		jumpToggle(false);

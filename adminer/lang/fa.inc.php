@@ -244,7 +244,7 @@ Lang::$translations = array(
 	'File must be in UTF-8 encoding.' => 'فرمت فایل باید UTF-8 باشید.',
 
 	'Modify' => 'ویرایش', // in-place editing in select
-	'Ctrl+click on a value to modify it.' => 'برای ویرایش بر روی مقدار ctrl+click کنید.',
+	'Ctrl+click on a value to modify it.' => 'برای ویرایش بر روی مقدار Ctrl+click کنید.',
 	'Use the edit link to modify this value.' => 'از لینک ویرایش برای ویرایش این مقدار استفاده کنید.',
 
 	'Item%s has been inserted.' => '%s آیتم درج شد.', // %s can contain auto-increment value

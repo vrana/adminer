@@ -57,8 +57,8 @@ addEventListener('DOMContentLoaded', () => {
 				monaco.editor.addKeybindingRules([
 					{keybinding: monaco.KeyCode.Tab, command: null}
 				]);
-				// Monaco handles Ctrl+Enter itself, pass it to Adminer which sends the form
-				editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => el.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', ctrlKey: true, bubbles: true})));
+				// Monaco handles Ctrl+Enter itself, pass it to Adminer which sends the form; metaKey - isCtrl() checks only it on Mac
+				editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => el.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', ctrlKey: true, metaKey: true, bubbles: true})));
 				const errorLine = +el.dataset.errorLine;
 				if (errorLine) {
 					const mark = editor.createDecorationsCollection([{range: new monaco.Range(errorLine, 1, errorLine, 1), options: {isWholeLine: true, className: 'adminer-error-line'}}]);
