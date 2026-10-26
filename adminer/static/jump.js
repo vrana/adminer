@@ -208,11 +208,14 @@ function jumpKeydown(event) {
 		jumpSelect((row + (event.key == 'ArrowUp' ? rows.length - 1 : 1)) % rows.length, jumpColumn);
 		return false;
 	}
-	if (/^Arrow(Left|Right)$/.test(event.key) && !isCtrl(event) && !event.shiftKey && links.length > 1) {
-		jumpColumn = Math.max(0, Math.min(links.length - 1, column + ((event.key == 'ArrowLeft') == (document.dir != 'rtl') ? -1 : 1)));
-		cookie('adminer_jump=' + jumpColumn, 365);
-		jumpSelect(row, jumpColumn);
-		return false;
+	if (/^Arrow(Left|Right)$/.test(event.key) && !isCtrl(event) && !event.shiftKey && this.selectionStart == this.value.length) { // elsewhere the arrows move the caret
+		const next = column + ((event.key == 'ArrowLeft') == (document.dir != 'rtl') ? -1 : 1);
+		if (links[next]) { // otherwise Left moves the caret from the name
+			jumpColumn = next;
+			cookie('adminer_jump=' + jumpColumn, 365);
+			jumpSelect(row, jumpColumn);
+			return false;
+		}
 	}
 	if (event.key == 'Enter' && links[column]) {
 		const href = links[column].href;
