@@ -283,7 +283,7 @@ adminer()->selectLinks($table_status, $set);
 if (!$columns && support("table")) {
 	echo "<p class='error'>" . lang('Unable to select the table.') . "\n";
 } else {
-	echo "<form action='' id='form'>\n";
+	echo "<form id='form'>\n";
 	echo "<div hidden>";
 	hidden_fields_get();
 	echo (DB != "" ? input_hidden("db", DB) . (isset($_GET["ns"]) ? input_hidden("ns", $_GET["ns"]) : "") : ""); // not used in Editor
@@ -373,7 +373,7 @@ if (!$columns && support("table")) {
 			$max_rows = max_input_vars(count($rows[0]) + 1, 20); // 1 - the checkbox of each row, 20 - the other inputs
 			echo ($max_rows && count($rows) > $max_rows ? "<p class='error'>" . max_input_vars_error() . "\n" : "");
 		}
-		echo "<form action='' method='post' enctype='multipart/form-data'" . on_upload_progress($upload_progress) . ">\n";
+		echo "<form method='post' enctype='multipart/form-data'" . on_upload_progress($upload_progress) . ">\n";
 
 		// use count($rows) without LIMIT, COUNT(*) without grouping, FOUND_ROWS otherwise (slowest)
 		if ($_GET["page"] != "last" && $limit && $group && $is_group && JUSH == "sql") {

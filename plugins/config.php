@@ -25,7 +25,7 @@ class AdminerConfig extends Adminer\Plugin {
 					'<a href="https://github.com/vrana/adminer/blob/main/plugins/menu-links.php"' . Adminer\target_blank() . '>menu-links</a>'
 				) . "\n";
 			} else {
-				echo "<form action='' method='post'>\n";
+				echo "<form method='post'>\n";
 				if ($config) {
 					echo "<table>\n";
 					foreach (array_reverse($config) as $title => $html) { // Plugins::$append actually prepends

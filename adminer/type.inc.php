@@ -107,7 +107,7 @@ if (!$row) {
 }
 ?>
 
-<form action="" method="post">
+<form method="post">
 <p>
 <?php
 echo lang('Name') . ": <input name='name' value='" . h($row['name']) . "' autocapitalize='off'>\n";

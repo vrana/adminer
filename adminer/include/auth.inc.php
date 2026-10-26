@@ -118,7 +118,7 @@ function require_password_link(?string $password): string {
 <p>$more_options
 ";
 	return " <a href='#password-less' class='toggle'>" . lang('Require a password.') . "</a>
-<div id='password-less' class='hidden'>" . ($exists ? $return : "<form action='' method='post'>\n" . $return . input_token() . "</form>") . "</div>";
+<div id='password-less' class='hidden'>" . ($exists ? $return : "<form method='post'>\n" . $return . input_token() . "</form>") . "</div>";
 }
 
 if (preg_match('~^[-\w$./]+$~', $_POST["password_less"]) && verify_token()) { // the file offered by require_password_link()
@@ -223,7 +223,7 @@ function auth_error(string $error, array &$permanent, bool $invalid_login = true
 		$_SESSION["token"] = rand(1, 1e6); // this is for next attempt
 	}
 	page_header(lang('Login'), $error, null);
-	echo "<form action='' method='post'>\n";
+	echo "<form method='post'>\n";
 	echo "<div>";
 	if (hidden_fields($_POST, array("auth", "token"))) { // expired session
 		echo "<p class='message'>" . lang('The action will be performed after successful login with the same credentials.') . "\n";

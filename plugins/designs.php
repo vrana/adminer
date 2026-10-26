@@ -61,7 +61,7 @@ class AdminerDesigns extends Adminer\Plugin {
 
 	function navigation($missing) {
 		if (!$this->config) {
-			echo "<form action='' method='post' style='position: fixed; bottom: .5em; right: .5em;'>";
+			echo "<form method='post' style='position: fixed; bottom: .5em; right: .5em;'>";
 			echo Adminer\html_select("design", array("" => "(design)") + $this->designs, $_SESSION["design"], Adminer\on('change', 'formSubmit'));
 			echo Adminer\input_token();
 			echo "</form>\n";

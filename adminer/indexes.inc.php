@@ -126,7 +126,7 @@ foreach ($index_types as $type) {
 }
 ?>
 
-<form action="" method="post">
+<form method="post">
 <div class="scrollable">
 <table class="nowrap odds">
 <thead><tr>

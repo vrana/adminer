@@ -64,7 +64,7 @@ page_header(
 );
 ?>
 
-<form action="" method="post">
+<form method="post">
 <p><label><?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" data-maxlength="64" autocapitalize="off"></label>
 <p><?php textarea("clause", $row["clause"]); ?>
 <p><input type='submit' value='<?php echo lang('Save'); ?>'>

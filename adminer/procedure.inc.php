@@ -75,7 +75,7 @@ $routine_languages = routine_languages();
 echo ($collations ? "<datalist id='collations'>" . optionlist($collations) . "</datalist>" : "");
 ?>
 
-<form action="" method="post" id="form">
+<form method="post" id="form">
 <p><?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" data-maxlength="64" autocapitalize="off">
 <?php echo ($routine_languages ? "<label>" . lang('Language') . ": "
 	. html_select("language", array_keys($routine_languages), $row["language"], on('change', 'routineLanguage', $routine_languages))

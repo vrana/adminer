@@ -277,7 +277,7 @@ function page_footer(string $missing = ""): void {
 	echo "</div>\n";
 	if ($missing != "auth") {
 		?>
-<form action="" method="post">
+<form method="post">
 <p class="logout">
 <span title="<?php echo lang('Username'); ?>"><?php echo h($_GET["username"]) . "\n"; ?></span>
 <input type='submit' name='logout' value='<?php echo lang('Logout'); ?>' id='logout'>

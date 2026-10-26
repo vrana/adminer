@@ -1320,7 +1320,7 @@ class Adminer {
 		if (DB && $databases && !in_array(DB, $databases)) {
 			array_unshift($databases, DB);
 		}
-		echo "<form action=''>\n<p id='dbs'>\n";
+		echo "<form>\n<p id='dbs'>\n";
 		hidden_fields_get();
 		$db_events = on('mousedown', 'dbMouseDown') . on('change', 'dbChange');
 		echo "<label title='" . lang('Database') . "'>" . lang('DB') . ": " . ($databases

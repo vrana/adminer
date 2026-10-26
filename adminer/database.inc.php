@@ -69,7 +69,7 @@ if ($_POST) {
 }
 ?>
 
-<form action="" method="post">
+<form method="post">
 <p>
 <?php
 echo ($_POST["add"] || strpos($name, "\n")

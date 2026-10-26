@@ -65,7 +65,7 @@ page_header(
 );
 ?>
 
-<form action="" method="post">
+<form method="post">
 <p><?php echo lang('Name'); ?>: <input name="name" value="<?php echo h($row["name"]); ?>" data-maxlength="64" autocapitalize="off">
 <?php echo (support("materializedview") ? " " . checkbox("materialized", 1, $row["materialized"], lang('Materialized view')) : ""); ?>
 <p><?php textarea("select", $row["select"]); ?>

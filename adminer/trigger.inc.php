@@ -55,7 +55,7 @@ $trigger_change = on('change', 'triggerChange', "^$name_re$", $name_pattern);
 $of_input = on('input', 'triggerChange', "^$name_re$", $name_pattern);
 ?>
 
-<form action="" method="post" id="form">
+<form method="post" id="form">
 <table class="layout">
 <tr><th><?php echo lang('Time'); ?>
 <td><?php echo html_select("Timing", $trigger_options["Timing"], $row["Timing"], $trigger_change); ?>

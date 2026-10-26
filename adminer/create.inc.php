@@ -211,7 +211,7 @@ if ($max_columns) {
 }
 ?>
 
-<form action="" method="post" id="form">
+<form method="post" id="form">
 <p>
 <?php
 if (support("columns") || $TABLE == "") {

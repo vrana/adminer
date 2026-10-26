@@ -199,7 +199,7 @@ SET foreign_key_checks = 0;
 page_header(lang('Export'), $error, ($_GET["export"] != "" ? array("table" => $_GET["export"]) : array()), h(DB));
 ?>
 
-<form action="" method="post">
+<form method="post">
 <table class="layout">
 <?php
 $db_style = array('', 'USE', 'DROP+CREATE', 'CREATE');

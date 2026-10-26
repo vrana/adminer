@@ -16,7 +16,7 @@ if (support("kill")) {
 page_header(lang('Process list'), $error);
 ?>
 
-<form action="" method="post">
+<form method="post">
 <div class="scrollable">
 <table class="nowrap checkable odds"<?php echo on('click', 'tableClick') . on('dblclick', 'tableClick'); ?>>
 <?php

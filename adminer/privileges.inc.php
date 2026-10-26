@@ -12,7 +12,7 @@ if (!$result) {
 	$result = connection()->query("SELECT SUBSTRING_INDEX(CURRENT_USER, '@', 1) AS User, SUBSTRING_INDEX(CURRENT_USER, '@', -1) AS Host");
 }
 
-echo "<form action=''><p>\n";
+echo "<form><p>\n";
 hidden_fields_get();
 echo input_hidden("db", DB);
 echo ($grant ? "" : input_hidden("grant"));

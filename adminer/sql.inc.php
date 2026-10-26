@@ -299,7 +299,7 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 										$edit = !$_POST["only_errors"]; // the values can be modified only if the Save button is printed
 										if ($edit) {
 											// the result must be inside the form to send the modified values
-											echo "<form action='' method='post'>\n";
+											echo "<form method='post'>\n";
 										}
 										$orgtables = print_select_result($result, $connection2, array(), $num_rows, $edit);
 										if (!$_POST["only_errors"]) {
@@ -373,7 +373,7 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 }
 ?>
 
-<form action="" method="post" enctype="multipart/form-data" id="form"<?php
+<form method="post" enctype="multipart/form-data" id="form"<?php
 $upload_progress = "";
 if (!isset($_GET["import"])) {
 	echo on('submit', 'sqlSubmit', remove_from_uri("sql|limit|error_stops|only_errors|history"), adminer()->sqlUrlLength());

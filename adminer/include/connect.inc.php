@@ -52,7 +52,7 @@ if (
 		if ($databases) {
 			$scheme = support("scheme");
 			$collations = collations();
-			echo "<form action='' method='post'>\n";
+			echo "<form method='post'>\n";
 			echo "<table class='checkable odds'" . on('click', 'tableClick') . on('dblclick', 'tableClick') . ">\n";
 			echo "<thead><tr>"
 				. (support("database") ? "<td class='hover'>" : "")

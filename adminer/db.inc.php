@@ -87,7 +87,7 @@ if (adminer()->homepage()) {
 		if (!$tables_list) {
 			echo "<p class='message'>" . lang('No tables.') . "\n";
 		} else {
-			echo "<form action='' method='post'>\n";
+			echo "<form method='post'>\n";
 			if (support("table")) {
 				echo "<fieldset><legend>" . lang('Search data in tables') . " <span id='selected2'></span></legend><div>";
 				echo html_select("op", adminer()->operators(), idx($_POST, "op", JUSH == "elastic" ? "should" : "LIKE %%"));

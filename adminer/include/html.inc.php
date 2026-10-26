@@ -500,7 +500,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 		echo "<p class='error'>" . lang('No rows.') . "\n";
 		return;
 	}
-	echo "<form action='' method='post' enctype='multipart/form-data' id='form'>\n";
+	echo "<form method='post' enctype='multipart/form-data' id='form'>\n";
 	$editable = false;
 	// the WHERE condition in the URL is not updated after saving so changing these values would break Save and continue editing
 	$where_columns = ($update && !isset($_GET["select"]) ? where_columns($fields) : array());

@@ -96,7 +96,7 @@ if ($is_trigger) {
 
 } else {
 ?>
-<form action="" method="post">
+<form method="post">
 <?php
 if ($in) {
 	echo "<table class='layout'>\n";

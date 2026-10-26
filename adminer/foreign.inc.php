@@ -97,7 +97,7 @@ if ($_POST) {
 }
 ?>
 
-<form action="" method="post">
+<form method="post">
 <?php
 $source = array_keys(fields($TABLE)); //! no text and blob
 if ($row["db"] != "") {
