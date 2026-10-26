@@ -1,6 +1,6 @@
 'use strict'; // the box searching tables, schemas, databases and the sections of the database page, opened by Ctrl+K
 
-let jumpColumn = 0; // the action chosen by Left and Right, kept when moving between rows
+let jumpColumn = +(/(?:^|; )adminer_jump=(\d)/.exec(document.cookie) || [0, 0])[1]; // the action chosen by Left and Right, kept when moving between rows and remembered for the next pages
 const jumpSections = []; // [label, URL] of the sections and the links of the database page, filled by Adminer::navigation() and plugins
 
 /** Set up the box searching tables, schemas and databases */
@@ -210,6 +210,7 @@ function jumpKeydown(event) {
 	}
 	if (/^Arrow(Left|Right)$/.test(event.key) && !isCtrl(event) && !event.shiftKey && links.length > 1) {
 		jumpColumn = Math.max(0, Math.min(links.length - 1, column + ((event.key == 'ArrowLeft') == (document.dir != 'rtl') ? -1 : 1)));
+		cookie('adminer_jump=' + jumpColumn, 365);
 		jumpSelect(row, jumpColumn);
 		return false;
 	}
