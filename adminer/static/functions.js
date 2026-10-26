@@ -2,7 +2,7 @@
 
 /** Get first element by selector
 * @param {string} selector
-* @param {HTMLElement} [context=document]
+* @param {HTMLElement} [context]
 * @return {HTMLElement}
 */
 function qs(selector, context = document) {
@@ -21,7 +21,7 @@ function qsl(selector, context) {
 
 /** Get all elements by selector
 * @param {string} selector
-* @param {HTMLElement} [context=document]
+* @param {HTMLElement} [context]
 * @return {NodeList}
 */
 function qsa(selector, context = document) {
