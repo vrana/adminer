@@ -1,4 +1,5 @@
 import {expect, test} from '@playwright/test';
+import {readFileSync} from 'fs';
 import {button, expectExtension, expectNoErrors, extension, goto, link, newPage, setValue} from './adminer.js';
 
 test.describe.configure({mode: 'serial'}); // the tests depend on each other, e.g. on being logged in
@@ -628,6 +629,14 @@ test('Editor', async () => {
 	await button(page, 'Select').click();
 	await link(page, 'New item').click();
 	await expect(page.locator('[name="fields[interpret]"]')).toHaveValue('1'); // prefilled by the searched value
+	await link(page, 'Albums').click();
+	await page.locator('a[href="#fieldset-export"]').click();
+	await page.locator('[name="format"]').selectOption('csv');
+	const [download] = await Promise.all([
+		page.waitForEvent('download'), // Editor has no text output
+		page.locator('[name="export"]').click(),
+	]);
+	expect(readFileSync(await download.path(), 'utf8')).toContain('Dangerous');
 	await page.locator('[name="logout"]').click();
 });
 

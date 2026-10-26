@@ -649,8 +649,11 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		echo "\xef\xbb\xbf"; // UTF-8 byte order mark
 	}
 
-	function dumpData(string $table, string $style, string $query): void {
-		$result = connection()->query($query, 1); // 1 - MYSQLI_USE_RESULT
+	function dumpData(string $table, string $style, string $query, array $select = array(), array $where = array(), array $group = array(), array $order = array()): void {
+		$result = ($query != ""
+			? connection()->query($query, 1) // 1 - MYSQLI_USE_RESULT
+			: driver()->select($table, ($select ?: array("*")), $where, $group, $order, 0) // 0 - all rows
+		);
 		if ($result) {
 			while ($row = $result->fetch_assoc()) {
 				if ($style == "table") {
