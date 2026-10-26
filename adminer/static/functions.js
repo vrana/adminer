@@ -420,7 +420,7 @@ function menuClose() {
 
 
 let jumpColumn = 0; // the action chosen by Left and Right, kept when moving between rows
-const jumpSections = []; // [label, URL] of the sections and the links of the database page, filled by Adminer::navigation()
+const jumpSections = []; // [label, URL] of the sections and the links of the database page, filled by Adminer::navigation() and plugins
 
 /** Set up the box searching tables, schemas and databases */
 function jumpSetup() {

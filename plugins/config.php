@@ -72,9 +72,19 @@ class AdminerConfig extends Adminer\Plugin {
 		return implode($return);
 	}
 
+	function navigation($missing) {
+		if ($missing != "auth") { // offer the page in the Ctrl+K box
+			echo Adminer\script("jumpSections.push(" . json_encode(array($this->lang('Configuration'), $this->link()), 256) . ");");
+		}
+	}
+
 	function pluginsLinks() {
-		$link = preg_replace('~\b(db|ns)=[^&]*&~', '', Adminer\ME);
-		echo "<p class='links hover'><a href='" . Adminer\h($link) . "config='>" . $this->lang('Configuration') . "</a>\n";
+		echo "<p class='links hover'><a href='" . Adminer\h($this->link()) . "'>" . $this->lang('Configuration') . "</a>\n";
+	}
+
+	/** Get the URL of the configuration page */
+	private function link() {
+		return preg_replace('~\b(db|ns)=[^&]*&~', '', Adminer\ME) . "config=";
 	}
 
 	function screenshot() {

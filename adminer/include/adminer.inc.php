@@ -1273,7 +1273,8 @@ class Adminer {
 			if (DB != "" && !$missing && support("extension")) { // the extensions are on the page of the database without a schema
 				$sections[] = array(lang('Extensions'), preg_replace('~\bns=[^&]*&~', '', ME) . "ns=#extensions");
 			}
-			echo ($sections ? script("jumpSections.push(..." . json_encode($sections, 256) . ");") : ""); // 256 - JSON_UNESCAPED_UNICODE
+			// unshift() - before the links added by plugins, whose hooks run first; 256 - JSON_UNESCAPED_UNICODE
+			echo ($sections ? script("jumpSections.unshift(..." . json_encode($sections, 256) . ");") : "");
 			if ($in_db) {
 				if ($tables) {
 					adminer()->tablesPrint($tables);
