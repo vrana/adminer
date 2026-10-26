@@ -275,6 +275,7 @@ Lang::$translations = array(
 	'edit' => 'tahrirlash',
 	'Edit' => 'Tahrirlash',
 	'Insert' => 'Kiritish',
+	'insert' => 'kiritish',
 	'Save' => 'Saqlash',
 	'Save and continue editing' => 'Saqlash va tahrirlashni davom ettirish',
 	'Save and insert next' => 'Saqlash va keyingisini kiritish',

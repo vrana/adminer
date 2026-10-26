@@ -38,6 +38,7 @@ Lang::$translations = array(
 	'Item has been updated.' => 'הפריט עודכן',
 	'Edit' => 'ערוך',
 	'Insert' => 'הכנס',
+	'insert' => 'הכנס',
 	'Save and insert next' => 'שמור והמשך להכניס',
 	'Delete' => 'מחק',
 	'Database' => 'מסד נתונים',

@@ -40,6 +40,7 @@ Lang::$translations = array(
 	'Item%s has been inserted.' => 'มี%s รายการ ถูกเพิ่มแล้ว.',
 	'Edit' => 'แก้ไข',
 	'Insert' => 'เพิ่ม',
+	'insert' => 'เพิ่ม',
 	'Save and insert next' => 'บันทึกแล้วเพิ่มรายการถัดไป',
 	'Delete' => 'ลบ',
 	'Database' => 'ฐานข้อมูล',

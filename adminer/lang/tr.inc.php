@@ -276,6 +276,7 @@ Lang::$translations = array(
 	'edit' => 'düzenle',
 	'Edit' => 'Düzenle',
 	'Insert' => 'Ekle',
+	'insert' => 'ekle',
 	'Save' => 'Kaydet',
 	'Save and continue editing' => 'Kaydet ve düzenlemeye devam et',
 	'Save and insert next' => 'Kaydet ve sonrakini ekle',

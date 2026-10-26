@@ -40,6 +40,7 @@ Lang::$translations = array(
 	'Item%s has been inserted.' => 'Kirje%s on edukalt lisatud.',
 	'Edit' => 'Muuda',
 	'Insert' => 'Sisesta',
+	'insert' => 'sisesta',
 	'Save and insert next' => 'Salvesta ja lisa järgmine',
 	'Delete' => 'Kustuta',
 	'Database' => 'Andmebaas',

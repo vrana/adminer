@@ -41,6 +41,7 @@ Lang::$translations = array(
 	'Item%s has been inserted.' => 'Položka%s bola vložená.',
 	'Edit' => 'Upraviť',
 	'Insert' => 'Vložiť',
+	'insert' => 'vložiť',
 	'Save and insert next' => 'Uložiť a vložiť ďalší',
 	'Delete' => 'Zmazať',
 	'Database' => 'Databáza',

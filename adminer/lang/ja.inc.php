@@ -60,6 +60,7 @@ Lang::$translations = array(
 	'Item has been updated.' => 'レコードを更新しました。',
 	'Edit' => '編集',
 	'Insert' => '挿入',
+	'insert' => '挿入',
 	'Save and insert next' => '保存／追加',
 	'Delete' => '削除',
 	'You have no privileges to update this table.' => 'このテーブルを更新する権限がありません。',

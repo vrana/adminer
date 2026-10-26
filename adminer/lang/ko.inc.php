@@ -118,6 +118,7 @@ Lang::$translations = array(
 	'Indexes have been altered.' => '색인을 변경했습니다.',
 	'Indexes' => '색인',
 	'Insert' => '삽입',
+	'insert' => '삽입',
 	'Invalid credentials.' => '잘못된 로그인.',
 	'Invalid CSRF token. Submit the form again.' => '잘못된 CSRF 토큰입니다. 다시 보내주십시오.',
 	'Item has been deleted.' => '항목을 삭제했습니다.',

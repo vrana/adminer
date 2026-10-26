@@ -295,6 +295,7 @@ Lang::$translations = array(
 	'edit' => 'ubah',
 	'Edit' => 'Ubah',
 	'Insert' => 'Masukkan',
+	'insert' => 'masukkan',
 	'Save' => 'Simpan',
 	'Save and continue editing' => 'Simpan dan sambung ubah',
 	'Save and insert next' => 'Simpan dan masukkan seterusnya',

@@ -40,6 +40,7 @@ Lang::$translations = array(
 	'Item%s has been inserted.' => 'ჩანაწერი%s ჩაჯდა.',
 	'Edit' => 'შეცვლა',
 	'Insert' => 'ჩასმა',
+	'insert' => 'ჩასმა',
 	'Save and insert next' => 'შენახვა და სხვის ჩასმა',
 	'Delete' => 'წაშლა',
 	'Database' => 'ბაზა',

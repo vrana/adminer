@@ -246,6 +246,7 @@ Lang::$translations = array(
 	'edit' => 'измени',
 	'Edit' => 'Измени',
 	'Insert' => 'Уметни',
+	'insert' => 'уметни',
 	'Save' => 'Сачувај',
 	'Save and continue editing' => 'Сачувај и настави уређење',
 	'Save and insert next' => 'Сачувај и уметни следеће',

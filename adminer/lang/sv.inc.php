@@ -290,6 +290,7 @@ Lang::$translations = array(
 	'edit' => 'redigera',
 	'Edit' => 'Redigera',
 	'Insert' => 'Infoga',
+	'insert' => 'infoga',
 	'Save' => 'Spara',
 	'Save and continue editing' => 'Spara och fortsätt att redigera',
 	'Save and insert next' => 'Spara och infoga nästa',

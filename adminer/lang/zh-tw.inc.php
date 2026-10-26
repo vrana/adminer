@@ -290,6 +290,7 @@ Lang::$translations = array(
 	'edit' => '編輯',
 	'Edit' => '編輯',
 	'Insert' => '新增',
+	'insert' => '新增',
 	'Save' => '儲存',
 	'Save and continue editing' => '儲存並繼續編輯',
 	'Save and insert next' => '儲存並新增下一筆',

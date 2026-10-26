@@ -288,6 +288,7 @@ Lang::$translations = array(
 	'edit' => '编辑',
 	'Edit' => '编辑',
 	'Insert' => '插入',
+	'insert' => '插入',
 	'Save' => '保存',
 	'Save and continue editing' => '保存并继续编辑',
 	'Save and insert next' => '保存并插入下一个',

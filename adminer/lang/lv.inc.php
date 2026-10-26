@@ -40,6 +40,7 @@ Lang::$translations = array(
 	'Item%s has been inserted.' => 'Ieraksti%s tika ievietoti.',
 	'Edit' => 'Rediģēt',
 	'Insert' => 'Ievietot',
+	'insert' => 'ievietot',
 	'Save and insert next' => 'Saglabāt un ievietot nākamo',
 	'Delete' => 'Dzēst',
 	'Database' => 'Datubāze',

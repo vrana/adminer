@@ -267,6 +267,7 @@ Lang::$translations = array(
 	'edit' => 'muokkaa',
 	'Edit' => 'Muokkaa',
 	'Insert' => 'Lisää',
+	'insert' => 'lisää',
 	'Save' => 'Tallenna',
 	'Save and continue editing' => 'Tallenna ja jatka muokkaamista',
 	'Save and insert next' => 'Tallenna ja lisää seuraava',

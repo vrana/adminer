@@ -40,6 +40,7 @@ Lang::$translations = array(
 	'Item%s has been inserted.' => 'বিষয়বস্তুসমূহ%s সংযোজন করা হয়েছে।',
 	'Edit' => 'সম্পাদনা',
 	'Insert' => 'সংযোজন',
+	'insert' => 'সংযোজন',
 	'Save and insert next' => 'সংরক্ষন ও পরবর্তী সংযোজন করুন',
 	'Delete' => 'মুছে ফেলুন',
 	'Database' => 'ডাটাবেজ',

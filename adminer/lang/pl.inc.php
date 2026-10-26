@@ -299,6 +299,7 @@ Lang::$translations = array(
 	'edit' => 'edytuj',
 	'Edit' => 'Edytuj',
 	'Insert' => 'Dodaj',
+	'insert' => 'dodaj',
 	'Save' => 'Zapisz zmiany',
 	'Save and continue editing' => 'Zapisz i kontynuuj edycję',
 	'Save and insert next' => 'Zapisz i dodaj następny',

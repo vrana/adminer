@@ -40,6 +40,7 @@ Lang::$translations = array(
 	'Item%s has been inserted.' => 'Înregistrarea%s a fost inserată.',
 	'Edit' => 'Editează',
 	'Insert' => 'Inserează',
+	'insert' => 'inserează',
 	'Save and insert next' => 'Salvează și mai inserează',
 	'Delete' => 'Șterge',
 	'Database' => 'Baza de date',

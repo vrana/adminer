@@ -266,6 +266,7 @@ Lang::$translations = array(
 	'edit' => 'редакция',
 	'Edit' => 'Редактиране',
 	'Insert' => 'Вмъкване',
+	'insert' => 'вмъкване',
 	'Save' => 'Запис',
 	'Saving…' => 'Записване…',
 	'Save and continue editing' => 'Запис и редакция',

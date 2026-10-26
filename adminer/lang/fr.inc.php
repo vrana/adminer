@@ -38,6 +38,7 @@ Lang::$translations = array(
 	'Item has been updated.' => 'L\'élément a été modifié.',
 	'Edit' => 'Modifier',
 	'Insert' => 'Insérer',
+	'insert' => 'insérer',
 	'Save and insert next' => 'Enr. et insérer prochain',
 	'Delete' => 'Effacer',
 	'Database' => 'Base de données',

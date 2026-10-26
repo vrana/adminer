@@ -230,6 +230,7 @@ Lang::$translations = array(
 	'edit' => 'rediger',
 	'Edit' => 'Rediger',
 	'Insert' => 'Indsæt',
+	'insert' => 'Indsæt',
 	'Save' => 'Gem',
 	'Save and continue editing' => 'Gem og fortsæt redigering',
 	'Save and insert next' => 'Gem og indsæt næste',

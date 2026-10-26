@@ -267,6 +267,7 @@ Lang::$translations = array(
 	'edit' => 'επεξεργασία',
 	'Edit' => 'Επεξεργασία',
 	'Insert' => 'Εισαγωγή',
+	'insert' => 'εισαγωγή',
 	'Save' => 'Αποθήκευση',
 	'Save and continue editing' => 'Αποθήκευση και συνέχεια επεξεργασίας',
 	'Save and insert next' => 'Αποθήκευση και εισαγωγή επόμενου',

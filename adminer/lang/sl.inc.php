@@ -239,6 +239,7 @@ Lang::$translations = array(
 	'edit' => 'uredi',
 	'Edit' => 'Uredi',
 	'Insert' => 'Vstavi',
+	'insert' => 'vstavi',
 	'Save' => 'Shrani',
 	'Save and continue editing' => 'Shrani in nadaljuj z urejanjem',
 	'Save and insert next' => 'Shrani in vstavi tekst',

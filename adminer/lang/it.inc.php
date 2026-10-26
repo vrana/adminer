@@ -40,6 +40,7 @@ Lang::$translations = array(
 	'Item%s has been inserted.' => 'Elemento%s inserito.',
 	'Edit' => 'Modifica',
 	'Insert' => 'Inserisci',
+	'insert' => 'inserisci',
 	'Save and insert next' => 'Salva e inserisci un altro',
 	'Delete' => 'Elimina',
 	'Database' => 'Database',

@@ -257,6 +257,7 @@ Lang::$translations = array(
 	'edit' => 'ویرایش',
 	'Edit' => 'ویرایش',
 	'Insert' => 'درج',
+	'insert' => 'درج',
 	'Save' => 'ذخیره',
 	'Save and continue editing' => 'ذخیره و ادامه ویرایش',
 	'Save and insert next' => 'ذخیره و درج بعدی',

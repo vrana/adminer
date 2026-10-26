@@ -244,6 +244,7 @@ Lang::$translations = array(
 	'edit' => 'sunting',
 	'Edit' => 'Sunting',
 	'Insert' => 'Sisipkan',
+	'insert' => 'sisipkan',
 	'Save' => 'Simpan',
 	'Save and continue editing' => 'Simpan dan lanjut menyunting',
 	'Save and insert next' => 'Simpan dan sisipkan berikutnya',

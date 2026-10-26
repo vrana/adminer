@@ -40,6 +40,7 @@ Lang::$translations = array(
 	'Item%s has been inserted.' => 'Registro%s insertado.',
 	'Edit' => 'Modificar',
 	'Insert' => 'Agregar',
+	'insert' => 'agregar',
 	'Save and insert next' => 'Guardar e insertar siguiente',
 	'Delete' => 'Eliminar',
 	'Database' => 'Base de datos',

@@ -40,6 +40,7 @@ Lang::$translations = array(
 	'Item%s has been inserted.' => '%s tétel beszúrva.',
 	'Edit' => 'Szerkeszt',
 	'Insert' => 'Beszúr',
+	'insert' => 'beszúr',
 	'Save and insert next' => 'Mentés és újat beszúr',
 	'Delete' => 'Törlés',
 	'Database' => 'Adatbázis',

@@ -255,6 +255,7 @@ Lang::$translations = array(
 	'edit' => 'sửa',
 	'Edit' => 'Sửa',
 	'Insert' => 'Thêm',
+	'insert' => 'thêm',
 	'Save' => 'Lưu',
 	'Save and continue editing' => 'Lưu và tiếp tục sửa',
 	'Save and insert next' => 'Lưu và thêm tiếp',

@@ -243,6 +243,7 @@ Lang::$translations = array(
 	'edit' => 'редагувати',
 	'Edit' => 'Редагувати',
 	'Insert' => 'Вставити',
+	'insert' => 'вставити',
 	'Save' => 'Зберегти',
 	'Save and continue editing' => 'Зберегти і продовжити редагування',
 	'Save and insert next' => 'Зберегти і вставити знову',
