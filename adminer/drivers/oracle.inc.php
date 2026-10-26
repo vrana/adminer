@@ -19,6 +19,7 @@ if (isset($_GET["oracle"])) {
 			/** @var int */ public $error_offset = 0; // byte offset of the last error in the query, PDO_OCI doesn't report it
 			public $timeout = 0; // seconds, limits the next query only
 			private $link, $transaction = false;
+			private $query_timeout = 0; // milliseconds set by timeout(), limits all queries
 
 			function attach(array $server, string $username, string $password): string {
 				$this->link = @oci_new_connect($username, $password, easy_connect($server), "AL32UTF8");
@@ -49,6 +50,7 @@ if (isset($_GET["oracle"])) {
 					return false;
 				}
 				$timeout = $this->timeout;
+				$query_timeout = $this->query_timeout; // timeout() overwrites it
 				if ($timeout) {
 					$this->timeout = 0;
 					$this->timeout(1000 * $timeout);
@@ -57,7 +59,7 @@ if (isset($_GET["oracle"])) {
 					$return = oci_execute($result, ($this->transaction ? OCI_NO_AUTO_COMMIT : OCI_COMMIT_ON_SUCCESS));
 				});
 				if ($timeout) {
-					$this->timeout(0);
+					$this->timeout($query_timeout);
 				}
 				if ($errors) {
 					$this->error = end($errors);
@@ -77,6 +79,7 @@ if (isset($_GET["oracle"])) {
 			}
 
 			function timeout(int $ms): bool {
+				$this->query_timeout = $ms;
 				return function_exists('oci_set_call_timeout') && oci_set_call_timeout($this->link, $ms); // available since PHP 7.2.13
 			}
 
@@ -148,6 +151,7 @@ if (isset($_GET["oracle"])) {
 		class Db extends PdoDb {
 			public $extension = "PDO_OCI";
 			public $timeout = 0; // seconds, limits the next query only
+			private $query_timeout = 0; // milliseconds set by timeout(), limits all queries
 
 			function attach(array $server, string $username, string $password): string {
 				return $this->dsn("oci:dbname=//" . easy_connect($server) . ";charset=AL32UTF8", $username, $password);
@@ -162,14 +166,16 @@ if (isset($_GET["oracle"])) {
 				if (!$timeout) {
 					return parent::query($query, $unbuffered);
 				}
+				$query_timeout = $this->query_timeout; // timeout() overwrites it
 				$this->timeout = 0;
 				$this->timeout(1000 * $timeout);
 				$return = parent::query($query, $unbuffered);
-				$this->timeout(0);
+				$this->timeout($query_timeout);
 				return $return;
 			}
 
 			function timeout(int $ms): bool {
+				$this->query_timeout = $ms;
 				return $this->pdo->setAttribute(1004, $ms); // 1004 - PDO::OCI_ATTR_CALL_TIMEOUT available since PHP 8.0
 			}
 		}
