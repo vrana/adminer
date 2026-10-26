@@ -23,6 +23,7 @@ tbody tr:hover td, tbody tr:hover th { background: #133553; }
 pre.jush { background: var(--lit); }
 input.default { box-shadow: 1px 1px 1px #888; }
 input.required, input.maxlength, textarea.maxlength { box-shadow: 1px 1px 1px red; }
+:target { color: #a8b05f; }
 .version { color: #97a5b2; }
 .error { color: #ff9a9a; background: #3b1d1d; border: 1px solid #e76f6f; }
 .error b { background: #4d2626; }
@@ -47,4 +48,3 @@ input.required, input.maxlength, textarea.maxlength { box-shadow: 1px 1px 1px re
 #schema div.table a { color: #6ba4d6; }
 #menu .active { color: #4fb0b1; }
 #edit-fields tbody tr:hover td, #edit-fields tbody tr:hover th { background: #1a4268; }
-:target { color: #a8b05f; }

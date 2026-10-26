@@ -56,6 +56,7 @@ input[type="radio"] { vertical-align: text-bottom; }
 input.default { box-shadow: 1px 1px 1px #777; }
 input.required, input.maxlength, textarea.maxlength { box-shadow: 1px 1px 1px red; }
 [draggable] { cursor: grab; }
+:target { background: var(--lit); }
 .block { display: block; }
 .version { color: #777; font-size: 62%; }
 .js .hidden, .nojs .jsonly, .insecure .icon-copy { display: none; }
@@ -124,7 +125,6 @@ td.check { text-align: end; } /* to display the checkboxes next to the data */
 #schema .table { border: 1px solid silver; padding: 0 2px; cursor: move; position: absolute; box-sizing: border-box; }
 #schema .references { position: absolute; }
 #help { position: absolute; border: 1px solid #999; background: var(--dim); padding: 5px; font-family: monospace; z-index: 2; }
-:target { background: var(--lit); }
 
 /* inlined here and not in compile.php because otherwise the development version flickers a little bit when loading the images */
 .icon-plus { background-image: url(data:image/gif;base64,R0lGODlhEgASAIEAMe7u7gAAgJmZmQAAACH5BAEAAAEALAAAAAASABIAAQIhhI+py+0PTQjxzCopvm/6rykgCHGVGaFliLXuI8TyTMsFADs=); }
