@@ -28,9 +28,6 @@ class AdminerTimeout extends Adminer\Plugin {
 				case 'pgsql':
 					$conn->query("SET statement_timeout = $ms");
 					break;
-				case 'mssql':
-					$conn->query("SET LOCK_TIMEOUT $ms");
-					break;
 				default:
 					if (method_exists($conn, 'timeout')) {
 						$conn->timeout($ms);

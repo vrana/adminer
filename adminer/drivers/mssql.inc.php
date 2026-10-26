@@ -17,6 +17,7 @@ if (isset($_GET["mssql"])) {
 			public $extension = "SQLSRV";
 			public $timeout = 0; // seconds, limits the next query only
 			private $link, $result, $warnings, $transaction = false;
+			private $query_timeout = 0; // seconds set by timeout(), limits all queries
 
 			private function get_error(): void {
 				$this->error = "";
@@ -64,9 +65,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function query(string $query, bool $unbuffered = false) {
-				$options = ($this->timeout ? array("QueryTimeout" => $this->timeout) : array()); //! "Scrollable" => "keyset" unless $unbuffered
-				$this->timeout = 0;
-				$result = sqlsrv_query($this->link, $query, array(), $options);
+				$result = sqlsrv_query($this->link, $query, array(), $this->options()); //! "Scrollable" => "keyset" unless $unbuffered
 				$this->error = "";
 				if (!$result) {
 					$this->get_error();
@@ -76,12 +75,26 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function multi_query(string $query) {
-				$this->result = sqlsrv_query($this->link, $query);
+				$this->result = sqlsrv_query($this->link, $query, array(), $this->options());
 				$this->error = "";
 				if (!$this->result) {
 					$this->get_error();
 					return false;
 				}
+				return true;
+			}
+
+			/** Get the options of sqlsrv_query() limiting the execution time
+			* @return array{QueryTimeout: int}
+			*/
+			private function options(): array {
+				$return = array("QueryTimeout" => ($this->timeout ?: $this->query_timeout)); // 0 - no limit
+				$this->timeout = 0;
+				return $return;
+			}
+
+			function timeout(int $ms): bool {
+				$this->query_timeout = (int) ceil($ms / 1000); // QueryTimeout rejects a float
 				return true;
 			}
 
@@ -262,6 +275,7 @@ if (isset($_GET["mssql"])) {
 			class Db extends MssqlDb {
 				public $extension = "PDO_SQLSRV";
 				public $timeout = 0; // seconds, limits the next query only
+				private $query_timeout = 0; // seconds set by timeout(), limits all queries
 
 				function attach(array $server, string $username, string $password): string {
 					$port = $server["port"];
@@ -284,8 +298,13 @@ if (isset($_GET["mssql"])) {
 					$this->pdo->setAttribute(\PDO::SQLSRV_ATTR_QUERY_TIMEOUT, $this->timeout);
 					$this->timeout = 0;
 					$return = parent::query($query, $unbuffered);
-					$this->pdo->setAttribute(\PDO::SQLSRV_ATTR_QUERY_TIMEOUT, 0);
+					$this->pdo->setAttribute(\PDO::SQLSRV_ATTR_QUERY_TIMEOUT, $this->query_timeout);
 					return $return;
+				}
+
+				function timeout(int $ms): bool {
+					$this->query_timeout = (int) ceil($ms / 1000); // the attribute rejects a float
+					return $this->pdo->setAttribute(\PDO::SQLSRV_ATTR_QUERY_TIMEOUT, $this->query_timeout);
 				}
 			}
 
