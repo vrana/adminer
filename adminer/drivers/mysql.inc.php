@@ -60,7 +60,8 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			function begin(): bool {
-				return $this->begin_transaction(); // commit() and rollback() are inherited from MySQLi
+				// commit() and rollback() are inherited from MySQLi
+				return (method_exists($this, 'begin_transaction') ? $this->begin_transaction() : !!$this->query("BEGIN")); // available since PHP 5.5
 			}
 		}
 
