@@ -188,6 +188,23 @@ if (isset($_GET["redis"])) {
 		* @return list<mixed> replies in the order of the commands
 		*/
 		function sendMulti(array $commands): array {
+			$query = array();
+			foreach ($commands as $args) {
+				if (strtoupper($args[0]) == "AUTH") {
+					$args[count($args) - 1] = "***"; // the password
+				}
+				$query[] = format_command($args);
+			}
+			return adminer()->executeQuery(implode("\n", $query), function () use ($commands) {
+				return $this->pipeline($commands);
+			});
+		}
+
+		/** Send the commands and read their replies
+		* @param list<list<string|int>> $commands
+		* @return list<mixed>
+		*/
+		private function pipeline(array $commands): array {
 			$cmd = '';
 			foreach ($commands as $args) {
 				$cmd .= "*" . count($args) . "\r\n";

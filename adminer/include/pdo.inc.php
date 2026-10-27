@@ -29,7 +29,9 @@ if (extension_loaded('pdo')) {
 
 		function query(string $query, bool $unbuffered = false) {
 			/** @var Result|bool */
-			$result = $this->pdo->query($query);
+			$result = adminer()->executeQuery($query, function () use ($query) {
+				return $this->pdo->query($query);
+			});
 			$this->error = "";
 			if (!$result) {
 				return $this->store_error(false);
@@ -81,16 +83,22 @@ if (extension_loaded('pdo')) {
 
 		function begin(): bool {
 			// the API works also where a separate BEGIN doesn't, e.g. MS SQL rolls it back at the end of the batch and Oracle commits each command
-			return $this->store_error($this->pdo->beginTransaction());
+			return $this->store_error(adminer()->executeQuery("BEGIN", function () {
+				return $this->pdo->beginTransaction();
+			}));
 		}
 
 		function commit(): bool {
 			// PDO throws without a transaction, PDO_MySQL reports none after a DDL command committed it implicitly
-			return !$this->pdo->inTransaction() || $this->store_error($this->pdo->commit());
+			return !$this->pdo->inTransaction() || $this->store_error(adminer()->executeQuery("COMMIT", function () {
+				return $this->pdo->commit();
+			}));
 		}
 
 		function rollback(): bool {
-			return !$this->pdo->inTransaction() || $this->store_error($this->pdo->rollBack());
+			return !$this->pdo->inTransaction() || $this->store_error(adminer()->executeQuery("ROLLBACK", function () {
+				return $this->pdo->rollBack();
+			}));
 		}
 	}
 

@@ -22,7 +22,9 @@ if (isset($_GET["sqlite"])) {
 			}
 
 			function query(string $query, bool $unbuffered = false) {
-				$result = @$this->link->query($query);
+				$result = adminer()->executeQuery($query, function () use ($query) {
+					return @$this->link->query($query);
+				});
 				$this->error = "";
 				if (!$result) {
 					$this->errno = $this->link->lastErrorCode();

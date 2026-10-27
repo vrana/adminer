@@ -65,7 +65,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function query(string $query, bool $unbuffered = false) {
-				$result = sqlsrv_query($this->link, $query, array(), $this->options()); //! "Scrollable" => "keyset" unless $unbuffered
+				$result = $this->execute($query); //! "Scrollable" => "keyset" unless $unbuffered
 				$this->error = "";
 				if (!$result) {
 					$this->get_error();
@@ -75,13 +75,22 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function multi_query(string $query) {
-				$this->result = sqlsrv_query($this->link, $query, array(), $this->options());
+				$this->result = $this->execute($query);
 				$this->error = "";
 				if (!$this->result) {
 					$this->get_error();
 					return false;
 				}
 				return true;
+			}
+
+			/** Send a query
+			* @return resource|false
+			*/
+			private function execute(string $query) {
+				return adminer()->executeQuery($query, function () use ($query) {
+					return sqlsrv_query($this->link, $query, array(), $this->options());
+				});
 			}
 
 			/** Get the options of sqlsrv_query() limiting the execution time
@@ -141,8 +150,18 @@ if (isset($_GET["mssql"])) {
 				return $this->transaction || (isset($_GET["sql"]) && get_val("SELECT @@TRANCOUNT", 0, $this)); // the extension doesn't know about BEGIN TRANSACTION typed in SQL command
 			}
 
+			/** Send a transaction command by the API
+			* @param callable(resource): bool $function
+			*/
+			private function transaction_command(string $query, callable $function): bool {
+				return adminer()->executeQuery($query, function () use ($function) {
+					return $function($this->link);
+				});
+			}
+
 			function begin(): bool {
-				$this->transaction = sqlsrv_begin_transaction($this->link); // BEGIN TRANSACTION sent as a separate query is rolled back at the end of its batch under MARS enabled by default
+				// BEGIN TRANSACTION sent as a separate query is rolled back at the end of its batch under MARS enabled by default
+				$this->transaction = $this->transaction_command("BEGIN", 'sqlsrv_begin_transaction');
 				if (!$this->transaction) {
 					$this->get_error();
 				}
@@ -150,7 +169,7 @@ if (isset($_GET["mssql"])) {
 			}
 
 			function commit(): bool {
-				if ($this->transaction && !sqlsrv_commit($this->link)) { // the API refuses to commit a transaction not started by it
+				if ($this->transaction && !$this->transaction_command("COMMIT", 'sqlsrv_commit')) { // the API refuses to commit a transaction not started by it
 					$this->get_error();
 					return false;
 				}
@@ -162,7 +181,7 @@ if (isset($_GET["mssql"])) {
 				if (!$this->transaction && isset($_GET["sql"])) {
 					return !!$this->query("IF @@TRANCOUNT > 0 ROLLBACK"); // BEGIN TRANSACTION typed in SQL command
 				}
-				if ($this->transaction && !sqlsrv_rollback($this->link)) {
+				if ($this->transaction && !$this->transaction_command("ROLLBACK", 'sqlsrv_rollback')) {
 					$this->get_error();
 					return false;
 				}

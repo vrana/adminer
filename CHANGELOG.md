@@ -13,6 +13,7 @@
 - Editor: Fix JavaScript errors in import and export (regression from 5.4.1)
 ### Plugins
 - Method donation() to replace or hide the donation link
+- Method executeQuery() to wrap every request sent to the database server (bug #1368)
 - New plugin donation: Replace or hide the donation link in the top right corner
 
 ## Adminer 6.2.0 (released 2026-10-23)

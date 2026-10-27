@@ -39,12 +39,39 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			function set_charset($charset) {
-				if (parent::set_charset($charset)) {
+				if ($this->send_charset($charset)) {
 					return true;
 				}
 				// the client library may not support utf8mb4
-				parent::set_charset('utf8');
+				$this->send_charset('utf8');
 				return $this->query("SET NAMES $charset");
+			}
+
+			/** Set the client character set by the API which sends SET NAMES */
+			private function send_charset(string $charset): bool {
+				return adminer()->executeQuery("SET NAMES $charset", function () use ($charset) {
+					return parent::set_charset($charset);
+				});
+			}
+
+			function select_db($database) {
+				// the API sends COM_INIT_DB
+				return adminer()->executeQuery("USE " . idf_escape($database), function () use ($database) {
+					return parent::select_db($database);
+				});
+			}
+
+			function query($query, int $result_mode = MYSQLI_STORE_RESULT) {
+				// Adminer passes bool $unbuffered, true is MYSQLI_USE_RESULT
+				return adminer()->executeQuery($query, function () use ($query, $result_mode) {
+					return parent::query($query, $result_mode);
+				});
+			}
+
+			function multi_query($query) {
+				return adminer()->executeQuery($query, function () use ($query) {
+					return parent::multi_query($query);
+				});
 			}
 
 			function next_result() {
@@ -60,8 +87,25 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			function begin(): bool {
-				// commit() and rollback() are inherited from MySQLi
-				return (method_exists($this, 'begin_transaction') ? $this->begin_transaction() : !!$this->query("BEGIN")); // available since PHP 5.5
+				return (method_exists($this, 'begin_transaction') // available since PHP 5.5
+					? adminer()->executeQuery("BEGIN", function () {
+						return $this->begin_transaction();
+					})
+					: !!$this->query("BEGIN")
+				);
+			}
+
+			function commit($flags = 0, $name = null) {
+				// the parameters are ignored, MySQLi accepts them only since PHP 5.5
+				return adminer()->executeQuery("COMMIT", function () {
+					return parent::commit();
+				});
+			}
+
+			function rollback($flags = 0, $name = null) {
+				return adminer()->executeQuery("ROLLBACK", function () {
+					return parent::rollback();
+				});
 			}
 		}
 
@@ -91,7 +135,14 @@ if (!defined('Adminer\DRIVER')) {
 
 			/** Set the client character set */
 			function set_charset(string $charset): bool {
-				return mysql_set_charset($charset, $this->link) || mysql_set_charset('utf8', $this->link); // the client library may not support utf8mb4
+				return $this->send_charset($charset) || $this->send_charset('utf8'); // the client library may not support utf8mb4
+			}
+
+			/** Set the client character set by the API which sends SET NAMES */
+			private function send_charset(string $charset): bool {
+				return adminer()->executeQuery("SET NAMES $charset", function () use ($charset) {
+					return mysql_set_charset($charset, $this->link);
+				});
 			}
 
 			function quote(string $string): string {
@@ -99,11 +150,16 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			function select_db(string $database) {
-				return mysql_select_db($database, $this->link);
+				// the API sends COM_INIT_DB
+				return adminer()->executeQuery("USE " . idf_escape($database), function () use ($database) {
+					return mysql_select_db($database, $this->link);
+				});
 			}
 
 			function query(string $query, bool $unbuffered = false) {
-				$result = @($unbuffered ? mysql_unbuffered_query($query, $this->link) : mysql_query($query, $this->link)); // @ - mute mysql.trace_mode
+				$result = adminer()->executeQuery($query, function () use ($query, $unbuffered) {
+					return @($unbuffered ? mysql_unbuffered_query($query, $this->link) : mysql_query($query, $this->link)); // @ - mute mysql.trace_mode
+				});
 				$this->error = "";
 				if (!$result) {
 					$this->errno = mysql_errno($this->link);

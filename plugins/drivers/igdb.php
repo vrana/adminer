@@ -52,6 +52,15 @@ if (isset($_GET["igdb"])) {
 			}
 
 			function request(string $endpoint, string $query, string $method = 'POST') {
+				return adminer()->executeQuery("$method $endpoint: $query", function () use ($endpoint, $query, $method) {
+					return $this->execute($endpoint, $query, $method);
+				});
+			}
+
+			/** Send the request to the API
+			* @return array|false
+			*/
+			private function execute(string $endpoint, string $query, string $method) {
 				$context = stream_context_create(array('http' => array(
 					'method' => $method,
 					'header' => array(

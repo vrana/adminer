@@ -37,15 +37,16 @@ if (isset($_GET["imap"])) {
 			function query(string $query, bool $unbuffered = false) {
 				if (preg_match('~DELETE FROM "(.+?)"~', $query)) {
 					preg_match_all('~"uid" = (\d+)~', $query, $matches);
-					return imap_delete($this->imap, implode(",", $matches[1]), FT_UID);
+					$uids = implode(",", $matches[1]);
+					return $this->request('imap_delete', array($uids, FT_UID), $uids);
 				} elseif (preg_match('~^SELECT COUNT\(\*\)\sFROM "(.+?)"~s', $query, $match)) {
 					$status = table_status1($match[1]);
 					return new Result(array(array($status["Rows"])));
 				} elseif (preg_match('~^SELECT (.+)\sFROM "(.+?)"(?:\sWHERE "uid" = (\d+))?.*?(?:\sLIMIT (\d+)(?:\sOFFSET (\d+))?)?~s', $query, $match)) {
 					list(, $columns, $table, $uid, $limit, $offset) = $match;
-					imap_reopen($this->imap, $this->mailbox . $table);
+					$this->request('imap_reopen', array($this->mailbox . $table), $table);
 					if ($uid) {
-						$return = array((array) imap_fetchstructure($this->imap, $uid, FT_UID));
+						$return = array((array) $this->request('imap_fetchstructure', array($uid, FT_UID), $uid));
 					} else {
 						$count = imap_num_msg($this->imap);
 						$range = ($offset + 1) . ":" . ($limit ? min($count, $offset + $limit) : $count);
@@ -53,7 +54,7 @@ if (isset($_GET["imap"])) {
 						$fields = fields($table);
 						$columns = ($columns == "*" ? $fields : array_flip(explode(", ", $columns)));
 						$empty = array_fill_keys(array_keys($fields), null);
-						foreach (imap_fetch_overview($this->imap, $range) as $row) {
+						foreach ($this->request('imap_fetch_overview', array($range), $range) as $row) {
 							// imap_utf8 doesn't work with some strings
 							$row->subject = iconv_mime_decode($row->subject, 2, "utf-8");
 							$row->from = iconv_mime_decode($row->from, 2, "utf-8");
@@ -75,7 +76,7 @@ if (isset($_GET["imap"])) {
 				static $return;
 				if ($return === null) {
 					$return = array();
-					foreach (imap_list($this->imap, $this->mailbox, "*") as $val) {
+					foreach ($this->request('imap_list', array($this->mailbox, "*"), "*") as $val) {
 						$return[substr($val, strlen($this->mailbox))] = "table";
 					}
 				}
@@ -86,7 +87,7 @@ if (isset($_GET["imap"])) {
 				if ($fast) {
 					return array("Name" => $name);
 				}
-				$return = imap_status($this->imap, $this->mailbox . $name, SA_ALL);
+				$return = $this->request('imap_status', array($this->mailbox . $name, SA_ALL), $name);
 				return array(
 					"Name" => $name,
 					"Rows" => $return->messages,
@@ -97,15 +98,25 @@ if (isset($_GET["imap"])) {
 			}
 
 			function create(string $name): bool {
-				return imap_createmailbox($this->imap, $this->mailbox . $name);
+				return $this->request('imap_createmailbox', array($this->mailbox . $name), $name);
 			}
 
 			function drop(string $name): bool {
-				return imap_deletemailbox($this->imap, $this->mailbox . $name);
+				return $this->request('imap_deletemailbox', array($this->mailbox . $name), $name);
 			}
 
 			function expunge(): bool {
-				return imap_expunge($this->imap);
+				return $this->request('imap_expunge');
+			}
+
+			/** Call an IMAP function communicating with the server
+			* @param list<mixed> $args arguments following the connection
+			* @return mixed
+			*/
+			private function request(string $function, array $args = array(), string $description = '') {
+				return adminer()->executeQuery(rtrim("$function $description"), function () use ($function, $args) {
+					return call_user_func_array($function, array_merge(array($this->imap), $args));
+				});
 			}
 		}
 

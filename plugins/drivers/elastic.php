@@ -18,13 +18,23 @@ if (isset($_GET["elastic"])) {
 			 * @return array|false
 			 */
 			function rootQuery(string $path, $content = null, string $method = 'GET', bool $log = false) {
+				$query = "$method $path" . ($content !== null ? ": " . json_encode($content) : "");
 				if ($log) {
 					if (!Queries::$start) {
 						Queries::$start = microtime(true);
 					}
 					// the same format as in Driver::select(), queries() is not used because it would append the SQL delimiter
-					Queries::$queries[] = "$method $path" . ($content !== null ? ": " . json_encode($content) : "");
+					Queries::$queries[] = $query;
 				}
+				return adminer()->executeQuery($query, function () use ($path, $content, $method) {
+					return $this->execute($path, $content, $method);
+				});
+			}
+
+			/** Send the request to the server
+			* @return array|false
+			*/
+			private function execute(string $path, $content, string $method) {
 				list($file, $status, , $error) = get_url("$this->url/" . ltrim($path, '/'), stream_context_create(array(
 					'ssl' => $this->sslOptions(),
 					'http' => array(

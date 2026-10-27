@@ -541,6 +541,11 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		return "";
 	}
 
+	/** @param callable(): mixed $callback */
+	function executeQuery(string $query, callable $callback) {
+		return $callback();
+	}
+
 	function messageQuery(string $query, string $time, bool $failed = false): string {
 		return " <span class='time'>" . @date("H:i:s") . "</span>" . sql_comment($query, $time);
 	}

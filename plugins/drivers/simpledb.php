@@ -399,6 +399,16 @@ if (isset($_GET["simpledb"])) {
 	}
 
 	function sdb_request(string $action, array $params = array()) {
+		return adminer()->executeQuery($action . ($params ? " " . json_encode(array_map('strval', $params)) : ""), function () use ($action, $params) {
+			return sdb_execute($action, $params);
+		});
+	}
+
+	/** Sign and send the request
+	* @param string[] $params
+	* @return \SimpleXMLElement|bool
+	*/
+	function sdb_execute(string $action, array $params) {
 		list($host, $params['AWSAccessKeyId'], $secret) = adminer()->credentials();
 		if ($host == "") {
 			$host = "sdb.amazonaws.com";

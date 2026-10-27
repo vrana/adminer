@@ -14,6 +14,15 @@ if (isset($_GET["clickhouse"])) {
 			private $authorization;
 
 			function rootQuery(string $db, string $query) {
+				return adminer()->executeQuery($query, function () use ($db, $query) {
+					return $this->execute($db, $query);
+				});
+			}
+
+			/** Send the query to the server
+			* @return Result|bool
+			*/
+			private function execute(string $db, string $query) {
 				$this->error = '';
 				$this->errno = 0;
 				$this->affected_rows = 0;

@@ -55,8 +55,12 @@ if (isset($_GET["oracle"])) {
 					$this->timeout = 0;
 					$this->timeout(1000 * $timeout);
 				}
-				$errors = php_errors(function () use ($result, &$return) {
-					$return = oci_execute($result, ($this->transaction ? OCI_NO_AUTO_COMMIT : OCI_COMMIT_ON_SUCCESS));
+				$errors = array();
+				$return = adminer()->executeQuery($query, function () use ($result, &$errors) {
+					$errors = php_errors(function () use ($result, &$return) {
+						$return = oci_execute($result, ($this->transaction ? OCI_NO_AUTO_COMMIT : OCI_COMMIT_ON_SUCCESS));
+					});
+					return $return;
 				});
 				if ($timeout) {
 					$this->timeout($query_timeout);
@@ -93,11 +97,20 @@ if (isset($_GET["oracle"])) {
 			}
 
 			function commit(): bool {
-				return $this->end_transaction(@oci_commit($this->link));
+				return $this->end_transaction($this->transaction_command("COMMIT", 'oci_commit'));
 			}
 
 			function rollback(): bool {
-				return $this->end_transaction(@oci_rollback($this->link)); // succeeds also without a transaction
+				return $this->end_transaction($this->transaction_command("ROLLBACK", 'oci_rollback')); // succeeds also without a transaction
+			}
+
+			/** Send a transaction command by the API
+			* @param callable(resource): bool $function
+			*/
+			private function transaction_command(string $query, callable $function): bool {
+				return adminer()->executeQuery($query, function () use ($function) {
+					return @$function($this->link);
+				});
 			}
 
 			/** Store the error of commit or rollback */

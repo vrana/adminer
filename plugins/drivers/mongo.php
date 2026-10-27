@@ -44,7 +44,9 @@ if (isset($_GET["mongo"])) {
 
 			function executeDbCommand(string $db, array $command) {
 				try {
-					return $this->_link->executeCommand($db, new \MongoDB\Driver\Command($command));
+					return adminer()->executeQuery("$db.runCommand(" . json_encode($command) . ")", function () use ($db, $command) {
+						return $this->_link->executeCommand($db, new \MongoDB\Driver\Command($command));
+					});
 				} catch (\Exception $e) {
 					$this->error = $e->getMessage();
 					return array();
@@ -53,7 +55,9 @@ if (isset($_GET["mongo"])) {
 
 			function executeBulkWrite(string $namespace, \MongoDB\Driver\BulkWrite $bulk, string $counter): bool {
 				try {
-					$results = $this->_link->executeBulkWrite($namespace, $bulk);
+					$results = adminer()->executeQuery("$namespace.bulkWrite(" . $bulk->count() . " operations)", function () use ($namespace, $bulk) {
+						return $this->_link->executeBulkWrite($namespace, $bulk);
+					});
 					$this->affected_rows = $results->$counter();
 					return true;
 				} catch (\Exception $e) {
@@ -373,10 +377,10 @@ if (isset($_GET["mongo"])) {
 				$options['skip'] = $page * $limit;
 			}
 			try {
-				return new Result($this->conn->_link->executeQuery(
-					$this->conn->_db_name . ".$table",
-					new \MongoDB\Driver\Query($where, $options)
-				));
+				$namespace = $this->conn->_db_name . ".$table";
+				return new Result(adminer()->executeQuery("$namespace.find(" . json_encode($where) . ", " . json_encode($options) . ")", function () use ($namespace, $where, $options) {
+					return $this->conn->_link->executeQuery($namespace, new \MongoDB\Driver\Query($where, $options));
+				}));
 			} catch (\Exception $e) {
 				$this->conn->error = $e->getMessage();
 				return false;

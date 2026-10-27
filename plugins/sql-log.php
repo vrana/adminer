@@ -7,35 +7,74 @@
 * @license https://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 class AdminerSqlLog extends Adminer\Plugin {
-	protected $filename;
+	protected $filename, $all;
+	private $pending = array(); // log entries waiting for the file name
+	private $resolving = false;
 
 	/**
 	* @param string $filename defaults to "adminer-$database.sql" in the temp directory
+	* @param bool $all log every query sent to the server with its duration including the internal ones, PHP 7.3+
 	*/
-	function __construct($filename = "") {
+	function __construct($filename = "", $all = false) {
 		$this->filename = $filename;
+		$this->all = $all;
+	}
+
+	function executeQuery($query, $callback) {
+		if (!$this->all) {
+			return null;
+		}
+		$start = hrtime(true);
+		try {
+			$return = $callback();
+		} catch (Throwable $ex) { // plugin drivers may throw
+			$this->logTime($query, $start, true);
+			throw $ex;
+		}
+		$this->logTime($query, $start, !$return);
+		return $return;
 	}
 
 	function messageQuery($query, $time, $failed = false) {
-		$this->log($query);
+		if (!$this->all) {
+			$this->log($query);
+		}
 	}
 
 	function sqlCommandQuery($query) {
-		$this->log($query);
+		if (!$this->all) {
+			$this->log($query);
+		}
+	}
+
+	private function logTime($query, $start, $failed) {
+		$query = rtrim($query);
+		$this->log((preg_match('~;$~', $query) ? $query : "$query;") . sprintf(" -- %.3f ms", (hrtime(true) - $start) / 1e6) . ($failed ? ", failed" : ""));
 	}
 
 	private function log($query) {
+		$this->pending[] = "$query\n\n";
 		if ($this->filename == "") {
+			if ($this->resolving) {
+				return; // database() in Adminer Editor sends queries
+			}
+			$this->resolving = true;
+			$database = Adminer\adminer()->database();
+			$this->resolving = false;
+			if ($database === null) {
+				return; // Adminer Editor knows the database only after connecting
+			}
 			// the directory of the script should not be writable by the web server at all and a relative name would create the log there, where anyone could download it
 			// no database goes to "adminer-.sql" to avoid collisions
-			$this->filename = Adminer\get_temp_dir() . "/adminer-" . urlencode(Adminer\adminer()->database() . ($_GET["ns"] != "" ? ".$_GET[ns]" : "")) . ".sql";
+			$this->filename = Adminer\get_temp_dir() . "/adminer-" . urlencode($database . ($_GET["ns"] != "" ? ".$_GET[ns]" : "")) . ".sql";
 		}
 		$fp = Adminer\file_open_lock($this->filename); // it also refuses a symlink and doesn't make the file readable by everyone
 		if ($fp) {
 			fseek($fp, 0, SEEK_END);
-			fwrite($fp, "$query\n\n");
+			fwrite($fp, implode($this->pending));
 			Adminer\file_unlock($fp);
 		}
+		$this->pending = array();
 	}
 
 	protected $translations = array(

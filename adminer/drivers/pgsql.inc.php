@@ -29,7 +29,9 @@ if (isset($_GET["pgsql"])) {
 					}
 				});
 				if ($this->link) {
-					pg_set_client_encoding($this->link, "UTF8");
+					adminer()->executeQuery("SET client_encoding TO 'UTF8'", function () {
+						return !pg_set_client_encoding($this->link, "UTF8"); // 0 means success
+					});
 				}
 				return ($this->link ? '' : (string) end($errors));
 			}
@@ -64,12 +66,12 @@ if (isset($_GET["pgsql"])) {
 			function query(string $query, bool $unbuffered = false) {
 				if (self::$untrusted) {
 					// the extended protocol doesn't allow multiple commands, the transaction doesn't allow modifying data
-					$result = (@pg_query($this->link, "BEGIN READ ONLY")
-						? @pg_query_params($this->link, $query, array())
+					$result = ($this->execute("BEGIN READ ONLY")
+						? $this->execute($query, array())
 						: false
 					);
 				} else {
-					$result = @pg_query($this->link, $query);
+					$result = $this->execute($query);
 				}
 				$this->error = "";
 				if (!$result) {
@@ -82,13 +84,23 @@ if (isset($_GET["pgsql"])) {
 					$return = new Result($result);
 				}
 				if (self::$untrusted) {
-					@pg_query($this->link, "COMMIT"); // rollbacks the transaction if the query failed
+					$this->execute("COMMIT"); // rollbacks the transaction if the query failed
 				}
 				if ($this->timeout) {
 					$this->timeout = 0;
 					$this->query("RESET statement_timeout");
 				}
 				return $return;
+			}
+
+			/** Send a query, the extended protocol used with $params doesn't allow multiple commands
+			* @param list<string> $params
+			* @return resource|false
+			*/
+			private function execute(string $query, ?array $params = null) {
+				return adminer()->executeQuery($query, function () use ($query, $params) {
+					return ($params === null ? @pg_query($this->link, $query) : @pg_query_params($this->link, $query, $params));
+				});
 			}
 
 			function warnings() {
@@ -110,8 +122,12 @@ if (isset($_GET["pgsql"])) {
 			* @param list<string> $rows
 			*/
 			function copyFrom(string $table, array $rows): bool {
-				$errors = php_errors(function () use ($table, $rows, &$return) {
-					$return = pg_copy_from($this->link, $table, $rows);
+				$errors = array();
+				$return = adminer()->executeQuery("COPY $table FROM stdin", function () use ($table, $rows, &$errors) {
+					$errors = php_errors(function () use ($table, $rows, &$return) {
+						$return = pg_copy_from($this->link, $table, $rows);
+					});
+					return $return;
 				});
 				$this->error = (string) end($errors);
 				return $return;
@@ -193,25 +209,35 @@ if (isset($_GET["pgsql"])) {
 			*/
 			private function readOnlyQuery(string $query) {
 				$this->error = "";
-				if (!$this->pdo->query("BEGIN READ ONLY")) {
-					list(, $this->errno, $this->error) = $this->pdo->errorInfo();
+				if (!$this->execute("BEGIN READ ONLY")) {
 					return false;
 				}
-				/** @var PdoResult|false */
-				$result = $this->pdo->prepare($query); // a prepared statement doesn't allow multiple commands
-				$return = false;
-				if ($result && $result->execute()) {
-					$this->store_result($result);
-					$return = $result;
-				} else {
+				$return = $this->execute($query, array());
+				if ($return) {
+					$this->store_result($return);
+				}
+				$this->execute("COMMIT"); // rollbacks the transaction if the query failed
+				return $return;
+			}
+
+			/** Send a query and store its error, a prepared statement used with $params doesn't allow multiple commands
+			* @param list<string> $params
+			* @return PdoResult|false
+			*/
+			private function execute(string $query, ?array $params = null) {
+				return adminer()->executeQuery($query, function () use ($query, $params) {
+					/** @var PdoResult|false */
+					$result = ($params === null ? $this->pdo->query($query) : $this->pdo->prepare($query));
+					if ($result && ($params === null || $result->execute($params))) {
+						return $result;
+					}
 					// prepare() succeeds even for an invalid query, the error is reported by execute()
 					list(, $this->errno, $this->error) = ($result ? $result->errorInfo() : $this->pdo->errorInfo());
 					if (!$this->error) {
 						$this->error = lang('Unknown error.');
 					}
-				}
-				$this->pdo->query("COMMIT"); // rollbacks the transaction if the query failed
-				return $return;
+					return false;
+				});
 			}
 
 			function warnings() {
@@ -219,7 +245,9 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function copyFrom(string $table, array $rows): bool {
-				$return = $this->pdo->pgsqlCopyFromArray($table, $rows);
+				$return = adminer()->executeQuery("COPY $table FROM stdin", function () use ($table, $rows) {
+					return $this->pdo->pgsqlCopyFromArray($table, $rows);
+				});
 				$this->error = idx($this->pdo->errorInfo(), 2) ?: '';
 				return $return;
 			}

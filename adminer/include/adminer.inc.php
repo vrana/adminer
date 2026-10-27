@@ -819,6 +819,15 @@ class Adminer {
 		return "";
 	}
 
+	/** Send a request to the database server, called for every query including the internal ones
+	* @param callable(): mixed $callback sends the request and returns its result
+	* @return mixed the result of $callback
+	*/
+	function executeQuery(string $query, callable $callback) {
+		// $query also describes the requests of non-SQL drivers and API calls like beginning a transaction
+		return $callback();
+	}
+
 	/** Query printed after execution in the message
 	* @param string $query executed query
 	* @param string $time elapsed time
