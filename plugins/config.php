@@ -74,7 +74,7 @@ class AdminerConfig extends Adminer\Plugin {
 
 	function navigation($missing) {
 		if ($missing != "auth") { // offer the page in the Ctrl+K box
-			echo Adminer\script("jumpSections.push(" . json_encode(array($this->lang('Configuration'), $this->link()), 256) . ");");
+			echo Adminer\script("jumpSections.push(" . json_encode(array($this->lang('Configuration'), $this->link()), JSON_UNESCAPED_UNICODE) . ");");
 		}
 	}
 

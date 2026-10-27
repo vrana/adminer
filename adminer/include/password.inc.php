@@ -40,7 +40,7 @@ class Password {
 	*/
 	protected function passwordMatches($password): bool {
 		if ($this->password_matches === null) {
-			// password_verify() is PHP 5.5 and slow by design, the compiled file supports 5.3
+			// password_verify() is available since PHP 5.5 and slow by design
 			$this->password_matches = (function_exists('password_verify') && password_verify(strval($password), $this->password_hash));
 		}
 		return $this->password_matches;

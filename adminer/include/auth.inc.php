@@ -93,10 +93,10 @@ function password_required(): bool {
 */
 function require_password_link(?string $password): string {
 	$more_options = "<a href='https://www.adminer.org/password/'" . target_blank() . ">" . lang('More options') . "</a>";
-	if (!function_exists('password_hash')) { // PHP 5.5, the compiled file supports 5.3
+	if (!function_exists('password_hash')) { // available since PHP 5.5
 		return " $more_options";
 	}
-	$plugin_password = ($password !== null ? $password : base64_encode(substr(pack("H*", rand_string()), 0, 12))); // pack() instead of hex2bin() which is PHP 5.4
+	$plugin_password = ($password !== null ? $password : base64_encode(substr(hex2bin(rand_string()), 0, 12)));
 	$hash = password_hash($plugin_password, PASSWORD_DEFAULT);
 	$filename = "adminer-plugins.php";
 	$exists = file_exists("adminer-plugins.php"); // we would overwrite it, it can also hold another sensitive information

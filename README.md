@@ -7,7 +7,7 @@
 ## Features
 - **Supports:** MySQL, MariaDB, PostgreSQL, CockroachDB, SQLite, MS SQL, Oracle
 - **Plugins for:** Elasticsearch, OpenSearch, SimpleDB, MongoDB, Redis, Firebird, ClickHouse, IGDB, IMAP
-- **Requirements:** PHP 5.3+ (compiled file), PHP 7.4+ (source codes)
+- **Requirements:** PHP 5.4+ (compiled file), PHP 7.4+ (source codes)
 
 ## Screenshot
 ![Table structure](https://www.adminer.org/static/screenshots/table.webp)

@@ -278,7 +278,7 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 		$link = h($link);
 		if (is_blob($field) && !is_utf8($val)) {
 			$return = lang('%d byte(s)', strlen($original));
-			$size = (function_exists('getimagesizefromstring') ? @getimagesizefromstring($original) : array()); // @ - the notice for other data contains the data; the function is since PHP 5.4
+			$size = @getimagesizefromstring($original); // @ - the notice for other data contains the data
 			if ($size) { // the same as in the select-image plugin
 				$return = "<img src='$link' alt='$return' $size[3] loading='lazy'>"; // $size[3] is width and height
 			}

@@ -10,8 +10,8 @@ class AdminerSelectImage extends Adminer\Plugin {
 	static $optional = true;
 
 	function selectVal($val, $link, $field, $original) {
-		if ($link != "" && Adminer\is_blob($field) && !Adminer\is_utf8($val) && function_exists('getimagesizefromstring')) {
-			$size = @getimagesizefromstring($original); // @ - the notice for other data contains the data; the function is since PHP 5.4
+		if ($link != "" && Adminer\is_blob($field) && !Adminer\is_utf8($val)) {
+			$size = @getimagesizefromstring($original); // @ - the notice for other data contains the data
 			if ($size) { // the same as in Adminer Editor
 				$link = Adminer\h($link);
 				return "<a href='$link'><img src='$link' alt='' title='" . $this->lang('%d byte(s)', strlen($original)) . "' $size[3] loading='lazy'></a>"; // $size[3] is width and height

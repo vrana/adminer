@@ -105,9 +105,9 @@ Simple conditional checks may use `JUSH`, but for complex logic, methods in `Dri
 
 Adminer is highly conservative regarding PHP version requirements.
 Source codes require PHP 7.4 to take advantage of type declarations.
-These type declarations are stripped during compilation to be compatible with PHP 5.3.
-PHP 5.3 is still supported because some users cannot upgrade their servers.
-Compatibility is checked by `php53 -l` on the compiled files, which reports the syntax, and by `composer compat`, which reports the rest - a function or a constant missing in PHP 5.3.
+These type declarations are stripped during compilation to be compatible with PHP 5.4.
+PHP 5.4 is still supported because some users cannot upgrade their servers.
+Compatibility is checked by `php54 -l` on the compiled files, which reports the syntax, and by `composer compat`, which reports the rest - a function or a constant missing in PHP 5.4.
 It uses [PHPCompatibility](https://github.com/PHPCompatibility/PHPCompatibility) configured in [conf/phpcompat.xml](/conf/phpcompat.xml) and compiles both files itself.
 The release script runs the same check next to `php -l` over the release builds, passing them on the command line, which overrides the files in the ruleset.
 It runs separately from `composer check` because it is slow and because it can't see the guards - a newer function may be called if `function_exists()` or `PHP_VERSION_ID` allows it, so the ruleset lists every such call as an exclusion.

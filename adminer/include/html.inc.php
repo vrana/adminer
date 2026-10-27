@@ -25,7 +25,7 @@ function nonce(): string {
 function on(string $event, string $handler, $arg = null): string {
 	$args = array();
 	foreach (array_slice(func_get_args(), 2) as $val) { // not ...$args - variadics are available since PHP 5.6
-		$args[] = json_encode($val, 256); // 256 - JSON_UNESCAPED_UNICODE available since PHP 5.4
+		$args[] = json_encode($val, JSON_UNESCAPED_UNICODE);
 	}
 	return " data-on$event='" . str_replace( // h() would escape " to &quot; but the value is printed in a single-quoted attribute so only ' matters
 		array('&', '<', "'"),
@@ -65,7 +65,7 @@ function h(?string $string): string {
 
 /** Convert \n to <br> */
 function nl_br(string $string): string {
-	return str_replace("\n", "<br>", $string); // nl2br() uses XHTML before PHP 5.3
+	return str_replace("\n", "<br>", $string); // nl2br() uses XHTML by default
 }
 
 /** Generate HTML checkbox
@@ -312,8 +312,8 @@ function input(array $field, $value, ?string $function, ?bool $autofocus = false
 	$json = ($function == "json" || preg_match('~^jsonb?$~', $field["full_type"]));
 	// don't re-format the string sent by the user, it would discard the invalid value when re-printing the form after an error
 	if ($json && $value != '' && (JUSH != "pgsql" || $field["type"] != "json") && (is_array($value) || !$_POST["save"])) {
-		// 128 - JSON_PRETTY_PRINT, 64 - JSON_UNESCAPED_SLASHES, 256 - JSON_UNESCAPED_UNICODE available since PHP 5.4
-		$value = (is_array($value) ? json_encode($value, 128 | 64 | 256) : json_encode_exact(json_decode_exact($value), 128 | 64 | 256)); // json_decode() would round e.g. big integers
+		$flags = JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE;
+		$value = (is_array($value) ? json_encode($value, $flags) : json_encode_exact(json_decode_exact($value), $flags)); // json_decode() would round e.g. big integers
 	}
 	$reset = ($update && is_identity_always($field));
 	if ($reset && !$_POST["save"]) {

@@ -64,12 +64,12 @@ class AdminerLoginPasskey extends Adminer\Plugin {
 
 	/** Print the login form row with the passkey buttons; the buttons are displayed only if the passkey can be used, otherwise the requirements are */
 	protected function printRow() {
-		// 1 - JSON_HEX_TAG because the values are printed to a script element, 256 - JSON_UNESCAPED_UNICODE
+		// JSON_HEX_TAG because the values are printed to a script element
 		$lang = json_encode(array(
 			'unsupported' => $this->lang('The passkey does not support storing passwords.'),
 			'invalid' => $this->lang('The accounts cannot be decrypted by this passkey.'),
 			'browser' => $this->lang('This browser does not support passkeys.'),
-		), 1 | 256);
+		), JSON_HEX_TAG | JSON_UNESCAPED_UNICODE);
 		?>
 <tr id='passkey-row'><th>Passkey<td>
 <span id='passkey-buttons' hidden>
@@ -86,8 +86,8 @@ class AdminerLoginPasskey extends Adminer\Plugin {
 <textarea id='passkey-config' rows='3' cols='40' readonly></textarea>
 </div>
 <script<?php echo Adminer\nonce(); ?>>
-const passkeyId = <?php echo json_encode($this->credential_id, 1); ?>;
-const passkeyAccounts = <?php echo json_encode($this->accounts, 1); ?>;
+const passkeyId = <?php echo json_encode($this->credential_id, JSON_HEX_TAG); ?>;
+const passkeyAccounts = <?php echo json_encode($this->accounts, JSON_HEX_TAG); ?>;
 const passkeyLang = <?php echo $lang; ?>;
 const passkeySalt = new TextEncoder().encode('adminer-login-passkey');
 let passkeySetUp = null; // {auth, accounts} of the passkey used by the setup form

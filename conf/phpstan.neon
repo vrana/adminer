@@ -36,12 +36,9 @@ parameters:
 
 		# not real problems
 		- identifier: include.fileNotFound # includes in include/ relative from index.php
-		- "~^Function (set_magic_quotes_runtime|mysql_)~" # PHP < 7 functions
+		- "~^Function mysql_~" # PHP < 7 functions
 		- "~^Call to function method_exists\\(\\) with SQLite3 and 'setAuthorizer'~" # PHP 8.0+
 		- "~^Call to function method_exists\\(\\) with \\$this\\(Adminer\\\\Db\\) and 'begin_transaction'~" # PHP 5.5+
-		-
-			identifier: booleanAnd.rightAlwaysFalse # function_exists() of the PHP < 7 functions
-			path: ../adminer/include/bootstrap.inc.php
 		-
 			identifier: booleanAnd.alwaysFalse # PHP_VERSION_ID < 70100
 			path: ../adminer/include/pdo.inc.php

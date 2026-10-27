@@ -1,4 +1,5 @@
 ## Adminer dev
+- Require PHP 5.4+
 - Search tables, schemas and databases by Ctrl+K
 - Link the donation page by a heart in the top right corner
 - Mac: Use ⌘ instead of Ctrl in keyboard shortcuts and write them so

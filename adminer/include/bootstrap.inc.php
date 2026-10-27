@@ -7,8 +7,7 @@ include DIR . "include/version.inc.php";
 include DIR . "include/errors.inc.php";
 
 // disable filter.default
-$filter = !preg_match('~^(unsafe_raw)?$~', ini_get("filter.default"));
-if ($filter || ini_get("filter.default_flags")) {
+if (!preg_match('~^(unsafe_raw)?$~', ini_get("filter.default")) || ini_get("filter.default_flags")) {
 	foreach (array('_GET', '_POST', '_COOKIE', '_SERVER') as $val) {
 		$unsafe = filter_input_array(constant("INPUT$val"), FILTER_UNSAFE_RAW);
 		if ($unsafe) {
@@ -48,7 +47,7 @@ define('Adminer\SESSION_NAME', session_name()); // PHP stores the upload progres
 if (isset($_GET["upload"])) {
 	include DIR . "upload.inc.php";
 }
-if (function_exists('session_status') ? session_status() == PHP_SESSION_NONE : !defined("SID")) { // session_status() available since PHP 5.4
+if (session_status() == PHP_SESSION_NONE) {
 	session_cache_limiter(""); // to allow restarting session
 	session_name("adminer_sid"); // use specific session name to get own namespace
 	// ini_set() may be disabled
@@ -60,15 +59,6 @@ if (function_exists('session_status') ? session_status() == PHP_SESSION_NONE : !
 	session_start();
 }
 
-// disable magic quotes to be able to use database escaping function
-if (function_exists("get_magic_quotes_gpc") && get_magic_quotes_gpc()) {
-	$_GET = remove_slashes($_GET, $filter);
-	$_POST = remove_slashes($_POST, $filter);
-	$_COOKIE = remove_slashes($_COOKIE, $filter);
-}
-if (function_exists("get_magic_quotes_runtime") && get_magic_quotes_runtime()) {
-	set_magic_quotes_runtime(false);
-}
 if (function_exists('set_time_limit')) { // can be disabled
 	set_time_limit(0);
 }

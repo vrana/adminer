@@ -72,7 +72,7 @@ if (isset($_GET["mongo"])) {
 			}
 
 			function quote(string $string): string {
-				return json_encode($string, 256); // 256 - JSON_UNESCAPED_UNICODE available since PHP 5.4
+				return json_encode($string, JSON_UNESCAPED_UNICODE);
 			}
 		}
 
@@ -92,7 +92,7 @@ if (isset($_GET["mongo"])) {
 							(is_a($val, 'MongoDB\BSON\UTCDatetime') ? $val->toDateTime()->format('Y-m-d H:i:s') :
 							(is_a($val, 'MongoDB\BSON\Binary') ? $val->getData() : //! allow downloading
 							(is_a($val, 'MongoDB\BSON\Regex') ? "$val" :
-							(is_object($val) || is_array($val) ? json_encode($val, 256) : // 256 - JSON_UNESCAPED_UNICODE available since PHP 5.4
+							(is_object($val) || is_array($val) ? json_encode($val, JSON_UNESCAPED_UNICODE) :
 							$val))))) // MongoMinKey, MongoMaxKey
 						;
 					}

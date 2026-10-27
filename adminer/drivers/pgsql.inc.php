@@ -35,10 +35,7 @@ if (isset($_GET["pgsql"])) {
 			}
 
 			function quote(string $string): string {
-				return (function_exists('pg_escape_literal')
-					? pg_escape_literal($this->link, $string) // available since PHP 5.4.4
-					: "'" . pg_escape_string($this->link, $string) . "'"
-				);
+				return pg_escape_literal($this->link, $string);
 			}
 
 			function value(?string $val, array $field): ?string {

@@ -191,7 +191,7 @@ if (!defined('Adminer\DRIVER')) {
 			}
 
 			function set_charset($charset) {
-				return $this->query("SET NAMES $charset"); // charset in DSN is ignored before PHP 5.3.6
+				return $this->query("SET NAMES $charset"); // the DSN sets utf8 accepted by any server, utf8mb4 needs MySQL 5.5.3
 			}
 
 			function select_db(string $database) {

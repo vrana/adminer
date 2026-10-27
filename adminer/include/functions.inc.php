@@ -142,22 +142,6 @@ function is_searchable(array $field, array $val): bool {
 	return true; // unknown types are searched, the driver converts them to text
 }
 
-/** Disable magic_quotes_gpc
-* @param mixed[] $values
-* @param bool $filter whether to leave values as is
-* @return mixed[]
-*/
-function remove_slashes(array $values, bool $filter = false): array {
-	$return = array();
-	foreach ($values as $key => $val) {
-		$return[stripslashes($key)] = (is_array($val)
-			? remove_slashes($val, $filter)
-			: ($filter ? $val : stripslashes($val))
-		);
-	}
-	return $return;
-}
-
 /** Escape or unescape string to use inside form [] */
 function bracket_escape(string $idf, bool $back = false): string {
 	// escape brackets inside name="x[]"; = would be treated as the end of the parameter name
@@ -437,7 +421,6 @@ function where_columns(array $fields): array {
 */
 function where_check(string $val, array $fields = array()): string {
 	parse_str($val, $check);
-	remove_slashes(array(&$check));
 	return where($check, $fields);
 }
 
@@ -583,7 +566,7 @@ function save_settings(array $settings, string $cookie = "adminer_settings"): vo
 
 /** Restart stopped session */
 function restart_session(): void {
-	if (!ini_bool("session.use_cookies") && (!function_exists('session_status') || session_status() == PHP_SESSION_NONE)) { // session_status() available since PHP 5.4
+	if (!ini_bool("session.use_cookies") && session_status() == PHP_SESSION_NONE) {
 		session_start();
 	}
 }
@@ -820,7 +803,7 @@ function utf8_length(string $val): int {
 function format_number($val): string {
 	preg_match('~^#+([^#0]+)(?:(#+)\1)?(#*0)$~u', lang('#,##0'), $match); // CLDR pattern: separator, group repeated to the left, rightmost group
 	$size = strlen($match[3]);
-	$return = number_format($val, 0, ".", ""); // multi-byte separator supported since PHP 5.4
+	$return = number_format($val, 0, ".", "");
 	$return = preg_replace('~\B(?=(\d{' . (strlen($match[2]) ?: $size) . '})*\d{' . $size . '}$)~', $match[1], $return); // \B doesn't match after the sign
 	return strtr($return, preg_split('~~u', lang('0123456789'), -1, PREG_SPLIT_NO_EMPTY));
 }

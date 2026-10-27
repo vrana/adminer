@@ -131,7 +131,7 @@ if (isset($_GET["clickhouse"])) {
 						$type = (isset($this->meta[$key]['type']) ? $this->meta[$key]['type'] : '');
 						$row[$key] = ($val === null || is_scalar($val)
 							? $this->normalizeValue(json_scalar($val), $type)
-							: json_encode_exact($val, 256 | 64) // JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES available since PHP 5.4
+							: json_encode_exact($val, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
 						);
 					}
 					$this->rows[] = $row;

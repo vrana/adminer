@@ -92,7 +92,7 @@ check(-123, "-123");
 check("1234567", "1,234,567"); // numeric string
 check(1234.6, "1,235"); // the decimals are rounded
 
-// a multi-byte separator, number_format() would use only its first byte in PHP 5.3
+// a multi-byte separator
 set_format('# ##0');
 check(1234567, "1 234 567");
 check(-1234, "-1 234");

@@ -1065,7 +1065,7 @@ class Adminer {
 					}
 					foreach ($row as $key => $val) {
 						if (is_array($val)) { // nested values of the document drivers, printed as tables by select_value()
-							$row[$key] = json_encode($val, 256 | 64); // 256 - JSON_UNESCAPED_UNICODE, 64 - JSON_UNESCAPED_SLASHES available since PHP 5.4
+							$row[$key] = json_encode($val, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 						}
 					}
 					if ($_POST["format"] != "sql") {
@@ -1273,8 +1273,8 @@ class Adminer {
 			if (DB != "" && !$missing && support("extension")) { // the extensions are on the page of the database without a schema
 				$sections[] = array(lang('Extensions'), preg_replace('~\bns=[^&]*&~', '', ME) . "ns=#extensions");
 			}
-			// unshift() - before the links added by plugins, whose hooks run first; 256 - JSON_UNESCAPED_UNICODE
-			echo ($sections ? script("jumpSections.unshift(..." . json_encode($sections, 256) . ");") : "");
+			// unshift() - before the links added by plugins, whose hooks run first
+			echo ($sections ? script("jumpSections.unshift(..." . json_encode($sections, JSON_UNESCAPED_UNICODE) . ");") : "");
 			if ($in_db) {
 				if ($tables) {
 					adminer()->tablesPrint($tables);
