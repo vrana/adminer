@@ -10,6 +10,7 @@ class AdminerSqlLog extends Adminer\Plugin {
 	protected $filename, $all;
 	private $pending = array(); // log entries waiting for the file name
 	private $resolving = false;
+	private $page = false; // the comment with the page was logged
 
 	/**
 	* @param string $filename defaults to "adminer-$database.sql" in the temp directory
@@ -53,6 +54,11 @@ class AdminerSqlLog extends Adminer\Plugin {
 	}
 
 	private function log($query) {
+		if ($this->all && !$this->page) {
+			$this->page = true;
+			// not in login() which runs after the queries sent by connecting
+			$this->pending[] = "-- " . @date("Y-m-d H:i:sP") . " $_SERVER[REQUEST_METHOD] $_SERVER[REQUEST_URI]\n\n"; // @ - time zone may be not set
+		}
 		$this->pending[] = "$query\n\n";
 		if ($this->filename == "") {
 			if ($this->resolving) {
