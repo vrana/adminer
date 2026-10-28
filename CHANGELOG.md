@@ -8,6 +8,7 @@
 - MySQL &lt; 5.7.8, MariaDB &lt; 10.1.2: Unsupport found rows timeout
 - MySQLi: Fix transactions in PHP &lt; 5.5 (regression from 6.1.0)
 - MySQL PDO: Fix select in PHP &lt; 5.5.21 (regression from 6.0.0)
+- PostgreSQL: Restore the schema in menu after changing it in SQL command
 - MS SQL Dblib: Don't stop queries after 30 seconds
 - MS SQL, Oracle: Limit the execution time of counting rows in select
 - Editor: Fix export (bug #1370, regression from 6.0.0)

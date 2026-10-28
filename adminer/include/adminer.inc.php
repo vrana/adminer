@@ -1240,6 +1240,9 @@ class Adminer {
 			$tables = array();
 			if ($_GET["ns"] !== "" && !$missing && DB != "") {
 				connection()->select_db(DB);
+				if (isset($_GET["sql"]) && support("scheme") && $_GET["ns"] != "") {
+					set_schema($_GET["ns"]); // the SQL command could switch it
+				}
 				$tables = table_status('', true);
 			}
 			adminer()->syntaxHighlighting($tables);
