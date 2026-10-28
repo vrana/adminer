@@ -326,8 +326,8 @@ FROM all_tab_columns c
 WHERE ' . where_owner("c.owner") . '
 ORDER BY c.table_name, c.column_id', $this->conn);
 			foreach ($rows as $row) {
-				$length = "$row[precision],$row[scale]";
-				$row["length"] = (strpos($row["type"], "(") ? "" : ($length == "," ? $row["char_length"] : $length)); //! int
+				$length = ($row["precision"] == "" && $row["scale"] != "" ? "*" : $row["precision"]) . ",$row[scale]"; // INTEGER is NUMBER(*,0)
+				$row["length"] = (strpos($row["type"], "(") ? "" : ($length == "," ? $row["char_length"] : $length));
 				$row["type"] = strtolower($row["type"]);
 				$row["null"] = ($row["nullable"] == "Y");
 				$return[$row["tab"]][] = $row;
@@ -456,7 +456,7 @@ ORDER BY 1") as $row
 		}
 		foreach (get_rows("SELECT * FROM all_tab_columns WHERE table_name = " . q($table) . " AND " . where_owner() . " ORDER BY column_id") as $row) {
 			$type = $row["DATA_TYPE"];
-			$length = "$row[DATA_PRECISION],$row[DATA_SCALE]";
+			$length = ($row["DATA_PRECISION"] == "" && $row["DATA_SCALE"] != "" ? "*" : $row["DATA_PRECISION"]) . ",$row[DATA_SCALE]"; // INTEGER is NUMBER(*,0)
 			if ($length == ",") {
 				$length = ($type == "RAW" ? $row["DATA_LENGTH"] : (preg_match('~CHAR~', $type) ? $row["CHAR_COL_DECL_LENGTH"] : "")); // CLOB reports 4000
 				if ($row["CHAR_USED"] == "C" && preg_match('~^(VARCHAR2|CHAR)$~', $type)) {
@@ -464,7 +464,7 @@ ORDER BY 1") as $row
 				}
 			} elseif (strpos($type, "(")) {
 				$length = ""; // the type includes the precision, e.g. TIMESTAMP(6) WITH TIME ZONE
-			} //! int
+			}
 			$default = $row["DATA_DEFAULT"];
 			$default_sql = false;
 			if ($default !== null) {

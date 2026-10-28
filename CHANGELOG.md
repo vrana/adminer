@@ -13,6 +13,7 @@
 - MS SQL Dblib: Don't stop queries after 30 seconds
 - MS SQL, Oracle: Limit the execution time of counting rows in select
 - Oracle: Create foreign keys in Create table and Alter table
+- Oracle: Fix altering INTEGER columns
 - Editor: Fix export (bug #1370, regression from 6.0.0)
 - Editor: Fix JavaScript errors in import and export (regression from 5.4.1)
 ### Plugins

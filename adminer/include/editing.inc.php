@@ -250,6 +250,9 @@ function process_length(?string $length): string {
 	if (JUSH == "oracle" && preg_match('~^\s*\(?\s*(\d+)\s+(CHAR|BYTE)\s*\)?\s*$~i', $length, $match)) {
 		return "($match[1] " . strtoupper($match[2]) . ")"; // the length semantics of varchar2 and char
 	}
+	if (JUSH == "oracle" && preg_match('~^\s*\(?\s*\*\s*,\s*(-?\d+)\s*\)?\s*$~', $length, $match)) {
+		return "(*,$match[1])"; // the maximum precision of number, e.g. INTEGER is NUMBER(*,0)
+	}
 	$enum_length = driver()->enumLength;
 	return (preg_match("~^\\s*\\(?\\s*$enum_length(?:\\s*,\\s*$enum_length)*+\\s*\\)?\\s*\$~", $length) && preg_match_all("~$enum_length~", $length, $matches)
 		? "(" . implode(",", $matches[0]) . ")"
