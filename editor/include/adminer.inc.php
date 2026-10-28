@@ -6,6 +6,7 @@ class Adminer {
 	/** @visibility protected(set) */ public string $error = ''; // HTML
 	/** @var array<string, string[]|string> */ private array $values = array(); // [table => options or one description]
 	/** @var true[] */ private array $described = array(); // [column => true] of the columns replaced by rowDescriptions()
+	/** @var string[] */ private array $descriptions = array(); // [table => rowDescription()], more columns can reference the same table
 
 	function name(): string {
 		return "<a href='https://www.adminer.org/editor/'" . target_blank() . " id='h1'><img src='" . DIR . "static/logo.svg' width='24' height='24' alt='' id='logo'>" . lang('Editor') . "</a>";
@@ -757,7 +758,10 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 	function _foreignColumn(array $foreignKeys, string $column) {
 		foreach ((array) $foreignKeys[$column] as $foreignKey) {
 			if (count($foreignKey["source"]) == 1) {
-				$name = adminer()->rowDescription($foreignKey["table"]);
+				$name = &$this->descriptions[$foreignKey["table"]];
+				if ($name === null) {
+					$name = adminer()->rowDescription($foreignKey["table"]);
+				}
 				if ($name != "") {
 					$id = idf_escape($foreignKey["target"][0]);
 					return array($foreignKey["table"], $id, $name);

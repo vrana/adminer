@@ -33,6 +33,7 @@ class AdminerSelectForeign extends Adminer\Plugin {
 
 	// this is copy-pasted from Adminer Editor
 	protected $described = array();
+	protected $descriptions = array(); // [db][ns][table] => rowDescription(), more columns can reference the same table
 
 	function rowDescription($table) {
 		$column = $this->columns[$table];
@@ -70,7 +71,10 @@ class AdminerSelectForeign extends Adminer\Plugin {
 					if ($otherSchema) {
 						Adminer\set_schema($foreignKey["ns"]); // rowDescription() and table() work in the current schema
 					}
-					$name = $this->rowDescription($table);
+					$name = &$this->descriptions[$foreignKey["db"]][$foreignKey["ns"]][$table];
+					if ($name === null) {
+						$name = $this->rowDescription($table);
+					}
 					if ($name != "") {
 						$this->described[$key] = true;
 						// find all used ids
