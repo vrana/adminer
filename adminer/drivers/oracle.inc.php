@@ -448,6 +448,12 @@ ORDER BY 1") as $row
 	function fields(string $table): array {
 		$return = array();
 		$identity = null;
+		$primary = array();
+		foreach (table_constraints($table) as $constraint) {
+			if ($constraint["type"] == "P") {
+				$primary = $constraint["columns"];
+			}
+		}
 		foreach (get_rows("SELECT * FROM all_tab_columns WHERE table_name = " . q($table) . " AND " . where_owner() . " ORDER BY column_id") as $row) {
 			$type = $row["DATA_TYPE"];
 			$length = "$row[DATA_PRECISION],$row[DATA_SCALE]";
@@ -493,7 +499,7 @@ ORDER BY 1") as $row
 				//! "collation" => $row["CHARACTER_SET_NAME"],
 				"privileges" => $privileges,
 				//! "comment" => $row["Comment"],
-				//! "primary" => ($row["Key"] == "PRI"),
+				"primary" => in_array($row["COLUMN_NAME"], $primary),
 			);
 		}
 		return $return;
@@ -623,8 +629,9 @@ ORDER BY aic.column_position", $connection2) as $row
 				$drop[] = idf_escape($field[0]);
 			}
 		}
+		$alter = array_merge($alter, $foreign);
 		if ($table == "") {
-			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", array_merge($alter, $foreign)) . "\n)");
+			return queries("CREATE TABLE " . table($name) . " (\n" . implode(",\n", $alter) . "\n)");
 		}
 		return (!$alter || queries("ALTER TABLE " . table($table) . "\n" . implode("\n", $alter)))
 			&& (!$drop || queries("ALTER TABLE " . table($table) . " DROP (" . implode(", ", $drop) . ")"))
