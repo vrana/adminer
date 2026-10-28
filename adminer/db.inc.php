@@ -115,7 +115,8 @@ if (adminer()->homepage()) {
 			// without $order, the tables are sorted by name, except in SQLite which puts the sqlite_ tables last
 			echo '<th class="sticky"' . (!$order && JUSH != 'sqlite' ? " aria-sort='ascending'" : '') . '><a href="' . h(substr($me, 0, -1)) . '">' . lang('Table') . '</a>';
 			$columns = array("Engine" => array(lang('Engine') . doc_link(array('sql' => 'storage-engines.html'))));
-			if (collations()) {
+			$collations = collations();
+			if ($collations) {
 				$columns["Collation"] = array(lang('Collation') . doc_link(array('sql' => 'charset-charsets.html', 'mariadb' => 'supported-character-sets-and-collations/')));
 			}
 			if (function_exists('Adminer\alter_table')) {
@@ -206,7 +207,7 @@ if (adminer()->homepage()) {
 
 			echo "<tr><td class='hover'><th class='sticky'>" . lang('%d in total', count($tables_list));
 			echo "<td>" . h(JUSH == "sql" ? get_val("SELECT @@default_storage_engine") : "");
-			echo (collations() ? "<td>" . h(db_collation(DB, collations())) : '');
+			echo ($collations ? "<td>" . h(db_collation(DB, $collations)) : '');
 			if ($full && function_exists('Adminer\db_status')) {
 				$sums = db_status();
 			}
