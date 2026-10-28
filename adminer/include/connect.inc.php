@@ -2,7 +2,7 @@
 namespace Adminer;
 
 if (DB == "" && isset($_GET["ns"])) {	// menu form for changing DB preserves ns which leads to this combination
-	redirect(remove_from_uri('ns'));
+	redirect(remove_from_uri('ns'), null, 301);
 }
 
 if (

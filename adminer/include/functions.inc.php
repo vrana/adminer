@@ -624,7 +624,7 @@ function is_ajax(): bool {
 * @param ?string $location null to only set a message
 * @return ($location is null ? void : never)
 */
-function redirect(?string $location, ?string $message = null): void {
+function redirect(?string $location, ?string $message = null, int $status = 303): void {
 	if ($message !== null) {
 		restart_session();
 		$_SESSION["messages"][preg_replace('~^[^?]*~', '', ($location !== null ? $location : $_SERVER["REQUEST_URI"]))][] = $message;
@@ -633,7 +633,7 @@ function redirect(?string $location, ?string $message = null): void {
 		if ($location == "") {
 			$location = ".";
 		}
-		header("Location: $location");
+		header("Location: $location", true, $status);
 		exit;
 	}
 }
