@@ -540,9 +540,9 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 			}
 		}
 		if (!$return) {
-			foreach (fields($table) as $name => $field) {
-				if ($field["primary"]) {
-					$return[""] = array("type" => "PRIMARY", "columns" => array($name), "lengths" => array(), "descs" => array(null));
+			foreach (get_rows("PRAGMA table_info(" . table($table) . ")", $connection2) as $row) {
+				if ($row["pk"]) {
+					$return[""] = array("type" => "PRIMARY", "columns" => array($row["name"]), "lengths" => array(), "descs" => array(null));
 				}
 			}
 		}
