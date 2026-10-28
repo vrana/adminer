@@ -370,8 +370,6 @@ if (isset($_GET["mssql"])) {
 		public $onActions = "NO ACTION|CASCADE|SET NULL|SET DEFAULT";
 		public $inout = "|OUTPUT"; // T-SQL has no keyword for an input parameter
 
-		/** @var list<string> */ private $unknownTypes = array(); // types of the server which Adminer doesn't know, they are offered without a group
-
 		function operators(?array $tableStatus): array {
 			return array("=", "<", ">", "<=", ">=", "!=", "LIKE", "LIKE %%", "IN", "BETWEEN", "IS NULL", "NOT LIKE", "NOT IN", "IS NOT NULL");
 		}
@@ -398,30 +396,43 @@ if (isset($_GET["mssql"])) {
 				lang('Binary') => array("binary" => 8000, "varbinary" => 8000, "image" => 2147483647),
 				lang('Geometry') => array("geometry" => 0, "geography" => 0),
 			);
-			$types = array_flip(get_vals("SELECT name FROM sys.types WHERE is_user_defined = 0 ORDER BY name"));
-			if ($types) {
-				foreach ($this->types as $group => $group_types) {
-					foreach ($group_types as $type => $length) {
-						if (isset($types[$type])) {
-							unset($types[$type]);
-						} else {
-							unset($this->types[$group][$type]);
-						}
-					}
-					if (!$this->types[$group]) {
-						unset($this->types[$group]);
-					}
-				}
-				$this->unknownTypes = array_keys($types);
-			}
 		}
 
 		function types(): array {
-			return parent::types() + array_fill_keys($this->unknownTypes, 0);
+			$unknown = $this->unknownTypes(); // before parent::types() which reads the filtered types
+			return parent::types() + array_fill_keys($unknown, 0);
 		}
 
 		function structuredTypes(): array {
-			return array_merge(parent::structuredTypes(), $this->unknownTypes);
+			$unknown = $this->unknownTypes();
+			return array_merge(parent::structuredTypes(), $unknown);
+		}
+
+		/** Get the types of the server which Adminer doesn't know; drop the known types which the server doesn't have
+		* @return list<string>
+		*/
+		private function unknownTypes(): array {
+			static $return;
+			if ($return === null) {
+				$return = array();
+				$types = array_flip(get_vals("SELECT name FROM sys.types WHERE is_user_defined = 0 ORDER BY name"));
+				if ($types) {
+					foreach ($this->types as $group => $group_types) {
+						foreach ($group_types as $type => $length) {
+							if (isset($types[$type])) {
+								unset($types[$type]);
+							} else {
+								unset($this->types[$group][$type]);
+							}
+						}
+						if (!$this->types[$group]) {
+							unset($this->types[$group]);
+						}
+					}
+					$return = array_keys($types);
+				}
+			}
+			return $return;
 		}
 
 		function typeName(\stdClass $field): string {
