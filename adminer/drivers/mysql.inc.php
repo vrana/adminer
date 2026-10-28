@@ -585,15 +585,11 @@ if (!defined('Adminer\DRIVER')) {
 	* @param string[][] $collations result of collations()
 	*/
 	function db_collation(string $db, array $collations): ?string {
-		$return = null;
-		$create = get_val("SHOW CREATE DATABASE " . idf_escape($db), 1);
-		if (preg_match('~ COLLATE ([^ ]+)~', $create, $match)) {
-			$return = $match[1];
-		} elseif (preg_match('~ CHARACTER SET ([^ ]+)~', $create, $match)) {
-			// default collation
-			$return = $collations[$match[1]][-1];
+		static $return; // the database list asks for each database
+		if ($return === null) {
+			$return = get_key_vals("SELECT SCHEMA_NAME, DEFAULT_COLLATION_NAME FROM information_schema.SCHEMATA");
 		}
-		return $return;
+		return $return[$db];
 	}
 
 	/** Get logged user */
@@ -810,11 +806,7 @@ if (!defined('Adminer\DRIVER')) {
 	function collations(): array {
 		$return = array();
 		foreach (get_rows("SHOW COLLATION") as $row) {
-			if ($row["Default"]) {
-				$return[$row["Charset"]][-1] = $row["Collation"];
-			} else {
-				$return[$row["Charset"]][] = $row["Collation"];
-			}
+			$return[$row["Charset"]][] = $row["Collation"];
 		}
 		ksort($return);
 		foreach ($return as $key => $val) {

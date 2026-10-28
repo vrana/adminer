@@ -59,7 +59,6 @@ if (
 		}
 		if ($databases) {
 			$scheme = support("scheme");
-			$collations = collations();
 			echo "<form method='post'>\n";
 			echo "<table class='checkable odds'" . on('click', 'tableClick') . on('dblclick', 'tableClick') . ">\n";
 			echo "<thead><tr>"
@@ -79,7 +78,7 @@ if (
 				$id = h("Db-" . $db);
 				echo "<tr>" . (support("database") ? "<td class='hover'>" . checkbox("db[]", $db, in_array($db, (array) $_POST["db"]), "", "", "", $id) : "");
 				echo "<th><a href='$root' id='$id'>" . h($db) . "</a>";
-				$collation = h(db_collation($db, $collations));
+				$collation = h(db_collation($db, array()));
 				echo "<td>" . (support("database") ? "<a href='$root" . ($scheme ? "&amp;ns=" : "") . "&amp;database=' title='" . lang('Alter database') . "'>$collation</a>" : $collation);
 				echo "<td align='right'><a href='$root&amp;schema=' id='tables-" . h($db) . "' title='" . lang('Database schema') . "'>" . ($_GET["dbsize"] ? format_number($tables) : "?") . "</a>";
 				echo "<td align='right' id='size-" . h($db) . "'>" . ($_GET["dbsize"] ? db_size($db) : "?");
