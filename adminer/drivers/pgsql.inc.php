@@ -1282,6 +1282,9 @@ FROM pg_range WHERE rngtypid = $id"));
 	}
 
 	function get_schema(): string {
+		if ($_GET["ns"] != "") {
+			return $_GET["ns"]; // set_schema() keeps it
+		}
 		return (string) get_val("SELECT current_schema()"); // NULL if no schema in search_path exists or is visible
 	}
 
