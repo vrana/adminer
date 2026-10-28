@@ -781,7 +781,7 @@ WHERE OBJECT_NAME(i.object_id) = " . q($table), $connection2) as $row
 					unset($val[1], $val[2]);
 				}
 				if ($field[0] == "") {
-					$alter["ADD"][] = "\n  " . implode("", $val) . ($table == "" ? substr($foreign[$val[0]], 16 + strlen($val[0])) : ""); // 16 - strlen("  FOREIGN KEY ()")
+					$alter["ADD"][] = "\n  " . implode("", $val) . ($table == "" ? str_replace(" FOREIGN KEY ($val[0])", "", $foreign[$val[0]]) : ""); // the column constraint can't list the columns
 				} else {
 					$default = $val[3];
 					unset($val[3]); // default values are set separately
