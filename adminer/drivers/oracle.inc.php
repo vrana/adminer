@@ -618,13 +618,16 @@ ORDER BY aic.column_position", $connection2) as $row
 			$orig_field = $orig_fields[$field[0]];
 			if ($val && $orig_field) {
 				$old = process_field($orig_field, $orig_field);
+				if (array_slice($val, 1) == array_slice($old, 1)) {
+					continue; // only renamed above, MODIFY of the same type fails e.g. in CLOB
+				}
 				if ($val[2] == $old[2]) {
 					$val[2] = "";
 				}
 			}
 			if ($val) {
 				list($val[2], $val[3]) = array($val[3], $val[2]); // Oracle expects DEFAULT before NOT NULL
-				$alter[] = ($table != "" ? ($field[0] != "" ? "MODIFY (" : "ADD (") : "  ") . implode($val) . ($table != "" ? ")" : ""); //! error with name change only
+				$alter[] = ($table != "" ? ($field[0] != "" ? "MODIFY (" : "ADD (") : "  ") . implode($val) . ($table != "" ? ")" : "");
 			} else {
 				$drop[] = idf_escape($field[0]);
 			}
