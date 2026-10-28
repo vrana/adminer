@@ -1238,11 +1238,14 @@ class Adminer {
 			}
 		} else {
 			$tables = array();
-			if ($_GET["ns"] !== "" && !$missing && DB != "") {
+			if ($_POST && !$missing && DB != "") {
+				// the SQL command or an action failed in the middle could switch the database or the schema
 				connection()->select_db(DB);
-				if (isset($_GET["sql"]) && support("scheme") && $_GET["ns"] != "") {
-					set_schema($_GET["ns"]); // the SQL command could switch it
+				if (support("scheme") && $_GET["ns"] != "") {
+					set_schema($_GET["ns"]);
 				}
+			}
+			if ($_GET["ns"] !== "" && !$missing && DB != "") {
 				$tables = table_status('', true);
 			}
 			adminer()->syntaxHighlighting($tables);
@@ -1366,7 +1369,7 @@ class Adminer {
 		) . "</label>";
 		echo "<input type='submit' value='" . lang('Use') . "'" . ($databases ? " class='hidden'" : "") . ">\n";
 		if (support("scheme")) {
-			if ($missing != "db" && DB != "" && connection()->select_db(DB)) {
+			if ($missing != "db" && DB != "") {
 				echo "<br><label>" . lang('Schema') . ": " . html_select("ns", array("" => "") + group_system(adminer()->schemas(), true), $_GET["ns"], $db_events) . "</label>";
 			}
 		}

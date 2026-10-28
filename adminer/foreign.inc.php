@@ -133,6 +133,9 @@ if (support("scheme")) {
 	}
 	echo "<label>" . lang('DB') . ": " . html_select("db", $dbs, $selected, $attrs) . "</label>";
 }
+if ($row["db"] != "") {
+	connection()->select_db(DB);
+}
 echo input_hidden("change-js");
 ?>
 <noscript><p><input type='submit' name='change' value='<?php echo lang('Change'); ?>'></noscript>
