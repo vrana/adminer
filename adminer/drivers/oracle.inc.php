@@ -692,7 +692,7 @@ ORDER BY aic.column_position", $connection2) as $row
 			foreach (get_rows("SELECT owner, constraint_name, table_name, column_name FROM all_cons_columns WHERE " . implode(" OR ", array_unique($where)) . " ORDER BY position") as $row) {
 				foreach ($targets as $name => $target) {
 					if ($target == array($row["OWNER"], $row["CONSTRAINT_NAME"])) {
-						$return[$name]["db"] = $row["OWNER"];
+						$return[$name]["db"] = ($row["OWNER"] == DB ? "" : $row["OWNER"]); // the other drivers leave the current database empty
 						$return[$name]["table"] = $row["TABLE_NAME"];
 						$return[$name]["target"][] = $row["COLUMN_NAME"];
 					}
