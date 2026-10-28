@@ -576,8 +576,12 @@ ORDER BY datname");
 		);
 	}
 
-	function db_collation(string $db, array $collations): string {
-		return get_val("SELECT datcollate FROM pg_database WHERE datname = " . q($db));
+	function db_collation(string $db, array $collations): ?string {
+		static $return; // the database list asks for each database
+		if ($return === null) {
+			$return = get_key_vals("SELECT datname, datcollate FROM pg_database");
+		}
+		return $return[$db];
 	}
 
 	function logged_user(): string {

@@ -364,7 +364,11 @@ ORDER BY c.table_name, c.column_id', $this->conn);
 	}
 
 	function db_collation(string $db, array $collations): string {
-		return get_val("SELECT value FROM nls_database_parameters WHERE parameter = 'NLS_CHARACTERSET'"); // the character set is common to all schemas
+		static $return; // the character set is common to all schemas, the database list asks for each one
+		if ($return === null) {
+			$return = get_val("SELECT value FROM nls_database_parameters WHERE parameter = 'NLS_CHARACTERSET'");
+		}
+		return $return;
 	}
 
 	function logged_user(): string {

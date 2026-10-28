@@ -554,7 +554,11 @@ if (isset($_GET["mssql"])) {
 	}
 
 	function db_collation(string $db, array $collations): ?string {
-		return get_val("SELECT collation_name FROM sys.databases WHERE name = " . q($db));
+		static $return; // the database list asks for each database
+		if ($return === null) {
+			$return = get_key_vals("SELECT name, collation_name FROM sys.databases");
+		}
+		return $return[$db];
 	}
 
 	function logged_user(): string {
