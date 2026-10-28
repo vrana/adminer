@@ -1365,9 +1365,6 @@ class Adminer {
 		if (support("scheme")) {
 			if ($missing != "db" && DB != "" && connection()->select_db(DB)) {
 				echo "<br><label>" . lang('Schema') . ": " . html_select("ns", array("" => "") + group_system(adminer()->schemas(), true), $_GET["ns"], $db_events) . "</label>";
-				if ($_GET["ns"] != "") {
-					set_schema($_GET["ns"]);
-				}
 			}
 		}
 		foreach (array("import", "sql", "schema", "dump", "privileges") as $val) {
