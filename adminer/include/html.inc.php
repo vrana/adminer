@@ -599,7 +599,7 @@ function edit_form(string $table, array $fields, $row, ?bool $update, string $er
 				}
 			}
 		}
-		if (!fields($table) && driver()->primary != "") {
+		if (driver()->primary != "" && !fields($table)) {
 			echo "<tr>"
 				. "<th><input name='field_keys[]'" . on('input', 'fieldChange') . ">"
 				. "<td class='function'>" . html_select("field_funs[]", adminer()->editFunctions(array("null" => isset($_GET["select"]))))
