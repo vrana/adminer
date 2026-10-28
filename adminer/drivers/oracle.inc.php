@@ -504,6 +504,10 @@ ORDER BY 1") as $row
 	*/
 	function table_constraints(string $table, ?Db $connection2 = null): array {
 		// one statement shape for both indexes() and foreign_keys() - every statement over all_constraints takes ~0.5 s to compile after a restart of the server
+		static $cache = array(); // pages call both indexes() and foreign_keys()
+		if (!$connection2 && isset($cache[$table])) {
+			return $cache[$table];
+		}
 		$return = array();
 		foreach (
 			get_rows('SELECT c.constraint_name "name", c.constraint_type "type", c.r_owner "r_owner", c.r_constraint_name "r_constraint", c.delete_rule "delete_rule", cc.column_name "column"
@@ -518,6 +522,9 @@ ORDER BY cc.position', $connection2) as $row
 			$return[$name]["r_constraint"] = $row["r_constraint"];
 			$return[$name]["delete_rule"] = $row["delete_rule"];
 			$return[$name]["columns"][] = $row["column"];
+		}
+		if (!$connection2) {
+			$cache[$table] = $return;
 		}
 		return $return;
 	}
