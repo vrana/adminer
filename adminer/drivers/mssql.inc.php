@@ -583,12 +583,13 @@ if (isset($_GET["mssql"])) {
 		$sizes = array();
 		// a page is 8 KB; sys.dm_db_partition_stats requires the VIEW DATABASE STATE permission so sizes are optional
 		foreach (
-			get_rows("SELECT object_id, SUM(CASE WHEN index_id < 2 THEN row_count ELSE 0 END) AS [Rows],
+			($fast ? array() : get_rows("SELECT object_id, SUM(CASE WHEN index_id < 2 THEN row_count ELSE 0 END) AS [Rows],
 SUM(CASE WHEN index_id < 2 THEN used_page_count ELSE 0 END) * 8192 AS Data_length,
 SUM(CASE WHEN index_id > 1 THEN used_page_count ELSE 0 END) * 8192 AS Index_length,
 SUM(reserved_page_count - used_page_count) * 8192 AS Data_free
-FROM sys.dm_db_partition_stats
-GROUP BY object_id", null, "") as $row
+FROM sys.dm_db_partition_stats" . ($name != "" ? "
+WHERE object_id = OBJECT_ID(" . q(table($name)) . ")" : "") . "
+GROUP BY object_id", null, "")) as $row
 		) {
 			$object_id = $row["object_id"];
 			unset($row["object_id"]);
