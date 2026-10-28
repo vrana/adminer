@@ -383,6 +383,9 @@ if ($project != "editor") { // the Editor doesn't use jush
 	$file = replace_re('~DIR \. "static/jush/modules/(jush\.js)"~', $replace, $file); // before the general rule which would keep the path
 }
 $file = replace_re('~DIR \. "static/([^\'"]*)~', 'h(' . $replace . ') . "', $file);
+if (function_exists('shortArrays')) {
+	$file = shortArrays($file); // after the text-matched replacements above
+}
 if (function_exists('phpShrink')) {
 	$file = phpShrink($file);
 }
