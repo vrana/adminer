@@ -15,6 +15,7 @@
 - Method donation() to replace or hide the donation link
 - Method executeQuery() to wrap every request sent to the database server (bug #1368)
 - New plugin donation: Replace or hide the donation link in the top right corner
+- New plugin login-auth-proxy: Log in automatically to a fixed server behind an authenticating proxy which sends the user in a header
 
 ## Adminer 6.2.0 (released 2026-10-23)
 - Use the page font instead of monospace in &lt;code> except SQL
