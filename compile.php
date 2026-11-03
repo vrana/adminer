@@ -99,8 +99,8 @@ function put_file($match) {
 				}
 			}
 			unset($functions["__construct"], $functions["__destruct"], $functions["set_charset"], $functions["multi_query"], $functions["store_result"], $functions["next_result"]);
-			unset($functions["inTransaction"], $functions["begin"]); // SqlDb provides a default implementation, MySQL overrides it only because its Db extends \MySQLi
-			unset($functions["parse_type"], $functions["trigger_event"]); // helpers of the MySQL driver, not a part of the driver interface
+			unset($functions["inTransaction"], $functions["begin"], $functions["commit"], $functions["rollback"]); // SqlDb provides a default implementation, MySQL overrides it only because its Db extends \MySQLi
+			unset($functions["parse_type"], $functions["trigger_event"], $functions["send_charset"]); // helpers of the MySQL driver, not a part of the driver interface
 			if (!strpos($return, "function alter_table(")) {
 				unset($functions["auto_increment"]); // it is used only in the form creating or altering a table
 			}
