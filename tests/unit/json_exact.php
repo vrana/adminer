@@ -49,6 +49,9 @@ check('["x","5","-1","1e5","x/y","č","tab\tq\"uote\\\\"]');
 check('["@x","@5","@-1","@@y","x@","x@5"]');
 check('{"@k":"@5","k":"a\"@5"}'); // the marker after an escaped quote is inside the string
 check('["a\\\\","@5"]'); // an escaped backslash ends the string before the quote
+check('["\u0002\u0003\\\\\"","a\\\\u0022\"@5","@@\\\\\"\\\\"]'); // the temporary replacements of the escapes
+check('{"\\\\":"\"","x":1.10,"y":"\\\\"}');
+check('["\\\\@5","\"@5\\\\",-1.0e-7]');
 check('"@7"');
 check('"plain"');
 

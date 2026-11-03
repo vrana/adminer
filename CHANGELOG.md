@@ -4,6 +4,7 @@
 - Link the donation page by a heart in the top right corner
 - Avoid redundant queries
 - Use HTTP 303 for redirects after POST
+- Edit: Don't replace long JSON values by null without PCRE JIT (bug #1373, regression from 6.1.1)
 - Mac: Use ⌘ instead of Ctrl in keyboard shortcuts and write them so
 - MySQL, MariaDB: Upload files up to max_allowed_packet instead of its half
 - MySQL &lt; 5.7.8, MariaDB &lt; 10.1.2: Unsupport found rows timeout

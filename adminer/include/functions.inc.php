@@ -518,9 +518,11 @@ function get_url(string $url, $context): array {
 * @return mixed pass a scalar to json_scalar() and the rest to json_encode_exact()
 */
 function json_decode_exact(string $json) {
+	// equivalent escapes of \ and " make a string "[^"]*" which doesn't exceed pcre.backtrack_limit without JIT
+	$json = str_replace(array('\\\\', '\\"'), array('\\u005c', '\\u0022'), $json);
 	// a number is decoded as a string beginning with U+0001, a string beginning with U+0001 gets another one
-	$json = preg_replace('~"(\\\\u0001(?:[^"\\\\]|\\\\.)*+")|"(?:[^"\\\\]|\\\\.)*+"(*SKIP)(*FAIL)~', '"\\\\u0001$1', $json);
-	return json_decode(preg_replace('~"(?:[^"\\\\]|\\\\.)*+"(*SKIP)(*FAIL)|-?\d[-+.\deE]*+~', '"\\\\u0001$0"', $json));
+	$json = preg_replace('~"(\\\\u0001[^"]*+")|"[^"]*+"(*SKIP)(*FAIL)~', '"\\\\u0001$1', $json);
+	return json_decode(preg_replace('~"[^"]*+"(*SKIP)(*FAIL)|-?\d[-+.\deE]*+~', '"\\\\u0001$0"', $json));
 }
 
 /** Get a scalar decoded by json_decode_exact(), a number as a string
@@ -535,8 +537,11 @@ function json_scalar($val) {
 * @param mixed $val
 */
 function json_encode_exact($val, int $flags = 0): string {
+	// json_encode() escapes control characters so they can temporarily replace the escapes of \ and ", see json_decode_exact()
+	$json = str_replace(array('\\\\', '\\"'), array("\2", "\3"), json_encode($val, $flags));
 	// the string U+0001 + "1.5" is the number 1.5, U+0001 + U+0001 + "x" is the string U+0001 + "x"
-	return preg_replace('~"\\\\u0001(-?\d[^"\\\\]*)"|(")\\\\u0001(\\\\u0001(?:[^"\\\\]|\\\\.)*+")|"(?:[^"\\\\]|\\\\.)*+"(*SKIP)(*FAIL)~', '$1$2$3', json_encode($val, $flags));
+	$json = preg_replace('~"\\\\u0001(-?\d[^"\\\\]*)"|(")\\\\u0001(\\\\u0001[^"]*+")|"[^"]*+"(*SKIP)(*FAIL)~', '$1$2$3', $json);
+	return str_replace(array("\2", "\3"), array('\\\\', '\\"'), $json);
 }
 
 /** Get settings stored in a cookie
