@@ -99,7 +99,7 @@ class Plugins {
 	* @param object $plugin
 	*/
 	static function pluginName($plugin): string {
-		return preg_replace('~^ Adminer ~', '', preg_replace('~[A-Z]~', ' $0', get_class($plugin)));
+		return preg_replace('~^ Adminer\\\\? ~', '', preg_replace('~[A-Z]~', ' $0', get_class($plugin)));
 	}
 
 	/** Get HTML with plugin description and screenshot link
