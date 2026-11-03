@@ -1,4 +1,4 @@
-## Adminer dev
+## Adminer 6.3.0 (released 2026-11-03)
 - Require PHP 5.4+
 - Search tables, schemas and databases by Ctrl+K
 - Link the donation page by a heart in the top right corner
