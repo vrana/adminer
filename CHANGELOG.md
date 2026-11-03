@@ -4,6 +4,7 @@
 - Link the donation page by a heart in the top right corner
 - Avoid redundant queries
 - Use HTTP 303 for redirects after POST
+- Don't skip the CSRF token check if login data is posted along (regression from 6.0.1)
 - Edit: Don't replace long JSON values by null without PCRE JIT (bug #1373, regression from 6.1.1)
 - Mac: Use ⌘ instead of Ctrl in keyboard shortcuts and write them so
 - MySQL, MariaDB: Upload files up to max_allowed_packet instead of its half

@@ -275,9 +275,6 @@ if (!$_SESSION["token"]) {
 	$_SESSION["token"] = rand(1, 1e6); // defense against cross-site request forgery
 }
 stop_session(true);
-if ($auth && $_POST["token"]) {
-	$_POST["token"] = get_token(); // reset token after explicit login
-}
 
 /** @var string */ $error = ''; // HTML
 if ($_POST) {
