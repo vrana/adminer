@@ -287,6 +287,41 @@ code {
     padding: 4px;
 }
 
+/* keep the cells with the repeated links and row checkboxes inside the table */
+td.hover, tr:hover td.hover, .js .checkable .checked td.hover {
+    background-color: white;
+    border-bottom-width: 1px;
+}
+
+td.hover:first-child {
+    border-inline-start-width: 1px;
+}
+
+td.hover:last-child {
+    border-inline-end-width: 1px;
+}
+
+table > :first-child > :first-child > td.hover {
+    border-top-width: 1px;
+}
+
+.odds tbody tr:nth-child(2n) td.hover {
+    background-color: #F5F5F5;
+}
+
+tbody tr:hover td.hover {
+    background-color: var(--dim);
+}
+
+.js .checkable .checked td.hover {
+    background-color: var(--lit);
+}
+
+thead td.hover, thead tr:hover td.hover {
+    background-color: silver;
+    box-shadow: inset -1px -1px var(--window-frame), inset 1px 1px white, inset -2px -2px grey, inset 2px 2px var(--button-face);
+}
+
 @media all and (max-width: 800px) {
     .js .logout {
         box-shadow: none;
