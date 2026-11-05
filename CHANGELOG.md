@@ -1,6 +1,8 @@
 ## Adminer dev
 - MySQL, MariaDB: Don't unescape string literals in routine definitions (regression from 5.4.2)
 - PostgreSQL: Export data of GENERATED ALWAYS identity columns with OVERRIDING SYSTEM VALUE
+- SQLite: Check the file extension in file: URIs (GHSA-5xfm-7vgj-3f39)
+- SQLite PDO: Open databases by file: URIs (PHP 8.1+)
 
 ## Adminer 6.3.0 (released 2026-11-03)
 - Require PHP 5.4+
