@@ -593,7 +593,7 @@ function tar_file(string $filename, $tmp_file): void {
 	for ($i=0; $i < strlen($return); $i++) {
 		$checksum += ord($return[$i]);
 	}
-	$return .= sprintf("%06o", $checksum) . "\0 ";
+	$return .= sprintf("%06o\0 ", $checksum);
 	echo $return;
 	echo str_repeat("\0", 512 - strlen($return));
 	$tmp_file->send();

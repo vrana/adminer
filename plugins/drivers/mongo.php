@@ -154,8 +154,7 @@ if (isset($_GET["mongo"])) {
 		}
 
 		function count_tables(array $databases): array {
-			$return = array();
-			return $return;
+			return array();
 		}
 
 		function tables_list(): array {

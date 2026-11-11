@@ -89,7 +89,7 @@ class AdminerSelectForeign extends Adminer\Plugin {
 							$id = Adminer\idf_escape($foreignKey["target"][0]);
 							$descriptions = Adminer\get_key_vals("SELECT $id, $name FROM " . Adminer\table($table) . " WHERE $id IN (" . implode(", ", $ids) . ")");
 							foreach ($rows as $n => $row) {
-								if (isset($row[$key]) && isset($descriptions[$row[$key]])) {
+								if (isset($row[$key], $descriptions[$row[$key]])) {
 									$return[$n][$key] = $descriptions[$row[$key]];
 								}
 							}
