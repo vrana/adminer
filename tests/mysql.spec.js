@@ -561,6 +561,24 @@ test('Export routine with hidden definition', async () => {
 	await expect(page.locator('body')).toContainText('3 queries executed OK.');
 });
 
+test('Routine with escaped string', async () => {
+	// information_schema.ROUTINES.ROUTINE_DEFINITION has the string literals unescaped
+	await goto(page, '/adminer/?username=ODBC&db=adminer_test&error_stops=1&only_errors=1&sql=' + encodeURIComponent("CREATE FUNCTION backslash(\n  a int -- it's the last parameter\n) RETURNS varchar(10) DETERMINISTIC\nRETURN REPLACE('a\\\\b\\'', '\\\\', '');\n"));
+	await button(page, 'Execute').click();
+	await expect(page.locator('body')).toContainText('1 query executed OK.');
+	await goto(page, '/adminer/?username=ODBC&db=adminer_test&function=backslash');
+	await expect(page.locator('[name="definition"]')).toHaveValue("RETURN REPLACE('a\\\\b\\'', '\\\\', '')");
+	await goto(page, '/adminer/?username=ODBC&db=adminer_test&dump=');
+	await page.locator('[name="output"]').first().click();
+	await page.locator('[name="format"]').first().click();
+	await page.locator('[name="routines"]').check();
+	await button(page, 'Export').click();
+	await expect(page.locator('body')).toContainText("RETURN REPLACE('a\\\\b\\'', '\\\\', '');;");
+	await goto(page, '/adminer/?username=ODBC&db=adminer_test&error_stops=1&only_errors=1&sql=' + encodeURIComponent('DROP FUNCTION backslash;\n'));
+	await button(page, 'Execute').click();
+	await expect(page.locator('body')).toContainText('1 query executed OK.');
+});
+
 test('Generated columns', async () => {
 	await goto(page, '/adminer/?username=ODBC&db=adminer_test&create=');
 	await page.locator('[name="name"]').fill('generated');

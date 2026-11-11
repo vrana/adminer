@@ -1158,6 +1158,14 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 		if (!$return) {
 			return array();
 		}
+		// ROUTINE_DEFINITION has the string literals unescaped ('\\' becomes '\'), SHOW CREATE has the original body starting on a new line
+		if ($return['language'] != 'javascript' && preg_match('~^[^\'"]+(?=[\'"])~', $return['definition'], $match)) {
+			$create = get_val("SHOW CREATE $type " . idf_escape($name), 2);
+			$pos = strpos($create, "\n$match[0]");
+			if ($pos) {
+				$return['definition'] = substr($create, $pos + 1);
+			}
+		}
 		$return['options'] = array(
 			"DEFINER" => $return['definer'], // empty for the logged user so that the routine can be created by anyone
 			"DETERMINISTIC" => $return['is_deterministic'],
