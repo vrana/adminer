@@ -10,6 +10,7 @@
 - Don't skip the CSRF token check if login data is posted along (regression from 6.0.1)
 - Edit: Don't replace long JSON values by null without PCRE JIT (bug #1373, regression from 6.1.1)
 - Mac: Use ⌘ instead of Ctrl in keyboard shortcuts and write them so
+- Login: Don't block other pages while connecting to the server
 - MySQL, MariaDB: Upload files up to max_allowed_packet instead of its half
 - MySQL &lt; 5.7.8, MariaDB &lt; 10.1.2: Unsupport found rows timeout
 - MySQLi: Fix transactions in PHP &lt; 5.5 (regression from 6.1.0)
