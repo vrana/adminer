@@ -32,7 +32,7 @@ parameters:
 	ignoreErrors:
 		# need to fix
 		- "~Adminer\\\\Result.*mysqli_result~" # mysqli_result
-		- "~Function Adminer\\\\queries\\(\\) never returns Adminer\\\\Result~" # mysqli_result
+		- "~Function Adminer\\\\queries(_password)?\\(\\) never returns Adminer\\\\Result~" # mysqli_result
 
 		# not real problems
 		- identifier: include.fileNotFound # includes in include/ relative from index.php

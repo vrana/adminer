@@ -20,6 +20,16 @@ function grant(string $grant, array $privileges, ?string $columns, string $on) {
 	return queries("$grant " . preg_replace('~(GRANT OPTION)\([^)]*\)~', '\1', implode("$columns, ", $privileges) . $columns) . $on);
 }
 
+/** Execute a query with a password and remember it with the password replaced by a syntax error
+* @param string $format sprintf() format with %s for $user and then for $pass
+* @return Result|bool
+*/
+function queries_password(string $format, string $user, string $pass) {
+	// the session must not store the password (even hashed, it is enough for MySQL authentication), the history must not replay the query with a different one
+	remember_query(sprintf($format, $user, "<password>"));
+	return connection()->query(sprintf($format, $user, q($pass)));
+}
+
 $USER = $_GET["user"];
 $privileges = array("" => array("All privileges" => ""));
 foreach (get_rows("SHOW PRIVILEGES") as $row) {
@@ -69,10 +79,10 @@ if ($_POST && !$error) {
 		$created = false;
 		$result = true;
 		if ($old_user != $new_user) {
-			$created = queries("CREATE USER $new_user IDENTIFIED BY " . ($_POST["hashed"] ? "PASSWORD " : "") . q($pass));
+			$created = queries_password("CREATE USER %s IDENTIFIED BY " . ($_POST["hashed"] ? "PASSWORD %s" : "%s"), $new_user, $pass);
 			$result = $created;
 		} elseif ($pass != "") {
-			$result = queries("SET PASSWORD FOR $new_user = " . (min_version(8, 99) || $_POST["hashed"] ? q($pass) : "PASSWORD(" . q($pass) . ")"));
+			$result = queries_password("SET PASSWORD FOR %s = " . (min_version(8, 99) || $_POST["hashed"] ? "%s" : "PASSWORD(%s)"), $new_user, $pass);
 		}
 
 		if ($result) {
