@@ -1,5 +1,6 @@
 ## Adminer dev
 - Ignore search conditions from the URL in searching all tables (regression from 6.3.0)
+- Perform the action posted with an expired session after the login only if sent by same origin
 - MySQL, MariaDB: Don't unescape string literals in routine definitions (regression from 5.4.2)
 - PostgreSQL: Export data of GENERATED ALWAYS identity columns with OVERRIDING SYSTEM VALUE
 - SQLite: Check the file extension in file: URIs (GHSA-5xfm-7vgj-3f39)
