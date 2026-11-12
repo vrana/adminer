@@ -8,6 +8,7 @@
 - SQLite PDO: Open databases by file: URIs (PHP 8.1+)
 ### Internal
 - Use a 128-bit cryptographically secure CSRF token
+- Encrypt the password in the session also after the permanent login
 
 ## Adminer 6.3.0 (released 2026-11-03)
 - Require PHP 5.4+

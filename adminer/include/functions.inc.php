@@ -242,10 +242,12 @@ function sid(): bool {
 
 /** Set password to session */
 function set_password(string $vendor, ?string $server, string $username, ?string $password): void {
-	$_SESSION["pwds"][$vendor][$server][$username] = ($_COOKIE["adminer_key"] && is_string($password)
-		? array(encrypt_string($password, $_COOKIE["adminer_key"]))
-		: $password
-	);
+	if (is_string($password) && !$_COOKIE["adminer_key"]) { // the login form wasn't displayed in this browser session (permanent login, external login form)
+		$params = session_get_cookie_params();
+		$_COOKIE["adminer_key"] = rand_string();
+		cookie("adminer_key", $_COOKIE["adminer_key"], $params["lifetime"]);
+	}
+	$_SESSION["pwds"][$vendor][$server][$username] = (is_string($password) ? array(encrypt_string($password, $_COOKIE["adminer_key"])) : $password);
 }
 
 /** Get password from session
