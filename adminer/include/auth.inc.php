@@ -219,8 +219,8 @@ function auth_error(string $error, array &$permanent, bool $invalid_login = true
 	}
 	$params = session_get_cookie_params();
 	cookie("adminer_key", ($_COOKIE["adminer_key"] ?: rand_string()), $params["lifetime"]);
-	if (!$_SESSION["token"]) {
-		$_SESSION["token"] = rand(1, 1e6); // this is for next attempt
+	if (!is_string($_SESSION["token"])) { // an integer in sessions from Adminer 6.3.0 and older
+		$_SESSION["token"] = rand_string(); // this is for next attempt
 	}
 	page_header(lang('Login'), $error, null);
 	echo "<form method='post'>\n";
@@ -271,8 +271,8 @@ if ($_POST["logout"] && $_SESSION["token"] && !verify_token()) {
 	exit;
 }
 
-if (!$_SESSION["token"]) {
-	$_SESSION["token"] = rand(1, 1e6); // defense against cross-site request forgery
+if (!is_string($_SESSION["token"])) {
+	$_SESSION["token"] = rand_string(); // defense against cross-site request forgery
 }
 stop_session(true);
 

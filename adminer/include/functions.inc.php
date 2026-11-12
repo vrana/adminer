@@ -1205,12 +1205,14 @@ function slow_query(string $query): array {
 
 /** Generate BREACH resistant CSRF token */
 function get_token(): string {
-	$rand = rand(1, 1e6);
-	return ($rand ^ $_SESSION["token"]) . ":$rand";
+	$rand = rand_string();
+	return bin2hex($rand ^ "$_SESSION[token]") . ":$rand"; // string ^ null or int is a TypeError, verify_token() rejects such tokens
 }
 
 /** Verify if supplied CSRF token is valid */
 function verify_token(): bool {
 	list($token, $rand) = explode(":", $_POST["token"]);
-	return ($rand ^ $_SESSION["token"]) == $token && in_array($_SERVER["HTTP_SEC_FETCH_SITE"], array("", "same-origin"));
+	$secret = $_SESSION["token"]; // not set before login, an integer in sessions from Adminer 6.3.0 and older
+	// string ^ string is as long as the shorter operand, a short $rand would compare only a part of the secret
+	return is_string($secret) && strlen($rand) == strlen($secret) && bin2hex($rand ^ $secret) === $token && in_array($_SERVER["HTTP_SEC_FETCH_SITE"], array("", "same-origin"));
 }
