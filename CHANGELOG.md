@@ -1,6 +1,7 @@
 ## Adminer dev
 - Ignore search conditions from the URL in searching all tables (regression from 6.3.0)
 - Perform the action posted with an expired session after the login only if sent by same origin
+- Select: Run the SQL operator without Sec-Fetch-Site (old browsers, HTTP) only after sending the form again
 - MySQL, MariaDB: Don't unescape string literals in routine definitions (regression from 5.4.2)
 - MySQL, MariaDB: Don't store the password of a created or altered user in the SQL history (regression from 5.5.0)
 - PostgreSQL: Export data of GENERATED ALWAYS identity columns with OVERRIDING SYSTEM VALUE

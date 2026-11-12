@@ -297,15 +297,23 @@ if (!$columns && support("table")) {
 		adminer()->selectLengthPrint($text_length);
 	}
 	adminer()->selectActionPrint($indexes);
+
+	// the form carries a signature of the conditions, sending the form again confirms them also without Sec-Fetch-Site (old browsers, HTTP)
+	$sql_conditions = array();
+	foreach ((array) $_GET["where"] as $val) {
+		if ($val["op"] == "SQL") {
+			$sql_conditions[] = $val["val"];
+		}
+	}
+	$sql_sig = ($sql_conditions && $_SERVER["HTTP_SEC_FETCH_SITE"] != "same-origin" ? hash_hmac('sha256', json_encode(array($TABLE, $sql_conditions)), $_SESSION["token"]) : "");
+	echo ($sql_sig ? input_hidden("sql_sig", $sql_sig) : "");
+
 	echo "</form>\n";
 
-	foreach ((array) $_GET["where"] as $val) {
-		// the SQL operator passes the value to the database unescaped, GET is not protected by the CSRF token
-		if ($val["op"] == "SQL" && !in_array($_SERVER["HTTP_SEC_FETCH_SITE"], array("", "same-origin"))) {
-			echo "<p class='error'>" . lang('Invalid CSRF token. Submit the form again.') . ' ' . lang('If you did not send this request from Adminer, close this page.') . "\n";
-			page_footer();
-			exit;
-		}
+	if ($sql_sig && $_GET["sql_sig"] !== $sql_sig) {
+		echo "<p class='error'>" . lang('Invalid CSRF token. Submit the form again.') . ' ' . lang('If you did not send this request from Adminer, close this page.') . "\n";
+		page_footer();
+		exit;
 	}
 
 	$page = $_GET["page"];
