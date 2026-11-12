@@ -466,11 +466,10 @@ function jump_input(): string {
 }
 
 /** Print results of search in all tables
-* @uses $_GET["where"][0]
 * @uses $_POST["tables"]
 */
-function search_tables(string $query): void {
-	$_GET["where"][0]["val"] = $query;
+function search_tables(string $query, string $op = ""): void {
+	$_GET["where"] = array(array("op" => $op, "val" => $query)); // discard the conditions from the URL, they could contain the SQL operator
 	$sep = "<ul>\n";
 	foreach (table_status('', true) as $table => $table_status) {
 		$name = adminer()->tableName($table_status);

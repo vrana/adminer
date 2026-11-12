@@ -98,14 +98,14 @@ if (adminer()->homepage()) {
 			echo "<form method='post'>\n";
 			if (support("table")) {
 				echo "<fieldset><legend>" . lang('Search data in tables') . " <span id='selected2'></span></legend><div>";
-				echo html_select("op", adminer()->operators(), idx($_POST, "op", JUSH == "elastic" ? "should" : "LIKE %%"));
+				$op = idx($_POST, "op", JUSH == "elastic" ? "should" : "LIKE %%");
+				echo html_select("op", adminer()->operators(), $op);
 				$query = ($_POST ? $_POST["query"] : $_GET["query"]); // GET is used by the Ctrl+K box
 				echo " <input type='search' name='query' value='" . h($query != "" ? $query : $filter) . "'" . on('keydown', 'submitKeydown', 'search') . ">";
 				echo " <input type='submit' name='search' value='" . lang('Search') . "'>\n";
 				echo "</div></fieldset>\n";
 				if (!$error && (!$_POST || $_POST["search"]) && $query != "") {
-					$_GET["where"][0]["op"] = idx($_POST, "op", JUSH == "elastic" ? "should" : "LIKE %%");
-					search_tables($query);
+					search_tables($query, $op);
 				}
 			}
 			echo "<div class='scrollable'>\n";
