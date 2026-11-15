@@ -1,4 +1,5 @@
 ## Adminer dev
+- Search Database schema, Privileges, Process list, Variables and Status by Ctrl+K
 - Ignore search conditions from the URL in searching all tables (regression from 6.3.0)
 - Perform the action posted with an expired session after the login only if sent by same origin
 - Select: Run the SQL operator without Sec-Fetch-Site (old browsers, HTTP) only after sending the form again

@@ -1269,7 +1269,7 @@ class Adminer {
 			}
 			$actions = adminer()->menuActions($actions, $missing);
 			echo ($actions ? "<p class='links'>\n" . implode("\n", $actions) . "\n" : "");
-			$sections = array(); // the sections and the links of the database page offered by the Ctrl+K box
+			$sections = array(); // the sections and the links of the database and server pages offered by the Ctrl+K box
 			if ($in_db) {
 				if (function_exists('Adminer\alter_table')) {
 					$sections[] = array(lang('Create table'), ME . "create=");
@@ -1277,6 +1277,7 @@ class Adminer {
 				if (support("view")) {
 					$sections[] = array(lang('Create view'), ME . "view=");
 				}
+				$sections[] = array(lang('Database schema'), ME . "schema=");
 				$features = array(
 					'routine' => array('routines', lang('Routines')),
 					'sequence' => array('sequences', lang('Sequences')),
@@ -1291,6 +1292,17 @@ class Adminer {
 			}
 			if (DB != "" && !$missing && support("extension")) { // the extensions are on the page of the database without a schema
 				$sections[] = array(lang('Extensions'), preg_replace('~\bns=[^&]*&~', '', ME) . "ns=#extensions");
+			}
+			$server_pages = array(
+				'privileges' => lang('Privileges'),
+				'processlist' => lang('Process list'),
+				'variables' => lang('Variables'),
+				'status' => lang('Status'),
+			);
+			foreach ($server_pages as $key => $val) {
+				if (support($key)) {
+					$sections[] = array($val, preg_replace('~&(db|ns)=[^&]*~', '', ME) . "$key=");
+				}
 			}
 			// unshift() - before the links added by plugins, whose hooks run first
 			echo ($sections ? script("jumpSections.unshift(..." . json_encode($sections, JSON_UNESCAPED_UNICODE) . ");") : "");
