@@ -14,7 +14,9 @@ class AdminerSelectImage extends Adminer\Plugin {
 			$size = @getimagesizefromstring($original); // @ - the notice for other data contains the data
 			if ($size) { // the same as in Adminer Editor
 				$link = Adminer\h($link);
-				return "<a href='$link'><img src='$link' alt='' title='" . $this->lang('%d byte(s)', strlen($original)) . "' $size[3] loading='lazy'></a>"; // $size[3] is width and height
+				$ratio = min(1, 200 / max($size[0], $size[1], 1)); // shrink to 200px
+				$title = $this->lang('%d byte(s)', strlen($original));
+				return "<a href='$link'><img src='$link' alt='' title='$title' width='" . round($size[0] * $ratio) . "' height='" . round($size[1] * $ratio) . "' loading='lazy'></a>";
 			}
 		}
 	}

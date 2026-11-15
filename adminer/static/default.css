@@ -40,7 +40,6 @@ table > :first-child > :first-child > td.hover { border-top-width: 0; }
 fieldset { display: inline; vertical-align: top; padding: .5em .8em; margin: .8em 0 0; margin-inline-end: .5em; border: 1px solid #999; border-radius: 5px; }
 p { margin: .8em 0 0; margin-inline-end: 20px; }
 img { vertical-align: middle; border: 0; }
-td img { max-width: 200px; max-height: 200px; }
 code { padding: 1px 2px; background: var(--dim); }
 mark { color: inherit; background: #ff9; }
 pre { margin: 1em 0 0; tab-size: 4; }

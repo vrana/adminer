@@ -7,6 +7,7 @@
 - PostgreSQL: Export data of GENERATED ALWAYS identity columns with OVERRIDING SYSTEM VALUE
 - SQLite: Check the file extension in file: URIs (GHSA-5xfm-7vgj-3f39)
 - SQLite PDO: Open databases by file: URIs (PHP 8.1+)
+- Editor: Preserve the aspect ratio of shrunk images (regression from 6.0.0)
 ### Internal
 - Use a 128-bit cryptographically secure CSRF token
 - Encrypt the password in the session also after the permanent login

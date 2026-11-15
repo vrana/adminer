@@ -102,10 +102,6 @@ img {
     vertical-align: middle;
     border: 0;
 }
-td img {
-    max-width: 200px;
-    max-height: 200px;
-}
 code {
     font-size: 14px;
     padding: 1px;
