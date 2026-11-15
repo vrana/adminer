@@ -1291,7 +1291,7 @@ class Adminer {
 				}
 			}
 			if (DB != "" && !$missing && support("extension")) { // the extensions are on the page of the database without a schema
-				$sections[] = array(lang('Extensions'), preg_replace('~\bns=[^&]*&~', '', ME) . "ns=#extensions");
+				$sections[] = array(lang('Extensions'), preg_replace('~&ns=[^&]*~', '', ME) . "ns=#extensions");
 			}
 			$server_pages = array(
 				'privileges' => lang('Privileges'),

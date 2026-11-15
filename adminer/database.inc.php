@@ -12,7 +12,7 @@ if ($_POST && !$error && !$_POST["add"]) {
 		// create or rename database
 		if (DB != "") {
 			$_GET["db"] = $name;
-			queries_redirect(preg_replace('~\bdb=[^&]*&~', '', ME) . "db=" . url_escape($name), lang('Database has been renamed.'), rename_database($name, (string) $row["collation"]));
+			queries_redirect(preg_replace('~&db=[^&]*~', '', ME) . "db=" . url_escape($name), lang('Database has been renamed.'), rename_database($name, (string) $row["collation"]));
 		} else {
 			$databases = explode("\n", str_replace("\r", "", $name));
 			$success = true;
