@@ -2,6 +2,7 @@
 - Search Database schema, Privileges, Process list, Variables and Status by Ctrl+K
 - Ignore search conditions from the URL in searching all tables (regression from 6.3.0)
 - Perform the action posted with an expired session after the login only if sent by same origin
+- Syntax highlighting: Escape quotes in the links, e.g. in a status variable name sent by a malicious server
 - Select: Run the SQL operator without Sec-Fetch-Site (old browsers, HTTP) only after sending the form again
 - MySQL, MariaDB: Don't unescape string literals in routine definitions (regression from 5.4.2)
 - MySQL, MariaDB: Don't store the password of a created or altered user in the SQL history (regression from 5.5.0)
