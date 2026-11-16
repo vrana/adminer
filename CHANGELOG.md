@@ -1,5 +1,7 @@
 ## Adminer dev
 - MySQL, MariaDB: Don't unescape string literals in routine definitions (regression from 5.4.2)
+### Plugins
+- Plugin dump-json: Export SQL command results as a root JSON array instead of {"": […]}
 
 ## Adminer 6.3.0 (released 2026-11-03)
 - Require PHP 5.4+
