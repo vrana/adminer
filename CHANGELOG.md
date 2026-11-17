@@ -6,6 +6,7 @@
 - Select: Run the SQL operator without Sec-Fetch-Site (old browsers, HTTP) only after sending the form again
 - MySQL, MariaDB: Don't unescape string literals in routine definitions (regression from 5.4.2)
 - MySQL, MariaDB: Don't store the password of a created or altered user in the SQL history (regression from 5.5.0)
+- MySQL, MariaDB: Export the table name in CREATE TABLE as in the other commands with lower_case_table_names=1 (fix #1380)
 - PostgreSQL: Export data of GENERATED ALWAYS identity columns with OVERRIDING SYSTEM VALUE
 - SQLite: Check the file extension in file: URIs (GHSA-5xfm-7vgj-3f39)
 - SQLite PDO: Open databases by file: URIs (PHP 8.1+)
