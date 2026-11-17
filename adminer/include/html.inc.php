@@ -415,7 +415,10 @@ function process_input(array $field) {
 	}
 	$value = idx($_POST["fields"], $idf);
 	if ($value === null) {
-		return false;
+		if (!isset($_FILES["fields"]["name"][$idf])) {
+			return false;
+		}
+		$value = ""; // <input type="file"> from a plugin's editInput()
 	}
 	if ($field["type"] == "enum" || driver()->enumLength($field)) {
 		$value = idx($value, 0);

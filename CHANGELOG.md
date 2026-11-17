@@ -10,6 +10,8 @@
 - SQLite: Check the file extension in file: URIs (GHSA-5xfm-7vgj-3f39)
 - SQLite PDO: Open databases by file: URIs (PHP 8.1+)
 - Editor: Preserve the aspect ratio of shrunk images (regression from 6.0.0)
+### Plugins
+- Call processInput() for <input type="file"> from editInput(), e.g. in AdminerFileUpload (regression from 5.4.2)
 ### Internal
 - Use a 128-bit cryptographically secure CSRF token
 - Encrypt the password in the session also after the permanent login
