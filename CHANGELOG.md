@@ -13,6 +13,7 @@
 ### Internal
 - Use a 128-bit cryptographically secure CSRF token
 - Encrypt the password in the session also after the permanent login
+- ESLint: Pin the npm package versions in package.json
 
 ## Adminer 6.3.0 (released 2026-11-03)
 - Require PHP 5.4+

@@ -51,10 +51,19 @@ export default [
 			sourceType: 'script', // the files are included by <script>, the top level is the global scope
 			globals: {
 				...globals.browser,
-				jush: false, jushLinks: false,
-				offlineMessage: false, numberFormat: false, numberDigits: false, urlSeparators: false, // include/design.inc.php
-				indexColumns: false, // select.inc.php
-				tablePos: false, tablePosDefault: false, em: false, // schema.inc.php
+				jush: false,
+				jushLinks: false,
+				// include/design.inc.php
+				offlineMessage: false,
+				numberFormat: false,
+				numberDigits: false,
+				urlSeparators: false,
+				// select.inc.php
+				indexColumns: false,
+				// schema.inc.php
+				tablePos: false,
+				tablePosDefault: false,
+				em: false,
 			},
 		},
 		rules: {
@@ -81,7 +90,7 @@ export default [
 		...stylisticPreset,
 		rules: {
 			...stylisticPreset.rules,
-			'@stylistic/object-curly-spacing': ['error', 'never'],
+			'@stylistic/list-style': ['error', {overrides: {'{}': {singleLine: {spacing: 'never'}}}}],
 			'@stylistic/arrow-parens': ['error', 'as-needed'], // the preset requires them around a block body
 			'@stylistic/quotes': ['error', 'single', {avoidEscape: true}],
 			'@stylistic/no-multiple-empty-lines': ['error', {max: 3}], // three blank lines separate groups of functions

@@ -343,8 +343,9 @@ Because many developers expect Composer to bootstrap a checkout, `composer insta
 The dependencies are optional, so the command only prints a warning if it fails.
 Each submodule sits where it is used: the syntax highlighter in [adminer/static/jush/](/adminer/static/jush/) so that the `adminer/` directory is self-contained, the two minifiers used only by [compile.php](/compile.php) in [conf/](/conf/).
 
-Composer manages no runtime dependency but it does install the development tools - PHP_CS and PHPStan as `require-dev`, ESLint by npm.
-The Composer packages are pinned to exact versions because the lock file is not committed: the constraint in [composer.json](/composer.json) is what keeps every checkout and CI on the same build, so updating a linter is a deliberate commit.
+Composer manages no runtime dependency but it does install the development tools - PHP_CS and PHPStan as `require-dev`, ESLint and Playwright by running `npm install` with [package.json](/package.json).
+The packages are pinned to exact versions because the lock files are not committed: the constraints in [composer.json](/composer.json) and [package.json](/package.json) are what keep every checkout and CI on the same build, so updating a linter is a deliberate commit.
+`composer outdated --direct` and `npm outdated` list the newer versions.
 PHPCompatibility has no release supporting PHP_CodeSniffer 4 yet so it is pinned to a commit of its `develop` branch, which works the same way.
 Use `composer install --no-dev` to bootstrap a checkout without them - the `submodules` script checks `COMPOSER_DEV_MODE` and skips the npm packages too, so only the submodules are always initialized.
 
