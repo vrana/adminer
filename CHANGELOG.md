@@ -1,5 +1,6 @@
 ## Adminer dev
 - MySQL, MariaDB: Don't unescape string literals in routine definitions (regression from 5.4.2)
+- PostgreSQL: Export data of GENERATED ALWAYS identity columns with OVERRIDING SYSTEM VALUE
 
 ## Adminer 6.3.0 (released 2026-11-03)
 - Require PHP 5.4+
