@@ -1054,6 +1054,7 @@ class Adminer {
 				$buffer = "";
 				$keys = array();
 				$generated = array();
+				$overriding = "";
 				$suffix = "";
 				$fetch_function = ($table != '' ? 'fetch_assoc' : 'fetch_row');
 				$count = 0;
@@ -1067,6 +1068,9 @@ class Adminer {
 								continue;
 							}
 							$keys[] = $field->name;
+							if (JUSH == "pgsql" && isset($fields[$field->name]) && is_identity_always($fields[$field->name])) {
+								$overriding = " OVERRIDING SYSTEM VALUE";
+							}
 							$key = idf_escape($field->name);
 							$values[] = "$key = VALUES($key)";
 						}
@@ -1085,7 +1089,7 @@ class Adminer {
 						dump_csv($row);
 					} else {
 						if (!$insert) {
-							$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('Adminer\idf_escape', $keys)) . ") VALUES";
+							$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('Adminer\idf_escape', $keys)) . ")$overriding VALUES";
 						}
 						foreach ($row as $key => $val) {
 							if ($generated[$key]) {
