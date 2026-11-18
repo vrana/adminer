@@ -428,7 +428,7 @@ if (!$columns && support("table")) {
 					$fun = apply_sql_function(h($val["fun"]), $name);
 					$sortable = isset($field["privileges"]["order"]) || $val["fun"];
 					echo ($sortable ? "<a href='" . h($href . ($sorted && $sort_column == $order[0] ? $desc : '')) . "'>$fun</a>" : $fun);
-					echo doc_link(array(JUSH => $field["doc"]));
+					echo doc_link(array(JUSH => idx($field, "doc")));
 					$menu = ($sortable ? "<a href='" . h($href . $desc) . "' title='" . lang('descending') . "' class='text'> ↓</a>" : '');
 					if (!$val["fun"] && isset($field["privileges"]["where"])) {
 						$menu .= "<a href='#fieldset-search' title='" . lang('Search') . "' class='text jsonly'" . on('click', 'selectSearch', $key) . "> =</a>";
