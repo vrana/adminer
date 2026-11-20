@@ -583,6 +583,7 @@ class Adminer {
 		}
 		$operators = adminer()->operators($tableStatus);
 		foreach (array_merge((array) $_GET["where"], array(array())) as $i => $val) {
+			$i = number($i); // the key from the URL can contain anything, selectAddRow() creates keys like 01
 			if (!$val || (("$val[col]$val[val]" != "" || preg_match('~NULL$~', $val["op"])) && in_array($val["op"], $operators))) {
 				echo "<div>" . adminer()->selectColumnInput(
 					" name='where[$i][col]' data-default=''" . on('change', ($val ? 'selectFieldChange' : 'selectAddRow')),
