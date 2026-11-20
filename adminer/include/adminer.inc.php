@@ -576,7 +576,7 @@ class Adminer {
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
 				echo "<div>(<i>" . implode("</i>, <i>", array_map('Adminer\h', $index["columns"])) . "</i>) " . h(driver()->fulltextOperator);
-				echo " <input type='search' name='fulltext[$i]' value='" . h(idx($_GET["fulltext"], $i)) . "' data-default=''" . on('input', 'selectFieldChange') . ">";
+				echo " <input type='search' name='fulltext[" . h($i) . "]' value='" . h(idx($_GET["fulltext"], $i)) . "' data-default=''" . on('input', 'selectFieldChange') . ">";
 				echo (JUSH == 'sql' ? checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL") : '');
 				echo "</div>\n";
 			}

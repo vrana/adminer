@@ -6,6 +6,7 @@
 - Select: Run the SQL operator without Sec-Fetch-Site (old browsers, HTTP) only after sending the form again
 - Select: Don't warn about a missing field in COUNT(*) (regression from 6.2.0)
 - Select: Print only the digits of the search condition keys from the URL (GHSA-qjv8-pw8g-jw65)
+- Select: Escape the name of a FULLTEXT index in the search form (HTML injection)
 - MySQL, MariaDB: Don't unescape string literals in routine definitions (regression from 5.4.2)
 - MySQL, MariaDB: Don't store the password of a created or altered user in the SQL history (regression from 5.5.0)
 - MySQL, MariaDB: Export the table name in CREATE TABLE as in the other commands with lower_case_table_names=1 (fix #1380)

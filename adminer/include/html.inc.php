@@ -74,7 +74,7 @@ function nl_br(string $string): string {
 * @param string $class class of the label, of the input if there's no label
 */
 function checkbox(string $name, $value, ?bool $checked, string $label = "", string $attrs = "", string $class = "", string $labelled_by = ""): string {
-	$return = "<input type='checkbox' name='$name' value='" . h($value) . "'"
+	$return = "<input type='checkbox' name='" . h($name) . "' value='" . h($value) . "'"
 		. ($checked ? " checked" : "")
 		. ($label == "" && $class ? " class='$class'" : "")
 		. ($labelled_by ? " aria-labelledby='$labelled_by'" : "")
