@@ -316,7 +316,7 @@ if (isset($_GET["clickhouse"])) {
 	}
 
 	function idf_escape(string $idf): string {
-		return "`" . str_replace("`", "``", $idf) . "`";
+		return "`" . str_replace(array("\\", "`"), array("\\\\", "``"), $idf) . "`";
 	}
 
 	function table(string $idf): string {
