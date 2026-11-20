@@ -232,7 +232,8 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 						$empty = false;
 						$commands++;
 						$print = "<pre id='sql-$commands'>$code</pre>\n";
-						if (JUSH == "sqlite" && preg_match("~^$space*+(ATTACH|VACUUM\\b.*\\bINTO)\\b~is", $q, $match) !== 0) {
+						// SQLite skips empty statements, a leading ; is possible with DELIMITER
+						if (JUSH == "sqlite" && preg_match("~^(?:$space|;)*+(ATTACH|VACUUM\\b.*\\bINTO)\\b~is", $q, $match) !== 0) {
 							// PHP doesn't support setting SQLITE_LIMIT_ATTACHED
 							echo $print;
 							echo "<p class='error'>" . lang('%s queries are not supported.', preg_match('~ATTACH~i', $match[1]) ? 'ATTACH' : 'VACUUM INTO') . "\n";

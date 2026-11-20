@@ -10,6 +10,7 @@
 - MySQL, MariaDB: Export the table name in CREATE TABLE as in the other commands with lower_case_table_names=1 (fix #1380)
 - PostgreSQL: Export data of GENERATED ALWAYS identity columns with OVERRIDING SYSTEM VALUE
 - SQLite: Check the file extension in file: URIs (GHSA-5xfm-7vgj-3f39)
+- SQLite: Disallow ATTACH and VACUUM INTO preceded by a semicolon without the authorizer (PHP < 8.0, PDO < 8.5)
 - SQLite PDO: Open databases by file: URIs (PHP 8.1+)
 - Editor: Preserve the aspect ratio of shrunk images (regression from 6.0.0)
 ### Plugins
