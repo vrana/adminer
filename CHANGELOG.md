@@ -1,3 +1,5 @@
+## Adminer dev
+
 ## Adminer 6.3.1 (released 2026-11-20)
 - Search Database schema, Privileges, Process list, Variables and Status by Ctrl+K
 - Ignore search conditions from the URL in searching all tables (regression from 6.3.0)
@@ -21,7 +23,7 @@
 - MongoDB: Don't update or delete other documents if a value contains AND or OR, refuse a condition which is not understood
 - Editor: Preserve the aspect ratio of shrunk images (regression from 6.0.0)
 ### Plugins
-- Call processInput() for <input type="file"> from editInput(), e.g. in AdminerFileUpload (regression from 5.4.2)
+- Call processInput() for &lt;input type="file"> from editInput(), e.g. in AdminerFileUpload (regression from 5.4.2)
 ### Internal
 - Use a 128-bit cryptographically secure CSRF token
 - Encrypt the password in the session also after the permanent login
