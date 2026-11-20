@@ -21,7 +21,8 @@ class AdminerSqlGemini extends Adminer\Plugin {
 		$this->model = $model;
 	}
 
-	function headers() {
+	function afterConnect() {
+		// not in headers() which runs also on the login page, also after connecting with wrong credentials
 		if (isset($_POST["gemini"]) && !isset($_POST["query"]) && Adminer\verify_token()) {
 			$prompt = "I have a " . Adminer\get_driver(Adminer\DRIVER) . " database with this structure:\n\n";
 			foreach (Adminer\tables_list() as $table => $type) {
