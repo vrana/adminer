@@ -13,6 +13,7 @@
 - SQLite: Disallow ATTACH and VACUUM INTO preceded by a semicolon without the authorizer (PHP < 8.0, PDO < 8.5)
 - SQLite: Disallow ATTACH and VACUUM INTO in exporting the SQL command result without the authorizer
 - SQLite PDO: Open databases by file: URIs (PHP 8.1+)
+- MongoDB: Don't update or delete other documents if a value contains AND or OR, refuse a condition which is not understood
 - Editor: Preserve the aspect ratio of shrunk images (regression from 6.0.0)
 ### Plugins
 - Call processInput() for <input type="file"> from editInput(), e.g. in AdminerFileUpload (regression from 5.4.2)
