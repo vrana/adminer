@@ -8,6 +8,7 @@
 - MySQL, MariaDB: Don't unescape string literals in routine definitions (regression from 5.4.2)
 - MySQL, MariaDB: Don't store the password of a created or altered user in the SQL history (regression from 5.5.0)
 - MySQL, MariaDB: Export the table name in CREATE TABLE as in the other commands with lower_case_table_names=1 (fix #1380)
+- MySQL, MariaDB: Escape the name of a geometry column in the conditions, edit and export (SQL injection)
 - PostgreSQL: Export data of GENERATED ALWAYS identity columns with OVERRIDING SYSTEM VALUE
 - SQLite: Check the file extension in file: URIs (GHSA-5xfm-7vgj-3f39)
 - SQLite: Disallow ATTACH and VACUUM INTO preceded by a semicolon without the authorizer (PHP < 8.0, PDO < 8.5)
