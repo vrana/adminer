@@ -248,7 +248,9 @@ $connection = '';
 if (isset($_GET["username"]) && is_string(get_password())) {
 	check_invalid_login($permanent);
 	$credentials = adminer()->credentials();
+	stop_session(true); // connecting to an unresponsive server would block other pages until it times out
 	$connection = Driver::connect($credentials[0], $credentials[1], $credentials[2]);
+	restart_session(); // password_required(), login() and plugins write to the session
 	if (is_object($connection)) {
 		Db::$instance = $connection;
 		Driver::$instance = new Driver($connection);
