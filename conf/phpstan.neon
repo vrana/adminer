@@ -42,6 +42,9 @@ parameters:
 		-
 			identifier: booleanAnd.alwaysFalse # PHP_VERSION_ID < 70100
 			path: ../adminer/include/pdo.inc.php
+		-
+			identifier: greater.alwaysTrue # while ($q-- > 0), https://github.com/phpstan/phpstan/issues/15782
+			path: ../adminer/include/xxtea.inc.php
 		- "~an unknown class OCI-?Lob~" # this looks like PHPStan bug
 		- "~^Variable \\$error might not be defined~" # declared in bootstrap.inc.php
 		- "~^Constant LANG not found~" # defined in lang.inc.php
