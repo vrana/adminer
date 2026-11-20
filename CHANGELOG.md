@@ -1,4 +1,4 @@
-## Adminer dev
+## Adminer 6.3.1 (released 2026-11-20)
 - Search Database schema, Privileges, Process list, Variables and Status by Ctrl+K
 - Ignore search conditions from the URL in searching all tables (regression from 6.3.0)
 - Perform the action posted with an expired session after the login only if sent by same origin
