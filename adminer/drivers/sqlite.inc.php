@@ -609,8 +609,8 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 		// avoid creating PHP files on unsecured servers
 		$extensions = "db|sdb|sqlite";
 		// PDO_SQLite opens file: as URI since PHP 8.1, SQLite decodes % in its path and ends it by ? or #
-		$uri = (connection()->extension == "PDO_SQLite" && PHP_VERSION_ID >= 80100 ? "file:[^?#%]+\\.($extensions)(\\?|\$)|" : "");
-		if (!preg_match("~^($uri(?!file:)[^\\0]*\\.($extensions)\$)~", $name)) {
+		$uri = (connection()->extension == "PDO_SQLite" && PHP_VERSION_ID >= 80100 ? "file:[^?#%\\0]+\\.($extensions)(\\?[^\\0]*)?|" : "");
+		if (!preg_match("~^($uri(?!file:)[^\\0]*\\.($extensions))\\z~", $name)) {
 			connection()->error = lang('Please use one of these file extensions: %s.', str_replace("|", ", ", $extensions));
 			return false;
 		}
