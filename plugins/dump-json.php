@@ -34,7 +34,7 @@ class AdminerDumpJson extends Adminer\Plugin {
 				: Adminer\driver()->select($table, ($select ?: array("*")), $where, $group, $order, 0) // 0 - all rows
 			);
 			if ($result) {
-				echo '"' . addcslashes($table, "\r\n\"\\") . "\": [\n";
+				echo '"' . addcslashes($table != "" ? $table : "rows", "\r\n\"\\") . "\": [\n";
 				$first = true;
 				while ($row = $result->fetch_assoc()) {
 					echo ($first ? "" : ", ");
