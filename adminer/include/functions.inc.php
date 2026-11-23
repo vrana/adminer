@@ -242,10 +242,12 @@ function sid(): bool {
 
 /** Set password to session */
 function set_password(string $vendor, ?string $server, string $username, ?string $password): void {
-	$_SESSION["pwds"][$vendor][$server][$username] = ($_COOKIE["adminer_key"] && is_string($password)
-		? array(encrypt_string($password, $_COOKIE["adminer_key"]))
-		: $password
-	);
+	if (is_string($password) && !$_COOKIE["adminer_key"]) { // the login form wasn't displayed in this browser session (permanent login, external login form)
+		$params = session_get_cookie_params();
+		$_COOKIE["adminer_key"] = rand_string();
+		cookie("adminer_key", $_COOKIE["adminer_key"], $params["lifetime"]);
+	}
+	$_SESSION["pwds"][$vendor][$server][$username] = (is_string($password) ? array(encrypt_string($password, $_COOKIE["adminer_key"])) : $password);
 }
 
 /** Get password from session
@@ -1205,12 +1207,14 @@ function slow_query(string $query): array {
 
 /** Generate BREACH resistant CSRF token */
 function get_token(): string {
-	$rand = rand(1, 1e6);
-	return ($rand ^ $_SESSION["token"]) . ":$rand";
+	$rand = rand_string();
+	return bin2hex($rand ^ "$_SESSION[token]") . ":$rand"; // string ^ null or int is a TypeError, verify_token() rejects such tokens
 }
 
 /** Verify if supplied CSRF token is valid */
 function verify_token(): bool {
 	list($token, $rand) = explode(":", $_POST["token"]);
-	return ($rand ^ $_SESSION["token"]) == $token && in_array($_SERVER["HTTP_SEC_FETCH_SITE"], array("", "same-origin"));
+	$secret = $_SESSION["token"]; // not set before login, an integer in sessions from Adminer 6.3.0 and older
+	// string ^ string is as long as the shorter operand, a short $rand would compare only a part of the secret
+	return is_string($secret) && strlen($rand) == strlen($secret) && bin2hex($rand ^ $secret) === $token && in_array($_SERVER["HTTP_SEC_FETCH_SITE"], array("", "same-origin"));
 }

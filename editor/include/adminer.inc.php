@@ -281,7 +281,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			$return = lang('%d byte(s)', strlen($original));
 			$size = @getimagesizefromstring($original); // @ - the notice for other data contains the data
 			if ($size) { // the same as in the select-image plugin
-				$return = "<img src='$link' alt='$return' $size[3] loading='lazy'>"; // $size[3] is width and height
+				$ratio = min(1, 200 / max($size[0], $size[1], 1)); // shrink to 200px
+				$return = "<img src='$link' alt='$return' width='" . round($size[0] * $ratio) . "' height='" . round($size[1] * $ratio) . "' loading='lazy'>";
 			}
 		}
 		if (like_bool($field) && $return != "") { // bool

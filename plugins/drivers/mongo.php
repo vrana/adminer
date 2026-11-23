@@ -223,24 +223,51 @@ if (isset($_GET["mongo"])) {
 			return $toArray[0]->n;
 		}
 
-		function sql_query_where_parser(string $queryWhere): array {
-			$queryWhere = preg_replace('~^\s*WHERE\s*~', "", $queryWhere);
-			while ($queryWhere[0] == "(") {
-				$queryWhere = preg_replace('~^\((.*)\)$~', "$1", $queryWhere);
-			}
+		/** Convert the condition created by where() and selectSearchProcess() to a filter
+		* @return mixed[]|null null if the condition is not understood
+		*/
+		function sql_query_where_parser(string $queryWhere): ?array {
+			$queryWhere = preg_replace('~^\s*WHERE\s+~', "", $queryWhere);
+			$offset = 0;
+			$return = where_parse($queryWhere, $offset);
+			return ($offset == strlen($queryWhere) ? $return : null);
+		}
 
-			$wheres = explode(' AND ', $queryWhere);
-			$wheresOr = explode(') OR (', $queryWhere);
-			$where = array();
-			foreach ($wheres as $whereStr) {
-				$where[] = trim($whereStr);
-			}
-			if (count($wheresOr) == 1) {
-				$wheresOr = array();
-			} elseif (count($wheresOr) > 1) {
-				$where = array();
-			}
-			return where_to_query($where, $wheresOr);
+		/** Parse conditions joined by AND or OR, the values are JSON strings which can contain the operators and parentheses
+		* @return mixed[]|null
+		*/
+		function where_parse(string $query, int &$offset): ?array {
+			$type = "";
+			$parts = array();
+			do {
+				if (substr($query, $offset, 1) == "(") {
+					$offset++;
+					$part = where_parse($query, $offset);
+					if (substr($query, $offset, 1) != ")") {
+						return null;
+					}
+					$offset++;
+				} else {
+					if (!preg_match('~(?:[^"()]|\(\w+\)|"(?:[^"\\\\]|\\\\.)*+")+?(?=\s+(?:AND|OR)\s|\)|\z)~A', $query, $match, 0, $offset)) { // \(\w+\) - operators like (f)=
+						return null;
+					}
+					$offset += strlen($match[0]);
+					$part = where_condition(trim($match[0]));
+				}
+				if ($part === null) {
+					return null;
+				}
+				$parts[] = $part;
+				if (!preg_match('~\s+(AND|OR)\s+~A', $query, $match, 0, $offset)) {
+					break;
+				}
+				if ($type && $type != $match[1]) { // mixed AND and OR without parentheses
+					return null;
+				}
+				$type = $match[1];
+				$offset += strlen($match[0]);
+			} while (true);
+			return (count($parts) == 1 ? $parts[0] : array('$' . strtolower($type) => $parts));
 		}
 
 		/** Get value from an expression created by Db::quote()
@@ -255,62 +282,45 @@ if (isset($_GET["mongo"])) {
 			return (json_last_error() ? null : $return);
 		}
 
-		function where_to_query(array $whereAnd = array(), array $whereOr = array()): array {
+		/** @param list<string> $where conditions joined by AND, a condition which is not understood is ignored */
+		function where_to_query(array $where = array()): array {
 			$data = array();
-			foreach (array('and' => $whereAnd, 'or' => $whereOr) as $type => $where) {
-				if (is_array($where)) {
-					foreach ($where as $expression) {
-						list($col, $op, $val) = explode(" ", $expression, 3);
-						$val = unquote($val);
-						if ($col == "_id" && preg_match('~^(MongoDB\\\\BSON\\\\ObjectID)\("(.+)"\)$~', $val, $match)) {
-							list(, $class, $val) = $match;
-							$val = new $class($val);
-						}
-						if (!in_array($op, adminer()->operators())) {
-							continue;
-						}
-						if (preg_match('~^\(f\)(.+)~', $op, $match)) {
-							$val = (float) $val;
-							$op = $match[1];
-						} elseif (preg_match('~^\(date\)(.+)~', $op, $match)) {
-							$dateTime = new \DateTime($val);
-							$val = new \MongoDB\BSON\UTCDatetime($dateTime->getTimestamp() * 1000);
-							$op = $match[1];
-						}
-						switch ($op) {
-							case '=':
-								$op = '$eq';
-								break;
-							case '!=':
-								$op = '$ne';
-								break;
-							case '>':
-								$op = '$gt';
-								break;
-							case '<':
-								$op = '$lt';
-								break;
-							case '>=':
-								$op = '$gte';
-								break;
-							case '<=':
-								$op = '$lte';
-								break;
-							case 'regex':
-								$op = '$regex';
-								break;
-							default:
-								continue 2;
-						}
-						if ($type == 'and') {
-							$data['$and'][] = array($col => array($op => $val));
-						} elseif ($type == 'or') {
-							$data['$or'][] = array($col => array($op => $val));
-						}
-					}
+			foreach ($where as $expression) {
+				$condition = where_condition($expression);
+				if ($condition !== null) {
+					$data['$and'][] = $condition;
 				}
 			}
 			return $data;
+		}
+
+		/** Convert one condition "column operator value" to a filter
+		* @return mixed[]|null null if the condition is not understood
+		*/
+		function where_condition(string $expression): ?array {
+			$operators = implode("|", array_map('preg_quote', adminer()->operators()));
+			if (!preg_match("~^(.+?) ($operators) (\"(?:[^\"\\\\]|\\\\.)*+\")\$~s", $expression, $match)) {
+				return null;
+			}
+			list(, $col, $op, $val) = $match;
+			$val = unquote($val);
+			if (!is_string($val)) {
+				return null;
+			}
+			if ($col == "_id" && preg_match('~^(MongoDB\\\\BSON\\\\ObjectID)\("(.+)"\)$~', $val, $match)) {
+				list(, $class, $val) = $match;
+				$val = new $class($val);
+			}
+			if (preg_match('~^\(f\)(.+)~', $op, $match)) {
+				$val = (float) $val;
+				$op = $match[1];
+			} elseif (preg_match('~^\(date\)(.+)~', $op, $match)) {
+				$dateTime = new \DateTime($val);
+				$val = new \MongoDB\BSON\UTCDatetime($dateTime->getTimestamp() * 1000);
+				$op = $match[1];
+			}
+			$ops = array('=' => '$eq', '!=' => '$ne', '>' => '$gt', '<' => '$lt', '>=' => '$gte', '<=' => '$lte', 'regex' => '$regex');
+			return (isset($ops[$op]) ? array($col => array($ops[$op] => $val)) : null);
 		}
 	}
 
@@ -389,6 +399,10 @@ if (isset($_GET["mongo"])) {
 		function update(string $table, array $set, string $queryWhere, int $limit = 0, string $separator = "\n") {
 			$db = $this->conn->_db_name;
 			$where = sql_query_where_parser($queryWhere);
+			if ($where === null) { // ignoring a part of the condition would modify other documents
+				$this->conn->error = "Unsupported condition: $queryWhere";
+				return false;
+			}
 			$bulk = new \MongoDB\Driver\BulkWrite(array());
 			if (isset($set['_id'])) {
 				unset($set['_id']);
@@ -414,6 +428,10 @@ if (isset($_GET["mongo"])) {
 		function delete(string $table, string $queryWhere, int $limit = 0) {
 			$db = $this->conn->_db_name;
 			$where = sql_query_where_parser($queryWhere);
+			if ($where === null) {
+				$this->conn->error = "Unsupported condition: $queryWhere";
+				return false;
+			}
 			$bulk = new \MongoDB\Driver\BulkWrite(array());
 			$bulk->delete($where, array('limit' => $limit));
 			return $this->conn->executeBulkWrite("$db.$table", $bulk, 'getDeletedCount');

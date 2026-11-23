@@ -84,7 +84,7 @@ class AdminerConfig extends Adminer\Plugin {
 
 	/** Get the URL of the configuration page */
 	private function link() {
-		return preg_replace('~\b(db|ns)=[^&]*&~', '', Adminer\ME) . "config=";
+		return preg_replace('~&(db|ns)=[^&]*~', '', Adminer\ME) . "config=";
 	}
 
 	function screenshot() {

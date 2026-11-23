@@ -2,7 +2,8 @@
 //! handle delete
 
 /** Edit fields ending with "_path" with <input type="file"> and link to the uploaded files from select
-* The uploaded file can have any extension by default, e.g. *.php can be a legitimate download, so disable executing scripts in the upload directory by PHP config "engine Off".
+* The default extensions are files without active content. If you allow others, e.g. *.php, *.html or *.svg as legitimate downloads,
+* disable executing scripts in the upload directory by PHP config "engine Off" and serve it with the header "Content-Security-Policy: sandbox".
 * @link https://www.adminer.org/plugins/#use
 * @author Jakub Vrana, https://www.vrana.cz/
 * @license https://www.apache.org/licenses/LICENSE-2.0 Apache License, Version 2.0
@@ -14,9 +15,9 @@ class AdminerFileUpload extends Adminer\Plugin {
 	/**
 	* @param string $uploadPath prefix for uploading data (create writable subdirectory for each table containing uploadable fields)
 	* @param string $displayPath prefix for displaying data, null stands for $uploadPath
-	* @param string $extensions regular expression with allowed file extensions
+	* @param string $extensions regular expression with allowed file extensions, "[a-zA-Z0-9]+" for any
 	*/
-	function __construct($uploadPath = "../static/data/", $displayPath = null, $extensions = "[a-zA-Z0-9]+") {
+	function __construct($uploadPath = "../static/data/", $displayPath = null, $extensions = "(?i:jpe?g|png|gif|webp|avif|jxl|pdf|txt|csv|zip)") {
 		$this->uploadPath = $uploadPath;
 		$this->displayPath = ($displayPath !== null ? $displayPath : $uploadPath);
 		$this->extensions = $extensions;

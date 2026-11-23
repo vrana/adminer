@@ -219,13 +219,14 @@ function auth_error(string $error, array &$permanent, bool $invalid_login = true
 	}
 	$params = session_get_cookie_params();
 	cookie("adminer_key", ($_COOKIE["adminer_key"] ?: rand_string()), $params["lifetime"]);
-	if (!$_SESSION["token"]) {
-		$_SESSION["token"] = rand(1, 1e6); // this is for next attempt
+	if (!is_string($_SESSION["token"])) { // an integer in sessions from Adminer 6.3.0 and older
+		$_SESSION["token"] = rand_string(); // this is for next attempt
 	}
 	page_header(lang('Login'), $error, null);
 	echo "<form method='post'>\n";
 	echo "<div>";
-	if (hidden_fields($_POST, array("auth", "token"))) { // expired session
+	// expired session; a cross-site POST would be performed after the login, a missing Sec-Fetch-Site doesn't exclude it
+	if ($_SERVER["HTTP_SEC_FETCH_SITE"] == "same-origin" && hidden_fields($_POST, array("auth", "token"))) {
 		echo "<p class='message'>" . lang('The action will be performed after successful login with the same credentials.') . "\n";
 	}
 	echo input_token(); // after hidden_fields() which can print the token of the expired session
@@ -271,8 +272,8 @@ if ($_POST["logout"] && $_SESSION["token"] && !verify_token()) {
 	exit;
 }
 
-if (!$_SESSION["token"]) {
-	$_SESSION["token"] = rand(1, 1e6); // defense against cross-site request forgery
+if (!is_string($_SESSION["token"])) {
+	$_SESSION["token"] = rand_string(); // defense against cross-site request forgery
 }
 stop_session(true);
 

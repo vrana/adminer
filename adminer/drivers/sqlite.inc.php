@@ -132,9 +132,12 @@ if (isset($_GET["sqlite"])) {
 			}
 
 			function select_db(string $filename): bool {
+				if (preg_match('~^file:~', $filename) && !check_sqlite_name($filename)) {
+					return false;
+				}
 				$query = "ATTACH " . $this->quote(preg_match("~(^[/\\\\]|:)~", $filename) ? $filename : dirname($_SERVER["SCRIPT_FILENAME"]) . "/$filename") . " AS a";
 				$this->attaching = true;
-				$attached = is_readable($filename) && $this->query($query);
+				$attached = is_readable(file_from_uri($filename)) && $this->query($query);
 				$this->attaching = false;
 				if ($attached) {
 					return !self::attach(server_parts(array("path" => $filename)), '', '');
@@ -605,15 +608,23 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 	function check_sqlite_name(string $name): bool {
 		// avoid creating PHP files on unsecured servers
 		$extensions = "db|sdb|sqlite";
-		if (!preg_match("~^[^\\0]*\\.($extensions)\$~", $name)) {
+		// PDO_SQLite opens file: as URI since PHP 8.1, SQLite decodes % in its path and ends it by ? or #
+		$uri = (connection()->extension == "PDO_SQLite" && PHP_VERSION_ID >= 80100 ? "file:[^?#%\\0]+\\.($extensions)(\\?[^\\0]*)?|" : "");
+		if (!preg_match("~^($uri(?!file:)[^\\0]*\\.($extensions))\\z~", $name)) {
 			connection()->error = lang('Please use one of these file extensions: %s.', str_replace("|", ", ", $extensions));
 			return false;
 		}
 		return true;
 	}
 
+	/** Get the file path from a file: URI checked by check_sqlite_name() */
+	function file_from_uri(string $name): string {
+		// SQLite skips the authority and / before a Windows drive letter
+		return (preg_match('~^file:(//[^/]*)?(/(?=[a-zA-Z]:))?([^?]*)~', $name, $match) ? $match[3] : $name);
+	}
+
 	function create_database(string $db, string $collation) {
-		if (file_exists($db)) {
+		if (file_exists(file_from_uri($db))) {
 			connection()->error = lang('File exists.');
 			return false;
 		}
@@ -639,7 +650,7 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 			if (!check_sqlite_name($db)) {
 				return false;
 			}
-			if (!@unlink($db)) {
+			if (!@unlink(file_from_uri($db))) {
 				connection()->error = lang('File exists.');
 				return false;
 			}
@@ -653,7 +664,7 @@ ORDER BY (name LIKE 'sqlite_%'), name");
 		}
 		connection()->attach(server_parts(array("path" => ":memory:")), '', '');
 		connection()->error = lang('File exists.');
-		return @rename(DB, $name);
+		return @rename(file_from_uri(DB), file_from_uri($name));
 	}
 
 	function auto_increment(): string {

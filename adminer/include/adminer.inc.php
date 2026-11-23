@@ -576,13 +576,14 @@ class Adminer {
 		foreach ($indexes as $i => $index) {
 			if ($index["type"] == "FULLTEXT") {
 				echo "<div>(<i>" . implode("</i>, <i>", array_map('Adminer\h', $index["columns"])) . "</i>) " . h(driver()->fulltextOperator);
-				echo " <input type='search' name='fulltext[$i]' value='" . h(idx($_GET["fulltext"], $i)) . "' data-default=''" . on('input', 'selectFieldChange') . ">";
+				echo " <input type='search' name='fulltext[" . h($i) . "]' value='" . h(idx($_GET["fulltext"], $i)) . "' data-default=''" . on('input', 'selectFieldChange') . ">";
 				echo (JUSH == 'sql' ? checkbox("boolean[$i]", 1, isset($_GET["boolean"][$i]), "BOOL") : '');
 				echo "</div>\n";
 			}
 		}
 		$operators = adminer()->operators($tableStatus);
 		foreach (array_merge((array) $_GET["where"], array(array())) as $i => $val) {
+			$i = number($i); // the key from the URL can contain anything, selectAddRow() creates keys like 01
 			if (!$val || (("$val[col]$val[val]" != "" || preg_match('~NULL$~', $val["op"])) && in_array($val["op"], $operators))) {
 				echo "<div>" . adminer()->selectColumnInput(
 					" name='where[$i][col]' data-default=''" . on('change', ($val ? 'selectFieldChange' : 'selectAddRow')),
@@ -777,7 +778,8 @@ class Adminer {
 		$return = array();
 		foreach ((array) $_GET["order"] as $key => $val) {
 			if ($val != "") {
-				$return[] = (preg_match('~^((COUNT\(DISTINCT |[A-Z0-9_]+\()(`(?:[^`]|``)+`|"(?:[^"]|"")+")\)|COUNT\(\*\))$~', $val) ? $val : idf_escape($val)) //! MS SQL uses []
+				// a backslash escapes the closing quote in ClickHouse
+				$return[] = (preg_match('~^((COUNT\(DISTINCT |[A-Z0-9_]+\()(`(?:[^`\\\\]|``)+`|"(?:[^"\\\\]|"")+")\)|COUNT\(\*\))$~', $val) ? $val : idf_escape($val)) //! MS SQL uses []
 					. (isset($_GET["desc"][$key]) ? " DESC" . (JUSH == 'pgsql' && idx($fields[$val], "null") ? " NULLS LAST" : "") : "")
 				;
 			}
@@ -1054,6 +1056,7 @@ class Adminer {
 				$buffer = "";
 				$keys = array();
 				$generated = array();
+				$overriding = "";
 				$suffix = "";
 				$fetch_function = ($table != '' ? 'fetch_assoc' : 'fetch_row');
 				$count = 0;
@@ -1067,6 +1070,9 @@ class Adminer {
 								continue;
 							}
 							$keys[] = $field->name;
+							if (JUSH == "pgsql" && isset($fields[$field->name]) && is_identity_always($fields[$field->name])) {
+								$overriding = " OVERRIDING SYSTEM VALUE";
+							}
 							$key = idf_escape($field->name);
 							$values[] = "$key = VALUES($key)";
 						}
@@ -1085,7 +1091,7 @@ class Adminer {
 						dump_csv($row);
 					} else {
 						if (!$insert) {
-							$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('Adminer\idf_escape', $keys)) . ") VALUES";
+							$insert = "INSERT INTO " . table($table) . " (" . implode(", ", array_map('Adminer\idf_escape', $keys)) . ")$overriding VALUES";
 						}
 						foreach ($row as $key => $val) {
 							if ($generated[$key]) {
@@ -1265,7 +1271,7 @@ class Adminer {
 			}
 			$actions = adminer()->menuActions($actions, $missing);
 			echo ($actions ? "<p class='links'>\n" . implode("\n", $actions) . "\n" : "");
-			$sections = array(); // the sections and the links of the database page offered by the Ctrl+K box
+			$sections = array(); // the sections and the links of the database and server pages offered by the Ctrl+K box
 			if ($in_db) {
 				if (function_exists('Adminer\alter_table')) {
 					$sections[] = array(lang('Create table'), ME . "create=");
@@ -1273,6 +1279,7 @@ class Adminer {
 				if (support("view")) {
 					$sections[] = array(lang('Create view'), ME . "view=");
 				}
+				$sections[] = array(lang('Database schema'), ME . "schema=");
 				$features = array(
 					'routine' => array('routines', lang('Routines')),
 					'sequence' => array('sequences', lang('Sequences')),
@@ -1286,7 +1293,18 @@ class Adminer {
 				}
 			}
 			if (DB != "" && !$missing && support("extension")) { // the extensions are on the page of the database without a schema
-				$sections[] = array(lang('Extensions'), preg_replace('~\bns=[^&]*&~', '', ME) . "ns=#extensions");
+				$sections[] = array(lang('Extensions'), preg_replace('~&ns=[^&]*~', '', ME) . "ns=#extensions");
+			}
+			$server_pages = array(
+				'privileges' => lang('Privileges'),
+				'processlist' => lang('Process list'),
+				'variables' => lang('Variables'),
+				'status' => lang('Status'),
+			);
+			foreach ($server_pages as $key => $val) {
+				if (support($key)) {
+					$sections[] = array($val, preg_replace('~&(db|ns)=[^&]*~', '', ME) . "$key=");
+				}
 			}
 			// unshift() - before the links added by plugins, whose hooks run first
 			echo ($sections ? script("jumpSections.unshift(..." . json_encode($sections, JSON_UNESCAPED_UNICODE) . ");") : "");

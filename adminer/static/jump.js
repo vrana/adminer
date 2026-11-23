@@ -1,7 +1,7 @@
-'use strict'; // the box searching tables, schemas, databases and the sections of the database page, opened by Ctrl+K
+'use strict'; // the box searching tables, schemas, databases and the sections of the database and server pages, opened by Ctrl+K
 
 let jumpColumn = +(/(?:^|; )adminer_jump=(\d)/.exec(document.cookie) || [0, 0])[1]; // the action chosen by Left and Right, kept when moving between rows and remembered for the next pages
-const jumpSections = []; // [label, URL] of the sections and the links of the database page, filled by Adminer::navigation() and plugins
+const jumpSections = []; // [label, URL] of the sections and the links of the database and server pages, filled by Adminer::navigation() and plugins
 
 /** Set up the box searching tables, schemas and databases */
 function jumpSetup() {

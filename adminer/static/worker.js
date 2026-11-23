@@ -37,6 +37,5 @@ self.addEventListener('fetch', event => {
 			}
 			return response;
 		})))
-		.catch(() => fetch(event.request)) // a broken cache must not make Adminer unreachable
-	);
+		.catch(() => fetch(event.request))); // a broken cache must not make Adminer unreachable
 });

@@ -21,6 +21,9 @@ if (isset($_GET["pgsql"])) {
 				if (isset($ssl["mode"])) {
 					$this->string .= " sslmode=$ssl[mode]";
 				}
+				if (strpos($this->string . $db, "\0") !== false) {
+					return lang('Invalid credentials.'); // pg_connect() throws ValueError, the password decrypted by a wrong adminer_key cookie may contain NUL
+				}
 				$errors = php_errors(function () use ($db) {
 					$this->link = pg_connect("$this->string dbname='" . ($db != "" ? addcslashes($db, "'\\") : "postgres") . "'", PGSQL_CONNECT_FORCE_NEW);
 					if (!$this->link && $db != "") {

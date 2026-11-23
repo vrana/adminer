@@ -1,6 +1,15 @@
 <?php
 namespace Adminer;
 
+$line_comment = driver()->lineComment();
+$space = "(?:\\s|\xEF\xBB\xBF|/\\*[\s\S]*?\\*/|(?:$line_comment)[^\n]*\n?|--\r?\n)"; // BOM - SQLite skips it
+// PHP doesn't support setting SQLITE_LIMIT_ATTACHED; SQLite skips empty statements, a leading ; is possible with DELIMITER
+$sqlite_attach = "~^(?:$space|;)*+(ATTACH|VACUUM\\b.*\\bINTO)\\b~is";
+
+if (!$error && $_POST["export"] && JUSH == "sqlite" && preg_match($sqlite_attach, $_POST["query"], $match) !== 0) {
+	$error = lang('%s queries are not supported.', preg_match('~ATTACH~i', $match[1]) ? 'ATTACH' : 'VACUUM INTO');
+}
+
 if (!$error && $_POST["export"]) {
 	save_settings(array("output" => $_POST["output"], "format" => $_POST["format"]), "adminer_import");
 	dump_headers("sql");
@@ -104,7 +113,6 @@ if ($_POST && $adminer_export) { //! delete on 2026-09-26
 }
 
 page_header((isset($_GET["import"]) ? lang('Import') : lang('SQL command')), $error);
-$line_comment = driver()->lineComment();
 $error_line = 0; // the line of the first error in the <textarea>, counted from 1
 
 /** Get the line of an error in the <textarea>
@@ -149,7 +157,6 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 			}
 		}
 
-		$space = "(?:\\s|\xEF\xBB\xBF|/\\*[\s\S]*?\\*/|(?:$line_comment)[^\n]*\n?|--\r?\n)"; // BOM - SQLite skips it
 		$offset = 0;
 		$query_offset = 0; // the position of $query in the <textarea>
 		$empty = true;
@@ -232,8 +239,7 @@ if (!$error && $_POST && !(isset($_GET["import"]) && adminer()->importProcess())
 						$empty = false;
 						$commands++;
 						$print = "<pre id='sql-$commands'>$code</pre>\n";
-						if (JUSH == "sqlite" && preg_match("~^$space*+(ATTACH|VACUUM\\b.*\\bINTO)\\b~is", $q, $match) !== 0) {
-							// PHP doesn't support setting SQLITE_LIMIT_ATTACHED
+						if (JUSH == "sqlite" && preg_match($sqlite_attach, $q, $match) !== 0) {
 							echo $print;
 							echo "<p class='error'>" . lang('%s queries are not supported.', preg_match('~ATTACH~i', $match[1]) ? 'ATTACH' : 'VACUUM INTO') . "\n";
 							$errors[] = " <a href='#sql-$commands'>$commands</a>";

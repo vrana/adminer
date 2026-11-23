@@ -74,7 +74,7 @@ function nl_br(string $string): string {
 * @param string $class class of the label, of the input if there's no label
 */
 function checkbox(string $name, $value, ?bool $checked, string $label = "", string $attrs = "", string $class = "", string $labelled_by = ""): string {
-	$return = "<input type='checkbox' name='$name' value='" . h($value) . "'"
+	$return = "<input type='checkbox' name='" . h($name) . "' value='" . h($value) . "'"
 		. ($checked ? " checked" : "")
 		. ($label == "" && $class ? " class='$class'" : "")
 		. ($labelled_by ? " aria-labelledby='$labelled_by'" : "")
@@ -415,7 +415,10 @@ function process_input(array $field) {
 	}
 	$value = idx($_POST["fields"], $idf);
 	if ($value === null) {
-		return false;
+		if (!isset($_FILES["fields"]["name"][$idf])) {
+			return false;
+		}
+		$value = ""; // <input type="file"> from a plugin's editInput()
 	}
 	if ($field["type"] == "enum" || driver()->enumLength($field)) {
 		$value = idx($value, 0);
@@ -466,11 +469,10 @@ function jump_input(): string {
 }
 
 /** Print results of search in all tables
-* @uses $_GET["where"][0]
 * @uses $_POST["tables"]
 */
-function search_tables(string $query): void {
-	$_GET["where"][0]["val"] = $query;
+function search_tables(string $query, string $op = ""): void {
+	$_GET["where"] = array(array("op" => $op, "val" => $query)); // discard the conditions from the URL, they could contain the SQL operator
 	$sep = "<ul>\n";
 	foreach (table_status('', true) as $table => $table_status) {
 		$name = adminer()->tableName($table_status);

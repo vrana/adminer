@@ -88,7 +88,7 @@ const urlSeparators = '" . js_escape(ini_get("arg_separator.input")) . "';");
 		$jump = (class_exists('Adminer\Db') && connection()); // not on the page reporting a missing extension
 		$link = substr(preg_replace('~\b(username|db|ns)=[^&]*&~', '', ME), 0, -1);
 		echo '<p id="breadcrumb">' . ($jump ? jump_input() : '') . '<a href="' . h($link ?: ".") . '">' . get_driver(DRIVER) . '</a> » ';
-		$link = substr(preg_replace('~\b(db|ns)=[^&]*&~', '', ME), 0, -1);
+		$link = substr(preg_replace('~&(db|ns)=[^&]*~', '', ME), 0, -1);
 		$server = adminer()->serverName(SERVER);
 		$server = ($server != "" ? $server : lang('Server'));
 		if ($breadcrumb === false) {

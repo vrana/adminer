@@ -32,7 +32,7 @@ parameters:
 	ignoreErrors:
 		# need to fix
 		- "~Adminer\\\\Result.*mysqli_result~" # mysqli_result
-		- "~Function Adminer\\\\queries\\(\\) never returns Adminer\\\\Result~" # mysqli_result
+		- "~Function Adminer\\\\queries(_password)?\\(\\) never returns Adminer\\\\Result~" # mysqli_result
 
 		# not real problems
 		- identifier: include.fileNotFound # includes in include/ relative from index.php
@@ -42,6 +42,9 @@ parameters:
 		-
 			identifier: booleanAnd.alwaysFalse # PHP_VERSION_ID < 70100
 			path: ../adminer/include/pdo.inc.php
+		-
+			identifier: greater.alwaysTrue # while ($q-- > 0), https://github.com/phpstan/phpstan/issues/15782
+			path: ../adminer/include/xxtea.inc.php
 		- "~an unknown class OCI-?Lob~" # this looks like PHPStan bug
 		- "~^Variable \\$error might not be defined~" # declared in bootstrap.inc.php
 		- "~^Constant LANG not found~" # defined in lang.inc.php

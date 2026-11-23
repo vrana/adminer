@@ -1245,6 +1245,9 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 	/** Get SQL command to create table */
 	function create_sql(string $table, ?bool $auto_increment, string $style): string {
 		$return = get_val("SHOW CREATE TABLE " . table($table), 1);
+		$return = preg_replace_callback('~(?<=^CREATE TABLE )`(?:[^`]|``)+`~', function () use ($table): string {
+			return table($table); // lower_case_table_names=1 lowercases the name here, the other statements in the export use $table
+		}, $return);
 		if (!$auto_increment) {
 			$return = preg_replace('~(\n\)[^\n]*?) AUTO_INCREMENT=\d+~', '\1', $return); // \n) - the table options, not a comment
 		}
@@ -1325,7 +1328,7 @@ WHERE ROUTINE_SCHEMA = DATABASE() AND ROUTINE_TYPE = '$type' AND ROUTINE_NAME = 
 		}
 		if (preg_match("~geom|point|linestring|polygon~", $field["type"])) {
 			$prefix = (min_version(8) ? "ST_" : "");
-			$return = $prefix . "GeomFromText($return, $prefix" . "SRID($field[field]))";
+			$return = $prefix . "GeomFromText($return, $prefix" . "SRID(" . idf_escape($field["field"]) . "))";
 		}
 		return $return;
 	}

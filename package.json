@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.65.1",
+    "@stylistic/eslint-plugin": "6.0.1",
+    "eslint": "10.15.0",
+    "globals": "17.14.0"
+  }
+}
