@@ -42,6 +42,7 @@ if (isset($_GET["igdb"])) {
 					if (!$this->token) {
 						return "$url: " . ($error ?: idx($json, 'message', "HTTP $status")); // the URL is a constant so displaying the response doesn't disclose anything
 					}
+					restart_session(); // connect() runs with the session closed
 					set_session("igdb_token", array($hash, time() + $json['expires_in'], ($key ? encrypt_string($this->token, $key) : $this->token)));
 				}
 				return '';
