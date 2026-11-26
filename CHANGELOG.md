@@ -12,7 +12,7 @@
 - Select: Escape the name of a FULLTEXT index in the search form (HTML injection)
 - MySQL, MariaDB: Don't unescape string literals in routine definitions (regression from 5.4.2)
 - MySQL, MariaDB: Don't store the password of a created or altered user in the SQL history (regression from 5.5.0)
-- MySQL, MariaDB: Export the table name in CREATE TABLE as in the other commands with lower_case_table_names=1 (fix #1380)
+- MySQL, MariaDB: Export the table name in CREATE TABLE as in the other commands with lower_case_table_names=1 (bug #1380)
 - MySQL, MariaDB: Escape the name of a geometry column in the conditions, edit and export (SQL injection)
 - PostgreSQL: Export data of GENERATED ALWAYS identity columns with OVERRIDING SYSTEM VALUE
 - PostgreSQL: Don't crash on NUL in the password or the database name (PHP 8.5.13)
@@ -81,7 +81,7 @@
 - PostgreSQL: Drop a unique index without a constraint
 - PostgreSQL: Save binary data with standard_conforming_strings off
 - PostgreSQL: Fix inserting the CURRENT_DATE default
-- PostgreSQL: Don't report SELECT without columns as affected rows (fix #1365)
+- PostgreSQL: Don't report SELECT without columns as affected rows (bug #1365)
 - PostgreSQL PDO: Compute the number of tables in databases
 - PostgreSQL PDO: Export databases from the server level
 - PostgreSQL, MS SQL, Oracle: Mark and recreate invalid indexes
