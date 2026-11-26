@@ -134,9 +134,25 @@ SET foreign_key_checks = 0;
 
 				if ($_POST["table_style"] || $_POST["data_style"]) {
 					$views = array();
+					// partitions are created after their parent and hold its rows
+					$partitions = array();
+					$queue = array();
 					foreach ($statuses as $name => $table_status) {
+						if (isset($statuses[$table_status["partition_of"]])) {
+							$partitions[$table_status["partition_of"]][] = $name;
+						} else {
+							$queue[] = $name;
+						}
+					}
+					$ordered = array();
+					while ($queue) {
+						$name = array_shift($queue);
+						$ordered[$name] = $statuses[$name];
+						$queue = array_merge((array) $partitions[$name], $queue);
+					}
+					foreach ($ordered as $name => $table_status) {
 						$table = array_key_exists($name, $exported);
-						$data = array_key_exists($name, $data_tables);
+						$data = (array_key_exists($name, $data_tables) && !array_intersect((array) $partitions[$name], array_keys($data_tables)));
 						if ($table || $data) {
 							$tmp_file = null;
 							if ($ext == "tar") {

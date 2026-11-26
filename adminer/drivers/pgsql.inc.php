@@ -634,7 +634,8 @@ ORDER BY 1";
 	reltuples AS \"Rows\",
 	EXISTS (SELECT 1 FROM pg_index WHERE indrelid = c.oid AND NOT indisvalid)::int AS invalid_index,
 	" . ($sequences ? "seq.last_value" : "NULL") . " AS \"Auto_increment\"" . (min_version(10) ? ",
-	relispartition::int AS dependent" : "") . "
+	relispartition::int AS dependent,
+	CASE WHEN relispartition THEN (SELECT p.relname FROM pg_inherits JOIN pg_class p ON p.oid = inhparent WHERE inhrelid = c.oid) END AS partition_of" : "") . "
 FROM pg_class c
 " . ($sequences ? "LEFT JOIN (
 	SELECT d.refobjid, max(s.last_value) AS last_value
@@ -1330,10 +1331,13 @@ FROM pg_range WHERE rngtypid = $id"));
 
 		$fkeys = foreign_keys($table);
 		ksort($fkeys);
+		// a partition gets the keys of its parent and a key referencing a partitioned table has a clone for each partition
+		$cloned = (min_version(11) ? array_flip(get_vals("SELECT conname FROM pg_constraint WHERE conrelid = " . driver()->tableOid($table) . " AND contype = 'f' AND conparentid != 0")) : array());
+		$only = (driver()->partitionsInfo($table) ? "" : "ONLY "); // a partitioned table rejects ONLY
 
-		foreach ($fkeys as $fkey_name => $fkey) {
+		foreach (array_diff_key($fkeys, $cloned) as $fkey_name => $fkey) {
 			// the definition names the target table in another schema with the schema
-			$return .= "ALTER TABLE ONLY " . table($table) . " ADD CONSTRAINT " . idf_escape($fkey_name) . " "
+			$return .= "ALTER TABLE $only" . table($table) . " ADD CONSTRAINT " . idf_escape($fkey_name) . " "
 				. preg_replace_callback('~( REFERENCES )([^(.]+)\(~', function (array $match): string {
 					return $match[1] . table(idf_unescape($match[2])) . "(";
 				}, $fkey["definition"]) . ";\n";
@@ -1351,7 +1355,8 @@ FROM pg_range WHERE rngtypid = $id"));
 		// pg_get_indexdef() always qualifies the table by the schema, quote_ident() quotes the same way
 		$query = "SELECT indexdef, quote_ident(schemaname) || '.' || quote_ident(tablename) AS qualified, quote_ident(current_database()) AS db
 FROM pg_catalog.pg_indexes
-WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary != "" ? " AND indexname != " . q($primary) : "");
+WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary != "" ? " AND indexname != " . q($primary) : "") . (min_version(11) ? "
+AND NOT EXISTS (SELECT 1 FROM pg_inherits WHERE inhrelid = (quote_ident(schemaname) || '.' || quote_ident(indexname))::regclass)" : ""); // a partition gets the indexes of its parent
 		foreach (get_rows($query, null, "-- ") as $row) {
 			// CockroachDB qualifies also by the database, the leading space matches also ON ONLY in a partitioned table
 			$return .= "\n\n" . str_replace(array(" $row[db].$row[qualified] USING ", " $row[qualified] USING "), " " . table($table) . " USING ", $row["indexdef"]) . ";";
@@ -1376,6 +1381,32 @@ WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary !=
 
 		if (count($status) < 2 || empty($fields)) {
 			return "";
+		}
+
+		// comments for table & fields
+		$comments = ($status['Comment'] ? "\n\nCOMMENT ON TABLE " . table($status['Name']) . " IS " . q($status['Comment']) . ";" : "");
+		foreach ($fields as $field_name => $field) {
+			if ($field['comment']) {
+				$comments .= "\n\nCOMMENT ON COLUMN " . table($status['Name']) . "." . idf_escape($field_name) . " IS " . q($field['comment']) . ";";
+			}
+		}
+
+		$partition = driver()->partitionsInfo($status['Name']);
+		$partition_by = ($partition ? "\nPARTITION BY $partition[partition_by]($partition[partition])" : "");
+
+		if ($status['partition_of'] != "") {
+			// the columns, defaults, primary key, inherited checks, indexes and triggers come from the parent
+			$table_oid = driver()->tableOid($table);
+			$checks = get_vals("SELECT 'CONSTRAINT ' || quote_ident(conname) || ' ' || pg_get_constraintdef(oid)
+FROM pg_constraint
+WHERE conrelid = $table_oid AND contype = 'c' AND conislocal
+ORDER BY conname");
+			$return = "CREATE TABLE " . table($status['Name']) . " PARTITION OF " . table($status['partition_of'])
+				. ($checks ? " (\n    " . implode(",\n    ", $checks) . "\n)" : "")
+				. " " . get_val("SELECT pg_get_expr(relpartbound, oid) FROM pg_class WHERE oid = $table_oid") // FOR VALUES ... or DEFAULT
+				. "$partition_by;$comments" . indexes_sql($table)
+			;
+			return rtrim($return, ';');
 		}
 
 		$return = "CREATE TABLE " . table($status['Name']) . " (\n    ";
@@ -1443,27 +1474,10 @@ WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary !=
 		}
 		$return .= implode(",\n    ", $return_parts) . "\n)";
 
-		$partition = driver()->partitionsInfo($status['Name']);
-		if ($partition) {
-			$return .= "\nPARTITION BY $partition[partition_by]($partition[partition])";
-		}
-		//! parse pg_class.relpartbound to create PARTITION OF
-		//! don't insert partitioned data twice
-
+		$return .= $partition_by;
 		$return .= (min_version(12) ? "" : "\nWITH (oids = " . ($status['Oid'] ? 'true' : 'false') . ")") . ";";
 		$return .= implode($sequences_owned);
-
-		// comments for table & fields
-		if ($status['Comment']) {
-			$return .= "\n\nCOMMENT ON TABLE " . table($status['Name']) . " IS " . q($status['Comment']) . ";";
-		}
-
-		foreach ($fields as $field_name => $field) {
-			if ($field['comment']) {
-				$return .= "\n\nCOMMENT ON COLUMN " . table($status['Name']) . "." . idf_escape($field_name) . " IS " . q($field['comment']) . ";";
-			}
-		}
-
+		$return .= $comments;
 		$return .= indexes_sql($table, $primary);
 
 		foreach (array_filter($sequence_values) as $sequence) {
@@ -1492,7 +1506,9 @@ WHERE schemaname = current_schema() AND tablename = " . q($table) . ($primary !=
 	function trigger_sql(string $table): string {
 		$status = table_status1($table);
 		$return = "";
-		foreach (triggers($table) as $trg_id => $trg) {
+		// a partition gets the triggers of its parent, PostgreSQL < 13 marks them internal so that triggers() doesn't list them
+		$cloned = (min_version(13) ? array_flip(get_vals("SELECT tgname FROM pg_trigger WHERE tgrelid = " . driver()->tableOid($table) . " AND tgparentid != 0")) : array());
+		foreach (array_diff_key(triggers($table), $cloned) as $trg_id => $trg) {
 			$trigger = trigger($trg_id, $status['Name']);
 			$return .= "\nCREATE TRIGGER " . idf_escape($trigger['Trigger']) . " $trigger[Timing] $trigger[Event] ON "
 				. table($status['Name']) . " $trigger[Type] $trigger[Statement];;\n";
