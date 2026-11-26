@@ -596,7 +596,8 @@ ORDER BY ORDINAL_POSITION", null, "") as $row
 			);
 		}
 		if (like_bool($field)) {
-			return '<input type="checkbox" value="1"' . (preg_match('~^(1|t|true|y|yes|on)$~i', $value) ? ' checked' : '') . "$attrs>";
+			return "<input type='hidden'$attrs value='0'>"
+				. '<input type="checkbox" value="1"' . (preg_match('~^(1|t|true|y|yes|on)$~i', $value) ? ' checked' : '') . "$attrs>";
 		}
 		$hint = "";
 		if (preg_match('~time~', $field["type"])) {

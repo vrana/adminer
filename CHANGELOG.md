@@ -1,5 +1,6 @@
 ## Adminer dev
 - PostgreSQL: Export partitions as PARTITION OF and their rows only once (bug #1389)
+- Editor: Allow unchecking boolean fields (bug #1391, regression from 5.4.2)
 
 ## Adminer 6.3.1 (released 2026-11-20)
 - Search Database schema, Privileges, Process list, Variables and Status by Ctrl+K
